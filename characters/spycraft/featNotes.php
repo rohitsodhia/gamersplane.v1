@@ -10,24 +10,13 @@
 	} else $noChar = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></h1>
+		<h1 class="headerbar"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></h1>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } elseif (!isset($featInfo)) { ?>
 		<h2 id="noFeat">This character does not have this feat/ability.</h2>
 <? } else { ?>
-		<div class="jsHide">
-			Javascript is disabled. This page won't work/show up properly.
-		</div>
-		
-		<form id="featDescForm" method="post" action="<?=SITEROOT?>/characters/process/spycraft/featNotes/">
-			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-			<input id="featID" type="hidden" name="featID" value="<?=$featID?>">
-			<textarea id="notes" name="notes"><?=$featInfo['notes']?></textarea>
-			<div id="submitDiv" class="buttonPanel">
-				<button type="submit" name="save" class="btn_save"></button>
-			</div>
-		</form>
+		<div id="notes"><?=printReady($featInfo['notes'])?></div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

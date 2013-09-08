@@ -3,31 +3,34 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#page_myGames #gamesList {
-	margin-bottom: 10px;
+#page_myGames .mainColumn h2 {
+	margin: 0;
 }
 
-#page_myGames h2 {
-	margin: 2.5em 0;
+#page_myGames .hbTopper a {
+	display: block;
+	float: left;
+	font-size: 1.3em;
+	line-height: 1.2em;
 }
 
-#page_myGames #gamesList h3 {
-	margin-bottom: .5em;
+#page_myGames .noneFound {
+	font-size: 1.3em;
+	margin: 1.5em 0;
+	line-height: 1.4em;
+	text-align: center;
+	font-weight: bold;
 }
 
 #page_myGames .tr {
-	border: 1px solid #000;
 	padding: 8px;
+	border: 1px solid #000;
+	border-top: none;
 /*	padding-left: 15px;*/
 }
 
-#page_myGames .firstTR {
-	margin-top: 1em;
-}
-
 #page_myGames .tr:hover {
-	background: #111;
-	border-color: #333;
+	background: #EEF;
 }
 
 #page_myGames .gameTitle {
@@ -82,39 +85,48 @@
 
 /* --------------------------------------------*/
 
-#page_lfg #myLFG {
-}
-
-#page_lfg #myLFG h3 {
+#page_lfg h3 {
 	display: inline;
 }
 
-#page_lfg #myLFG a {
+#page_lfg a {
 	font-size: .75em;
 }
 
-#page_lfg #myLFG div.game {
+#page_lfg .game {
 	float: left;
 	width: 224px;
 	padding: .25em 0;
 }
 
-#page_lfg #myLFG div.game label {
+#page_lfg .game label {
 	display: inline;
 }
 
-#page_lfg #myLFG textarea {
-	width: 888px;
-	height: 5em;
-	margin-top: 1em;
-}
-
-#page_lfg #myLFG #submitDiv {
+#page_lfg #submitDiv {
 	text-align: center;
-	margin-top: 1em;
+	margin-top: .5em;
 }
 
 /* --------------------------------------------*/
+
+#page_newGame .sideWidget {
+	width: 260px;
+}
+
+#page_newGame .sideWidget li {
+	padding: .2em 0;
+	list-style: none;
+}
+
+#page_newGame .mainColumn {
+	width: 640px;
+}
+
+#page_newGame form, #page_editGame form {
+	width: 620px;
+	margin: 0 auto;
+}
 
 #page_newGame label, #page_editGame label {
 	float: left;
@@ -125,7 +137,7 @@
 }
 
 #page_newGame input, #page_editGame input {
-	width: 200px;
+	width: 250px;
 }
 
 #page_newGame input#numPlayers, #page_newGame input#timesPer, #page_editGame input#numPlayers, #page_editGame input#timesPer {
@@ -138,8 +150,9 @@
 	height: 8em;
 }
 
-#page_newGame .indent {
-	margin-left: 20px;
+#page_newGame #submitDiv, #page_editGame #submitDiv {
+	margin-top: 1em;
+	text-align: center;
 }
 
 /* --------------------------------------------*/
@@ -153,7 +166,7 @@
 }
 
 #page_listGames #filterGames ul {
-	margin: .5em 0;
+	margin: .5em 0 1em;
 	clear: both;
 	list-style: none;
 }
@@ -162,15 +175,25 @@
 	padding: 0.1em 0
 }
 
+#page_listGames label {
+	display: inline;
+}
+
+#page_listGames h1 {
+	margin: 0;
+}
+
 #page_listGames #gamesList .tr {
-	border: 1px solid #000;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding: 10px 5px;
+	border-top: 1px solid #000;
+}
+
+#page_listGames #gamesList .tr:first-of-type {
+	border-top: none;
 }
 
 #page_listGames #gamesList .tr:hover {
-	background: #111;
-	border-color: #333;
+	background: #DDD;
 }
 
 #page_listGames .gameTitle {
@@ -191,6 +214,14 @@
 	margin-left: 450px;
 }
 
+#page_listGames #noResults {
+	margin: 2em 0;
+	font-size: 1.5em;
+	font-weight: bold;
+	line-height: 1.2em;
+	text-align: center;
+}
+
 /* --------------------------------------------*/
 
 #page_gameDetails h1 a {
@@ -206,60 +237,50 @@
 	width: 250px;
 }
 
-#page_gameDetails .tr div {
+#page_gameDetails #details .tr div {
 	margin-left: 260px;
 }
 
-#page_gameDetails #userLists {
-	margin: 20px 0 15px;
+#page_gameDetails .noItems, #page_gameDetails #loggedOutNotice {
+	margin: 1em 0;
+	font-size: 1.3em;
+	line-height: 1.2em;
+	font-weight: bold;
+	text-align: center;
 }
 
-#page_gameDetails #userLists h3 {
-	margin: 1.5em 0 .5em;
+#page_gameDetails .playerList {
+	margin: 10px 0;
 }
 
-#page_gameDetails #userLists .tr {
-	border: 1px solid #000;
-	padding-left: 15px;
+#page_gameDetails .playerList .tr {
+	padding: 8px 12px;
 }
 
-#page_gameDetails .firstTR {
-	margin-top: .5em;
+#page_gameDetails .playerList .tr:hover {
+	background: #EEE;
 }
 
-#page_gameDetails #userLists .tr:hover {
-	background: #111;
-	border-color: #333;
-}
-
-#page_gameDetails #userLists div {
-	margin-left: 0;
-}
-
-#page_gameDetails #userLists .charTitle, #page_gameDetails #userLists .gm {
-	display: block;
+#page_gameDetails .playerList .tr > div {
 	float: left;
+}
+
+#page_gameDetails .playerList .charTitle, #page_gameDetails .playerList .gm {
 	width: 225px;
 	border-right: 1px solid #666;
 }
 
-#page_gameDetails #userLists .player {
-	float: left;
-	width: 150px;
-	border-right: 1px solid #999;
-	text-align: center;
+#page_gameDetails .playerList .player {
+	width: 200px;
 }
 
-#page_gameDetails #userLists .charLinks {
-	margin-left: 395px;
+#page_gameDetails .playerList .player img {
+	vertical-align: top;
+	margin-left: 10px;
 }
 
-#page_gameDetails #userLists .gmLinks {
-	margin-left: 245px;
-}
-
-#page_gameDetails #userLists .charLinks a, #page_gameDetails #userLists .gmLinks a {
-	margin-right: 30px;
+#page_gameDetails .actionLinks a, #page_gameDetails .actionLinks a {
+	margin-right: 20px;
 }
 
 #page_gameDetails #submitChar {
@@ -274,6 +295,12 @@
 
 #page_gameDetails #submitChar button {
 	margin-top: .5em;
+}
+
+/* --------------------------------------------*/
+
+#page_game_pendingPlayer form, #page_game_removePlayer form {
+	margin-top: 1em;
 }
 
 /* --------------------------------------------*/

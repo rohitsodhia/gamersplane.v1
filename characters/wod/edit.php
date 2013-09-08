@@ -2,20 +2,17 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT wod.*, characters.userID, gms.gameID IS NOT NULL isGM FROM wod_characters wod INNER JOIN characters ON wod.characterID = characters.characterID LEFT JOIN (SELECT gameID, `primary` FROM gms WHERE userID = $userID) gms ON characters.gameID = gms.gameID WHERE wod.characterID = $characterID");
+	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM wod_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
 	if ($charInfo->rowCount()) {
 		$charInfo = $charInfo->fetch();
+		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
-		if (isset($_GET['new'])) {
-			foreach (array('int', 'str', 'pre', 'wit', 'dex', 'man', 'res', 'sta', 'com') as $key) $charInfo[$key] = 1;
-			foreach (array('academics', 'computer', 'crafts', 'investigation', 'medicine', 'occult', 'politics', 'science', 'athletics', 'brawl', 'drive', 'firearms', 'larceny', 'stealth', 'survival', 'weaponry', 'animalKen', 'empathy', 'expression', 'intimidation', 'persuasion', 'socialize', 'streetwise', 'subterfuge') as $key) $charInfo[$key] = 0;
-		}
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Character Sheet</h1>
-		<h2><img src="<?=SITEROOT?>/images/logos/wod.jpg"></h2>
+		<h1 class="headerbar">Edit Character Sheet</h1>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/wod.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
@@ -29,7 +26,7 @@
 			</div>
 			
 			<div id="attributes">
-				<h2>Attributes</h2>
+				<h2 class="headerbar hbDark">Attributes</h2>
 				<table>
 					<tr>
 						<th>Power</th>
@@ -115,129 +112,145 @@
 				</table>
 			</div>
 			
-			<div id="leftCol" class="triCol">
-				<h2 id="leftColHeader">Skills</h2>
-				<h3>Mental</h3>
-				<p>(-3 unskilled)</p>
-<?
-		foreach (array('Academics', 'Computer', 'Crafts', 'Investigation', 'Medicine', 'Occult', 'Politics', 'Science') as $skill) {
-			echo "				
-				<div class=\"tr\">
-					{$skill}
-					<div class=\"skillRank\">
-						0
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"0\"".($charInfo[strtolower($skill)] == 0?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"1\"".($charInfo[strtolower($skill)] == 1?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"2\"".($charInfo[strtolower($skill)] == 2?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"3\"".($charInfo[strtolower($skill)] == 3?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"4\"".($charInfo[strtolower($skill)] == 4?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"5\"".($charInfo[strtolower($skill)] == 5?' checked="checked"':'').">
-						5
+			<div class="clearfix">
+				<div id="skills">
+					<h2 class="headerbar hbDark">Skills</h2>
+					<div class="hbMargined">
+						<div id="skills_mental" class="skillSet">
+							<h3>Mental</h3>
+							<p>(-3 unskilled)</p>
+<? foreach (array('Academics', 'Computer', 'Crafts', 'Investigation', 'Medicine', 'Occult', 'Politics', 'Science') as $skill) { ?>
+							<div class="tr">
+								<label><?=$skill?></label>
+								<div class="skillRank">
+									<span>0</span>
+									<input type="radio" name="<?=strtolower($skill)?>" value="0"<?=($charInfo[strtolower($skill)] == 0?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="1"<?=($charInfo[strtolower($skill)] == 1?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="2"<?=($charInfo[strtolower($skill)] == 2?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="3"<?=($charInfo[strtolower($skill)] == 3?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="4"<?=($charInfo[strtolower($skill)] == 4?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="5"<?=($charInfo[strtolower($skill)] == 5?' checked="checked"':'')?>>
+									<span>5</span>
+								</div>
+							</div>
+<? } ?>
+						</div>
+						
+						<div id="skills_physical" class="skillSet">
+							<h3>Physical</h3>
+							<p>(-1 unskilled)</p>
+<? foreach (array('Athletics', 'Brawl', 'Drive', 'Firearms', 'Larceny', 'Stealth', 'Survival', 'Weaponry') as $skill) { ?>
+							<div class="tr">
+								<label><?=$skill?></label>
+								<div class="skillRank">
+									<span>0</span>
+									<input type="radio" name="<?=strtolower($skill)?>" value="0"<?=($charInfo[strtolower($skill)] == 0?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="1"<?=($charInfo[strtolower($skill)] == 1?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="2"<?=($charInfo[strtolower($skill)] == 2?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="3"<?=($charInfo[strtolower($skill)] == 3?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="4"<?=($charInfo[strtolower($skill)] == 4?' checked="checked"':'')?>>
+									<input type="radio" name="<?=strtolower($skill)?>" value="5"<?=($charInfo[strtolower($skill)] == 5?' checked="checked"':'')?>>
+									<span>5</span>
+								</div>
+							</div>
+<? } ?>
+						</div>
+						
+						<div id="skills_social" class="skillSet">
+							<h3>Social</h3>
+							<p>(-1 unskilled)</p>
+<? foreach (array('Animal Ken', 'Empathy', 'Expression', 'Intimidation', 'Persuasion', 'Socialize', 'Streetwise', 'Subterfuge') as $skill) { ?>
+							<div class="tr">
+								<label><?=$skill?></label>
+								<div class="skillRank">
+									<span>0</span>
+									<input type="radio" name="<?=camelcase($skill)?>" value="0"<?=($charInfo[camelcase($skill)] == 0?' checked="checked"':'')?>>
+									<input type="radio" name="<?=camelcase($skill)?>" value="1"<?=($charInfo[camelcase($skill)] == 1?' checked="checked"':'')?>>
+									<input type="radio" name="<?=camelcase($skill)?>" value="2"<?=($charInfo[camelcase($skill)] == 2?' checked="checked"':'')?>>
+									<input type="radio" name="<?=camelcase($skill)?>" value="3"<?=($charInfo[camelcase($skill)] == 3?' checked="checked"':'')?>>
+									<input type="radio" name="<?=camelcase($skill)?>" value="4"<?=($charInfo[camelcase($skill)] == 4?' checked="checked"':'')?>>
+									<input type="radio" name="<?=camelcase($skill)?>" value="5"<?=($charInfo[camelcase($skill)] == 5?' checked="checked"':'')?>>
+									<span>5</span>
+								</div>
+							</div>
+<? } ?>
+						</div>
 					</div>
 				</div>
-";
-		}
-?>
 				
-				<h3>Physical</h3>
-				<p>(-1 unskilled)</p>
-<?
-		foreach (array('Athletics', 'Brawl', 'Drive', 'Firearms', 'Larceny', 'Stealth', 'Survival', 'Weaponry') as $skill) {
-			echo "				
-				<div class=\"tr\">
-					{$skill}
-					<div class=\"skillRank\">
-						0
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"0\"".($charInfo[strtolower($skill)] == 0?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"1\"".($charInfo[strtolower($skill)] == 1?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"2\"".($charInfo[strtolower($skill)] == 2?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"3\"".($charInfo[strtolower($skill)] == 3?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"4\"".($charInfo[strtolower($skill)] == 4?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".strtolower($skill)."\" value=\"5\"".($charInfo[strtolower($skill)] == 5?' checked="checked"':'').">
-						5
+				<div id="otherTraits">
+					<h2 class="headerbar hbDark">Other Traits</h2>
+					<div class="hbMargined clearfix">
+						<div class="col floatLeft">
+							<div id="merits">
+								<h3>Merits</h3>
+								<textarea name="merits"><?=$charInfo['merits']?></textarea>
+							</div>
+							
+							<div id="flaws" class="marginTop">
+								<h3>Flaws</h3>
+								<textarea name="flaws"><?=$charInfo['flaws']?></textarea>
+							</div>
+						</div>
+						<div class="col floatRight">
+							<div class="clearfix">
+								<div id="health" class="alignCenter">
+									<h3>Health</h3>
+									<input type="text" name="health" maxlength="2" value="<?=$charInfo['health']?>">
+								</div>
+								<div id="willpower" class="alignCenter">
+									<h3>Willpower</h3>
+									<input type="text" name="willpower" maxlength="2" value="<?=$charInfo['willpower']?>">
+								</div>
+								<div id="morality" class="alignCenter">
+									<h3>Morality</h3>
+									<input type="text" name="morality" maxlength="2" value="<?=$charInfo['morality']?>">
+								</div>
+							</div>
+							
+							<div class="tr marginTop">
+								<label class="textLabel">Size</label>
+								<input type="text" name="size" maxlength="2" value="<?=$charInfo['size']?>">
+							</div>
+							<div class="tr">
+								<label class="textLabel">Speed</label>
+								<input type="text" name="speed" maxlength="2" value="<?=$charInfo['speed']?>">
+							</div>
+							<div class="tr">
+								<label class="textLabel">Initiative Mod</label>
+								<input type="text" name="initiativeMod" maxlength="2" value="<?=$charInfo['initiativeMod']?>">
+							</div>
+							<div class="tr">
+								<label class="textLabel">Defense</label>
+								<input type="text" name="defense" maxlength="2" value="<?=$charInfo['defense']?>">
+							</div>
+							<div class="tr">
+								<label class="textLabel">Armor</label>
+								<input type="text" name="armor" maxlength="2" value="<?=$charInfo['armor']?>">
+							</div>
+						</div>
 					</div>
 				</div>
-";
-		}
-?>
 				
-				<h3>Social</h3>
-				<p>(-1 unskilled)</p>
-<?
-		foreach (array('Animal Ken', 'Empathy', 'Expression', 'Intimidation', 'Persuasion', 'Socialize', 'Streetwise', 'Subterfuge') as $skill) {
-			echo "				
-				<div class=\"tr\">
-					{$skill}
-					<div class=\"skillRank\">
-						0
-						<input type=\"radio\" name=\"".camelcase($skill)."\" value=\"0\"".($charInfo[camelcase($skill)] == 0?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".camelcase($skill)."\" value=\"1\"".($charInfo[camelcase($skill)] == 1?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".camelcase($skill)."\" value=\"2\"".($charInfo[camelcase($skill)] == 2?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".camelcase($skill)."\" value=\"3\"".($charInfo[camelcase($skill)] == 3?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".camelcase($skill)."\" value=\"4\"".($charInfo[camelcase($skill)] == 4?' checked="checked"':'').">
-						<input type=\"radio\" name=\"".camelcase($skill)."\" value=\"5\"".($charInfo[camelcase($skill)] == 5?' checked="checked"':'').">
-						5
+				<div id="itemsDiv">
+					<div id="weapons">
+						<h2 class="headerbar hbDark">Weapons</h2>
+						<textarea name="weapons" class="hbMargined"><?=$charInfo['weapons']?></textarea>
+					</div>
+					<div id="equipment">
+						<h2 class="headerbar hbDark">Equipment</h2>
+						<textarea name="equipment" class="hbMargined"><?=$charInfo['equipment']?></textarea>
 					</div>
 				</div>
-";
-		}
-?>
 			</div>
 			
-			<h2 id="rightColHeader">Other Traits</h2>
-			<div class="triCol rightCol">
-				<h3>Merits</h3>
-				<textarea id="merits" name="merits"><?=$charInfo['merits']?></textarea>
-				
-				<h3 class="marginTop">Flaws</h3>
-				<textarea id="flaws" name="flaws"><?=$charInfo['flaws']?></textarea>
+			<div id="notes" class="marginTop">
+				<h2 id="notesTitle" class="headerbar hbDark">Notes</h3>
+				<textarea name="notes" class="hbMargined"><?=$charInfo['notes']?></textarea>
 			</div>
-			<div class="triCol rightCol lastCol">
-				<h3>Health</h3>
-				<div class="alignCenter"><input type="text" id="health" name="health" maxlength="2" value="<?=$charInfo['health']?>"></div>
-				
-				<h3 class="marginTop">Willpower</h3>
-				<div class="alignCenter"><input type="text" id="willpower" name="willpower" maxlength="2" value="<?=$charInfo['willpower']?>"></div>
-				
-				<h3 class="marginTop">Morality</h3>
-				<div class="alignCenter"><input type="text" id="morality" name="morality" maxlength="2" value="<?=$charInfo['morality']?>"></div>
-				
-				<div class="tr marginTop">
-					<label class="textLabel">Size</label>
-					<input type="text" name="size" maxlength="2" value="<?=$charInfo['size']?>">
-				</div>
-				<div class="tr">
-					<label class="textLabel">Speed</label>
-					<input type="text" name="speed" maxlength="2" value="<?=$charInfo['speed']?>">
-				</div>
-				<div class="tr">
-					<label class="textLabel">Initiative Mod</label>
-					<input type="text" name="initiativeMod" maxlength="2" value="<?=$charInfo['initiativeMod']?>">
-				</div>
-				<div class="tr">
-					<label class="textLabel">Defense</label>
-					<input type="text" name="defense" maxlength="2" value="<?=$charInfo['defense']?>">
-				</div>
-				<div class="tr">
-					<label class="textLabel">Armor</label>
-					<input type="text" name="armor" maxlength="2" value="<?=$charInfo['armor']?>">
-				</div>
-			</div>
-			
-			<div id="itemsDiv">
-				<h3 class="marginTop">Weapons</h3>
-				<textarea id="weapons" name="weapons"><?=$charInfo['weapons']?></textarea>
-				
-				<h3 class="marginTop">Equipment</h3>
-				<textarea id="equipment" name="equipment"><?=$charInfo['equipment']?></textarea>
-			</div>
-			
-			<br class="clear">
-			<h2 id="notesTitle" class="marginTop">Notes</h3>
-			<textarea id="notes" name="notes"><?=$charInfo['notes']?></textarea>
 			
 			<div id="submitDiv">
-				<button type="submit" name="save" class="btn_save"></button>
+				<button type="submit" name="save" class="fancyButton">Save</button>
 			</div>
 		</form>
 <? } ?>

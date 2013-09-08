@@ -1,13 +1,13 @@
 <? if (!MODAL) { ?>
-	</div></div>
-	<div id="footer"<?=$dispatchInfo['fixedGameMenu']?' class="withFixedMenu"':''?>>
-		<div id="footerBody">
-			<a href="<?=SITEROOT?>/contact">Contact Us</a>
-		</div>
 	</div>
-<? } ?>
-</div>
+</div></div>
+<footer<?=$dispatchInfo['fixedGameMenu']?' class="withFixedMenu"':''?>><div class="bodyContainer">
+	<a href="<?=SITEROOT?>/contact">Contact Us</a>
+</div></footer>
 <? if (FIXED_GAME_MENU) require(FILEROOT.'/fixedGameMenu.php'); ?>
+<? } else { ?>
+</div>
+<? } ?>
 </body>
 
 <? if (SITEROOT == '') { ?>

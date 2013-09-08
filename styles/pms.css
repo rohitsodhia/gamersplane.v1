@@ -1,0 +1,214 @@
+/*
+	Characters CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_pms #controlsContainer {
+	position: relative;
+	margin-top: 2em;
+}
+
+#page_pms #newPM {
+	float: left;
+}
+
+#page_pms #controls {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+#page_pms #controls a {
+	display: block;
+	float: left;
+	padding: 3px 15px;
+	color: #FDD;
+	background: #522;
+	border-top: 3px solid #222;
+	border-left: 2px solid #222;
+}
+
+#page_pms #controls a:first-child {
+	border-left: none;
+}
+
+#page_pms #controls .wing {
+	position: absolute;
+	top: 0;
+	border-style: solid;
+	border-color: #222;
+	border-top-color: transparent;
+	background: none;
+}
+
+#page_pms #controls .dlWing {
+	left: 0;
+}
+
+#page_pms #controls .drWing {
+	right: 0;
+}
+
+#page_pms #controls .current, #page_pms #controls a:hover {
+	color: #F00;
+	background: #222;
+}
+
+#page_pms #pms {
+	position: relative;
+}
+
+#page_pms .tr > div, #page_pms .trHeaders div {
+	display: inline-block;
+	vertical-align: middle;
+	padding: 4px 2px;
+}
+
+#page_pms .tr {
+	position: relative;
+	top: -1px;
+	padding: 0;
+	border-style: solid;
+	border-color: #222;
+	border-width: 1px 2px;
+	border-right-color: #A66;
+	border-bottom-color: #A66;
+}
+
+#page_pms .tr:hover {
+	background-color: #FFF2E0;
+}
+
+#page_pms .headerTR {
+	top: 0;	
+	border: none;
+	padding: 2px 2px;
+}
+
+#page_pms .headerTR:hover {
+	background-color: #222;
+}
+
+#page_pms .lastTR {
+	border-bottom-width: 2px;
+}
+
+#page_pms .new {
+	background: #EEF;
+}
+
+#page_pms .new:hover {
+	background: #FEC;
+}
+
+#page_pms .delCol {
+	position: relative;
+	top: 1px;
+	width: 30px;
+	text-align: center;
+}
+
+#page_pms .headerTR .delCol {
+	top: 0;
+}
+
+#page_pms .titleCol {
+	width: 520px;
+	padding-left: 15px !important;
+}
+
+#page_pms .fromCol {
+	width: 150px;
+	text-align: center;
+}
+
+#page_pms .whenCol {
+	width: 150px;
+	text-align: center;
+}
+
+#page_pms #noPMs {
+	text-align: center;
+	font-weight: bold;
+	padding: 1em 0;
+}
+
+/* --------------------------------------------*/
+
+#page_pm_view #buttonsDiv {
+	margin-left: 10px;
+	margin-bottom: 1em;
+}
+
+#page_pm_view #buttonsDiv a {
+	margin-right: 5px;
+	font-size: 1.2em;
+}
+
+#page_pm_view .leftCol {
+	font-size: .9em;
+	text-transform: uppercase;
+	text-align: right;
+	font-weight: bold;
+	float: left;
+	width: 60px;
+}
+
+#page_pm_view .rightCol {
+	margin-left: 75px;
+}
+
+#page_pm_view #messageDiv {
+	margin: 0 2em 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_pm_send form {
+	width: 650px;
+	margin: 0 auto;
+}
+
+#page_pm_send label {
+	width: 75px;
+	float: left;
+}
+
+#page_pm_send input[type="text"] {
+	width: 562px;
+	margin: 0 0 0 5px;
+}
+
+#page_pm_send #username {
+	width: 250px;
+}
+
+#page_pm_send #invalidUser {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+#page_pm_send #titleRequired {
+	margin-left: 80px;
+	padding-top: 0;
+}
+
+#page_pm_send textarea {
+	width: 642px;
+	height: 10em;
+	margin: 10px 0;
+}
+
+#page_pm_send #submitDiv {
+	margin: 1em 0 .5em;
+}
+
+/* --------------------------------------------*/
+
+#page_pm_delete form {
+	margin: 1em 0 .25em;
+}
+
+#page_pm_delete form button {
+	margin: 0 5px;
+}

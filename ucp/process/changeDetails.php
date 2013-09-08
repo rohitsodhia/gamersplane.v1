@@ -2,12 +2,14 @@
 	checkLogin();
 	
 	$userID = intval($_SESSION['userID']);
+	$ext = '';
 	
 	if (isset($_POST['submit'])) {
 		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/$userID.jpg");
 		if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
 			$ext = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
-			if (in_array($ext, array('jpg', 'jpeg', 'gif', 'png'))) {
+			if ($ext == 'jpeg') $ext = 'jpg';
+			if (in_array($ext, array('jpg', 'gif', 'png'))) {
 				$maxWidth = 150;
 				$maxHeight = 150;
 				
@@ -31,9 +33,15 @@
 				}
 				
 				$tempColor = imagecreatetruecolor($finalWidth, $finalHeight);
+				imagealphablending($tempColor, false);
+				imagesavealpha($tempColor,true);
 				imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
 				
-				imagejpeg($tempColor, FILEROOT."/ucp/avatars/$userID.jpg", 100);
+				$destination = FILEROOT.'/ucp/avatars/'.$userID.'.'.$ext;
+				foreach (glob(FILEROOT.'/ucp/avatars/'.$userID.'.*') as $oldFile) unlink($oldFile);
+				if ($ext == 'jpg') imagejpeg($tempColor, $destination, 100);
+				elseif ($ext == 'gif') imagegif($tempColor, $destination);
+				elseif ($ext == 'png') imagepng($tempColor, $destination, 0);
 				imagedestroy($tempImg);
 				imagedestroy($tempColor);
 			}
@@ -55,9 +63,10 @@
 		$games = sanatizeString($_POST['games']);
 		$newGameMail = $_POST['newGameMail']?1:0;
 		
-		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, timezone = :timezone, showTZ = :showTZ, gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
-		$updateUser->excute(array(
+		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, avatarExt = :avatarExt, timezone = :timezone, showTZ = :showTZ, gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
+		$updateUser->execute(array(
 			'showAvatars' => $showAvatars,
+			'avatarExt' => $ext,
 			'timezone' => $timezone,
 			'showTZ' => $showTZ,
 			'gender' => $gender,

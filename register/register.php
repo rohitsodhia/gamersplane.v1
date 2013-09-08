@@ -13,7 +13,8 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Registration</h1>
+		<h1 class="headerbar">Registration</h1>
+
 		<form method="post" action="<?=SITEROOT?>/register/process/register">
 <? if ($_GET['failed'] && sizeof($errors)) { ?>
 			<div class="alertBox_error">
@@ -36,7 +37,7 @@
 			
 			<div class="tr">
 				<label class="textLabel">Password</label>
-				<div class="textfield"><input id="password1" type="password" name="password1" maxlength="16" tabindex="<?=tabOrder()?>"></div>
+				<div class="textfield"><input id="password1" type="password" name="password1" maxlength="32" tabindex="<?=tabOrder()?>"></div>
 				<div class="alert">
 					<div id="passBlank" class="<?=(isset($errors['passBlank'])?'showDiv':'hideDiv')?>">Password cannot be blank</div>
 					<div id="passShort" class="<?=(isset($errors['passShort'])?'showDiv':'hideDiv')?>">Password too short</div>
@@ -44,11 +45,11 @@
 				</div>
 			</div>
 			<div>
-				<div class="noFloat notice">Password must be between 6-16 characters</div>
+				<div class="noFloat notice">Password must be between 6-32 characters</div>
 			</div>
 			<div class="tr">
 				<label class="textLabel">Repeat Password</label>
-				<div class="textfield"><input id="password2" type="password" name="password2" maxlength="16" tabindex="<?=tabOrder()?>"></div>
+				<div class="textfield"><input id="password2" type="password" name="password2" maxlength="32" tabindex="<?=tabOrder()?>"></div>
 				<div class="alert">
 					<div id="passMismatch" class="<?=(isset($errors['passMismatch'])?'showDiv':'hideDiv')?>">Passwords don't match</div>
 				</div>
@@ -84,7 +85,7 @@
 			<input type="hidden" name="gender" value="Pick One">
 			
 			<div id="submitDiv">
-				<button id="submit" type="submit" name="submit" tabindex="<?=tabOrder(2)?>" class="btn_submit"></button>
+				<button id="submit" type="submit" name="submit" tabindex="<?=tabOrder(2)?>" class="fancyButton">Submit</button>
 			</div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

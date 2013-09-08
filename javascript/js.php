@@ -1,3 +1,4 @@
+	<script type="text/javascript" src="<?=SITEROOT?>/javascript/html5shiv.js"></script>
 	<script type="text/javascript" src="<?=SITEROOT?>/javascript/variables.js"></script>
 	<script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery.min.js"></script>
 	<script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery-ui.min.js"></script>
@@ -15,6 +16,9 @@
 	<script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery.qtip-1.0.0-rc3.min.js"></script>
 <? } ?>
 	<script type="text/javascript" src="<?=SITEROOT?>/javascript/gamersplane.js"></script>
+<? if (file_exists(FILEROOT.'/javascript/'.$action.'/_section.js')) { ?>
+	<script type="text/javascript" src="<?=SITEROOT.'/javascript/'.$action?>/_section.js"></script>
+<? } ?>
 <? if (file_exists(FILEROOT.'/javascript/'.substr($requireLoc, 0, -4).'.js')) { ?>
 	<script type="text/javascript" src="<?=SITEROOT.'/javascript/'.substr($requireLoc, 0, -4)?>.js"></script>
 <? } ?>

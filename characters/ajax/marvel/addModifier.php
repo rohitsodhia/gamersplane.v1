@@ -1,33 +1,24 @@
 <?
 	if (checkLogin(0)) {
+		includeSystemInfo('marvel');
+
+		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = {$_SESSION['userID']}");
+		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
 		if ($charCheck->rowCount()) {
-			$name = sanatizeString(preg_replace('/\s+/', ' ', strtolower($_POST['modifierName'])));
-			$modifierID = $mysql->query('SELECT modifierID FROM marvel_modifiersList WHERE name = "'.$name.'"');
+			$name = sanitizeString($_POST['modifierName'], 'rem_dup_spaces');
+			$modifierID = $mysql->prepare('SELECT modifierID FROM marvel_modifiersList WHERE name = :name');
+			$modifierID->execute(array(':name' => strtolower($name)));
 			if ($modifierID->rowCount()) $modifierID = $modifierID->fetchColumn();
 			else {
-				$mysql->query('INSERT INTO marvel_modifiersList (name, userDefined) VALUES ("'.$name.'", '.intval($_SESSION['userID']).')');
+				$addNewModifier = $mysql->prepare('INSERT INTO marvel_modifiersList (name, userDefined) VALUES (:name, :userID)');
+				$addNewModifier = execute(array(':name' => $name, ':userID' => $userID));
 				$modifierID = $mysql->lastInsertId();
 			}
 			$addModifier = $mysql->query("INSERT INTO marvel_modifiers (characterID, modifierID) VALUES ($characterID, $modifierID)");
 			$numModifiers = intval($_POST['numModifiers']) + 1;
-			if ($addModifier->getResult()) {
-?>
-				<div class="modifier<?=$numModifiers % 3 == 0?' third':''?>">
-					<div class="tr labelTR">
-						<label class="level">Level</label>
-						<label class="cost">Cost</label>
-					</div>
-					<div class="clearfix">
-						<span class="modifierName"><?=mb_convert_case($name, MB_CASE_TITLE)?></span>
-						<input type="text" name="modifier[<?=$modifierID?>][cost]" value="0" class="cost">
-						<input type="text" name="modifier[<?=$modifierID?>][level]" value="0" class="level">
-					</div>
-					<textarea name="modifier[<?=$modifierID?>][details]"></textarea>
-				</div>
-<?
-			}
+			$modifierInfo = array('modifierID' => $modifierID, 'name' => $name);
+			if ($addModifier->rowCount()) modifierFormFormat($modifierInfo, $numModifiers);
 		}
 	}
 ?>

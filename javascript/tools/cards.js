@@ -1,5 +1,5 @@
 $(function() {
-	var $newDeckLink = $('a.newDeckLink'),
+	var $newDeckLink = $('a .newDeckLink').parent(),
 		$newDeck = $('div.newDeck'),
 		$deckName = $('p.deckName'),
 		$cardsLeft = $('span.cardsLeft'),
@@ -29,7 +29,7 @@ $(function() {
 	
 	$drawCards.click(function (e) {
 		numCards = parseInt($numCards.val()), size = $(this).closest('#fixedMenu_cards').length > 0?65:'';
-		if (numCards > 1) {
+		if (numCards >= 1) {
 			$.post(SITEROOT + '/tools/process/cards', { ajax: true, numCards: numCards, size: size }, function (data) {
 				if (data.length > 0) {
 					$cardSpace.html(data);

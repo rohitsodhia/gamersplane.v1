@@ -2,20 +2,36 @@
 	checkLogin(0);
 	
 	if (isset($_POST['submit'])) {
-		$username = sanatizeString($_POST['username']);
-		$key = sanatizeString($_POST['key']);
-		$pass1 = sanatizeString($_POST['pass1']);
-		$pass2 = sanatizeString($_POST['pass2']);
+		$errors = array();
+		$username = sanitizeString($_POST['username'], '+lower');
+		$key = sanitizeString($_POST['key']);
+		$pass1 = sanitizeString($_POST['pass1']);
+		$pass2 = sanitizeString($_POST['pass2']);
 		
-		if (strlen($pass1) < 6 || strlen($pass1) > 16 || $pass1 != $pass2) { header('Location: '.SITEROOT.'/login/resetPass?passError=1'); exit; }
+		if (strlen($pass1) < 6) $errors['passError'] = 'short';
+		elseif (strlen($pass1) > 32) $errors['passError'] = 'long';
+		elseif ($pass1 != $pass2) $errors['passError'] = 'mismatch';
 		
-		$userCheck = $mysql->query('SELECT userID, email FROM users WHERE username = "'.$username.'"');
-		if ($mysql->rowCount()) {
+		$userCheck = $mysql->prepare('SELECT userID, email FROM users WHERE LOWER(username) = ?');
+		$userCheck->execute(array($username));
+
+		if ($userCheck->rowCount() && sizeof($errors) == 0) {
 			$userInfo = $userCheck->fetch();
 			if (md5($userInfo['email'].'r3Qu'.$key) == $_POST['validationStr']) {
 				$mysql->query('UPDATE users SET password = "'.hash('sha256', SVAR.$pass1).'" WHERE userID = '.$userInfo['userID']);
-				header('Location: '.SITEROOT.'/login/?resetSuccess=1');
-			} else header('Location: '.SITEROOT.'/login/resetPass?invalid=1');
-		} else header('Location: '.SITEROOT.'/login/resetPass?invalid=1');
+				if ($_POST['ajaxForm']) echo 'success'
+				else header('Location: '.SITEROOT.'/login/?resetSuccess=1');
+			} else {
+				$errors['invalidValidation'] = 1;
+
+				if ($_POST['ajaxForm']) echo json_encode($errors);
+				else header('Location: '.SITEROOT.'/login/resetPass?'.http_build_query($errors);
+			}
+		} else {
+			if (!$userCheck->rowCount()) $errors['invalidUser'] = 1;
+
+			if ($_POST['ajaxForm']) echo json_encode($errors);
+			else header('Location: '.SITEROOT.'/login/resetPass?'.http_build_query($errors);
+		}
 	} else header('Location: '.SITEROOT.'/login/resetPass');
 ?>

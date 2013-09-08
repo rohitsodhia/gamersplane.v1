@@ -3,7 +3,7 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#page_characterSheet_wod_edit #nameDiv label, #page_characterSheet_wod_sheet #nameDiv label {
+#nameDiv label {
 	display: block;
 	float: left;
 	width: 150px;
@@ -11,165 +11,200 @@
 	margin-right: 10px;
 }
 
-#page_characterSheet_wod_edit #attributes table, #page_characterSheet_wod_sheet #attributes table {
+table {
 	width: 752px;
 	margin: 0 auto;
 }
 
-#page_characterSheet_wod_edit #attributes input, #page_characterSheet_wod_sheet #attributes input {
+#attributes input {
 	margin: 0;
 }
 
-#page_characterSheet_wod_edit #attributes th, #page_characterSheet_wod_edit #attributes td, #page_characterSheet_wod_sheet #attributes th, #page_characterSheet_wod_sheet #attributes td {
+#attributes th, #attributes td {
 	padding: .5em 2px;
 }
 
-#page_characterSheet_wod_edit #attributes th, #page_characterSheet_wod_sheet #attributes th {
+#attributes th {
 	text-align: right;
 	width: 100px;
 }
 
-#page_characterSheet_wod_edit #attributes td.statName, #page_characterSheet_wod_sheet #attributes td.statName {
+#attributes td.statName {
 	width: 100px;
 	padding-left: 20px;
 }
 
-#page_characterSheet_wod_edit #attributes td.statVal, #page_characterSheet_wod_sheet #attributes td.statVal {
+#attributes td.statVal {
 	padding: 9px 2px 3px;
 	width: 90px;
 }
 
-#page_characterSheet_wod_edit .marginTop, #page_characterSheet_wod_sheet .marginTop {
+.dots {
+	width: 75px;
+	height: 13px;
+	background: url('../../images/wod_dots.png') top left repeat-x;
+}
+
+.dots div {
+	width: 0;
+	height: 13px;
+	background: url('../../images/wod_dots.png') bottom left repeat-x;
+}
+
+.dots .dotCount_1 {
+	width: 15px;
+}
+
+.dots .dotCount_2 {
+	width: 30px;
+}
+
+.dots .dotCount_3 {
+	width: 45px;
+}
+
+.dots .dotCount_4 {
+	width: 60px;
+}
+
+.dots .dotCount_5 {
+	width: 75px;
+}
+
+.marginTop {
 	margin-top: 1em;
 }
 
-#page_characterSheet_wod_edit .triCol, #page_characterSheet_wod_sheet .triCol {
+#skills {
 	float: left;
-	width: 290px;
-	margin-right: 20px;
-}
-
-#page_characterSheet_wod_edit .lastCol, #page_characterSheet_wod_sheet .lastCol {
-	margin-right: 0;
-}
-
-#page_characterSheet_wod_edit #leftCol, #page_characterSheet_wod_sheet #leftCol {
 	margin-top: 1.5em;
+	width: 320px;
 }
 
-#page_characterSheet_wod_edit #leftColHeader, #page_characterSheet_wod_sheet #leftColHeader {
+#skills .headerbar, #otherTraits .headerbar {
 	margin-top: 0;
 }
 
-#page_characterSheet_wod_edit h3, #page_characterSheet_wod_edit #leftCol p, #page_characterSheet_wod_sheet h3, #page_characterSheet_wod_sheet #leftCol p {
+h3 {
+	margin: 0 0 .35em;
+	font-family: "AgencyFB";
+	font-size: 1.8em;
+	line-height: 1.2em;
+	text-align: center;
+	text-decoration: none;
+	color: #A00;
+}
+
+.skillSet {
+	margin-top: 1em;
+}
+
+#skills_mental {
+	margin-top: 0;
+}
+
+.viewCharacter h3, #skills p {
 	text-align: center;
 }
 
-#page_characterSheet_wod_edit #leftCol p, #page_characterSheet_wod_sheet #leftCol p {
+#skills p {
 	margin: 0;
 }
 
-#page_characterSheet_wod_edit #leftCol .tr, #page_characterSheet_wod_sheet #leftCol .tr {
+#skills .tr {
 	position: relative;
 	padding: 0;
 	margin: .5em 0;
 }
 
-#page_characterSheet_wod_edit #leftCol .tr .skillRank {
-	position: absolute;
-	top: 0;
-	right: 0;
+#skills label {
+	display: inline-block;
+	width: 122px;
 }
 
-#page_characterSheet_wod_sheet #leftCol .tr .skillRank {
+.editCharacter #skills .skillRank {
+	display: inline-block;
+	width: 143px;
+}
+
+.viewCharacter #skills .tr .skillRank {
 	position: absolute;
 	bottom: 0;
 	right: 0;
 }
 
-#page_characterSheet_wod_edit #leftCol .tr input, #page_characterSheet_wod_sheet #leftCol .tr input {
+#skills span {
+	margin: 0 3px;
+}
+
+#skills input {
+	position: relative;
+	top: 2px;
 	margin: 0;
 }
 
-#page_characterSheet_wod_edit #rightColHeader, #page_characterSheet_wod_sheet #rightColHeader {
+#otherTraits {
 	float: right;
-	margin-top: 1.5em;
 	width: 610px;
+	margin-top: 1.5em;
 }
 
-#page_characterSheet_wod_edit .triCol textarea {
-	width: 282px;
-	margin-top: .5em;
+#otherTraits .col {
+	width: 270px;
 }
 
-#page_characterSheet_wod_edit #merits {
+textarea {
+	width: 100%;
+}
+
+#merits textarea {
 	height: 10em;
 }
 
-#page_characterSheet_wod_edit #flaws {
+#flaws textarea {
 	height: 6.2em;
 }
 
-#page_characterSheet_wod_edit .rightCol .tr, #page_characterSheet_wod_sheet .rightCol .tr{
-	position: relative;
+#health, #willpower, #morality {
+	float: left;
+	width: 33%;
 }
 
-#page_characterSheet_wod_edit .rightCol .tr {
-	height: 20px;
+#otherTraits label {
+	display: inline-block;
+	width: 130px;
+	margin-left: 50px;
 }
 
-#page_characterSheet_wod_edit .rightCol label {
-	display: inline;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-#page_characterSheet_wod_edit .rightCol .tr input, #page_characterSheet_wod_edit #health, #page_characterSheet_wod_edit #willpower, #page_characterSheet_wod_edit #morality {
+#otherTraits input, #otherTraits .tr div {
 	width: 30px;
-}
-
-#page_characterSheet_wod_edit .rightCol .tr input, #page_characterSheet_wod_sheet .rightCol .tr .value {
-	position: absolute;
-	top: 0;
-	right: 0;
 	text-align: center;
 }
 
-#page_characterSheet_wod_sheet .rightCol .tr .value {
-	padding-top: 5px;
+#otherTraits .tr div {
+	display: inline-block;
 }
 
-#page_characterSheet_wod_edit #itemsDiv, #page_characterSheet_wod_sheet #itemsDiv {
+#itemsDiv {
 	float: left;
 	width: 600px;
 	margin-top: 1em;
 }
 
-#page_characterSheet_wod_edit .lastCol h3, #page_characterSheet_wod_edit #itemsDiv h3, #page_characterSheet_wod_sheet .lastCol h3, #page_characterSheet_wod_sheet #itemsDiv h3 {
-	margin-bottom: .75em;
-}
 
-#page_characterSheet_wod_edit #health, #page_characterSheet_wod_edit #willpower, #page_characterSheet_wod_edit #morality {
-	text-align: center;
-}
-
-#page_characterSheet_wod_edit #itemsDiv {
+.editCharacter #itemsDiv {
 	float: left;
 }
 
-#page_characterSheet_wod_edit #weapons, #page_characterSheet_wod_edit #equipment {
-	width: 592px;
+#weapons textarea, #equipment textarea {
 	height: 7.3em;
 }
 
-#page_characterSheet_wod_edit #notes {
-	width: 912px;
+#notes textarea {
 	height: 10em;
 }
 
-#page_characterSheet_wod_edit #submitDiv {
-	clear: both;
+.editCharacter #submitDiv {
 	text-align: center;
 	margin-top: 1em;
 }

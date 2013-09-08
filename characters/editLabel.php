@@ -7,7 +7,7 @@
 	$label = $label->fetchColumn();
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Edit Label</h1>
+		<h1 class="headerbar">Edit Label</h1>
 <? if (isset($_GET['invalidLabel'])) { ?>
 		<div class="alertBox_error"><ul>
 			<li>Label cannot be blank</li>
@@ -16,10 +16,9 @@
 <? } ?>
 		
 		<form method="post" action="<?=SITEROOT?>/characters/process/editLabel/" class="buttonPanel">
-<!--			<p><b>Current label:</b> <?=$label?></p>-->
 			<p><b>New label:</b> <input id="newLabel" type="text" name="label" maxlength="50" value="<?=$label?>"></p>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-			<button type="submit" name="save" class="btn_save"></button>
+			<div class="fancyButton"><button type="submit" name="save">Save</button></div>
 <!--			<button type="submit" name="cancel" class="btn_cancel"></button>-->
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

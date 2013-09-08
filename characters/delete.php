@@ -7,14 +7,14 @@
 	list($label, $gameID, $systemID, $shortName) = $charInfo->fetch();
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Delete Character</h1>
+		<h1 class="headerbar">Delete Character</h1>
 		
 		<p class="alignCenter">Are you sure you wanna delete <?='<a href="'.SITEROOT.'/characters/'.$shortName.'/'.$characterID.'" target="_parent">'.$label.'</a>'?>?</p>
 		<p class="alignCenter">This cannot be reversed!</p>
 		
 		<form method="post" action="<?=SITEROOT?>/characters/process/delete/" class="buttonPanel">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-			<button type="submit" name="delete" class="btn_delete"></button>
+			<div class="fancyButton"><button type="submit" name="delete">Delete</button></div>
 <!--			<button type="submit" name="cancel" class="btn_cancel"></button>-->
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

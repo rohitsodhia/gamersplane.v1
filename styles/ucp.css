@@ -1,0 +1,97 @@
+/*
+	Characters CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_ucp #controls {
+	float: right;
+}
+
+#page_ucp #controls a {
+	display: block;
+	float: left;
+	padding: .3em 15px;
+	color: #FDD;
+	background: #522;
+	border-top: .3em solid #222;
+	border-left: 2px solid #222;
+}
+
+#page_ucp #controls a:first-child {
+	border-left: none;
+}
+
+#page_ucp #controls .wing {
+	float: none;
+	position: absolute;
+	top: 0;
+	margin: 0;
+	padding: 0;
+	border-style: solid;
+	border-color: #222;
+	border-top-color: transparent;
+	background: none;
+}
+
+#page_ucp #controls .dlWing {
+	left: 0;
+}
+
+#page_ucp #controls .drWing {
+	right: 0;
+}
+
+#page_ucp #controls .current, #page_ucp #controls a:hover {
+	color: #F00;
+	background: #222;
+}
+
+#page_ucp .hbDark {
+	margin-top: 0;
+}
+
+#page_ucp label {
+	width: 225px;
+	text-align: right;
+	margin-right: 10px;
+	font-weight: bold;
+	float: left;
+}
+
+#page_ucp .tr > div {
+	margin-left: 235px;
+}
+
+#page_ucp .tr .explanation {
+	margin-top: .5em;
+	font-size: .8em;
+}
+
+#page_ucp .tr #avatar {
+	margin-bottom: .5em;
+}
+
+#page_ucp .tr #avatar img {
+	border: 2px solid #333;
+}
+
+#page_ucp .tr div div {
+	margin-left: 0;
+}
+
+#page_ucp .tr a.changeLink {
+	font-size: .8em;
+}
+
+#page_ucp select {
+	margin-bottom: .5em;
+	margin-right: 10px;
+}
+
+#page_ucp input[type="checkbox"] {
+	margin-bottom: 0;
+}
+
+#page_ucp #changeOptions #games {
+	width: 400px;
+}

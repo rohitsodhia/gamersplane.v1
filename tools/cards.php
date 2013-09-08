@@ -11,14 +11,14 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Card Dealer</h1>
+		<h1 class="headerbar">Card Dealer</h1>
         
 		<form method="post" action="<?=SITEROOT?>/tools/process/cards" class="cardControls<?=isset($cardCount[0]) && $cardCount[0] == 0?' hideDiv':''?>">
 			<p class="deckName"><?=$_SESSION['deckName']?></p>
 			<p>Cards Left: <span class="cardsLeft"><?=$cardCount[1]?></span></p>
 			<div>Draw <input type="text" name="numCards" maxlength="2" value="<?=!isset($cardsDrawn)?'':(sizeof($cardsDrawn) > $cardCount[0]?$cardCount[0]:sizeof($cardsDrawn))?>" autocomplete="off" class="numCards"> Cards</div>
-			<div><button type="submit" name="drawCards" class="drawCards btn_drawCards"></button></div>
-			<a href="?newDeck=1" class="newDeckLink"><img src="<?=SITEROOT?>/images/buttons/newDeck.jpg"></a>
+			<div class="drawCards"><button type="submit" name="drawCards" class="fancyButton">Draw Cards</button></div>
+			<a href="?newDeck=1" class="newDeckLink button">New Deck</a>
 		</form>
 		
 		<div id="dispArea">

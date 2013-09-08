@@ -1,6 +1,20 @@
 <?
 	$loggedIn = checkLogin();
 	
+	if ($pathOptions[0] != 'new') $display = 'new';
+	else $display = 'edit';
+
+	if ($display == 'edit') {
+		$gameID = intval($pathOptions[0]);
+		$userID = intval($_SESSION['userID']);
+		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.systemID, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$userID);
+		if ($gameDetails->rowCount() == 0) { header('Location: '.SITEROOT.'/403'); exit; }
+		else {
+			$gameDetails = $gameDetails->fetch();
+			foreach ($gameDetails as $key => $value) $$key = $value;
+		}
+	}
+
 	if ($_SESSION['errors']) {
 		if (preg_match('/games(\/process)?\/new\/?.*$/', $_SESSION['lastURL'])) {
 			$errors = $_SESSION['errors'];
@@ -13,21 +27,24 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<div class="sidebar">
-			<div class="widget">
-				<h3>LFGs</h3>
-				<div class="widgetBody">
-					<p>Players are currently looking to play...</p>
+<? if ($display == 'new') { ?>
+		<div class="sideWidget">
+			<h2>LFGs</h2>
+			<div class="widgetBody">
+				<p>Players are currently looking to play...</p>
+				<ul>
 <?
 	$lfgSummaries = $mysql->query('SELECT s.systemID, s.fullName, l.numPlayers FROM systems s LEFT JOIN (SELECT systemID, COUNT(systemID) numPlayers FROM lfg GROUP BY systemID) l USING (systemID) WHERE l.numPlayers != 0 ORDER BY l.numPlayers DESC, s.fullName');
 	$totalsInfo = array();
-	foreach ($lfgSummaries as $info) echo "\t\t\t\t\t<p class=\"indent\">{$info['fullName']} - ".($info['numPlayers']?$info['numPlayers']:'0')."</p>\n";
+	foreach ($lfgSummaries as $info) echo "\t\t\t\t\t<li>{$info['fullName']} - ".($info['numPlayers']?$info['numPlayers']:'0')."</li>\n";
 ?>
-				</div>
+				</ul>
 			</div>
 		</div>
+
 		<div class="mainColumn">
-			<h1>New Game</h1>
+<? } ?>
+			<h1 class="headerbar"><?=$display == 'new'?'New':'Edit'?> Game</h1>
 			
 <? if (sizeof($_GET) && $errors) { ?>
 			<div class="alertBox_error">
@@ -81,7 +98,9 @@
 					<textarea name="charGenInfo"><?=$charGenInfo?></textarea>
 				</div>
 				
-				<div class="alignCenter"><button type="submit" name="create" class="btn_create"></button></div>
+				<div id="submitDiv"><div class="fancyButton"><button type="submit" name="<?=$display == 'new'?'create':'save'?>"><?=$display == 'new'?'Create':'Save'?></button></div></div>
 			</form>
+<? if ($display == 'new') { ?>
 		</div>
+<? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

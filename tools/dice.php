@@ -10,31 +10,31 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Dice Roller</h1>
+		<h1 class="headerbar">Dice Roller</h1>
 		
 		<div id="roller">
 			<p>Dice should be in the format<br>(number of dice)d(dice type)(modifier)</p>
 			<p>Separate rolls should be separated by commas or on new lines.</p>
 			<p><i>Example: 2d4, 3d6+4</i></p>
-			<form method="post">
+			<form id="customDice" method="post">
 				<textarea id="dice" name="dice"><?=$_POST['dice']?></textarea>
-				<button id="roll" type="submit" name="roll" class="btn_roll"></button>
+				<button id="roll" type="submit" name="roll" class="fancyButton">Roll</button>
 				<br class="clear">
 				<input id="rerollAces" type="checkbox" name="rerollAces"<? if ($_POST['rerollAces']) echo ' checked="checked"'; ?>>Reroll Aces
 			</form>
 			
 			<form id="indivDice" method="post">
-				<p>
-					<button type="submit" name="d4" class="btn_d4"></button>
-					<button type="submit" name="d6" class="btn_d6"></button>
-					<button type="submit" name="d8" class="btn_d8"></button>
-					<button type="submit" name="d10" class="btn_d10"></button>
-				</p>
-				<p>
-					<button type="submit" name="d12" class="btn_d12"></button>
-					<button type="submit" name="d20" class="btn_d20"></button>
-					<button type="submit" name="d100" class="btn_d100"></button>
-				</p>
+				<div>
+					<button type="submit" name="d4" class="diceButton fancyButton">d4</button>
+					<button type="submit" name="d6" class="diceButton fancyButton">d6</button>
+					<button type="submit" name="d8" class="diceButton fancyButton">d8</button>
+					<button type="submit" name="d10" class="diceButton fancyButton">d10</button>
+				</div>
+				<div>
+					<button type="submit" name="d12" class="diceButton fancyButton">d12</button>
+					<button type="submit" name="d20" class="diceButton fancyButton">d20</button>
+					<button type="submit" name="d100" class="diceButton fancyButton">d100</button>
+				</div>
 			</form>
 		</div>
 

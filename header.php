@@ -8,14 +8,14 @@
 <? require_once(FILEROOT.'/javascript/js.php'); ?>
 </head>
 
-<body<?=MODAL?' class="modal"':''?>>
+<body<?=(MODAL?' class="modal"':'')?>>
 <? if (!MODAL) { ?>
-<div id="header">
-	<a href="<?=SITEROOT?>/"><img id="logo" src="<?=SITEROOT?>/images/logo.png" alt="Gamers Plane Logo"></a>
+<header><div class="bodyContainer">
+	<a href="<?=SITEROOT?>/"><img id="logo" src="<?=SITEROOT?>/images/header_logo.png" alt="Gamers Plane Logo"></a>
 	
 	<div id="userMenu">
-		<img id="userMenu_left" src="<?=SITEROOT?>/images/userMenuL.png">
-		<img id="userMenu_right" src="<?=SITEROOT?>/images/userMenuR.png">
+		<div id="userMenu_left"></div>
+		<div id="userMenu_right"></div>
 <? if (!$loggedIn) { ?>
 		<a href="<?=SITEROOT?>/login" class="loginLink first">Login</a>
 		<a href="<?=SITEROOT?>/register" class="last">Register</a>
@@ -24,18 +24,18 @@
 		$numMessages = $mysql->query('SELECT COUNT(*) FROM pms WHERE recipientID = '.intval($_SESSION['userID']).' AND viewed = 0');
 		$numNewMessages = $numMessages->fetchColumn();
 ?>
-		<span id="menuMessage">Welcome, <a href="<?=SITEROOT?>/users/cp" class="username first"><?=$_SESSION['username']?></a></span>
-		<a href="<?=SITEROOT?>/ucp/pms"><img src="<?=SITEROOT?>/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$numNewMessages?>)</a>
+		<span id="menuMessage"><a href="<?=SITEROOT?>/ucp" class="username first"><?=$_SESSION['username']?></a></span>
+		<a href="<?=SITEROOT?>/pms"><img src="<?=SITEROOT?>/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$numNewMessages?>)</a>
 		<a href="<?=SITEROOT?>/"><img src="<?=SITEROOT?>/images/exclamation.jpg" title="Notifications" alt="Notifications"></a>
 		<a href="<?=SITEROOT?>/logout" class="last">Logout</a>
 <? } ?>
 	</div>
 	
 	<div id="followLinks">
-		<a href="http://twitter.com/GamersPlane" target="_blank"><img src="<?=SITEROOT?>/images/twitter.png" height="20"></a>
-		<a href="https://www.facebook.com/pages/Gamers-Plane/245904792107862" target="_blank"><img src="<?=SITEROOT?>/images/facebook.png" height="20"></a>
+		<a href="http://twitter.com/GamersPlane" target="_blank"><img src="<?=SITEROOT?>/images/bodyComponents/twitter.png" height="20"></a>
+		<a href="https://www.facebook.com/pages/Gamers-Plane/245904792107862" target="_blank"><img src="<?=SITEROOT?>/images/bodyComponents/facebook.png" height="20"></a>
 <!--		<script src="http://www.stumbleupon.com/hostedbadge.php?s=6"></script>-->
-		<a href="http://www.stumbleupon.com/submit?url=http://gamersplane.com" target="_blank"><img src="<?=SITEROOT?>/images/stumble.png" height="20"></a>
+		<a href="http://www.stumbleupon.com/submit?url=http://gamersplane.com" target="_blank"><img src="<?=SITEROOT?>/images/bodyComponents/stumble.png" height="20"></a>
 	</div>
 	
 	<div id="mainMenu">
@@ -64,7 +64,7 @@
 			<li>
 				<a href="<?=SITEROOT?>/games">My Games</a>
 <?
-		$games = $mysql->query('SELECT g.gameID, g.title, gms.userID IS NOT NULL isGM FROM games g LEFT JOIN characters c ON c.userID = '.intval($_SESSION['userID']).' AND c.gameID = g.gameID LEFT JOIN gms ON gms.userID = '.intval($_SESSION['userID']).' AND g.gameID = gms.gameID WHERE c.characterID IS NOT NULL OR gms.userID IS NOT NULL ORDER BY g.title');
+		$games = $mysql->query('SELECT g.gameID, g.title, p.userID IS NOT NULL isGM FROM games g INNER JOIN players p ON p.userID = '.intval($_SESSION['userID']).' AND p.gameID = g.gameID ORDER BY g.title');
 		if ($games->rowCount()) {
 			echo "				<ul>\n";
 			$count = 0;
@@ -90,14 +90,14 @@
 		</ul>
 <? } ?>
 	</div>
-</div>
+</div></header>
 
-<div id="content">
-	<div id="contentBody"><div id="page_<?=PAGE_ID?>">
+<div id="content"><div class="bodyContainer clearfix">
+	<div id="page_<?=PAGE_ID?>"<?=strlen($dispatchInfo['bodyClass'])?" class=\"{$dispatchInfo['bodyClass']}\"":''?>>
 		<div id="stupidIE">
 			<p>Hm... seems like you're using IE. Can I suggest a better browser, such as <a href="http://www.mozilla.com/en-US/firefox/" target="_blank">Firefox</a>, <a href="http://www.googlechrome.com/" target="_blank">Chrome</a> or <a href="http://www.opera.com/" target="_blank">Opera</a>? There are other choices too.</p>
 			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
 		</div>
 <? } else { ?>
-<div id="page_<?=PAGE_ID?>">
+<div id="page_<?=PAGE_ID?>" class="clearfix">
 <? } ?>

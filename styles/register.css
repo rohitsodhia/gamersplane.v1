@@ -1,0 +1,68 @@
+/*
+	Gamers Plane Main CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_register label {
+	float: left;
+	width: 375px;
+	text-align: right;
+	padding-right: 10px;
+}
+
+#page_register .textfield {
+	float: left;
+}
+
+#page_register .textfield input {
+	width: 150px;
+}
+
+#page_register .alert {
+	height: 20px;
+	margin-left: 550px;
+	width: 250px;
+}
+
+#page_register .alert div {
+	padding-top: 5px;
+}
+
+#page_register .notice {
+	margin: 3px 0 3px 385px;
+	font-size: 80%;
+}
+
+#page_register h2 {
+	margin: 1em 0 .5em;
+	text-align: center;
+}
+
+#page_register #recaptchaDiv {
+	width: 320px;
+	margin: 0 auto;
+}
+
+#page_register #recaptchaDiv input {
+	background-color: #FFF;
+}
+
+#page_register #recaptchaDiv .alert {
+	text-align: center;
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-left: 0;
+	margin-top: .5em;
+	width: 320px;
+}
+
+#page_register #submitDiv {
+	margin-top: .5em;
+	text-align: center;
+}
+
+/* --------------------------------------------*/
+
+#page_regSuccess p, #page_regActivate p {
+	margin: 1em 25px;
+}

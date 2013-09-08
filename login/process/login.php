@@ -1,21 +1,22 @@
 <?
 	checkLogin(0);
 	if (isset($_POST['login'])) {
-		$username = sanatizeString(strtolower($_POST['username']));
+		$username = sanitizeString($_POST['username'], '+lower');
 		$password = hash('sha256', SVAR.$_POST['password']);
 		
 /*		$mysql->setTable('loginRecord');
 		$mysql->setInserts(array('username' => $username, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')));
 		$mysql->stdQuery('insert');
 */		
-		$userCheck = $mysql->query('SELECT userID, username, password, joinDate, active, timezone FROM users WHERE LOWER(username) = "'.$username.'"');
+		$userCheck = $mysql->prepare('SELECT userID, username, password, joinDate, active, timezone FROM users WHERE LOWER(username) = ?');
+		$userCheck->execute(array($username));
 		
 		if ($userCheck->rowCount()) {
 			$userInfo = $userCheck->fetch();
 			
 			if ($userInfo['active'] == 0 || $userInfo['password'] != $password) {
 				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 0)');
-				if (isset($_POST['modal'])) echo 0;
+				if (isset($_POST['modal'])) echo SITEROOT.'/login?failed=1';
 				else header('Location: '.SITEROOT.'/login?failed=1');
 			} else {
 				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');

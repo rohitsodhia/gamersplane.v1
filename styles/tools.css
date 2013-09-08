@@ -4,20 +4,27 @@
 */
 
 #page_tools #toolsList {
-	width: 464px;
+	width: 487px;
 	margin: 0 auto;
 }
 
 #page_tools #toolsList a {
-	border: 1px solid #000;
-	padding: 5px 15px;
 	display: block;
 	float: left;
+	padding: 5px 15px;
+	border: 3px solid #A00;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	background: #FFF;
 }
 
 #page_tools #toolsList a:hover {
-	background: #111;
-	border-color: #333;
+	background: #F8EEEE;
+}
+
+#page_tools #toolsList a:first-child {
+	margin-right: 15px;
 }
 
 #page_tools #toolsList a p {
@@ -29,7 +36,7 @@
 /* --------------------------------------------*/
 
 #page_tools_cards .cardControls {
-	width: 200px;
+	width: 220px;
 	float: left;
 }
 
@@ -47,15 +54,24 @@
 }
 
 #page_tools_cards #dispArea {
-	margin: 2em 20px 0 210px;
+	margin: 2em 0 0 230px;
 }
 
 #page_tools_cards .newDeck {
 	margin-bottom: 2em;
 	padding: 5px 10px 10px;
-	border: 1px solid #FFF;
-	background-color: #000B00;
+	border: 1px solid #CCC;
+	background-color: #EEE;
 	text-align: left;
+}
+
+#page_tools_cards .newDeck h2 {
+	margin: .2em 0 .2em;
+	padding: 0 10px;
+	background: #444;
+	font-size: 2em;
+	font-family: 'AgencyFB';
+	color: #FFF;
 }
 
 #page_tools_cards .deckType {
@@ -63,13 +79,26 @@
 	width: 222px;
 }
 
+#page_tools_cards .fancyButton {
+	display: inline-block;
+}
+
+#page_tools_cards .fancyButton button {
+	width: 150px;
+}
+
+#page_tools_cards .button :first-child {
+	width: 134px;
+	text-align: center;
+}
+
 #page_tools_cards .cardSpace {
-	border: 1px solid #FFF;
+	border: 1px solid #A00;
 	padding: 5px;
 	text-align: left;
 }
 
-#page_tools_cards .cardSpace img {
+#page_tools_cards .cardWindow {
 	margin: 4px;
 }
 
@@ -89,25 +118,26 @@
 
 #page_tools_dice textarea {
 	height: 6.2em;
-	width: 300px;
+	width: 275px;
 	float: left;
 }
 
-#page_tools_dice button {
+#page_tools_dice #customDice .fancyButton {
+	display: inline-block;
 	margin: 30px 0 0 15px;
 }
 
 #page_tools_dice input[type="checkbox"] {
-	margin-left: 120px;
+	margin-left: 105px;
 }
 
-#page_tools_dice #indivDice p {
+#page_tools_dice #indivDice > div {
 	text-align: center;
-	margin-bottom: 0;
+	margin-top: .5em;
 }
 
-#page_tools_dice #indivDice button {
-	margin: .5em;
+#page_tools_dice #indivDice .fancyButton {
+	margin: 0;
 }
 
 #page_tools_dice br.clear {
@@ -116,8 +146,9 @@
 
 #page_tools_dice #diceSpace {
 	height: 292px;
-	border: 1px solid #333;
+	border: 1px solid #A00;
 	overflow: auto;
+	background: #EEE;
 }
 
 #page_tools_dice #diceSpace div p {
@@ -133,11 +164,11 @@
 
 #page_tools_dice #diceSpace .newestRolls {
 	display: none;
-	border-bottom: 1px solid #222;
+	border-bottom: 1px solid #D99;
 }
 
 #page_tools_dice #diceSpace .newestRolls p {
-	background-color: #222;
+	background-color: #FFF;
 }
 
 #page_tools_dice #diceSpace .newestRolls p.error {

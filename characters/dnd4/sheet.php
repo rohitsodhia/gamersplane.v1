@@ -2,18 +2,13 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT dnd4.*, characters.userID, gms.gameID IS NOT NULL isGM FROM dnd4_characters dnd4 INNER JOIN characters ON dnd4.characterID = characters.characterID LEFT JOIN (SELECT gameID, `primary` FROM gms WHERE userID = $userID) gms ON characters.gameID = gms.gameID WHERE dnd4.characterID = $characterID");
+	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM dnd4_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
 	if ($charInfo->rowCount()) {
 		$charInfo = $charInfo->fetch();
 		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
-			$numVals = array('str', 'con', 'dex', 'int', 'wis', 'cha', 'ac_armor', 'ac_class', 'ac_feats', 'ac_enh', 'ac_misc', 'fort_class', 'fort_feats', 'fort_enh', 'fort_misc', 'ref_class', 'ref_feats', 'ref_enh', 'ref_misc', 'will_class', 'will_feats', 'will_enh', 'will_misc', 'init_misc', 'hp', 'surges', 'speed_base', 'speed_armor', 'speed_item', 'speed_misc', 'ap', 'piSkill', 'ppSkill', 'ab1_stat', 'ab1_class', 'ab1_prof', 'ab1_feat', 'ab1_enh', 'ab1_misc', 'ab2_stat', 'ab2_class', 'ab2_prof', 'ab2_feat', 'ab2_enh', 'ab2_misc', 'ab3_stat', 'ab3_class', 'ab3_prof', 'ab3_feat', 'ab3_enh', 'ab3_misc');
-			$textVals = array('name', 'race', 'alignment', 'class', 'paragon', 'epic', 'ab1_ability', 'ab2_ability', 'ab3_ability', 'skills', 'feats', 'powers', 'weapons', 'armor', 'items', 'notes');
-			foreach ($charInfo as $key => $value) {
-				if (in_array($key, $textVals)) $charInfo[$key] = strlen($value)?printReady($value):'&nbsp';
-				elseif (in_array($key, $numVals)) $charInfo[$key] = intval($value);
-			}
+			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
 			$charInfo['level'] = 0;
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;
@@ -24,13 +19,13 @@
 	$alignments = array('g' => 'Good', 'lg' => 'Lawful Good', 'e' => 'Evil', 'ce' => 'Chaotic Evil', 'u' => 'Unaligned'); 
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Character Sheet</h1>
-		<h2><img src="<?=SITEROOT?>/images/logos/dnd4.jpg"></h2>
+		<h1 class="headerbar">Character Sheet</h1>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/dnd4.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div id="editCharLink"><a href="<?=SITEROOT?>/characters/dnd4/<?=$characterID?>/edit">Edit Character</a></div>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd3/<?=$characterID?>/edit" class="button">Edit Character</a></div>
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
 			<label id="label_race" class="medText">Race</label>
@@ -49,8 +44,8 @@
 		</div>
 		<div class="tr dataTR">
 			<div class="longText"><?=$charInfo['class']?></div>
-			<div class="longText"><?=$charInfo['paragon']?></div>
-			<div class="longText"><?=$charInfo['epic']?></div>
+			<div class="medText"><?=$charInfo['paragon']?></div>
+			<div class="medText"><?=$charInfo['epic']?></div>
 		</div>
 		
 		<div id="stats">
@@ -214,7 +209,7 @@
 		</div>
 	
 		<div id="combatBonuses">
-			<h3>Attack Bonuses</h3>
+			<h2 class="headerbar hbDark">Attack Bonuses</h2>
 <?
 	$count = 0;
 	$attacks = $mysql->query('SELECT attackID, ability, stat, class, prof, feat, enh, misc FROM dnd4_attacks WHERE characterID = '.$characterID);
@@ -255,84 +250,95 @@
 		<br class="clear">
 		<div class="clearfix">
 			<div id="skills" class="floatLeft">
-				<h2>Skills</h2>
-				<div class="tr labelTR">
-					<label class="medText">Skill</label>
-					<label class="shortNum alignCenter lrBuffer">Total</label>
-					<label class="shortNum alignCenter lrBuffer">Stat</label>
-					<label class="shortNum alignCenter lrBuffer">Ranks</label>
-					<label class="shortNum alignCenter lrBuffer">Misc</label>
-				</div>
+				<h2 class="headerbar hbDark">Skills</h2>
+				<div class="hbMargined">
+					<div class="tr labelTR">
+						<label class="medText">Skill</label>
+						<label class="shortNum alignCenter lrBuffer">Total</label>
+						<label class="shortNum alignCenter lrBuffer">Stat</label>
+						<label class="shortNum alignCenter lrBuffer">Ranks</label>
+						<label class="shortNum alignCenter lrBuffer">Misc</label>
+					</div>
 <?
 	$skills = $mysql->query('SELECT dnd4_skills.skillID, skillsList.name, dnd4_skills.stat, dnd4_skills.ranks, dnd4_skills.misc FROM dnd4_skills INNER JOIN skillsList USING (skillID) ORDER BY skillsList.name');
 	if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
-		echo "\t\t\t\t<div id=\"skill_{$skillInfo['skillID']}\" class=\"skill tr clearfix\">\n";
-		echo "\t\t\t\t\t<span class=\"skill_name medText\">".mb_convert_case($skillInfo['name'], MB_CASE_TITLE)."</span>\n";
-		echo "\t\t\t\t\t<span class=\"skill_total addStat_{$skillInfo['stat']} shortNum lrBuffer\">".showSign($statBonus[$skillInfo['stat']] + $skillInfo['ranks'] + $skillInfo['misc'])."</span>\n";
-		echo "\t\t\t\t\t<span class=\"skill_stat alignCenter shortNum lrBuffer\">".ucwords($skillInfo['stat'])."</span>\n";
-		echo "\t\t\t\t\t<span class=\"skill_ranks alignCenter shortNum lrBuffer\">".showSign($skillInfo['ranks'])."</span>\n";
-		echo "\t\t\t\t\t<span class=\"skill_ranks alignCenter shortNum lrBuffer\">".showSign($skillInfo['misc'])."</span>\n";
-		echo "\t\t\t\t</div>\n";
+?>
+					<div id="skill_<?=$skillInfo['skillID']?>" class="skill tr clearfix">
+						<span class="skill_name medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
+						<span class="skill_total addStat_<?=$skillInfo['stat']?> shortNum lrBuffer"><?=showSign($statBonus[$skillInfo['stat']] + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
+						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skillInfo['stat'])?></span>
+						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skillInfo['ranks'])?></span>
+						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skillInfo['misc'])?></span>
+					</div>
+<?
 	} } else echo "\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
 ?>
+				</div>
 			</div>
 			<div id="feats" class="floatRight">
-				<h2>Feats/Features</h2>
+				<h2 class="headerbar hbDark">Feats/Features</h2>
+				<div class="hbMargined">
 <?
 	$feats = $mysql->query('SELECT dnd4_feats.featID, featsList.name FROM dnd4_feats INNER JOIN featsList USING (featID) ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
-		echo "\t\t\t\t<div id=\"feat_{$featInfo['featID']}\" class=\"feat tr clearfix\">\n";
-		echo "\t\t\t\t\t<span class=\"feat_name textLabel\">".mb_convert_case($featInfo['name'], MB_CASE_TITLE)."</span>\n";
-		echo "\t\t\t\t\t<a href=\"".SITEROOT."/characters/dnd4/featNotes/$characterID/{$featInfo['featID']}?modal=1\" id=\"featNotesLink_{$featInfo['featID']}\" class=\"feat_notesLink\">Notes</a>\n";
-		echo "\t\t\t\t</div>\n";
+?>
+					<div id="feat_<?=$featInfo['featID']?>" class="feat tr clearfix">
+						<span class="feat_name textLabel"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
+						<a href="<?=SITEROOT?>/characters/dnd4/featNotes/$characterID/<?=$featInfo['featID']?>?modal=1" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
+					</div>
+<?
 	} } else echo "\t\t\t\t<p id=\"noFeats\">This character currently has no feats/features.</p>\n";
 ?>
+				</div>
 			</div>
 		</div>
 		
 		<div id="powers" class="clearfix">
-			<h2>Powers</h2>
-			<div id="powers_atwill" class="powerCol first">
-				<h3>At-Will</h3>
+			<h2 class="headerbar hbDark">Powers</h2>
+			<div class="hbMargined">
+				<div id="powers_atwill" class="powerCol first">
+					<h3>At-Will</h3>
 <?
 	$powers = $mysql->query('SELECT name FROM dnd4_powers WHERE type = "a" AND characterID = '.$characterID);
-	foreach ($powers as $power) echo "\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
+	foreach ($powers as $power) echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
 ?>
 			</div>
 			<div id="powers_encounter" class="powerCol">
 				<h3>Encounter</h3>
 <?
 	$powers = $mysql->query('SELECT name FROM dnd4_powers WHERE type = "e" AND characterID = '.$characterID);
-	foreach ($powers as $power) echo "\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
+	foreach ($powers as $power) echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
 ?>
 			</div>
 			<div id="powers_daily" class="powerCol">
 				<h3>Daily</h3>
 <?
 	$powers = $mysql->query('SELECT name FROM dnd4_powers WHERE type = "d" AND characterID = '.$characterID);
-	foreach ($powers as $power) echo "\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
+	foreach ($powers as $power) echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
 ?>
+				</div>
 			</div>
 		</div>
 		
-		<div id="weapons" class="textDiv floatLeft">
-			<h2>Weapons</h2>
-			<div><?=$charInfo['weapons']?></div>
-		</div>
-		<div id="armor" class="textDiv floatRight">
-			<h2>Armor</h2>
-			<div><?=$charInfo['armor']?></div>
+		<div class="clearfix">
+			<div id="weapons" class="textDiv floatLeft">
+				<h2 class="headerbar hbDark">Weapons</h2>
+				<div class="hbMargined"><?=$charInfo['weapons']?></div>
+			</div>
+			<div id="armor" class="textDiv floatRight">
+				<h2 class="headerbar hbDark">Armor</h2>
+				<div class="hbMargined"><?=$charInfo['armor']?></div>
+			</div>
 		</div>
 		
-		<br class="clear">
 		<div id="items">
-			<h2>Items</h2>
-			<div><?=$charInfo['items']?></div>
+			<h2 class="headerbar hbDark">Items</h2>
+			<div class="hbMargined"><?=$charInfo['items']?></div>
 		</div>
 		
 		<div id="notes">
-			<h2>Notes</h2>
-			<div><?=$charInfo['notes']?></div>
+			<h2 class="headerbar hbDark">Notes</h2>
+			<div class="hbMargined"><?=$charInfo['notes']?></div>
 		</div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

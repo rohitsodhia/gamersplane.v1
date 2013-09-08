@@ -12,8 +12,9 @@
 	function checkLogin($redirect = 1) {
 		if (isset($_COOKIE['loginHash'])) {
 			global $mysql;
-			$loginHash = sanatizeString($_COOKIE['loginHash']);
-			$userCheck = $mysql->query('SELECT userID, username, joinDate, timezone FROM users WHERE MD5(CONCAT("'.SVAR.'", `username`, `joinDate`)) = "'.$loginHash.'"');
+			$loginHash = sanitizeString($_COOKIE['loginHash']);
+			$userCheck = $mysql->prepare('SELECT userID, username, joinDate, timezone FROM users WHERE MD5(CONCAT("'.SVAR.'", `username`, `joinDate`)) = :loginHash');
+			$userCheck->execute(array(':loginHash' => $loginHash));
 			
 			if ($userCheck->rowCount()) {
 				$userInfo = $userCheck->fetch();

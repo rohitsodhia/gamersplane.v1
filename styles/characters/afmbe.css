@@ -3,85 +3,89 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#page_characterSheet_afmbe_edit #nameDiv label, #page_characterSheet_afmbe_sheet #nameDiv label {
+#nameDiv label {
 	display: block;
 	float: left;
-	width: 150px;
+	width: 110px;
 	text-align: right;
 	margin-right: 10px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol, #page_characterSheet_afmbe_edit #secondaryStatsCol, #page_characterSheet_afmbe_sheet #primaryStatsCol, #page_characterSheet_afmbe_sheet #secondaryStatsCol {
-	float: left;
-	margin-top: 1em;
+#nameDiv input {
+	width: 200px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol, #page_characterSheet_afmbe_sheet #primaryStatsCol {
-	width: 480px;
-	margin-right: 40px;
+h2 {
+	margin-bottom: .3em;
+}
+
+#primaryStatsCol {
+	float: left;
+	width: 440px;
 	margin-left: 65px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol .tr, #page_characterSheet_afmbe_sheet #primaryStatsCol .tr {
-	margin: 8px 0;
+#primaryStatsCol .tr {
+	margin: 0 0 8px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol .twoCol, #page_characterSheet_afmbe_sheet #primaryStatsCol .twoCol {
+#primaryStatsCol .twoCol {
 	float: left;
-	width: 220px;
+	width: 180px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol .leftCol, #page_characterSheet_afmbe_sheet #primaryStatsCol .leftCol {
-	margin-right: 40px;
+#primaryStatsCol .leftCol {
+	margin-right: 30px;
 }
 
-#page_characterSheet_afmbe_edit #secondaryStatsCol, #page_characterSheet_afmbe_sheet #secondaryStatsCol {
-	width: 250px;
+#secondaryStatsCol {
+	float: right;
+	width: 300px;
 	margin-right: 65px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol label, #page_characterSheet_afmbe_edit #secondaryStatsCol label, #page_characterSheet_afmbe_sheet #primaryStatsCol label, #page_characterSheet_afmbe_sheet #secondaryStatsCol label {
+#primaryStatsCol label, #secondaryStatsCol label {
 	display: block;
 	float: left;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol label, #page_characterSheet_afmbe_sheet #primaryStatsCol label {
-	width: 170px;
+#primaryStatsCol label {
+	width: 130px;
 }
 
-#page_characterSheet_afmbe_edit #secondaryStatsCol label, #page_characterSheet_afmbe_sheet #secondaryStatsCol label {
+#secondaryStatsCol label {
 	width: 200px;
 }
 
-#page_characterSheet_afmbe_edit #primaryStatsCol input, #page_characterSheet_afmbe_edit #secondaryStatsCol input {
+#primaryStatsCol input, #secondaryStatsCol input {
 	width: 30px;
 	margin: 0 6px;
 }
 
-#page_characterSheet_afmbe_edit .twoCol, #page_characterSheet_afmbe_sheet .twoCol {
+.twoCol {
 	float: left;
-	width: 450px;
+	width: 465px;
 }
 
-#page_characterSheet_afmbe_edit .twoCol h2, #page_characterSheet_afmbe_sheet .twoCol h2 {
+.twoCol h2, #charInfoDiv h2 {
 	margin-top: 1em;
 }
 
-#page_characterSheet_afmbe_edit .twoCol textarea, #page_characterSheet_afmbe_sheet .twoCol textarea {
-	width: 442px;
+.twoCol textarea {
+	width: 465px;
 	height: 8.6em;
 }
 
-#page_characterSheet_afmbe_edit #notes {
+.editCharacter #notes {
 	width: 912px;
 	height: 19.7em;
 }
 
-#page_characterSheet_afmbe_edit .leftCol, #page_characterSheet_afmbe_sheet .leftCol {
+.leftCol {
 	margin-right: 20px;
 }
 
-#page_characterSheet_afmbe_edit #submitDiv {
+#submitDiv {
 	clear: both;
 	text-align: center;
 	margin-top: 1em;

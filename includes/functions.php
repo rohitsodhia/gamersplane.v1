@@ -41,16 +41,27 @@
 		return $finalString;
 	}
 	
-	function sanatizeString($string, $options = array('trim', 'strip_tags', 'mysql_real_escape_string')) {
-		if (in_array('trim', $options)) $string = trim($string);
-		if (in_array('strip_tags', $options)) $string = strip_tags($string);
-		if (in_array('mysql_real_escape_string', $options)) $string = mysql_real_escape_string($string);
-		
+	function sanitizeString($string) {
+		$options = func_get_args();
+		array_shift($options);
+//		if (sizeof($options) == 0) $options = array('strip_tags');
+
+		/*if (in_array('trim', $options)) */$string = trim($string);
+		/*if (in_array('strip_tags', $options)) */$string = strip_tags($string);
+		if (in_array('lower', $options)) $string = strtolower($string);
+		if (in_array('like_clean', $options)) $string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
+		if (in_array('rem_dup_spaces', $options)) $string = preg_replace('/\s+/', ' ', $string);
+
+		if (in_array('search_format', $options)) {
+			$string = strtolower($string);
+//			$string = str_replace('-', ' ', $string)
+			$string = preg_replace('/[^A-za-z0-9]/', ' ', $string);
+		}
+
 		return $string;
 	}
-	
+
 	function printReady($string, $options = array('stripslashes', 'nl2br')) {
-//		if (in_array('nl2br', $options)) $string = nl2br($string);
 		if (in_array('nl2br', $options)) {
 			$string = str_replace('\r\n', "\n", $string);
 			$string = nl2br($string);
@@ -62,7 +73,7 @@
 	
 	function filterString($string) {
 		global $mysql;
-		$filters = $mysql->query('SELECT * FROM wordFilter');
+		$filters = $mysql->query('SELECT word FROM wordFilter');
 		$filterWords = array();
 		$replacements = array();
 		$stars = '';
@@ -109,6 +120,34 @@
 		return $num;
 	}
 
+/* Character Functions */
+	function includeSystemInfo($system) {
+		if (is_dir(FILEROOT.'/includes/characters/'.$system)) 
+			foreach (glob(FILEROOT.'/includes/characters/'.$system.'/*') as $file) 
+				include($file);
+	}
+
+	function getCharInfo($characterID, $system) {
+		global $mysql;
+		
+		$characterID = intval($characterID);
+		$userID = intval($_SESSION['userID']);
+		$checkSystem = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :system');
+		$checkSystem->execute(array(':system' => $system));
+		if ($checkSystem->rowCount()) {
+			$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM {$system}_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
+			if ($charInfo->rowCount()) return $charInfo->fetch();
+			else return false;
+		} else return false;
+	}
+
+	function updateCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()') {
+		global $mysql;
+		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
+
+		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return false;
+		$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action) VALUES ($characterID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':"'$enactedOn'").", '$action')");
+	}
 	
 /* Tools Functions */
 	function parseRolls($rawRolls) {
@@ -174,9 +213,9 @@
 	}
 	
 	function cardText($card, $deck) {
-		if ($deck == 'pcwj' || $deck == 'pcwoj') {
+		if ($deck == 'pc') {
 			if ($card <= 52) {
-				$suit = array('Clubs', 'Diamonds', 'Hearts', 'Spades');
+				$suit = array('Hearts', 'Spades', 'Diamonds', 'Clubs');
 				$cardNum = $card - (floor(($card - 1)/13) * 13);
 				
 				if ($cardNum == 1) $cardNum = 'Ace';
@@ -185,17 +224,45 @@
 				elseif ($cardNum == 13) $cardNum = 'King';
 				
 				return $cardNum.' of '.$suit[floor(($card - 1)/13)];
-			} elseif ($card == 53) return 'Red Joker';
-			elseif ($card == 54) return 'Black Joker';
+			} elseif ($card == 53) return 'Black Joker';
+			elseif ($card == 54) return 'Red Joker';
 		}
 	}
 	
 	function getCardImg($cardNum, $deckType, $size = '') {
-		$src = SITEROOT.'/images/cards/'.$deckType.'/'.$cardNum.'.png';
+//		$src = SITEROOT.'/images/tools/cards/'.$deckType.'/'.$cardNum.'.png';
 //		if (intval($size) > 0) $src = SITEROOT.'/phpthumb/phpThumb.php?src='.$src.'&h='.intval($size);
-		return '<img src="'.$src.'" title="'.cardText($cardNum, $deckType).'" alt="'.cardText($cardNum, $deckType).'">';
+//		return '<img src="'.$src.'" title="'.cardText($cardNum, $deckType).'" alt="'.cardText($cardNum, $deckType).'">';
+
+		global $mysql;
+
+		$deckInfo = $mysql->query('SELECT class, image FROM deckTypes WHERE short = "'.$deckType.'"');
+		$deckInfo = $deckInfo->fetch();
+
+		$classes = '';
+
+		if ($deckInfo['class'] == 'pc') {
+			if ($cardNum <= 52) {
+				$suit = array('hearts', 'spades', 'diamonds', 'clubs');
+				$classes = $cardNum - (floor(($cardNum - 1)/13) * 13);
+				
+				if ($classes == 1) $classes = 'A';
+				elseif ($classes == 11) $classes = 'J';
+				elseif ($classes == 12) $classes = 'Q';
+				elseif ($classes == 13) $classes = 'K';
+
+				$classes = 'num_'.$classes;
+				
+				$classes .= ' '.$suit[floor(($cardNum - 1)/13)];
+			} elseif ($classes == 53) return 'blackJoker';
+			elseif ($classes == 54) return 'redJoker';
+		}
+
+		return '<div class="cardWindow deck_'.$deckInfo['class'].'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].'" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
 	}
 
+	
+/* Character Functions */
 	
 /* Forum Functions */
 	function retrieveHeritage($forumID, $parent = 0) {

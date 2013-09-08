@@ -4,7 +4,7 @@
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	
-	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, users.username, gms.primary IS NOT NULL isGM, gms.primary FROM games g INNER JOIN users ON g.gmID = users.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, `primary` FROM gms WHERE gms.userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
+	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.primaryGM IS NOT NULL isGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: '.SITEROOT.'/games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 	$gameInfo['created'] = switchTimezone($_SESSION['timezone'], $gameInfo['created']);
@@ -13,17 +13,17 @@
 	$isGM = $gameInfo['isGM']?TRUE:FALSE;
 	
 	if (!$isGM) {
-		$charCheck = $mysql->query('SELECT characterID, label, approved FROM characters WHERE gameID = '.$gameInfo['gameID'].' AND userID = '.$userID);
-		
-		$isInGame = $charCheck->rowCount()?TRUE:FALSE;
-		if ($isInGame) $userCharInfo = $charCheck->fetch();
+		$userCheck = $mysql->query('SELECT approved FROM players WHERE gameID = '.$gameInfo['gameID'].' AND userID = '.$userID);
+		if ($userCheck->rowCount()) {
+			$inGame = TRUE;
+			$approved = $userCheck->fetchColumn();
+		} else $inGame = FALSE;
 	}
 	
-	$approvedPlayers = $mysql->query("SELECT characters.characterID, characters.label, characters.approved, users.userID, users.username FROM characters, users WHERE characters.gameID = $gameID AND users.userID = characters.userID AND characters.approved = 1 ORDER BY characters.approved DESC, characters.label ASC");
-	$numPlayersActive = $approvedPlayers->rowCount();
+	$approvedPlayers = $mysql->query("SELECT u.userID, u.username, p.isGM, p.primaryGM FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 1 ORDER BY u.username ASC");
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Game Details<?=$gameInfo['isGM']?' <a href="'.SITEROOT.'/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>
+		<h1 class="headerbar">Game Details<?=$gameInfo['isGM']?' <a href="'.SITEROOT.'/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>
 		
 <? if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
 		<div class="alertBox_error"><ul>
@@ -38,105 +38,99 @@
 <?
 		if ($_GET['gmAdded']) echo "\t\t\t<li>GM successfully added.</li>\n";
 		if ($_GET['gmRemoved']) echo "\t\t\t<li>GM successfully removed.</li>\n";
-		if ($_GET['removed']) { echo "\t\t\t<li>Character successfully removed from game.</li>\n"; }
+		if ($_GET['removed']) echo "\t\t\t<li>Character successfully removed from game.</li>\n";
 ?>
 		</ul></div>
 <? } ?>
 		
-		<div class="tr">
-			<label>Game Status</label>
-			<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?=SITEROOT.'/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
+		<div id="details">
+			<div class="tr clearfix">
+				<label>Game Status</label>
+<? if ($isGM) { ?>
+				<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?=SITEROOT.'/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
+<? } else { ?>
+				<div><?=$gameInfo['open']?'Open':'Closed'?></div>
+<? } ?>
+			</div>
+			<div class="tr clearfix">
+				<label>Game Title</label>
+				<div><?=printReady($gameInfo['title'])?></div>
+			</div>
+			<div class="tr clearfix">
+				<label>System</label>
+				<div><?=printReady($gameInfo['systemFull'])?></div>
+			</div>
+			<div class="tr clearfix">
+				<label>Game Master</label>
+				<div><a href="<?=SITEROOT.'/user/'.$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+			</div>
+			<div class="tr clearfix">
+				<label>Created</label>
+				<div><?=date('F j, Y g:i a', $gameInfo['created'])?></div>
+			</div>
+			<div class="tr clearfix">
+				<label>Post Frequency</label>
+				<div><?=$postFrequency[0].' post'.($postFrequency[0] == 1?'':'s').' per '.($postFrequency[1] == 'd'?'day':'week')?></div>
+			</div>
+			<div class="tr clearfix">
+				<label>Number of Players</label>
+				<div><?=($approvedPlayers->rowCount() - 1).' / '.$gameInfo['numPlayers']?></div>
+			</div>
+			<div class="tr clearfix">
+				<label>Description</label>
+				<div><?=$gameInfo['description']?printReady($gameInfo['description']):'None Provided'?></div>
+			</div>
+			<div class="tr clearfix">
+				<label>Character Generation Info</label>
+				<div><?=$gameInfo['charGenInfo']?printReady($gameInfo['charGenInfo']):'None Provided'?></div>
+			</div>
 		</div>
-		<div class="tr">
-			<label>Game Title</label>
-			<div><?=printReady($gameInfo['title'])?></div>
+
+		<h2 class="headerbar hbDark">Players in game</h2>
+		<div id="playersInGame" class="playerList">
+<?	if ($approvedPlayers->rowCount()) { foreach ($approvedPlayers as $playerInfo) { ?>
+			<div class="tr clearfix">
+<? //		echo "\t\t\t\t".(($isGM || $userID == $playerInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$playerInfo['characterID'].'/sheet"':'<div').' class="charTitle">'.$playerInfo['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?>
+				<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="'.SITEROOT.'/images/gm_icon.png">':''?></div>
+				<div class="actionLinks">
+<?		if ($isGM && !$playerInfo['primaryGM']) { ?>
+					<a href="<?=SITEROOT.'/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
+					<a href="<?=SITEROOT.'/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
+<?		} elseif ($playerInfo['userID'] == $userID && !$playerInfo['primaryGM']) { ?>
+					<a href="<?=SITEROOT.'/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
+<?		} ?>
+				</div>
+			</div>
+<?	} } else echo "\t\t\t<p class=\"noItems\">No Players have joined yet!</p>\n"; ?>
 		</div>
-		<div class="tr">
-			<label>System</label>
-			<div><?=printReady($gameInfo['systemFull'])?></div>
-		</div>
-		<div class="tr">
-			<label>Game Master</label>
-			<div><a href="<?=SITEROOT.'/ucp/'.$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
-		</div>
-		<div class="tr">
-			<label>Created</label>
-			<div><?=date('F j, Y g:i a', $gameInfo['created'])?></div>
-		</div>
-		<div class="tr">
-			<label>Post Frequency</label>
-			<div><?=$postFrequency[0].' post'.($postFrequency[0] == 1?'':'s').' per '.($postFrequency[1] == 'd'?'day':'week')?></div>
-		</div>
-		<div class="tr">
-			<label>Number of Players</label>
-			<div><?=$numPlayersActive.' / '.$gameInfo['numPlayers']?></div>
-		</div>
-		<div class="tr">
-			<label>Description</label>
-			<div><?=$gameInfo['description']?printReady($gameInfo['description']):'None Provided'?></div>
-		</div>
-		<div class="tr">
-			<label>Character Generation Info</label>
-			<div><?=$gameInfo['charGenInfo']?printReady($gameInfo['charGenInfo']):'None Provided'?></div>
+
+<?
+	if ($isGM) {
+		$waitingPlayers = $mysql->query("SELECT u.userID, u.username FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 0 ORDER BY u.username ASC");
+		if ($waitingPlayers->rowCount()) {
+?>
+		<h2 class="headerbar hbDark" id="waitingChars">Players awaiting approval</h2>
+		<div id="waitingPlayers" class="playerList">
+<?			foreach ($waitingPlayers as $playerInfo) { ?>
+			<div class="tr clearfix userID_<?=$playerInfo['userID']?>">
+				<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
+				<div class="actionLinks">
+					<a href="<?=SITEROOT.'/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
+					<a href="<?=SITEROOT.'/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
+				</div>
+			</div>
+<?			} ?>
 		</div>
 <?
-	if ($loggedIn) {
-		if ($isGM || $isInGame && $userCharInfo['approved']) {
-			echo "\t\t<div id=\"userLists\">\n";
-			if ($isGM) {
-				$gms = $mysql->query("SELECT gms.userID, users.username, gms.primary FROM gms, users WHERE gms.userID = users.userID AND gms.gameID = $gameID AND gms.primary = 0 ORDER BY users.username");
-				echo "\t\t\t<h3>GMs</h3>\n";
-				echo "\t\t\t<a id=\"addGM\" href=\"".SITEROOT."/games/$gameID/addGM\">Add a GM</a>\n";
-				$first = TRUE;
-				if ($gms->rowCount()) { foreach ($gms as $gmInfo) {
-					echo "\t\t\t<div class=\"tr".($first?' firstTR':'')."\">\n";
-					echo "\t\t\t\t<div class=\"gm\"><a href=\"".SITEROOT."/ucp/{$gmInfo['userID']}\" class=\"username\">{$gmInfo['username']}</a></div>\n";
-					echo "\t\t\t\t<div class=\"gmLinks\">\n";
-					if ($gameInfo['primary']) echo "\t\t\t\t\t<a href=\"".SITEROOT."/games/$gameID/removeGM/{$gmInfo['userID']}\" class=\"removeGM\">Remove GM</a>\n";
-					else "\t\t\t\t\t&nbsp;\n";
-					echo "\t\t\t\t</div>\n";
-					echo "\t\t\t</div>\n";
-					if ($first) { $first = FALSE; }
-				} } else echo "\t\t\t<h2>No Other GMs</h2>\n";
-			}
-			
-			echo "\t\t\t<h3>Characters in game</h3>\n";
-			if ($numPlayersActive) { foreach ($approvedPlayers as $charInfo) {
-				echo "\t\t\t<div class=\"tr\">\n";
-				echo "\t\t\t\t".(($isGM || $userID == $charInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$charInfo['characterID'].'/sheet"':'<div').' class="charTitle">'.$charInfo['label'].(($isGM || $userID == $charInfo['userID'])?"</a>\n":"</div>\n");
-				echo "\t\t\t\t".'<div class="player"><a href="'.SITEROOT.'/ucp/'.$charInfo['userID'].'" class="username">'.$charInfo['username']."</a></div>\n";
-				echo "\t\t\t\t<div class=\"charLinks\">\n";
-				if ($isGM) echo "\t\t\t\t\t".'<a href="'.SITEROOT.'/games/'.$gameID.'/remove/'.$charInfo['characterID'].'" class="removeChar">Remove Character from Game</a>';
-				elseif ($userID == $charInfo['userID']) echo "\t\t\t\t\t".'<a href="'.SITEROOT.'/games/'.$gameID.'/leave/'.$charInfo['characterID'].'">Leave Game</a>';
-				else echo "\t\t\t\t\t&nbsp;\n";
-				echo "\t\t\t\t</div>\n";
-				echo "\t\t\t</div>\n";
-			} } else echo "\t\t\t<h2>No Characters Joined Yet!</h2>\n";
-			
-			if ($isGM) {
-				$waitingChars = $mysql->query("SELECT characters.characterID, characters.label, characters.approved, users.userID, users.username FROM characters, users WHERE characters.gameID = $gameID AND users.userID = characters.userID AND characters.approved = 0 ORDER BY characters.approved DESC, characters.label ASC");
-				echo "\t\t\t<h3 id=\"waitingChars\">Characters awaiting approval</h3>\n";
-				if ($waitingChars->rowCount()) { foreach ($waitingChars as $charInfo) {
-					echo "\t\t\t<div class=\"tr\">\n";
-					echo "\t\t\t\t".(($isGM || $userID == $charInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$charInfo['characterID'].'/sheet"':'<div').' class="charTitle">'.$charInfo['label'].(($isGM || $userID == $charInfo['userID'])?"</a>\n":"</div>\n");
-					echo "\t\t\t\t".'<div class="player"><a href="'.SITEROOT.'/ucp/'.$charInfo['userID'].'" class="username">'.$charInfo['username']."</a></div>\n";
-					echo "\t\t\t\t<div class=\"charLinks\">\n";
-					echo "\t\t\t\t\t".'<a href="'.SITEROOT.'/games/'.$gameID.'/approve/'.$charInfo['characterID'].'" class="approveChar">Approve Character</a>';
-					echo "\t\t\t\t\t".'<a href="'.SITEROOT.'/games/'.$gameID.'/remove/'.$charInfo['characterID'].'" class="removeChar">Remove Character from Game</a>';
-					echo "\t\t\t\t</div>\n";
-					echo "\t\t\t</div>\n";
-				} } else echo "\t\t\t<h2>No Characters Awaiting Approval.</h2>\n";
-			}
-			echo "\t\t</div>\n";
-		} elseif ($isInGame) echo "\t\t".'<div id="charList"><p><a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$userCharInfo['characterID'].'/sheet">'.$userCharInfo['label']."</a> is awaiting approval.</p></div>\n";
-		elseif (!$isGM && !$isInGame && $numPlayersActive < $gameInfo['numPlayers']) {
+		}
+	} elseif ($inGame && $approved) {
 ?>
 		<div id="submitChar">
 <?
 			$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$userID.' AND systemID = "'.$gameInfo['systemID'].'" AND ISNULL(gameID)');
 			if ($readyChars->rowCount()) {
 ?>
-			<h3>Submit a Character</h3>
+			<h2 class="headerbar hbDark">Submit a Character</h2>
 			<form method="post" action="<?=SITEROOT?>/games/process/join">
 				<input type="hidden" name="gameID" value="<?=$gameID?>">
 				<select name="characterID">
@@ -149,11 +143,27 @@
 				<button type="submit" name="submitCharacter" class="btn_submitCharacter"></button>
 			</form>
 <?	 		} else { ?>
-			<h2>You have no characters you can submit at this time.</h2>
+			<p class="noItems">You have no characters you can submit at this time.</p>
 <? 			} ?>
 		</div>
 <?
-		}
-	} else echo "			".'<h2>Interested in this game? <a href="'.SITEROOT.'/login" class="loginLink">Login</a> or <a href="'.SITEROOT.'/register" class="last">Register</a> to join!</h2>'."\n";
+	} elseif ($inGame) {
+?>
+		<div id="applyToGame">
+			<h2 class="headerbar hbDark">Join Game</h2>
+			<p>Your request to join this game is awaiting approval.</p>
+		</div>
+<?
+	} elseif ($loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {
+?>
+		<div id="applyToGame">
+			<h2 class="headerbar hbDark">Join Game</h2>
+			<form method="post" action="<?=SITEROOT?>/games/process/join" class="alignCenter">
+				<input type="hidden" name="gameID" value="<?=$gameID?>">
+				<div class="fancyButton"><button type="submit" name="apply">Apply to Game</button></div>
+			</form>
+		</div>
+<?
+	} elseif (!$loggedIn) echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="'.SITEROOT.'/login" class="loginLink">Login</a> or <a href="'.SITEROOT.'/register" class="last">Register</a> to join!</div>'."\n";
 ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

@@ -28,7 +28,7 @@
 	border-right-color: #900;
 /*	background-image:url(images/bg-editor.png);*/
 	background-repeat:repeat-x;
-	background-color: #100;
+	background-color: #DDF;
 	clear:both; display:block;
 /*	line-height:18px;*/
 	overflow:auto;
@@ -48,10 +48,10 @@
 }
 .markItUpResizeHandle {
 	overflow:hidden;
-	width:22px; height:15px;
+	width:21px; height:15px;
 	margin-left:auto;
 	margin-right:auto;
-	background-image:url(images/handle.png);
+	background:url(images/handle.png) center center no-repeat;
 	cursor:n-resize;
 }
 /***************************************************************************************/
@@ -90,7 +90,7 @@
 	display:none;
 	position:absolute;
 	top:18px; left:0px;	
-	background:#000;
+	background:#FFF8F8;
 	border:1px solid #3C769D;
 	height:inherit;
 }

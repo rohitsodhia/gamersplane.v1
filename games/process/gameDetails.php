@@ -20,23 +20,31 @@
 		$details['description'] = sanatizeString($_POST['description']);
 		$details['charGenInfo'] = sanatizeString($_POST['charGenInfo']);
 		
-		if (strlen($details['title']) == 0) { $_SESSION['errors']['invalidTitle'] = TRUE; }
-		if (!isset($_POST['save'])) {
-			$titleCheck = $mysql->query('SELECT gameID FROM games WHERE title = "'.$details['title'].'"');
-			if ($titleCheck->rowCount()) $_SESSION['errors']['repeatTitle'] = TRUE;
-		}
-		if ($details['systemID'] == 0) $_SESSION['errors']['invalidSystem'] = TRUE;
+		if (strlen($details['title']) == 0) $_SESSION['errors']['invalidTitle'] = TRUE;
+		$titleCheck = $mysql->query('SELECT gameID FROM games WHERE title = "'.$details['title'].'"'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
+		if ($titleCheck->rowCount()) $_SESSION['errors']['repeatTitle'] = TRUE;
+		if ($details['systemID'] == 0 && !isset($_POST['save'])) $_SESSION['errors']['invalidSystem'] = TRUE;
 		if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) { $_SESSION['errors']['invalidFreq'] = TRUE; }
 		if ($details['numPlayers'] < 2) { $_SESSION['errors']['invalidNumPlayers'] = TRUE; }
 		
 		if (sizeof($_SESSION['errors'])) {
 			$_SESSION['errorVals'] = $_POST;
 			$_SESSION['errorTime'] = time() + 300;
-			if (isset($_POST['save'])) header('Location: '.SITEROOT.'/games/'.$gameID.'?failed=1');
+			if (isset($_POST['save'])) header('Location: '.SITEROOT.'/games/'.$gameID.'/edit?failed=1');
 			else header('Location: '.SITEROOT.'/games/new?failed=1');
 		} elseif (isset($_POST['save'])) {
-			$mysql->query('UPDATE games SET '.$mysql->setupUpdates($details).' WHERE gameID = '.$gameID);
-			$mysql->query('UPDATE forums, forums_groups, games SET forums.title = "'.$details['title'].'", forums_groups.name = "'.$details['title'].'" WHERE forums.forumID = games.forumID AND forums_groups.groupID = games.groupID AND games.gameID = '.$gameID);
+			$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, description = :description, charGenInfo = :charGenInfo WHERE gameID = :gameID');
+			$updateGame->bindValue(':title', $details['title']);
+			$updateGame->bindValue(':postFrequency', $details['postFrequency']);
+			$updateGame->bindValue(':numPlayers', $details['numPlayers']);
+			$updateGame->bindValue(':description', $details['description']);
+			$updateGame->bindValue(':charGenInfo', $details['charGenInfo']);
+			$updateGame->bindValue(':gameID', $gameID);
+			$updateGame->execute();
+			$updateForums = $mysql->prepare('UPDATE forums, forums_groups, games SET forums.title = :title, forums_groups.name = :title WHERE forums.forumID = games.forumID AND forums_groups.groupID = games.groupID AND games.gameID = :gameID');
+			$updateForums->bindValue(':title', $details['title']);
+			$updateForums->bindValue(':gameID', $gameID);
+			$updateForums->execute();
 			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'editedGame')");
 			
 			header('Location: '.SITEROOT.'/games/'.$gameID);
@@ -58,7 +66,6 @@
 			$details['groupID'] = $groupID;
 			
 			$system = $details['system'];
-			unset($details['system']);
 			$addGame = $mysql->prepare('INSERT INTO games (`title`, `systemID`, `gmID`, `created`, `start`, `postFrequency`, `numPlayers`, `description`, `charGenInfo`, `forumID`, `groupID`) VALUES (:title, :systemID, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, :forumID, :groupID)');
 			$addGame->bindParam('title', $details['title']);
 			$addGame->bindParam('systemID', $details['systemID']);
@@ -74,14 +81,14 @@
 			$addGame->execute();
 			$gameID = $mysql->lastInsertId();
 			
-			$mysql->query("INSERT INTO gms (gameID, userID, `primary`) VALUES ($gameID, $userID, 1)");
+//			$mysql->query("INSERT INTO players (gameID, userID, activeSince, approved, isGM, primaryGM) VALUES ($gameID, $userID, '{$details['created']}', 1, 1, 1)");
+			$mysql->query("INSERT INTO players (gameID, userID, approved, isGM, primaryGM) VALUES ($gameID, $userID, 1, 1, 1)");
 			
 			$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$userID.')');
 			
 			$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES('.$userID.', '.$forumID.')');
-			$mysql->query('INSERT INTO forums_permissions_general (`forumID`, `read, `write`, `createThread`, `moderate`) VALUES ('.$forumID.', -1, -1, -1, -1)');
+//			$mysql->query('INSERT INTO forums_permissions_general (`forumID`, `read, `write`, `createThread`, `moderate`) VALUES ('.$forumID.', -1, -1, -1, -1)');
 			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 1, 1, 1, 1, 1, 1, 1)');
-//			$mysql->query('INSERT INTO forums_permissions_users '.$mysql->setupInserts(array('userID' => $userID, 'forumID' => $forumID, 'read' => 1, 'write' => 1, 'editPost' => 1, 'deletePost' => 1, 'createThread' => 1, 'deleteThread' => 1, 'moderate' => 1)));
 			
 			$mysql->query("INSERT INTO chat_sessions (gameID, locked) VALUES ($gameID, 0)");
 			
@@ -100,5 +107,5 @@
 			
 			header('Location: '.SITEROOT.'/games/my/');
 		}
-	} else { header('Location: '.SITEROOT.'/games/my/'); }
+	} else header('Location: '.SITEROOT.'/games/my/');
 ?>

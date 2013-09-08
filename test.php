@@ -5,7 +5,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php require_once(FILEROOT.'/javascript/js.php'); ?>
+<?php //require_once(FILEROOT.'/javascript/js.php'); ?>
+	<script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery.min.js"></script>
 </head>
 
 <body>
@@ -434,10 +435,47 @@ mail('dhvanit.mehta@gmail.com', 'test', $var, 'Content-type: text/html;');*/
 //	require_once(FILEROOT.'/blog/wp-blog-header.php');
 //	print_r(get_user_by('id', 1));
 
-		$forumInfos = $mysql->query('SELECT forumID, heritage FROM forums WHERE forumID IN (4, 5, 6)');
+/*		$forumInfos = $mysql->query('SELECT forumID, heritage FROM forums WHERE forumID IN (4, 5, 6)');
 		$allForumIDs = $forumIDs;
 		while (list($indivForumID, $heritage) = $forumInfos->fetch()) {
 			echo $indivForumID.','.$heritage.'<br>';
-		}
+		}*/
+
+//		echo crc32(strtolower('hunt.michael101@gmail.com')).strlen('hunt.michael101@gmail.com');
+
+/*		$suit = array('H', 'S', 'D', 'C');
+		$nums = array('A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K');
+		for ($sNum = 0; $sNum < 4; $sNum++) {
+			for ($nNum = 0; $nNum < 13; $nNum++) {
 ?>
+.pc_card.<?=$nums[$nNum]?>of<?=$suit[$sNum]?> {
+	background-position: -<?=$sNum * 125?>px -<?=$nNum * 100?>px;
+}
+
+<?
+			}
+		}*/
+
+
+//$sum = 0;
+//for ($count = 1; $count <= 114; $count++) $sum += $count;
+//	echo $sum;
+//	echo intval('test');
+/*	$skills = $mysql->query('SELECT * FROM skillsList');
+	foreach ($skills as $skill) {
+//		$name = mb_convert_case($skill['name'], MB_CASE_TITLE);
+//		$name = str_replace('Of', 'of', $name);
+		$name = searchFormat($skill['searchName']);
+		echo $skill['skillID'].':'.$name.'<br>';
+		$mysql->query('UPDATE skillsList SET searchName = "'.$name.'" WHERE modifierID = '.$skill['skillID']);
+	}*/
+?>
+<script>
+$(function () {
+	var var1 = 1, var2 = 2;
+	setTimeout(function (var1, var2) {
+		console.log(var1, var2);
+	}, 1000);
+});
+</script>
 </body></html>

@@ -2,7 +2,7 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT deadlands.*, characters.userID, gms.gameID IS NOT NULL isGM FROM deadlands_characters deadlands INNER JOIN characters ON deadlands.characterID = characters.characterID LEFT JOIN (SELECT gameID, `primary` FROM gms WHERE userID = $userID) gms ON characters.gameID = gms.gameID WHERE deadlands.characterID = $characterID");
+	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM deadlands_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
 	if ($charInfo->rowCount()) {
 		$charInfo = $charInfo->fetch();
@@ -15,105 +15,111 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Character Sheet</h1>
-		<h2><img src="<?=SITEROOT?>/images/logos/deadlands.jpg"></h2>
+		<h1 class="headerbar">Character Sheet</h1>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/deadlands.jpg"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<a href="<?=SITEROOT?>/characters/deadlands/<?=$characterID?>/edit">Edit Character</a>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/deadlands/<?=$characterID?>/edit" class="button">Edit Character</a></div>
 		<div id="nameDiv" class="tr">
 			<label>Name:</label>
 			<div><?=$charInfo['name']?></div>
 		</div>
 		
-		<div class="triCol">
-			<h2>Mental</h2>
+		<div class="clearfix">
+			<div class="triCol">
+				<h2 class="headerbar hbDark">Mental</h2>
 <?
 	$first = TRUE;
 	foreach (array('cog' => 'Cognition', 'kno' => 'Knowledge', 'mie' => 'Mien', 'sma' => 'Smarts', 'spi' => 'Spirit') as $abbrev => $label) {
 ?>
-			<div class="statDiv<?=$first?' firstStatDiv':''?>">
-				<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." <h3>$label</h3>"?>
-			</div>
-			<h3 class="skillTitle"><?=$label?> Skills</h3>
-			<?=printReady($charInfo[$abbrev.'Skills'])?>
+				<div class="hbMargined statDiv<?=$first?' firstStatDiv':''?>">
+					<div class="statDice">
+						<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." $label"?>
+					</div>
+					<div class="skillTitle"><?=$label?> Skills</div>
+					<?=printReady($charInfo[$abbrev.'Skills'])?>
+				</div>
 <?
 		if ($first) $first = FALSE;
 	}
 ?>
-		</div>
-		<div class="triCol">
-			<h2>Corporeal</h2>
+			</div>
+			<div class="triCol">
+				<h2 class="headerbar hbDark">Corporeal</h2>
 <?
 	$first = TRUE;
 	foreach (array('def' => 'Deftness', 'nim' => 'Nimbleness', 'str' => 'Strength', 'qui' => 'Quickness', 'vig' => 'Vigor') as $abbrev => $label) {
 ?>
-			<div class="statDiv<?=$first?' firstStatDiv':''?>">
-				<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." <h3>$label</h3>"?>
-			</div>
-			<h3 class="skillTitle"><?=$label?> Skills</h3>
-			<?=printReady($charInfo[$abbrev.'Skills'])?>
+				<div class="hbMargined">
+					<div class="statDiv<?=$first?' firstStatDiv':''?>">
+						<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." $label"?>
+					</div>
+					<div class="skillTitle"><?=$label?> Skills</div>
+					<?=printReady($charInfo[$abbrev.'Skills'])?>
+				</div>
 <?
 		if ($first) $first = FALSE;
 	}
 ?>
-		</div>
-		<div class="triCol lastTriCol">
-			<h2>Edges &amp; Hindrances</h2>
-			<?=printReady($charInfo['edge_hind'])?>
-			
-			<h2>Worst Nightmare</h2>
-			<?=printReady($charInfo['nightmare'])?>
-			
-			<h2>Wounds</h2>
-			<div id="woundsDiv">
-				<div class="indivWoundDiv">
-					<h3>Head</h3>
-					<?=$charInfo['wounds'][0]?>
-				</div>
-				<div class="indivWoundDiv subTwoCol">
-					<h3>Left Hand</h3>
-					<?=$charInfo['wounds'][1]?>
-				</div>
-				<div class="indivWoundDiv subTwoCol">
-					<h3>Right Hand</h3>
-					<?=$charInfo['wounds'][2]?>
-				</div>
-				<div class="indivWoundDiv">
-					<h3>Guts</h3>
-					<?=$charInfo['wounds'][3]?>
-				</div>
-				<div class="indivWoundDiv subTwoCol">
-					<h3>Left Leg</h3>
-					<?=$charInfo['wounds'][4]?>
-				</div>
-				<div class="indivWoundDiv subTwoCol">
-					<h3>Right Leg</h3>
-					<?=$charInfo['wounds'][5]?>
-				</div>
 			</div>
-			
-			<div id="windDiv">
-				<h3>Wind</h3><?=printReady($charInfo['wind'])?>
+			<div class="triCol lastTriCol">
+				<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
+				<div class="hbMargined"><?=printReady($charInfo['edge_hind'])?></div>
+				
+				<h2 class="headerbar hbDark">Worst Nightmare</h2>
+				<div class="hbMargined"><?=printReady($charInfo['nightmare'])?></div>
+				
+				<h2 class="headerbar hbDark">Wounds</h2>
+				<div id="woundsDiv" class="clearfix">
+					<div class="indivWoundDiv">
+						<div>Head</div>
+						<?=$charInfo['wounds'][0]?>
+					</div>
+					<div class="indivWoundDiv subTwoCol">
+						<div>Left Hand</div>
+						<?=$charInfo['wounds'][1]?>
+					</div>
+					<div class="indivWoundDiv subTwoCol">
+						<div>Right Hand</div>
+						<?=$charInfo['wounds'][2]?>
+					</div>
+					<div class="indivWoundDiv">
+						<div>Guts</div>
+						<?=$charInfo['wounds'][3]?>
+					</div>
+					<div class="indivWoundDiv subTwoCol">
+						<div>Left Leg</div>
+						<?=$charInfo['wounds'][4]?>
+					</div>
+					<div class="indivWoundDiv subTwoCol">
+						<div>Right Leg</div>
+						<?=$charInfo['wounds'][5]?>
+					</div>
+				</div>
+				
+				<div id="windDiv">
+					<div>Wind</div><?=printReady($charInfo['wind'])?>
+				</div>
 			</div>
 		</div>
 		
-		<br class="clear">
-		<div class="twoCol">
-			<h2 class="leftTitle">Shootin Irons & Such</h2>
-			<?=printReady($charInfo['weapons'])?>
-			
-			<h2 class="leftTitle">Arcane Abilities</h2>
-			<?=printReady($charInfo['arcane'])?>
-		</div>
-		<div class="twoCol lastTwoCol">
-			<h2 class="leftTitle">Equipment</h2>
-			<?=printReady($charInfo['equipment'])?>
+		<div class="clearfix">
+			<div class="twoCol">
+				<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
+				<div class="hbMargined"><?=printReady($charInfo['weapons'])?></div>
+				
+				<h2 class="headerbar hbDark">Arcane Abilities</h2>
+				<div class="hbMargined"><?=printReady($charInfo['arcane'])?></div>
+			</div>
+			<div class="twoCol lastTwoCol">
+				<h2 class="headerbar hbDark">Equipment</h2>
+				<div class="hbMargined"><?=printReady($charInfo['equipment'])?></div>
+			</div>
 		</div>
 		
-		<br class="clear">
-		<h2 class="leftTitle">Background/Notes</h2>
-		<?=printReady($charInfo['notes'])?>
+		<h2 class="headerbar hbDark">Background/Notes</h2>
+		<div class="hbMargined"><?=printReady($charInfo['notes'])?></div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

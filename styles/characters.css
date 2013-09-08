@@ -8,26 +8,16 @@
 	padding-bottom: 8px;
 }
 
-#page_myCharacters h2 {
-	margin: 2.5em 0;
-}
-
 #page_myCharacters #characterList {
 	margin-bottom: 2em;
 }
 
-#page_myCharacters #characterList h3 {
-	margin-bottom: .5em;
-}
-
 #page_myCharacters #characterList .tr {
-	border: 1px solid #000;
 	padding-left: 15px;
 }
 
 #page_myCharacters #characterList .tr:hover {
-	background: #111;
-	border-color: #333;
+	background: #EEE;
 }
 
 #page_myCharacters #characterList .charLabel {
@@ -52,8 +42,12 @@
 	margin-right: 20px;
 }
 
-#page_myCharacters #newChar h3 {
-	margin-bottom: .5em;
+#page_myCharacters .noItems {
+	margin: 1.5em 0;
+	font-size: 1.3em;
+	line-height: 1.2em;
+	font-weight: bold;
+	text-align: center;
 }
 
 #page_myCharacters #newChar label {
@@ -65,20 +59,34 @@
 	font-size: 1em;
 }
 
-#page_myCharacters #newChar .tr div {
-	margin-left: 300px;
-	padding: 4px 0;
-	width: 150px;
-	text-align: right;
-	font-size: .8em;
+#page_myCharacters #newChar input[type="text"] {
+	width: 200px;
 }
 
-#page_myCharacters #newChar button {
+#page_myCharacters #newChar .fancyButton {
 	margin-left: 165px;
 }
 
 /* --------------------------------------------*/
 
-#page_deleteCharacter div {
+#page_editLabel .fancyButton, #page_deleteCharacter .fancyButton {
+	margin-top: .5em;
+}
+
+/* --------------------------------------------*/
+
+#charSheetLogo {
+	margin: 1em 0;
+	text-align: center;
+}
+
+#editCharacter {
 	margin-bottom: 1em;
+}
+
+#noCharFound {
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+	margin: 1em 0;
 }

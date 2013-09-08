@@ -78,8 +78,8 @@
 	$pollInfo = $pollInfo->rowCount()?$pollInfo->fetch():FALSE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1><?=$threadInfo['title']?></h1>
-		<div id="threadMenu">
+		<h1 class="headerbar"><?=$threadInfo['title']?></h1>
+		<div id="threadMenu" class="clearfix">
 			<a href="<?=SITEROOT.'/forums/'.$threadInfo['forumID']?>">Back to the forums</a>
 <? if ($permissions['moderate']) { ?>
 			<div id="threadOptions"><form method="post" action="<?=SITEROOT?>/forums/process/modThread">
@@ -88,8 +88,8 @@
 	$lock = $threadInfo['locked']?'unlock':'lock';
 ?>
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
-				<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread"><img src="<?=SITEROOT?>/images/<?=$sticky?>.jpg" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread"></button>
-				<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread"><img src="<?=SITEROOT?>/images/<?=$lock?>.jpg" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread"></button>
+				<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
+				<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread" class="<?=$lock?>"></button>
 			</form></div>
 <? } ?>
 		</div>
@@ -152,13 +152,10 @@
 				<p class="posterName"><a href="<?=SITEROOT.'/ucp/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
 			</div>
 			<div class="postContent">
-				<img src="<?=SITEROOT?>/images/chatPoint<?=$postSide == 'Right'?'L':'R'?>.jpg" class="postPoint">
+				<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>
 				<div class="postedOn"><?=date('M j, Y g:i a', $postInfo['datePosted'])?></div>
 <?
-//			if ($postInfo['title']) {
-				echo "\t\t\t\t<b>".(strlen($postInfo['title'])?printReady($postInfo['title']):'&nbsp')."</b>\n";
-				echo "\t\t\t\t<hr>\n";
-//			}
+			echo "\t\t\t\t<div class=\"subject\">".(strlen($postInfo['title'])?printReady($postInfo['title']):'&nbsp')."</div>\n";
 			echo "\t\t\t\t<div class=\"post\">\n";
 			echo BBCode2Html(printReady($postInfo['message']))."\n";
 			if ($postInfo['timesEdited']) { echo "\t\t\t\t\t".'<div class="editInfoDiv">Last edited '.date('F j, Y g:i a', $postInfo['lastEdit']).', a total of '.$postInfo['timesEdited'].' time'.(($postInfo['timesEdited'] > 1)?'s':'')."</div>\n"; }
@@ -274,7 +271,7 @@
 				<option value="sticky"><?=ucwords($sticky)?> Thread</option>
 				<option value="move">Move Thread</option>
 			</select>
-			<button type="submit" name="go" class="btn_text">Go</button>
+			<button type="submit" name="go">Go</button>
 		</form>
 		<br class="clear">
 <?
@@ -283,12 +280,15 @@
 	if ($permissions['write'] && $userID != 0 && !$threadInfo['locked']) {
 ?>
 		<form method="post" action="<?=SITEROOT?>/forums/process/post">
-			<h2 class="alignCenter">Quick Reply:</h2>
+			<h2 class="headerbar hbDark">Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
 			<input type="hidden" name="title" value="Re: <?=$threadInfo['title']?>">
 			<textarea id="messageTextArea" name="message"></textarea>
 			
-			<div id="submitDiv" class="alignCenter"><button type="submit" name="post" class="btn_post"></button><button type="submit" name="advanced" class="btn_advanced"></button></div>
+			<div id="submitDiv" class="alignCenter">
+				<div class="fancyButton"><button type="submit" name="post">Post</button></div>
+				<div class="fancyButton"><button type="submit" name="advanced">Advanced</button></div>
+			</div>
 		</form>
 <?
 	} elseif ($threadInfo['locked']) echo "\t\t\t<h2>Thread locked</h2>\n";

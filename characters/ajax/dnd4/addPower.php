@@ -1,16 +1,23 @@
 <?
 	if (checkLogin(0)) {
+		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = {$_SESSION['userID']}");
+		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
 		if ($charCheck->rowCount()) {
-			$name = sanatizeString(preg_replace('/\s+/', ' ', strtolower($_POST['name'])));
-			$powerType = sanatizeString($_POST['type']);
-			$addPower = $mysql->query("INSERT INTO dnd4_powers (characterID, name, type) VALUES ($characterID, '$name', '$powerType')");
-			if ($addPower->getResult()) {
-				echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $name)."\" class=\"power\">\n";
-				echo "\t\t\t\t\t\t<span class=\"power_name\">".mb_convert_case($name, MB_CASE_TITLE)."</span>\n";
-				echo "\t\t\t\t\t\t<input type=\"image\" name=\"removePower_".str_replace(' ', '_', $name)."\" src=\"".SITEROOT."/images/cross.jpg\" value=\"{$name}\" class=\"power_remove lrBuffer\">\n";
-				echo "\t\t\t\t\t</div>\n";
+			$name = sanitizeString($_POST['name'], 'rem_dup_spaces');
+			$type = in_array($_POST['type'], array('a', 'e', 'd'));
+			$checkDup = $mysql->prepare('SELECT powerID FROM dnd4_powers WHERE characterID = '.$characterID.' AND LOWER(name) = :name');
+			$checkDup->execute(array(':name' => strtolower($name)));
+			if ($checkDup->rowCount()) {
+				echo 'Exists'
+			} else {
+				$addPower = $mysql->prepare("INSERT INTO dnd4_powers (characterID, name, type) VALUES ($characterID, :name, :type)");
+				$addPower->execute(array(':name' => $name, ':type' => $type));
+				if ($addPower->getResult()) {
+					$powerInfo['powerID'] = $mysql->lastInsertId;
+					$powerInfo['name'] = $name;
+					powerFormFormat($powerInfo);
+				}
 			}
 		}
 	}

@@ -3,129 +3,136 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#page_characterSheet_deadlands_edit #nameDiv label, #page_characterSheet_deadlands_sheet #nameDiv label {
+#nameDiv label {
 	display: block;
 	float: left;
-	width: 150px;
+	width: 70px;
 	text-align: right;
 	margin-right: 10px;
 }
 
-#page_characterSheet_deadlands_edit .triCol, #page_characterSheet_deadlands_sheet .triCol {
+#nameDiv input {
+	width: 200px;
+}
+
+.triCol {
 	float: left;
-	width: 290px;
-	margin-right: 20px;
-	margin-top: 1em;
+	width: 306px;
+	margin-right: 16px;
 }
 
-#page_characterSheet_deadlands_edit .lastTriCol, #page_characterSheet_deadlands_sheet .lastTriCol {
-	float: none;
+.lastTriCol {
 	margin-right: 0;
-	margin-left: 620px;
 }
 
-#page_characterSheet_deadlands_edit textarea {
-	width: 282px;
+.editCharacter textarea {
+	width: 100%;
 	height: 6.2em;
 }
 
-#page_characterSheet_deadlands_edit .triCol h3, #page_characterSheet_deadlands_sheet .triCol h3 {
+.triCol h3 {
 	text-decoration: none;
 }
 
-#page_characterSheet_deadlands_edit .triCol .statDiv, #page_characterSheet_deadlands_sheet .triCol .statDiv {
+.statDiv {
 	position: relative;
-	margin-top: 1.5em;
+	margin-top: .75em;
+	padding-top: .75em;
 }
 
-#page_characterSheet_deadlands_edit .triCol .firstStatDiv, #page_characterSheet_deadlands_sheet .triCol .firstStatDiv {
+#page_characterSheet_deadlands_sheet .statDiv {
+	border-top: 1px solid #AAA;
+}
+
+.firstStatDiv {
 	margin-top: 0;
+	padding-top: 0;
 }
 
-#page_characterSheet_deadlands_edit .triCol .statDiv h3, #page_characterSheet_deadlands_sheet .triCol .statDiv h3 {
-	display: inline;
+#page_characterSheet_deadlands_sheet .firstStatDiv {
+	border-top: none;
 }
 
-#page_characterSheet_deadlands_edit .triCol .statDiv input {
+.editCharacter .statDiv input {
 	width: 30px;
 	text-align: center;
 }
 
-#page_characterSheet_deadlands_edit .triCol .skillTitle, #page_characterSheet_deadlands_sheet .triCol .skillTitle {
+.triCol .skillTitle {
 	margin-top: .75em;
 }
 
-#page_characterSheet_deadlands_edit #edge_hind {
+.editCharacter #edge_hind {
 	height: 20em;
 }
 
-#page_characterSheet_deadlands_edit #nightmare {
+.editCharacter #nightmare {
 	height: 12.4em;
 }
 
-#page_characterSheet_deadlands_edit #woundsDiv .indivWoundDiv, #page_characterSheet_deadlands_sheet #woundsDiv .indivWoundDiv {
+#woundsDiv .indivWoundDiv {
+	margin-bottom: .5em;
 	text-align: center;
 }
 
-#page_characterSheet_deadlands_edit #woundsDiv h3, #page_characterSheet_deadlands_sheet #woundsDiv h3 {
+#woundsDiv h3 {
 	margin: .5em 0;
 }
 
-#page_characterSheet_deadlands_edit #woundsDiv .indivWoundDiv input {
+#woundsDiv .indivWoundDiv input {
 	width: 60px;
 	text-align: center;
 }
 
-#page_characterSheet_deadlands_edit #woundsDiv .subTwoCol, #page_characterSheet_deadlands_sheet #woundsDiv .subTwoCol {
-	width: 140px;
+#woundsDiv .subTwoCol {
+	width: 153px;
 	float: left;
 }
 
-#page_characterSheet_deadlands_edit #windDiv, #page_characterSheet_deadlands_sheet #windDiv {
-	margin-top: 70px;
+#windDiv {
+	margin-top: .5em;
+	text-align: center;
 }
 
-#page_characterSheet_deadlands_edit #windDiv h3, #page_characterSheet_deadlands_sheet #windDiv h3 {
+#windDiv h3 {
 	display: inline;
 	margin-right: 10px;
 }
 
-#page_characterSheet_deadlands_edit #windDiv input {
+#windDiv input {
 	width: 30px;
 	text-align: center;
 }
 
-#page_characterSheet_deadlands_edit .twoCol, #page_characterSheet_deadlands_sheet .twoCol {
+.twoCol {
 	float: left;
-	width: 450px;
+	width: 465px;
 	margin-right: 20px;
 }
 
-#page_characterSheet_deadlands_edit .lastTwoCol, #page_characterSheet_deadlands_sheet .lastTwoCol {
-	float: none;
-	margin-left: 470px;
+.lastTwoCol {
+	margin-right: 0;
 }
 
-#page_characterSheet_deadlands_edit .leftTitle, #page_characterSheet_deadlands_sheet .leftTitle {
+.leftTitle {
 	text-align: left;
 	margin-top: 1.5em;
 }
 
-#page_characterSheet_deadlands_edit #weapons, #page_characterSheet_deadlands_edit #arcane, #page_characterSheet_deadlands_edit #equipment {
-	width: 442px;
+.editCharacter #weapons, .editCharacter #arcane, .editCharacter #equipment {
 	height: 10em;
 }
 
-#page_characterSheet_deadlands_edit #equipment {
-	height: 24.2em;
+.editCharacter #equipment {
+	height: 25.4em;
 }
 
-#page_characterSheet_deadlands_edit #notes {
+.editCharacter #notes {
 	height: 24.8em;
 	width: 912px;
 }
 
-#page_characterSheet_deadlands_edit #submitDiv {
+.editCharacter #submitDiv {
 	clear: both;
 	text-align: center;
 	margin-top: 1em;

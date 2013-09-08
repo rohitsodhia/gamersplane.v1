@@ -1,11 +1,12 @@
 <?
 	if (checkLogin(0)) {
-		$search = sanatizeString(preg_replace('/\s+/', ' ', strtolower($_POST['search'])));
+		$search = sanitizeString($_POST['search'], 'like_clean', 'search_format');
 		$characterID = intval($_POST['characterID']);
 		
-		$powers = $mysql->query("SELECT powers.name FROM (SELECT name FROM dnd4_powers GROUP BY name) powers LEFT JOIN (SELECT characterID, name FROM dnd4_powers WHERE characterID = $characterID) charPowers  USING (name) WHERE powers.name LIKE '%$search%' AND charPowers.characterID IS NULL ORDER BY powers.name LIMIT 5");
+		$powers = $mysql->prepare("SELECT pl.powerID, pl.name FROM dnd4_powersList pl LEFT JOIN dnd4_powers cp ON pl.powerID = cp.powerID AND cp.characterID = $characterID WHERE pl.searchName LIKE ? AND cp.characterID IS NULL ORDER BY pl.name LIMIT 5");
+		$powers->execute(array("%$search%"));
 		foreach ($powers as $info) {
-			echo "<a href=\"\">".mb_convert_case($info['name'], MB_CASE_TITLE)."</a>\n";
+			echo "<a href=\"\">{$info['name']}</a>\n";
 		}
 	}
 ?>

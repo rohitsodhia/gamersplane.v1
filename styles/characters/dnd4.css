@@ -3,110 +3,84 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-
-#page_characterSheet_dnd4_edit .cell, #page_characterSheet_dnd4_sheet .cell {
+.cell {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_sheet .total {
+.viewCharacter .total {
 	font-weight: bold;
 }
 
-#page_characterSheet_dnd4_edit h2 img, #page_characterSheet_dnd4_sheet h2 img {
+h2 img {
 	margin-bottom: 1em;
 }
 
-#page_characterSheet_dnd4_sheet #editCharLink  {
-	margin-bottom: 1.5em;
-}
-
-#page_characterSheet_dnd4_edit .labelTR label, #page_characterSheet_dnd4_sheet .labelTR label {
+.labelTR label {
 	font-size: .8em;
 }
 
-#page_characterSheet_dnd4_edit label, #page_characterSheet_dnd4_sheet label {
+label {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_edit label.shiftRight, #page_characterSheet_dnd4_sheet label.shiftRight {
+label.shiftRight {
 	padding-left: 8px;
 }
 
-#page_characterSheet_dnd4_edit input[type="text"] {
-	width: 32px;
+input[type="text"] {
+	width: 40px;
 	text-align: center;
 }
 
-#page_characterSheet_dnd4_edit .shortText, #page_characterSheet_dnd4_sheet .shortText {
+.shortText, input.shortText {
 	width: 100px;
+	text-align: left;
 }
 
-#page_characterSheet_dnd4_edit input.shortText, #page_characterSheet_dnd4_sheet input.shortText {
-	width: 92px;
-}
-
-#page_characterSheet_dnd4_edit .medText, #page_characterSheet_dnd4_sheet .medText {
-	width: 200px;
-}
-
-#page_characterSheet_dnd4_edit input.medText, #page_characterSheet_dnd4_sheet input.medText {
+.medText, input.medText {
 	width: 200px;
 	text-align: left;
 }
 
-#page_characterSheet_dnd4_edit .longText, #page_characterSheet_dnd4_sheet .longText {
+.longText, input.longText {
 	width: 350px;
-}
-
-#page_characterSheet_dnd4_edit input.longText, #page_characterSheet_dnd4_sheet input.longText {
-	width: 342px;
 	text-align: left;
 }
 
-#page_characterSheet_dnd4_edit .shortNum, #page_characterSheet_dnd4_sheet .shortNum {
+.shortNum, input.shortNum {
 	width: 40px;
 }
 
-#page_characterSheet_dnd4_edit input.shortNum, #page_characterSheet_dnd4_sheet input.shortNum {
-	width: 32px;
-	text-align: center;
-}
-
-#page_characterSheet_dnd4_edit .medNum, #page_characterSheet_dnd4_sheet .medNum {
+.medNum, input.medNum {
 	width: 60px;
 }
 
-#page_characterSheet_dnd4_edit input.medNum, #page_characterSheet_dnd4_sheet input.medNum {
-	width: 52px;
-	text-align: center;
-}
-
-#page_characterSheet_dnd4_edit label.leftLabel, #page_characterSheet_dnd4_sheet label.leftLabel {
+label.leftLabel {
 	font-size: 1em;
 }
 
-#page_characterSheet_dnd4_edit .lrBuffer, #page_characterSheet_dnd4_sheet .lrBuffer {
+.lrBuffer {
 	margin-right: 5px;
 	margin-left: 5px;
 }
 
-#page_characterSheet_dnd4_edit .labelTR {
+.editCharacter .labelTR {
 	padding-bottom: 0;
 }
 
-#page_characterSheet_dnd4_sheet .labelTR {
+.viewCharacter .labelTR {
 	padding: 0;
 }
 
-#page_characterSheet_dnd4_sheet .dataTR {
+.viewCharacter .dataTR {
 	margin-bottom: 1em;
 }
 
-#page_characterSheet_dnd4_sheet .dataTR > div {
+.viewCharacter .dataTR > div {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_edit #label label {
+.editCharacter #label label {
 	float: left;
 	text-align: right;
 	margin-right: 15px;
@@ -114,403 +88,312 @@
 	font-size: 1em;
 }
 
-#page_characterSheet_dnd4_edit #label div {
+.editCharacter #label div {
 	width: 200px;
 	text-align: right;
 	font-size: .8em;
 }
 
-#page_characterSheet_dnd4_edit #size {
+.editCharacter #size {
 	width: 65px;
 	text-align: center;
 }
 
-f#page_characterSheet_dnd4_edit #levels {
+.editCharacter #levels {
 	width: 75px;
 }
 
-#page_characterSheet_dnd4_edit #stats, #page_characterSheet_dnd4_sheet #stats {
+#stats {
 	margin: 1.5em 0 .5em;
 	float: left;
 }
 
-#page_characterSheet_dnd4_sheet #stats {
+.viewCharacter #stats {
 	margin-top: 0;
 }
 
-#page_characterSheet_dnd4_sheet #stats .dataTR {
+.viewCharacter #stats .dataTR {
 	margin-bottom: 0;
 }
 
-#page_characterSheet_dnd4_edit #stats .tr div {
+.editCharacter #stats .tr div {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_sheet #stats .stat {
+.viewCharacter #stats .stat {
 	border-right: 1px solid #555;
 	border-left: 1px solid #555;
 }
 
-#page_characterSheet_dnd4_sheet #stats .labelTR .stat {
+.viewCharacter #stats .labelTR .stat {
 	border-right: 1px solid #000;
 	border-left: 1px solid #000;
 }
 
-#page_characterSheet_dnd4_edit #saves, #page_characterSheet_dnd4_edit #init, #page_characterSheet_dnd4_sheet #saves, #page_characterSheet_dnd4_sheet #init {
-	margin: 1.5em 0 0 400px;
+#saves, #init {
+	float: left;
+	margin: 1.5em 0 0 70px;
 }
 
-#page_characterSheet_dnd4_sheet #saves {
+.viewCharacter #saves {
 	margin-top: 0;
 }
 
-#page_characterSheet_dnd4_sheet #saves .dataTR {
+.viewCharacter #saves .dataTR {
 	margin-bottom: 0;
 }
 
-#page_characterSheet_dnd4_edit #saves .labelTR label, #page_characterSheet_dnd4_sheet #saves .labelTR label {
+#saves .labelTR label {
 	text-align: center;
 }
 
-#page_characterSheet_dnd4_edit #saves label.first {
+#saves label.first {
 	margin-left: 85px;
 }
 
-#page_characterSheet_dnd4_sheet #saves label.first {
-	margin-left: 85px;
-}
-
-#page_characterSheet_dnd4_edit #saves label.leftLabel, #page_characterSheet_dnd4_sheet #saves label.leftLabel {
+#saves label.leftLabel {
 	width: 75px;
 }
 
-#page_characterSheet_dnd4_edit #saves span {
+.editCharacter #saves span {
 	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
 
-#page_characterSheet_dnd4_sheet #saves .dataTR > div {
+.viewCharacter #saves .dataTR > div {
 	text-align: center;
 }
 
-#page_characterSheet_dnd4_edit #init .tr div, #page_characterSheet_dnd4_sheet #init .tr div {
+#init .tr div {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_edit #init .first, #page_characterSheet_dnd4_sheet #init .first {
+#init .first {
 	margin-left: 110px;
 }
 
-#page_characterSheet_dnd4_edit #hpCol, #page_characterSheet_dnd4_edit #combatBonuses {
+.editCharacter #hpCol, .editCharacter #combatBonuses {
 	margin-top: 1.5em;
 }
 
-#page_characterSheet_dnd4_sheet #hpCol, #page_characterSheet_dnd4_sheet #combatBonuses {
+.viewCharacter #hpCol, .viewCharacter #combatBonuses {
 	margin-top: 2.5em;
 }
 
-#page_characterSheet_dnd4_edit #hpCol, #page_characterSheet_dnd4_sheet #hpCol {
+#hpCol {
 	float: left;
 }
 
-#page_characterSheet_dnd4_edit #hp input {
-	width: 52px;
-	text-align: center;
-}
-
-#page_characterSheet_dnd4_edit #movement, #page_characterSheet_dnd4_sheet #movement {
+#movement {
 	margin: 1.5em 0 0 15px;
 }
 
-#page_characterSheet_dnd4_edit #movement label.first, #page_characterSheet_dnd4_sheet #movement label.first {
+#movement label.first {
 	margin-left: 70px;
 }
 
-#page_characterSheet_dnd4_edit #actionPoints, #page_characterSheet_dnd4_sheet #actionPoints {
+#actionPoints {
 	margin: 2.5em 0 0 15px;
 }
 
-#page_characterSheet_dnd4_edit #passiveSenses, #page_characterSheet_dnd4_sheet #passiveSenses {
+#passiveSenses {
 	margin: 2em 0 0 10px;
 }
 
-#page_characterSheet_dnd4_edit #passiveSenses .labelTR label, #page_characterSheet_dnd4_sheet #passiveSenses .labelTR label {
+#passiveSenses .labelTR label {
 	margin-left: 35px;
 }
 
-#page_characterSheet_dnd4_edit #passiveSenses .labelTR label:first-child, #page_characterSheet_dnd4_sheet #passiveSenses .labelTR label:first-child {
+#passiveSenses .labelTR label:first-child {
 	margin-left: 155px;
 }
 
-#page_characterSheet_dnd4_edit #passiveSenses .tr .leftLabel, #page_characterSheet_dnd4_sheet #passiveSenses .tr .leftLabel {
+#passiveSenses .tr .leftLabel {
 	width: 150px;
 }
 
-#page_characterSheet_dnd4_edit #combatBonuses, #page_characterSheet_dnd4_sheet #combatBonuses {
-	margin-left: 405px;
+#combatBonuses {
+	float: left;
+	margin-left: 60px;
 }
 
-#page_characterSheet_dnd4_edit #combatBonuses .attackBonusSet, #page_characterSheet_dnd4_sheet #combatBonuses .attackBonusSet {
+#combatBonuses .attackBonusSet {
 	margin-top: 1em;
 }
 
-#page_characterSheet_dnd4_edit #combatBonuses .attackBonusSet:first-of-type, #page_characterSheet_dnd4_sheet #combatBonuses .attackBonusSet:first-of-type {
+#combatBonuses .attackBonusSet:first-of-type {
 	margin-top: 0;
 }
 
-#page_characterSheet_dnd4_sheet #combatBonuses .tr div {
+.viewCharacter #combatBonuses .tr div {
+	display: inline-block;
+}
+
+#combatBonuses span {
 	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
 
-#page_characterSheet_dnd4_edit #combatBonuses span, #page_characterSheet_dnd4_sheet #combatBonuses span {
-	display: inline-block;
-	width: 40px;
-	text-align: center;
-}
-
-#page_characterSheet_dnd4_edit #combatBonuses .ability, #page_characterSheet_dnd4_sheet #combatBonuses .tr .ability {
-	width: 360px;
+#combatBonuses .ability {
+	width: 366px;
 	text-align: left;
 }
 
-#page_characterSheet_dnd4_edit #skills, #page_characterSheet_dnd4_edit #feats, #page_characterSheet_dnd4_sheet #skills, #page_characterSheet_dnd4_sheet #feats {
+#skills, #feats {
 	margin-top: 1em;
 }
 
-#page_characterSheet_dnd4_edit #powers, #page_characterSheet_dnd4_sheet #powers {
+#powers {
 	margin-top: 2em;
 }
 
-#page_characterSheet_dnd4_edit .textareaDiv, #page_characterSheet_dnd4_sheet .textDiv {
-	width: 450px;
+.editCharacter .textareaDiv, .viewCharacter .textDiv {
+	width: 465px;
 	margin-top: 1em;
 }
 
-#page_characterSheet_dnd4_edit .textareaDiv textarea {
-	width: 442px;
+.editCharacter .textareaDiv textarea {
 	height: 10em;
 }
 
-#page_characterSheet_dnd4_edit h2 a {
+.editCharacter h2 a {
 	font-size: .75em;
 	font-weight: normal;
 	margin-left: 20px;
 }
 
-#page_characterSheet_dnd4_edit #skills, #page_characterSheet_dnd4_sheet #skills {
+#skills {
 	width: 520px;
 }
 
-#page_characterSheet_dnd4_edit #addSkillWrapper {
+#addSkillWrapper {
 	margin: 1em 0;
 	position: relative;
 }
 
-#page_characterSheet_dnd4_edit #addSkillWrapper input {
-	position: absolute;
-	top: 4px;
-	left: 0;
-	color: #666;
+#addSkillWrapper .fancyButton {
+	top: -1px;
+	margin-left: 5px;
+	vertical-align: middle;
 }
 
-#page_characterSheet_dnd4_edit #addSkillWrapper #skillAjaxResults {
-	display: none;
-	position: absolute;
-	top: 27px;
-	left: 0;
-	border: 1px solid #600;
-	width: 206px;
-	background-color: #111;
-}
-
-#page_characterSheet_dnd4_edit #addSkillWrapper #skillAjaxResults a {
-	display: block;
-	padding: 5px;
-	text-align: left;
-}
-
-#page_characterSheet_dnd4_edit #addSkillWrapper #skillAjaxResults a:hover {
-	background-color: #222;
-}
-
-#page_characterSheet_dnd4_edit #addSkillWrapper select{
-	position: absolute;
-	top: 4px;
-	left: 220px;
-}
-
-#page_characterSheet_dnd4_edit #addSkillWrapper button {
-	margin-left: 280px;
-}
-
-#page_characterSheet_dnd4_edit .skill span, #page_characterSheet_dnd4_sheet .skill span {
+.skill span {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_edit .skill .skill_stat, #page_characterSheet_dnd4_sheet .skill .skill_stat {
+.skill .skill_stat {
 	text-transform: smallcaps;
 }
 
-#page_characterSheet_dnd4_edit .skill .skill_total, #page_characterSheet_dnd4_sheet .skill .skill_total {
+.skill .skill_total {
 	text-align: center;
 }
 
-#page_characterSheet_dnd4_edit #feats, #page_characterSheet_dnd4_sheet #feats {
+#feats {
 	width: 390px;
 }
 
-#page_characterSheet_dnd4_edit #addFeatWrapper {
+#addFeatWrapper {
 	margin: 1em 0;
 	position: relative;
 }
 
-#page_characterSheet_dnd4_edit #addFeatWrapper label {
-	position: absolute;
-	top: 4px;
+#addFeatWrapper input {
 }
 
-#page_characterSheet_dnd4_edit #addFeatWrapper input {
-	position: absolute;
-	top: 4px;
-	left: 60px;
+#addFeatWrapper .fancyButton {
+	top: -1px;
+	margin-left: 5px;
+	vertical-align: middle;
 }
 
-#page_characterSheet_dnd4_edit #addFeatWrapper #featAjaxResults {
-	display: none;
-	position: absolute;
-	top: 27px;
-	left: 60px;
-	border: 1px solid #600;
-	width: 206px;
-	background-color: #111;
-}
-
-#page_characterSheet_dnd4_edit #addFeatWrapper #featAjaxResults a {
-	display: block;
-	padding: 5px;
-	text-align: left;
-}
-
-#page_characterSheet_dnd4_edit #addFeatWrapper #featAjaxResults a:hover {
-	background-color: #222;
-}
-
-#page_characterSheet_dnd4_edit #addFeatWrapper button {
-	margin-left: 290px;
-}
-
-#page_characterSheet_dnd4_edit #feats span, #page_characterSheet_dnd4_edit #feats a, #page_characterSheet_dnd4_sheet #feats span, #page_characterSheet_dnd4_sheet #feats a {
+#feats span, #feats a {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_edit .feat_name {
-	width: 300px;
+.editCharacter .feat_name {
+	width: 260px;
 }
 
-#page_characterSheet_dnd4_sheet .feat_name {
+.viewCharacter .feat_name {
 	width: 350px;
 }
 
-#page_characterSheet_dnd4_edit .feat_notesLink, #page_characterSheet_dnd4_sheet .feat_notesLink {
+.feat_notesLink {
 	font-size: .8em;
 }
 
-#page_characterSheet_dnd4_sheet .feat_notes {
-	display: none;
+#powers {
 }
 
-#page_characterSheet_dnd4_edit #powers, #page_characterSheet_dnd4_sheet #powers {
-}
-
-#page_characterSheet_dnd4_edit #addPowerWrapper {
+#addPowerWrapper {
 	margin: 1em 0;
 	position: relative;
 }
 
-#page_characterSheet_dnd4_edit #addPowerWrapper input {
-	position: absolute;
-	top: 4px;
-	left: 0;
-	color: #666;
+#addPowerWrapper input {
 }
 
-#page_characterSheet_dnd4_edit #addPowerWrapper #powerAjaxResults {
-	display: none;
-	position: absolute;
-	top: 27px;
-	left: 0;
-	border: 1px solid #600;
-	width: 206px;
-	background-color: #111;
+#addPowerWrapper select {
 }
 
-#page_characterSheet_dnd4_edit #addPowerWrapper #powerAjaxResults a {
-	display: block;
-	padding: 5px;
-	text-align: left;
+#addPowerWrapper .fancyButton {
+	top: -1px;
+	margin-left: 5px;
+	vertical-align: middle;
 }
 
-#page_characterSheet_dnd4_edit #addPowerWrapper #powerAjaxResults a:hover {
-	background-color: #222;
-}
-
-#page_characterSheet_dnd4_edit #addPowerWrapper select{
-	position: absolute;
-	top: 4px;
-	left: 220px;
-}
-
-#page_characterSheet_dnd4_edit #addPowerWrapper button {
-	margin-left: 325px;
-}
-
-#page_characterSheet_dnd4_edit .powerCol, #page_characterSheet_dnd4_sheet .powerCol {
+.powerCol {
 	float: left;
-	width: 300px;
-	margin-left: 10px;
+	width: 32.6%;
+	margin-left: 1%;
 }
 
-#page_characterSheet_dnd4_edit .powerCol.first, #page_characterSheet_dnd4_sheet .powerCol.first {
+.powerCol.first {
 	margin-left: 0;
 }
 
-#page_characterSheet_dnd4_edit .powerCol h3, #page_characterSheet_dnd4_sheet .powerCol h3 {
-	font-size: 1.1em;
+.powerCol h3 {
+	font-family: "AgencyFB";
+	font-size: 1.8em;
+	line-height: 1.2em;
 	text-align: center;
 	margin-bottom: .35em;
 	text-decoration: none;
 }
 
-#page_characterSheet_dnd4_edit .power span, #page_characterSheet_dnd4_edit .power a, #page_characterSheet_dnd4_sheet .power span, #page_characterSheet_dnd4_sheet .power a {
+.power span, .power a {
 	display: inline-block;
 }
 
-#page_characterSheet_dnd4_edit .power .power_name, #page_characterSheet_dnd4_sheet .power .power_name {
-	width: 255px;
+.power .power_name {
+	width: 250px;
 }
 
-#page_characterSheet_dnd4_edit #items, #page_characterSheet_dnd4_sheet #items {
-	margin-top: 1.5em;
-}
-
-#page_characterSheet_dnd4_edit #items textarea {
-	width: 912px;
+#items textarea {
+	width: 100%;
 	height: 12.4em;
 }
 
-#page_characterSheet_dnd4_edit #notes, #page_characterSheet_dnd4_sheet #notes {
-	margin-top: 1.5em;
-}
-
-#page_characterSheet_dnd4_edit #notes textarea {
-	width: 912px;
+#notes textarea {
+	width: 100%;
 	height: 16.2em;
 }
 
-#page_characterSheet_dnd4_edit #submitDiv {
+#submitDiv {
 	text-align: center;
 	margin-top: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_dnd4_editFeatNotes {
+    text-align: center;
+}
+
+#page_characterSheet_dnd4_editFeatNotes textarea {
+    width: 450px;
+    height: 8em;
 }

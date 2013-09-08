@@ -12,7 +12,7 @@
 ?>
 		</ul></div>
 <? } ?>
-		<h1>Reset Password</h1>
+		<h1 class="headerbar">Reset Password</h1>
 		
 		<form method="post" action="<?=SITEROOT?>/login/process/resetPass">
 			<div class="tr">
@@ -25,14 +25,22 @@
 			</div>
 			<div class="tr">
 				<label class="textLabel">New Password:</label>
-				<input type="password" name="pass1" maxlength="16">
+				<input id="password1" type="password" name="pass1" maxlength="32">
+				<div class="alert">
+					<div id="passBlank" class="<?=(isset($errors['passBlank'])?'showDiv':'hideDiv')?>">Password cannot be blank</div>
+					<div id="passShort" class="<?=(isset($errors['passShort'])?'showDiv':'hideDiv')?>">Password too short</div>
+					<div id="passLong" class="<?=(isset($errors['passLong'])?'showDiv':'hideDiv')?>">Password too long</div>
+				</div>
 			</div>
-			<div class="notice">Password must be between 6 and 16 characters long</div>
+			<div class="notice">Password must be between 6 and 32 characters long</div>
 			<div class="tr">
 				<label class="textLabel">Repeat New Password:</label>
-				<input type="password" name="pass2" maxlength="16">
+				<input id="password2" type="password" name="pass2" maxlength="32">
+				<div class="alert">
+					<div id="passMismatch" class="<?=(isset($errors['passMismatch'])?'showDiv':'hideDiv')?>">Passwords don't match</div>
+				</div>
 			</div>
 			<input type="hidden" name="validationStr" value="<?=$validationStr?>">
-			<div class="alignCenter"><button type="submit" name="submit" value="submit" class="btn_submit"></button></div>
+			<div class="alignCenter"><button type="submit" name="submit" value="submit" class="fancyButton">Submit</button></div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

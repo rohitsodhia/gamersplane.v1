@@ -11,7 +11,7 @@
 	
 //	require_once(FILEROOT.'/blog/wp-blog-header.php');
 //	header_remove('X-Pingback');
-	
+
 	require_once('Mobile_Detect.php');
 	$mobileDetect = new Mobile_Detect();
 ?>

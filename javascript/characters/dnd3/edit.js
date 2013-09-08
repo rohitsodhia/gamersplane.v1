@@ -1,4 +1,13 @@
 $(function() {
+	function updateAC() {
+		var total = 10;
+		$('#ac input.acComponents').each(function () {
+			total += ($(this).val() != '')?parseInt($(this).val()):0;
+		});
+		total += parseInt($('#ac .sizeVal').text());
+		$('#ac_total').text(total);
+	}
+
 	var characterID = parseInt($('#characterID').val());
 	var statBonus = { 'str': parseInt($('#strModifier').text()),
 						'con': parseInt($('#conModifier').text()),
@@ -9,38 +18,33 @@ $(function() {
 						
 	$('#size').blur(function() {
 		size = parseInt($(this).val());
-		$('.sizeVal').text(size);
+		$('.sizeVal').text(showSign(size));
+		updateAC();
+		updateCombatBonuses();
 	});
 	$('.stat').blur(function() {
 		modifier = Math.floor(($(this).val() - 10)/2);
 		change = modifier - statBonus[this.id];
-		if ($(this).val() == '') { modifier = 0; }
-		else if (modifier > 0) { modifier = '+' + modifier; }
+		if ($(this).val() == '') modifier = 0;
+		else if (modifier >= 0) modifier = '+' + modifier;
 		$('#' + this.id + 'Modifier').text(modifier);
 		$('.statBonus_' + this.id).text(modifier);
 		$('.addStat_' + this.id).each(function () { $(this).text(showSign(parseInt($(this).text()) + change)); });
 		
 		if (this.id == 'str') { updateCombatBonuses(); }
-		else if (this.id == 'dex') { updateSaves('ref', 'dnd3'); updateCombatBonuses('dex'); }
-		else if (this.id == 'con') { updateSaves('fort', 'dnd3'); }
-		else if (this.id == 'wis') { updateSaves('will', 'dnd3'); }
+		else if (this.id == 'dex') { updateSaves('ref'); updateCombatBonuses('dex'); }
+		else if (this.id == 'con') { updateSaves('fort'); }
+		else if (this.id == 'wis') { updateSaves('will'); }
 		
 		statBonus[this.id] = modifier;
 	});
 	
-	$('#savingThrows input').blur(function () { updateSaves($(this).attr('name'), 'dnd3'); });
-	$('#ac input.acComponents').blur(function () {
-		var total = 10;
-		$('#ac input.acComponents').each(function () {
-			total += ($(this).val() != '')?parseInt($(this).val()):0;
-		});
-		total += parseInt($('#ac .sizeVal').text());
-		$('#ac input.first').val(total);
-	});
+	$('#savingThrows input').blur(function () { updateSaves($(this).attr('name')); });
+	$('#ac input.acComponents').blur(function () { updateAC(); });
 	$('#combatBonuses input').blur(updateCombatBonuses);
 	$('#bab').blur(function () { $('.bab').text(showSign($(this).val())); });
 	
-	$('#skillName').focus(function () {
+/*	$('#skillName').focus(function () {
 		if ($(this).val() == 'Skill Name') $(this).val('').css('color', '#FFF');
 		if ($('#skillAjaxResults a').size() > 1 && $(this).val() >= 3) $('#skillAjaxResults').slideDown();
 	}).blur(function () {
@@ -60,53 +64,51 @@ $(function() {
 		}); } else $('#skillAjaxResults').slideUp();
 	}).keypress(function (event) {
 		if (event.which == 13) return false;
-	});
+	});*/
+
+	$('#skillName').autocomplete('/characters/ajax/skillSearch', { search: $('#skillName').val(), characterID: characterID, system: 'dnd3' });
 	
-	function removeSkill () {
+	$('#addSkill').click(function (e) {
+		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
+			$.post(SITEROOT + '/characters/ajax/dnd3/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
+				if ($('#noSkills').size()) $('#noSkills').remove();
+				$(data).hide().appendTo('#skills .hbMargined').slideDown();
+				$('#skillName').val('').trigger('blur');
+			});
+		}
+		
+		e.preventDefault()
+	});
+	$('#skills').on('click', '.skill_remove', function (e) {
 		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/dnd3/removeSkill', { characterID: $('#characterID').val(), skillID: skillID }, function (data) {
+		$.post(SITEROOT + '/characters/ajax/dnd3/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
-				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills').slideDown();
+				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills .hbMargined').slideDown();
 			}); }
 		});
 		
-		return false;
-	}
-	
-	function updateSkill() {
+		e.preventDefault()
+	}).on('change', '.skill input', function () {
 		var stat = $(this).parent().find('.skill_total').attr('class').match(/addStat_(\w{3})/)[1];
 		var total = statBonus[stat];
 		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { total += parseInt($(this).val()); });
 		$(this).parent().find('.skill_total').text(showSign(total));
-	}
-	
-	$('#addSkill').click(function () {
-		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') { $.post(SITEROOT + '/characters/ajax/dnd3/addSkill', { characterID: $('#characterID').val(), name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
-			if ($('#noSkills').size()) $('#noSkills').remove();
-			$(data).change(updateSkill).hide().appendTo('#skills').slideDown().find('.skill_remove').click(removeSkill);
-			$('#skillName').val('Skill Name').css('color', '#666');
-		}); }
-		
-		return false;
 	});
-	$('.skill_remove').click(removeSkill);
-	$('.skill input').change(updateSkill);
 	
-	function removeFeat() {
+	function removeFeat(e) {
 		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/dnd3/removeFeat', { characterID: $('#characterID').val(), featID: featID }, function (data) {
+		$.post(SITEROOT + '/characters/ajax/dnd3/removeFeat', { characterID: characterID, featID: featID }, function (data) {
 			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
 				$(this).remove();
-				if ($('.feat').size() == 0) $('<p id=\"noFeats\">This character currently has no feats/abilities.</p>').hide().appendTo('#feats').slideDown();
+				if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbMargined').slideDown();
 			}); }
 		});
 		
-		return false;
+		e.preventDefault()
 	}
-	$('.feat_remove').click(removeFeat);
 	
-	$('#featName').focus(function () {
+/*	$('#featName').focus(function () {
 		if ($('#featAjaxResults a').size() > 1 && $(this).val() >= 3) $('#featAjaxResults').slideDown();
 	}).blur(function () {
 		$('#featAjaxResults').slideUp();
@@ -124,30 +126,39 @@ $(function() {
 		}); } else $('#featAjaxResults').slideUp();
 	}).keypress(function (event) {
 		if (event.which == 13) return false;
+	});*/
+
+	$('#featName').autocomplete('/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'dnd3' });
+	
+	$('#addFeat').click(function (e) {
+		if ($('#featName').val().length >= 3) {
+			$.post(SITEROOT + '/characters/ajax/dnd3/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
+				if ($('#noFeats').size()) $('#noFeats').remove();
+				$(data).hide().appendTo('#feats .hbMargined').slideDown();
+				$('#featName').val('').trigger('blur');
+			});
+		}
+		
+		e.preventDefault()
+	});
+	$('.feat_notesLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerHeight: 100, innerWidth: 500 });
+	$('#feats').on('click', '.feat_remove', removeFeat);
+	
+	$('#addWeapon').click(function (e) {
+		$.post(SITEROOT + '/characters/ajax/dnd3/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+		
+		e.preventDefault()
 	});
 	
-	$('#addFeat').click(function () {
-		if ($('#featName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/dnd3/addFeat', { characterID: $('#characterID').val(), name: $('#featName').val() }, function (data) {
-			if ($('#noFeats').size()) $('#noFeats').remove();
-			$(data).hide().appendTo('#feats').slideDown().find('.feat_remove').click(removeFeat);
-			$('#featName').val('');
-		}); }
+	$('#addArmor').click(function (e) {
+		$.post(SITEROOT + '/characters/ajax/dnd3/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
 		
-		return false;
+		e.preventDefault()
 	});
-	$('.feat_notesLink').colorbox({ iframe: true, height: 250, width: 500 });
-	
-	$('#addWeapon').click(function () {
-		var weaponNum = $('.weapon').size() + 1;
-		$.get(SITEROOT + '/characters/ajax/dnd3/weapon', function (data) { $(data.replace(/weaponNum/g, weaponNum )).hide().appendTo('#weapons').slideDown(); } );
-		
-		return false;
-	});
-	
-	$('#addArmor').click(function () {
-		var armorNum = $('.armor').size() + 1;
-		$.get(SITEROOT + '/characters/ajax/dnd3/armor', function (data) { $(data.replace(/armorNum/g, armorNum)).hide().appendTo('#armor').slideDown(); } );
-		
-		return false;
+
+	$('#weapons, #armor').on('click', '.remove', function (e) {
+		$(this).parent().parent().remove();
+
+		e.preventDefault()
 	});
 });

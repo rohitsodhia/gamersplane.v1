@@ -7,13 +7,12 @@
 	$gameInfo = $gameInfo->fetch();
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1><?=$gameInfo['open']?'Close':'Open'?> Game</h1>
+		<h1 class="headerbar"><?=$gameInfo['open']?'Close':'Open'?> Game</h1>
 		
-		<p class="alignCenter">Are you sure you want to <?=$gameInfo['open']?'close':'open'?> <a href="<?=SITEROOT.'/games/'.$gameID?>"><?=$gameInfo['title']?></a>?</p>
+		<p class="alignCenter">Are you sure you want to <?=$gameInfo['open']?'close':'open'?> <strong><?=$gameInfo['title']?></strong>?</p>
 		
 		<form method="post" action="<?=SITEROOT?>/games/process/changeStatus/" class="cbf_basic buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
-			<button type="submit" name="<?=$gameInfo['open']?'close':'open'?>" class="btn_<?=$gameInfo['open']?'close':'open'?>"></button>
-<!--			<button type="submit" name="cancel" class="btn_cancel"></button>-->
+			<div class="fancyButton"><button type="submit" name="<?=$gameInfo['open']?'close':'open'?>"><?=$gameInfo['open']?'Close':'Open'?></button></div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

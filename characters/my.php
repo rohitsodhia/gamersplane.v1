@@ -11,7 +11,7 @@
 	unset($_SESSION['characterID'], $_SESSION['stepDone']);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>My Characters</h1>
+		<h1 class="headerbar">My Characters</h1>
 		
 <? if (isset($_GET['invalidType']) || isset($_GET['invalidLabel'])) { ?>
 		<div class="alertBox_error"><ul>
@@ -29,11 +29,12 @@
 		</ul></div>
 <? } ?>
 		<div id="characterList">
-			<h3>My Characters</h3>
+			<h2 class="headerbar hbDark">My Characters</h2>
 <?
 	$characters = $mysql->query('SELECT characters.*, systems.shortName, systems.fullName FROM characters, systems WHERE characters.systemID = systems.systemID AND characters.userID = '.intval($_SESSION['userID']).' ORDER BY systems.fullName, characters.label');
 	
 	$currentSystem = '';
+	$noItems = FALSE;
 	if ($characters->rowCount()) { foreach ($characters as $info) {
 		echo "\t\t\t<div id=\"char_{$info['characterID']}\" class=\"tr\">\n";
 		echo "\t\t\t\t".'<a href="'.SITEROOT.'/characters/'.$info['shortName'].'/'.$info['characterID'].'" class="charLabel">'.$info['label']."</a>\n";
@@ -43,12 +44,13 @@
 		echo '<a href="'.SITEROOT.'/characters/delete/'.$info['characterID'].'" class="deleteChar">Delete Character</a>';
 		echo "</div>\n";
 		echo "\t\t\t</div>\n";
-	} } else { echo "\t\t\t".'<h2>It seems you don\'t have any characters yet. You might wanna get started!</h2>'."\n"; }
+	} } else $noItems = TRUE;
+	echo "\t\t\t".'<div class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any characters yet. You might wanna get started!</div>'."\n";
 ?>
 		</div>
 		
 		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
-			<h3>Create New Character</h3>
+			<h2 class="headerbar hbDark">Create New Character</h2>
 			<div class="tr">
 				<label class="textLabel">Label</label>
 				<input type="text" name="label" maxlength="50">
@@ -66,6 +68,6 @@
 					<option value="1">Custom</option>
 				</select>
 			</div>
-			<div class="tr"><button type="submit" name="create" class="btn_create"></button></div>
+			<div class="tr"><div class="fancyButton"><button type="submit" name="create">Create</button></div></div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

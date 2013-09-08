@@ -4,102 +4,74 @@
 */
 
 
-#page_characterSheet_spycraft2_edit h2 img, #page_characterSheet_spycraft2_sheet h2 img {
-	margin-bottom: 1em;
-}
-
-#page_characterSheet_spycraft2_edit .cell, #page_characterSheet_spycraft2_sheet .cell {
+.cell {
 	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_sheet #editCharLink  {
-	margin-bottom: 1.5em;
-}
-
-#page_characterSheet_spycraft2_edit label, #page_characterSheet_spycraft2_sheet label {
+label {
 	font-size: .8em;
 	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_edit label.shiftRight, #page_characterSheet_spycraft2_sheet label.shiftRight {
+label.shiftRight {
 	padding-left: 8px;
 }
 
-#page_characterSheet_spycraft2_edit input[type="text"] {
-	width: 32px;
+input[type="text"] {
+	width: 40px;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit .shortText, #page_characterSheet_spycraft2_sheet .shortText {
+.shortText, input.shortText {
 	width: 100px;
 }
 
-#page_characterSheet_spycraft2_edit input.shortText, #page_characterSheet_spycraft2_sheet input.shortText {
-	width: 92px;
-}
-
-#page_characterSheet_spycraft2_edit .medText, #page_characterSheet_spycraft2_sheet .medText {
+.medText, input.medText {
 	width: 200px;
 }
 
-#page_characterSheet_spycraft2_edit input.medText, #page_characterSheet_spycraft2_sheet input.medText {
-	width: 200px;
-	text-align: left;
-}
-
-#page_characterSheet_spycraft2_edit .longText, #page_characterSheet_spycraft2_sheet .longText {
+.longText, input.longText {
 	width: 350px;
 }
 
-#page_characterSheet_spycraft2_edit input.longText, #page_characterSheet_spycraft2_sheet input.longText {
-	width: 342px;
+input.shortText, input.medText, input.longText {
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_edit .shortNum, #page_characterSheet_spycraft2_sheet .shortNum {
+.shortNum, input.shortNum {
 	width: 40px;
 }
 
-#page_characterSheet_spycraft2_edit input.shortNum, #page_characterSheet_spycraft2_sheet input.shortNum {
-	width: 32px;
-	text-align: center;
-}
-
-#page_characterSheet_spycraft2_edit .medNum, #page_characterSheet_spycraft2_sheet .medNum {
+.medNum, input.medNum {
 	width: 60px;
 }
 
-#page_characterSheet_spycraft2_edit input.medNum, #page_characterSheet_spycraft2_sheet input.medNum {
-	width: 52px;
-	text-align: center;
-}
-
-#page_characterSheet_spycraft2_edit label.leftLabel, #page_characterSheet_spycraft2_sheet label.leftLabel {
+label.leftLabel {
 	font-size: 1em;
 }
 
-#page_characterSheet_spycraft2_edit .lrBuffer, #page_characterSheet_spycraft2_sheet .lrBuffer {
+.lrBuffer {
 	margin-right: 10px;
 	margin-left: 10px;
 }
 
-#page_characterSheet_spycraft2_edit .labelTR {
+.editCharacter .labelTR {
 	padding-bottom: 0;
 }
 
-#page_characterSheet_spycraft2_sheet .labelTR {
+.viewCharacter .labelTR {
 	padding: 0;
 }
 
-#page_characterSheet_spycraft2_sheet .dataTR {
+.viewCharacter .dataTR.gapBelow {
 	margin-bottom: 1em;
 }
 
-#page_characterSheet_spycraft2_sheet .dataTR > div {
+.viewCharacter .dataTR > div {
 	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_edit #label label {
+.editCharacter #label label {
 	float: left;
 	text-align: right;
 	margin-right: 15px;
@@ -107,607 +79,388 @@
 	font-size: 1em;
 }
 
-#page_characterSheet_spycraft2_edit #label div {
+.editCharacter #label div {
 	width: 200px;
 	text-align: right;
 	font-size: .8em;
 }
 
-#page_characterSheet_spycraft2_edit #size {
+.editCharacter #size {
 	width: 65px;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #classes {
+.editCharacter #classes {
 	width: 350px;
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_edit #department {
+.editCharacter #department {
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_edit #stats, #page_characterSheet_spycraft2_sheet #stats {
+#stats, #savingThrows, #hp, #ac {
 	margin: 1.5em 0 .5em;
 	float: left;
 }
 
-#page_characterSheet_spycraft2_sheet #stats {
-	margin-top: 0;
+#stats {
+	margin-top: 2em;
 }
 
-#page_characterSheet_spycraft2_sheet #stats .dataTR {
-	margin-bottom: 0;
-}
-
-#page_characterSheet_spycraft2_edit #stats input, #page_characterSheet_spycraft2_sheet #stats .stat {
-	width: 30px;
-	text-align: center;
-}
-
-#page_characterSheet_spycraft2_sheet #stats .stat {
+.viewCharacter #stats .stat {
 	border-right: 1px solid #555;
 	border-left: 1px solid #555;
 }
 
-#page_characterSheet_spycraft2_edit #stats span, #page_characterSheet_spycraft2_sheet #stats span {
+#stats div.stat, #stats span {
 	display: inline-block;
-	width: 30px;
-	text-align: center;
-}
-
-#page_characterSheet_spycraft2_sheet #stats .stat, #page_characterSheet_spycraft2_sheet #stats span {
 	width: 40px;
-}
-
-#page_characterSheet_spycraft2_edit #savingThrows, #page_characterSheet_spycraft2_edit #hp {
-	float: left;
-	margin: 1.5em 0 1em 40px;
-}
-
-#page_characterSheet_spycraft2_sheet #savingThrows, #page_characterSheet_spycraft2_sheet #hp {
-	float: left;
-	margin: 0 0 1em 40px;
-}
-
-#page_characterSheet_spycraft2_sheet #savingThrows .dataTR {
-	margin-bottom: 0;
-}
-
-#page_characterSheet_spycraft2_edit #savingThrows .labelTR label, #page_characterSheet_spycraft2_sheet #savingThrows .labelTR label {
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #savingThrows label.first {
-	margin-left: 90px;
+#savingThrows, #hp, #ac {
+	margin-left: 50px;
 }
 
-#page_characterSheet_spycraft2_sheet #savingThrows label.first {
-	margin-left: 80px;
+#savingThrows .labelTR div {
+	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_edit #savingThrows label.leftLabel, #page_characterSheet_spycraft2_sheet #savingThrows label.leftLabel {
+#savingThrows .labelTR label {
+	text-align: center;
+}
+
+#savingThrows .labelTR div, #savingThrows label.leftLabel {
 	width: 75px;
 }
 
-#page_characterSheet_spycraft2_edit #savingThrows span {
+.editCharacter #savingThrows span {
 	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_sheet #savingThrows .dataTR > div {
+.viewCharacter #savingThrows .dataTR > div {
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #hp {
-	margin-top: 2em;
-	margin-left: 45px;
-}
-
-#page_characterSheet_spycraft2_edit #hp label {
+#hp label {
 	width: 80px;
 	margin-right: 10px;
 }
 
-#page_characterSheet_spycraft2_edit #hp input {
+#hp input {
 	margin-right: 20px;
 }
 
-#page_characterSheet_spycraft2_sheet #hp {
-	margin-top: .5em;
-}
-
-#page_characterSheet_spycraft2_sheet #hp .tr label {
+#hp .tr label {
 	display: inline-block;
 	width: 100px;
 }
 
-#page_characterSheet_spycraft2_sheet #hp .tr div {
+.viewCharacter #hp .tr div {
 	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_edit #ac {
-	float: left;
-	margin: 0 0 1em 30px;
-}
-
-#page_characterSheet_spycraft2_sheet #ac {
-	float: left;
-	margin: 10px 0 0 40px;
-}
-
-#page_characterSheet_spycraft2_edit #ac label, #page_characterSheet_spycraft2_sheet #ac label, #page_characterSheet_spycraft2_sheet #ac .dataTR div {
+#ac label, .viewCharacter #ac .dataTR div {
 	text-align: center;
 	width: 60px;
 }
 
-#page_characterSheet_spycraft2_sheet #ac .first {
+.viewCharacter #ac .first {
 	margin-right: 10px;
 }
 
-#page_characterSheet_spycraft2_sheet #ac .labelTR .first {
+.viewCharacter #ac .labelTR .first {
 	margin-right: 75px;
 }
 
-#page_characterSheet_spycraft2_edit #ac .labelTR .first {
+.editCharacter #ac .labelTR .first {
 	margin-right: 65px;
 }
 
-#page_characterSheet_spycraft2_edit #ac #ac_total {
+#ac #ac_total {
 	width: 60px;
 }
 
-#page_characterSheet_spycraft2_sheet #ac .dataTR {
-	margin-bottom: 0;
-}
-
-#page_characterSheet_spycraft2_sheet #ac .dataTR div {
-	text-align: center;
-}
-
-#page_characterSheet_spycraft2_edit #ac span {
+.editCharacter #ac span {
 	display: inline-block;
 	width: 50px;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #ac .sizeVal {
+.editCharacter #ac .sizeVal {
 	width: 40px;
 	margin: 0 10px;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #ac input.first {
+#ac input.first {
 	margin: 0 20px;
 }
 
-#page_characterSheet_spycraft2_edit #combatBonuses, #page_characterSheet_spycraft2_sheet #combatBonuses {
-	margin-top: 1.5em;
+#combatBonuses, #actionDie, #extraStats {
 	float: left;
-	margin-right: 50px;
+	margin-top: 1.5em;
 }
 
-#page_characterSheet_spycraft2_sheet #combatBonuses .dataTR div {
+#combatBonuses .labelTR div, #actionDie .labelTR div {
+	display: inline-block;
+}
+
+.viewCharacter #combatBonuses .dataTR div, #combatBonuses .labelTR label {
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #combatBonuses .labelTR label, #page_characterSheet_spycraft2_sheet #combatBonuses .labelTR label {
-	text-align: center;
-}
-
-#page_characterSheet_spycraft2_edit #combatBonuses .labelTR .first {
-	margin-left: 115px;
-}
-
-#page_characterSheet_spycraft2_sheet #combatBonuses .labelTR .first {
-	margin-left: 105px;
-}
-
-#page_characterSheet_spycraft2_edit #combatBonuses label.leftLabel, #page_characterSheet_spycraft2_sheet #combatBonuses label.leftLabel {
+#combatBonuses label.leftLabel {
 	text-align: right;
 }
 
-#page_characterSheet_spycraft2_edit #combatBonuses span, #page_characterSheet_spycraft2_sheet #combatBonuses span {
+#combatBonuses span {
 	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #actionDie, #page_characterSheet_spycraft2_edit #extraStats, #page_characterSheet_spycraft2_sheet #actionDie, #page_characterSheet_spycraft2_sheet #extraStats {
+#actionDie, #extraStats {
 	float: left;
-	margin-left: 20px;
+	margin-left: 50px;
 }
 
-#page_characterSheet_spycraft2_sheet #actionDie, #page_characterSheet_spycraft2_sheet #extraStats {
+.viewCharacter #actionDie, .viewCharacter #extraStats {
 	width: 400px;
 }
 
-#page_characterSheet_spycraft2_sheet #actionDie {
-	margin-top: 1em;
-}
-
-#page_characterSheet_spycraft2_edit #extraStats {
-	margin-top: 1em;
-}
-
-#page_characterSheet_spycraft2_sheet #extraStats {
-	margin-top: 2em;
-}
-
-#page_characterSheet_spycraft2_edit #actionDie .labelTR label, #page_characterSheet_spycraft2_edit #extraStats .labelTR label, #page_characterSheet_spycraft2_sheet #actionDie .labelTR label, #page_characterSheet_spycraft2_sheet #extraStats .labelTR label {
+#actionDie .labelTR label, #extraStats .labelTR label {
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #extraStats .labelTR .shortText, #page_characterSheet_spycraft2_sheet #extraStats .labelTR .shortText {
+#extraStats .labelTR .shortText {
 	text-align: left;
 	font-variant: small-caps;
 }
 
-#page_characterSheet_spycraft2_edit #actionDie .labelTR .first, #page_characterSheet_spycraft2_edit #extraStats .labelTR .first {
-	margin-left: 115px;
-}
-
-#page_characterSheet_spycraft2_sheet #actionDie .labelTR .first, #page_characterSheet_spycraft2_sheet #extraStats .labelTR .first {
-	margin-left: 105px;
-}
-
-#page_characterSheet_spycraft2_edit #extraStats span, #page_characterSheet_spycraft2_sheet #actionDie span, #page_characterSheet_spycraft2_sheet #extraStats span {
+#extraStats span, .viewCharacter #actionDie span {
 	display: inline-block;
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit .textareaDiv, #page_characterSheet_spycraft2_sheet .textDiv {
-/*	width: 450px;*/
-	margin-top: 1em;
-}
-
-#page_characterSheet_spycraft2_edit h2 a {
+h2 a {
 	font-size: .75em;
 	font-weight: normal;
 	margin-left: 20px;
 }
 
-#page_characterSheet_spycraft2_edit #skills, #page_characterSheet_spycraft2_edit #feats, #page_characterSheet_spycraft2_sheet #skills, #page_characterSheet_spycraft2_sheet #feats {
+#skills, #feats {
 	margin-top: 1em;
 }
 
-#page_characterSheet_spycraft2_edit #weapons, #page_characterSheet_spycraft2_edit #armor, #page_characterSheet_spycraft2_sheet #weapons, #page_characterSheet_spycraft2_sheet #armor {
+#weapons, #armor {
 	margin-top: 2em;
 }
 
-#page_characterSheet_spycraft2_edit .textareaDiv textarea {
-	width: 442px;
+textarea {
+	width: 100%;
 	height: 10em;
 }
 
-#page_characterSheet_spycraft2_edit #skills, #page_characterSheet_spycraft2_sheet #skills {
-	margin-top: 20px;
-}
-
-#page_characterSheet_spycraft2_edit #addSkillWrapper {
+#addSkillWrapper {
 	margin: 1em 0;
 	position: relative;
 }
 
-#page_characterSheet_spycraft2_edit #addSkillWrapper input {
-	position: relative;
-	top: 4px;
-	color: #666;
+#addSkillWrapper .fancyButton, #addFocusWrapper .fancyButton, #addFeatWrapper .fancyButton {
+	top: -1px;
+	margin-left: 5px;
+	vertical-align: middle;
 }
 
-#page_characterSheet_spycraft2_edit #addSkillWrapper #skillAjaxResults {
-	display: none;
-	position: absolute;
-	top: 27px;
-	left: 0;
-	border: 1px solid #600;
-	width: 206px;
-	background-color: #111;
-}
-
-#page_characterSheet_spycraft2_edit #addSkillWrapper #skillAjaxResults a {
-	display: block;
-	padding: 5px;
-	text-align: left;
-}
-
-#page_characterSheet_spycraft2_edit #addSkillWrapper #skillAjaxResults a:hover {
-	background-color: #222;
-}
-
-#page_characterSheet_spycraft2_edit #addSkillWrapper select {
-	position: relative;
-	top: 4px;
-}
-
-#page_characterSheet_spycraft2_edit #addSkillWrapper button {
-}
-
-#page_characterSheet_spycraft2_edit .skill span, #page_characterSheet_spycraft2_sheet .skill span {
+.skill span {
 	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_edit #skills .skill_name, #page_characterSheet_spycraft2_sheet #skills .skill_name {
+#skills .skill_name {
 	width: 150px;
 }
 
-#page_characterSheet_spycraft2_edit .skill .skill_stat, #page_characterSheet_spycraft2_sheet .skill .skill_stat {
+.skill .skill_stat {
 	font-variant: small-caps;
 }
 
-#page_characterSheet_spycraft2_edit .skill .skill_total, #page_characterSheet_spycraft2_sheet .skill .skill_total {
+.skill .skill_total {
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_edit #focuses, #page_characterSheet_spycraft2_sheet #focuses {
+#focuses {
 	float: left;
 	width: 450px;
 	margin-top: 30px;
 }
 
-#page_characterSheet_spycraft2_edit #addFocusWrapper {
+#addFocusWrapper {
 	margin: 1em 0;
 	position: relative;
 }
 
-#page_characterSheet_spycraft2_edit #addFocusWrapper, #page_characterSheet_spycraft2_edit #addFocusWrapper * {
-	z-index: 100;
-}
-
-#page_characterSheet_spycraft2_edit #addFocusWrapper label {
-	position: relative;
-	top: 4px;
-}
-
-#page_characterSheet_spycraft2_edit #focusNameWrapper {
-	position: relative;
-	top: 4px;
-	left: 10px;
-}
-
-#page_characterSheet_spycraft2_edit #focusName {
+#focusName {
 	width: 250px;
 }
 
-#page_characterSheet_spycraft2_edit #addFocusWrapper #focusAjaxResults {
-	display: none;
-	position: absolute;
-	top: 27px;
-	left: 50px;
-	border: 1px solid #600;
-	width: 256px;
-	background-color: #111;
-}
-
-#page_characterSheet_spycraft2_edit #addFocusWrapper #focusAjaxResults a {
-	display: block;
-	padding: 5px;
+#noFocuses {
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_edit #addFocusWrapper #focusAjaxResults a:hover {
-	background-color: #222;
-}
-
-#page_characterSheet_spycraft2_edit #addFocusWrapper button {
-	position: relative;
-	left: 15px;
-}
-
-#page_characterSheet_spycraft2_edit #noFocuses, #page_characterSheet_spycraft2_sheet #noFocuses {
-	text-align: left;
-}
-
-#page_characterSheet_spycraft2_edit #focuses span, #page_characterSheet_spycraft2_sheet #focuses span {
+#focuses span {
 	display: inline-block;
+	vertical-align: middle;
 }
 
-#page_characterSheet_spycraft2_sheet #focuses img {
-	width: 15px;
+#focuses input[type="checkbox"] {
+	vertical-align: middle;
 }
 
-#page_characterSheet_spycraft2_edit .focus_name {
-	width: 310px;
-	margin-right: 3px;
+.focus_name {
+	width: 300px;
 	text-align: left;
+	vertical-align: middle;
 }
 
-#page_characterSheet_spycraft2_sheet .focus_name {
+.viewCharacter .focus_name {
 	width: 310px;
 }
 
-#page_characterSheet_spycraft2_edit #feats, #page_characterSheet_spycraft2_sheet #feats {
+#feats {
 	float: right;
 	width: 450px;
 	margin-top: 30px;
 }
 
-#page_characterSheet_spycraft2_edit #addFeatWrapper {
+#addFeatWrapper {
 	margin: 1em 0;
 	position: relative;
 }
 
-#page_characterSheet_spycraft2_edit #addFeatWrapper label {
-	position: relative;
-	top: 4px;
-}
-
-#page_characterSheet_spycraft2_edit #featNameWrapper {
-	position: relative;
-	top: 4px;
-	left: 10px;
-}
-
-#page_characterSheet_spycraft2_edit #featName {
+#featName {
 	width: 250px;
 }
 
-#page_characterSheet_spycraft2_edit #addFeatWrapper #featAjaxResults {
-	display: none;
-	position: absolute;
-	top: 27px;
-	left: 50px;
-	border: 1px solid #600;
-	width: 256px;
-	background-color: #111;
-}
-
-#page_characterSheet_spycraft2_edit #addFeatWrapper #featAjaxResults a {
-	display: block;
-	padding: 5px;
+#noFeats {
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_edit #addFeatWrapper #featAjaxResults a:hover {
-	background-color: #222;
-}
-
-#page_characterSheet_spycraft2_edit #addFeat {
-	position: relative;
-	left: 15px;
-}
-
-#page_characterSheet_spycraft2_edit #noFeats, #page_characterSheet_spycraft2_sheet #noFeats {
-	text-align: left;
-}
-
-#page_characterSheet_spycraft2_edit #feats .feat span, #page_characterSheet_spycraft2_edit #feats .feat a, #page_characterSheet_spycraft2_sheet #feats .feat span, #page_characterSheet_spycraft2_sheet #feats .feat a {
+#feats .feat span, #feats .feat a {
 	display: inline-block;
+	vertical-align: middle;
 }
 
-#page_characterSheet_spycraft2_edit .feat_name {
-	width: 320px;
+.feat_name {
+	width: 310px;
 	margin-right: 3px;
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_sheet .feat_name {
-	width: 320px;
+.viewCharacter .feat_name {
+	width: 350px;
 }
 
-#page_characterSheet_spycraft2_edit .feat_notesLink, #page_characterSheet_spycraft2_sheet .feat_notesLink {
+.feat_notesLink {
 	font-size: .8em;
 }
 
-#page_characterSheet_spycraft2_sheet .feat_notes {
-	display: none;
+#weapons {
+	width: 460px;
 }
 
-#page_characterSheet_spycraft2_edit #weapons, #page_characterSheet_spycraft2_sheet #weapons {
-	width: 490px;
-}
-
-#page_characterSheet_spycraft2_sheet #weapons {
-	border-right: 1px solid #333;
-}
-
-#page_characterSheet_spycraft2_edit .weapon, #page_characterSheet_spycraft2_edit .armor, #page_characterSheet_spycraft2_sheet .weapon, #page_characterSheet_spycraft2_sheet .armor {
-	margin: 0 0 20px;
+.weapon, .armor {
+	margin: 10px 0 0;
 	padding-top: 10px;
 	border-top: 1px solid #777;
 }
 
-#page_characterSheet_spycraft2_edit .weapon:first-child, #page_characterSheet_spycraft2_edit .armor:first-child, #page_characterSheet_spycraft2_sheet .weapon:first-child, #page_characterSheet_spycraft2_sheet .armor:first-child {
+.weapon:first-child, .armor:first-child {
+	margin-top: 0;
 	border-top: none;
 }
 
-#page_characterSheet_spycraft2_sheet #weapons span, #page_characterSheet_spycraft2_sheet #armor span {
+.weapon .shortText, .armor .shortText {
+	text-align: center;
+}
+
+.viewCharacter #weapons span, .viewCharacter #armor span {
 	display: inline-block;
 }
 
-#page_characterSheet_spycraft2_sheet .weapon .labelTR, #page_characterSheet_spycraft2_sheet .armor .labelTR {
+.viewCharacter .weapon .labelTR, .viewCharacter .armor .labelTR {
 	padding-top: .5em;
 }
 
-#page_characterSheet_spycraft2_sheet .weapon .labelTR:first-child, #page_characterSheet_spycraft2_sheet .armor .labelTR:first-child {
+.viewCharacter .weapon .labelTR:first-child, .viewCharacter .armor .labelTR:first-child {
 	padding-top: 0;
 }
 
-#page_characterSheet_spycraft2_sheet .weapon .medText, #page_characterSheet_spycraft2_sheet .armor .medText {
-	width: 208px;
+.weapon .medText {
+	width: 185px;
 }
 
-#page_characterSheet_spycraft2_edit .weapon, #page_characterSheet_spycraft2_sheet .weapon {
+.weapon_firstRow .shortText {
+	width: 90px;
+}
+
+.weapon_secondRow input, .weapon_secondRow label, .viewCharacter .weapon_secondRow span {
+	width: 67px;
+}
+
+input.weapon_notes, .weapon_notes {
+	width: 436px;
+	text-align: left;
+}
+
+#armor {
 	width: 480px;
 }
 
-#page_characterSheet_spycraft2_edit .weapon_secondRow label, #page_characterSheet_spycraft2_sheet .weapon_secondRow label, #page_characterSheet_spycraft2_sheet .weapon_secondRow span {
-	width: 72px;
+.armor .medText {
+	width: 223px;
 }
 
-#page_characterSheet_spycraft2_edit .weapon_secondRow input {
-	width: 64px;
+.armor_firstRow .shortText {
+	width: 90px;
 }
 
-#page_characterSheet_spycraft2_edit .weapon input.weapon_notes {
-	width: 450px;
+.armor_secondRow input, .armor_secondRow label, .viewCharacter .armor_secondRow span {
+	width: 95px;
+}
+
+input.armor_notes, .armor_notes {
+	width: 456px;
 	text-align: left;
 }
 
-#page_characterSheet_spycraft2_sheet .weapon .weapon_notes {
-	width: 458px;
-}
-
-#page_characterSheet_spycraft2_edit #armor, #page_characterSheet_spycraft2_sheet #armor {
-	width: 420px;
-}
-
-#page_characterSheet_spycraft2_edit .armor_firstRow label.shortText, #page_characterSheet_spycraft2_sheet .armor_firstRow .shortText {
-	width: 70px;
-}
-
-#page_characterSheet_spycraft2_edit .armor_firstRow input.shortText {
-	width: 62px;
-}
-
-#page_characterSheet_spycraft2_edit .armor_secondRow label, #page_characterSheet_spycraft2_sheet .armor_secondRow label, #page_characterSheet_spycraft2_sheet .armor_secondRow span {
-	width: 101px;
-}
-
-#page_characterSheet_spycraft2_edit .armor_secondRow input {
-	width: 73px;
-}
-
-#page_characterSheet_spycraft2_edit input.armor_notes {
-	width: 392px;
-	text-align: left;
-}
-
-#page_characterSheet_spycraft2_sheet .armor_notes {
-	width: 400px;
-}
-
-#page_characterSheet_spycraft2_edit #items, #page_characterSheet_spycraft2_sheet #items {
+#items {
 	margin-top: 1.5em;
 }
 
-#page_characterSheet_spycraft2_edit #items textarea {
-	width: 912px;
+#items textarea {
 	height: 12.4em;
 }
 
-#page_characterSheet_spycraft2_edit #notes, #page_characterSheet_spycraft2_sheet #notes {
-	margin-top: 1.5em;
-}
-
-#page_characterSheet_spycraft2_edit #notes textarea {
-	width: 912px;
+#notes textarea {
 	height: 16.2em;
 }
 
-#page_characterSheet_spycraft2_edit #submitDiv {
+#submitDiv {
 	text-align: center;
 	margin-top: 1em;
 }
 
 /* --------------------------------------------*/
 
-#page_characterSheet_spycraft2_featNotes {
+#page_characterSheet_spycraft2_editFeatNotes {
 	text-align: center;
 }
 
-#page_characterSheet_spycraft2_featNotes textarea {
+#page_characterSheet_spycraft2_editFeatNotes textarea {
 	width: 450px;
 	height: 8em;
 }

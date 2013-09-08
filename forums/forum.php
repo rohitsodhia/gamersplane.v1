@@ -129,57 +129,10 @@
 		foreach ($rdInfos as $rdInfo) $readData[$rdInfo['forumID']] = $rdInfo['newPosts'];
 	}
 	
-	$threadsContent = '';
 	if ($forumID != 0 && $forumType != 'c') {
 		$numThreads = $mysql->query('SELECT COUNT(*) FROM threads WHERE forumID = '.$forumID);
 		$numThreads = $numThreads->fetchColumn();
 		$threads = $mysql->query('SELECT threads.threadID, threads.locked, threads.sticky, first.title, first.postID fp_postID, first.datePosted fp_datePosted, first.authorID fp_authorID, tAuthor.username fp_username, last.postID lp_postID, last.datePosted lp_datePosted, last.authorID lp_authorID, lAuthor.username lp_username, postCount.numPosts, IFNULL(rd.lastRead, 0) lastRead FROM threads INNER JOIN threads_relPosts relPosts ON relPosts.threadID = threads.threadID INNER JOIN posts first ON relPosts.firstPostID = first.postID INNER JOIN posts last ON relPosts.lastPostID = last.postID INNER JOIN users tAuthor ON first.authorID = tAuthor.userID INNER JOIN users lAuthor ON last.authorID = lAuthor.userID LEFT JOIN (SELECT threadID, COUNT(*) AS numPosts FROM posts GROUP BY threadID) postCount ON threads.threadID = postCount.threadID LEFT JOIN forums_readData_threads rd ON threads.threadID = rd.threadID AND rd.userID = '.$userID.' WHERE threads.forumID = '.$forumID.' ORDER BY threads.sticky DESC, last.datePosted DESC');
-		
-		$threadContent .= '		<div class="tableDiv threadTable'.($firstTable?' firstTableDiv':'').'">
-			<h2 class="title"><div>Threads</div></h2>
-			<table id="threadList">
-				<tr>
-					<td class="forumIcon">&nbsp;</td>
-					<th class="threadName">Thread</th>
-					<th class="numPosts"># of Posts</th>
-					<th class="lastPost">Last Post</th>
-				</tr>'."\n";
-		
-		if ($firstTable) $firstTable = FALSE;
-		
-		if ($threads->rowCount()) { foreach ($threads as $threadInfo) {
-			$threadInfo['fp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['fp_datePosted']);
-			$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
-//			if (!isset($threadRD[$threadInfo['threadID']]) && $threadInfo['lp_postID'] > $markedRead) $threadRD[$threadInfo['threadID']] = array('forumID' => $forumID, 'lastRead' => 0, 'lastPost' => $threadInfo['lp_postID']);
-//			elseif (isset($threadRD[$threadInfo['threadID']])) $threadRD[$threadInfo['threadID']]['lastPost'] = $threadInfo['lp_postID'];
-			$forumIcon = ($threadInfo['lp_postID'] > $markedRead && $threadInfo['lp_postID'] > $threadInfo['lastRead'])?'new':'old';
-			$threadContent .= '				<tr>
-					<td class="forumIcon"><img src="'.SITEROOT.'/images/forum_'.($threadInfo['sticky']?'sticky_':'').$forumIcon.'.jpg" title="'.($forumIcon == 'new'?'New':'No new').' posts in forum" alt="'.($forumIcon == 'new'?'New':'No new').' posts in forum"></td>
-					<td class="threadInfo">'."\n";
-			if ($forumIcon == 'new') $threadContent .= "						<a href=\"".SITEROOT."/forums/thread/{$threadInfo['threadID']}?view=newPost\"><img src=\"".SITEROOT."/images/newPost.png\" title=\"View new posts\" alt=\"View new posts\"></a>\n";
-			if ($threadInfo['numPosts'] > PAGINATE_PER_PAGE) {
-				$threadContent .= "\t\t\t\t\t\t<div class=\"paginateDiv\">";
-				$url = SITEROOT.'/forums/thread/'.$threadInfo['threadID'];
-				$numPages = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
-				if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) $threadContent .= "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
-				else {
-					$threadContent .= "\t\t\t\t\t\t\t<a href=\"$url?page=1\">1</a>\n";
-					$threadContent .= "\t\t\t\t\t\t\t<div>...</div>\n";
-					for ($count = ($numPages - 2); $count <= $numPages; $count++) $threadContent .= "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
-				}
-				$threadContent .= "\t\t\t\t\t\t</div>\n";
-			}
-			$threadContent .= '						<a href="'.SITEROOT.'/forums/thread/'.$threadInfo['threadID'].'">'.$threadInfo['title']."</a><br>\n";
-			$threadContent .= '						<span class="threadAuthor">by <a href="'.SITEROOT.'/ucp/'.$threadInfo['fp_authorID'].'" class="username">'.$threadInfo['fp_username'].'</a> on <span>'.date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>\n";
-			$threadContent .= '						</td>
-					<td class="numPosts">'.$threadInfo['numPosts'].'</td>
-					<td class="lastPost">
-						<a href="'.SITEROOT.'/ucp/'.$threadInfo['lp_authorID'].'" class="username">'.$threadInfo['lp_username'].'</a><br><span>'.date('M j, Y g:i a', $threadInfo['lp_datePosted'])."</span>
-					</td>
-				</tr>\n";
-		} } else $threadContent .= "\t\t\t<tr><td colspan=\"4\"><h2>No threads yet</h2></td></tr>\n";
-		$threadContent .= "			</table>
-		</div>\n";
 	}
 	
 //	$mysql->query('UPDATE forums_readData SET forumData = "'.sanatizeString(serialize($forumRD)).'", threadData = "'.sanatizeString(serialize($threadRD)).'" WHERE userID = '.$userID);
@@ -195,10 +148,10 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Forum<?=$forumID?' - '.$forumTitle/*.($forumInfo['gameID']?' (Game)':'')*/:'s'?></h1>
+		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumTitle/*.($forumInfo['gameID']?' (Game)':'')*/:'s'?></h1>
 		
 <? if ($forumID != 0) { ?>
-		<div id="breadcrumb">
+		<div id="breadcrumbs">
 			<a href="<?=SITEROOT?>/forums">Index</a><?=$forumID != 0?' > ':''?>
 <?
 		$breadcrumbs = $mysql->query('SELECT forumID, title FROM forums WHERE forumID IN ('.implode(',', $heritage).')');
@@ -213,10 +166,9 @@
 		</div>
 <? } ?>
 		
-		<div id="topLinkDiv">
+		<div id="topLinkDiv"<?=$forumID == 0?' class="alignRight"':''?>>
 <?
 	if ($forumID == 0) echo "\t\t\t".'<a href="'.SITEROOT.'/forums/search?search=latestPosts">Latest Posts</a>'."\n";
-	elseif ($permissions[$forumID]['createThread']) echo "\t\t\t".'<a id="newThread" href="'.SITEROOT.'/forums/newThread/'.$forumID.'"><img src="'.SITEROOT.'/images/spacer.gif" alt="Create New Thread"></a>'."\n";
 ?>
 		</div>
 		
@@ -224,7 +176,6 @@
 		<p id="rules">Be sure to read and follow the <a href="<?=SITEROOT?>/forums/rules">guidelines for our forums</a>.</p>
 	
 <?
-	$firstTable = TRUE;
 	$forumIcon = '';
 	
 	if (sizeof($forumStructure)) {
@@ -234,19 +185,23 @@
 			if ($info['type'] == 'c' && sizeof($info['children'])) {
 				if ($tableOpen) {
 					$tableOpen = FALSE;
-					echo "\t\t\t</table>\n\t\t</div>\n";
+					echo "\t\t\t</div>\n\t\t</div>\n";
 				}
 ?>
-		<div class="tableDiv<?=$firstTable?' firstTableDiv':''?>">
-			<h2 class="title"><div><?=($forumID == 0)?$forumInfos[$iForumID]['title']:'Subforums'?></div></h2>
-			<table class="forumList">
-				<tr>
-					<td class="forumIcon">&nbsp;</td>
-					<th class="forumName">Forum</th>
-					<th class="numThreads"># of Threads</th>
-					<th class="numPosts"># of Posts</th>
-					<th class="lastPost">Last Post</th>
-				</tr>
+		<div class="tableDiv">
+			<div class="clearfix"><h2 class="wingDiv redWing">
+				<div><?=($forumID == 0)?$forumInfos[$iForumID]['title']:'Subforums'?></div>
+				<div class="wing dlWing"></div>
+				<div class="wing drWing"></div>
+			</h2></div>
+			<div class="tr headerTR headerbar hbDark">
+				<div class="td icon">&nbsp;</div>
+				<div class="td name">Forum</div>
+				<div class="td numThreads"># of Threads</div>
+				<div class="td numPosts"># of Posts</div>
+				<div class="td lastPost">Last Post</div>
+			</div>
+			<div class="sudoTable forumList">
 <?
 				if ($firstTable) $firstTable = FALSE;
 				foreach ($info['children'] as $cForumID => $cInfo) {
@@ -257,38 +212,42 @@
 //					$forumIcon = checkNewPosts_new($cForumID, $readData, $permissionsList, $children[$cForumID])?'new':'old';
 					$forumIcon = $readData[$cForumID]?'new':'old';
 ?>
-				<tr<?=$forumInfo['numPosts']?'':' class="noPosts"'?>>
-					<td class="forumIcon"><img src="<?=SITEROOT?>/images/forum_<?=$forumIcon?>.jpg" title="<?=$forumIcon == 'new'?'New':'No New'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></td>
-					<td class="forumName">
+				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
+					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
+					<div class="td name">
 						<a href="<?=SITEROOT?>/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
 <?=($forumInfo['description'] != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forumInfo['description'])."</div>\n":''?>
-					</td>
-					<td class="numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></td>
-					<td class="numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></td>
-					<td class="lastPost">
+					</div>
+					<div class="td numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></div>
+					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
+					<div class="td lastPost">
 <?
 					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"".SITEROOT.'/ucp/'.$forumInfo['authorID'].'" class="username">'.$forumInfo['username'].'</a><br><span>'.date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
 					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
-					</td>
-				</tr>
+					</div>
+				</div>
 <?
 				}
-				echo "\t\t\t</table>\n\t\t</div>\n";
+				echo "\t\t\t</div>\n\t\t</div>\n";
 			} elseif ($info['type'] == 'f') {
 				if (!$tableOpen) {
 					$tableOpen = TRUE;
 ?>
-		<div class="tableDiv<?=$firstTable?' firstTableDiv':''?>">
-			<h2 class="title"><div><?=($forumID == 0)?$forumInfos[$iForumID]['title']:'Subforums'?></div></h2>
-			<table class="forumList">
-				<tr>
-					<td class="forumIcon">&nbsp;</td>
-					<th class="forumName">Forum</th>
-					<th class="numThreads"># of Threads</th>
-					<th class="numPosts"># of Posts</th>
-					<th class="lastPost">Last Post</th>
-				</tr>
+		<div class="tableDiv">
+			<div class="clearfix"><h2 class="wingDiv redWing">
+				<div><?=($forumID == 0)?$forumInfos[$iForumID]['title']:'Subforums'?></div>
+				<div class="wing dlWing"></div>
+				<div class="wing drWing"></div>
+			</h2></div>
+			<div class="tr headerTR headerbar hbDark">
+				<div class="td icon">&nbsp;</div>
+				<div class="td name">Forum</div>
+				<div class="td numThreads"># of Threads</div>
+				<div class="td numPosts"># of Posts</div>
+				<div class="td lastPost">Last Post</div>
+			</div>
+			<div class="sudoTable forumList">
 <?
 					if ($firstTable) $firstTable = FALSE;
 				}
@@ -299,29 +258,88 @@
 //				$forumIcon = checkNewPosts_new($iForumID, $readData, $permissionsList, $children[$iForumID])?'new':'old';
 				$forumIcon = $readData[$iForumID]?'new':'old';
 ?>
-				<tr<? echo $forumInfo['numPosts']?'':' class="noPosts"' ?>>
-					<td class="forumIcon"><img src="<?=SITEROOT?>/images/forum_<?=$forumIcon?>.jpg" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></td>
-					<td class="forumName">
-						<a href="<?=SITEROOT?>/forums/<? echo $forumInfo['forumID']; ?>"><?=printReady($forumInfo['title']); ?></a>
+				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
+					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
+					<div class="td name">
+						<a href="<?=SITEROOT?>/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
 <?=($forumInfo['description'] != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forumInfo['description'])."</div>\n":''?>
-					</td>
-					<td class="numThreads"><? echo $forumInfo['numThreads']?$forumInfo['numThreads']:0; ?></td>
-					<td class="numPosts"><? echo $forumInfo['numPosts']?$forumInfo['numPosts']:0; ?></td>
-					<td class="lastPost">
+					</div>
+					<div class="td numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></div>
+					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
+					<div class="td lastPost">
 <?
 					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"".SITEROOT.'/ucp/'.$forumInfo['authorID'].'" class="username">'.$forumInfo['username'].'</a><br><span>'.date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
-					else echo "\t\t\t\t\t\tNo Posts Yet!</span>\n";
+					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
-					</td>
-				</tr>
+					</div>
+				</div>
 <?
 			}
 		}
 	}
-	if ($tableOpen) echo "\t\t\t</table>\n\t\t</div>\n";
+	if ($tableOpen) echo "\t\t\t</div>\n\t\t</div>\n";
 ?>
 		
-<?=$threadContent?>
+<?
+	if ($forumID != 0 && $forumType != 'c') {
+?>
+		<div class="tableDiv threadTable<?=$firstTable?' firstTableDiv':''?>">
+			<div id="newThread" class="clearfix"><a href="<?=SITEROOT?>/forums/newThread/<?=$forumID?>" class="button">New Thread</a></div>
+			<div class="tr headerTR headerbar hbDark">
+				<div class="td icon">&nbsp;</div>
+				<div class="td threadInfo">Thread</div>
+				<div class="td numThreads"># of Threads</div>
+				<div class="td lastPost">Last Post</div>
+			</div>
+			<div class="sudoTable forumList">
+<?
+		if ($firstTable) $firstTable = FALSE;
+		
+		if ($threads->rowCount()) { foreach ($threads as $threadInfo) {
+			$threadInfo['fp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['fp_datePosted']);
+			$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
+//			if (!isset($threadRD[$threadInfo['threadID']]) && $threadInfo['lp_postID'] > $markedRead) $threadRD[$threadInfo['threadID']] = array('forumID' => $forumID, 'lastRead' => 0, 'lastPost' => $threadInfo['lp_postID']);
+//			elseif (isset($threadRD[$threadInfo['threadID']])) $threadRD[$threadInfo['threadID']]['lastPost'] = $threadInfo['lp_postID'];
+			$forumIcon = ($threadInfo['lp_postID'] > $markedRead && $threadInfo['lp_postID'] > $threadInfo['lastRead'])?'new':'old';
+?>
+				<div class="tr">
+					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
+					<div class="td threadInfo">
+<?
+			if ($forumIcon == 'new') {
+?>
+						<a href="<?=SITEROOT?>/forums/thread/<?=$threadInfo['threadID']?>?view=newPost"><img src="<?=SITEROOT?>/images/newPost.png" title="View new posts" alt="View new posts"></a>
+<?
+			}
+			if ($threadInfo['numPosts'] > PAGINATE_PER_PAGE) {
+?>
+						<div class="paginateDiv">
+<?
+				$url = SITEROOT.'/forums/thread/'.$threadInfo['threadID'];
+				$numPages = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
+				if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
+				else {
+					echo "\t\t\t\t\t\t\t<a href=\"$url?page=1\">1</a>\n";
+					echo "\t\t\t\t\t\t\t<div>...</div>\n";
+					for ($count = ($numPages - 2); $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
+				}
+				echo "\t\t\t\t\t\t</div>\n";
+			}
+?>
+						<a href="<?=SITEROOT?>/forums/thread/<?=$threadInfo['threadID']?>"><?=$threadInfo['title']?></a><br>
+						<span class="threadAuthor">by <a href="<?=SITEROOT?>/ucp/<?=$threadInfo['fp_authorID']?>" class="username"><?=$threadInfo['fp_username']?></a> on <span><?=date('M j, Y g:i a', $threadInfo['fp_datePosted'])?></span></span>
+					</div>
+					<div class="td numPosts"><?=$threadInfo['numPosts']?$threadInfo['numPosts']:0?></div>
+					<div class="td lastPost">
+						<a href="<?=SITEROOT?>/ucp/<?=$threadInfo['lp_authorID']?>" class="username"><?=$threadInfo['lp_username']?></a><br><span><?=date('M j, Y g:i a', $threadInfo['lp_datePosted'])?></span>
+					</div>
+				</div>
+<?
+		} } else echo "\t\t\t\t<div class=\"tr noThreads\">No threads yet</div>\n";
+		echo "			</div>
+		</div>\n";
+	}
+?>
 				
 		<div id="forumLinks">
 			<div id="forumOptions">

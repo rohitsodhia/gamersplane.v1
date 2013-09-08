@@ -32,27 +32,32 @@ function showSign(val) {
 }
 
 jQuery.fn.autocomplete = function (pathOption, sendData) {
-	var $inputBox = $(this), onWrapper = false;
+	function search(pathOption, sendData, $resultsDiv) {
+		$.post(SITEROOT + pathOption, sendData, function (data) {
+			if (data.length > 0) {
+				$resultsDiv.html(data).slideDown();
+			} else $resultsDiv.slideUp();
+		});
+	}
+
+	var $inputBox = $(this), onWrapper = false, searchTimeout;
 	$inputBox.wrap('<div class="autocompleteWrapper"></div>').parent().attr('id', $inputBox.attr('id') + 'Wrapper');
-	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: $inputBox.outerHeight(false) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
+	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
 	$inputBox.keyup(function () {
 		if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
 			$.extend(sendData, { search: $(this).val() });
-			$.post(SITEROOT + pathOption, sendData, function (data) {
-				if (data.length > 0) {
-					$resultsDiv.html(data).parent().slideDown();
-				} else $resultsDiv.parent().slideUp();
-			});
-		} else $resultsDiv.parent().slideUp();
+			clearTimeout(searchTimeout);
+			searchTimeout = setTimeout(function () { search(pathOption, sendData, $resultsDiv); }, 500);
+		} else $resultsDiv.slideUp();
 	}).blur(function () {
-		if (onWrapper == false) $resultsDiv.parent().slideUp();
+		if (onWrapper == false) $resultsDiv.slideUp();
 	}).focus(function () {
-		if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) $resultsDiv.parent().slideDown();
+		if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) $resultsDiv.slideDown();
 	}).keypress(function (e) {
 		if (e.which == 13) e.preventDefault();
 	});
 	
-	$resultsDiv.on('click', 'a', function () {
+	$resultsDiv.on('click', 'a', function (e) {
 		$inputBox.val($(this).text());
 		$resultsDiv.slideUp();
 
@@ -60,17 +65,11 @@ jQuery.fn.autocomplete = function (pathOption, sendData) {
 	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
 }
 
-function updateSaves(save, game, level) {
+function updateSaves(save) {
 	var total = 0;
-	if (save.substring(0, 1) == 'f' && (game == 'dnd3' || game == 'spycraft' || game == 'spycraft2')) { save = 'fort'; total = parseInt($('#conModifier').text()); }
-	else if (save.substring(0, 1) == 'r' && (game == 'dnd3' || game == 'spycraft' || game == 'spycraft2')) { save = 'ref'; total = parseInt($('#dexModifier').text()); }
-	else if (save.substring(0, 1) == 'w' && (game == 'dnd3' || game == 'spycraft' || game == 'spycraft2')) { save = 'will'; total = parseInt($('#wisModifier').text()); }
-	else if (save.substring(0, 1) == 'f' && game == 'dnd4') { save = 'fort'; total = parseInt($('#conModifier').text()) > parseInt($('#strModifier').text())?parseInt($('#conModifier').text()):parseInt($('#strModifier').text()); }
-	else if (save.substring(0, 1) == 'r' && game == 'dnd4') { save = 'ref'; total = parseInt($('#dexModifier').text()) > parseInt($('#intModifier').text())?parseInt($('#dexModifier').text()):parseInt($('#intModifier').text()); }
-	else if (save.substring(0, 1) == 'w' && game == 'dnd4') { save = 'will'; total = parseInt($('#wisModifier').text()) > parseInt($('#chaModifier').text())?parseInt($('#wisModifier').text()):parseInt($('#chaModifier').text()); }
-	else if (save.substring(0, 1) == 'a' && game == 'dnd4') save = 'ac';
-	
-	if (game == 'dnd4') total += Math.floor(level / 2) + 10;
+	if (save.substring(0, 1) == 'f') { save = 'fort'; total = parseInt($('#conModifier').text()); }
+	else if (save.substring(0, 1) == 'r') { save = 'ref'; total = parseInt($('#dexModifier').text()); }
+	else if (save.substring(0, 1) == 'w') { save = 'will'; total = parseInt($('#wisModifier').text()); }
 	$('#' + save +'Row input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
 	$('#' + save + 'Total').text(showSign(total));
 }
@@ -103,9 +102,57 @@ function fm_rollDice(dice, rerollAces) {
 	});
 }
 
+function setupWingContainer() {
+	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';
+	else if ($(this).hasClass('button')) baseClass = 'button';
+	else if ($(this).hasClass('fancyButton')) baseClass = 'fancyButton';
+	else if ($(this).hasClass('wingDiv')) baseClass = 'wingDiv';
+	classes = $(this).attr('class');
+	hasDark = $(this).hasClass('hbDark')?true:false;
+	currentID = this.id;
+	if (baseClass != 'fancyButton' && baseClass != 'wingDiv') {
+		$(this).css('background', 'none').attr('class', baseClass).wrapInner('<div>').children().attr('class', classes).removeClass(baseClass);
+	} else if (baseClass == 'fancyButton') {
+		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);//.attr('id', currentID + 'Wrapper');
+	}
+
+	if (baseClass == 'fancyButton') wingMargins($(this).parent());
+	else wingMargins(this);
+	if (hasDark) $(this).addClass('hbDark');
+	wings = '';
+	if (baseClass != 'wingDiv' && baseClass != 'fancyButton') $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo(this);
+	else if (baseClass == 'fancyButton') $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo($(this).parent());
+}
+
+function wingMargins(container) {
+	if ($(container).hasClass('headerbar')) baseClass = 'headerbar';
+	else if ($(container).hasClass('button')) baseClass = 'button';
+	else if ($(container).hasClass('fancyButton')) baseClass = 'fancyButton';
+	else if ($(container).hasClass('wingDiv')) baseClass = 'wingDiv';
+	if (baseClass != 'fancyButton') $content = $(container).children('div:not(.wing)');
+	else $content = $(container).children('button');
+	$content.height('auto');
+
+	var height = $(container).outerHeight()/* + 2*/;
+	var width = Math.ceil(height * ($(container).data('ratio') == undefined?.6:Number($(container).data('ratio'))));
+	$(container).data('height', height);
+	$(container).data('width', width);
+	$content.css('margin', '0 ' + width + 'px').outerHeight($content.outerHeight());
+	$(container).children('.wing').each(setupWings);
+}
+
+function setupWings() {
+	height = $(this).parent().data('height');
+	width = $(this).parent().data('width');
+	if ($(this).hasClass('dlWing')) bCSS = { 'borderTopWidth': height, 'borderRightWidth': width };
+	else if ($(this).hasClass('urWing')) bCSS = { 'borderTopWidth': height, 'borderRightWidth': width };
+	else if ($(this).hasClass('drWing')) bCSS = { 'borderTopWidth': height, 'borderLeftWidth': width };
+	else if ($(this).hasClass('ulWing')) bCSS = { 'borderTopWidth': height, 'borderLeftWidth': width };
+	$(this).css(bCSS);
+}
+
 $(function() {
-	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '400px', innerHeight: '210px' });
-	$('#register').attr('target', '_parent');
+	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '450px', innerHeight: '240px' });
 
 	$('.placeholder').each(function () {
 		$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
@@ -114,6 +161,15 @@ $(function() {
 			if ($(this).val() == '') $(this).val($(this).data('placeholder')).addClass('default');
 		});
 	});
+
+	if ($('body').hasClass('modal')) parent.$.colorbox.resize({ 'innerHeight': $('body').height()} );
+
+	$('.headerbar, a.button, .fancyButton, .wingDiv').each(setupWingContainer);
+	$('.wing').each(setupWings);
+//	$('.wingDiv').each(function () {
+//		width = $(this).children('div:not(.wing)').outerWidth() + $(this).children('.wing').outerWidth() * 2;
+//		$(this).width(width);
+//	});
 
 	$('#mainMenu li').mouseenter(function () {
 		$(this).children('ul').stop(true, true).slideDown();
@@ -199,4 +255,9 @@ $(function() {
 			}
 		}
 	});
+
+
+	/* Individual Pages */
+	if (!$('body').hasClass('modal')) var curPage = $('#content > div > div').attr('id').substring(5);
+	else var curPage = $('body > div').attr('id').substring(5);
 });

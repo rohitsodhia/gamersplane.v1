@@ -52,7 +52,11 @@
 
 /* --------------------------------------------*/
 
-#page_forum #breadcrumb {
+#page_forum h1 {
+	margin-bottom: .3em;
+}
+
+#page_forum #breadcrumbs {
 	margin-bottom: .75em;
 	color: #666;
 	font-size: 1.1em;
@@ -61,7 +65,6 @@
 #page_forum #administrateLink {
 	float: right;
 	margin-top: .5em;
-	margin-right: 20px;
 }
 
 #page_forum #rules {
@@ -69,20 +72,15 @@
 }
 
 #page_forum #newThread {
-	display: block;
-	height: 33px;
-	width: 180px;
-	background: url('../images/buttons/newThread.jpg') top left no-repeat;
 }
 
-#page_forum #newThread:hover {
-	background-position: bottom left;
+#page_forum #newThread a {
+	display: block;
+	float: left;
 }
 
 #page_forum .tableDiv, #page_forumSearch .tableDiv {
-	width: 900px;
-	background: #222;
-	margin: 20px 10px 0;
+	margin-top: 15px;
 	padding-bottom: 5px;
 }
 
@@ -90,34 +88,49 @@
 	margin-top: 0;
 }*/
 
-#page_forum .tableDiv h2.title, #page_forumSearch .tableDiv h2.title {
-	background: url('../images/forumHeader.jpg') #222 top no-repeat;
-	font-size: 1.1em;
-	text-transform: uppercase;
-	margin-bottom: 0;
+#page_forum h2, #page_forumSearch h2 {
+	position: relative;
+	float: right;
+	margin: 0;
+	font-size: 1.8em;
+	line-height: 1.2em;
 }
 
-#page_forum .tableDiv h2.title div, #page_forumSearch .tableDiv h2.title div {
-	text-align: center;
-	background: url('../images/blackGradiant_b.jpg') bottom no-repeat;
-	padding: 8px 0;
+#page_forum h2, #page_forumSearch h2 {
 }
 
-/*#page_forum .threadTable h2.title div {
-	padding: 0;
-	font-size: 10px;
-}*/
-
-#page_forum .tableDiv table, #page_forumSearch .tableDiv table {
-	width: 890px;
-	margin: 0px 5px;
+#page_forum .td {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
 }
 
-#page_forum .tableDiv table th, #page_forum .tableDiv table td, #page_forumSearch .tableDiv table th, #page_forumSearch .tableDiv table td {
-	background-color: #111;
+#page_forum .headerTR .td {
+	padding-top: 8px;
+	padding-bottom: 8px;
 }
 
-#page_forum .tableDiv table th, #page_forumSearch .tableDiv table th {
+#page_forum .sudoTable .tr {
+	position: relative;
+	top: -1px;
+	padding-left: 8px;
+	padding-right: 8px;
+	border-style: solid;
+	border-color: #222;
+	border-width: 1px 2px;
+	border-right-color: #A66;
+	border-bottom-color: #A66;
+}
+
+#page_forum .sudoTable .tr:hover {
+	background-color: #FFF2E0;
+}
+
+#page_forum .sudoTable .tr:last-child {
+	border-bottom-width: 2px;
+}
+
+#page_forum .tableDiv th, #page_forumSearch .tableDiv th {
 	text-align: center;
 	vertical-align: middle;
 }
@@ -126,36 +139,44 @@
 	padding-top: 6px;
 }
 
-#page_forum .tableDiv table td, #page_forumSearch .tableDiv table td {
+#page_forum .tableDiv td, #page_forumSearch .tableDiv td {
 	vertical-align: middle;
 	padding: 8px 2px;
 }
 
-#page_forum .tableDiv tr.noPosts td, #page_forumSearch.tableDiv tr.noPosts td {
+#page_forum .tableDiv .noPosts td, #page_forumSearch.tableDiv .noPosts td {
 	height: 41px;
 }
 
-#page_forum .tableDiv table .forumIcon, #page_forum .tableDiv table .threadIcon, #page_forumSearch .tableDiv table .forumIcon, #page_forumSearch .tableDiv table .threadIcon {
+#page_forum .icon, #page_forum .icon, #page_forumSearch .icon, #page_forumSearch .icon {
 	width: 35px;
 	text-align: center;
 	vertical-align: middle;
 }
 
-#page_forum .tableDiv table .forumName, #page_forum .tableDiv table .threadInfo, #page_forumSearch .tableDiv table .threadInfo {
+#page_forum .name, #page_forum .threadInfo, #page_forumSearch .threadInfo {
 	padding-left: 5px;
 }
 
-#page_forum .tableDiv table .forumName .description {
+#page_forum .name {
+	width: 415px;
+}
+
+#page_forum .threadInfo, #page_forumSearch .threadInfo {
+	width: 540px;
+}
+
+#page_forum .name .description {
 	font-size: .85em;
 	margin: .5em 0 0;
 }
 
-#page_forum .tableDiv table .threadInfo .threadAuthor, #page_forumSearch .tableDiv table .threadInfo .threadAuthor {
+#page_forum .threadInfo .threadAuthor, #page_forumSearch .threadInfo .threadAuthor {
 	margin-top: .2em;
 	font-size: .85em;
 }
 
-#page_forumSearch .tableDiv table .threadInfo .threadAuthor .forumName, #page_forumSearch .tableDiv table .threadInfo .threadAuthor .forumName:hover {
+#page_forumSearch .threadAuthor .forumName, #page_forumSearch .threadInfo .threadAuthor .forumName:hover {
 	color: #D60;
 }
 
@@ -163,17 +184,28 @@
 	text-decoration: none;
 }
 
-#page_forum .tableDiv table .numPosts, #page_forum .tableDiv table .numThreads, #page_forumSearch .tableDiv table .numPosts {
-	width: 125px;
+#page_forum .numPosts, #page_forum .numThreads, #page_forumSearch .numPosts {
+	width: 120px;
 	text-align: center;
 }
 
-#page_forum .tableDiv table .lastPost, #page_forumSearch .tableDiv table .lastPost {
-	width: 200px;
+#page_forum .sudoTable .noThreads {
+	text-align: center;
+	font-family: Neuropol;
+	font-size: 1.6em;
+	line-height: 1.2em;
+}
+
+#page_forum .sudoTable .noThreads:hover {
+	background-color: transparent;
+}
+
+#page_forum .lastPost, #page_forumSearch .lastPost {
+	width: 175px;
 	text-align: center;
 }
 
-#page_forum .tableDiv table .lastPost span, #page_forumSearch .tableDiv table .lastPost span {
+#page_forum .lastPost span, #page_forumSearch .lastPost span {
 	font-size: .85em;
 }
 
@@ -198,65 +230,86 @@
 
 /* --------------------------------------------*/
 
-#page_forum_thead h2#noPosts {
+#page_forum_thread h2#noPosts {
 	margin: 4em 0;
 }
 
-#page_forum_thead #threadMenu {
+#page_forum_thread #threadMenu {
 	position: relative;
+	height: 24px;
+	margin: 1em 0;
 }
 
-#page_forum_thead #threadMenu #threadOptions {
+#page_forum_thread #threadMenu #threadOptions {
 	position: absolute;
 	right: 0;
 	bottom: 0;
 }
 
-#page_forum_thead #threadMenu #threadOptions button {
-	height: auto;
+#page_forum_thread #threadOptions button {
+	height: 24px;
+	width: 24px;
 	padding: 0;
+	background-image: url('../images/forums/threadActions.png');
+	background-repeat: no-repeat;
 }
 
-#page_forum_thead #poll {
+#page_forum_thread .unsticky {
+	background-position: top left;
+}
+
+#page_forum_thread .unsticky {
+	background-position: top right;
+}
+
+#page_forum_thread .lock {
+	background-position: bottom left;
+}
+
+#page_forum_thread .unlock {
+	background-position: bottom right;
+}
+
+#page_forum_thread #poll {
 	border: 1px solid #444;
 	padding: 10px;
 	margin: 10px 0 20px;
 	background: #111;
 }
 
-#page_forum_thead #poll p {
+#page_forum_thread #poll p {
 	font-size: .8em;
 }
 
-#page_forum_thead #poll #poll_question {
+#page_forum_thread #poll_question {
 	font-size: 1.1em;
 	font-weight: bold;
 }
 
-#page_forum_thead #poll ul {
+#page_forum_thread #poll ul {
 	margin: 1em 0 0;
 }
 
-#page_forum_thead #poll li {
+#page_forum_thread #poll li {
 	list-style: none;
 	margin-bottom: .3em;
 }
 
-#page_forum_thead #poll li div {
+#page_forum_thread #poll li div {
 	display: block;
 	float: left;
 }
 
-#page_forum_thead #poll li .poll_input {
+#page_forum_thread #poll .poll_input {
 	width: 30px;
 }
 
-#page_forum_thead #poll li .poll_option {
+#page_forum_thread #poll .poll_option {
 	width: 300px;
 	padding-top: .1em;
 }
 
-#page_forum_thead #poll li .poll_votesCast {
+#page_forum_thread #poll .poll_votesCast {
 	border: 1px solid #755;
 	border-right-color: #211;
 	border-bottom-color: #211;
@@ -265,226 +318,209 @@
 	padding: 0 5px;
 }
 
-#page_forum_thead #poll #poll_submit {
+#page_forum_thread #poll_submit {
 	margin: 1em 0 0 30px;
 }
 
-#page_forum_thead .postBlock {
-	width: 920px;
+#page_forum_thread .postBlock {
 	margin: 10px 0 30px;
 	background-image: url('../images/chatBody.jpg');
 	background-repeat: repeat-y;
 }
 
-#page_forum_thead .postRight {
+#page_forum_thread .postRight {
 	background-position: top right;
 }
 
-#page_forum_thead .postLeft {
+#page_forum_thread .postLeft {
 	background-position: top left;
 }
 
-#page_forum_thead .posterDetails {
+#page_forum_thread .posterDetails {
 	width: 170px;
 }
 
-#page_forum_thead .postRight .posterDetails {
+#page_forum_thread .postRight .posterDetails {
 	float: left;
 }
 
-#page_forum_thead .postLeft .posterDetails {
+#page_forum_thread .postLeft .posterDetails {
 	float: right;
 }
 
-#page_forum_thead .posterDetails .avatar {
+#page_forum_thread .posterDetails .avatar {
 	text-align: center;
 }
 
-#page_forum_thead .posterDetails .posterName {
+#page_forum_thread .posterDetails .posterName {
 	font-size: 1.1em;
 	font-weight: bold;
 	text-align: center;
 }
 
-#page_forum_thead div.postContent {
+#page_forum_thread .postContent {
 	position: relative;
-	padding: 10px 10px 10px;
-	background-image: url('../images/chatTop.jpg');
-	background-repeat: no-repeat;
+	padding: 15px;
+	border: 2px solid #000;
+	border-radius: 10px;
 	line-height: 1.4em;
+	background: #FFF;
 }
 
-#page_forum_thead .postContent .post img {
+#page_forum_thread .postContent .post img {
 	max-width: 705px;
 }
 
-#page_forum_thead .postRight .postContent {
+#page_forum_thread .postRight .postContent {
 	background-position: top right;
 	margin-left: 180px;
-	padding-left: 25px;
 }
 
-#page_forum_thead .postLeft .postContent {
+#page_forum_thread .postLeft .postContent {
 	background-position: top left;
 	margin-right: 180px;
-	padding-right: 25px;
 }
 
-#page_forum_thead .postPoint {
+#page_forum_thread .postPoint {
 	position: absolute;
 	top: 30px;
+	height: 15px;
+	width: 17px;
+	background: url('../images/forums/chatPoint.png') left top no-repeat;
 }
 
-#page_forum_thead .postRight .postPoint {
-	left: 0;
+#page_forum_thread .postRight .postPoint {
+	left: -17px;
 }
 
-#page_forum_thead .postLeft .postPoint {
-	right: 0;
+#page_forum_thread .postLeft .postPoint {
+	right: -17px;
+	background-position: top right;
 }
 
-#page_forum_thead .postedOn {
+#page_forum_thread .postedOn {
 	position: absolute;
-	top: 5px;
+	top: 8px;
+	right: 15px;
 	font-size: .8em;
 }
 
-#page_forum_thead .postRight .postedOn {
-	right: 10px;
+#page_forum_thread .subject {
+	margin-bottom: .4em;
+	padding-bottom: .5em;
+	padding-right: 150px;
+	border-bottom: 1px solid #800;
+	font-size: 1.1em;
+	line-height: 1.2em;
 }
 
-#page_forum_thead .postLeft .postedOn {
-	right: 25px;
-}
-
-#page_forum_thead div.postContent hr {
+#page_forum_thread div.postContent hr {
 	margin: .25em 0;
 	color: #555;
 	background-color: #555;
 }
 
-#page_forum_thead div.postContent h4 {
+#page_forum_thread div.postContent h4 {
 	font-weight: bold;
 	background: url('../images/fadeHR.jpg') bottom left no-repeat;
 	margin: 1.5em 0 .25em;
 }
 
-#page_forum_thead .postContent form, #page_forum_thead .postContent .indent, #page_forum_post #postedRolls .indent {
+#page_forum_thread .postContent form, #page_forum_thread .postContent .indent, #page_forum_post #postedRolls .indent {
 	margin: .25em 0 .5em 30px;
 }
 
-#page_forum_thead .rollInfo .hidden {
+#page_forum_thread .rollInfo .hidden {
 	color: #666;
 }
 
-#page_forum_thead .postContent form {
+#page_forum_thread .postContent form {
 	margin-top: .6em;
 }
 
-#page_forum_thead .postContent form button {
+#page_forum_thread .postContent form button {
 	position: relative;
 	height: auto;
 	padding: 0;
 	margin: 0 10px 0 0;
 }
 
-#page_forum_thead .postContent form button .eyeIcon {
+#page_forum_thread .postContent form button .eyeIcon {
 	position: absolute;
 	top: -10px;
 	right: -5px;
 }
 
-#page_forum_thead .postContent .indent img {
+#page_forum_thread .postContent .indent img {
 	margin-right: 5px;
 }
 
-#page_forum_thead div.postContent div.editInfoDiv {
+#page_forum_thread div.postContent div.editInfoDiv {
 	padding-top: .75em;
 	font-size: .8em;
 	font-style: italic;
 	text-align: right;
 }
 
-#page_forum_thead div.postActions {
+#page_forum_thread div.postActions {
 	font-size: .9em;
-	padding: 15px 0 5px 50px;
+	padding-top: 8px;
 	clear: both;
-	background-image: url('../images/chatBottom.jpg');
-	background-color: #000;
-	background-repeat: no-repeat;
 }
 
-#page_forum_thead .postRight .postActions {
+#page_forum_thread .postRight .postActions {
 	background-position: top right;
 	margin-left: 180px;
 }
 
-#page_forum_thead .postLeft .postActions {
+#page_forum_thread .postLeft .postActions {
 	background-position: top left;
 	margin-right: 180px;
 }
 
-#page_forum_thead div.postActions div {
+#page_forum_thread div.postActions div {
 	float: right;
-	margin-right: 10px;
-	margin-top: 2px;
 }
 
-#page_forum_thead div.postActions div a {
-	margin: 0 15px;
+#page_forum_thread div.postActions a {
+	margin: 0 10px;
 }
 
-#page_forum_thead #quickMod {
+#page_forum_thread #quickMod {
 	margin-top: 1em;
 	float: right;
 }
 
-#page_forum_thead #quickMod button {
+#page_forum_thread #quickMod button {
 	margin-left: 10px;
-	background: #111;
-	border: 1px solid #400;
-	border-bottom-color: #900;
-	border-right-color: #900;
 }
 
-#page_forum_thead form {
-/*	width: 650px;
-	margin: 0 auto;*/
-	margin: 0 10px;
-}
-
-#page_forum_thead label, #page_forum_post label {
+#page_forum_thread label, #page_forum_post label {
 	width: 75px;
 	float: left;
 }
 
-#page_forum_thead input[type="text"], #page_forum_post input[type="text"] {
+#page_forum_thread input[type="text"], #page_forum_post input[type="text"] {
 /*	width: 562px;*/
-	width: 812px;
-	margin: 0 0 0 5px;
+	width: 808px;
+	margin: 0 0 10px 5px;
 }
 
-#page_forum_thead #textAreaDiv {
+#page_forum_thread #textAreaDiv {
 	margin-top: 1em;
 }
 
-#page_forum_thead textarea, #page_forum_post textarea {
-/*	width: 642px;*/
-	width: 892px;
+#page_forum_thread textarea, #page_forum_post textarea {
 	height: 10em;
-	margin: 10px 0;
+	width: 100%;
 }
 
 #page_forum_post textarea {
 	height: 20em;
 }
 
-#page_forum_thead #submitDiv button {
-	margin-left: 30px;
-}
-
-#page_forum_thead #submitDiv .btn_post {
-	margin-left: 50px;
+#page_forum_thread #markItUpMessageTextArea {
+	margin-bottom: 1em;
 }
 
 /* --------------------------------------------*/
@@ -492,10 +528,6 @@
 #page_forum_post #preview {
 	clear: both;
 	margin: 10px 0;
-}
-
-#page_forum_post form {
-	margin: 0 10px;
 }
 
 #page_forum_post hr {
@@ -533,11 +565,6 @@
 	position: absolute;
 	top: 0;
 	left: 400px;
-}
-
-#page_forum_post h3 {
-	text-decoration: none;
-	background: url('../images/fadeHR.jpg') bottom left no-repeat;
 }
 
 #page_forum_post #addPoll label {

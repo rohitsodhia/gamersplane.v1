@@ -10,11 +10,10 @@
 	$profFields = array('location' => 'Location', 'aim' => 'AIM', 'yahoo' => 'Yahoo!', 'msn' => 'MSN', 'games' => 'Games');
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
+		<h1 class="headerbar"><?=$userInfo['username']?></h1>
 		<div id="leftCol">
-			<h1><?=$userInfo['username']?></h1>
-			
-<? if (file_exists(FILEROOT."/ucp/avatars/$profileID.jpg")) { ?>
-			<img src="<?=SITEROOT?>/ucp/avatars/<?=$profileID?>.jpg" class="avatar">
+<? if (file_exists(FILEROOT."/ucp/avatars/$profileID.{$userInfo['avatarExt']}")) { ?>
+			<img src="<?=SITEROOT?>/ucp/avatars/<?=$profileID.'.'.$userInfo['avatarExt']?>" class="avatar">
 			
 <? } ?>
 			<div id="actions">
@@ -23,7 +22,7 @@
 		</div>
 		<div id="rightCol">
 			<div id="userInfo" class="userInfoBox">
-				<h2>User Information</h2>
+				<h2 class="headerbar hbDark">User Information</h2>
 				<div class="details">
 					<div class="tr">
 						<div class="title">Member Since</div>
@@ -58,10 +57,10 @@
 			</div>
 			
 			<div id="charStats" class="userInfoBox">
-				<h2>Characters Stats</h2>
-				<div class="details clearfix">
+				<h2 class="headerbar hbDark">Characters Stats</h2>
 <?
 	$characters = $mysql->query("SELECT c.characterID, c.systemID, s.shortName, s.fullName, c.gameID, c.retired, count(c.characterID) numChars FROM characters c INNER JOIN systems s USING (systemID) WHERE c.userID = $profileID GROUP BY c.systemID ORDER BY numChars DESC, s.fullName");
+	echo "				<div class=\"details clearfix".($characters->rowCount()?'':' noInfo')."\">\n";
 	if ($characters->rowCount()) {
 		$charStats = array();
 		$numChars = 0;
@@ -81,17 +80,17 @@
 			echo "\t\t\t\t\t\t</div>\n";
 			echo "\t\t\t\t\t</div>\n";
 		}
-	} else echo "\t\t\t\t<h3>{$userInfo['username']} has not yet made any characters.</h3>\n";
+	} else echo "\t\t\t\t<div>{$userInfo['username']} has not yet made any characters.</div>\n";
 ?>
 				</div>
 				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
 			</div>
 			
 			<div id="gmStats" class="userInfoBox">
-				<h2>GM Stats</h2>
-				<div class="details clearfix">
+				<h2 class="headerbar hbDark">GM Stats</h2>
 <?
-	$games = $mysql->query("SELECT g.gameID, s.shortName, s.fullName, g.retired, count(g.gameID) numGames FROM games g INNER JOIN systems s USING (systemID) INNER JOIN gms USING (gameID) WHERE gms.userID = $profileID GROUP BY g.systemID ORDER BY numGames DESC, s.fullName");
+	$games = $mysql->query("SELECT g.gameID, s.shortName, s.fullName, g.retired, count(g.gameID) numGames FROM games g INNER JOIN systems s USING (systemID) INNER JOIN players p USING (gameID) WHERE p.userID = $profileID AND p.isGM = 1 GROUP BY g.systemID ORDER BY numGames DESC, s.fullName");
+	echo "				<div class=\"details clearfix".($games->rowCount()?'':' noInfo')."\">\n";
 	if ($games->rowCount()) {
 		$gameStats = array();
 		$numGames = 0;
@@ -111,7 +110,7 @@
 			echo "\t\t\t\t\t\t</div>\n";
 			echo "\t\t\t\t\t</div>\n";
 		}
-	} else echo "\t\t\t\t<h3>{$userInfo['username']} has not yet run any games.</h3>\n";
+	} else echo "\t\t\t\t<div>{$userInfo['username']} has not yet run any games.</div>\n";
 ?>
 				</div>
 				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">

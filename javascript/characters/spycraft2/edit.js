@@ -53,8 +53,6 @@ $(function() {
 	$('.stat').blur(function() {
 		modifier = Math.floor(($(this).val() - 10)/2);
 		change = modifier - statBonus[this.id];
-//		if ($(this).val() == '') { modifier = 0; }
-//		else if (modifier > 0) { modifier = '+' + modifier; }
 		$('#' + this.id + 'Modifier').text(showSign(modifier));
 		$('.statBonus_' + this.id).text(showSign(modifier));
 		$('.addStat_' + this.id).each(function () { $(this).text(showSign(parseInt($(this).text()) + change)); });
@@ -90,32 +88,12 @@ $(function() {
 	$('#request_misc').blur(function () { $('#request_total').text(showSign(statBonus['cha'] + level + parseInt($(this).val()))); });
 	$('#gear_misc').blur(function () { $('#gear_total').text(showSign(statBonus['wis'] + level + parseInt($(this).val()))); });
 	
-	$('#skillName').focus(function () {
-		if ($(this).val() == 'Skill Name') $(this).val('').css('color', '#FFF');
-		if ($('#skillAjaxResults a').size() > 1 && $(this).val() >= 3) $('#skillAjaxResults').slideDown();
-	}).blur(function () {
-		if ($(this).val() == '') $(this).val('Skill Name').css('color', '#666');
-		$('#skillAjaxResults').slideUp();
-	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post(SITEROOT + '/characters/ajax/skillSearch', { search: $(this).val(), characterID: characterID, system: 'spycraft2' }, function (data) {
-			if (data.length > 0) {
-				$('#skillAjaxResults').html(data).slideDown();
-				
-				$('#skillAjaxResults a').click(function () {
-					$('#skillName').val($(this).text());
-					
-					return false;
-				});
-			} else $('#skillAjaxResults').slideUp();
-		}); } else $('#skillAjaxResults').slideUp();
-	}).keypress(function (event) {
-		if (event.which == 13) return false;
-	});
+	$('#skillName').autocomplete('/characters/ajax/skillSearch', { search: $('#skillName').val(), characterID: characterID, system: 'spycraft2' });
 	
-	$('#addSkill').click(function () {
+	$('#addSkill').click(function (e) {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name' && $('#skillStat_1').val() != $('#skillStat_2').val()) {
 			$.post(SITEROOT + '/characters/ajax/spycraft2/addSkill', {
-				characterID: $('#characterID').val(),
+				characterID: characterID,
 				name: $('#skillName').val(),
 				stat_1: $('#skillStat_1').val(),
 				stat_2: $('#skillStat_2').val(),
@@ -123,24 +101,24 @@ $(function() {
 				statBonus_2: $('#skillStat_2').val() != '' ? statBonus[$('#skillStat_2').val()] : 0
 			}, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
-				$(data).hide().appendTo('#skills').slideDown();
-				$('#skillName').val('Skill Name').css('color', '#666');
+				$(data).hide().appendTo('#skills .hbMargined').slideDown();
+				$('#skillName').val('').trigger('blur');
 			});
 		}
 		
-		return false;
+		e.preventDefault();
 	});
 	
-	$('#skills').on('click', '.skill_remove', function () {
+	$('#skills').on('click', '.skill_remove', function (e) {
 		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/spycraft2/removeSkill', { characterID: $('#characterID').val(), skillID: skillID }, function (data) {
+		$.post(SITEROOT + '/characters/ajax/spycraft2/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
-				if ($('.skill').length == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills').slideDown();
+				if ($('.skill').length == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbMargined').slideDown();
 			}); }
 		});
 		
-		return false;
+		e.preventDefault();
 	}).on('change', '.skill input', function () {
 		var inputTotal = 0;
 		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { inputTotal += parseInt($(this).val()); });
@@ -150,47 +128,25 @@ $(function() {
 			$(this).text(showSign(total));
 		});
 	});
-
-/*	var onWrapper = false;
-	$('#focusName').focus(function () {
-		if ($('#focusAjaxResults a').size() > 1 && $(this).val() >= 3) $('#focusAjaxResults').slideDown();
-	}).blur(function () {
-		if (onWrapper == false) $('#focusAjaxResults').slideUp();
-	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Focus Name') { $.post(SITEROOT + '/characters/ajax/spycraft2/focusSearch', { search: $(this).val(), characterID: characterID }, function (data) {
-			if (data.length > 0) {
-				$('#focusAjaxResults').html(data).slideDown();
-			} else $('#focusAjaxResults').slideUp();
-		}); } else $('#focusAjaxResults').slideUp();
-	}).keypress(function (event) {
-		if (event.which == 13) return false;
-	});
-
-	$('#focusAjaxResults').on('click', 'a', function () {
-		$('#focusName').val($(this).text());
-		$('#focusAjaxResults').slideUp();
-		
-		return false;
-	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });*/
 	
 	$('#focusName').autocomplete('/characters/ajax/spycraft2/focusSearch', { characterID: characterID });
 
-	$('#addFocus').click(function () {
-		if ($('#focusName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFocus', { characterID: $('#characterID').val(), name: $('#focusName').val() }, function (data) {
+	$('#addFocus').click(function (e) {
+		if ($('#focusName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFocus', { characterID: characterID, name: $('#focusName').val() }, function (data) {
 			if ($('#noFocuses').size()) {
 				$('#noFocuses').slideUp();
 				$('#focuses .labelTR').slideDown();
 			}
-			$(data).hide().appendTo('#focuses').slideDown();
-			$('#focusName').val('');
+			$(data).hide().appendTo('#focuses .hbMargined').slideDown();
+			$('#focusName').val('').trigger('blur');
 		}); }
 		
-		return false;
+		e.preventDefault();
 	});
 	
-	$('#focuses').on('click', '.focus_remove', function () {
+	$('#focuses').on('click', '.focus_remove', function (e) {
 		var focusID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/spycraft2/removeFocus', { characterID: $('#characterID').val(), focusID: focusID }, function (data) {
+		$.post(SITEROOT + '/characters/ajax/spycraft2/removeFocus', { characterID: characterID, focusID: focusID }, function (data) {
 			if (parseInt(data) == 1) { $('#focus_' + focusID).slideUp(function () {
 				$(this).remove();
 				if ($('.focus').size() == 0) {
@@ -200,67 +156,53 @@ $(function() {
 			}); }
 		});
 		
-		return false;
+		e.preventDefault();
 	});
 	
-/*	$('#featName').focus(function () {
-		if ($('#featAjaxResults a').size() > 1 && $(this).val() >= 3) $('#featAjaxResults').slideDown();
-	}).blur(function () {
-		$('#featAjaxResults').slideUp();
-	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post(SITEROOT + '/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'spycraft2' }, function (data) {
-			if (data.length > 0) {
-				$('#featAjaxResults').html(data).slideDown();
-				
-				$('#featAjaxResults a').click(function () {
-					$('#featName').val($(this).text());
-					
-					return false;
-				});
-			} else $('#featAjaxResults').slideUp();
-		}); } else $('#featAjaxResults').slideUp();
-	}).keypress(function (event) {
-		if (event.which == 13) return false;
-	});*/
 	$('#featName').autocomplete('/characters/ajax/featSearch', { characterID: characterID, system: 'spycraft2' });
 	
-	$('#addFeat').click(function () {
-		if ($('#featName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFeat', { characterID: $('#characterID').val(), name: $('#featName').val() }, function (data) {
+	$('#addFeat').click(function (e) {
+		if ($('#featName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
 			if ($('#noFeats').size()) $('#noFeats').slideUp();
-			$(data).hide().appendTo('#feats').slideDown();
-			$('#featName').val('');
+			$(data).hide().appendTo('#feats .hbMargined').slideDown();
+			$('#featName').val('').trigger('blur');
 		}); }
 		
-		return false;
+		e.preventDefault();
 	});
 
 	$('#feats').on('click', '.feat_notesLink', function (e) {
-		$.colorbox({ href: $(this).attr('href'), iframe: true, innerHeight: 190, innerWidth: 500 });
+		curLink = this.href;
+		$.colorbox({ href: function () { return curLink + '?modal=1' }, iframe: true, innerHeight: 100, innerWidth: 500 });
 		
 		e.preventDefault();
-	}).on('click', '.feat_remove', function () {
+	}).on('click', '.feat_remove', function (e) {
 		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/spycraft2/removeFeat', { characterID: $('#characterID').val(), featID: featID }, function (data) {
+		$.post(SITEROOT + '/characters/ajax/spycraft2/removeFeat', { characterID: characterID, featID: featID }, function (data) {
 			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
 				$(this).remove();
 				if ($('.feat').size() == 0) $('#noFeats').slideDown();
 			}); }
 		});
 		
-		return false;
+		e.preventDefault();
 	});
 	
-	$('#addWeapon').click(function () {
-		var weaponNum = $('.weapon').size() + 1;
-		$.get(SITEROOT + '/characters/ajax/spycraft2/weapon', function (data) { $(data.replace(/weaponNum/g, 'new_' + weaponNum )).hide().appendTo('#weapons').slideDown(); } );
+	$('#addWeapon').click(function (e) {
+		$.post(SITEROOT + '/characters/ajax/spycraft2/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
 		
-		return false;
+		e.preventDefault()
 	});
 	
-	$('#addArmor').click(function () {
-		var armorNum = $('.armor').size() + 1;
-		$.get(SITEROOT + '/characters/ajax/spycraft2/armor', function (data) { $(data.replace(/armorNum/g, 'new' + armorNum)).hide().appendTo('#armor').slideDown(); } );
+	$('#addArmor').click(function (e) {
+		$.post(SITEROOT + '/characters/ajax/spycraft2/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
 		
-		return false;
+		e.preventDefault()
+	});
+
+	$('#weapons, #armor').on('click', '.remove', function (e) {
+		$(this).parent().parent().remove();
+
+		e.preventDefault()
 	});
 });

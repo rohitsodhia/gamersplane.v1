@@ -21,10 +21,10 @@
 	$games = $mysql->query("SELECT games.gameID, games.title, systems.fullName system, games.gmID, gmUsers.username, IF(userChars.gameID IS NOT NULL, 1, IF(gms.gameID IS NOT NULL, 1, 0)) inGame FROM games INNER JOIN systems ON games.systemID = systems.systemID INNER JOIN users AS gmUsers ON games.gmID = gmUsers.userID LEFT JOIN characters AS userChars ON userChars.userID = $userID AND games.gameID = userChars.gameID LEFT JOIN gms ON (gms.userID, games.gameID) = ($userID, gms.gameID) WHERE games.gmID != $userID AND games.open = 1".($systems?" AND games.systemID IN ($systems)":'').(isset($search)?" AND ($search)":'')." HAVING inGame = 0 ORDER BY $order");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
-		echo "\t\t\t<div class=\"tr\">\n";
+		echo "\t\t\t<div class=\"tr clearfix\">\n";
 		echo "\t\t\t\t".'<a href="'.SITEROOT.'/games/'.$gameInfo['gameID'].'" class="gameTitle">'.$gameInfo['title']."</a>\n";
 		echo "\t\t\t\t".'<div class="systemType">'.$gameInfo['system']."</div>\n";
 		echo "\t\t\t\t".'<div class="gmLink"><a href="'.SITEROOT.'/ucp/'.$gameInfo['gmID'].'" class="username">'.$gameInfo['username'].'</a></div>'."\n";
 		echo "\t\t\t</div>\n";
-	} } else echo "\t\t\t<h2>Doesn't seem like any games are available at this time. Maybe you should <a href=\"".SITEROOT."/games/new\">make one</a>?</h2>\n";
+	} } else echo "\t\t\t<div id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"".SITEROOT."/games/new\">make one</a>?</div>\n";
 ?>

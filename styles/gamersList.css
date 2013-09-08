@@ -1,0 +1,60 @@
+/*
+	Gamers List CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_gamersList ul {
+	list-style: none;
+	margin-left: 0;
+}
+
+#page_gamersList li {
+	position: relative;
+	display: block;
+	float: left;
+	width: 164px;
+	height: 185px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding: 5px;
+	z-index: 0;
+	border: 1px solid #777;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	text-align: center;
+}
+
+#page_gamersList li:hover {
+	background-color: #EEE;
+}
+
+#page_gamersList li.last {
+	margin-right: 0;
+}
+
+#page_gamersList .onlineIndicator {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	width: 10px;
+	height: 10px;
+	z-index: 10;
+	background: url('../images/onlineIndicator.jpg') top left no-repeat;
+}
+
+#page_gamersList .avatar {
+	display: block;
+	width: 150px;
+	height: 150px;
+	margin: 7px auto 0;
+	text-align: center;
+}
+
+#page_gamersList p {
+	text-align: center;
+}
+
+#page_gamersList .onlineIndicator.online {
+	background-position: bottom left;
+}
