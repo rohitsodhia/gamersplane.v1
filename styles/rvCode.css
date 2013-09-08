@@ -1,0 +1,28 @@
+/*
+	rvCode: This is just a modified bbCode, based off research off the internet
+	Created by Rohit Sodhia
+*/
+
+div.textAreaDiv {
+}
+
+div.textAreaDiv div.buttonArea {
+	margin: .5em 0;
+}
+
+div.textAreaDiv div.buttonArea div.tagButtons {
+	margin: 0 15px;
+}
+
+div.textAreaDiv div.buttonArea div.tagButtons input {
+	height: 1.8em;
+	width: 25px;
+	float: left;
+	margin: 0 8px 0 0;
+	padding: 0px;
+}
+
+div.textAreaDiv div.buttonArea div.buttonArea_text {
+	margin: .5em 15px 0;
+	font-size: .9em;
+}

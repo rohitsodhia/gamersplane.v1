@@ -1,0 +1,88 @@
+/*
+	Gamers Plane Characters: AFMBE CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_characterSheet_afmbe_edit #nameDiv label, #page_characterSheet_afmbe_sheet #nameDiv label {
+	display: block;
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol, #page_characterSheet_afmbe_edit #secondaryStatsCol, #page_characterSheet_afmbe_sheet #primaryStatsCol, #page_characterSheet_afmbe_sheet #secondaryStatsCol {
+	float: left;
+	margin-top: 1em;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol, #page_characterSheet_afmbe_sheet #primaryStatsCol {
+	width: 480px;
+	margin-right: 40px;
+	margin-left: 65px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol .tr, #page_characterSheet_afmbe_sheet #primaryStatsCol .tr {
+	margin: 8px 0;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol .twoCol, #page_characterSheet_afmbe_sheet #primaryStatsCol .twoCol {
+	float: left;
+	width: 220px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol .leftCol, #page_characterSheet_afmbe_sheet #primaryStatsCol .leftCol {
+	margin-right: 40px;
+}
+
+#page_characterSheet_afmbe_edit #secondaryStatsCol, #page_characterSheet_afmbe_sheet #secondaryStatsCol {
+	width: 250px;
+	margin-right: 65px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol label, #page_characterSheet_afmbe_edit #secondaryStatsCol label, #page_characterSheet_afmbe_sheet #primaryStatsCol label, #page_characterSheet_afmbe_sheet #secondaryStatsCol label {
+	display: block;
+	float: left;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol label, #page_characterSheet_afmbe_sheet #primaryStatsCol label {
+	width: 170px;
+}
+
+#page_characterSheet_afmbe_edit #secondaryStatsCol label, #page_characterSheet_afmbe_sheet #secondaryStatsCol label {
+	width: 200px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol input, #page_characterSheet_afmbe_edit #secondaryStatsCol input {
+	width: 30px;
+	margin: 0 6px;
+}
+
+#page_characterSheet_afmbe_edit .twoCol, #page_characterSheet_afmbe_sheet .twoCol {
+	float: left;
+	width: 450px;
+}
+
+#page_characterSheet_afmbe_edit .twoCol h2, #page_characterSheet_afmbe_sheet .twoCol h2 {
+	margin-top: 1em;
+}
+
+#page_characterSheet_afmbe_edit .twoCol textarea, #page_characterSheet_afmbe_sheet .twoCol textarea {
+	width: 442px;
+	height: 8.6em;
+}
+
+#page_characterSheet_afmbe_edit #notes {
+	width: 912px;
+	height: 19.7em;
+}
+
+#page_characterSheet_afmbe_edit .leftCol, #page_characterSheet_afmbe_sheet .leftCol {
+	margin-right: 20px;
+}
+
+#page_characterSheet_afmbe_edit #submitDiv {
+	clear: both;
+	text-align: center;
+	margin-top: 1em;
+}

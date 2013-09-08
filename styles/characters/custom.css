@@ -1,0 +1,41 @@
+/*
+	Gamers Plane Characters: Custom CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_characterSheet_custom_edit .leftCol, #page_characterSheet_custom_sheet .leftCol {
+	float: left;
+	width: 200px;
+	margin-top: 5px;
+	font-weight: bold;
+	text-align: right;
+}
+
+#page_characterSheet_custom_sheet #charLabel, #page_characterSheet_custom_edit #charLabel {
+	margin-top: 0;
+}
+
+#page_characterSheet_custom_sheet #charSheetLabel {
+	margin-top: 0;
+}
+
+#page_characterSheet_custom_edit .rightCol, #page_characterSheet_custom_sheet .rightCol {
+	margin-left: 210px;
+	width: 620px;
+}
+
+#page_characterSheet_custom_edit .rightCol input {
+	width: 200px;
+}
+
+#page_characterSheet_custom_edit .rightCol textarea {
+	width: 600px;
+	height: 20em;
+}
+
+#page_characterSheet_custom_edit #labelInfo {
+	width: 200px;
+	padding-top: 4px;
+	font-size: .8em;
+	text-align: center;
+}

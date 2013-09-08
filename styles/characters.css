@@ -1,0 +1,84 @@
+/*
+	Gamers Plane Characters CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_myCharacters .alertBox_error {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+#page_myCharacters h2 {
+	margin: 2.5em 0;
+}
+
+#page_myCharacters #characterList {
+	margin-bottom: 2em;
+}
+
+#page_myCharacters #characterList h3 {
+	margin-bottom: .5em;
+}
+
+#page_myCharacters #characterList .tr {
+	border: 1px solid #000;
+	padding-left: 15px;
+}
+
+#page_myCharacters #characterList .tr:hover {
+	background: #111;
+	border-color: #333;
+}
+
+#page_myCharacters #characterList .charLabel {
+	display: block;
+	float: left;
+	width: 250px;
+	border-right: 1px solid #666;
+}
+
+#page_myCharacters #characterList .systemType {
+	float: left;
+	width: 220px;
+	border-right: 1px solid #999;
+	text-align: center;
+}
+
+#page_myCharacters #characterList .charLinks {
+	margin-left: 490px;
+}
+
+#page_myCharacters #characterList .charLinks a {
+	margin-right: 20px;
+}
+
+#page_myCharacters #newChar h3 {
+	margin-bottom: .5em;
+}
+
+#page_myCharacters #newChar label {
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 15px;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+#page_myCharacters #newChar .tr div {
+	margin-left: 300px;
+	padding: 4px 0;
+	width: 150px;
+	text-align: right;
+	font-size: .8em;
+}
+
+#page_myCharacters #newChar button {
+	margin-left: 165px;
+}
+
+/* --------------------------------------------*/
+
+#page_deleteCharacter div {
+	margin-bottom: 1em;
+}

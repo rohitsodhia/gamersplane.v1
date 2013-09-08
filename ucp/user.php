@@ -1,0 +1,120 @@
+<?
+	$loggedIn = checkLogin(0);
+	
+	$profileID = intval($pathOptions[0]);
+	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$profileID);
+	if ($userCheck->rowCount() == 0) { header('Location: '.SITEROOT.'/404'); exit; }
+	$userInfo = $userCheck->fetch();
+	$userInfo['joinDate'] = switchTimezone($_SESSION['timezone'], $userInfo['joinDate']);
+	
+	$profFields = array('location' => 'Location', 'aim' => 'AIM', 'yahoo' => 'Yahoo!', 'msn' => 'MSN', 'games' => 'Games');
+?>
+<? require_once(FILEROOT.'/header.php'); ?>
+		<div id="leftCol">
+			<h1><?=$userInfo['username']?></h1>
+			
+<? if (file_exists(FILEROOT."/ucp/avatars/$profileID.jpg")) { ?>
+			<img src="<?=SITEROOT?>/ucp/avatars/<?=$profileID?>.jpg" class="avatar">
+			
+<? } ?>
+			<div id="actions">
+				<a href="<?=SITEROOT?>/ucp/pms/send/?userID=<?=$profileID?>">Send Private Message</a>
+			</div>
+		</div>
+		<div id="rightCol">
+			<div id="userInfo" class="userInfoBox">
+				<h2>User Information</h2>
+				<div class="details">
+					<div class="tr">
+						<div class="title">Member Since</div>
+						<div><?=date('F j, Y g:i A', $userInfo['joinDate'])?></div>
+					</div>
+<? if ($userInfo['gender'] != '') { ?>
+					
+					<div class="tr">
+						<div class="title">Gender</div>
+						<div><?=$userInfo['gender'] == 'm'?'Male':'Female'?></div>
+					</div>
+<?
+	}
+	if ($userInfo['showAge'] == 1) {
+		$thisYear = strtotime(date('Y').substr($userInfo['birthday'], 4));
+?>
+					
+					<div class="tr">
+						<div class="title">Age</div>
+						<div><?=date('Y') - substr($userInfo['birthday'], 0, 4) - ($thisYear > time()?1:0)?></div>
+					</div>
+<? } ?>
+<? foreach ($profFields as $field => $label) { if (strlen($userInfo[$field])) { ?>
+					
+					<div class="tr">
+						<div class="title"><?=$label?></div>
+						<div><?=$userInfo[$field]?></div>
+					</div>
+<? } } ?>
+				</div>
+				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
+			</div>
+			
+			<div id="charStats" class="userInfoBox">
+				<h2>Characters Stats</h2>
+				<div class="details clearfix">
+<?
+	$characters = $mysql->query("SELECT c.characterID, c.systemID, s.shortName, s.fullName, c.gameID, c.retired, count(c.characterID) numChars FROM characters c INNER JOIN systems s USING (systemID) WHERE c.userID = $profileID GROUP BY c.systemID ORDER BY numChars DESC, s.fullName");
+	if ($characters->rowCount()) {
+		$charStats = array();
+		$numChars = 0;
+		foreach ($characters as $info) {
+			$charStats[] = $info;
+			$numChars += $info['numChars'];
+		}
+		$count = 0;
+		echo "\t\t\t\t\t<p>{$userInfo['username']} has made $numChars character".($numChars == 1?'':'s')." so far.</p>\n";
+		foreach ($charStats as $game) {
+			$count++;
+			echo "\t\t\t\t\t<div class=\"game".($count % 3 == 0?' third':'')."\">\n";
+			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.jpg\"></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
+			echo "\t\t\t\t\t\t\t<p>{$game['fullName']}</p>\n";
+			echo "\t\t\t\t\t\t\t<p>{$game['numChars']} Char".($game['numChars'] == 1?'':'s')." - ".round($game['numChars'] / $numChars * 100, 2)."%</p>\n";
+			echo "\t\t\t\t\t\t</div>\n";
+			echo "\t\t\t\t\t</div>\n";
+		}
+	} else echo "\t\t\t\t<h3>{$userInfo['username']} has not yet made any characters.</h3>\n";
+?>
+				</div>
+				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
+			</div>
+			
+			<div id="gmStats" class="userInfoBox">
+				<h2>GM Stats</h2>
+				<div class="details clearfix">
+<?
+	$games = $mysql->query("SELECT g.gameID, s.shortName, s.fullName, g.retired, count(g.gameID) numGames FROM games g INNER JOIN systems s USING (systemID) INNER JOIN gms USING (gameID) WHERE gms.userID = $profileID GROUP BY g.systemID ORDER BY numGames DESC, s.fullName");
+	if ($games->rowCount()) {
+		$gameStats = array();
+		$numGames = 0;
+		foreach ($games as $info) {
+			$gameStats[] = $info;
+			$numGames += $info['numGames'];
+		}
+		$count = 0;
+		echo "\t\t\t\t\t<p>{$userInfo['username']} has run $numGames game".($numGames == 1?'':'s')." so far.</p>\n";
+		foreach ($gameStats as $game) {
+			$count++;
+			echo "\t\t\t\t\t<div class=\"game".($count % 3 == 0?' third':'')."\">\n";
+			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.jpg\"></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
+			echo "\t\t\t\t\t\t\t<p>{$game['fullName']}</p>\n";
+			echo "\t\t\t\t\t\t\t<p>{$game['numGames']} Game".($game['numGames'] == 1?'':'s')." - ".round($game['numGames'] / $numGames * 100, 2)."%</p>\n";
+			echo "\t\t\t\t\t\t</div>\n";
+			echo "\t\t\t\t\t</div>\n";
+		}
+	} else echo "\t\t\t\t<h3>{$userInfo['username']} has not yet run any games.</h3>\n";
+?>
+				</div>
+				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
+			</div>
+		</div>
+<? require_once(FILEROOT.'/footer.php'); ?>

@@ -1,0 +1,3 @@
+$(function() {
+	$('#messageTextArea').markItUp(mySettings);
+});

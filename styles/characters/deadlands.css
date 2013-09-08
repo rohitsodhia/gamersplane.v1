@@ -1,0 +1,132 @@
+/*
+	Gamers Plane Characters: Deadlands CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_characterSheet_deadlands_edit #nameDiv label, #page_characterSheet_deadlands_sheet #nameDiv label {
+	display: block;
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#page_characterSheet_deadlands_edit .triCol, #page_characterSheet_deadlands_sheet .triCol {
+	float: left;
+	width: 290px;
+	margin-right: 20px;
+	margin-top: 1em;
+}
+
+#page_characterSheet_deadlands_edit .lastTriCol, #page_characterSheet_deadlands_sheet .lastTriCol {
+	float: none;
+	margin-right: 0;
+	margin-left: 620px;
+}
+
+#page_characterSheet_deadlands_edit textarea {
+	width: 282px;
+	height: 6.2em;
+}
+
+#page_characterSheet_deadlands_edit .triCol h3, #page_characterSheet_deadlands_sheet .triCol h3 {
+	text-decoration: none;
+}
+
+#page_characterSheet_deadlands_edit .triCol .statDiv, #page_characterSheet_deadlands_sheet .triCol .statDiv {
+	position: relative;
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_deadlands_edit .triCol .firstStatDiv, #page_characterSheet_deadlands_sheet .triCol .firstStatDiv {
+	margin-top: 0;
+}
+
+#page_characterSheet_deadlands_edit .triCol .statDiv h3, #page_characterSheet_deadlands_sheet .triCol .statDiv h3 {
+	display: inline;
+}
+
+#page_characterSheet_deadlands_edit .triCol .statDiv input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit .triCol .skillTitle, #page_characterSheet_deadlands_sheet .triCol .skillTitle {
+	margin-top: .75em;
+}
+
+#page_characterSheet_deadlands_edit #edge_hind {
+	height: 20em;
+}
+
+#page_characterSheet_deadlands_edit #nightmare {
+	height: 12.4em;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv .indivWoundDiv, #page_characterSheet_deadlands_sheet #woundsDiv .indivWoundDiv {
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv h3, #page_characterSheet_deadlands_sheet #woundsDiv h3 {
+	margin: .5em 0;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv .indivWoundDiv input {
+	width: 60px;
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv .subTwoCol, #page_characterSheet_deadlands_sheet #woundsDiv .subTwoCol {
+	width: 140px;
+	float: left;
+}
+
+#page_characterSheet_deadlands_edit #windDiv, #page_characterSheet_deadlands_sheet #windDiv {
+	margin-top: 70px;
+}
+
+#page_characterSheet_deadlands_edit #windDiv h3, #page_characterSheet_deadlands_sheet #windDiv h3 {
+	display: inline;
+	margin-right: 10px;
+}
+
+#page_characterSheet_deadlands_edit #windDiv input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit .twoCol, #page_characterSheet_deadlands_sheet .twoCol {
+	float: left;
+	width: 450px;
+	margin-right: 20px;
+}
+
+#page_characterSheet_deadlands_edit .lastTwoCol, #page_characterSheet_deadlands_sheet .lastTwoCol {
+	float: none;
+	margin-left: 470px;
+}
+
+#page_characterSheet_deadlands_edit .leftTitle, #page_characterSheet_deadlands_sheet .leftTitle {
+	text-align: left;
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_deadlands_edit #weapons, #page_characterSheet_deadlands_edit #arcane, #page_characterSheet_deadlands_edit #equipment {
+	width: 442px;
+	height: 10em;
+}
+
+#page_characterSheet_deadlands_edit #equipment {
+	height: 24.2em;
+}
+
+#page_characterSheet_deadlands_edit #notes {
+	height: 24.8em;
+	width: 912px;
+}
+
+#page_characterSheet_deadlands_edit #submitDiv {
+	clear: both;
+	text-align: center;
+	margin-top: 1em;
+}

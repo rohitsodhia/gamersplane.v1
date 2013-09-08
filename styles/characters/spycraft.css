@@ -1,0 +1,625 @@
+/*
+	Gamers Plane Characters: Spycraft CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+
+#page_characterSheet_spycraft_edit h2 img, #page_characterSheet_spycraft_sheet h2 img {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet_spycraft_edit .cell, #page_characterSheet_spycraft_sheet .cell {
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_sheet #editCharLink  {
+	margin-bottom: 1.5em;
+}
+
+#page_characterSheet_spycraft_edit label, #page_characterSheet_spycraft_sheet label {
+	font-size: .8em;
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_edit label.shiftRight, #page_characterSheet_spycraft_sheet label.shiftRight {
+	padding-left: 8px;
+}
+
+#page_characterSheet_spycraft_edit input[type="text"] {
+	width: 32px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit .shortText, #page_characterSheet_spycraft_sheet .shortText {
+	width: 100px;
+}
+
+#page_characterSheet_spycraft_edit input.shortText, #page_characterSheet_spycraft_sheet input.shortText {
+	width: 92px;
+}
+
+#page_characterSheet_spycraft_edit .medText, #page_characterSheet_spycraft_sheet .medText {
+	width: 200px;
+}
+
+#page_characterSheet_spycraft_edit input.medText, #page_characterSheet_spycraft_sheet input.medText {
+	width: 200px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit .longText, #page_characterSheet_spycraft_sheet .longText {
+	width: 350px;
+}
+
+#page_characterSheet_spycraft_edit input.longText, #page_characterSheet_spycraft_sheet input.longText {
+	width: 342px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit .shortNum, #page_characterSheet_spycraft_sheet .shortNum {
+	width: 40px;
+}
+
+#page_characterSheet_spycraft_edit input.shortNum, #page_characterSheet_spycraft_sheet input.shortNum {
+	width: 32px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit .medNum, #page_characterSheet_spycraft_sheet .medNum {
+	width: 60px;
+}
+
+#page_characterSheet_spycraft_edit input.medNum, #page_characterSheet_spycraft_sheet input.medNum {
+	width: 52px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit label.leftLabel, #page_characterSheet_spycraft_sheet label.leftLabel {
+	font-size: 1em;
+}
+
+#page_characterSheet_spycraft_edit .lrBuffer, #page_characterSheet_spycraft_sheet .lrBuffer {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+#page_characterSheet_spycraft_edit .labelTR {
+	padding-bottom: 0;
+}
+
+#page_characterSheet_spycraft_sheet .labelTR {
+	padding: 0;
+}
+
+#page_characterSheet_spycraft_sheet .dataTR {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet_spycraft_sheet .dataTR > div {
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_edit #label label {
+	float: left;
+	text-align: right;
+	margin-right: 15px;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+#page_characterSheet_spycraft_edit #label div {
+	width: 200px;
+	text-align: right;
+	font-size: .8em;
+}
+
+#page_characterSheet_spycraft_edit #size {
+	width: 65px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #classes {
+	width: 350px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit #department {
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit #stats, #page_characterSheet_spycraft_sheet #stats {
+	margin: 1.5em 0 .5em;
+	float: left;
+}
+
+#page_characterSheet_spycraft_sheet #stats {
+	margin-top: 0;
+}
+
+#page_characterSheet_spycraft_sheet #stats .dataTR {
+	margin-bottom: 0;
+}
+
+#page_characterSheet_spycraft_edit #stats input, #page_characterSheet_spycraft_sheet #stats .stat {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_sheet #stats .stat {
+	border-right: 1px solid #555;
+	border-left: 1px solid #555;
+}
+
+#page_characterSheet_spycraft_edit #stats span, #page_characterSheet_spycraft_sheet #stats span {
+	display: inline-block;
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_sheet #stats .stat, #page_characterSheet_spycraft_sheet #stats span {
+	width: 40px;
+}
+
+#page_characterSheet_spycraft_edit #savingThrows, #page_characterSheet_spycraft_edit #hp {
+	float: left;
+	margin: 1.5em 0 1em 40px;
+}
+
+#page_characterSheet_spycraft_sheet #savingThrows, #page_characterSheet_spycraft_sheet #hp {
+	float: left;
+	margin: 0 0 1em 40px;
+}
+
+#page_characterSheet_spycraft_sheet #savingThrows .dataTR {
+	margin-bottom: 0;
+}
+
+#page_characterSheet_spycraft_edit #savingThrows .labelTR label, #page_characterSheet_spycraft_sheet #savingThrows .labelTR label {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #savingThrows label.first {
+	margin-left: 90px;
+}
+
+#page_characterSheet_spycraft_sheet #savingThrows label.first {
+	margin-left: 80px;
+}
+
+#page_characterSheet_spycraft_edit #savingThrows label.leftLabel, #page_characterSheet_spycraft_sheet #savingThrows label.leftLabel {
+	width: 75px;
+}
+
+#page_characterSheet_spycraft_edit #savingThrows span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_sheet #savingThrows .dataTR > div {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #hp {
+	margin-top: 3em;
+	margin-left: 60px;
+}
+
+#page_characterSheet_spycraft_edit #hp label {
+	width: 80px;
+	margin-right: 10px;
+}
+
+#page_characterSheet_spycraft_edit #hp input {
+	margin-right: 20px;
+}
+
+#page_characterSheet_spycraft_sheet #hp {
+	margin-top: .5em;
+}
+
+#page_characterSheet_spycraft_sheet #hp .tr label {
+	display: inline-block;
+	width: 100px;
+}
+
+#page_characterSheet_spycraft_sheet #hp .tr div {
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_edit #ac {
+	float: left;
+	margin: .5em 0 1em 30px;
+}
+
+#page_characterSheet_spycraft_sheet #ac {
+	float: left;
+	margin: 10px 0 0 40px;
+}
+
+#page_characterSheet_spycraft_edit #ac label, #page_characterSheet_spycraft_sheet #ac label, #page_characterSheet_spycraft_sheet #ac .dataTR div {
+	text-align: center;
+	width: 60px;
+}
+
+#page_characterSheet_spycraft_sheet #ac .first {
+	margin-right: 10px;
+}
+
+#page_characterSheet_spycraft_sheet #ac .labelTR .first {
+	margin-right: 75px;
+}
+
+#page_characterSheet_spycraft_edit #ac .labelTR .first {
+	margin-right: 65px;
+}
+
+#page_characterSheet_spycraft_edit #ac #ac_total {
+	width: 60px;
+}
+
+#page_characterSheet_spycraft_sheet #ac .dataTR {
+	margin-bottom: 0;
+}
+
+#page_characterSheet_spycraft_sheet #ac .dataTR div {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #ac span {
+	display: inline-block;
+	width: 50px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #ac .sizeVal {
+	width: 40px;
+	margin: 0 10px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #ac input.first {
+	margin: 0 20px;
+}
+
+#page_characterSheet_spycraft_edit #combatBonuses, #page_characterSheet_spycraft_sheet #combatBonuses {
+	margin-top: 1.5em;
+	float: left;
+	margin-right: 50px;
+}
+
+#page_characterSheet_spycraft_sheet #combatBonuses .dataTR div {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #combatBonuses .labelTR label, #page_characterSheet_spycraft_sheet #combatBonuses .labelTR label {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #combatBonuses .labelTR .first {
+	margin-left: 115px;
+}
+
+#page_characterSheet_spycraft_sheet #combatBonuses .labelTR .first {
+	margin-left: 105px;
+}
+
+#page_characterSheet_spycraft_edit #combatBonuses label.leftLabel, #page_characterSheet_spycraft_sheet #combatBonuses label.leftLabel {
+	text-align: right;
+}
+
+#page_characterSheet_spycraft_edit #combatBonuses span, #page_characterSheet_spycraft_sheet #combatBonuses span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit  #actionDie, #page_characterSheet_spycraft_edit  #extraStats, #page_characterSheet_spycraft_sheet  #actionDie, #page_characterSheet_spycraft_sheet  #extraStats {
+	float: left;
+	margin-left: 20px;
+}
+
+#page_characterSheet_spycraft_sheet  #actionDie, #page_characterSheet_spycraft_sheet  #extraStats {
+	width: 400px;
+}
+
+#page_characterSheet_spycraft_edit  #extraStats {
+	margin-top: 1em;
+}
+
+#page_characterSheet_spycraft_sheet  #extraStats {
+	margin-top: 2em;
+}
+
+#page_characterSheet_spycraft_edit  #actionDie .labelTR label, #page_characterSheet_spycraft_edit  #extraStats .labelTR label, #page_characterSheet_spycraft_sheet  #actionDie .labelTR label, #page_characterSheet_spycraft_sheet  #extraStats .labelTR label {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit  #actionDie .labelTR .first, #page_characterSheet_spycraft_edit  #extraStats .labelTR .first {
+	margin-left: 115px;
+}
+
+#page_characterSheet_spycraft_sheet  #actionDie .labelTR .first, #page_characterSheet_spycraft_sheet  #extraStats .labelTR .first {
+	margin-left: 105px;
+}
+
+#page_characterSheet_spycraft_edit  #extraStats span, #page_characterSheet_spycraft_sheet  #actionDie span, #page_characterSheet_spycraft_sheet  #extraStats span {
+	display: inline-block;
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit .textareaDiv, #page_characterSheet_spycraft_sheet .textDiv {
+/*	width: 450px;*/
+	margin-top: 1em;
+}
+
+#page_characterSheet_spycraft_edit h2 a {
+	font-size: .75em;
+	font-weight: normal;
+	margin-left: 20px;
+}
+
+#page_characterSheet_spycraft_edit #skills, #page_characterSheet_spycraft_edit #feats, #page_characterSheet_spycraft_sheet #skills, #page_characterSheet_spycraft_sheet #feats {
+	margin-top: 1em;
+}
+
+#page_characterSheet_spycraft_edit #weapons, #page_characterSheet_spycraft_edit #armor, #page_characterSheet_spycraft_sheet #weapons, #page_characterSheet_spycraft_sheet #armor {
+	margin-top: 2em;
+}
+
+#page_characterSheet_spycraft_edit .textareaDiv textarea {
+	width: 442px;
+	height: 10em;
+}
+
+#page_characterSheet_spycraft_edit #skills, #page_characterSheet_spycraft_sheet #skills {
+	width: 635px;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper {
+	margin: 1em 0;
+	position: relative;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper input {
+	position: absolute;
+	top: 4px;
+	left: 0;
+	color: #666;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper #skillAjaxResults {
+	display: none;
+	position: absolute;
+	top: 27px;
+	left: 0;
+	border: 1px solid #600;
+	width: 206px;
+	background-color: #111;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper #skillAjaxResults a {
+	display: block;
+	padding: 5px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper #skillAjaxResults a:hover {
+	background-color: #222;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper select{
+	position: absolute;
+	top: 4px;
+	left: 220px;
+}
+
+#page_characterSheet_spycraft_edit #addSkillWrapper button {
+	margin-left: 280px;
+}
+
+#page_characterSheet_spycraft_edit .skill span, #page_characterSheet_spycraft_sheet .skill span {
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_edit #skills .skill_name, #page_characterSheet_spycraft_sheet #skills .skill_name {
+	width: 150px;
+}
+
+#page_characterSheet_spycraft_edit .skill .skill_stat, #page_characterSheet_spycraft_sheet .skill .skill_stat {
+	font-variant: small-caps;
+}
+
+#page_characterSheet_spycraft_edit .skill .skill_total, #page_characterSheet_spycraft_sheet .skill .skill_total {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_edit #feats, #page_characterSheet_spycraft_sheet #feats {
+	width: 285px;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper {
+	margin: 1em 0;
+	position: relative;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper label {
+	position: absolute;
+	top: 4px;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper input {
+	position: absolute;
+	top: 4px;
+	left: 50px;
+	width: 130px;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper #featAjaxResults {
+	display: none;
+	position: absolute;
+	top: 27px;
+	left: 50px;
+	border: 1px solid #600;
+	width: 136px;
+	background-color: #111;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper #featAjaxResults a {
+	display: block;
+	padding: 5px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper #featAjaxResults a:hover {
+	background-color: #222;
+}
+
+#page_characterSheet_spycraft_edit #addFeatWrapper button {
+	position: relative;
+	left: 200px;
+}
+
+#page_characterSheet_spycraft_edit #noFeats, #page_characterSheet_spycraft_sheet #noFeats {
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_edit #feats span, #page_characterSheet_spycraft_edit #feats a, #page_characterSheet_spycraft_sheet #feats span, #page_characterSheet_spycraft_sheet #feats a {
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_edit .feat_name {
+	width: 195px;
+	margin-right: 3px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_sheet .feat_name {
+	width: 245px;
+}
+
+#page_characterSheet_spycraft_edit .feat_notesLink, #page_characterSheet_spycraft_sheet .feat_notesLink {
+	font-size: .8em;
+}
+
+#page_characterSheet_spycraft_sheet .feat_notes {
+	display: none;
+}
+
+#page_characterSheet_spycraft_edit #weapons, #page_characterSheet_spycraft_sheet #weapons {
+	width: 490px;
+}
+
+#page_characterSheet_spycraft_sheet #weapons {
+	border-right: 1px solid #333;
+}
+
+#page_characterSheet_spycraft_edit .weapon, #page_characterSheet_spycraft_edit .armor, #page_characterSheet_spycraft_sheet .weapon, #page_characterSheet_spycraft_sheet .armor {
+	margin: 0 0 20px;
+	padding-top: 10px;
+	border-top: 1px solid #777;
+}
+
+#page_characterSheet_spycraft_edit .weapon:first-child, #page_characterSheet_spycraft_edit .armor:first-child, #page_characterSheet_spycraft_sheet .weapon:first-child, #page_characterSheet_spycraft_sheet .armor:first-child {
+	border-top: none;
+}
+
+#page_characterSheet_spycraft_sheet #weapons span, #page_characterSheet_spycraft_sheet #armor span {
+	display: inline-block;
+}
+
+#page_characterSheet_spycraft_sheet .weapon .labelTR, #page_characterSheet_spycraft_sheet .armor .labelTR {
+	padding-top: .5em;
+}
+
+#page_characterSheet_spycraft_sheet .weapon .labelTR:first-child, #page_characterSheet_spycraft_sheet .armor .labelTR:first-child {
+	padding-top: 0;
+}
+
+#page_characterSheet_spycraft_sheet .weapon .medText, #page_characterSheet_spycraft_sheet .armor .medText {
+	width: 208px;
+}
+
+#page_characterSheet_spycraft_edit .weapon, #page_characterSheet_spycraft_sheet .weapon {
+	width: 480px;
+}
+
+#page_characterSheet_spycraft_edit .weapon_secondRow label, #page_characterSheet_spycraft_sheet .weapon_secondRow label, #page_characterSheet_spycraft_sheet .weapon_secondRow span {
+	width: 72px;
+}
+
+#page_characterSheet_spycraft_edit .weapon_secondRow input {
+	width: 64px;
+}
+
+#page_characterSheet_spycraft_edit .weapon input.weapon_notes {
+	width: 450px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_sheet .weapon .weapon_notes {
+	width: 458px;
+}
+
+#page_characterSheet_spycraft_edit #armor, #page_characterSheet_spycraft_sheet #armor {
+	width: 420px;
+}
+
+#page_characterSheet_spycraft_edit .armor_firstRow label.shortText, #page_characterSheet_spycraft_sheet .armor_firstRow .shortText {
+	width: 70px;
+}
+
+#page_characterSheet_spycraft_edit .armor_firstRow input.shortText {
+	width: 62px;
+}
+
+#page_characterSheet_spycraft_edit .armor_secondRow label, #page_characterSheet_spycraft_sheet .armor_secondRow label, #page_characterSheet_spycraft_sheet .armor_secondRow span {
+	width: 81px;
+}
+
+#page_characterSheet_spycraft_edit .armor_secondRow input {
+	width: 73px;
+}
+
+#page_characterSheet_spycraft_edit input.armor_notes {
+	width: 392px;
+	text-align: left;
+}
+
+#page_characterSheet_spycraft_sheet .armor_notes {
+	width: 400px;
+}
+
+#page_characterSheet_spycraft_edit #items, #page_characterSheet_spycraft_sheet #items {
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_spycraft_edit #items textarea {
+	width: 912px;
+	height: 12.4em;
+}
+
+#page_characterSheet_spycraft_edit #notes, #page_characterSheet_spycraft_sheet #notes {
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_spycraft_edit #notes textarea {
+	width: 912px;
+	height: 16.2em;
+}
+
+#page_characterSheet_spycraft_edit #submitDiv {
+	text-align: center;
+	margin-top: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_spycraft_featNotes {
+	text-align: center;
+}
+
+#page_characterSheet_spycraft_featNotes textarea {
+	width: 450px;
+	height: 8em;
+}

@@ -1,0 +1,366 @@
+/*
+	Games CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_myGames #gamesList {
+	margin-bottom: 10px;
+}
+
+#page_myGames h2 {
+	margin: 2.5em 0;
+}
+
+#page_myGames #gamesList h3 {
+	margin-bottom: .5em;
+}
+
+#page_myGames .tr {
+	border: 1px solid #000;
+	padding: 8px;
+/*	padding-left: 15px;*/
+}
+
+#page_myGames .firstTR {
+	margin-top: 1em;
+}
+
+#page_myGames .tr:hover {
+	background: #111;
+	border-color: #333;
+}
+
+#page_myGames .gameTitle {
+	display: block;
+	float: left;
+	width: 250px;
+	border-right: 1px solid #666;
+}
+
+#page_myGames .systemType, #page_myGames .gmInfo {
+	float: left;
+	border-right: 1px solid #999;
+	text-align: center;
+}
+
+#page_myGames .systemType {
+	width: 200px;
+}
+
+#page_myGames .gmInfo {
+	float: none;
+	width: 175px;
+	margin-left: 451px;
+	border-right: none;
+}
+
+#page_myGames .gmLinks {
+	margin-left: 470px;
+}
+
+#page_myGames .playerLinks {
+	margin-left: 670px;
+}
+
+#page_myGames .gameRunning .systemType {
+	float: none;
+	margin-left: 250px;
+	border-right: none;
+}
+
+#page_myGames #lfg a {
+	font-size: .75em;
+}
+
+#page_myGames .alignRight {
+	margin: 0 10px 0 0;
+}
+
+#page_myGames #gamesRunning {
+	margin-top: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_lfg #myLFG {
+}
+
+#page_lfg #myLFG h3 {
+	display: inline;
+}
+
+#page_lfg #myLFG a {
+	font-size: .75em;
+}
+
+#page_lfg #myLFG div.game {
+	float: left;
+	width: 224px;
+	padding: .25em 0;
+}
+
+#page_lfg #myLFG div.game label {
+	display: inline;
+}
+
+#page_lfg #myLFG textarea {
+	width: 888px;
+	height: 5em;
+	margin-top: 1em;
+}
+
+#page_lfg #myLFG #submitDiv {
+	text-align: center;
+	margin-top: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_newGame label, #page_editGame label {
+	float: left;
+	width: 210px;
+	margin: 3px 10px 0 0;
+	text-align: right;
+	font-weight: bold;
+}
+
+#page_newGame input, #page_editGame input {
+	width: 200px;
+}
+
+#page_newGame input#numPlayers, #page_newGame input#timesPer, #page_editGame input#numPlayers, #page_editGame input#timesPer {
+	text-align: center;
+	width: 30px;
+}
+
+#page_newGame textarea, #page_editGame textarea {
+	width: 375px;
+	height: 8em;
+}
+
+#page_newGame .indent {
+	margin-left: 20px;
+}
+
+/* --------------------------------------------*/
+
+#page_listGames #filterGames .tr:first-child {
+	padding-top: 0;
+}
+
+#page_listGames #filterGames input[type="text"] {
+	width: 212px;
+}
+
+#page_listGames #filterGames ul {
+	margin: .5em 0;
+	clear: both;
+	list-style: none;
+}
+
+#page_listGames #filterGames li {
+	padding: 0.1em 0
+}
+
+#page_listGames #gamesList .tr {
+	border: 1px solid #000;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#page_listGames #gamesList .tr:hover {
+	background: #111;
+	border-color: #333;
+}
+
+#page_listGames .gameTitle {
+	display: block;
+	float: left;
+	width: 230px;
+	border-right: 1px solid #666;
+}
+
+#page_listGames .systemType {
+	float: left;
+	width: 200px;
+	border-right: 1px solid #999;
+	text-align: center;
+}
+
+#page_listGames .gmLink {
+	margin-left: 450px;
+}
+
+/* --------------------------------------------*/
+
+#page_gameDetails h1 a {
+	font-size: .6em;
+}
+
+#page_gameDetails .tr label {
+	font-size: .9em;
+	text-transform: uppercase;
+	text-align: right;
+	font-weight: bold;
+	float: left;
+	width: 250px;
+}
+
+#page_gameDetails .tr div {
+	margin-left: 260px;
+}
+
+#page_gameDetails #userLists {
+	margin: 20px 0 15px;
+}
+
+#page_gameDetails #userLists h3 {
+	margin: 1.5em 0 .5em;
+}
+
+#page_gameDetails #userLists .tr {
+	border: 1px solid #000;
+	padding-left: 15px;
+}
+
+#page_gameDetails .firstTR {
+	margin-top: .5em;
+}
+
+#page_gameDetails #userLists .tr:hover {
+	background: #111;
+	border-color: #333;
+}
+
+#page_gameDetails #userLists div {
+	margin-left: 0;
+}
+
+#page_gameDetails #userLists .charTitle, #page_gameDetails #userLists .gm {
+	display: block;
+	float: left;
+	width: 225px;
+	border-right: 1px solid #666;
+}
+
+#page_gameDetails #userLists .player {
+	float: left;
+	width: 150px;
+	border-right: 1px solid #999;
+	text-align: center;
+}
+
+#page_gameDetails #userLists .charLinks {
+	margin-left: 395px;
+}
+
+#page_gameDetails #userLists .gmLinks {
+	margin-left: 245px;
+}
+
+#page_gameDetails #userLists .charLinks a, #page_gameDetails #userLists .gmLinks a {
+	margin-right: 30px;
+}
+
+#page_gameDetails #submitChar {
+	padding-top: 1.5em;
+}
+
+#page_gameDetails #submitChar form {
+	margin-top: .5em;
+	text-align: center;
+	width: 220px;
+}
+
+#page_gameDetails #submitChar button {
+	margin-top: .5em;
+}
+
+/* --------------------------------------------*/
+
+#page_gameDecks label, #page_gameDecks .title {
+	width: 200px;
+	float: left;
+}
+
+#page_gameDecks #deckLabel {
+	width: 200px;
+}
+
+#page_gameDecks .inputCol, #page_gameDecks .checkCol {
+	margin-left: 210px;
+}
+
+#page_gameDecks .inputCol p {
+	margin: .3em 0;
+}
+
+#page_gameDecks .checkCol {
+	width: 100px;
+	text-align: center;
+}
+
+#page_gameDecks .user label {
+	padding-top: 2px;
+}
+
+#page_gameDecks #submitDiv {
+	margin-top: .5em;
+}
+
+#page_gameDecks #deckList .tr {
+	clear: both;
+}
+
+#page_gameDecks #deckList .tr div {
+	float: left;
+}
+
+#page_gameDecks #deckList #headers div {
+	text-align: center;
+	font-weight: bold;
+	padding-top: 1.25em;
+}
+
+#page_gameDecks #deckList .deckLabel {
+	width: 250px;
+}
+
+#page_gameDecks #deckList .deckType {
+	width: 225px;
+	text-align: center;
+}
+
+#page_gameDecks #deckList #headers .deckRemaining {
+	padding-top: 0;
+}
+
+#page_gameDecks #deckList .deckRemaining {
+	width: 100px;
+	text-align: center;
+	margin-right: 10px;
+}
+
+#page_gameDecks #deckList #headers .deckActions {
+	text-align: left;
+}
+
+#page_gameDecks #deckList .tr .deckActions {
+	float: none;
+}
+
+#page_gameDecks #deckList .tr .deckActions a {
+	margin-right: 20px;
+}
+
+/* --------------------------------------------*/
+
+#page_addGM input {
+	margin-top: .5em;
+	width: 200px;
+}
+
+#page_addGM #buttonDiv {
+	margin-top: 1em;
+	text-align: center;
+}

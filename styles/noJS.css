@@ -1,0 +1,18 @@
+/*
+	Gamers Plane No Javascript CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+.jsHide {
+	display: block;
+	text-align: center;
+	padding: 1em;
+	margin: 1em;
+	border: 2px solid #600;
+	background: #111;
+	font-weight: bold;
+}
+
+#page_chat #chatDiv {
+	display: none;
+}

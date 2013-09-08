@@ -1,0 +1,15 @@
+ErrorDocument 401 errors/401
+ErrorDocument 403 errors/403
+ErrorDocument 404 errors/404
+
+Options -Indexes +FollowSymLinks 
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/blog
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/phpthumb
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/backup
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/test\d?\.php$
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/phpinfo\.php$
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/test/
+RewriteCond %{REQUEST_URI} !^/Gamers_Plane/dbBackup\.php$
+RewriteRule !\.(css|jpg|js|gif|png|ico)$ dispatch.php

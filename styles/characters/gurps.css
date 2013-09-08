@@ -1,0 +1,84 @@
+/*
+	Gamers Plane Characters: Deadlands CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_characterSheet_gurps_edit #nameDiv label, #page_characterSheet_gurps_sheet #nameDiv label {
+	display: block;
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#page_characterSheet_gurps_edit #stats, #page_characterSheet_gurps_sheet #stats {
+	float: left;
+	width: 500px;
+	font-size: 1.5em;
+}
+
+#page_characterSheet_gurps_edit #stats .statCol, #page_characterSheet_gurps_sheet #stats .statCol {
+	float: left;
+	width: 60px;
+}
+
+#page_characterSheet_gurps_edit #stats .largeCol, #page_characterSheet_gurps_sheet #stats .largeCol {
+	width: 140px;
+	font-size: .7em;
+}
+
+#page_characterSheet_gurps_edit #stats .statCol .statRow, #page_characterSheet_gurps_sheet #stats .statCol .statRow {
+	text-align: center;
+	padding: 6px 0;
+}
+
+#page_characterSheet_gurps_edit #stats .statCol .blank {
+	padding: 9px 0 10px;
+}
+
+#page_characterSheet_gurps_edit #stats .statCol label.statRow {
+	padding: 9px 0;
+}
+
+#page_characterSheet_gurps_edit #stats .largeCol label.statRow {
+	padding: 9px 0 10px;
+}
+
+#page_characterSheet_gurps_edit #stats .statCol .statRow input {
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet_gurps_edit #langDiv {
+	margin-left: 530px;
+}
+
+#page_characterSheet_gurps_edit #langDiv textarea {
+	height: 95px;
+	width: 382px;
+}
+
+#page_characterSheet_gurps_edit .twoCol, #page_characterSheet_gurps_sheet .twoCol {
+	width: 450px;
+	margin-top: 1em;
+}
+
+#page_characterSheet_gurps_edit textarea {
+	width: 442px;
+	height: 12.4em;
+}
+
+#page_characterSheet_gurps_edit #notesDiv {
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_gurps_edit #notesDiv textarea {
+	width: 912px;
+	height: 10em;
+}
+
+#page_characterSheet_gurps_edit #submitDiv {
+	clear: both;
+	text-align: center;
+	margin-top: 1em;
+}

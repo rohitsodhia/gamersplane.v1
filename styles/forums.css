@@ -1,0 +1,813 @@
+/*
+	Gamers Plane Forums CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+.quote {
+	margin: 10px 20px 20px;
+	padding: 8px;
+	border: 1px solid #666;
+	background-color: #191919;
+}
+
+.quote .quotee {
+	font-size: .85em;
+	font-weight: bold;
+	margin: 0 0 .5em 0;
+}
+
+.note {
+	margin: 10px 20px 20px;
+	padding: 8px;
+	border: 1px solid #666;
+	background-color: #191919;
+}
+
+.note div:first-child {
+	font-size: .85em;
+	font-weight: bold;
+	margin: 0 0 .5em 0;
+	font-variant: small-caps;
+}
+
+/* --------------------------------------------*/
+
+#page_forum_rules p {
+	margin: 1em 0;
+}
+
+#page_forum_rules ol {
+	list-style: decimal;
+	margin: 1em 0 1em 50px;
+}
+
+#page_forum_rules li {
+	margin: .3em 0;
+}
+
+#page_forum_rules ol ol {
+	list-style: lower-roman;
+	margin: .3em 0 .3em 50px;
+}
+
+/* --------------------------------------------*/
+
+#page_forum #breadcrumb {
+	margin-bottom: .75em;
+	color: #666;
+	font-size: 1.1em;
+}
+
+#page_forum #administrateLink {
+	float: right;
+	margin-top: .5em;
+	margin-right: 20px;
+}
+
+#page_forum #rules {
+	margin-bottom: 1em;
+}
+
+#page_forum #newThread {
+	display: block;
+	height: 33px;
+	width: 180px;
+	background: url('../images/buttons/newThread.jpg') top left no-repeat;
+}
+
+#page_forum #newThread:hover {
+	background-position: bottom left;
+}
+
+#page_forum .tableDiv, #page_forumSearch .tableDiv {
+	width: 900px;
+	background: #222;
+	margin: 20px 10px 0;
+	padding-bottom: 5px;
+}
+
+/*#page_forum .firstTableDiv {
+	margin-top: 0;
+}*/
+
+#page_forum .tableDiv h2.title, #page_forumSearch .tableDiv h2.title {
+	background: url('../images/forumHeader.jpg') #222 top no-repeat;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	margin-bottom: 0;
+}
+
+#page_forum .tableDiv h2.title div, #page_forumSearch .tableDiv h2.title div {
+	text-align: center;
+	background: url('../images/blackGradiant_b.jpg') bottom no-repeat;
+	padding: 8px 0;
+}
+
+/*#page_forum .threadTable h2.title div {
+	padding: 0;
+	font-size: 10px;
+}*/
+
+#page_forum .tableDiv table, #page_forumSearch .tableDiv table {
+	width: 890px;
+	margin: 0px 5px;
+}
+
+#page_forum .tableDiv table th, #page_forum .tableDiv table td, #page_forumSearch .tableDiv table th, #page_forumSearch .tableDiv table td {
+	background-color: #111;
+}
+
+#page_forum .tableDiv table th, #page_forumSearch .tableDiv table th {
+	text-align: center;
+	vertical-align: middle;
+}
+
+#page_forum .threadTable th, #page_forumSearch .threadTable th {
+	padding-top: 6px;
+}
+
+#page_forum .tableDiv table td, #page_forumSearch .tableDiv table td {
+	vertical-align: middle;
+	padding: 8px 2px;
+}
+
+#page_forum .tableDiv tr.noPosts td, #page_forumSearch.tableDiv tr.noPosts td {
+	height: 41px;
+}
+
+#page_forum .tableDiv table .forumIcon, #page_forum .tableDiv table .threadIcon, #page_forumSearch .tableDiv table .forumIcon, #page_forumSearch .tableDiv table .threadIcon {
+	width: 35px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+#page_forum .tableDiv table .forumName, #page_forum .tableDiv table .threadInfo, #page_forumSearch .tableDiv table .threadInfo {
+	padding-left: 5px;
+}
+
+#page_forum .tableDiv table .forumName .description {
+	font-size: .85em;
+	margin: .5em 0 0;
+}
+
+#page_forum .tableDiv table .threadInfo .threadAuthor, #page_forumSearch .tableDiv table .threadInfo .threadAuthor {
+	margin-top: .2em;
+	font-size: .85em;
+}
+
+#page_forumSearch .tableDiv table .threadInfo .threadAuthor .forumName, #page_forumSearch .tableDiv table .threadInfo .threadAuthor .forumName:hover {
+	color: #D60;
+}
+
+#page_forumSearch .tableDiv table .threadInfo .threadAuthor .forumName:hover {
+	text-decoration: none;
+}
+
+#page_forum .tableDiv table .numPosts, #page_forum .tableDiv table .numThreads, #page_forumSearch .tableDiv table .numPosts {
+	width: 125px;
+	text-align: center;
+}
+
+#page_forum .tableDiv table .lastPost, #page_forumSearch .tableDiv table .lastPost {
+	width: 200px;
+	text-align: center;
+}
+
+#page_forum .tableDiv table .lastPost span, #page_forumSearch .tableDiv table .lastPost span {
+	font-size: .85em;
+}
+
+#page_forum #forumLinks, #page_forumSearch #forumLinks {
+	margin: 1em 10px;
+	height: 24px;
+	position: relative;
+}
+
+#page_forum #forumOptions {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+
+#page_forum #paginateDiv, #page_forumSearch #paginateDiv {
+	float: none;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+/* --------------------------------------------*/
+
+#page_forum_thead h2#noPosts {
+	margin: 4em 0;
+}
+
+#page_forum_thead #threadMenu {
+	position: relative;
+}
+
+#page_forum_thead #threadMenu #threadOptions {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+#page_forum_thead #threadMenu #threadOptions button {
+	height: auto;
+	padding: 0;
+}
+
+#page_forum_thead #poll {
+	border: 1px solid #444;
+	padding: 10px;
+	margin: 10px 0 20px;
+	background: #111;
+}
+
+#page_forum_thead #poll p {
+	font-size: .8em;
+}
+
+#page_forum_thead #poll #poll_question {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#page_forum_thead #poll ul {
+	margin: 1em 0 0;
+}
+
+#page_forum_thead #poll li {
+	list-style: none;
+	margin-bottom: .3em;
+}
+
+#page_forum_thead #poll li div {
+	display: block;
+	float: left;
+}
+
+#page_forum_thead #poll li .poll_input {
+	width: 30px;
+}
+
+#page_forum_thead #poll li .poll_option {
+	width: 300px;
+	padding-top: .1em;
+}
+
+#page_forum_thead #poll li .poll_votesCast {
+	border: 1px solid #755;
+	border-right-color: #211;
+	border-bottom-color: #211;
+	background-color: #422;
+	text-align: right;
+	padding: 0 5px;
+}
+
+#page_forum_thead #poll #poll_submit {
+	margin: 1em 0 0 30px;
+}
+
+#page_forum_thead .postBlock {
+	width: 920px;
+	margin: 10px 0 30px;
+	background-image: url('../images/chatBody.jpg');
+	background-repeat: repeat-y;
+}
+
+#page_forum_thead .postRight {
+	background-position: top right;
+}
+
+#page_forum_thead .postLeft {
+	background-position: top left;
+}
+
+#page_forum_thead .posterDetails {
+	width: 170px;
+}
+
+#page_forum_thead .postRight .posterDetails {
+	float: left;
+}
+
+#page_forum_thead .postLeft .posterDetails {
+	float: right;
+}
+
+#page_forum_thead .posterDetails .avatar {
+	text-align: center;
+}
+
+#page_forum_thead .posterDetails .posterName {
+	font-size: 1.1em;
+	font-weight: bold;
+	text-align: center;
+}
+
+#page_forum_thead div.postContent {
+	position: relative;
+	padding: 10px 10px 10px;
+	background-image: url('../images/chatTop.jpg');
+	background-repeat: no-repeat;
+	line-height: 1.4em;
+}
+
+#page_forum_thead .postContent .post img {
+	max-width: 705px;
+}
+
+#page_forum_thead .postRight .postContent {
+	background-position: top right;
+	margin-left: 180px;
+	padding-left: 25px;
+}
+
+#page_forum_thead .postLeft .postContent {
+	background-position: top left;
+	margin-right: 180px;
+	padding-right: 25px;
+}
+
+#page_forum_thead .postPoint {
+	position: absolute;
+	top: 30px;
+}
+
+#page_forum_thead .postRight .postPoint {
+	left: 0;
+}
+
+#page_forum_thead .postLeft .postPoint {
+	right: 0;
+}
+
+#page_forum_thead .postedOn {
+	position: absolute;
+	top: 5px;
+	font-size: .8em;
+}
+
+#page_forum_thead .postRight .postedOn {
+	right: 10px;
+}
+
+#page_forum_thead .postLeft .postedOn {
+	right: 25px;
+}
+
+#page_forum_thead div.postContent hr {
+	margin: .25em 0;
+	color: #555;
+	background-color: #555;
+}
+
+#page_forum_thead div.postContent h4 {
+	font-weight: bold;
+	background: url('../images/fadeHR.jpg') bottom left no-repeat;
+	margin: 1.5em 0 .25em;
+}
+
+#page_forum_thead .postContent form, #page_forum_thead .postContent .indent, #page_forum_post #postedRolls .indent {
+	margin: .25em 0 .5em 30px;
+}
+
+#page_forum_thead .rollInfo .hidden {
+	color: #666;
+}
+
+#page_forum_thead .postContent form {
+	margin-top: .6em;
+}
+
+#page_forum_thead .postContent form button {
+	position: relative;
+	height: auto;
+	padding: 0;
+	margin: 0 10px 0 0;
+}
+
+#page_forum_thead .postContent form button .eyeIcon {
+	position: absolute;
+	top: -10px;
+	right: -5px;
+}
+
+#page_forum_thead .postContent .indent img {
+	margin-right: 5px;
+}
+
+#page_forum_thead div.postContent div.editInfoDiv {
+	padding-top: .75em;
+	font-size: .8em;
+	font-style: italic;
+	text-align: right;
+}
+
+#page_forum_thead div.postActions {
+	font-size: .9em;
+	padding: 15px 0 5px 50px;
+	clear: both;
+	background-image: url('../images/chatBottom.jpg');
+	background-color: #000;
+	background-repeat: no-repeat;
+}
+
+#page_forum_thead .postRight .postActions {
+	background-position: top right;
+	margin-left: 180px;
+}
+
+#page_forum_thead .postLeft .postActions {
+	background-position: top left;
+	margin-right: 180px;
+}
+
+#page_forum_thead div.postActions div {
+	float: right;
+	margin-right: 10px;
+	margin-top: 2px;
+}
+
+#page_forum_thead div.postActions div a {
+	margin: 0 15px;
+}
+
+#page_forum_thead #quickMod {
+	margin-top: 1em;
+	float: right;
+}
+
+#page_forum_thead #quickMod button {
+	margin-left: 10px;
+	background: #111;
+	border: 1px solid #400;
+	border-bottom-color: #900;
+	border-right-color: #900;
+}
+
+#page_forum_thead form {
+/*	width: 650px;
+	margin: 0 auto;*/
+	margin: 0 10px;
+}
+
+#page_forum_thead label, #page_forum_post label {
+	width: 75px;
+	float: left;
+}
+
+#page_forum_thead input[type="text"], #page_forum_post input[type="text"] {
+/*	width: 562px;*/
+	width: 812px;
+	margin: 0 0 0 5px;
+}
+
+#page_forum_thead #textAreaDiv {
+	margin-top: 1em;
+}
+
+#page_forum_thead textarea, #page_forum_post textarea {
+/*	width: 642px;*/
+	width: 892px;
+	height: 10em;
+	margin: 10px 0;
+}
+
+#page_forum_post textarea {
+	height: 20em;
+}
+
+#page_forum_thead #submitDiv button {
+	margin-left: 30px;
+}
+
+#page_forum_thead #submitDiv .btn_post {
+	margin-left: 50px;
+}
+
+/* --------------------------------------------*/
+
+#page_forum_post #preview {
+	clear: both;
+	margin: 10px 0;
+}
+
+#page_forum_post form {
+	margin: 0 10px;
+}
+
+#page_forum_post hr {
+	width: 800px;
+	margin: 1.25em auto;
+	background-color: #444;
+	color: #444;
+}
+
+#page_forum_post #basicPostInfo {
+/*	width: 650px;*/
+}
+
+#page_forum_post .post {
+	margin-top: 10px;
+	margin-left: 15px;
+}
+
+#page_forum_post #rollExplination {
+	font-size: .8em;
+	margin: 0;
+	font-style: italic;
+}
+
+#page_forum_post #postedRolls, #page_forum_post #rollsTable {
+	margin-top: 1em;
+}
+
+#page_forum_post #postedRolls .rollInfo {
+	position: relative;
+	margin-bottom: 1em;
+}
+
+#page_forum_post #postedRolls select {
+	position: absolute;
+	top: 0;
+	left: 400px;
+}
+
+#page_forum_post h3 {
+	text-decoration: none;
+	background: url('../images/fadeHR.jpg') bottom left no-repeat;
+}
+
+#page_forum_post #addPoll label {
+	width: 150px;
+}
+
+#page_forum_post #addPoll input, #page_forum_post #addPoll textarea {
+	margin: 0 0 0 15px;
+}
+
+#page_forum_post #addPoll input[type="text"], #page_forum_post #addPoll textarea {
+	width: 727px;
+}
+
+#page_forum_post #addPoll label p {
+	font-size: .8em;
+}
+
+#page_forum_post #addPoll textarea {
+	height: 7.3em;
+}
+
+#page_forum_post #addPoll #optionsPerUser {
+	width: 40px;
+}
+
+#page_forum_post #addPoll #allowRevoting {
+	width: auto;
+}
+
+#page_forum_post .rollInfo .hidden {
+	color: #666;
+}
+
+#page_forum_post #rollsTable {
+	width: 840px;
+}
+
+#page_forum_post #rollsTable input {
+	margin: 0;
+}
+
+#page_forum_post #rollsTable .reason {
+	width: 450px;
+}
+
+#page_forum_post #rollsTable .roll {
+	width: 130px;
+}
+
+#page_forum_post #rollsTable .roll input {
+	width: 100px;
+}
+
+#page_forum_post #rollsTable .reason input, #page_forum_post #decksTable .reason input {
+	width: 415px;
+	margin: 0;
+}
+
+#page_forum_post #rollsTable .reroll {
+	width: 90px;
+	text-align: center;
+}
+
+#page_forum_post #rollsTable .reroll input {
+	margin-top: 3px;
+}
+
+#page_forum_post #rollsTable .visibility {
+	width: 150px;
+	padding-left: 20px;
+}
+
+#page_forum_post #rollsTable .indivRolls {
+	width: 200px;
+}
+
+#page_forum_post #decksHeader {
+	margin-top: 1.5em;
+}
+
+#page_forum_post #decksTable .titleBuffer td {
+	padding-top: 1em;
+}
+
+#page_forum_post #decksTable .reason {
+	width: 440px;
+	padding-left: 0;
+}
+
+#page_forum_post #decksTable .draw input {
+	width: 50px;
+	text-align: center;
+}
+
+#page_forum_post #submitDiv {
+	margin-top: 1em;
+}
+
+#page_forum_post #submitDiv button {
+	margin-left: 20px;
+}
+
+#page_forum_post #submitDiv button:first-child {
+	margin-left: 0;
+}
+
+/* --------------------------------------------*/
+
+#page_forumACP #acpMenu {
+	float: left;
+	width: 150px;
+	list-style: none;
+	margin-top: 20px;
+	margin-left: 0;
+	border-top: 1px solid #777;
+}
+
+#page_forumACP #acpMenu li {
+	position: relative;
+	padding: .5em 10px .5em 10px;
+	border: 1px solid #777;
+	border-top-width: 0;
+	background: #151515;
+}
+
+#page_forumACP #acpMenu li.current {
+	top: -1px;
+	z-index: 100;
+	border: 1px solid #AAA;
+	border-right-width: 0;
+	background: none;
+}
+
+#page_forumACP #acpMenu li a {
+	display: block;
+}
+
+#page_forumACP .acpContent {
+	display: none;
+	margin-left: 170px;
+}
+
+#page_forumACP .acpContent.current {
+	display: block;
+}
+
+#page_forumACP h2 {
+	text-align: left;
+}
+
+#page_forumACP #breadcrumbs {
+	font-size: 1.1em;
+	color: #666;
+	margin-bottom: 1em;
+}
+
+#page_forumACP #breadcrumbs #forumReturn {
+	float: right;
+}
+
+#page_forumACP #forumDetails label {
+	float: left;
+	width: 150px;
+}
+
+#page_forumACP #forumDetails textarea {
+	width: 300px;
+	height: 4.9em;
+}
+
+#page_forumACP #forumDetails button {
+	margin-left: 150px;
+	margin-top: .5em;
+}
+
+#page_forumACP #forums h3 {
+	margin: 1.5em 0 .5em;
+}
+
+#page_forumACP #forums h3.first {
+	margin-top: 0px;
+}
+
+#page_forumACP #categories .tr, #page_forumACP #forums .tr {
+	margin-left: 10px;
+}
+
+#page_forumACP #categories .buttonDiv, #page_forumACP #forums .buttonDiv {
+	width: 30px;
+	text-align: center;
+	float: left;
+}
+
+#page_forumACP #categories .catNames, #page_forumACP #forums .forumNames {
+	padding: 2px 0;
+	margin-left: 160px;
+}
+
+#page_forumACP #forums .editLinks {
+	float: left;
+	padding: 4px 10px 0;
+}
+
+#page_forumACP #categories .delete {
+	margin-left: 10px;
+}
+
+#page_forumACP #forums .delete {
+	margin-left: 435px;
+}
+
+#page_forumACP #newForum label {
+	font-weight: bold;
+	float: left;
+	width: 100px;
+}
+
+#page_forumACP #newForum input {
+	width: 300px;
+}
+
+#page_forumACP #newForum button {
+	margin-left: 100px;
+}
+
+#page_forumACP #newForum {
+	margin-top: 1em;
+}
+
+#page_forumACP #newPermission label {
+	width: 150px;
+	float: left;
+}
+
+#page_forumACP #newPermission button {
+	margin-left: 150px;
+}
+
+#page_forumACP br.clear {
+	font-size: 1px;
+	line-height: 1px;
+}
+
+#page_forumACP .gapAbove {
+	margin-top: 2em;
+}
+
+#page_forumACP .permissionsTitle, #page_forumACP .permissionsLink {
+	float: left;
+}
+
+#page_forumACP #newPermission .permissionsTitle {
+	width: 150px;
+}
+
+#page_forumACP .permissionsTitle {
+	width: 300px;
+}
+
+#page_forumACP .permissionsLink {
+	margin: 0 30px 0 0;
+}
+
+#page_forumACP .noFloat {
+	float: none;
+}
+
+#page_forumACP #updateDiv {
+	clear: both;
+	margin-top: 2.5em;
+	text-align: center;
+}

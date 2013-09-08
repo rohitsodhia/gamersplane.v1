@@ -1,0 +1,10 @@
+/*
+	Mafia v2.0 IE8 CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+
+button[type="submit"]:active {
+	-ms-background-position-x: 1px;
+	-ms-background-position-y: -29px;
+}

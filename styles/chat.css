@@ -1,0 +1,51 @@
+/*
+	Chat CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_chat #chatDiv {
+	width: 800px;
+	margin: 0 auto;
+}
+
+#page_chat p {
+	margin-bottom: 1em;
+}
+
+#page_chat #users, #page_chat #chatArea {
+	background: #080808;
+	border: 1px solid #400;
+	border-bottom-color: #600;
+	border-right-color: #600;
+	margin-bottom: 1em;
+	overflow: auto;
+}
+
+#page_chat #users {
+	float: right;
+	width: 100px;
+	margin-left: 20px;
+	padding: 5px;
+	height: 390px;
+}
+
+#page_chat #chatArea {
+	height: 400px;
+}
+
+#page_chat #chatDiv #message {
+	padding-top: .4em;
+	float: left;
+}
+
+#page_chat #chatDiv #message input {
+	width: 500px;
+	padding: 3px 3px;
+}
+
+#page_chat #chatDiv #send {
+	margin-left: 20px;
+}
+
+/* --------------------------------------------*/
+

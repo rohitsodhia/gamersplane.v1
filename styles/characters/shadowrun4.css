@@ -1,0 +1,87 @@
+/*
+	Gamers Plane Characters: D&D3/3.5 CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+
+#page_characterSheet_shadowrun4_edit h2 img, #page_characterSheet_shadowrun4_sheet h2 img {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet_shadowrun4_sheet #editCharLink  {
+	margin-bottom: 1.5em;
+}
+
+#page_characterSheet_shadowrun4_edit label, #page_characterSheet_shadowrun4_sheet label {
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#page_characterSheet_shadowrun4_edit #stats, #page_characterSheet_shadowrun4_sheet #stats {
+	margin-top: 2em;
+}
+
+#page_characterSheet_shadowrun4_edit #stats .statCol, #page_characterSheet_shadowrun4_sheet #stats .statCol {
+	float: left;
+	width: 250px;
+}
+
+#page_characterSheet_shadowrun4_edit #stats input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_shadowrun4_edit #qualities, #page_characterSheet_shadowrun4_edit #damage, #page_characterSheet_shadowrun4_sheet #qualities, #page_characterSheet_shadowrun4_sheet #damage {
+	float: left;
+	width: 400px;
+	margin-left: 20px;
+}
+
+#page_characterSheet_shadowrun4_edit #qualities textarea {
+	width: 392px;
+	height: 10em;
+}
+
+#page_characterSheet_shadowrun4_edit #damage, #page_characterSheet_shadowrun4_sheet #damage {
+	margin-top: 2em;
+}
+
+#page_characterSheet_shadowrun4_edit #damage div, #page_characterSheet_shadowrun4_sheet #damage > div {
+	float: left;
+	width: 200px;
+}
+
+#page_characterSheet_shadowrun4_edit #damage label, #page_characterSheet_shadowrun4_sheet #damage label {
+	width: auto;
+}
+
+#page_characterSheet_shadowrun4_edit #damage input, #page_characterSheet_shadowrun4_sheet #damage div div {
+	float: left;
+	width: 30px;
+}
+
+#page_characterSheet_shadowrun4_edit .twoCol, #page_characterSheet_shadowrun4_sheet .twoCol {
+	width: 450px;
+	margin-top: 1em;
+}
+
+#page_characterSheet_shadowrun4_edit .twoCol textarea {
+	width: 442px;
+	height: 10em;
+}
+
+#page_characterSheet_shadowrun4_edit #items, #page_characterSheet_shadowrun4_edit #notes, #page_characterSheet_shadowrun4_sheet #items, #page_characterSheet_shadowrun4_sheet #notes {
+	margin-top: 1em;
+}
+
+#page_characterSheet_shadowrun4_edit #items textarea, #page_characterSheet_shadowrun4_edit #notes textarea {
+	width: 912px;
+	height: 10em;
+}
+
+#page_characterSheet_shadowrun4_edit #submitDiv {
+	text-align: center;
+	margin-top: 1em;
+}

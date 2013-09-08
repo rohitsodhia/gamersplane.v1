@@ -1,0 +1,832 @@
+/*
+	Gamers Plane Characters CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#page_myCharacters .alertBox_error {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+#page_myCharacters h2 {
+	margin: 2.5em 0;
+}
+
+#page_myCharacters #characterList {
+	margin-bottom: 2em;
+}
+
+#page_myCharacters #characterList h3 {
+	margin-bottom: .5em;
+}
+
+#page_myCharacters #characterList .tr {
+	border: 1px solid #000;
+	padding-left: 15px;
+}
+
+#page_myCharacters #characterList .tr:hover {
+	background: #111;
+	border-color: #333;
+}
+
+#page_myCharacters #characterList .charLabel {
+	display: block;
+	float: left;
+	width: 250px;
+	border-right: 1px solid #666;
+}
+
+#page_myCharacters #characterList .systemType {
+	float: left;
+	width: 150px;
+	border-right: 1px solid #999;
+	text-align: center;
+}
+
+#page_myCharacters #characterList .charLinks {
+	margin-left: 420px;
+}
+
+#page_myCharacters #characterList .charLinks a {
+	margin-right: 20px;
+}
+
+#page_myCharacters #newChar h3 {
+	margin-bottom: .5em;
+}
+
+#page_myCharacters #newChar label {
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 15px;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+#page_myCharacters #newChar .tr div {
+	margin-left: 300px;
+	padding: 4px 0;
+	width: 150px;
+	text-align: right;
+	font-size: .8em;
+}
+
+#page_myCharacters #newChar button {
+	margin-left: 165px;
+}
+
+/* --------------------------------------------*/
+
+#page_deleteCharacter div {
+	margin-bottom: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel_new #startingStonesForm {
+	margin: 1em auto;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #startingStonesForm div {
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #startingStonesForm #labelInfo {
+	font-size: .85em;
+	margin-left: 110px;
+	margin-bottom: .5em;
+}
+
+#page_characterSheet_marvel_new #startingStonesForm #startingStones {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #startingStonesForm button {
+	margin-top: 10px;
+}
+
+#page_characterSheet_marvel_new #charNames {
+	margin: 20px 0 10px;
+}
+
+#page_characterSheet_marvel_new #normName {
+	margin-right: 20px;
+}
+
+#page_characterSheet_marvel_new #editAction, #page_characterSheet_marvel_new #editAction div, #page_characterSheet_marvel_new #editModifier, #page_characterSheet_marvel_new #editModifier div, #page_characterSheet_marvel_actions #editAction, #page_characterSheet_marvel_actions #editAction div, #page_characterSheet_marvel_modifiers #editModifier, #page_characterSheet_marvel_modifiers #editModifier div {
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #actionLevel, #page_characterSheet_marvel_new #actionOffset, #page_characterSheet_marvel_new #editModifier input, #page_characterSheet_marvel_actions #actionLevel, #page_characterSheet_marvel_actions #actionOffset, #page_characterSheet_marvel_modifiers #editModifier input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #editAction label, #page_characterSheet_marvel_new #editModifier label, #page_characterSheet_marvel_actions #editAction label, #page_characterSheet_marvel_modifiers #editModifier label {
+	margin: .75em 0 .3em;
+}
+
+#page_characterSheet_marvel_new #editAction textarea, #page_characterSheet_marvel_new #editModifier textarea, #page_characterSheet_marvel_actions #editAction textarea, #page_characterSheet_marvel_modifiers #editModifier textarea {
+	width: 350px;
+	height: 7em;
+}
+
+#page_characterSheet_marvel_new #editModifier textarea {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet_marvel_modifiers #modStones {
+	margin: .3em 0 .5em;
+}
+
+#page_characterSheet_marvel_new #actionSpecialties {
+	margin-bottom: .75em;
+}
+
+#page_characterSheet_marvel_new #actionSpecialties input {
+	margin: 4px;
+	width: 150px;
+}
+
+#page_characterSheet_marvel_new #actionButtonDiv {
+	margin-top: .75em;
+}
+
+#page_characterSheet_marvel_new #actionsList, #page_characterSheet_marvel_new #modifierList, #page_characterSheet_marvel_actions #actionsList, #page_characterSheet_marvel_modifiers #modifierList {
+	margin-left: 30px;
+	width: 900px;
+}
+
+#page_characterSheet_marvel_new #actionsList td, #page_characterSheet_marvel_new #modifierList td, #page_characterSheet_marvel_actions #actionsList td, #page_characterSheet_marvel_modifiers #modifierList td {
+	text-align: left;
+	padding: 5px 2px;
+	height: 18px;
+	vertical-align: middle;
+}
+
+#page_characterSheet_marvel_new .actionName, #page_characterSheet_marvel_new .modifierName, #page_characterSheet_marvel_actions .actionName, #page_characterSheet_marvel_modifiers .modifierName {
+	width: 220px;
+}
+
+#page_characterSheet_marvel_new .actionLinks, #page_characterSheet_marvel_new .modifierLinks, #page_characterSheet_marvel_actions .actionLinks, #page_characterSheet_marvel_modifiers .modifierLinks {
+	width: 222px;
+}
+
+#page_characterSheet_marvel_new .actionLinks form, #page_characterSheet_marvel_new .modifierLinks form, #page_characterSheet_marvel_actions .actionLinks form, #page_characterSheet_marvel_modifiers .modifierLinks form {
+	display: inline;
+}
+
+#page_characterSheet_marvel_new .actionLinks button {
+}
+
+#page_characterSheet_marvel_new #saveBtn, #page_characterSheet_marvel_new #addActionBtn, #page_characterSheet_marvel_new #addModifierBtn, #page_characterSheet_marvel_new #setChallengesBtn, #page_characterSheet_marvel_challenges #setChallengesBtn  {
+	margin-right: 20px;
+}
+
+#page_characterSheet_marvel_new #challenges table, #page_characterSheet_marvel_challenges #challenges table {
+	width: 725px;
+	margin-bottom: 10px;
+}
+
+#page_characterSheet_marvel_new #challenges th, #page_characterSheet_marvel_challenges #challenges th {
+	text-align: center;
+	text-decoration: underline;
+}
+
+#page_characterSheet_marvel_new #challenges .selectChallenge, #page_characterSheet_marvel_challenges #challenges .selectChallenge {
+	width: 75px;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #challenges .selectChallenge input, #page_characterSheet_marvel_challenges #challenges .selectChallenge input {
+	padding: 0;
+}
+
+#page_characterSheet_marvel_new #challenges .challengeDescription, #page_characterSheet_marvel_challenges #challenges .challengeDescription {
+	width: 500px;
+}
+
+#page_characterSheet_marvel_new #challenges .stonesText, #page_characterSheet_marvel_new #challenges .stonesInput, #page_characterSheet_marvel_challenges #challenges .stonesText, #page_characterSheet_marvel_challenges #challenges .stonesInput {
+	width: 75px;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #challenges .selectChallenge, #page_characterSheet_marvel_new #challenges .challengeDescription, #page_characterSheet_marvel_new #challenges .stonesText, #page_characterSheet_marvel_challenges #challenges .selectChallenge, #page_characterSheet_marvel_challenges #challenges .challengeDescription, #page_characterSheet_marvel_challenges #challenges .stonesText {
+	vertical-align: middle;
+}
+
+#page_characterSheet_marvel_new #challenges .stonesInput input, #page_characterSheet_marvel_challenges #challenges .stonesInput input {
+	width: 20px;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_new #challenges .btn_startOver, #page_characterSheet_marvel_challenges #challenges .btn_startOver {
+	margin-bottom: 5px;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel h2#noCharFound {
+	margin: 4em 0 3em;
+}
+
+#page_characterSheet_marvel h3 {
+	text-align: right;
+	width: 190px;
+	font-size: 1.1em;
+}
+
+#page_characterSheet_marvel div.links {
+	margin: .5em 0 .5em 10px;
+}
+
+#page_characterSheet_marvel a.edit {
+	font-size: .75em;
+}
+
+#page_characterSheet_marvel div.links a {
+	margin: 0 10px;
+}
+
+#page_characterSheet_marvel label.name {
+	width: 190px;
+	margin-right: 10px;
+	text-align: right;
+	font-weight: bold;
+	float: left;
+}
+
+#page_characterSheet_marvel #stats label {
+	float: left;
+	width: 115px;
+	margin-right: 10px;
+	text-transform: capitalize;
+	font-weight: bold;
+	text-align: right;
+}
+
+#page_characterSheet_marvel #stats label.first {
+	width: 190px;
+}
+
+#page_characterSheet_marvel #stats div {
+	float: left;
+	width: 20px;
+}
+
+#page_characterSheet_marvel #stats div.noFloat {
+	float: none;
+	margin-left: 783px;
+}
+
+#page_characterSheet_marvel ul {
+	list-style: none;
+	margin-left: 200px;
+}
+
+#page_characterSheet_marvel ul li {
+	padding-bottom: .75em;
+}
+
+#page_characterSheet_marvel #actions {
+	margin: 3em 0 0;
+}
+
+#page_characterSheet_marvel #actions .tr {
+	width: 280px;
+	float: left;
+	padding: 10px;
+}
+
+#page_characterSheet_marvel #actions .details {
+	margin: .5em 0 1em 25px;
+}
+
+#page_characterSheet_marvel #modifiers, #page_characterSheet_marvel #challenges, #page_characterSheet_marvel #notes {
+	margin-top: 2em;
+}
+
+#page_characterSheet_marvel #modifiers .details {
+	margin: .5em 0 1em 125px;
+}
+
+#page_characterSheet_marvel #challenges h3 {
+	margin-bottom: .5em;
+}
+
+#page_characterSheet_marvel #challenges .tr div {
+	margin-left: 10px;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel_he label {
+	display: inline;
+	width: 350px;
+	margin-right: 10px;
+	text-align: right;
+	font-weight: bold;
+	padding-top: 3px;
+}
+
+#page_characterSheet_marvel_he .he input {
+	width: 30px;
+	text-align: center;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel_stones label {
+	display: inline;
+	width: 350px;
+	text-align: right;
+	font-weight: bold;
+	padding-top: 3px;
+}
+
+#page_characterSheet_marvel_stones input.stones {
+	width: 30px;
+	text-align: center;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel_stats #stats {
+	margin: 1em 0 0;
+}
+
+#page_characterSheet_marvel_stats label {
+	display: inline;
+	width: 115px;
+	margin-right: 10px;
+	text-transform: capitalize;
+	font-weight: bold;
+	text-align: right;
+}
+
+#page_characterSheet_marvel_stats label.first {
+	width: 190px;
+}
+
+#page_characterSheet_marvel_stats #stats input {
+	width: 30px;
+	margin-right: 15px;
+	text-align: center;
+}
+
+#page_characterSheet_marvel_stats #stats input.last {
+	margin-right: 0;
+}
+
+#page_characterSheet_marvel_stats #specialRules {
+	margin: 1em 0;
+}
+
+#page_characterSheet_marvel_stats #specialRules div.tr {
+	margin: .75em 0;
+}
+
+#page_characterSheet_marvel_stats #specialRules div.tr input {
+	float: left;
+	margin: 8px 30px 0;
+}
+
+#page_characterSheet_marvel_stats #specialRules div.tr div {
+	margin-left: 80px;
+	margin-right: 40px;
+}
+
+#page_characterSheet_marvel_stats #saveDiv {
+	margin-top: 1.5em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel_notes textarea {
+	width: 910px;
+	height: 15em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_marvel_delete p b {
+	color: #A00;
+}
+
+#page_characterSheet_marvel_delete .tr {
+	padding-top: 0;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_dnd3_edit h2 img {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet_dnd3_edit label {
+	font-size: .8em;
+	display: inline-block;
+}
+
+#page_characterSheet_dnd3_edit label.shiftRight {
+	padding-left: 8px;
+}
+
+#page_characterSheet_dnd3_edit input[type="text"] {
+	width: 200px;
+}
+
+#page_characterSheet_dnd3_edit label.col1 {
+	width: 200px;
+}
+
+#page_characterSheet_dnd3_edit label.col2 {
+	width: 350px;
+}
+
+#page_characterSheet_dnd3_edit label.col3 {
+	width: 100px;
+}
+
+#page_characterSheet_dnd3_edit label.col4 {
+	width: 40px;
+}
+
+#page_characterSheet_dnd3_edit label.leftLabel {
+	font-size: 1em;
+}
+
+#page_characterSheet_dnd3_edit .lrBuffer {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+#page_characterSheet_dnd3_edit .labelTR {
+	padding-bottom: 0;
+}
+
+#page_characterSheet_dnd3_edit #label label {
+	float: left;
+	text-align: right;
+	margin-right: 15px;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+#page_characterSheet_dnd3_edit #label div {
+	width: 200px;
+	text-align: right;
+	font-size: .8em;
+}
+
+#page_characterSheet_dnd3_edit #classes {
+	width: 350px;
+}
+
+#page_characterSheet_dnd3_edit #levels {
+	width: 75px;
+}
+
+#page_characterSheet_dnd3_edit #stats {
+	margin: 1em 0 .5em;
+	float: left;
+}
+
+#page_characterSheet_dnd3_edit #stats input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #stats span {
+	display: inline-block;
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #savingThrows, #page_characterSheet_dnd3_edit #hp {
+	margin: .5em 0 1em 300px;
+}
+
+#page_characterSheet_dnd3_edit #savingThrows .labelTR label {
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #savingThrows label.first {
+	margin-left: 90px;
+}
+
+#page_characterSheet_dnd3_edit #savingThrows label.leftLabel {
+	width: 75px;
+}
+
+#page_characterSheet_dnd3_edit #savingThrows span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #savingThrows input {
+	width: 32px;
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #hp {
+	margin-top: 2em;
+}
+
+#page_characterSheet_dnd3_edit #hp label {
+	margin-right: 10px;
+}
+
+#page_characterSheet_dnd3_edit #hp input {
+	width: 40px;
+	text-align: center;
+	margin-right: 20px;
+}
+
+#page_characterSheet_dnd3_edit #hp input#damageReduction {
+	width: 150px;
+}
+
+#page_characterSheet_dnd3_edit #ac {
+	clear: left;
+	margin-top: 4em;
+}
+
+#page_characterSheet_dnd3_edit #ac label {
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #ac label.first {
+	width: 60px;
+	margin-right: 65px;
+}
+
+#page_characterSheet_dnd3_edit #ac span {
+	display: inline-block;
+	width: 50px;
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #ac input {
+	width: 32px;
+	text-align: center;
+	margin: 0 10px;
+}
+
+#page_characterSheet_dnd3_edit #ac input.first {
+	margin: 0 20px;
+}
+
+#page_characterSheet_dnd3_edit #combatBonuses {
+	margin-top: 1em;
+}
+
+#page_characterSheet_dnd3_edit #combatBonuses .labelTR label {
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #combatBonuses .labelTR .first {
+	margin-left: 115px;
+}
+
+#page_characterSheet_dnd3_edit #combatBonuses label.leftLabel {
+	text-align: right;
+}
+
+#page_characterSheet_dnd3_edit #combatBonuses span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_edit #combatBonuses input {
+	width: 32px;
+	text-align: center;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_deadlands_edit #nameDiv label, #page_characterSheet_deadlands #nameDiv label {
+	display: block;
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#page_characterSheet_deadlands_edit .triCol, #page_characterSheet_deadlands .triCol {
+	float: left;
+	width: 290px;
+	margin-right: 20px;
+	margin-top: 1em;
+}
+
+#page_characterSheet_deadlands_edit .lastTriCol, #page_characterSheet_deadlands .lastTriCol {
+	float: none;
+	margin-right: 0;
+	margin-left: 620px;
+}
+
+#page_characterSheet_deadlands_edit textarea {
+	width: 282px;
+	height: 6.2em;
+}
+
+#page_characterSheet_deadlands_edit .triCol h3, #page_characterSheet_deadlands .triCol h3 {
+	text-decoration: none;
+}
+
+#page_characterSheet_deadlands_edit .triCol .statDiv, #page_characterSheet_deadlands .triCol .statDiv {
+	position: relative;
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_deadlands_edit .triCol .firstStatDiv, #page_characterSheet_deadlands .triCol .firstStatDiv {
+	margin-top: 0;
+}
+
+#page_characterSheet_deadlands_edit .triCol .statDiv h3, #page_characterSheet_deadlands .triCol .statDiv h3 {
+	display: inline;
+}
+
+#page_characterSheet_deadlands_edit .triCol .statDiv input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit .triCol .skillTitle, #page_characterSheet_deadlands .triCol .skillTitle {
+	margin-top: .75em;
+}
+
+#page_characterSheet_deadlands_edit #edge_hind {
+	height: 20em;
+}
+
+#page_characterSheet_deadlands_edit #nightmare {
+	height: 12.4em;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv .indivWoundDiv, #page_characterSheet_deadlands #woundsDiv .indivWoundDiv {
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv h3, #page_characterSheet_deadlands #woundsDiv h3 {
+	margin: .5em 0;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv .indivWoundDiv input {
+	width: 60px;
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit #woundsDiv .subTwoCol, #page_characterSheet_deadlands #woundsDiv .subTwoCol {
+	width: 140px;
+	float: left;
+}
+
+#page_characterSheet_deadlands_edit #windDiv, #page_characterSheet_deadlands #windDiv {
+	margin-top: 70px;
+}
+
+#page_characterSheet_deadlands_edit #windDiv h3, #page_characterSheet_deadlands #windDiv h3 {
+	display: inline;
+	margin-right: 10px;
+}
+
+#page_characterSheet_deadlands_edit #windDiv input {
+	width: 30px;
+	text-align: center;
+}
+
+#page_characterSheet_deadlands_edit .twoCol, #page_characterSheet_deadlands .twoCol {
+	float: left;
+	width: 450px;
+	margin-right: 20px;
+}
+
+#page_characterSheet_deadlands_edit .lastTwoCol, #page_characterSheet_deadlands .lastTwoCol {
+	float: none;
+	margin-left: 470px;
+}
+
+#page_characterSheet_deadlands_edit .leftTitle, #page_characterSheet_deadlands .leftTitle {
+	text-align: left;
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_deadlands_edit #weapons, #page_characterSheet_deadlands_edit #arcane, #page_characterSheet_deadlands_edit #equipment {
+	width: 442px;
+	height: 10em;
+}
+
+#page_characterSheet_deadlands_edit #equipment {
+	height: 24.2em;
+}
+
+#page_characterSheet_deadlands_edit #notes {
+	height: 24.8em;
+	width: 912px;
+}
+
+#page_characterSheet_deadlands_edit #submitDiv {
+	clear: both;
+	text-align: center;
+	margin-top: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_afmbe_edit #nameDiv label {
+	display: block;
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol, #page_characterSheet_afmbe_edit #secondaryStatsCol {
+	float: left;
+	margin-top: 1em;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol {
+	width: 480px;
+	margin-right: 40px;
+	margin-left: 65px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol .tr {
+	margin: 8px 0;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol .twoCol {
+	float: left;
+	width: 220px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol .leftCol {
+	margin-right: 40px;
+}
+
+#page_characterSheet_afmbe_edit #secondaryStatsCol {
+	width: 250px;
+	margin-right: 65px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol label, #page_characterSheet_afmbe_edit #secondaryStatsCol label {
+	display: block;
+	float: left;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol label {
+	width: 170px;
+}
+
+#page_characterSheet_afmbe_edit #secondaryStatsCol label {
+	width: 200px;
+}
+
+#page_characterSheet_afmbe_edit #primaryStatsCol input, #page_characterSheet_afmbe_edit #secondaryStatsCol input {
+	width: 30px;
+	margin: 0 6px;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_custom_edit .leftCol, #page_characterSheet_custom .leftCol {
+	float: left;
+	width: 200px;
+	margin-top: 5px;
+	font-weight: bold;
+	text-align: right;
+}
+
+#page_characterSheet_custom #charLabel, #page_characterSheet_custom_edit #charLabel {
+	margin-top: 0;
+}
+
+#page_characterSheet_custom_edit .rightCol, #page_characterSheet_custom .rightCol {
+	margin-left: 210px;
+	width: 620px;
+}
+
+#page_characterSheet_custom_edit .rightCol input {
+	width: 200px;
+}
+
+#page_characterSheet_custom_edit .rightCol textarea {
+	width: 600px;
+	height: 20em;
+}
+
+#page_characterSheet_custom_edit #labelInfo {
+	width: 200px;
+	padding-top: 4px;
+	font-size: .8em;
+	text-align: center;
+}
