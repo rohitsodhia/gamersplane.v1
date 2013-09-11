@@ -50,7 +50,7 @@
 		$bonus = showSign(floor(($charInfo[$short] - 10)/2));
 ?>
 				<div class="tr">
-					<label id="label_<?=$short?>" class="textLabel shortText leftLabel"><?=$stat?></label>
+					<label id="label_<?=$short?>" class="shortText leftLabel"><?=$stat?></label>
 					<div class="stat"><?=$charInfo[$short]?></div>
 					<span id="<?=$short?>Modifier"><?=$bonus?></span>
 				</div>
@@ -64,7 +64,8 @@
 			
 			<div id="savingThrows">
 				<div class="tr labelTR">
-					<label class="statCol shortNum lrBuffer first">Total</label>
+					<div class="fillerBlock cell">&nbsp;</div>
+					<label class="statCol shortNum lrBuffer">Total</label>
 					<label class="statCol shortNum lrBuffer">Base</label>
 					<label class="statCol shortNum lrBuffer">Ability</label>
 					<label class="statCol shortNum lrBuffer">Magic</label>
@@ -116,6 +117,7 @@
 		<div id="ac">
 			<div class="tr labelTR">
 				<label class="first">Total AC</label>
+				<div class="fillerBlock cell medNum">&nbsp;</div>
 				<label>Armor</label>
 				<label>Shield</label>
 				<label>Dex</label>
@@ -142,7 +144,8 @@
 		
 		<div id="combatBonuses" class="clearFix">
 			<div class="tr labelTR">
-				<label class="statCol shortNum first">Total</label>
+				<div class="fillerBlock cell shortText">&nbsp;</div>
+				<label class="statCol shortNum">Total</label>
 				<label class="statCol shortNum">Base</label>
 				<label class="statCol shortNum">Ability</label>
 				<label class="statCol shortNum">Size</label>

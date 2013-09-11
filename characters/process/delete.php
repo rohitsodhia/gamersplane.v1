@@ -14,7 +14,7 @@
 			$tables = $mysql->query("SHOW TABLES LIKE '{$shortName}_%'");
 			while ($table = $tables->fetchColumn()) $mysql->query('DELETE FROM '.$table.' WHERE characterID = '.$characterID);
 			
-			$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action) VALUES ($characterID, $userID, NOW(), 'deleted')");
+			addCharacterHistory($characterID, 'deleted', $userID, 'NOW()');
 			
 			if (isset($_POST['modal'])) echo 'deleted';
 			else header('Location: '.SITEROOT.'/characters/my?delete=1');

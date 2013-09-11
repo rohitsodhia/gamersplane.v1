@@ -120,14 +120,9 @@ label.leftLabel {
 	display: inline-block;
 }
 
-.viewCharacter #stats .stat {
+.viewCharacter #stats .dataTR .stat {
 	border-right: 1px solid #555;
 	border-left: 1px solid #555;
-}
-
-.viewCharacter #stats .labelTR .stat {
-	border-right: 1px solid #000;
-	border-left: 1px solid #000;
 }
 
 #saves, #init {
@@ -147,11 +142,7 @@ label.leftLabel {
 	text-align: center;
 }
 
-#saves label.first {
-	margin-left: 85px;
-}
-
-#saves label.leftLabel {
+#saves label.leftLabel, #saves .fillerBlock {
 	width: 75px;
 }
 
@@ -167,10 +158,6 @@ label.leftLabel {
 
 #init .tr div {
 	display: inline-block;
-}
-
-#init .first {
-	margin-left: 110px;
 }
 
 .editCharacter #hpCol, .editCharacter #combatBonuses {
@@ -201,15 +188,7 @@ label.leftLabel {
 	margin: 2em 0 0 10px;
 }
 
-#passiveSenses .labelTR label {
-	margin-left: 35px;
-}
-
-#passiveSenses .labelTR label:first-child {
-	margin-left: 155px;
-}
-
-#passiveSenses .tr .leftLabel {
+#passiveSenses .tr .leftLabel, #passiveSenses .labelFiller {
 	width: 150px;
 }
 

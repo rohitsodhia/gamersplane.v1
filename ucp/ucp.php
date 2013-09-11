@@ -116,7 +116,7 @@
 				<div><input type="radio" name="newGameMail" value="1"<?=$userInfo['newGameMail'] == 1?' checked="checked"':''?>> Yes <input type="radio" name="newGameMail" value="0"<?=$userInfo['newGameMail'] == 0?' checked="checked"':''?>> No</div>
 			</div>
 			<div class="tr">
-				<div class="fancyButton"><button type="submit" name="submit">Save</button></div>
+				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>
 
@@ -146,7 +146,7 @@
 				<div><input type="password" name="password2" maxlength="16"></div>
 			</div>
 			<div class="tr">
-				<div class="fancyButton"><button type="submit" name="submit">Save</button></div>
+				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>
 		
@@ -158,7 +158,7 @@
 				<div><input type="radio" name="postSide" value="c"<?=$userInfo['postSide'] == 'c'?' checked="checked"':''?>> Conversation</div>
 			</div>
 			<div class="tr">
-				<div class="fancyButton"><button type="submit" name="submit">Save</button></div>
+				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

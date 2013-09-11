@@ -27,26 +27,27 @@
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			
 			<div class="tr labelTR">
-				<label id="label_name" class="medText lrBuffer shiftRight">Name</label>
-				<label id="label_race" class="medText lrBuffer shiftRight">Race</label>
-				<label id="label_alignment" class="shortText lrBuffer shiftRight">Alignment</label>
+				<label id="label_name" class="medText lrBuffer shiftRight borderBox">Name</label>
+				<label id="label_race" class="medText lrBuffer shiftRight borderBox">Race</label>
+				<label id="label_alignment" class="shortText lrBuffer shiftRight borderBox">Alignment</label>
 			</div>
 			<div class="tr">
 				<input type="text" name="name" value="<?=$charInfo['name']?>" class="medText lrBuffer">
 				<input type="text" name="race" value="<?=$charInfo['race']?>" class="medText lrBuffer">
 				<select name="alignment" class="lrBuffer">
-					<option value="g"<?=$charInfo['alignment'] == 'g'?' selected="selected"':''?>>Good</option>
-					<option value="lg"<?=$charInfo['alignment'] == 'lg'?' selected="selected"':''?>>Lawful Good</option>
-					<option value="e"<?=$charInfo['alignment'] == 'e'?' selected="selected"':''?>>Evil</option>
-					<option value="ce"<?=$charInfo['alignment'] == 'ce'?' selected="selected"':''?>>Chaotic Evil</option>
-					<option value="u"<?=$charInfo['alignment'] == 'u'?' selected="selected"':''?>>Unaligned</option>
+<?
+	$alignments = array('g' => 'Good', 'lg' => 'Lawful Good', 'e' => 'Evil', 'ce' => 'Chaotic Evil', 'u' => 'Unaligned'); 
+	foreach ($alignments as $alignShort => $alignment) {
+?>
+					<option value="<?=$alignShort?>"<?=$charInfo['alignment'] == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
+<?	} ?>
 				</select>
 			</div>
 			
 			<div class="tr labelTR">
-				<label id="label_classes" class="longText lrBuffer shiftRight">Class(es)/Level(s)</label>
-				<label id="label_paragon" class="medText lrBuffer shiftRight">Paragon Path</label>
-				<label id="label_epic" class="medText lrBuffer shiftRight">Epic Destinies</label>
+				<label id="label_classes" class="longText lrBuffer shiftRight borderBox">Class(es)/Level(s)</label>
+				<label id="label_paragon" class="medText lrBuffer shiftRight borderBox">Paragon Path</label>
+				<label id="label_epic" class="medText lrBuffer shiftRight borderBox">Epic Destinies</label>
 			</div>
 			<div class="tr">
 				<input id="classes" type="text" name="class" value="<?=$charInfo['class']?>" class="longText lrBuffer">
@@ -82,7 +83,8 @@
 				
 				<div id="saves">
 					<div class="tr labelTR">
-						<label class="shortNum lrBuffer first">Total</label>
+						<div class="fillerBlock cell">&nbsp;</div>
+						<label class="shortNum lrBuffer">Total</label>
 						<label class="shortNum lrBuffer">10 + 1/2 Lvl</label>
 						<label class="shortNum lrBuffer">Armor/ Ability</label>
 						<label class="shortNum lrBuffer">Class</label>
@@ -140,7 +142,8 @@
 				
 				<div id="init">
 					<div class="tr labelTR">
-						<label class="shortNum alignCenter lrBuffer first">Total</label>
+						<div class="fillerBlock cell shortText">&nbsp;</div>
+						<label class="shortNum alignCenter lrBuffer">Total</label>
 						<label class="shortNum alignCenter lrBuffer">Dex</label>
 						<label class="shortNum alignCenter lrBuffer">1/2 Lvl</label>
 						<label class="shortNum alignCenter lrBuffer">Misc</label>
@@ -174,7 +177,8 @@
 					
 					<div id="movement">
 						<div class="tr labelTR">
-							<label class="shortNum alignCenter lrBuffer first">Total</label>
+							<div class="fillerBlock cell medNum">&nbsp;</div>
+							<label class="shortNum alignCenter lrBuffer">Total</label>
 							<label class="shortNum alignCenter lrBuffer">Base</label>
 							<label class="shortNum alignCenter lrBuffer">Armor</label>
 							<label class="shortNum alignCenter lrBuffer">Item</label>
@@ -197,8 +201,10 @@
 					
 					<div id="passiveSenses">
 						<div class="tr labelTR">
+							<div class="fillerBlock cell labelFiller">&nbsp;</div>
 							<label class="medNum alignCenter">Total</label>
-							<label class="medNum alignCenter">Skill</label>
+							<div class="fillerBlock cell shortNum">&nbsp;</div>
+							<label class="shortNum alignCenter">Skill</label>
 						</div>
 						<div class="tr">
 							<label class="leftLabel">Passive Insight</label>

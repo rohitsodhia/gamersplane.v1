@@ -112,6 +112,7 @@ function setupWingContainer() {
 	currentID = this.id;
 	if (baseClass != 'fancyButton' && baseClass != 'wingDiv') {
 		$(this).css('background', 'none').attr('class', baseClass).wrapInner('<div>').children().attr('class', classes).removeClass(baseClass);
+		if (baseClass == 'button' && classes.match(/smallButton/)) $(this).addClass('smallButton').children().removeClass('smallButton');
 	} else if (baseClass == 'fancyButton') {
 		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);//.attr('id', currentID + 'Wrapper');
 	}
@@ -166,10 +167,17 @@ $(function() {
 
 	$('.headerbar, a.button, .fancyButton, .wingDiv').each(setupWingContainer);
 	$('.wing').each(setupWings);
-//	$('.wingDiv').each(function () {
-//		width = $(this).children('div:not(.wing)').outerWidth() + $(this).children('.wing').outerWidth() * 2;
-//		$(this).width(width);
-//	});
+	if ($('.hbDark .wing').length) {
+		leftMargin = $('.hbDark .wing').css('border-right-width');
+		$('.hbMargined:not(textarea)').css({ 'margin-left': leftMargin, 'margin-right': leftMargin });
+		$('.hbTopper').css({ 'marginLeft': leftMargin });
+
+		leftMargin = leftMargin.slice(0, -2);
+		$('textarea.hbMargined').each(function () {
+			tWidth = $(this).parent().width();
+			$(this).css({ 'margin-left': leftMargin + 'px', 'margin-right': leftMargin + 'px', 'width': (tWidth - 2 * leftMargin) + 'px' });
+		});
+	}
 
 	$('#mainMenu li').mouseenter(function () {
 		$(this).children('ul').stop(true, true).slideDown();

@@ -140,11 +140,7 @@ label.leftLabel {
 	text-align: center;
 }
 
-#savingThrows label.first {
-	margin-left: 90px;
-}
-
-#savingThrows label.leftLabel {
+#savingThrows label.leftLabel, #savingThrows .fillerBlock {
 	width: 75px;
 }
 
@@ -193,19 +189,11 @@ label.leftLabel {
 	margin-right: 10px;
 }
 
-.viewCharacter #ac .labelTR .first {
-	margin-right: 75px;
-}
-
-.editCharacter #ac .labelTR .first {
-	margin-right: 65px;
-}
-
 .viewCharacter #ac .dataTR div {
 	text-align: center;
 }
 
-.editCharacter #ac span {
+.editCharacter #ac .tr div {
 	display: inline-block;
 	width: 50px;
 	text-align: center;
@@ -215,7 +203,7 @@ label.leftLabel {
 	width: 60px;
 }
 
-.editCharacter #ac .sizeVal {
+.editCharacter #ac .tr .sizeVal {
 	width: 40px;
 	margin: 0 10px;
 	text-align: center;

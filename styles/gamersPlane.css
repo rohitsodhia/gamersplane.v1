@@ -296,6 +296,16 @@ a.button, a.button:visited, a.button:active, .redWing {
 	color: #FFF;
 }
 
+a.button.smallButton {
+	font-size: 1.3em;
+	line-height: 1.2em;
+}
+
+.hbTopper .button {
+	display: block;
+	float: left;
+}
+
 .redWing {
 	display: block;
 }

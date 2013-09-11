@@ -17,7 +17,7 @@
 			$updateChar->bindvalue(':wounds', intval($_POST['wounds']['head']).','.intval($_POST['wounds']['leftHand']).','.intval($_POST['wounds']['rightHand']).','.intval($_POST['wounds']['guts']).','.intval($_POST['wounds']['leftLeg']).','.intval($_POST['wounds']['rightLeg']));
 			$updateChar->bindValue(':characterID', $characterID);
 			$updateChar->execute();
-			updateCharacterHistory($characterID, 'editedChar');
+			addCharacterHistory($characterID, 'editedChar');
 		}
 		
 		header('Location: '.SITEROOT.'/characters/deadlands/'.$characterID);

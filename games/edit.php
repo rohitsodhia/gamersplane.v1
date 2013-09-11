@@ -105,7 +105,7 @@
 					<textarea name="charGenInfo"><?=$charGenInfo?></textarea>
 				</div>
 				
-				<div id="submitDiv"><div class="fancyButton"><button type="submit" name="<?=$display == 'new'?'create':'save'?>"><?=$display == 'new'?'Create':'Save'?></button></div></div>
+				<div id="submitDiv"><button type="submit" name="<?=$display == 'new'?'create':'save'?>" class="fancyButton"><?=$display == 'new'?'Create':'Save'?></button></div>
 			</form>
 <? if ($display == 'new') { ?>
 		</div>

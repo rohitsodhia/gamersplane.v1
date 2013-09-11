@@ -7,13 +7,6 @@
 	margin: 0;
 }
 
-#page_myGames .hbTopper a {
-	display: block;
-	float: left;
-	font-size: 1.3em;
-	line-height: 1.2em;
-}
-
 #page_myGames .noneFound {
 	font-size: 1.3em;
 	margin: 1.5em 0;

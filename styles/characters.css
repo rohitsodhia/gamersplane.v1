@@ -8,6 +8,10 @@
 	padding-bottom: 8px;
 }
 
+#page_myCharacters h2 {
+	margin-top: 0;
+}
+
 #page_myCharacters #characterList {
 	margin-bottom: 2em;
 }
@@ -50,21 +54,23 @@
 	text-align: center;
 }
 
-#page_myCharacters #newChar label {
+/* --------------------------------------------*/
+
+#page_newCharacter h1 {
+	margin-bottom: .3em;
+}
+
+#page_newCharacter #newChar label {
 	float: left;
-	width: 150px;
+	width: 120px;
 	text-align: right;
 	margin-right: 15px;
 	font-weight: bold;
 	font-size: 1em;
 }
 
-#page_myCharacters #newChar input[type="text"] {
+#page_newCharacter #newChar input[type="text"] {
 	width: 200px;
-}
-
-#page_myCharacters #newChar .fancyButton {
-	margin-left: 165px;
 }
 
 /* --------------------------------------------*/

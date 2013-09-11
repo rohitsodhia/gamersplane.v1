@@ -25,7 +25,7 @@
 ?>
 				</ul>
 				<input type="hidden" name="numSystems" value="<?=$systems->rowCount()?>">
-				<div class="alignCenter"><div class="fancyButton"><button name="filter" value="filter">Filter</button></div></div>
+				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 			</form>
 		</div>
 

@@ -141,12 +141,18 @@
 		} else return false;
 	}
 
-	function updateCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()') {
+	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
 		global $mysql;
 		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
 
 		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return false;
-		$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action) VALUES ($characterID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':"'$enactedOn'").", '$action')");
+		if ($enactedOn == '') $enactedOn = 'NOW()';
+
+		$addCharHistory = $mysql->prepare("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action, additionalInfo) VALUES ($characterID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :additionalInfo)");
+		if ($enactedOn != 'NOW()') $addCharHistory->bindvalue(':enactedOn', $enactedOn);
+		$addCharHistory->bindvalue(':action', $action);
+		$addCharHistory->bindvalue(':additionalInfo', $additionalInfo);
+		$addCharHistory->execute();
 	}
 	
 /* Tools Functions */

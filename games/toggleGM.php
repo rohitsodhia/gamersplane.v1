@@ -24,6 +24,6 @@
 		<form method="post" action="<?=SITEROOT?>/games/process/toggleGM" class="buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
-			<div class="fancyButton"><button type="submit" name="toggle"><?=$isGM?'Remove':'Add'?></button></div>
+			<button type="submit" name="toggle" class="fancyButton"><?=$isGM?'Remove':'Add'?></button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

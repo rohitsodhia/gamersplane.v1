@@ -48,7 +48,7 @@
 			foreach (array_merge($numVals, $textVals) as $value) $updateChar->bindValue(":$value", $_POST[$value]);
  			$updateChar->bindValue(':characterID', $characterID);
 			$updateChar->execute();
-			updateCharacterHistory($characterID, 'editedChar');
+			addCharacterHistory($characterID, 'editedChar');
 			header('Location: '.SITEROOT.'/characters/marvel/'.$characterID);
 		} else header('Location: '.SITEROOT.'/403');
 	} else header('Location: '.SITEROOT.'/403');

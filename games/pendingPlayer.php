@@ -21,6 +21,6 @@
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
 			<input type="hidden" name="pendingAction" value="<?=$pendingAction?>">
-			<div class="fancyButton"><button type="submit" name="pendingAction"><?=ucwords($pendingAction)?></button></div>
+			<button type="submit" name="pendingAction" class="fancyButton"><?=ucwords($pendingAction)?></button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

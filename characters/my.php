@@ -29,7 +29,8 @@
 		</ul></div>
 <? } ?>
 		<div id="characterList">
-			<h2 class="headerbar hbDark">My Characters</h2>
+			<div class="clearfix hbTopper"><a id="newCharLink" href="<?=SITEROOT?>/characters/new" class="button smallButton">New Character</a></div>
+			<h2 class="headerbar hbDark">Characters</h2>
 <?
 	$characters = $mysql->query('SELECT characters.*, systems.shortName, systems.fullName FROM characters, systems WHERE characters.systemID = systems.systemID AND characters.userID = '.intval($_SESSION['userID']).' ORDER BY systems.fullName, characters.label');
 	
@@ -48,26 +49,4 @@
 	echo "\t\t\t".'<div class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any characters yet. You might wanna get started!</div>'."\n";
 ?>
 		</div>
-		
-		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
-			<h2 class="headerbar hbDark">Create New Character</h2>
-			<div class="tr">
-				<label class="textLabel">Label</label>
-				<input type="text" name="label" maxlength="50">
-<!--				<div>Labels must unique</div>-->
-			</div>
-			<div class="tr">
-				<label class="textLabel">System</label>
-				<select name="system">
-					<option value="">Select One</option>
-<?
-	$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 AND systemID != 1 ORDER BY fullName');
-	foreach ($systems as $info) echo "\t\t\t\t\t".'<option value="'.$info['systemID'].'">'.printReady($info['fullName'])."</option>\n";
-//	foreach ($systemNames as $value => $name) { echo "\t\t\t\t\t".'<option value="'.$value.'">'.$name."</option>\n"; }
-?>
-					<option value="1">Custom</option>
-				</select>
-			</div>
-			<div class="tr"><div class="fancyButton"><button type="submit" name="create">Create</button></div></div>
-		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

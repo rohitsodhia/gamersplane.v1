@@ -13,6 +13,6 @@
 		
 		<form method="post" action="<?=SITEROOT?>/games/process/changeStatus/" class="cbf_basic buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
-			<div class="fancyButton"><button type="submit" name="<?=$gameInfo['open']?'close':'open'?>"><?=$gameInfo['open']?'Close':'Open'?></button></div>
+			<button type="submit" name="<?=$gameInfo['open']?'close':'open'?>" class="fancyButton"><?=$gameInfo['open']?'Close':'Open'?></button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

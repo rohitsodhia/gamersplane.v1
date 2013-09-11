@@ -124,9 +124,7 @@
 				<textarea id="notes" name="notes" class="hbMargined"></textarea>
 			</div>
 			
-			<div id="submitDiv">
-				<div class="fancyButton"><button type="submit" name="save">Save</button></div>
-			</div>
+			<div id="submitDiv"><button type="submit" name="save" class="fancyButton">Save</button></div>
 		</form>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

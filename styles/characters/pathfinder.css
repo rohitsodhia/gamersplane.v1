@@ -152,14 +152,6 @@ label.leftLabel {
 	text-align: center;
 }
 
-.editCharacter #savingThrows label.first {
-	margin-left: 90px;
-}
-
-.viewCharacter #savingThrows label.first {
-	margin-left: 80px;
-}
-
 #savingThrows label.leftLabel, #savingThrows .fillerBlock {
 	width: 75px;
 }
@@ -172,10 +164,6 @@ label.leftLabel {
 
 .viewCharacter #savingThrows .dataTR > div {
 	text-align: center;
-}
-
-.editCharacter #hp {
-	margin-top: 2em;
 }
 
 .editCharacter #hp label {
@@ -200,22 +188,22 @@ label.leftLabel {
 	margin-top: 1.5em;
 }
 
-#ac label, #ac .TR div, #ac_total {
+#ac label, #ac .tr div, #ac_total {
 	text-align: center;
-	width: 60px;
+	width: 60px !important;
 }
 
 .viewCharacter #ac .dataTR div {
 	text-align: center;
 }
 
-.editCharacter #ac span {
+.editCharacter #ac .tr div {
 	display: inline-block;
 	width: 50px;
 	text-align: center;
 }
 
-.editCharacter #ac .sizeVal {
+.editCharacter #ac .tr .sizeVal {
 	width: 40px;
 	margin: 0 10px;
 	text-align: center;
@@ -232,9 +220,8 @@ label.leftLabel {
 }
 
 #combatBonuses {
-	margin-top: 1.5em;
 	float: left;
-	margin-right: 100px;
+	margin-top: 1.5em;
 }
 
 .viewCharacter #combatBonuses .dataTR div {
@@ -243,14 +230,6 @@ label.leftLabel {
 
 #combatBonuses .labelTR label {
 	text-align: center;
-}
-
-.editCharacter #combatBonuses .labelTR .first {
-	margin-left: 115px;
-}
-
-.viewCharacter #combatBonuses .labelTR .first {
-	margin-left: 105px;
 }
 
 #combatBonuses label.leftLabel {
@@ -263,17 +242,10 @@ label.leftLabel {
 	text-align: center;
 }
 
-#combatBonuses input {
-	width: 40px;
-	text-align: center;
-}
-
-.editCharacter #combatManuvers {
+#combatManuvers {
+	float: left;
 	margin-top: 1.5em;
-}
-
-.viewCharacter #combatManuvers {
-	margin-top: 2.5em;
+	margin-left: 80px;
 }
 
 #combatManuvers #cmd {

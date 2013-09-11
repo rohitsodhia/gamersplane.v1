@@ -68,7 +68,7 @@
 			foreach (array_merge($numVals, $textVals) as $value) $updateChar->bindValue(":$value", $_POST[$value]);
  			$updateChar->bindValue(':characterID', $characterID);
 			$updateChar->execute();
-			updateCharacterHistory($characterID, 'editedChar');
+			addCharacterHistory($characterID, 'editedChar');
 		}
 		
 		header('Location: '.SITEROOT.'/characters/pathfinder/'.$characterID);

@@ -34,22 +34,17 @@
 			
 			<div class="tr labelTR">
 				<label id="label_classes" class="longText lrBuffer borderBox shiftRight">Class(es)/Level(s)</label>
-<!--					<label id="label_levels" class="shortText lrBuffer shiftRight">Level(s)</label>-->
 				<label id="label_alignment" class="medText lrBuffer borderBox shiftRight">Alignment</label>
 			</div>
 			<div class="tr">
 				<input type="text" id="classes" name="class" value="<?=$charInfo['class']?>" class="lrBuffer">
-<!--					<input type="text" id="levels" name="levels" class="lrBuffer">-->
 				<select name="alignment" class="lrBuffer">
-					<option value="lg"<?=$charInfo['alignment'] == 'lg'?' selected="selected"':''?>>Lawful Good</option>
-					<option value="ng"<?=$charInfo['alignment'] == 'ng'?' selected="selected"':''?>>Neutral Good</option>
-					<option value="cg"<?=$charInfo['alignment'] == 'cg'?' selected="selected"':''?>>Chaotic Good</option>
-					<option value="ln"<?=$charInfo['alignment'] == 'ln'?' selected="selected"':''?>>Lawful Neutral</option>
-					<option value="tn"<?=$charInfo['alignment'] == 'tn'?' selected="selected"':''?>>True Neutral</option>
-					<option value="cn"<?=$charInfo['alignment'] == 'cn'?' selected="selected"':''?>>Chaotic Neutral</option>
-					<option value="le"<?=$charInfo['alignment'] == 'le'?' selected="selected"':''?>>Lawful Evil</option>
-					<option value="ne"<?=$charInfo['alignment'] == 'ne'?' selected="selected"':''?>>Neutral Evil</option>
-					<option value="ce"<?=$charInfo['alignment'] == 'ce'?' selected="selected"':''?>>Chaotic Evil</option>
+<?
+	$alignments = array('lg' => 'Lawful Good', 'ng' => 'Neutral Good', 'cg' => 'Chaotic Good', 'ln' => 'Lawful Neutral', 'tn' => 'True Neutral', 'cn' => 'Chaotic Neutral', 'le' => 'Lawful Evil', 'ne' => 'Neutral Evil', 'ce' => 'Chaotic Evil');
+	foreach ($alignments as $alignShort => $alignment) {
+?>
+					<option value="<?=$alignShort?>"<?=$charInfo['alignment'] == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
+<?	} ?>
 				</select>
 			</div>
 			
@@ -143,13 +138,13 @@
 				</div>
 <? $acTotal = 10 + $charInfo['ac_armor'] + $charInfo['ac_shield'] + $charInfo['ac_dex'] + $charInfo['ac_class'] + $charInfo['size'] + $charInfo['ac_natural'] + $charInfo['ac_deflection'] + $charInfo['ac_misc']; ?>
 				<div class="tr">
-					<span id="ac_total" class="lrBuffer addSize"><?=$acTotal?></span>
-					<span> = 10 + </span>
+					<div id="ac_total" class="lrBuffer addSize"><?=$acTotal?></div>
+					<div> = 10 + </div>
 					<input type="text" name="ac_armor" value="<?=$charInfo['ac_armor']?>" class="acComponents">
 					<input type="text" name="ac_shield" value="<?=$charInfo['ac_shield']?>" class="acComponents">
 					<input type="text" name="ac_dex" value="<?=$charInfo['ac_dex']?>" class="acComponents">
 					<input type="text" name="ac_class" value="<?=$charInfo['ac_class']?>" class="acComponents">
-					<span class="sizeVal"><?=$charInfo['size']?></span>
+					<div class="sizeVal"><?=$charInfo['size']?></div>
 					<input type="text" name="ac_natural" value="<?=$charInfo['ac_natural']?>" class="acComponents">
 					<input type="text" name="ac_deflection" value="<?=$charInfo['ac_deflection']?>" class="acComponents">
 					<input type="text" name="ac_misc" value="<?=$charInfo['ac_misc']?>" class="acComponents">
@@ -159,7 +154,8 @@
 			<div class="clearfix">
 				<div id="combatBonuses">
 					<div class="tr labelTR">
-						<label class="shortNum lrBuffer first">Total</label>
+						<div class="fillerBlock cell shortText">&nbsp;</div>
+						<label class="shortNum lrBuffer">Total</label>
 						<label class="shortNum lrBuffer">Base</label>
 						<label class="shortNum lrBuffer">Ability</label>
 						<label class="shortNum lrBuffer">Size</label>
@@ -204,7 +200,7 @@
 				<div id="combatManuvers">
 					<div id="cmb">
 						<div class="tr labelTR">
-							<div class="medNum">&nbsp;</div>
+							<div class="fillerBlock cell medNum">&nbsp;</div>
 							<label class="shortNum first">Total</label>
 							<label class="shortNum">Base</label>
 							<label class="shortNum">Str</label>

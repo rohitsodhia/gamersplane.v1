@@ -18,7 +18,6 @@
 		<form method="post" action="<?=SITEROOT?>/games/process/remove/" class="buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
-			<div class="fancyButton"><button type="submit" name="remove">Remove</button></div>
-<!--			<button type="submit" name="cancel" class="btn_cancel"></button>-->
+			<button type="submit" name="remove" class="fancyButton">Remove</button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

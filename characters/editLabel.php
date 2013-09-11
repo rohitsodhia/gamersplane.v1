@@ -18,7 +18,6 @@
 		<form method="post" action="<?=SITEROOT?>/characters/process/editLabel/" class="buttonPanel">
 			<p><b>New label:</b> <input id="newLabel" type="text" name="label" maxlength="50" value="<?=$label?>"></p>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-			<div class="fancyButton"><button type="submit" name="save">Save</button></div>
-<!--			<button type="submit" name="cancel" class="btn_cancel"></button>-->
+			<button type="submit" name="save" class="fancyButton">Save</button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

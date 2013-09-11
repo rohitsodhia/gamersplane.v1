@@ -160,7 +160,7 @@
 			<h2 class="headerbar hbDark">Join Game</h2>
 			<form method="post" action="<?=SITEROOT?>/games/process/join" class="alignCenter">
 				<input type="hidden" name="gameID" value="<?=$gameID?>">
-				<div class="fancyButton"><button type="submit" name="apply">Apply to Game</button></div>
+				<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
 			</form>
 		</div>
 <?
