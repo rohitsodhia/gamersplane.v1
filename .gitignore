@@ -1,7 +1,6 @@
 ._htaccess
 _backup/
 *.ods
-*.sql
 *.csv
 *.sh
 *.txt
