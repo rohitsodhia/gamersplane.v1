@@ -108,11 +108,20 @@ function setupWingContainer() {
 	else if ($(this).hasClass('fancyButton')) baseClass = 'fancyButton';
 	else if ($(this).hasClass('wingDiv')) baseClass = 'wingDiv';
 	classes = $(this).attr('class');
+	modClasses = new Array();
+	modClasses['button'] = new Array('smallButton');
+	modClasses['headerbar'] = new Array('hb_hasButton', 'hb_hasList');
 	hasDark = $(this).hasClass('hbDark')?true:false;
 	currentID = this.id;
 	if (baseClass != 'fancyButton' && baseClass != 'wingDiv') {
 		$(this).css('background', 'none').attr('class', baseClass).wrapInner('<div>').children().attr('class', classes).removeClass(baseClass);
-		if (baseClass == 'button' && classes.match(/smallButton/)) $(this).addClass('smallButton').children().removeClass('smallButton');
+		if (typeof modClasses[baseClass] !== 'undefined') {
+			for (key in modClasses[baseClass]) {
+				modClass = modClasses[baseClass][key];
+				if (classes.match(new RegExp(modClass))) $(this).addClass(modClass).children().removeClass(modClass);
+			}
+		}
+//		if (baseClass == 'headerbar' && (classes.match(/hb_hasButton/) || classes.match(/hb_hasList/))) $(this).addClass
 	} else if (baseClass == 'fancyButton') {
 		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);//.attr('id', currentID + 'Wrapper');
 	}
@@ -167,13 +176,18 @@ $(function() {
 
 	$('.headerbar, a.button, .fancyButton, .wingDiv').each(setupWingContainer);
 	$('.wing').each(setupWings);
-	if ($('.hbDark .wing').length) {
-		leftMargin = $('.hbDark .wing').css('border-right-width');
+	if ($('.headerbar .wing').length) {
+		leftMargin = $('.headerbar .wing').css('border-right-width');
 		$('.hbMargined:not(textarea)').css({ 'margin-left': leftMargin, 'margin-right': leftMargin });
 		$('.hbTopper').css({ 'marginLeft': leftMargin });
+	}
+	if ($('.hbDark .wing').length) {
+		leftMargin = $('.hbDark .wing').css('border-right-width');
+		$('.hbdMargined:not(textarea)').css({ 'margin-left': leftMargin, 'margin-right': leftMargin });
+		$('.hbdTopper').css({ 'marginLeft': leftMargin });
 
 		leftMargin = leftMargin.slice(0, -2);
-		$('textarea.hbMargined').each(function () {
+		$('textarea.hbdMargined').each(function () {
 			tWidth = $(this).parent().width();
 			$(this).css({ 'margin-left': leftMargin + 'px', 'margin-right': leftMargin + 'px', 'width': (tWidth - 2 * leftMargin) + 'px' });
 		});

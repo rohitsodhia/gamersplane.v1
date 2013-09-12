@@ -64,7 +64,7 @@
 			<li>
 				<a href="<?=SITEROOT?>/games">My Games</a>
 <?
-		$games = $mysql->query('SELECT g.gameID, g.title, p.userID IS NOT NULL isGM FROM games g INNER JOIN players p ON p.userID = '.intval($_SESSION['userID']).' AND p.gameID = g.gameID ORDER BY g.title');
+		$games = $mysql->query('SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = '.intval($_SESSION['userID']).' AND p.gameID = g.gameID ORDER BY g.title');
 		if ($games->rowCount()) {
 			echo "				<ul>\n";
 			$count = 0;

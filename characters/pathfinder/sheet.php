@@ -230,7 +230,7 @@
 		<div class="clearfix">
 			<div id="skills" class="floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div class="tr labelTR">
 						<label class="medText">Skill</label>
 						<label class="shortNum alignCenter lrBuffer">Total</label>
@@ -256,7 +256,7 @@
 			</div>
 			<div id="feats" class="floatRight">
 				<h2 class="headerbar hbDark">Feats/Abilities</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 	$feats = $mysql->query('SELECT pathfinder_feats.featID, featsList.name, IF(LENGTH(pathfinder_feats.notes) = 0, 1, 0) hasNotes FROM pathfinder_feats INNER JOIN featsList USING (featID) WHERE pathfinder_feats.characterID = '.$characterID.' ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
@@ -362,18 +362,18 @@
 		<div class="clearfix">
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbMargined"><?=$charInfo['items']?></div>
+				<div class="hbdMargined"><?=$charInfo['items']?></div>
 			</div>
 			
 			<div id="spells">
 				<h2 class="headerbar hbDark">Spells</h2>
-				<div class="hbMargined"><?=$charInfo['spells']?></div>
+				<div class="hbdMargined"><?=$charInfo['spells']?></div>
 			</div>
 		</div>
 		
 		<div id="notes">
 			<h2 class="headerbar hbDark">Notes</h2>
-			<div class="hbMargined"><?=$charInfo['notes']?></div>
+			<div class="hbdMargined"><?=$charInfo['notes']?></div>
 		</div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

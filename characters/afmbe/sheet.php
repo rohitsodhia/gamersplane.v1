@@ -29,7 +29,7 @@
 		<div class="clearfix">
 			<div id="primaryStatsCol">
 				<h2 class="headerbar hbDark">Primary Attributes</h2>
-				<div class="hbMargined clearfix">
+				<div class="hbdMargined clearfix">
 					<div class="twoCol leftCol">
 						<div class="tr">
 							<label>Strength</label>
@@ -63,7 +63,7 @@
 			
 			<div id="secondaryStatsCol">
 				<h2 class="headerbar hbDark">Secondary Attributes</h2>
-				<div class="hbMargined clearfix">
+				<div class="hbdMargined clearfix">
 					<div class="tr">
 						<label>Life Points</label>
 						<?=$charInfo['lp']?>
@@ -87,42 +87,42 @@
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Qualities</h2>
-				<div class="hbMargined"><?=printReady($charInfo['qualities'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['qualities'])?></div>
 			</div>
 			
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Drawbacks</h2>
-				<div class="hbMargined"><?=printReady($charInfo['drawbacks'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['drawbacks'])?></div>
 			</div>
 		</div>
 		
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbMargined"><?=printReady($charInfo['skills'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['skills'])?></div>
 			</div>
 			
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Powers</h2>
-				<div class="hbMargined"><?=printReady($charInfo['powers'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['powers'])?></div>
 			</div>
 		</div>
 		
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Weapons</h2>
-				<div class="hbMargined"><?=printReady($charInfo['weapons'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['weapons'])?></div>
 			</div>
 			
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Posessions</h2>
-				<div class="hbMargined"><?=printReady($charInfo['items'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['items'])?></div>
 			</div>
 		</div>
 		
 		<div id="charInfoDiv" class="clearfix">
 			<h2 class="headerbar hbDark">Character Info/Notes</h2>
-			<div class="hbMargined"><?=printReady($charInfo['notes'])?></div>
+			<div class="hbdMargined"><?=printReady($charInfo['notes'])?></div>
 		</div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

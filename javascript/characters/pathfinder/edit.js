@@ -58,7 +58,7 @@ $(function() {
 		$.post(SITEROOT + '/characters/ajax/pathfinder/removeSkill', { characterID: $('#characterID').val(), skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
-				if ($('.skill').size() == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbMargined').slideDown();
+				if ($('.skill').size() == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
 			}); }
 		});
 		
@@ -76,7 +76,7 @@ $(function() {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
 			$.post(SITEROOT + '/characters/ajax/pathfinder/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
-				$(data).hide().appendTo('#skills .hbMargined').slideDown();
+				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');
 
 			});
@@ -91,7 +91,7 @@ $(function() {
 		$.post(SITEROOT + '/characters/ajax/pathfinder/removeFeat', { characterID: $('#characterID').val(), featID: featID }, function (data) {
 			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
 				$(this).remove();
-				if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbMargined').slideDown();
+				if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
 			}); }
 		});
 		
@@ -104,7 +104,7 @@ $(function() {
 		if ($('#featName').val().length >= 3) {
 			$.post(SITEROOT + '/characters/ajax/pathfinder/addFeat', { characterID: $('#characterID').val(), name: $('#featName').val() }, function (data) {
 				if ($('#noFeats').size()) $('#noFeats').remove();
-				$(data).hide().appendTo('#feats .hbMargined').slideDown();
+				$(data).hide().appendTo('#feats .hbdMargined').slideDown();
 				$('#featName').val('').trigger('blur');
 			});
 		}

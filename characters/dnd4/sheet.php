@@ -259,7 +259,7 @@
 		<div class="clearfix">
 			<div id="skills" class="floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div class="tr labelTR">
 						<label class="medText">Skill</label>
 						<label class="shortNum alignCenter lrBuffer">Total</label>
@@ -285,7 +285,7 @@
 			</div>
 			<div id="feats" class="floatRight">
 				<h2 class="headerbar hbDark">Feats/Features</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 	$feats = $mysql->query('SELECT dnd4_feats.featID, featsList.name FROM dnd4_feats INNER JOIN featsList USING (featID) ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
@@ -303,7 +303,7 @@
 		
 		<div id="powers" class="clearfix">
 			<h2 class="headerbar hbDark">Powers</h2>
-			<div class="hbMargined">
+			<div class="hbdMargined">
 				<div id="powers_atwill" class="powerCol first">
 					<h3>At-Will</h3>
 <?
@@ -331,22 +331,22 @@
 		<div class="clearfix">
 			<div id="weapons" class="textDiv floatLeft">
 				<h2 class="headerbar hbDark">Weapons</h2>
-				<div class="hbMargined"><?=$charInfo['weapons']?></div>
+				<div class="hbdMargined"><?=$charInfo['weapons']?></div>
 			</div>
 			<div id="armor" class="textDiv floatRight">
 				<h2 class="headerbar hbDark">Armor</h2>
-				<div class="hbMargined"><?=$charInfo['armor']?></div>
+				<div class="hbdMargined"><?=$charInfo['armor']?></div>
 			</div>
 		</div>
 		
 		<div id="items">
 			<h2 class="headerbar hbDark">Items</h2>
-			<div class="hbMargined"><?=$charInfo['items']?></div>
+			<div class="hbdMargined"><?=$charInfo['items']?></div>
 		</div>
 		
 		<div id="notes">
 			<h2 class="headerbar hbDark">Notes</h2>
-			<div class="hbMargined"><?=$charInfo['notes']?></div>
+			<div class="hbdMargined"><?=$charInfo['notes']?></div>
 		</div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

@@ -57,7 +57,7 @@
 		
 		<div id="actions" class="clearfix">
 			<h2 class="headerbar hbDark">Actions</h2>
-			<div class="hbMargined clearfix">
+			<div class="hbdMargined clearfix">
 <?
 	$count = 0;
 	$actions = $mysql->query('SELECT pa.actionID, al.name, pa.level, pa.offset, pa.cost, pa.details FROM marvel_actions pa INNER JOIN marvel_actionsList al USING (actionID) WHERE characterID = '.$characterID);
@@ -82,7 +82,7 @@
 		
 		<div id="modifiers" class="clearfix">
 			<h2 class="headerbar hbDark">Modifiers</h2>
-			<div class="hbMargined clearfix">
+			<div class="hbdMargined clearfix">
 <?
 	$count = 0;
 	$modifiers = $mysql->query('SELECT pm.modifierID, ml.name, pm.level, pm.offset, pm.cost, pm.details FROM marvel_modifiers pm INNER JOIN marvel_modifiersList ml USING (modifierID) WHERE characterID = '.$characterID);
@@ -107,7 +107,7 @@
 		
 		<div id="challenges" class="clearfix">
 			<h2 class="headerbar hbDark">Challenges</h2>
-			<div class="hbMargined">
+			<div class="hbdMargined">
 <?
 	$challenges = $mysql->query('SELECT challengeID, challenge, stones FROM marvel_challenges WHERE characterID = '.$characterID);
 	foreach ($challenges as $challengeInfo) {
@@ -122,7 +122,7 @@
 		
 		<div id="notes">
 			<h2 class="headerbar hbDark">Character Notes</h2>
-			<div class="hbMargined">
+			<div class="hbdMargined">
 <? echo printReady($charInfo['notes']); ?>
 			</div>
 		</div>

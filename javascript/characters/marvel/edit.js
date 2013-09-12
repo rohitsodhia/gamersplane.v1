@@ -18,7 +18,7 @@ $(function() {
 		$.post(SITEROOT + '/characters/ajax/marvel/addAction', { characterID: characterID, actionName: actionName }, function (data) {
 			if (data.length > 0) {
 				$(data).hide();
-				if ($('#actions .actionRow:last-of-type .action').length == 3) $('<div class="actionRow clearfix"></div>').html(data).appendTo('#actions .hbMargined');
+				if ($('#actions .actionRow:last-of-type .action').length == 3) $('<div class="actionRow clearfix"></div>').html(data).appendTo('#actions .hbdMargined');
 				else $(data).appendTo('#actions .actionRow:last-of-type');
 				$(data).slideDown();
 				$('#actionSearch').val('').trigger('blur');
@@ -46,7 +46,7 @@ $(function() {
 		$.post(SITEROOT + '/characters/ajax/marvel/addModifier', { characterID: characterID, modifierName: modifierName }, function (data) {
 			if (data.length > 0) {
 				$(data).hide();
-				if ($('#modifiers .modifierRow:last-of-type .modifier').length == 3) $('<div class="modifierRow clearfix"></div>').html(data).appendTo('#modifiers .hbMargined');
+				if ($('#modifiers .modifierRow:last-of-type .modifier').length == 3) $('<div class="modifierRow clearfix"></div>').html(data).appendTo('#modifiers .hbdMargined');
 				else $(data).appendTo('#modifiers .modifierRow:last-of-type');
 				$(data).slideDown();
 				$('#modifierSearch').val('').trigger('blur');
@@ -68,7 +68,7 @@ $(function() {
 		var stones = $('#challengeStones').val();
 		$.post(SITEROOT + '/characters/ajax/marvel/addChallenge', { characterID: characterID, challengeName: challengeName, stones: stones }, function (data) {
 			if (data.length > 0) {
-				$(data).hide().appendTo('#challenges .hbMargined').slideDown();
+				$(data).hide().appendTo('#challenges .hbdMargined').slideDown();
 				$('#addChallenge, #challengeStones').val('');
 			}
 		});

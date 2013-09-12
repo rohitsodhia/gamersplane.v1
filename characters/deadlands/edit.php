@@ -36,7 +36,7 @@
 	$defaults = array('cog' => 'Search - 1', 'kno' => "Area Knowledge: Home County - 2\nLanguage: Native Tongue - 2");
 	foreach (array('cog' => 'Cognition', 'kno' => 'Knowledge', 'mie' => 'Mien', 'sma' => 'Smarts', 'spi' => 'Spirit') as $abbrev => $label) {
 ?>
-					<div class="hbMargined statDiv<?=$first?' firstStatDiv':''?>">
+					<div class="hbdMargined statDiv<?=$first?' firstStatDiv':''?>">
 						<div class="statDice">
 							<input type="text" name="<?=$abbrev?>NumDice" maxlength="2" class="numDice" value="<?=$charInfo[$abbrev.'NumDice']?>"> d <input type="text" name="<?=$abbrev?>DieType" class="dieType" value="<?=$charInfo[$abbrev.'DieType']?>"> <?=$label?>
 						</div>
@@ -54,7 +54,7 @@
 	$first = TRUE;
 	foreach (array('def' => 'Deftness', 'nim' => 'Nimbleness', 'str' => 'Strength', 'qui' => 'Quickness', 'vig' => 'Vigor') as $abbrev => $label) {
 ?>
-					<div class="hbMargined statDiv<?=$first?' firstStatDiv':''?>">
+					<div class="hbdMargined statDiv<?=$first?' firstStatDiv':''?>">
 						<div class="statDice">
 							<input type="text" name="<?=$abbrev?>NumDice" maxlength="2" class="numDice" value="<?=$charInfo[$abbrev.'NumDice']?>"> d <input type="text" name="<?=$abbrev?>DieType" class="dieType" value="<?=$charInfo[$abbrev.'DieType']?>"> <?=$label?>
 						</div>
@@ -68,10 +68,10 @@
 				</div>
 				<div class="triCol lastTriCol">
 					<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-					<textarea id="edge_hind" name="edge_hind" class="hbMargined"><?=$charInfo['edge_hind']?></textarea>
+					<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$charInfo['edge_hind']?></textarea>
 					
 					<h2 class="headerbar hbDark">Worst Nightmare</h2>
-					<textarea id="nightmare" name="nightmare" class="hbMargined"><?=$charInfo['nightmare']?></textarea>
+					<textarea id="nightmare" name="nightmare" class="hbdMargined"><?=$charInfo['nightmare']?></textarea>
 					
 					<h2 class="headerbar hbDark">Wounds</h2>
 					<div id="woundsDiv" class="clearfix">
@@ -111,19 +111,19 @@
 			<div class="clearfix">
 				<div class="twoCol">
 					<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
-					<textarea id="weapons" name="weapons" class="hbMargined"><?=$charInfo['weapons']?></textarea>
+					<textarea id="weapons" name="weapons" class="hbdMargined"><?=$charInfo['weapons']?></textarea>
 					
 					<h2 class="headerbar hbDark">Arcane Abilities</h2>
-					<textarea id="arcane" name="arcane" class="hbMargined"><?=$charInfo['arcane']?></textarea>
+					<textarea id="arcane" name="arcane" class="hbdMargined"><?=$charInfo['arcane']?></textarea>
 				</div>
 				<div class="twoCol lastTwoCol">
 					<h2 class="headerbar hbDark">Equipment</h2>
-					<textarea id="equipment" name="equipment" class="hbMargined"><?=$charInfo['equipment']?></textarea>
+					<textarea id="equipment" name="equipment" class="hbdMargined"><?=$charInfo['equipment']?></textarea>
 				</div>
 			</div>
 			
 			<h2 class="headerbar hbDark">Background/Notes</h2>
-			<textarea id="notes" name="notes" class="hbMargined"><?=$charInfo['notes']?></textarea>
+			<textarea id="notes" name="notes" class="hbdMargined"><?=$charInfo['notes']?></textarea>
 			
 			<div id="submitDiv"><button type="submit" name="save" class="fancyButton">Save</button></div>
 		</form>

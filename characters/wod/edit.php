@@ -115,7 +115,7 @@
 			<div class="clearfix">
 				<div id="skills">
 					<h2 class="headerbar hbDark">Skills</h2>
-					<div class="hbMargined">
+					<div class="hbdMargined">
 						<div id="skills_mental" class="skillSet">
 							<h3>Mental</h3>
 							<p>(-3 unskilled)</p>
@@ -180,7 +180,7 @@
 				
 				<div id="otherTraits">
 					<h2 class="headerbar hbDark">Other Traits</h2>
-					<div class="hbMargined clearfix">
+					<div class="hbdMargined clearfix">
 						<div class="col floatLeft">
 							<div id="merits">
 								<h3>Merits</h3>
@@ -235,18 +235,18 @@
 				<div id="itemsDiv">
 					<div id="weapons">
 						<h2 class="headerbar hbDark">Weapons</h2>
-						<textarea name="weapons" class="hbMargined"><?=$charInfo['weapons']?></textarea>
+						<textarea name="weapons" class="hbdMargined"><?=$charInfo['weapons']?></textarea>
 					</div>
 					<div id="equipment">
 						<h2 class="headerbar hbDark">Equipment</h2>
-						<textarea name="equipment" class="hbMargined"><?=$charInfo['equipment']?></textarea>
+						<textarea name="equipment" class="hbdMargined"><?=$charInfo['equipment']?></textarea>
 					</div>
 				</div>
 			</div>
 			
 			<div id="notes" class="marginTop">
 				<h2 id="notesTitle" class="headerbar hbDark">Notes</h3>
-				<textarea name="notes" class="hbMargined"><?=$charInfo['notes']?></textarea>
+				<textarea name="notes" class="hbdMargined"><?=$charInfo['notes']?></textarea>
 			</div>
 			
 			<div id="submitDiv">

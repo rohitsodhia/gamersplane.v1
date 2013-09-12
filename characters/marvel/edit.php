@@ -57,7 +57,7 @@
 			
 			<div id="actions" class="clearfix">
 				<h2 class="headerbar hbDark">Actions</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div id="actionForm">
 						<input id="actionSearch" type="text" autocomplete="off" class="placeholder" data-placeholder="Action">
 						<button id="addAction" type="submit" name="addAction" class="fancyButton">Add</button>
@@ -73,7 +73,7 @@
 			
 			<div id="modifiers" class="clearfix">
 				<h2 class="headerbar hbDark">Modifiers</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div id="modifierForm">
 						<input id="modifierSearch" type="text" autocomplete="off" class="placeholder" data-placeholder="Modifier">
 						<button id="addModifier" type="submit" name="addModifier" class="fancyButton">Add</button>
@@ -89,7 +89,7 @@
 			
 			<div id="challenges" class="clearfix">
 				<h2 class="headerbar hbDark">Challenges</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div id="challengeForm">
 						<div class="labelTR clearfix">
 							<div class="challengeName">Challenge</div>
@@ -111,7 +111,7 @@
 			
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<textarea name="notes" class="hbMargined"><?=$challengeInfo['notes']?></textarea>
+				<textarea name="notes" class="hbdMargined"><?=$challengeInfo['notes']?></textarea>
 			</div>
 			
 			<div class="tr buttonPanel">

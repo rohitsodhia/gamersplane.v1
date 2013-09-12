@@ -185,7 +185,7 @@
 		<div class="clearfix">
 			<div id="skills" class="floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div class="tr labelTR">
 						<label class="medText">Skill</label>
 						<label class="shortNum alignCenter lrBuffer">Total</label>
@@ -208,7 +208,7 @@
 			</div>
 			<div id="feats" class="floatRight">
 				<h2 class="headerbar hbDark">Feats/Abilities</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 	$feats = $mysql->query('SELECT dnd3_feats.featID, featsList.name, dnd3_feats.notes FROM dnd3_feats INNER JOIN featsList USING (featID) WHERE dnd3_feats.characterID = '.$characterID.' ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $feat) { ?>
@@ -224,7 +224,7 @@
 		<div class="clearfix">
 			<div id="weapons" class="floatLeft">
 				<h2 class="headerbar hbDark">Weapons</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 	$weapons = $mysql->query('SELECT * FROM dnd3_weapons WHERE characterID = '.$characterID);
 	foreach ($weapons as $weapon) {
@@ -266,7 +266,7 @@
 			</div>
 			<div id="armor" class="floatRight">
 				<h2 class="headerbar hbDark">Armor</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 	$armors = $mysql->query('SELECT * FROM dnd3_armors WHERE characterID = '.$characterID);
 	foreach ($armors as $armor) {
@@ -311,18 +311,18 @@
 		<div class="clearfix">
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbMargined"><?=$charInfo['items']?></div>
+				<div class="hbdMargined"><?=$charInfo['items']?></div>
 			</div>
 			
 			<div id="spells">
 				<h2 class="headerbar hbDark">Spells</h2>
-				<div class="hbMargined"><?=$charInfo['spells']?></div>
+				<div class="hbdMargined"><?=$charInfo['spells']?></div>
 			</div>
 		</div>
 
 		<div id="notes">
 			<h2 class="headerbar hbDark">Notes</h2>
-			<div class="hbMargined"><?=$charInfo['notes']?></div>
+			<div class="hbdMargined"><?=$charInfo['notes']?></div>
 		</div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

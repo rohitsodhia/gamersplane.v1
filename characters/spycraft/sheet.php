@@ -206,7 +206,7 @@
 
 			<div id="feats" class="floatRight">
 				<h2 class="headerbar hbDark">Feats/Abilities</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 	$feats = $mysql->query('SELECT spycraft_feats.featID, featsList.name, IF(LENGTH(spycraft_feats.notes) = 0, 1, 0) hasNotes FROM spycraft_feats INNER JOIN featsList USING (featID) WHERE spycraft_feats.characterID = '.$characterID.' ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
@@ -226,7 +226,7 @@
 		
 		<div id="skills" class="floatLeft">
 			<h2 class="headerbar hbDark">Skills</h2>
-			<div class="hbMargined">
+			<div class="hbdMargined">
 				<div class="tr labelTR">
 					<label class="medText skill_name">Skill</label>
 					<label class="shortNum alignCenter lrBuffer">Total</label>

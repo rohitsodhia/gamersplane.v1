@@ -3,27 +3,12 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#page_myGames .mainColumn h2 {
-	margin: 0;
-}
-
 #page_myGames .noneFound {
 	font-size: 1.3em;
 	margin: 1.5em 0;
 	line-height: 1.4em;
 	text-align: center;
 	font-weight: bold;
-}
-
-#page_myGames .tr {
-	padding: 8px;
-	border: 1px solid #000;
-	border-top: none;
-/*	padding-left: 15px;*/
-}
-
-#page_myGames .tr:hover {
-	background: #EEF;
 }
 
 #page_myGames .gameTitle {
@@ -176,35 +161,25 @@
 	margin: 0;
 }
 
-#page_listGames #gamesList .tr {
-	padding: 10px 5px;
-	border-top: 1px solid #000;
-}
-
-#page_listGames #gamesList .tr:first-of-type {
-	border-top: none;
-}
-
-#page_listGames #gamesList .tr:hover {
-	background: #DDD;
-}
-
 #page_listGames .gameTitle {
 	display: block;
 	float: left;
-	width: 230px;
-	border-right: 1px solid #666;
+	width: 210px;
+	padding-right: 15px;
+	border-right: 1px solid #999;
 }
 
 #page_listGames .systemType {
 	float: left;
 	width: 200px;
+	padding: 0 15px;
 	border-right: 1px solid #999;
 	text-align: center;
 }
 
 #page_listGames .gmLink {
-	margin-left: 450px;
+	float: left;
+	margin-left: 15px;
 }
 
 #page_listGames #noResults {
@@ -242,32 +217,21 @@
 	text-align: center;
 }
 
-#page_gameDetails .playerList {
-	margin: 10px 0;
-}
-
-#page_gameDetails .playerList .tr {
-	padding: 8px 12px;
-}
-
-#page_gameDetails .playerList .tr:hover {
-	background: #EEE;
-}
-
-#page_gameDetails .playerList .tr > div {
+#page_gameDetails #playersInGame li > div {
 	float: left;
 }
 
-#page_gameDetails .playerList .charTitle, #page_gameDetails .playerList .gm {
+#page_gameDetails .charTitle, #page_gameDetails .gm {
 	width: 225px;
 	border-right: 1px solid #666;
 }
 
-#page_gameDetails .playerList .player {
+#page_gameDetails .player {
 	width: 200px;
+	padding-right: 15px;
 }
 
-#page_gameDetails .playerList .player img {
+#page_gameDetails .player img {
 	vertical-align: top;
 	margin-left: 10px;
 }

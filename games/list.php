@@ -30,9 +30,9 @@
 		</div>
 
 		<div class="mainColumn right">
-			<h1 class="headerbar">Join a Game</h1>
+			<h1 class="headerbar hb_hasList">Join a Game</h1>
 			
-			<div id="gamesList">
+			<ul id="gamesList" class="hbAttachedList hbMargined">
 <?
 	if (isset($_GET['filter']) && $_GET['orderBy'] == 'createdOn_d' || !isset($_GET['filter'])) $orderBy = 'games.created DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'createdOn_a') $orderBy = 'games.created ASC';
@@ -42,13 +42,13 @@
 	$games = $mysql->query("SELECT games.gameID, games.title, systems.fullName system, games.gmID, gmUsers.username, IF(userChars.gameID IS NOT NULL, 1, IF(gms.gameID IS NOT NULL, 1, 0)) inGame FROM games INNER JOIN systems ON games.systemID = systems.systemID INNER JOIN users AS gmUsers ON games.gmID = gmUsers.userID LEFT JOIN characters AS userChars ON userChars.userID = $userID AND games.gameID = userChars.gameID LEFT JOIN gms ON (gms.userID, games.gameID) = ($userID, gms.gameID) WHERE games.gmID != $userID AND games.open = 1".(isset($_GET['filter'])?' AND games.systemID IN ('.implode(', ', $_GET['filterSystem']).')':'')." HAVING inGame = 0 ORDER BY $orderBy");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
-		echo "\t\t\t\t<div class=\"tr clearfix\">\n";
-		echo "\t\t\t\t\t".'<a href="'.SITEROOT.'/games/'.$gameInfo['gameID'].'" class="gameTitle">'.$gameInfo['title']."</a>\n";
-		echo "\t\t\t\t\t".'<div class="systemType">'.$gameInfo['system']."</div>\n";
-		echo "\t\t\t\t\t".'<div class="gmLink"><a href="'.SITEROOT.'/ucp/'.$gameInfo['gmID'].'" class="username">'.$gameInfo['username'].'</a></div>'."\n";
-		echo "\t\t\t\t</div>\n";
-		
-		$gamesAvail = TRUE;
+?>
+				<li class="clearfix">
+					<a href="<?=SITEROOT?>/games/<?=$gameInfo['gameID']?>" class="gameTitle"><?=$gameInfo['title']?></a>
+					<div class="systemType"><?=$gameInfo['system']?></div>
+					<div class="gmLink"><a href="<?=SITEROOT?>/ucp/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+				</li>
+<?
 	} } else echo "\t\t\t\t<div id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"".SITEROOT."/games/new\">make one</a>?</div>\n";
 ?>
 			</div>

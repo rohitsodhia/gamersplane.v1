@@ -208,7 +208,7 @@
 
 				<div id="feats" class="floatRight">
 					<h2 class="headerbar hbDark">Feats/Abilities</h2>
-					<div class="hbMargined">
+					<div class="hbdMargined">
 						<div id="addFeatWrapper">
 							<input id="featName" type="text" name="newFeat_name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
 							<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
@@ -224,7 +224,7 @@
 			
 			<div id="skills" class="floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div id="addSkillWrapper">
 						<input id="skillName" type="text" name="newSkill[name]" value="Skill Name" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
 						<select id="skillStat" name="newSkill[stat]">
@@ -279,12 +279,12 @@
 			
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<textarea name="items" class="hbMargined"><?=$charInfo['items']?></textarea>
+				<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
 			</div>
 			
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<textarea name="notes" class="hbMargined"><?=$charInfo['notes']?></textarea>
+				<textarea name="notes" class="hbdMargined"><?=$charInfo['notes']?></textarea>
 			</div>
 			
 			<div id="submitDiv">

@@ -74,37 +74,37 @@
 			
 			<div id="langDiv" class="floatRight">
 				<h2 class="headerbar hbDark">Languages</h2>
-				<div class="hbMargined"><?=printReady($charInfo['languages'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['languages'])?></div>
 			</div>
 		</div>
 
 		<div class="clearfix">
 			<div class="twoCol floatLeft">
 				<h2 class="headerbar hbDark">Advantages</h2>
-				<div class="hbMargined"><?=printReady($charInfo['advantages'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['advantages'])?></div>
 			</div>
 			
 			<div class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Disadvantages</h2>
-				<div class="hbMargined"><?=printReady($charInfo['disadvantages'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['disadvantages'])?></div>
 			</div>
 		</div>
 		
 		<div class="clearfix">
 			<div class="twoCol floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbMargined"><?=printReady($charInfo['skills'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['skills'])?></div>
 			</div>
 			
 			<div class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbMargined"><?=printReady($charInfo['items'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['items'])?></div>
 			</div>
 		</div>
 		
 		<div id="notesDiv">
 			<h2 class="headerbar hbDark">Notes</h2>
-			<div class="hbMargined"><?=printReady($charInfo['notes'])?></div>
+			<div class="hbdMargined"><?=printReady($charInfo['notes'])?></div>
 		</div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

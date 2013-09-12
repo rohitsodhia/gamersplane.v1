@@ -78,37 +78,37 @@
 				
 				<div id="langDiv" class="floatRight">
 					<h2 class="headerbar hbDark">Languages</h2>
-					<textarea name="languages" class="hbMargined"><?=$charInfo['languages']?></textarea>
+					<textarea name="languages" class="hbdMargined"><?=$charInfo['languages']?></textarea>
 				</div>
 			</div>
 			
 			<div class="clearfix">
 				<div class="twoCol floatLeft">
 					<h2 class="headerbar hbDark">Advantages</h2>
-					<textarea name="advantages" class="hbMargined"><?=$charInfo['advantages']?></textarea>
+					<textarea name="advantages" class="hbdMargined"><?=$charInfo['advantages']?></textarea>
 				</div>
 				
 				<div class="twoCol floatRight">
 					<h2 class="headerbar hbDark">Disadvantages</h2>
-					<textarea name="disadvantages" class="hbMargined"><?=$charInfo['disadvantages']?></textarea>
+					<textarea name="disadvantages" class="hbdMargined"><?=$charInfo['disadvantages']?></textarea>
 				</div>
 			</div>
 			
 			<div class="clearfix">
 				<div class="twoCol floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
-					<textarea name="skills" class="hbMargined"><?=$charInfo['skills']?></textarea>
+					<textarea name="skills" class="hbdMargined"><?=$charInfo['skills']?></textarea>
 				</div>
 				
 				<div class="twoCol floatRight">
 					<h2 class="headerbar hbDark">Items</h2>
-					<textarea name="items" class="hbMargined"><?=$charInfo['items']?></textarea>
+					<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
 				</div>
 			</div>
 			
 			<div id="notesDiv">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<textarea name="notes" class="hbMargined"><?=$charInfo['notes']?></textarea>
+				<textarea name="notes" class="hbdMargined"><?=$charInfo['notes']?></textarea>
 			</div>
 			
 			<div id="submitDiv">

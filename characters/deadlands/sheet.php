@@ -34,7 +34,7 @@
 	$first = TRUE;
 	foreach (array('cog' => 'Cognition', 'kno' => 'Knowledge', 'mie' => 'Mien', 'sma' => 'Smarts', 'spi' => 'Spirit') as $abbrev => $label) {
 ?>
-				<div class="hbMargined statDiv<?=$first?' firstStatDiv':''?>">
+				<div class="hbdMargined statDiv<?=$first?' firstStatDiv':''?>">
 					<div class="statDice">
 						<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." $label"?>
 					</div>
@@ -52,7 +52,7 @@
 	$first = TRUE;
 	foreach (array('def' => 'Deftness', 'nim' => 'Nimbleness', 'str' => 'Strength', 'qui' => 'Quickness', 'vig' => 'Vigor') as $abbrev => $label) {
 ?>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 					<div class="statDiv<?=$first?' firstStatDiv':''?>">
 						<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." $label"?>
 					</div>
@@ -66,10 +66,10 @@
 			</div>
 			<div class="triCol lastTriCol">
 				<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-				<div class="hbMargined"><?=printReady($charInfo['edge_hind'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['edge_hind'])?></div>
 				
 				<h2 class="headerbar hbDark">Worst Nightmare</h2>
-				<div class="hbMargined"><?=printReady($charInfo['nightmare'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['nightmare'])?></div>
 				
 				<h2 class="headerbar hbDark">Wounds</h2>
 				<div id="woundsDiv" class="clearfix">
@@ -108,18 +108,18 @@
 		<div class="clearfix">
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
-				<div class="hbMargined"><?=printReady($charInfo['weapons'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['weapons'])?></div>
 				
 				<h2 class="headerbar hbDark">Arcane Abilities</h2>
-				<div class="hbMargined"><?=printReady($charInfo['arcane'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['arcane'])?></div>
 			</div>
 			<div class="twoCol lastTwoCol">
 				<h2 class="headerbar hbDark">Equipment</h2>
-				<div class="hbMargined"><?=printReady($charInfo['equipment'])?></div>
+				<div class="hbdMargined"><?=printReady($charInfo['equipment'])?></div>
 			</div>
 		</div>
 		
 		<h2 class="headerbar hbDark">Background/Notes</h2>
-		<div class="hbMargined"><?=printReady($charInfo['notes'])?></div>
+		<div class="hbdMargined"><?=printReady($charInfo['notes'])?></div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

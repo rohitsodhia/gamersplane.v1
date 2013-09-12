@@ -48,12 +48,12 @@
 				
 				<div id="qualities">
 					<h2 class="headerbar hbDark">Qualities</h2>
-					<textarea name="qualities" class="hbMargined"><?=$charInfo['qualities']?></textarea>
+					<textarea name="qualities" class="hbdMargined"><?=$charInfo['qualities']?></textarea>
 				</div>
 				
 				<div id="damage">
 					<h2 class="headerbar hbDark">Damage Tracks</h2>
-					<div class="hbMargined">
+					<div class="hbdMargined">
 						<div class="damageTrack">
 							<label for="physical" class="textLabel">Physical Damage</label>
 							<input type="text" name="physicalDamage" value="<?=$charInfo['physicalDamage']?>" maxlength="2">
@@ -69,44 +69,44 @@
 			<div class="clearfix">
 				<div id="skills" class="twoCol floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
-					<textarea name="skills" class="hbMargined"><?=$charInfo['skills']?></textarea>
+					<textarea name="skills" class="hbdMargined"><?=$charInfo['skills']?></textarea>
 				</div>
 				<div id="spells" class="twoCol floatRight">
 					<h2 class="headerbar hbDark">Spells</h2>
-					<textarea name="spells" class="hbMargined"><?=$charInfo['spells']?></textarea>
+					<textarea name="spells" class="hbdMargined"><?=$charInfo['spells']?></textarea>
 				</div>
 			</div>
 			
 			<div class="clearfix">
 				<div id="weapons" class="twoCol floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
-					<textarea name="weapons" class="hbMargined"><?=$charInfo['weapons']?></textarea>
+					<textarea name="weapons" class="hbdMargined"><?=$charInfo['weapons']?></textarea>
 				</div>
 				<div id="armor" class="twoCol floatRight">
 					<h2 class="headerbar hbDark">Armor</h2>
-					<textarea name="armor" class="hbMargined"><?=$charInfo['armor']?></textarea>
+					<textarea name="armor" class="hbdMargined"><?=$charInfo['armor']?></textarea>
 				</div>
 			</div>
 			
 			<div class="clearfix">
 				<div id="augments" class="twoCol floatLeft">
 					<h2 class="headerbar hbDark">Augments</h2>
-					<textarea name="augments" class="hbMargined"><?=$charInfo['augments']?></textarea>
+					<textarea name="augments" class="hbdMargined"><?=$charInfo['augments']?></textarea>
 				</div>
 				<div id="contacts" class="twoCol floatRight">
 					<h2 class="headerbar hbDark">Contacts</h2>
-					<textarea name="contacts" class="hbMargined"><?=$charInfo['contacts']?></textarea>
+					<textarea name="contacts" class="hbdMargined"><?=$charInfo['contacts']?></textarea>
 				</div>
 			</div>
 			
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<textarea name="items" class="hbMargined"><?=$charInfo['items']?></textarea>
+				<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
 			</div>
 			
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<textarea name="notes" class="hbMargined"><?=$charInfo['notes']?></textarea>
+				<textarea name="notes" class="hbdMargined"><?=$charInfo['notes']?></textarea>
 			</div>
 			
 			<div id="submitDiv">

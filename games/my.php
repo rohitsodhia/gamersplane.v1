@@ -23,48 +23,48 @@
 		<div class="mainColumn">
 			<h1 class="headerbar">My Games</h1>
 			
-			<div class="clearfix hbTopper"><a href="<?=SITEROOT?>/games/list" class="button smallButton">Join a Game</a></div>
-			<h2 class="headerbar hbDark">Games I'm Playing</h2>
+			<div class="clearfix hbdTopper"><a href="<?=SITEROOT?>/games/list" class="button smallButton">Join a Game</a></div>
+			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Games I'm Playing</h2>
 <?
 	$games = $mysql->query('SELECT g.gameID, g.title, g.open, u.userID, u.username, s.fullName system FROM characters c, games g, users u, systems s WHERE c.gameID = g.gameID AND g.gmID = u.userID AND c.systemID = s.systemID AND c.userID = '.$userID.' AND c.gameID != 0 ORDER BY g.open DESC, s.fullName, g.title');
 	
 	$currentSystem = '';
 	$first = TRUE;
 	if ($games->rowCount()) {
-		echo "			<div class=\"gameList\">\n";
+		echo "			<ul class=\"gameList hbAttachedList hbdMargined\">\n";
 		foreach ($games as $info) {
 ?>
-				<div class="tr<?=$first?' firstTR':''?> gamePlaying">
+				<li class="gamePlaying">
 					<a href="<?=SITEROOT?>/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['open']?'':' (Closed)')?></a>
 					<div class="systemType"><?=$info['system']?></div>
 					<div class="gmInfo"><a href="<?=SITEROOT?>/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
-				</div>
+				</li>
 <?
 			if ($first) $first = FALSE;
 		}
-		echo "				</div>\n";
+		echo "				</ul>\n";
 	} else echo "\t\t\t".'<div class="noneFound">It seems you aren\'t playing any games yet. <br>You might want to <a href="'.SITEROOT.'/games/list">join one</a>!</div>'."\n";
 ?>
 			
-			<div class="clearfix hbTopper"><a href="<?=SITEROOT?>/games/new" class="button smallButton">Create a New Game</a></div>
-			<h2 class="headerbar hbDark">Games I'm Running</h2>
+			<div class="clearfix hbdTopper"><a href="<?=SITEROOT?>/games/new" class="button smallButton">Create a New Game</a></div>
+			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Games I'm Running</h2>
 <?
 	$games = $mysql->query('SELECT g.gameID, g.title, g.open, s.fullName system FROM games g INNER JOIN players p ON g.gameID = p.gameID AND p.isGM = 1 INNER JOIN systems s ON g.systemID = s.systemID WHERE p.userID = '.$userID.' ORDER BY g.open DESC, s.fullName, g.title');
 	
 	$currentSystem = '';
 	$first = TRUE;
 	if ($games->rowCount()) {
-		echo "			<div class=\"gameList\">\n";
+		echo "			<ul class=\"gameList hbAttachedList hbdMargined\">\n";
 		foreach ($games as $info) {
 ?>
-				<div class="tr<?=$first?' firstTR':''?> gameRunning">
+				<li class="gameRunning">
 					<a href="<?=SITEROOT?>/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['open']?'':' (Closed)')?></a>
 					<div class="systemType"><?=$info['system']?></div>
-				</div>
+				</li>
 <?
 			if ($first) $first = FALSE;
 		}
-		echo "				</div>\n";
+		echo "				</ul>\n";
 	} else echo "\t\t\t".'<div class="noneFound">It seems you aren\'t running any games yet. <br>You might want to <a href="'.SITEROOT.'/games/new">get started</a>!</div>'."\n";
 ?>
 		</div>

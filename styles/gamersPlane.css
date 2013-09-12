@@ -235,6 +235,14 @@ h3.headerbar {
 	overflow: hidden;
 }
 
+h1.hb_hasButton, h2.hb_hasButton, h3.hb_hasButton, h4.hb_hasButton {
+	margin-top: 0;
+}
+
+h1.hb_hasList, h2.hb_hasList, h3.hb_hasList, h4.hb_hasList {
+	margin-bottom: 0;
+}
+
 sup {
 	font-size: .8em;
 	vertical-align: super;
@@ -301,7 +309,7 @@ a.button.smallButton {
 	line-height: 1.2em;
 }
 
-.hbTopper .button {
+.hbTopper .button, .hbdTopper .button {
 	display: block;
 	float: left;
 }
@@ -677,6 +685,26 @@ html[xmlns] .clearfix {
 .sidebar.left {
 	float: left;
 	margin-right: 0;
+}
+
+.hbAttachedList {
+	list-style: none;
+}
+
+.hbAttachedList li {
+	padding: 8px 8px;
+}
+
+.hbAttachedList li:hover {
+	padding: 7px 7px;
+	border: 1px solid #CCC;
+	background: #EEE;
+}
+
+.hbAttachedList li:first-child:hover {
+	padding: 8px 7px 7px;
+	border-top: 0;
+	background: #EEE;
 }
 
 /* ----------------------------------------------------------------------------------------------*/

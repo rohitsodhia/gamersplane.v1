@@ -86,10 +86,12 @@
 			</div>
 		</div>
 
-		<h2 class="headerbar hbDark">Players in game</h2>
-		<div id="playersInGame" class="playerList">
-<?	if ($approvedPlayers->rowCount()) { foreach ($approvedPlayers as $playerInfo) { ?>
-			<div class="tr clearfix">
+		<h2 class="headerbar hbDark hb_hasList">Players in game</h2>
+		<ul id="playersInGame" class="hbdMargined hbAttachedList">
+<?
+	foreach ($approvedPlayers as $playerInfo) {
+?>
+			<li class="clearfix">
 <? //		echo "\t\t\t\t".(($isGM || $userID == $playerInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$playerInfo['characterID'].'/sheet"':'<div').' class="charTitle">'.$playerInfo['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?>
 				<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="'.SITEROOT.'/images/gm_icon.png">':''?></div>
 				<div class="actionLinks">
@@ -100,9 +102,9 @@
 					<a href="<?=SITEROOT.'/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
 <?		} ?>
 				</div>
-			</div>
-<?	} } else echo "\t\t\t<p class=\"noItems\">No Players have joined yet!</p>\n"; ?>
-		</div>
+			</li>
+<? 	} ?>
+		</ul>
 
 <?
 	if ($isGM) {

@@ -101,7 +101,7 @@ $(function() {
 				statBonus_2: $('#skillStat_2').val() != '' ? statBonus[$('#skillStat_2').val()] : 0
 			}, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
-				$(data).hide().appendTo('#skills .hbMargined').slideDown();
+				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');
 			});
 		}
@@ -114,7 +114,7 @@ $(function() {
 		$.post(SITEROOT + '/characters/ajax/spycraft2/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
-				if ($('.skill').length == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbMargined').slideDown();
+				if ($('.skill').length == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
 			}); }
 		});
 		
@@ -137,7 +137,7 @@ $(function() {
 				$('#noFocuses').slideUp();
 				$('#focuses .labelTR').slideDown();
 			}
-			$(data).hide().appendTo('#focuses .hbMargined').slideDown();
+			$(data).hide().appendTo('#focuses .hbdMargined').slideDown();
 			$('#focusName').val('').trigger('blur');
 		}); }
 		
@@ -164,7 +164,7 @@ $(function() {
 	$('#addFeat').click(function (e) {
 		if ($('#featName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
 			if ($('#noFeats').size()) $('#noFeats').slideUp();
-			$(data).hide().appendTo('#feats .hbMargined').slideDown();
+			$(data).hide().appendTo('#feats .hbdMargined').slideDown();
 			$('#featName').val('').trigger('blur');
 		}); }
 		

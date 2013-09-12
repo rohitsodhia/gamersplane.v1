@@ -12,37 +12,28 @@
 	margin-top: 0;
 }
 
-#page_myCharacters #characterList {
-	margin-bottom: 2em;
-}
-
-#page_myCharacters #characterList .tr {
-	padding-left: 15px;
-}
-
-#page_myCharacters #characterList .tr:hover {
-	background: #EEE;
-}
-
-#page_myCharacters #characterList .charLabel {
+#page_myCharacters .label {
 	display: block;
 	float: left;
-	width: 250px;
+	width: 200px;
+	padding-right: 15px;
 	border-right: 1px solid #666;
 }
 
-#page_myCharacters #characterList .systemType {
+#page_myCharacters .systemType {
 	float: left;
-	width: 220px;
-	border-right: 1px solid #999;
+	width: 200px;
+	padding: 0 15px;
+	border-right: 1px solid #666;
 	text-align: center;
 }
 
-#page_myCharacters #characterList .charLinks {
-	margin-left: 490px;
+#page_myCharacters .links {
+	float: left;
+	margin-left: 15px;
 }
 
-#page_myCharacters #characterList .charLinks a {
+#page_myCharacters .links a {
 	margin-right: 20px;
 }
 
@@ -52,6 +43,10 @@
 	line-height: 1.2em;
 	font-weight: bold;
 	text-align: center;
+}
+
+#page_myCharacters #mobsList {
+	margin-top: 2em;
 }
 
 /* --------------------------------------------*/
