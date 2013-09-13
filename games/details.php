@@ -111,18 +111,18 @@
 		$waitingPlayers = $mysql->query("SELECT u.userID, u.username FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 0 ORDER BY u.username ASC");
 		if ($waitingPlayers->rowCount()) {
 ?>
-		<h2 class="headerbar hbDark" id="waitingChars">Players awaiting approval</h2>
-		<div id="waitingPlayers" class="playerList">
+		<h2 id="waitingChars" class="headerbar hbDark hb_hasList">Players awaiting approval</h2>
+		<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
 <?			foreach ($waitingPlayers as $playerInfo) { ?>
-			<div class="tr clearfix userID_<?=$playerInfo['userID']?>">
+			<li class="clearfix userID_<?=$playerInfo['userID']?>">
 				<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
 				<div class="actionLinks">
 					<a href="<?=SITEROOT.'/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
 					<a href="<?=SITEROOT.'/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
 				</div>
-			</div>
+			</li>
 <?			} ?>
-		</div>
+		</ul>
 <?
 		}
 	} elseif ($inGame && $approved) {
@@ -153,7 +153,7 @@
 ?>
 		<div id="applyToGame">
 			<h2 class="headerbar hbDark">Join Game</h2>
-			<p>Your request to join this game is awaiting approval.</p>
+			<p class="hbdMargined">Your request to join this game is awaiting approval.</p>
 		</div>
 <?
 	} elseif ($loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {

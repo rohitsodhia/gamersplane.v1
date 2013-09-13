@@ -16,12 +16,13 @@
 			$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.str_pad(2, HERITAGE_PAD, 0, STR_PAD_LEFT).'-'.str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT).'%"');
 			$forumIDs = array();
 			foreach ($forums as $info) $forumIDs[] = $info['forumID'];
+			$mysql->query("DELETE FROM forumAdmins WHERE userID = $playerID AND forumID IN (".implode(', ', $forumIDs).")");
 			$mysql->query("DELETE FROM forums_permissions_users WHERE userID = $playerID AND forumID IN (".implode(', ', $forumIDs).")");
 			$mysql->query("DELETE FROM gm USING forums_groupMemberships gm INNER JOIN forums_permissions_groups p WHERE gm.userID = $playerID gm.groupID = p.groupID AND p.forumID IN (".implode(', ', $forumIDs).")");
 			$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, gameID, action) SELECT characterID, $userID, NOW(), $gameID, '".(isset($_POST['remove'])?'playerRemovedFromGame':'playerLeftGame')."' FROM characters WHERE gameID = $gameID AND userID = $playerID");
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE gameID = $gameID AND userID = $playerID");
-			if (isset($_POST['remove'])) $mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, targetUser) VALUES ($gameID, $userID, NOW(), 'removedChar, $playerID')");
-			else $mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'leftGame')");
+			if (isset($_POST['remove'])) addGameHistory($gameID, 'removedChar', $userID, 'NOW()', $playerID);
+			else addGameHistory($gameID, 'leftGame');
 			
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) echo 1;

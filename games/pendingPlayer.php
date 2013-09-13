@@ -10,17 +10,17 @@
 	
 	$playerInfo = $mysql->query('SELECT u.username, g.title FROM users u, games g WHERE g.gameID = '.$gameID.' AND u.userID = '.$playerID);
 	if ($playerInfo->rowCount() == 0) { header('Location: '.SITEROOT.'/403'); exit; }
-	list($playerName, $title) = $playerInfo->fetch();
+	list($playerName, $title) = $playerInfo->fetch(PDO::FETCH_NUM);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($pendingAction)?> Player</h1>
 		
-		<p class="alignCenter">Are you sure you want to <?=$pendingAction?> <a href="<?=SITEROOT?>/pms/send?userID=<?=$playerID?>" class="username"><?=$playerName?></a> <?=$pendingAction == 'approve'?'to join':'from'?> "<a href="<?=SITEROOT.'/games/'.$gameID?>"><?=$title?></a>?</p>
+		<p class="alignCenter">Are you sure you want to <?=$pendingAction?> <a href="<?=SITEROOT?>/pms/send?userID=<?=$playerID?>" class="username"><?=$playerName?></a> <?=$pendingAction == 'approve'?'to join':'from'?> "<a href="<?=SITEROOT.'/games/'.$gameID?>"><?=$title?></a>"?</p>
 		
 		<form method="post" action="<?=SITEROOT?>/games/process/pendingPlayer/" class="buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
 			<input type="hidden" name="pendingAction" value="<?=$pendingAction?>">
-			<button type="submit" name="pendingAction" class="fancyButton"><?=ucwords($pendingAction)?></button>
+			<button type="submit" name="submit" class="fancyButton"><?=ucwords($pendingAction)?></button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

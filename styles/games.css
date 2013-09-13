@@ -217,7 +217,7 @@
 	text-align: center;
 }
 
-#page_gameDetails #playersInGame li > div {
+#page_gameDetails .hbAttachedList li > div {
 	float: left;
 }
 
@@ -227,6 +227,7 @@
 }
 
 #page_gameDetails .player {
+
 	width: 200px;
 	padding-right: 15px;
 }

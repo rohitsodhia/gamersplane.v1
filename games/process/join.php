@@ -12,7 +12,7 @@
 		
 		if ($numApprovedPlayers < $numPlayers) {
 			$mysql->query("INSERT INTO players (gameID, userID) VALUES ($gameID, $userID)");
-			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'appliedToGame')");
+			addGameHistory($gameID, 'appliedToGame');
 		}
 		header('Location: '.SITEROOT.'/games/'.$gameID);
 	} else header('Location: '.SITEROOT.'/403');

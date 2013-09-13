@@ -155,6 +155,19 @@
 		$addCharHistory->execute();
 	}
 	
+	function addGameHistory($gameID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $targetUser = '') {
+		global $mysql;
+		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
+
+		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return false;
+		if ($enactedOn == '') $enactedOn = 'NOW()';
+
+		$addGameHistory = $mysql->prepare("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, targetUser) VALUES ($gameID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, $targetUser)");
+		if ($enactedOn != 'NOW()') $addGameHistory->bindvalue(':enactedOn', $enactedOn);
+		$addGameHistory->bindvalue(':action', $action);
+		$addGameHistory->execute();
+	}
+	
 /* Tools Functions */
 	function parseRolls($rawRolls) {
 		$rolls = array();
