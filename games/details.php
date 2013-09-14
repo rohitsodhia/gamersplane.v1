@@ -133,7 +133,7 @@
 			if ($readyChars->rowCount()) {
 ?>
 			<h2 class="headerbar hbDark">Submit a Character</h2>
-			<form method="post" action="<?=SITEROOT?>/games/process/join">
+			<form method="post" action="<?=SITEROOT?>/games/process/join" class="hbdMargined">
 				<input type="hidden" name="gameID" value="<?=$gameID?>">
 				<select name="characterID">
 <?
@@ -141,8 +141,9 @@
 					echo "\t\t\t\t\t".'<option value="'.$charInfo['characterID'].'">'.$charInfo['label']."</option>\n";
 				}
 ?>
-				</select><br>
-				<button type="submit" name="submitCharacter" class="btn_submitCharacter"></button>
+					<option>This is a long test option</option>
+				</select>
+				<button type="submit" name="submitCharacter" class="fancyButton">Submit</button>
 			</form>
 <?	 		} else { ?>
 			<p class="noItems">You have no characters you can submit at this time.</p>

@@ -4,8 +4,6 @@
 <? require_once(FILEROOT.'/meta.php'); ?>
 
 <? require_once(FILEROOT.'/styles/styles.php'); ?>
-
-<? require_once(FILEROOT.'/javascript/js.php'); ?>
 </head>
 
 <body<?=(MODAL?' class="modal"':'')?>>

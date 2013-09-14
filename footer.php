@@ -8,7 +8,8 @@
 <? } else { ?>
 </div>
 <? } ?>
-</body>
+
+<? require_once(FILEROOT.'/javascript/js.php'); ?>
 
 <? if (SITEROOT == '') { ?>
 <script type="text/javascript">
@@ -23,4 +24,5 @@
 	})();
 </script>
 <? } ?>
+</body>
 </html>

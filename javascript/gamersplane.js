@@ -65,43 +65,6 @@ jQuery.fn.autocomplete = function (pathOption, sendData) {
 	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
 }
 
-function updateSaves(save) {
-	var total = 0;
-	if (save.substring(0, 1) == 'f') { save = 'fort'; total = parseInt($('#conModifier').text()); }
-	else if (save.substring(0, 1) == 'r') { save = 'ref'; total = parseInt($('#dexModifier').text()); }
-	else if (save.substring(0, 1) == 'w') { save = 'will'; total = parseInt($('#wisModifier').text()); }
-	$('#' + save +'Row input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
-	$('#' + save + 'Total').text(showSign(total));
-}
-
-function updateCombatBonuses() {
-	var initTotal = parseInt($('#dexModifier').text());
-	var meleeTotal = parseInt($('#strModifier').text()) + parseInt($('#size').val()) + parseInt($('#bab').val()) + parseInt($('#melee_misc').val());
-	var rangedTotal = parseInt($('#dexModifier').text()) + parseInt($('#size').val()) + parseInt($('#bab').val()) + parseInt($('#ranged_misc').val());
-	
-	$('#init input').each(function () { initTotal += $(this).val().length?parseInt($(this).val()):0; });
-	$('#initTotal').text(showSign(initTotal));
-//	$('#melee input').each(function () { meleeTotal += $(this).val().length?parseInt($(this).val()):0; });
-	$('#meleeTotal').text(showSign(meleeTotal));
-//	$('#ranged input').each(function () { rangedTotal += $(this).val().length?parseInt($(this).val()):0; });
-	$('#rangedTotal').text(showSign(rangedTotal));
-}
-
-function fm_rollDice(dice, rerollAces) {
-	rerollAces = typeof rerollAces == 'undefined' ? 0 : rerollAces;
-	$.post(SITEROOT + '/tools/ajax/dice', { dice: dice, rerollAces: rerollAces }, function (data) {
-		$('#fixedMenu_diceRoller .newestRolls').removeClass('newestRolls');
-		var first = true;
-		var classes = '';
-		$('<div>').addClass('newestRolls').prependTo('#fixedMenu_diceRoller .floatRight');
-		$(data).find('roll').each(function() {
-			if ($(this).find('total').text() != '') $('<p>' + $(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text() +'</p>').appendTo('#fixedMenu_diceRoller .newestRolls');
-			else $('<p class="error">Sorry, there was some error. We don\'t let you roll d1s... the answer\'s 1 anyway, and you need to roll a positive number of dice.</p>').appendTo('.newestRolls');
-		});
-		$('#fixedMenu_diceRoller .newestRolls').slideDown(400, function() { $(this).find('p').animate({ backgroundColor: '#000' }, 200); });
-	});
-}
-
 function setupWingContainer() {
 	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';
 	else if ($(this).hasClass('button')) baseClass = 'button';
@@ -161,7 +124,73 @@ function setupWings() {
 	$(this).css(bCSS);
 }
 
+function updateSaves(save) {
+	var total = 0;
+	if (save.substring(0, 1) == 'f') { save = 'fort'; total = parseInt($('#conModifier').text()); }
+	else if (save.substring(0, 1) == 'r') { save = 'ref'; total = parseInt($('#dexModifier').text()); }
+	else if (save.substring(0, 1) == 'w') { save = 'will'; total = parseInt($('#wisModifier').text()); }
+	$('#' + save +'Row input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
+	$('#' + save + 'Total').text(showSign(total));
+}
+
+jQuery.fn.prettySelect = function () {
+	$select = $(this);
+	$prettySelect = $('<div class="prettySelect">');
+	$prettySelectCurrent = $('<div class="prettySelectCurrent">');
+	$prettySelectDropdown = $('<div class="prettySelectDropdown">');
+	$prettySelectOptions = $('<ul class="prettySelectOptions">');
+	longest = '', current = '';
+	$select.find('option').each(function () {
+		if ($(this).val() == $select.val()) current = $(this).text();
+		if ($(this).text().length > longest.length) longest = $(this).text();
+		$prettySelectOptions.append('<li>' + $(this).text() + '</li>');
+	});
+	$select.hide().after($prettySelect);
+	$prettySelect.append($prettySelectCurrent).append($prettySelectDropdown).append($prettySelectOptions);
+	$prettySelectCurrent.text(longest).width($prettySelectCurrent.width());
+	$prettySelect.css('width', $prettySelect.width());
+	$prettySelectOptions.width($prettySelect.outerWidth() - 2).hide();
+	$prettySelectCurrent.text(current);
+
+	$('html').click(function () {
+		$fixedMenu.find('.openMenu').removeClass('openMenu').slideUp(250);
+	});
+	$prettySelectCurrent.add($prettySelectDropdown).click(function () {
+		$prettySelectOptions.show();
+	});
+}
+
+function updateCombatBonuses() {
+	var initTotal = parseInt($('#dexModifier').text());
+	var meleeTotal = parseInt($('#strModifier').text()) + parseInt($('#size').val()) + parseInt($('#bab').val()) + parseInt($('#melee_misc').val());
+	var rangedTotal = parseInt($('#dexModifier').text()) + parseInt($('#size').val()) + parseInt($('#bab').val()) + parseInt($('#ranged_misc').val());
+	
+	$('#init input').each(function () { initTotal += $(this).val().length?parseInt($(this).val()):0; });
+	$('#initTotal').text(showSign(initTotal));
+//	$('#melee input').each(function () { meleeTotal += $(this).val().length?parseInt($(this).val()):0; });
+	$('#meleeTotal').text(showSign(meleeTotal));
+//	$('#ranged input').each(function () { rangedTotal += $(this).val().length?parseInt($(this).val()):0; });
+	$('#rangedTotal').text(showSign(rangedTotal));
+}
+
+function fm_rollDice(dice, rerollAces) {
+	rerollAces = typeof rerollAces == 'undefined' ? 0 : rerollAces;
+	$.post(SITEROOT + '/tools/ajax/dice', { dice: dice, rerollAces: rerollAces }, function (data) {
+		$('#fixedMenu_diceRoller .newestRolls').removeClass('newestRolls');
+		var first = true;
+		var classes = '';
+		$('<div>').addClass('newestRolls').prependTo('#fixedMenu_diceRoller .floatRight');
+		$(data).find('roll').each(function() {
+			if ($(this).find('total').text() != '') $('<p>' + $(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text() +'</p>').appendTo('#fixedMenu_diceRoller .newestRolls');
+			else $('<p class="error">Sorry, there was some error. We don\'t let you roll d1s... the answer\'s 1 anyway, and you need to roll a positive number of dice.</p>').appendTo('.newestRolls');
+		});
+		$('#fixedMenu_diceRoller .newestRolls').slideDown(400, function() { $(this).find('p').animate({ backgroundColor: '#000' }, 200); });
+	});
+}
+
 $(function() {
+	$('select').prettySelect();
+
 	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '450px', innerHeight: '240px' });
 
 	$('.placeholder').each(function () {

@@ -3,6 +3,10 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+#page_myGames #gamesPlaying {
+	margin-bottom: 1.5em;
+}
+
 #page_myGames .noneFound {
 	font-size: 1.3em;
 	margin: 1.5em 0;
@@ -197,16 +201,17 @@
 }
 
 #page_gameDetails .tr label {
+	float: left;
+	width: 300px;
+	margin-right: 10px;
 	font-size: .9em;
 	text-transform: uppercase;
 	text-align: right;
 	font-weight: bold;
-	float: left;
-	width: 250px;
 }
 
-#page_gameDetails #details .tr div {
-	margin-left: 260px;
+#page_gameDetails #details .tr > div {
+	float: left;
 }
 
 #page_gameDetails .noItems, #page_gameDetails #loggedOutNotice {
@@ -241,18 +246,12 @@
 	margin-right: 20px;
 }
 
-#page_gameDetails #submitChar {
-	padding-top: 1.5em;
+#page_gameDetails #submitChar form > * {
+	vertical-align: middle;
 }
 
-#page_gameDetails #submitChar form {
-	margin-top: .5em;
-	text-align: center;
-	width: 220px;
-}
-
-#page_gameDetails #submitChar button {
-	margin-top: .5em;
+#page_gameDetails #submitChar .fancyButton {
+	margin-left: 10px;
 }
 
 /* --------------------------------------------*/

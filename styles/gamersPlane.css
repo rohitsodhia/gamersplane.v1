@@ -416,6 +416,45 @@ button:hover {
 
 /* ----------------------------------------------------------------------------------------------*/
 
+/* Pretty Select */
+.prettySelect {
+	position: relative;
+	z-index: 5000;
+	display: inline-block;
+}
+
+.prettySelect, .prettySelectOptions {
+	border: 1px solid #CCC;
+	background-color: #EEE;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.prettySelect > div {
+	display: inline-block;
+}
+
+.prettySelectDropdown {
+	background: url('../images/dropdown_arrow.png') center center no-repeat;
+	width: 15px;
+}
+
+.prettySelectOptions {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	margin: 0;
+	list-style: none;
+}
+
+.prettySelectCurrent, .prettySelectDropdown, .prettySelectOptions li {
+	padding: 4px;
+	cursor: pointer;
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
 #sectionControls {
 	float: right;
 }
