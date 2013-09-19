@@ -76,6 +76,9 @@ input[type="text"], input[type="password"], input[type="button"], input[type="fi
 	border: 1px solid #400;
 	border-bottom-color: #900;
 	border-right-color: #900;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -424,8 +427,12 @@ button:hover {
 }
 
 .prettySelect, .prettySelectOptions {
-	border: 1px solid #CCC;
-	background-color: #EEE;
+/*	border: 1px solid #CCC;
+	background-color: #EEE;*/
+	background: #DDF;
+	border: 1px solid #400;
+	border-bottom-color: #900;
+	border-right-color: #900;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
@@ -438,6 +445,7 @@ button:hover {
 .prettySelectDropdown {
 	background: url('../images/dropdown_arrow.png') center center no-repeat;
 	width: 15px;
+	line-height: 1.25em;
 }
 
 .prettySelectOptions {
@@ -451,6 +459,10 @@ button:hover {
 .prettySelectCurrent, .prettySelectDropdown, .prettySelectOptions li {
 	padding: 4px;
 	cursor: pointer;
+}
+
+.prettySelectOptions li:hover {
+	background: #99C;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -645,10 +657,6 @@ br.gap {
 	color: #D00;
 }
 
-.buttonPanel {
-	text-align: center;
-}
-
 .usrImg {
 	max-width: 890px;
 }
@@ -734,16 +742,22 @@ html[xmlns] .clearfix {
 	padding: 8px 8px;
 }
 
-.hbAttachedList li:hover {
+.hbAttachedList > li:hover {
 	padding: 7px 7px;
 	border: 1px solid #CCC;
 	background: #EEE;
 }
 
-.hbAttachedList li:first-child:hover {
+.hbAttachedList > li:first-child:hover {
 	padding: 8px 7px 7px;
 	border-top: 0;
 	background: #EEE;
+}
+
+.hbAttachedList.noHover > li:hover, .hbAttachedList.noHover > li:first-child:hover {
+	padding: inherit;
+	border: none;
+	background: none;
 }
 
 /* ----------------------------------------------------------------------------------------------*/

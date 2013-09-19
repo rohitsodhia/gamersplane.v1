@@ -15,7 +15,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($pendingAction)?> Player</h1>
 		
-		<p class="alignCenter">Are you sure you want to <?=$pendingAction?> <a href="<?=SITEROOT?>/pms/send?userID=<?=$playerID?>" class="username"><?=$playerName?></a> <?=$pendingAction == 'approve'?'to join':'from'?> "<a href="<?=SITEROOT.'/games/'.$gameID?>"><?=$title?></a>"?</p>
+		<p class="alignCenter">Are you sure you want to <?=$pendingAction?> <a href="<?=SITEROOT?>/pms/send?userID=<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> <?=$pendingAction == 'approve'?'to join':'from'?> "<a href="<?=SITEROOT.'/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
 		
 		<form method="post" action="<?=SITEROOT?>/games/process/pendingPlayer/" class="buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">

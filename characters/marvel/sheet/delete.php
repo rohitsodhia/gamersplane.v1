@@ -20,7 +20,7 @@
 		<p class="alignCenter">Are you sure you wanna delete <b><?=$name?></b>?</p>
 		<p class="alignCenter">This cannot be reversed!</p>
 		
-		<form method="post" action="<?=SITEROOT?>/characters/process/marvel/edit/delete/<?=$type?>" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/characters/process/marvel/edit/delete/<?=$type?>" class="alignCenter">
 			<input type="hidden" name="characterID" value="<?=$characterID?>">
 			<input type="hidden" name="<?=$type?>ID" value="<?=intval($_POST[$type.'ID'])?>">
 			<div class="tr alignCenter"><input type="checkbox" name="alterStones" checked="checked"> Add/Subtract from <b>Remaining Stones</b></div>

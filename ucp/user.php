@@ -53,7 +53,6 @@
 					</div>
 <? } } ?>
 				</div>
-				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
 			</div>
 			
 			<div id="charStats" class="userInfoBox">
@@ -73,7 +72,7 @@
 		foreach ($charStats as $game) {
 			$count++;
 			echo "\t\t\t\t\t<div class=\"game".($count % 3 == 0?' third':'')."\">\n";
-			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.jpg\"></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.png\"></div>\n";
 			echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['fullName']}</p>\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['numChars']} Char".($game['numChars'] == 1?'':'s')." - ".round($game['numChars'] / $numChars * 100, 2)."%</p>\n";
@@ -83,7 +82,6 @@
 	} else echo "\t\t\t\t<div>{$userInfo['username']} has not yet made any characters.</div>\n";
 ?>
 				</div>
-				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
 			</div>
 			
 			<div id="gmStats" class="userInfoBox">
@@ -103,7 +101,7 @@
 		foreach ($gameStats as $game) {
 			$count++;
 			echo "\t\t\t\t\t<div class=\"game".($count % 3 == 0?' third':'')."\">\n";
-			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.jpg\"></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.png\"></div>\n";
 			echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['fullName']}</p>\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['numGames']} Game".($game['numGames'] == 1?'':'s')." - ".round($game['numGames'] / $numGames * 100, 2)."%</p>\n";
@@ -113,7 +111,6 @@
 	} else echo "\t\t\t\t<div>{$userInfo['username']} has not yet run any games.</div>\n";
 ?>
 				</div>
-				<img src="<?=SITEROOT?>/images/userInfoBox_bottom.jpg" class="bottom">
 			</div>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

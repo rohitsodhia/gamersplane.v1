@@ -137,13 +137,13 @@ jQuery.fn.prettySelect = function () {
 	$select = $(this);
 	$prettySelect = $('<div class="prettySelect">');
 	$prettySelectCurrent = $('<div class="prettySelectCurrent">');
-	$prettySelectDropdown = $('<div class="prettySelectDropdown">');
+	$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
 	$prettySelectOptions = $('<ul class="prettySelectOptions">');
 	longest = '', current = '';
 	$select.find('option').each(function () {
 		if ($(this).val() == $select.val()) current = $(this).text();
 		if ($(this).text().length > longest.length) longest = $(this).text();
-		$prettySelectOptions.append('<li>' + $(this).text() + '</li>');
+		$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelectOptions);
 	});
 	$select.hide().after($prettySelect);
 	$prettySelect.append($prettySelectCurrent).append($prettySelectDropdown).append($prettySelectOptions);
@@ -152,11 +152,14 @@ jQuery.fn.prettySelect = function () {
 	$prettySelectOptions.width($prettySelect.outerWidth() - 2).hide();
 	$prettySelectCurrent.text(current);
 
-	$('html').click(function () {
-		$fixedMenu.find('.openMenu').removeClass('openMenu').slideUp(250);
-	});
-	$prettySelectCurrent.add($prettySelectDropdown).click(function () {
+	$prettySelectCurrent.add($prettySelectDropdown).click(function (e) {
+		e.stopPropagation();
 		$prettySelectOptions.show();
+	});
+	$prettySelectOptions.children('li').click(function () {
+		$prettySelectCurrent.text($(this).text());
+		$prettySelectOptions.hide();
+		$select.val($(this).data('value'));
 	});
 }
 
@@ -190,6 +193,11 @@ function fm_rollDice(dice, rerollAces) {
 
 $(function() {
 	$('select').prettySelect();
+	if ($('.prettySelectOptions').length) {
+		$('html').click(function () {
+			$('.prettySelectOptions').hide();
+		});
+	}
 
 	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '450px', innerHeight: '240px' });
 
@@ -201,7 +209,10 @@ $(function() {
 		});
 	});
 
-	if ($('body').hasClass('modal')) parent.$.colorbox.resize({ 'innerHeight': $('body').height()} );
+	if ($('body').hasClass('modal')) {
+		$('a').attr('target', '_parent');
+		parent.$.colorbox.resize({ 'innerHeight': $('body').height()} );
+	}
 
 	$('.headerbar, a.button, .fancyButton, .wingDiv').each(setupWingContainer);
 	$('.wing').each(setupWings);

@@ -97,6 +97,10 @@
 					<input id="numPlayers" type="text" name="numPlayers" value="<?=$numPlayers?$numPlayers:2?>" maxlength="2">
 				</div>
 				<div class="tr">
+					<label>Number of Characters per Player</label>
+					<input id="charsPerPlayer" type="text" name="charsPerPlayer" value="<?=$charsPerPlayer?$charsPerPlayer:1?>" maxlength="1">
+				</div>
+				<div class="tr">
 					<label>Description</label>
 					<textarea name="description"><?=$description?></textarea>
 				</div>

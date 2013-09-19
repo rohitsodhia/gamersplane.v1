@@ -21,7 +21,7 @@
 			<div class="sideWidget">
 <?
 	if ($loggedIn) {
-		$usersGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM characters WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = '.$userID.' WHERE c.characterID IS NOT NULL OR g.gmID = '.$userID.' ORDER BY gameID DESC LIMIT 3');
+		$usersGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = '.$userID.' WHERE c.characterID IS NOT NULL OR g.gmID = '.$userID.' ORDER BY gameID DESC LIMIT 3');
 		echo "				<div class=\"loggedIn".($usersGames->rowCount()?'':' noGames')."\">\n";
 		echo "					<h2>Your Games</h2>\n";
 		if ($usersGames->rowCount()) {
@@ -34,8 +34,9 @@
 				echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
 				echo "\t\t\t\t\t\t\t<p class=\"title\"><a href=\"".SITEROOT."/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
 				echo "\t\t\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/users/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
+				echo "\t\t\t\t\t\t</div>\n";
 			}
-			echo "\t\t\t\t\t\t</div>\n";
+			echo "\t\t\t\t\t</div>\n";
 		} else {
 			echo "\t\t\t\t\t\t<p>You're not in any games yet.</p>\n";
 			echo "\t\t\t\t\t\t<div class=\"noGameLink\"><a href=\"".SITEROOT."/games/list\">Join a game!</a></div>\n";
@@ -62,8 +63,8 @@
 				<h3 class="headerbar">Latest Games</h3>
 				<div class="widgetBody">
 <?
-	if ($loggedIn) $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM characters WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = '.$userID.' WHERE c.characterID IS NULL ORDER BY gameID DESC LIMIT 5');
-	else $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM characters WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID ORDER BY gameID DESC LIMIT 5');
+	if ($loggedIn) $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = '.$userID.' WHERE c.characterID IS NULL ORDER BY gameID DESC LIMIT 5');
+	else $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID ORDER BY gameID DESC LIMIT 5');
 	$first = TRUE;
 	foreach ($latestGames as $gameInfo) {
 		$gameInfo['started'] = switchTimezone($_SESSION['timezone'], $gameInfo['started']);

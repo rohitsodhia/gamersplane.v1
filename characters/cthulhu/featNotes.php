@@ -25,7 +25,7 @@
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="featID" type="hidden" name="featID" value="<?=$featID?>">
 			<textarea id="notes" name="notes"><?=$featInfo['notes']?></textarea>
-			<div id="submitDiv" class="buttonPanel">
+			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="save" class="btn_save"></button>
 			</div>
 		</form>

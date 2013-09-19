@@ -13,7 +13,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Remove Player from Game</h1>
 		
-		<p>Are you sure you want to remove <a href="<?=SITEROOT?>/user/<?=$playerID?>" class="username"><?=$playerName?></a> from "<a href="<?=SITEROOT.'/games/'.$gameID?>"><?=$title?></a>"?</p>
+		<p>Are you sure you want to remove <a href="<?=SITEROOT?>/user/<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> from "<a href="<?=SITEROOT.'/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
 		
 		<form method="post" action="<?=SITEROOT?>/games/process/removePlayer/" class="buttonPanel">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">

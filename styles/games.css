@@ -106,13 +106,13 @@
 }
 
 #page_newGame form, #page_editGame form {
-	width: 620px;
+	width: 660px;
 	margin: 0 auto;
 }
 
 #page_newGame label, #page_editGame label {
 	float: left;
-	width: 210px;
+	width: 250px;
 	margin: 3px 10px 0 0;
 	text-align: right;
 	font-weight: bold;
@@ -122,7 +122,7 @@
 	width: 250px;
 }
 
-#page_newGame input#numPlayers, #page_newGame input#timesPer, #page_editGame input#numPlayers, #page_editGame input#timesPer {
+#page_newGame input#numPlayers, #page_newGame input#timesPer, #page_editGame input#numPlayers, #page_editGame input#charsPerPlayer, #page_editGame input#timesPer {
 	text-align: center;
 	width: 30px;
 }
@@ -202,7 +202,7 @@
 
 #page_gameDetails .tr label {
 	float: left;
-	width: 300px;
+	width: 320px;
 	margin-right: 10px;
 	font-size: .9em;
 	text-transform: uppercase;
@@ -222,17 +222,41 @@
 	text-align: center;
 }
 
-#page_gameDetails .hbAttachedList li > div {
+/*#page_gameDetails #playersInGame li {
+	padding: 0;
+}*/
+
+#page_gameDetails .playerInfo > div, #page_gameDetails .characters li > div {
 	float: left;
 }
 
-#page_gameDetails .charTitle, #page_gameDetails .gm {
-	width: 225px;
-	border-right: 1px solid #666;
+/*#page_gameDetails .playerInfo {
+	padding: 8px;
+}
+
+#page_gameDetails .playerInfo:hover {
+	padding: 7px;
+	border: 1;
+}
+
+#page_gameDetails #playersInGame li:hover {
+	padding: 0;
+}*/
+
+#page_gameDetails .hasChars {
+	padding-bottom: 4px;
+}
+
+#page_gameDetails .hasChars:hover {
+	padding-bottom: 3px;
+}
+
+#page_gameDetails .hasChars .playerInfo {
+	padding-left: 10px;
+	padding-bottom: 6px;
 }
 
 #page_gameDetails .player {
-
 	width: 200px;
 	padding-right: 15px;
 }
@@ -244,6 +268,35 @@
 
 #page_gameDetails .actionLinks a, #page_gameDetails .actionLinks a {
 	margin-right: 20px;
+}
+
+#page_gameDetails .characters {
+	margin-left: 0;
+	list-style: none;
+	background: #EEE;
+}
+
+#page_gameDetails #playersInGame > li:hover .characters {
+	background: #DDD;
+}
+
+#page_gameDetails #playersInGame .characters li {
+	padding: 6px 0;
+	border-top: 1px solid #CCC;
+}
+
+#page_gameDetails #playersInGame .characters li:first-child {
+	border-top: none;
+}
+
+#page_gameDetails #playersInGame > li:hover .characters li {
+	border-color: #BBB;
+}
+
+#page_gameDetails .charLabel {
+	width: 190px;
+	padding-left: 20px;
+	padding-right: 15px;
 }
 
 #page_gameDetails #submitChar form > * {

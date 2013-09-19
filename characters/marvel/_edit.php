@@ -168,7 +168,7 @@
 <? } ?>
 			</div>
 			
-			<div class="tr buttonPanel">
+			<div class="tr alignCenter">
 				<button id="saveBtn" type="submit" name="save" class="btn_save"></button>
 			</div>
 		</form>
@@ -199,7 +199,7 @@
 <? } ?>
 			</div>
 			
-			<div class="tr buttonPanel">
+			<div class="tr alignCenter">
 				<button id="saveBtn" type="submit" name="save" class="btn_save"></button>
 			</div>
 		</form>

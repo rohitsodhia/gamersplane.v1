@@ -114,7 +114,7 @@
 				<textarea name="notes" class="hbdMargined"><?=$challengeInfo['notes']?></textarea>
 			</div>
 			
-			<div class="tr buttonPanel">
+			<div id="submitDiv" class="tr alignCenter">
 				<button id="saveBtn" type="submit" name="save" class="fancyButton">Save</button>
 			</div>
 		</form>
