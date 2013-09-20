@@ -27,7 +27,7 @@
 		
 		<p>Where would you like to move the thread to?</p>
 		
-		<form method="post" action="<?=SITEROOT?>/forums/process/moveThread/" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/forums/process/moveThread/" class="alignCenter">
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
 			<div>
 <? foreach ($forumOrder as $oForumID) echo "\t\t\t\t<div class=\"tr\"><input type=\"radio\" name=\"destinationID\" value=\"$oForumID\"".($oForumID == $forumID?' checked="checked"':'')."><span style=\"margin-left: ".((sizeof(explode('-', $forumInfos[$oForumID]['heritage'])) - 1) * 20)."px\">".printReady($forumInfos[$oForumID]['title'])."</span>".($oForumID == $forumID?' <i>[ Currently Here ]</i>':'')."</div>\n"; ?>

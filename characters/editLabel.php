@@ -15,7 +15,7 @@
 		
 <? } ?>
 		
-		<form method="post" action="<?=SITEROOT?>/characters/process/editLabel/" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/characters/process/editLabel/" class="alignCenter">
 			<p><b>New label:</b> <input id="newLabel" type="text" name="label" maxlength="50" value="<?=$label?>"></p>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<button type="submit" name="save" class="fancyButton">Save</button>

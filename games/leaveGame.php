@@ -18,7 +18,8 @@
 <? } ?>
 		
 		<form method="post" action="<?=SITEROOT?>/games/process/leaveGame/" class="alignCenter">
-			<input type="hidden" name="characterID" value="<?=$characterID?>">
+			<input type="hidden" name="gameID" value="<?=$gameID?>">
+			<input type="hidden" name="playerID" value="<?=$userID?>">
 			<button type="submit" name="leave" class="fancyButton">Leave</button>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

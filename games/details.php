@@ -98,109 +98,137 @@
 			</div>
 		</div>
 
-		<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
-		<ul id="playersInGame" class="hbdMargined hbAttachedList">
+<?
+	if ($loggedIn) {
+		$hasRightCol = FALSE;
+?>
+		<div class="clearfix">
+<?
+		if ($inGame && $approved) {
+			$hasRightCol = TRUE;
+?>
+			<div class="rightCol">
+				<div id="submitChar">
+					<h2 class="headerbar hbDark">Submit a Character</h2>
+<?
+			if ($playerApprovedChars < $gameInfo['charsPerPlayer']) {
+				$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$userID.' AND systemID = '.$gameInfo['systemID'].' AND ISNULL(gameID)');
+				if ($readyChars->rowCount()) {
+?>
+					<form method="post" action="<?=SITEROOT?>/games/process/addCharacter" class="hbdMargined">
+						<input type="hidden" name="gameID" value="<?=$gameID?>">
+						<select name="characterID">
+<?
+					foreach ($readyChars as $charInfo) {
+						echo "\t\t\t\t\t\t\t".'<option value="'.$charInfo['characterID'].'">'.$charInfo['label']."</option>\n";
+					}
+?>
+						</select>
+						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
+					</form>
+<?	 			} else { ?>
+					<p class="hbMargined notice">You have no characters you can submit at this time.</p>
+<?
+	 			}
+	 		} else {
+?>
+					<p class="hbMargined notice">You cannot submit any more characters to this game.</p>
+<?			} ?>
+				</div>
+			</div>
+<?
+		} elseif (!$inGame) {
+			$hasRightCol = TRUE;
+?>
+			<div class="rightCol">
+				<div id="applyToGame">
+					<h2 class="headerbar hbDark">Join Game</h2>
+					<p class="hbdMargined notice">Your request to join this game is awaiting approval.</p>
+				</div>
+			</div>
+<?
+		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {
+			$hasRightCol = TRUE;
+?>
+			<div class="rightCol">
+				<div id="applyToGame">
+					<h2 class="headerbar hbDark">Join Game</h2>
+					<form method="post" action="<?=SITEROOT?>/games/process/join" class="alignCenter">
+						<input type="hidden" name="gameID" value="<?=$gameID?>">
+						<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
+					</form>
+				</div>
+			</div>
+<?
+		}
+?>
+			
+			<div<?=$hasRightCol?' class="leftCol"':''?>>
+				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
+				<ul id="playersInGame" class="hbdMargined hbAttachedList">
 <?
 	foreach ($approvedPlayers as $playerInfo) {
 ?>
-			<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
-				<div class="playerInfo clearfix">
-					<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="'.SITEROOT.'/images/gm_icon.png">':''?></div>
-					<div class="actionLinks">
+					<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
+						<div class="playerInfo clearfix">
+							<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="'.SITEROOT.'/images/gm_icon.png">':''?></div>
+							<div class="actionLinks">
 <?		if ($isGM && !$playerInfo['primaryGM']) { ?>
-						<a href="<?=SITEROOT.'/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
-						<a href="<?=SITEROOT.'/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
+								<a href="<?=SITEROOT.'/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
+								<a href="<?=SITEROOT.'/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
 <?		} elseif ($playerInfo['userID'] == $userID && !$playerInfo['primaryGM']) { ?>
-						<a href="<?=SITEROOT.'/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
+								<a href="<?=SITEROOT.'/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
 <?		} ?>
-					</div>
-				</div>
+							</div>
+						</div>
 <?		if (sizeof($characters[$playerInfo['userID']])) { ?>
-				<ul class="characters">
+						<ul class="characters">
 <?			foreach ($characters[$playerInfo['userID']] as $character) { ?>
-					<li class="clearfix">
-						<div class="charLabel"><?=(($isGM || $userID == $playerInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
-						<div class="actionLinks">
+							<li class="clearfix">
+								<div class="charLabel"><?=(($isGM || $userID == $playerInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
+								<div class="actionLinks">
 <?				if ($isGM && !$character['approved']) { ?>
-							<a href="<?=SITEROOT.'/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
+									<a href="<?=SITEROOT.'/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
 <?
 				}
 				if ($isGM || $character['userID'] == $userID) {
 ?>
-							<a href="<?=SITEROOT.'/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':'Remove'?> Character</a>
+									<a href="<?=SITEROOT.'/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':'Remove'?> Character</a>
 <?				} ?>
-						</div>
-					</li>
+								</div>
+							</li>
 <?			} ?>
-				</ul>
+						</ul>
 <?		} ?>
-			</li>
+					</li>
 <? 	} ?>
-		</ul>
+				</ul>
 
 <?
 	if ($isGM) {
 		$waitingPlayers = $mysql->query("SELECT u.userID, u.username FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 0 ORDER BY u.username ASC");
 		if ($waitingPlayers->rowCount()) {
 ?>
-		<h2 id="waitingChars" class="headerbar hbDark hb_hasList">Players awaiting approval</h2>
-		<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
+				<h2 id="waitingChars" class="headerbar hbDark hb_hasList">Players awaiting approval</h2>
+				<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
 <?			foreach ($waitingPlayers as $playerInfo) { ?>
-			<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
-				<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
-				<div class="actionLinks">
-					<a href="<?=SITEROOT.'/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
-					<a href="<?=SITEROOT.'/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
-				</div>
-			</li>
+					<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
+						<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
+						<div class="actionLinks">
+							<a href="<?=SITEROOT.'/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
+							<a href="<?=SITEROOT.'/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
+						</div>
+					</li>
 <?			} ?>
-		</ul>
+				</ul>
 <?
 		}
 	}
+?>
+			</div>
+		</div>
+<?
+	} else echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="'.SITEROOT.'/login" class="loginLink">Login</a> or <a href="'.SITEROOT.'/register" class="last">Register</a> to join!</div>'."\n";
 
-	if ($inGame && $approved && $playerApprovedChars < $gameInfo['charsPerPlayer']) {
-?>
-		<div id="submitChar">
-			<h2 class="headerbar hbDark">Submit a Character</h2>
-<?
-			$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$userID.' AND systemID = "'.$gameInfo['systemID'].'" AND ISNULL(gameID)');
-			if ($readyChars->rowCount()) {
-?>
-			<h2 class="headerbar hbDark">Submit a Character</h2>
-			<form method="post" action="<?=SITEROOT?>/games/process/addCharacter" class="hbdMargined">
-				<input type="hidden" name="gameID" value="<?=$gameID?>">
-				<select name="characterID">
-<?
-				foreach ($readyChars as $charInfo) {
-					echo "\t\t\t\t\t".'<option value="'.$charInfo['characterID'].'">'.$charInfo['label']."</option>\n";
-				}
-?>
-				</select>
-				<button type="submit" name="submitCharacter" class="fancyButton">Submit</button>
-			</form>
-<?	 		} else { ?>
-			<p class="noItems">You have no characters you can submit at this time.</p>
-<? 			} ?>
-		</div>
-<?
-	} elseif ($inGame) {
-?>
-		<div id="applyToGame">
-			<h2 class="headerbar hbDark">Join Game</h2>
-			<p class="hbdMargined">Your request to join this game is awaiting approval.</p>
-		</div>
-<?
-	} elseif ($loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {
-?>
-		<div id="applyToGame">
-			<h2 class="headerbar hbDark">Join Game</h2>
-			<form method="post" action="<?=SITEROOT?>/games/process/join" class="alignCenter">
-				<input type="hidden" name="gameID" value="<?=$gameID?>">
-				<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
-			</form>
-		</div>
-<?
-	} elseif (!$loggedIn) echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="'.SITEROOT.'/login" class="loginLink">Login</a> or <a href="'.SITEROOT.'/register" class="last">Register</a> to join!</div>'."\n";
 ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

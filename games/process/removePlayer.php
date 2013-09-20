@@ -14,7 +14,7 @@
 		if ($playerCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo 'No player';
 			else header('Location: '.SITEROOT.'/403');
-		} elseif ($gmCheck->rowCount() != 0) {
+		} elseif ($gmCheck->rowCount() != 0 || $playerID == $userID) {
 			$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.str_pad(2, HERITAGE_PAD, 0, STR_PAD_LEFT).'-'.str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT).'%"');
 			$forumIDs = array();
 			foreach ($forums as $info) $forumIDs[] = $info['forumID'];
@@ -24,7 +24,7 @@
 			$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, gameID, action) SELECT characterID, $userID, NOW(), $gameID, '".(isset($_POST['remove'])?'playerRemovedFromGame':'playerLeftGame')."' FROM characters WHERE gameID = $gameID AND userID = $playerID");
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE gameID = $gameID AND userID = $playerID");
 			$mysql->query("DELETE FROM players WHERE gameID = $gameID AND userID = $playerID");
-			if (isset($_POST['remove'])) addGameHistory($gameID, 'removedChar', $userID, 'NOW()', $playerID);
+			if (isset($_POST['remove'])) addGameHistory($gameID, 'removedPlayer', $userID, 'NOW()', $playerID);
 			else addGameHistory($gameID, 'leftGame');
 			
 			if (isset($_POST['remove'])) {

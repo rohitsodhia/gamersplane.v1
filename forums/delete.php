@@ -17,7 +17,7 @@
 		<p class="alignCenter">Are you sure you wanna delete this <?=$deleteType?>?</p>
 		<p class="alignCenter">This cannot be reversed!</p>
 		
-		<form method="post" action="<?=SITEROOT?>/forums/process/delete/" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/forums/process/delete/" class="alignCenter">
 			<input type="hidden" name="postID" value="<?=$postID?>">
 			<button type="submit" name="delete" class="btn_delete"></button>
 			<button type="submit" name="cancel" class="btn_cancel"></button>

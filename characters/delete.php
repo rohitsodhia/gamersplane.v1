@@ -13,7 +13,7 @@
 		<p class="alignCenter">Are you sure you wanna delete <a href="<?=SITEROOT?>/characters/<?=$charInfo['shortName']?>/<?=$characterID?>" target="_parent"><?=$charInfo['label']?></a>?</p>
 		<p class="alignCenter">This cannot be reversed!</p>
 		
-		<form method="post" action="<?=SITEROOT?>/characters/process/delete/" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/characters/process/delete/" class="alignCenter">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<button type="submit" name="delete" class="fancyButton">Delete</button>
 		</form>

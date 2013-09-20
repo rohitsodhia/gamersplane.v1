@@ -16,7 +16,7 @@
 			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, enactedUpon, action) VALUES ($gameID, $userID, NOW(), $characterID, 'charApplied')");
 			addGameHistory($gameID, 'charApplied', $userID, 'NOW()', $characterID, 'character');
 			
-			header('Location: '.SITEROOT.'/games/my/?submitted=1');
+			header('Location: '.SITEROOT.'/games/'.$gameID);
 		} else header('Location: '.SITEROOT.'/games/'.$gameID);
 	} else header('Location: '.SITEROOT.'/403');
 ?>

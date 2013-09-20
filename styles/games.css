@@ -214,12 +214,22 @@
 	float: left;
 }
 
-#page_gameDetails .noItems, #page_gameDetails #loggedOutNotice {
+#page_gameDetails .rightCol .notice, #page_gameDetails #loggedOutNotice {
 	margin: 1em 0;
-	font-size: 1.3em;
+	font-size: 1.2em;
 	line-height: 1.2em;
 	font-weight: bold;
 	text-align: center;
+}
+
+#page_gameDetails .leftCol {
+	float: left;
+	width: 630px;
+}
+
+#page_gameDetails .rightCol {
+	float: right;
+	width: 300px;
 }
 
 /*#page_gameDetails #playersInGame li {
@@ -252,12 +262,11 @@
 }
 
 #page_gameDetails .hasChars .playerInfo {
-	padding-left: 10px;
 	padding-bottom: 6px;
 }
 
 #page_gameDetails .player {
-	width: 200px;
+	width: 210px;
 	padding-right: 15px;
 }
 
@@ -303,8 +312,12 @@
 	vertical-align: middle;
 }
 
+#page_gameDetails #submitChar .prettySelect {
+	margin-left: 15px;
+}
+
 #page_gameDetails #submitChar .fancyButton {
-	margin-left: 10px;
+	margin-top: 10px;
 }
 
 /* --------------------------------------------*/

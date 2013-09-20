@@ -15,7 +15,7 @@
 			else header('Location: '.SITEROOT.'/games/'.$gameID.'/?charError=1');
 		} else {
 			if ($pendingAction == 'approve') $mysql->query('UPDATE characters SET approved = 1 WHERE characterID = '.$characterID);
-			else $mysql->query('UPDATE characters SET approved = 0, gameID = 0 WHERE characterID = '.$characterID);
+			else $mysql->query('UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = '.$characterID);
 			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', $userID);
 			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', $characterID, 'character');
 			

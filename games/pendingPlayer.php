@@ -17,7 +17,7 @@
 		
 		<p class="alignCenter">Are you sure you want to <?=$pendingAction?> <a href="<?=SITEROOT?>/pms/send?userID=<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> <?=$pendingAction == 'approve'?'to join':'from'?> "<a href="<?=SITEROOT.'/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
 		
-		<form method="post" action="<?=SITEROOT?>/games/process/pendingPlayer/" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/games/process/pendingPlayer/" class="alignCenter">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
 			<input type="hidden" name="pendingAction" value="<?=$pendingAction?>">

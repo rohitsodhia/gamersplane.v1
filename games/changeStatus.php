@@ -11,7 +11,7 @@
 		
 		<p class="alignCenter">Are you sure you want to <?=$gameInfo['open']?'close':'open'?> <strong><?=$gameInfo['title']?></strong>?</p>
 		
-		<form method="post" action="<?=SITEROOT?>/games/process/changeStatus/" class="cbf_basic buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/games/process/changeStatus/" class="cbf_basic alignCenter">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<button type="submit" name="<?=$gameInfo['open']?'close':'open'?>" class="fancyButton"><?=$gameInfo['open']?'Close':'Open'?></button>
 		</form>

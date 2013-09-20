@@ -199,7 +199,7 @@ $(function() {
 		});
 	}
 
-	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '450px', innerHeight: '240px' });
+	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '450px', innerHeight: '110px' });
 
 	$('.placeholder').each(function () {
 		$(this).val($(this).data('placeholder')).addClass('default').focus(function () {

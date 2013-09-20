@@ -15,7 +15,7 @@
 		
 		<p>Are you sure you want to remove <a href="<?=SITEROOT?>/user/<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> from "<a href="<?=SITEROOT.'/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
 		
-		<form method="post" action="<?=SITEROOT?>/games/process/removePlayer/" class="buttonPanel">
+		<form method="post" action="<?=SITEROOT?>/games/process/removePlayer/" class="alignCenter">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
 			<button type="submit" name="remove" class="fancyButton">Remove</button>
