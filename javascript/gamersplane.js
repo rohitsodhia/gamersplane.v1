@@ -184,10 +184,10 @@ function fm_rollDice(dice, rerollAces) {
 		var classes = '';
 		$('<div>').addClass('newestRolls').prependTo('#fixedMenu_diceRoller .floatRight');
 		$(data).find('roll').each(function() {
-			if ($(this).find('total').text() != '') $('<p>' + $(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text() +'</p>').appendTo('#fixedMenu_diceRoller .newestRolls');
+			if ($(this).find('total').text() != '') $('#fixedMenu_diceRoller .newestRolls').html($(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text());
 			else $('<p class="error">Sorry, there was some error. We don\'t let you roll d1s... the answer\'s 1 anyway, and you need to roll a positive number of dice.</p>').appendTo('.newestRolls');
 		});
-		$('#fixedMenu_diceRoller .newestRolls').slideDown(400, function() { $(this).find('p').animate({ backgroundColor: '#000' }, 200); });
+		$('#fixedMenu_diceRoller .newestRolls').slideDown(400);
 	});
 }
 
@@ -244,17 +244,27 @@ $(function() {
 	if ($('#fixedMenu').size()) {
 		var $fixedMenu = $('#fixedMenu_window');
 		$('html').click(function () {
-			$fixedMenu.find('.openMenu').removeClass('openMenu').slideUp(250);
+			$fixedMenu.find('.submenu').slideUp(250);
 		});
 		
 		$fixedMenu.click(function (e) { e.stopPropagation(); })
 		$fixedMenu.data('currentlyOpen', '');
 		$fixedMenu.data('currentlyOpenGroup', '');
-		$fixedMenu.find('.subMenu > a, .subRootMenu > a').click(function (e) {
+		$fixedMenu.find('.submenu').data('open', false);
+		$fixedMenu.find('li > a').filter(function () {
+			return $(this).siblings('.submenu').length;
+		}).click(function (e) {
 			e.stopPropagation();
+
+			$submenu = $(this).siblings('.submenu');
+			$submenu.slideToggle(250, function () {
+				$(this).data('open', $submenu.data('open')?false:true);
+				if ($(this).data('open') == false) $(this).find('.submenu').hide();
+			});
+
 			if ($(this).parent().attr('id') != $fixedMenu.data('currentlyOpen')) {
 				clickedMenu = $(this).data('menuGroup');
-				if (clickedMenu != $fixedMenu.data('currentlyOpenGroup')) { $fixedMenu.children('.subMenu').children('a').each(function () {
+				if (clickedMenu != $fixedMenu.data('currentlyOpenGroup')) { $fixedMenu.children('.submenu').children('a').each(function () {
 					if ($(this).data('menuGroup') == $fixedMenu.data('currentlyOpenGroup')) $(this).parent().find('.fixedMenu_window').removeClass('openMenu').slideUp(250);
 				}); }
 				$(this).parent().children('.fixedMenu_window').addClass('openMenu').slideDown(250);
@@ -262,7 +272,7 @@ $(function() {
 				$fixedMenu.data('currentlyOpen', $(this).parent().attr('id'));
 			} else {
 				$(this).parent().find('.fixedMenu_window').removeClass('openMenu').slideUp(250);
-				if ($(this).parent().hasClass('subMenu')) $fixedMenu.data('currentlyOpenGroup', '');
+				if ($(this).parent().hasClass('submenu')) $fixedMenu.data('currentlyOpenGroup', '');
 				
 				$fixedMenu.data('currentlyOpen', '');
 			}
@@ -296,10 +306,12 @@ $(function() {
 			}
 		}).click(function (e) { e.stopPropagation(); });
 		
-		$('#fixedMenu_diceRoller .indivDice button').click(function (e) {
+		$('#fixedMenu_diceRoller .diceBtn').click(function (e) {
 			e.stopPropagation();
 			var dice = '1' + $(this).attr('name');
-			if (dice != '') fm_rollDice(dice);
+			if (dice != '1') fm_rollDice(dice);
+
+			e.preventDefault();
 		});
 	}
 

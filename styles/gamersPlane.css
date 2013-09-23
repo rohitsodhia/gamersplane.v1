@@ -1034,15 +1034,11 @@ html[xmlns] .clearfix {
 
 /* --------------------------------------------*/
 
-#fixedMenu > div > * {
-	z-index: 1001;
+#fixedMenu ul {
+	margin: 0;
 }
 
-#fixedMenu > div > div > * {
-	z-index: 1002;
-}
-
-#fixedMenu > div > a, #fixedMenu .subMenu > a {
+#fixedMenu li > a {
 	display: block;
 	padding: 0 15px;
 	font-size: 1.2em;
@@ -1051,42 +1047,47 @@ html[xmlns] .clearfix {
 	line-height: 40px;
 }
 
-#fixedMenu > div > a:hover, #fixedMenu .subMenu > a:hover {
+#fixedMenu .submenu li {
 	color: #666;
 }
 
-#fixedMenu .left {
+#fixedMenu .leftCol {
 	float: left;
 }
 
-#fixedMenu .right {
+#fixedMenu .rightCol {
 	float: right;
 }
 
-#fixedMenu div {
+#fixedMenu ul {
 	position: relative;
 }
 
-#fixedMenu .fixedMenu_window {
+#fixedMenu .submenu {
 	display: none;
 	position: absolute;
 	bottom: 40px;
 	margin: 0;
 	list-style: none;
-	background: #000;
-	border: 1px solid #666;
+	background: url('../images/fixedMenu_submenu.png');
+	border: 1px solid #999;
 	border-bottom: 0;
 }
 
 #fixedMenu ul li {
+	position: relative;
 	display: block;
 	float: left;
-	padding: 10px 15px;
 	text-align: left;
 }
 
-#fixedMenu ul li:hover {
-	background-color: #0D0D0D;
+#fixedMenu .submenu li {
+	float: none;
+}
+
+#fixedMenu .submenu > li > a:hover {
+	block;
+	background: rgba(0, 0, 0, .3);
 }
 
 #fixedMenu .subRootMenu > a {
@@ -1096,77 +1097,71 @@ html[xmlns] .clearfix {
 	font-weight: bold;
 }
 
-#fixedMenu #fixedMenu_tools > .fixedMenu_window {
+#fixedMenu #fixedMenu_tools > .submenu {
 	width: 125px;
 }
 
-#fixedMenu #fixedMenu_diceRoller .fixedMenu_window {
+#fixedMenu button {
+	font-size: 1.6em;
+	color: #FFF;
+}
+
+#fixedMenu #fixedMenu_diceRoller .submenu {
 	left: 125px;
-	bottom: -36px;
+	bottom: -40px;
 	padding: 10px;
 	width: 450px;
 	height: 217px;
 }
 
 #fixedMenu #fixedMenu_diceRoller .floatLeft {
-	width: 175px;
+	width: 160px;
+	text-align: center;
 }
 
 #fixedMenu #fixedMenu_diceRoller input {
-	width: 80px;
-	margin-top: 4px;
+	width: 90px;
+	background: #FFF;
 }
 
-#fixedMenu #fixedMenu_diceRoller #customDiceRoll {
-	position: relative;
-	margin-bottom: 12px;
+#fixedMenu #customDiceRoll {
+	margin-bottom: .3em;
 }
 
-#fixedMenu #fixedMenu_diceRoller #fm_roll {
-	position: absolute;
-	top: 0;
-	left: 100px;
+#fixedMenu #fm_roll {
+	margin-left: 10px;
+	vertical-align: middle;
 }
 
-#fixedMenu #fixedMenu_diceRoller .indivDice {
-	text-align: center;
-	margin: 1em 0;
-}
-
-#fixedMenu #fixedMenu_diceRoller .indivDice button {
-	margin: 0 6px;
+#fixedMenu #fixedMenu_diceRoller button:hover {
+	text-shadow: 0 0 10px rgba(255, 150, 150, 1);
 }
 
 #fixedMenu #fixedMenu_diceRoller .floatRight {
 	overflow: auto;
-	width: 250px;
+	width: 275px;
 	height: 217px;
+	background: rgba(0, 0, 0, .2);
 	border: 1px solid #333;
 }
 
 #fixedMenu #fixedMenu_diceRoller .floatRight > div {
 	margin: 0;
-}
-
-#fixedMenu #fixedMenu_diceRoller .floatRight p {
-	margin: 0;
 	padding: 6px;
+	color: #DDD;
 }
 
 #fixedMenu #fixedMenu_diceRoller .floatRight .newestRolls {
 	display: none;
 	border-bottom: 1px solid #222;
+	background-color: rgba(0, 0, 0, .5);
 }
 
-#fixedMenu #fixedMenu_diceRoller .floatRight .newestRolls p {
-	background-color: #222;
-}
-
-#fixedMenu #fixedMenu_diceRoller .floatRight .newestRolls p.error {
+#fixedMenu #fixedMenu_diceRoller .floatRight .newestRolls.error {
 	font-weight: bold;
 }
 
-#fixedMenu #fixedMenu_cards .fixedMenu_window {
+#fixedMenu #fixedMenu_cards .submenu {
 	left: 125px;
 	bottom: 0;
 	padding: 10px;
@@ -1207,7 +1202,7 @@ html[xmlns] .clearfix {
 	margin: 5px;
 }
 
-#fixedMenu #fixedMenu_characters .fixedMenu_window {
+#fixedMenu #fixedMenu_characters .submenu {
 	left: 0;
 	width: 250px;
 }
