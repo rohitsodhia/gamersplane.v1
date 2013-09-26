@@ -25,7 +25,7 @@
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd3/<?=$characterID?>/edit" class="button">Edit Character</a></div>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd3/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
 			<label id="label_race" class="medText">Race</label>

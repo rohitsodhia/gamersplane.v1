@@ -66,17 +66,17 @@ jQuery.fn.autocomplete = function (pathOption, sendData) {
 }
 
 function setupWingContainer() {
+	element = this.nodeName.toLowerCase();
 	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';
-	else if ($(this).hasClass('button')) baseClass = 'button';
 	else if ($(this).hasClass('fancyButton')) baseClass = 'fancyButton';
 	else if ($(this).hasClass('wingDiv')) baseClass = 'wingDiv';
 	classes = $(this).attr('class');
 	modClasses = new Array();
-	modClasses['button'] = new Array('smallButton');
+	modClasses['fancyButton'] = new Array('smallButton');
 	modClasses['headerbar'] = new Array('hb_hasButton', 'hb_hasList');
 	hasDark = $(this).hasClass('hbDark')?true:false;
 	currentID = this.id;
-	if (baseClass != 'fancyButton' && baseClass != 'wingDiv') {
+	if ((element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') && baseClass != 'wingDiv') {
 		$(this).css('background', 'none').attr('class', baseClass).wrapInner('<div>').children().attr('class', classes).removeClass(baseClass);
 		if (typeof modClasses[baseClass] !== 'undefined') {
 			for (key in modClasses[baseClass]) {
@@ -89,20 +89,20 @@ function setupWingContainer() {
 		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);//.attr('id', currentID + 'Wrapper');
 	}
 
-	if (baseClass == 'fancyButton') wingMargins($(this).parent());
+	if (element != 'a' && baseClass == 'fancyButton') wingMargins($(this).parent());
 	else wingMargins(this);
 	if (hasDark) $(this).addClass('hbDark');
 	wings = '';
-	if (baseClass != 'wingDiv' && baseClass != 'fancyButton') $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo(this);
+	if (baseClass != 'wingDiv' && (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton')) $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo(this);
 	else if (baseClass == 'fancyButton') $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo($(this).parent());
 }
 
 function wingMargins(container) {
+	element = container.nodeName.toLowerCase();
 	if ($(container).hasClass('headerbar')) baseClass = 'headerbar';
-	else if ($(container).hasClass('button')) baseClass = 'button';
 	else if ($(container).hasClass('fancyButton')) baseClass = 'fancyButton';
 	else if ($(container).hasClass('wingDiv')) baseClass = 'wingDiv';
-	if (baseClass != 'fancyButton') $content = $(container).children('div:not(.wing)');
+	if (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') $content = $(container).children('div:not(.wing)');
 	else $content = $(container).children('button');
 	$content.height('auto');
 
@@ -179,15 +179,15 @@ function updateCombatBonuses() {
 function fm_rollDice(dice, rerollAces) {
 	rerollAces = typeof rerollAces == 'undefined' ? 0 : rerollAces;
 	$.post(SITEROOT + '/tools/ajax/dice', { dice: dice, rerollAces: rerollAces }, function (data) {
-		$('#fixedMenu_diceRoller .newestRolls').removeClass('newestRolls');
+		$('#fm_diceRoller .newestRolls').removeClass('newestRolls');
 		var first = true;
 		var classes = '';
-		$('<div>').addClass('newestRolls').prependTo('#fixedMenu_diceRoller .floatRight');
+		$('<div>').addClass('newestRolls').prependTo('#fm_diceRoller .floatRight');
 		$(data).find('roll').each(function() {
-			if ($(this).find('total').text() != '') $('#fixedMenu_diceRoller .newestRolls').html($(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text());
+			if ($(this).find('total').text() != '') $('#fm_diceRoller .newestRolls').html($(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text());
 			else $('<p class="error">Sorry, there was some error. We don\'t let you roll d1s... the answer\'s 1 anyway, and you need to roll a positive number of dice.</p>').appendTo('.newestRolls');
 		});
-		$('#fixedMenu_diceRoller .newestRolls').slideDown(400);
+		$('#fm_diceRoller .newestRolls').slideDown(400);
 	});
 }
 
@@ -244,49 +244,33 @@ $(function() {
 	if ($('#fixedMenu').size()) {
 		var $fixedMenu = $('#fixedMenu_window');
 		$('html').click(function () {
-			$fixedMenu.find('.submenu').slideUp(250);
+			$fixedMenu.find('.submenu, .subwindow').slideUp(250);
 		});
 		
+		var fm_currentlyOpen = '';
 		$fixedMenu.click(function (e) { e.stopPropagation(); })
-		$fixedMenu.data('currentlyOpen', '');
-		$fixedMenu.data('currentlyOpenGroup', '');
-		$fixedMenu.find('.submenu').data('open', false);
 		$fixedMenu.find('li > a').filter(function () {
-			return $(this).siblings('.submenu').length;
+			return $(this).siblings('.submenu, .subwindow').length;
 		}).click(function (e) {
 			e.stopPropagation();
 
-			$submenu = $(this).siblings('.submenu');
-			$submenu.slideToggle(250, function () {
-				$(this).data('open', $submenu.data('open')?false:true);
-				if ($(this).data('open') == false) $(this).find('.submenu').hide();
-			});
+			currentID = $(this).parent().attr('id');
+			$parentMenu = $(this).parent().parent();
+			$subwindow = $(this).siblings('.submenu, .subwindow');
 
-			if ($(this).parent().attr('id') != $fixedMenu.data('currentlyOpen')) {
-				clickedMenu = $(this).data('menuGroup');
-				if (clickedMenu != $fixedMenu.data('currentlyOpenGroup')) { $fixedMenu.children('.submenu').children('a').each(function () {
-					if ($(this).data('menuGroup') == $fixedMenu.data('currentlyOpenGroup')) $(this).parent().find('.fixedMenu_window').removeClass('openMenu').slideUp(250);
-				}); }
-				$(this).parent().children('.fixedMenu_window').addClass('openMenu').slideDown(250);
-				if ($(this).data('menuGroup') != $fixedMenu.data('currentlyOpenGroup')) $fixedMenu.data('currentlyOpenGroup', $(this).data('menuGroup'));
-				$fixedMenu.data('currentlyOpen', $(this).parent().attr('id'));
-			} else {
-				$(this).parent().find('.fixedMenu_window').removeClass('openMenu').slideUp(250);
-				if ($(this).parent().hasClass('submenu')) $fixedMenu.data('currentlyOpenGroup', '');
-				
-				$fixedMenu.data('currentlyOpen', '');
-			}
+			$parentMenu.find('.fm_smOpen').not($subwindow).slideUp(250).removeClass('fm_smOpen');
+			$subwindow.slideToggle(250).toggleClass('fm_smOpen');
 			
 			e.preventDefault();
 		});
 		
 		
-		$('#fixedMenu_diceRoller > a').click(function() {
-			$('#fixedMenu_cards .fixedMenu_window').slideUp();
+		$('#fm_diceRoller > a').click(function() {
+			$('#fm_cards .fixedMenu_window').slideUp();
 		});
 		
-		$('#fixedMenu_cards > a').click(function() {
-			$('#fixedMenu_diceRoller .fixedMenu_window').slideUp();
+		$('#fm_cards > a').click(function() {
+			$('#fm_diceRoller .fixedMenu_window').slideUp();
 		});
 		
 		$('#fm_roll').click(function (e) {
@@ -297,7 +281,7 @@ $(function() {
 			e.preventDefault();
 		});
 		
-		$('#fixedMenu_diceRoller input').keypress(function (e) {
+		$('#fm_diceRoller input').keypress(function (e) {
 			if (e.which == 13) {
 				var dice = $(this).val();
 				if (dice != '') fm_rollDice(dice);
@@ -306,7 +290,7 @@ $(function() {
 			}
 		}).click(function (e) { e.stopPropagation(); });
 		
-		$('#fixedMenu_diceRoller .diceBtn').click(function (e) {
+		$('#fm_diceRoller .diceBtn').click(function (e) {
 			e.stopPropagation();
 			var dice = '1' + $(this).attr('name');
 			if (dice != '1') fm_rollDice(dice);

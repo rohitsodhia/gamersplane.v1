@@ -19,7 +19,7 @@
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/shadowrun4/<?=$characterID?>/edit" class="button">Edit Character</a></div>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/shadowrun4/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
 			
 		<div class="tr">
 			<label for="name">Name:</label>

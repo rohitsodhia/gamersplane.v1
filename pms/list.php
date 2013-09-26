@@ -14,7 +14,7 @@
 		<h1 class="headerbar">Private Messages - <?=ucwords($box)?></h1>
 		
 		<div id="controlsContainer" class="clearfix">
-			<a id="newPM" href="<?=SITEROOT?>/pms/send" class="button">New PM</a>
+			<a id="newPM" href="<?=SITEROOT?>/pms/send" class="fancyButton">New PM</a>
 			<div id="controls" class="wingDiv" data-ratio=".8">
 				<div class="wingDivContent clearfix">
 					<a href="<?=SITEROOT?>/pms/"<?=$box == 'inbox'?' class="current"':''?>>Inbox</a>

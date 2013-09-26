@@ -22,7 +22,7 @@
 		</ul></div>
 <? } ?>
 		<div id="characterList">
-			<div class="clearfix hbdTopper"><a id="newCharLink" href="<?=SITEROOT?>/characters/new" class="button smallButton">New Character</a></div>
+			<div class="clearfix hbdTopper"><a id="newCharLink" href="<?=SITEROOT?>/characters/new" class="fancyButton smallButton">New Character</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
 	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.mob = 0 AND c.userID = '.$userID.' ORDER BY s.fullName, c.label');
@@ -48,7 +48,7 @@
 ?>
 		</div>
 		<div id="mobsList">
-			<div class="clearfix hbdTopper"><a id="newMobLink" href="<?=SITEROOT?>/characters/new/mob" class="button smallButton">New Mob</a></div>
+			<div class="clearfix hbdTopper"><a id="newMobLink" href="<?=SITEROOT?>/characters/new/mob" class="fancyButton smallButton">New Mob</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Mobs</h2>
 <?
 	$mobs = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.mob = 1 AND c.userID = '.$userID.' ORDER BY s.fullName, c.label');

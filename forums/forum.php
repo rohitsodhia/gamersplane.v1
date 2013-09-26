@@ -284,7 +284,7 @@
 	if ($forumID != 0 && $forumType != 'c') {
 ?>
 		<div class="tableDiv threadTable<?=$firstTable?' firstTableDiv':''?>">
-			<div id="newThread" class="clearfix"><a href="<?=SITEROOT?>/forums/newThread/<?=$forumID?>" class="button">New Thread</a></div>
+			<div id="newThread" class="clearfix"><a href="<?=SITEROOT?>/forums/newThread/<?=$forumID?>" class="fancyButton">New Thread</a></div>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
 				<div class="td threadInfo">Thread</div>

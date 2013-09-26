@@ -26,7 +26,7 @@
 					<label class="textLabel">Password</label>
 					<div class="textfield"><input id="password" type="password" name="password" maxlength="16" tabindex="4"></div>
 				</div>
-				<div id="submitDiv" class="alignCenter"><button type="submit" name="login" value="login" tabindex="5" class="btn_text">Login</button></div>
+				<div id="submitDiv" class="alignCenter"><button type="submit" name="login" value="login" tabindex="5">Login</button></div>
 			</form>
 		</div>
 		

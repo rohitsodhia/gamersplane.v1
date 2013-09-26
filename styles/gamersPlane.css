@@ -286,18 +286,7 @@ footer a, footer a:visited, footer a:active {
 	font-size: 11px;
 }
 
-/*a.button, a.button:visited, a.button:active {
-	font-family: Neuropol;
-	font-size: 2em;
-	line-height: 1.2em;
-}
-
-a.button:hover {
-	color: #A00;
-	text-shadow: 0 0 10px rgba(255, 0, 0, 1);
-}*/
-
-a.button, a.button:visited, a.button:active, .redWing {
+a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redWing {
 	position: relative;
 	overflow: hidden;
 	display: inline-block;
@@ -307,12 +296,12 @@ a.button, a.button:visited, a.button:active, .redWing {
 	color: #FFF;
 }
 
-a.button.smallButton {
+a.fancyButton.smallButton {
 	font-size: 1.3em;
 	line-height: 1.2em;
 }
 
-.hbTopper .button, .hbdTopper .button {
+.hbTopper .fancyButton, .hbdTopper .fancyButton {
 	display: block;
 	float: left;
 }
@@ -321,13 +310,13 @@ a.button.smallButton {
 	display: block;
 }
 
-a.button div:first-child, .redWing div:first-child {
+a.fancyButton div:first-child, .redWing div:first-child {
 	display: inline-block;
 	padding: 3px 8px;
 	background: #800;
 }
 
-a.button .wing, .redWing .wing {
+a.fancyButton .wing, .redWing .wing {
 	position: absolute;
 	top: 0;
 	margin: 0;
@@ -335,7 +324,7 @@ a.button .wing, .redWing .wing {
 	border-style: solid;
 }
 
-a.button .dlWing, .redWing .dlWing {
+a.fancyButton .dlWing, .redWing .dlWing {
 	left: 0;
 	border-top-color: transparent;
 }
@@ -350,12 +339,12 @@ a.button .dlWing, .redWing .dlWing {
 	border-left-color: transparent;
 }
 
-a.button .urWing, .redWing .urWing {
+a.fancyButton .urWing, .redWing .urWing {
 	right: 0;
 	border-right-color: transparent;
 }
 
-a.button:hover {
+a.fancyButton:hover {
 	color: #BBB;
 	text-shadow: 0 0 10px rgba(255, 0, 0, 1);
 }
@@ -363,10 +352,9 @@ a.button:hover {
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Submits */
-button {
+button, button:visited, button:active {
 	width: auto;
 	height: auto;
-	border: none;
 	color: #A00;
 	background: none;
 	font-family: Neuropol;
@@ -387,7 +375,7 @@ button:hover {
 	padding: 0;
 }
 
-.fancyButton button {
+.fancyButton button, .fancyButton button:visited, .fancyButton button:active {
 	padding: 3px 8px;
 	background: #800;
 	font-size: 1.5em;
@@ -1038,17 +1026,14 @@ html[xmlns] .clearfix {
 	margin: 0;
 }
 
-#fixedMenu li > a {
+#fixedMenu #fixedMenu_window .menuLink, #fixedMenu #fixedMenu_window .menuLink:visited, #fixedMenu #fixedMenu_window .menuLink:active {
 	display: block;
 	padding: 0 15px;
 	font-size: 1.2em;
 	font-weight: bold;
+	text-decoration: none;
 	color: #FFF;
 	line-height: 40px;
-}
-
-#fixedMenu .submenu li {
-	color: #666;
 }
 
 #fixedMenu .leftCol {
@@ -1063,7 +1048,7 @@ html[xmlns] .clearfix {
 	position: relative;
 }
 
-#fixedMenu .submenu {
+#fixedMenu .submenu, #fixedMenu .subwindow {
 	display: none;
 	position: absolute;
 	bottom: 40px;
@@ -1078,6 +1063,7 @@ html[xmlns] .clearfix {
 	position: relative;
 	display: block;
 	float: left;
+	color: #FFF;
 	text-align: left;
 }
 
@@ -1085,19 +1071,11 @@ html[xmlns] .clearfix {
 	float: none;
 }
 
-#fixedMenu .submenu > li > a:hover {
-	block;
+#fixedMenu .submenu .menuLink:hover {
 	background: rgba(0, 0, 0, .3);
 }
 
-#fixedMenu .subRootMenu > a {
-	display: block;
-	padding: 10px 15px;
-	font-size: 1.2em;
-	font-weight: bold;
-}
-
-#fixedMenu #fixedMenu_tools > .submenu {
+#fm_tools > .submenu {
 	width: 125px;
 }
 
@@ -1106,7 +1084,20 @@ html[xmlns] .clearfix {
 	color: #FFF;
 }
 
-#fixedMenu #fixedMenu_diceRoller .submenu {
+#fixedMenu input {
+	background: #FFF;
+}
+
+#fixedMenu a:not(.username), #fixedMenu a:visited:not(.username), #fixedMenu a:active:not(.username) {
+	color: #FFF;
+	text-decoration: underline;
+}
+
+#fixedMenu a:hover:not(.username) {
+	text-decoration: none;
+}
+
+#fm_diceRoller .subwindow {
 	left: 125px;
 	bottom: -40px;
 	padding: 10px;
@@ -1114,54 +1105,53 @@ html[xmlns] .clearfix {
 	height: 217px;
 }
 
-#fixedMenu #fixedMenu_diceRoller .floatLeft {
-	width: 160px;
+#fm_diceRoller .floatLeft {
+	width: 150px;
 	text-align: center;
 }
 
-#fixedMenu #fixedMenu_diceRoller input {
+#fm_diceRoller input {
 	width: 90px;
-	background: #FFF;
 }
 
-#fixedMenu #customDiceRoll {
+#fm_customDiceRoll {
 	margin-bottom: .3em;
 }
 
-#fixedMenu #fm_roll {
+#fm_roll {
 	margin-left: 10px;
 	vertical-align: middle;
 }
 
-#fixedMenu #fixedMenu_diceRoller button:hover {
+#fm_diceRoller button:hover {
 	text-shadow: 0 0 10px rgba(255, 150, 150, 1);
 }
 
-#fixedMenu #fixedMenu_diceRoller .floatRight {
+#fm_diceRoller .floatRight {
 	overflow: auto;
-	width: 275px;
+	width: 285px;
 	height: 217px;
 	background: rgba(0, 0, 0, .2);
 	border: 1px solid #333;
 }
 
-#fixedMenu #fixedMenu_diceRoller .floatRight > div {
+#fm_diceRoller .floatRight > div {
 	margin: 0;
 	padding: 6px;
 	color: #DDD;
 }
 
-#fixedMenu #fixedMenu_diceRoller .floatRight .newestRolls {
+#fm_diceRoller .floatRight .newestRolls {
 	display: none;
 	border-bottom: 1px solid #222;
 	background-color: rgba(0, 0, 0, .5);
 }
 
-#fixedMenu #fixedMenu_diceRoller .floatRight .newestRolls.error {
+#fm_diceRoller .floatRight .newestRolls.error {
 	font-weight: bold;
 }
 
-#fixedMenu #fixedMenu_cards .submenu {
+#fm_cards .subwindow {
 	left: 125px;
 	bottom: 0;
 	padding: 10px;
@@ -1193,6 +1183,15 @@ html[xmlns] .clearfix {
 	padding-top: 5px;
 }
 
+#fm_dispArea h3 {
+	font-family: "AgencyFB";
+	font-size: 1.8em;
+	line-height: 1.2em;
+	margin-bottom: .15em;
+	text-decoration: none;
+	font-style: italic;
+}
+
 #fm_dispArea .cardSpace {
 	text-align: left;
 }
@@ -1202,18 +1201,26 @@ html[xmlns] .clearfix {
 	margin: 5px;
 }
 
-#fixedMenu #fixedMenu_characters .submenu {
+#fm_characters .submenu {
 	left: 0;
-	width: 250px;
 }
 
-#fixedMenu #fixedMenu_characters li {
-	width: 220px;
+#fm_characters li {
+	padding: 7px 10px;
 }
 
-#fixedMenu #fixedMenu_characters .username {
-	margin-left: 30px;
-	
+#fm_characters p {
+	margin: 0;
+	line-height: 1.2em;
+}
+
+#fm_characters p.username {
+	margin-bottom: .3em;
+	font-size: 1.15em;
+}
+
+#fm_characters .isGM .charName {
+	margin-left: 25px;
 }
 
 /* ----------------------------------------------------------------------------------------------*/

@@ -16,8 +16,8 @@
 		<h1 class="headerbar">Private Message</h1>
 		
 		<div id="buttonsDiv">
-			<a href="<?=SITEROOT?>/pms/reply/<?=$pmID?>" class="button">Reply</a>
-			<a href="<?=SITEROOT?>/pms/delete/<?=$pmID?>" class="button deletePM">Delete</a>
+			<a href="<?=SITEROOT?>/pms/reply/<?=$pmID?>" class="fancyButton">Reply</a>
+			<a href="<?=SITEROOT?>/pms/delete/<?=$pmID?>" class="fancyButton deletePM">Delete</a>
 		</div>
 		
 		<div class="tr">

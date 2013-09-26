@@ -21,7 +21,7 @@
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/marvel/<?=$characterID?>/edit" class="button">Edit Character</a></div>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/marvel/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
 		<div class="tr basicInfo">
 			<label class="name">Secret Identity:</label>
 			<div><?=$charInfo['normName'] != ''?printReady($charInfo['normName']):'&nbsp;'?></div>
