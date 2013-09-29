@@ -1,12 +1,19 @@
 $(function() {
-	var $newDeckLink = $('a .newDeckLink').parent(),
+	var $newDeckLink = $('a.newDeckLink'),
 		$newDeck = $('div.newDeck'),
 		$deckName = $('p.deckName'),
 		$cardsLeft = $('span.cardsLeft'),
-		$cardSpace = $('div.cardSpace'),
+		$cardSpaceContent = $('div.cardSpace div'),
 		$cardControls = $('.cardControls'),
 		$drawCards = $('button.drawCards'),
-		$numCards = $('input.numCards');
+		$numCards = $('input.numCards'),
+		numCards = 0,
+		cardPosition = 1;
+	if ($('#fixedMenu').length) {
+		var $arrows = $('.arrow'),
+			$upArrow = $('#fm_upArrow'),
+			$downArrow = $('#fm_downArrow');
+	}
 
 	$newDeckLink.click(function (e) {
 		$newDeck.slideToggle();
@@ -20,7 +27,7 @@ $(function() {
 			$deckName.text(deckInfo[1]);
 			$cardsLeft.text(deckInfo[2]);
 			$newDeck.slideUp();
-			$cardSpace.html('<p id="deckAnnouncement">Draw cards on the left</p>');
+			$cardSpaceContent.html('<p id="deckAnnouncement">Draw cards on the left</p>');
 			$cardControls.fadeIn();
 		});
 		
@@ -28,20 +35,52 @@ $(function() {
 	});
 	
 	$drawCards.click(function (e) {
-		numCards = parseInt($numCards.val()), size = $(this).closest('#fixedMenu_cards').length > 0?65:'';
+		numCards = parseInt($numCards.val()), size = $(this).closest('#fm_cards').length > 0?'mini':'';
 		if (numCards >= 1) {
 			$.post(SITEROOT + '/tools/process/cards', { ajax: true, numCards: numCards, size: size }, function (data) {
 				if (data.length > 0) {
-					$cardSpace.html(data);
+					$cardSpaceContent.css('top', 0).html(data);
+					$arrows.addClass('hideArrow');
+					cardPosition = 1;
 					$cardsLeft.html(parseInt($cardsLeft.text()) - numCards >= 0 ? parseInt($cardsLeft.text()) - numCards : 0)
+					if ($('#fixedMenu').length && numCards > 5) {
+						$downArrow.removeClass('hideArrow');
+					}
 				} else {
 					$cardControls.hide();
 					$newDeck.slideDown();
-					$cardSpace.html('<p id="deckAnnouncement">Deck empty. Please select a new deck from above.</p>');
+					$cardSpaceContent.html('<p id="deckAnnouncement">Deck empty. Please select a new deck from above.</p>');
+					if ($('#fixedMenu').length) {
+						$upArrow.addClass('hideArrow');
+						$downArrow.addClass('hideArrow');
+					}
 				}
 			});
 		}
 		
 		e.preventDefault();
 	});
+
+	if ($('#fixedMenu').length) {
+		$arrows.click(function (e) {
+			e.preventDefault();
+			totalPages = Math.ceil(numCards / 5);
+
+			if (!$(this).hasClass('hideArrow')) {
+				position = $cardSpaceContent.position();
+				if (this.id == 'fm_downArrow' && cardPosition <= totalPages) {
+					$cardSpaceContent.css('top', position.top - 125);
+					cardPosition += 1;
+					if (cardPosition > 1) $upArrow.removeClass('hideArrow');
+				} else if (this.id == 'fm_upArrow' && cardPosition > 1) {
+					$cardSpaceContent.css('top', position.top + 125);
+					cardPosition -= 1;
+					if (cardPosition < totalPages) $downArrow.removeClass('hideArrow');
+				}
+
+				if (cardPosition == 1) $upArrow.addClass('hideArrow');
+				else if (cardPosition == totalPages) $downArrow.addClass('hideArrow');
+			}
+		});
+	}
 });

@@ -214,7 +214,7 @@
 	float: left;
 }
 
-#page_gameDetails .rightCol .notice, #page_gameDetails #loggedOutNotice {
+#page_gameDetails .notice, #page_gameDetails #loggedOutNotice {
 	margin: 1em 0;
 	font-size: 1.2em;
 	line-height: 1.2em;
@@ -222,12 +222,12 @@
 	text-align: center;
 }
 
-#page_gameDetails .leftCol {
+#page_gameDetails #playerDetails .leftCol {
 	float: left;
 	width: 630px;
 }
 
-#page_gameDetails .rightCol {
+#page_gameDetails #playerDetails .rightCol {
 	float: right;
 	width: 300px;
 }
@@ -314,6 +314,18 @@
 
 #page_gameDetails #submitChar .prettySelect {
 	margin-left: 15px;
+}
+
+#page_gameDetails #gameFeatures {
+	margin-top: 1em;
+}
+
+#page_gameDetails #gameFeatures > div {
+	width: 470px;
+}
+
+#page_gameDetails #gameFeatures .headerbar {
+	margin-top: 0;
 }
 
 #page_gameDetails #submitChar .fancyButton {

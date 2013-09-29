@@ -29,7 +29,7 @@
 				<div class="deckType last"><a id="newDeck_pcwoj" href="?newDeck=pcwoj">Playing Cards w/o Jokers</a></div>
 			</div>
 
-			<div class="cardSpace">
+			<div class="cardSpace"><div>
 <?
 	if (isset($cardsDrawn)) {
 		$deckShort = $_SESSION['deckShort'];
@@ -39,6 +39,6 @@
 	elseif ($cardCount[0] > 0) echo "\t\t\t".'<p id="deckAnnouncement">Draw cards on the left</p>'."\n";
 	else echo "\t\t\t".'<p id="deckAnnouncement">Deck empty. Please select a new deck from above.</p>'."\n";
 ?>
-			</div>
+			</div></div>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

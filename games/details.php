@@ -102,7 +102,7 @@
 	if ($loggedIn) {
 		$hasRightCol = FALSE;
 ?>
-		<div class="clearfix">
+		<div id="playerDetails" class="clearfix">
 <?
 		if ($inGame && $approved) {
 			$hasRightCol = TRUE;
@@ -127,12 +127,12 @@
 						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 					</form>
 <?	 			} else { ?>
-					<p class="hbMargined notice">You have no characters you can submit at this time.</p>
+					<p class="hbMargined notice">You have no characters you can submit at this time</p>
 <?
 	 			}
 	 		} else {
 ?>
-					<p class="hbMargined notice">You cannot submit any more characters to this game.</p>
+					<p class="hbMargined notice">You cannot submit any more characters to this game</p>
 <?			} ?>
 				</div>
 			</div>
@@ -143,7 +143,7 @@
 			<div class="rightCol">
 				<div id="applyToGame">
 					<h2 class="headerbar hbDark">Join Game</h2>
-					<p class="hbdMargined notice">Your request to join this game is awaiting approval.</p>
+					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
 				</div>
 			</div>
 <?
@@ -225,6 +225,82 @@
 		}
 	}
 ?>
+			</div>
+		</div>
+
+		<div id="gameFeatures" class="clearfix">
+			<div id="maps" class="floatLeft">
+<?		if ($isGM) { ?>
+				<div class="clearfix hbdTopper"><a id="newMap" href="" class="fancyButton smallButton">New Map</a></div>
+<?		} ?>
+				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
+				<div class="hbMargined">
+<?
+		$mapList = $mysql->query('SELECT mapID, name, rows, columns FROM maps WHERE gameID = '.$gameID);
+		
+		if ($mapList->rowCount()) {
+			foreach ($mapList as $mapInfo) {
+?>
+					<div class="tr">
+						<div class="mapLink"><a href="<?=SITEROOT?>/tools/maps/view/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
+						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['columns']?></div>
+<?				if ($isGM) { ?>
+			 			<div><a href="<?=SITEROOT?>/tools/maps/edit/<?=$mapInfo['mapID']?>">Edit</a></div>
+<?				} else { ?>
+ 						<div>&nbsp;</div>
+<?				} ?>
+					</div>
+<?
+				if ($firstMap) $firstMap = FALSE;
+			}
+		} else echo "					<p class=\"notice\">There are no maps available at this time</p>\n";
+?>
+				</div>
+			</div>
+			<div id="decks" class="floatRight">
+<?		if ($isGM) { ?>
+				<div class="clearfix hbdTopper"><a id="newDeck" href="" class="fancyButton smallButton">New Deck</a></div>
+<?		} ?>
+				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Decks</h2>
+				<div class="hbMargined">
+<?
+		$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
+		$decks = $decks->fetchAll();
+		$temp = array();
+		foreach ($decks as $key => $value) $temp[$value['deckID']] = $value;
+		$decks = $temp;
+		
+		$deckTypes = array();
+		foreach ($mysql->query('SELECT short, name FROM deckTypes') as $deckType) $deckTypes[$deckType['short']] = $deckType['name'];
+
+		if (sizeof($decks)) {
+?>
+					<div id="headers" class="tr">
+						<div class="deckLabel">Label</div>
+						<div class="deckType">Type</div>
+						<div class="deckRemaining">Cards Remaining</div>
+						<div class="deckActions">Actions</div>
+					</div>
+<?
+			foreach ($decks as $deckInfo) {
+				$cardsRemaining = sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1;
+?>
+					<div class="tr">
+						<div class="deckLabel"><?=$deckInfo['label']?></div>
+						<div class="deckType"><?=$deckTypes[$deckInfo['type']]?></div>
+						<div class="deckRemaining"><?=$cardsRemaining?></div>
+						<div class="deckActions">
+							<a href="?edit=<?=$deckInfo['deckID']?>">Edit Deck</a>
+							<a href="?shuffle=<?=$deckInfo['deckID']?>">Shuffle Deck</a>
+							<a href="?delete=<?=$deckInfo['deckID']?>">Delete Deck</a>
+						</div>
+					</div>
+<?
+			}
+			echo "				</div>\n";
+		} else echo "					<p class=\"notice\">There are no decks available at this time</p>\n";
+?>
+				</div>
 			</div>
 		</div>
 <?

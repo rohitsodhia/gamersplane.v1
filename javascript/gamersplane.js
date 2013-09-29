@@ -1,3 +1,10 @@
+var SITEROOT = '/Gamers_Plane';
+var redirectTimeout = 3000;
+$.colorbox.settings.href = function () { return this.href + '?modal=1' };
+$.colorbox.settings.iframe = true;
+$.colorbox.settings.innerHeight = '100px';
+$.colorbox.settings.innerWidth = '150px';
+
 function decToB26(num) {
 	var str = '';
 	var letterCode;
@@ -89,7 +96,7 @@ function setupWingContainer() {
 		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);//.attr('id', currentID + 'Wrapper');
 	}
 
-	if (element != 'a' && baseClass == 'fancyButton') wingMargins($(this).parent());
+	if (element != 'a' && baseClass == 'fancyButton') wingMargins($(this).parent()[0]);
 	else wingMargins(this);
 	if (hasDark) $(this).addClass('hbDark');
 	wings = '';
@@ -199,7 +206,7 @@ $(function() {
 		});
 	}
 
-	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerWidth: '450px', innerHeight: '110px' });
+	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true });
 
 	$('.placeholder').each(function () {
 		$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
@@ -211,10 +218,11 @@ $(function() {
 
 	if ($('body').hasClass('modal')) {
 		$('a').attr('target', '_parent');
-		parent.$.colorbox.resize({ 'innerHeight': $('body').height()} );
+		parent.$.colorbox.resize({ 'innerWidth': $('body').data('modalWidth') } );
+		parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
 	}
 
-	$('.headerbar, a.button, .fancyButton, .wingDiv').each(setupWingContainer);
+	$('.headerbar, .fancyButton, .wingDiv').each(setupWingContainer);
 	$('.wing').each(setupWings);
 	if ($('.headerbar .wing').length) {
 		leftMargin = $('.headerbar .wing').css('border-right-width');
@@ -264,14 +272,6 @@ $(function() {
 			e.preventDefault();
 		});
 		
-		
-		$('#fm_diceRoller > a').click(function() {
-			$('#fm_cards .fixedMenu_window').slideUp();
-		});
-		
-		$('#fm_cards > a').click(function() {
-			$('#fm_diceRoller .fixedMenu_window').slideUp();
-		});
 		
 		$('#fm_roll').click(function (e) {
 			e.stopPropagation();

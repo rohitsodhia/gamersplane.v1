@@ -351,8 +351,8 @@ a.fancyButton:hover {
 
 /* ----------------------------------------------------------------------------------------------*/
 
-/* Submits */
-button, button:visited, button:active {
+/* Button */
+button, button:visited, button:active, a.button, a.button:visited, a.button:active {
 	width: auto;
 	height: auto;
 	color: #A00;
@@ -363,7 +363,7 @@ button, button:visited, button:active {
 	cursor: pointer;
 }
 
-button:hover {
+button:hover, a.button:hover {
 /*	color: #06D;*/
 	text-shadow: 0 0 10px rgba(255, 0, 0, 1);
 }
@@ -873,6 +873,89 @@ html[xmlns] .clearfix {
 	left: -100px;
 }
 
+.deck_pc.mini {
+	height: 62.5px;
+	width: 50px;
+}
+
+.deck_pc.mini .hearts {
+	top: 0;
+}
+
+.deck_pc.mini .spades {
+	top: -62.5px;
+}
+
+.deck_pc.mini .diamonds {
+	top: -125px;
+}
+
+.deck_pc.mini .clubs {
+	top: -187.5px;
+}
+
+.deck_pc.mini .num_A {
+	left: 0;
+}
+
+.deck_pc.mini .num_2 {
+	left: -50px;
+}
+
+.deck_pc.mini .num_3 {
+	left: -100px;
+}
+
+.deck_pc.mini .num_4 {
+	left: -150px;
+}
+
+.deck_pc.mini .num_5 {
+	left: -200px;
+}
+
+.deck_pc.mini .num_6 {
+	left: -250px;
+}
+
+.deck_pc.mini .num_7 {
+	left: -300px;
+}
+
+.deck_pc.mini .num_8 {
+	left: -350px;
+}
+
+.deck_pc.mini .num_9 {
+	left: -400px;
+}
+
+.deck_pc.mini .num_10 {
+	left: -450px;
+}
+
+.deck_pc.mini .num_J {
+	left: -500px;
+}
+
+.deck_pc.mini .num_Q {
+	left: -550px;
+}
+
+.deck_pc.mini .num_K {
+	left: -600px;
+}
+
+.deck_pc.mini .blackJoker {
+	top: -250px;
+	left: 0;
+}
+
+.deck_pc.mini .redJoker {
+	top: -250px;
+	left: -50px;
+}
+
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Menu */
@@ -1072,16 +1155,17 @@ html[xmlns] .clearfix {
 }
 
 #fixedMenu .submenu .menuLink:hover {
-	background: rgba(0, 0, 0, .3);
+	background: rgba(0, 0, 0, .5);
 }
 
 #fm_tools > .submenu {
 	width: 125px;
 }
 
-#fixedMenu button {
+#fixedMenu button, #fixedMenu button:visited, #fixedMenu button:active, #fixedMenu .button, #fixedMenu .button:visited, #fixedMenu .button:active {
 	font-size: 1.6em;
 	color: #FFF;
+	text-decoration: none !important;
 }
 
 #fixedMenu input {
@@ -1155,13 +1239,14 @@ html[xmlns] .clearfix {
 	left: 125px;
 	bottom: 0;
 	padding: 10px;
-	width: 740px;
+	width: 715px;
 	height: 160px;
 }
 
 #fixedMenu .cardControls {
 	float: left;
-	width: 200px;
+	width: 150px;
+	margin-right: 10px;
 }
 
 #fixedMenu .cardControls, #fixedMenu .cardControls > * {
@@ -1172,15 +1257,13 @@ html[xmlns] .clearfix {
 	width: 30px;
 }
 
-#fixedMenu .drawCards, #fixedMenu .newDeckLink img {
+#fixedMenu .drawCards, #fixedMenu .newDeckLink {
 	margin-top: 6px;
 }
 
 #fm_dispArea {
 	float: right;
-	width: 535px;
-	height: 150px;
-	padding-top: 5px;
+	width: 550px;
 }
 
 #fm_dispArea h3 {
@@ -1192,13 +1275,51 @@ html[xmlns] .clearfix {
 	font-style: italic;
 }
 
-#fm_dispArea .cardSpace {
-	text-align: left;
+#fm_dispArea .cardWindow {
+	float: left;
+	margin: 0 5px;
 }
 
-#fm_dispArea img {
-	height: 65px;
-	margin: 5px;
+#fm_dispArea .cardSpace {
+	position: relative;
+	text-align: left;
+	width: 550px;
+	height: 125px;
+	margin-bottom: 15px;
+	overflow: hidden;
+}
+
+#fm_dispArea .cardSpace > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 550px;
+}
+
+.arrow {
+	display: inline-block;
+	margin: 0 10px;
+	border-style: solid;
+	border-color: #C00;
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+}
+
+.arrow.hideArrow {
+	width: 40px;
+	height: 15px;
+	border: none;
+	cursor: none;
+}
+
+#fm_upArrow {
+	border-top: 0;
+	border-bottom-width: 15px;
+}
+
+#fm_downArrow {
+	border-top-width: 15px;
+	border-bottom: 0;
 }
 
 #fm_characters .submenu {

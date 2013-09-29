@@ -1,5 +1,5 @@
 $(function() {
-	$('#roll').click(function() {
+	$('#roll').click(function(e) {
 		var dice = $('#dice').val();
 		var rerollAces = $('#rerollAces').attr('checked')?1:0;
 		if (dice != '') {
@@ -16,10 +16,10 @@ $(function() {
 			});
 		}
 		
-		return false;
+		e.preventDefault();
 	});
 	
-	$('#indivDice button').click(function() {
+	$('#indivDice button').click(function(e) {
 		var dice = '1' + $(this).attr('name');
 		$.post(SITEROOT + '/tools/ajax/dice', { dice: dice }, function (data) {
 			$('.newestRolls').removeClass('newestRolls');
@@ -33,6 +33,6 @@ $(function() {
 			$('.newestRolls').slideDown(400, function() { $(this).find('p').animate({ backgroundColor: '#000' }, 200); });
 		});
 		
-		return false;
+		e.preventDefault();
 	});
 });

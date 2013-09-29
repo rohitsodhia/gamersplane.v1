@@ -173,7 +173,7 @@ $(function() {
 
 	$('#feats').on('click', '.feat_notesLink', function (e) {
 		curLink = this.href;
-		$.colorbox({ href: function () { return curLink + '?modal=1' }, iframe: true, innerHeight: 100, innerWidth: 500 });
+		$.colorbox({ href: function () { return curLink + '?modal=1' }, iframe: true });
 		
 		e.preventDefault();
 	}).on('click', '.feat_remove', function (e) {

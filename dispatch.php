@@ -37,7 +37,7 @@
 		$moddedPath = $action?$action:'';
 		foreach ($pathOptions as $pathOption) $moddedPath .= '/'.(is_numeric($pathOption)?'(###)':$pathOption);
 //		echo $moddedPath;
-		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, fixedGameMenu, bodyClass FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
+		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute(array($moddedPath.'/'));
 		$dispatchInfo = $dispatchInfo->fetch(PDO::FETCH_ASSOC);
 		if ($dispatchInfo['pageID'] == 'home' && $moddedPath != '') {

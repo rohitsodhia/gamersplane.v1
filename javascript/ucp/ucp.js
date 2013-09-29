@@ -1,6 +1,4 @@
 $(function () {
-	leftSpacing = $('.hbDark .dlWing').css('borderRightWidth').slice(0, -2) - 1;
-
 	$('#controls a').click(function (e) {
 		oldOpen = $('#controls .current').removeClass('current').attr('class');
 		newOpen = $(this).attr('class');

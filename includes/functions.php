@@ -215,11 +215,11 @@
 	
 	function newGlobalDeck($deckType) {
 		global $mysql;
-		$deckShort = sanatizeString($deckType);
-		$deckCheck = $mysql->query("SELECT short, name, deckSize FROM deckTypes WHERE short = '$deckShort'");
+		$deckCheck = $mysql->prepare("SELECT short, name, deckSize FROM deckTypes WHERE short = :short");
+		$deckCheck->execute(array(':short' => $deckType));
 		if ($deckCheck->rowCount()) {
 			$deckInfo = $deckCheck->fetch();
-			$_SESSION['deckShort'] = $deckShort;
+			$_SESSION['deckShort'] = $deckType;
 			$_SESSION['deckName'] = $deckInfo['name'];
 			$_SESSION['deck'] = array_fill(1, $deckInfo['deckSize'], 1);
 			
@@ -251,13 +251,10 @@
 	}
 	
 	function getCardImg($cardNum, $deckType, $size = '') {
-//		$src = SITEROOT.'/images/tools/cards/'.$deckType.'/'.$cardNum.'.png';
-//		if (intval($size) > 0) $src = SITEROOT.'/phpthumb/phpThumb.php?src='.$src.'&h='.intval($size);
-//		return '<img src="'.$src.'" title="'.cardText($cardNum, $deckType).'" alt="'.cardText($cardNum, $deckType).'">';
-
 		global $mysql;
 
-		$deckInfo = $mysql->query('SELECT class, image FROM deckTypes WHERE short = "'.$deckType.'"');
+		$deckInfo = $mysql->prepare("SELECT class, image FROM deckTypes WHERE short = :short");
+		$deckInfo->execute(array(':short' => $deckType));
 		$deckInfo = $deckInfo->fetch();
 
 		$classes = '';
@@ -279,7 +276,8 @@
 			elseif ($classes == 54) return 'redJoker';
 		}
 
-		return '<div class="cardWindow deck_'.$deckInfo['class'].'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].'" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
+		return '<div class="cardWindow deck_'.$deckInfo['class'].'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
+//		return '<div class="cardWindow deck_'.$deckInfo['class'].($size != ''?' mini':'').'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].($size != ''?'_mini':'').'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
 	}
 
 	

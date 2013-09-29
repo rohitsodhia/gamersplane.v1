@@ -194,30 +194,8 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('.feat_notesLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true, innerHeight: 100, innerWidth: 500 });
+	$('.feat_notesLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true });
 	$('#feats').on('click', '.feat_remove', removeFeat);
-	
-/*	$('#powerName').focus(function () {
-		if ($(this).val() == 'Power') $(this).val('').css('color', '#FFF');
-		if ($('#powerAjaxResults a').size() > 1 && $(this).val() >= 3) $('#powerAjaxResults').slideDown();
-	}).blur(function () {
-		if ($(this).val() == '') $(this).val('Power').css('color', '#666');
-		$('#powerAjaxResults').slideUp();
-	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Power') { $.post(SITEROOT + '/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID }, function (data) {
-			if (data.length > 0) {
-				$('#powerAjaxResults').html(data).slideDown();
-				
-				$('#powerAjaxResults a').click(function (e) {
-					$('#powerName').val($(this).text());
-					
-					e.preventDefault();
-				});
-			} else $('#powerAjaxResults').slideUp();
-		}); } else $('#powerAjaxResults').slideUp();
-	}).keypress(function (event) {
-		if (event.which == 13) return false;
-	});*/
 	
 	$('#powerName').autocomplete('/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID });
 
