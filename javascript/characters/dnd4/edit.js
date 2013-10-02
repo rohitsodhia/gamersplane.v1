@@ -194,7 +194,7 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('.feat_notesLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true });
+	$('.feat_notesLink').colorbox();
 	$('#feats').on('click', '.feat_remove', removeFeat);
 	
 	$('#powerName').autocomplete('/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID });

@@ -17,7 +17,7 @@
 			if ($pendingAction == 'approve') $mysql->query('UPDATE characters SET approved = 1 WHERE characterID = '.$characterID);
 			else $mysql->query('UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = '.$characterID);
 			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', $userID);
-			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', $characterID, 'character');
+			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', 'character', $characterID);
 			
 			if (isset($_POST['modal'])) echo 1;
 			else header('Location: '.SITEROOT.'/games/'.$gameID);

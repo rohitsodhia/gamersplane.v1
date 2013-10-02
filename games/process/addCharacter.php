@@ -14,7 +14,7 @@
 			$mysql->query('UPDATE characters SET gameID = '.$gameID.' WHERE characterID = '.$characterID);
 			addCharacterHistory($characterID, 'appliedToGame', $userID, 'NOW()', $gameID);
 			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, enactedUpon, action) VALUES ($gameID, $userID, NOW(), $characterID, 'charApplied')");
-			addGameHistory($gameID, 'charApplied', $userID, 'NOW()', $characterID, 'character');
+			addGameHistory($gameID, 'charApplied', $userID, 'NOW()', 'character', $characterID);
 			
 			header('Location: '.SITEROOT.'/games/'.$gameID);
 		} else header('Location: '.SITEROOT.'/games/'.$gameID);

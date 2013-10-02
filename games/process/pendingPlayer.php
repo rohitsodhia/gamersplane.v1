@@ -20,7 +20,7 @@
 			} else {
 				$mysql->query("DELETE FROM players WHERE userID = $playerID AND gameID = $gameID");
 			}
-			addGameHistory($gameID, ($pendingAction == 'approve'?'playerApproved':'playerRejected'), $userID, 'NOW()', $playerID);
+			addGameHistory($gameID, ($pendingAction == 'approve'?'playerApproved':'playerRejected'), $userID, 'NOW()', 'user', $playerID);
 			
 			if (isset($_POST['modal'])) echo 1;
 			else header('Location: '.SITEROOT.'/games/'.$gameID);

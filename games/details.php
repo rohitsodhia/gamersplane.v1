@@ -231,7 +231,7 @@
 		<div id="gameFeatures" class="clearfix">
 			<div id="maps" class="floatLeft">
 <?		if ($isGM) { ?>
-				<div class="clearfix hbdTopper"><a id="newMap" href="" class="fancyButton smallButton">New Map</a></div>
+				<div class="clearfix hbdTopper"><a id="newMap" href="<?=SITEROOT?>/games/<?=$gameID?>/maps/new" class="fancyButton smallButton">New Map</a></div>
 <?		} ?>
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
 				<div class="hbMargined">
@@ -259,7 +259,7 @@
 			</div>
 			<div id="decks" class="floatRight">
 <?		if ($isGM) { ?>
-				<div class="clearfix hbdTopper"><a id="newDeck" href="" class="fancyButton smallButton">New Deck</a></div>
+				<div class="clearfix hbdTopper"><a id="newDeck" href="<?=SITEROOT?>/games/<?=$gameID?>/decks/new" class="fancyButton smallButton">New Deck</a></div>
 <?		} ?>
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Decks</h2>
 				<div class="hbMargined">
@@ -275,9 +275,8 @@
 
 		if (sizeof($decks)) {
 ?>
-					<div id="headers" class="tr">
+					<div class="tr clearfix headers">
 						<div class="deckLabel">Label</div>
-						<div class="deckType">Type</div>
 						<div class="deckRemaining">Cards Remaining</div>
 						<div class="deckActions">Actions</div>
 					</div>
@@ -285,14 +284,16 @@
 			foreach ($decks as $deckInfo) {
 				$cardsRemaining = sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1;
 ?>
-					<div class="tr">
-						<div class="deckLabel"><?=$deckInfo['label']?></div>
-						<div class="deckType"><?=$deckTypes[$deckInfo['type']]?></div>
+					<div class="tr clearfix">
+						<div class="deckLabel">
+							<?=$deckInfo['label']?>
+							<div class="deckType"><?=$deckTypes[$deckInfo['type']]?></div>
+						</div>
 						<div class="deckRemaining"><?=$cardsRemaining?></div>
 						<div class="deckActions">
-							<a href="?edit=<?=$deckInfo['deckID']?>">Edit Deck</a>
-							<a href="?shuffle=<?=$deckInfo['deckID']?>">Shuffle Deck</a>
-							<a href="?delete=<?=$deckInfo['deckID']?>">Delete Deck</a>
+							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/edit/<?=$deckInfo['deckID']?>" title="Edit Deck" class="editDeck">Edit Deck</a>
+							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/shuffle/<?=$deckInfo['deckID']?>" title="Shuffle Deck" class="shuffleDeck">Shuffle Deck</a>
+							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/delete/<?=$deckInfo['deckID']?>" title="Delete Deck" class="deleteDeck">Delete Deck</a>
 						</div>
 					</div>
 <?

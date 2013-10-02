@@ -155,18 +155,18 @@
 		$addCharHistory->execute();
 	}
 	
-	function addGameHistory($gameID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $targetID = '', $target = 'user') {
+	function addGameHistory($gameID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $affectedType = NULL, $affectedID = NULL) {
 		global $mysql;
 		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
 
 		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return false;
 		if ($enactedOn == '') $enactedOn = 'NOW()';
-		if ($target == 'character') $target == 'targetCharacter';
-		$target = 'targetUser';
 
-		$addGameHistory = $mysql->prepare("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, $target) VALUES ($gameID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, $targetID)");
+		$addGameHistory = $mysql->prepare("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, affectedType, affectedID) VALUES ($gameID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :affectedType, :affectedID)");
 		if ($enactedOn != 'NOW()') $addGameHistory->bindvalue(':enactedOn', $enactedOn);
 		$addGameHistory->bindvalue(':action', $action);
+		$addGameHistory->bindvalue(':affectedType', $affectedType);
+		$addGameHistory->bindvalue(':affectedID', $affectedID);
 		$addGameHistory->execute();
 	}
 	

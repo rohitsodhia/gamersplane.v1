@@ -1,3 +1,3 @@
 $(function () {
-	$('#changeStatus, .actionLinks a').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true });
+	$('#changeStatus, .actionLinks a, #newMap, #newDeck, .deckActions a').colorbox();
 });

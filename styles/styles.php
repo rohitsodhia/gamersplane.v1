@@ -8,6 +8,11 @@
 	if (file_exists(FILEROOT.'/styles/'.$action.'.css')) {
 ?>
 	<link href="<?=SITEROOT?>/styles/<?=$action?>.css" rel="stylesheet">
+<?
+	}
+	if ($pathOptions[1] == 'maps') {
+?>
+	<link href="<?=SITEROOT?>/styles/maps.css" rel="stylesheet">
 <? } ?>
 <? if ($action == 'characters' && file_exists(FILEROOT."/styles/characters/{$pathOptions[0]}.css")) { ?>
 	<link href="<?=SITEROOT?>/styles/characters/<?=$pathOptions[0]?>.css" rel="stylesheet">

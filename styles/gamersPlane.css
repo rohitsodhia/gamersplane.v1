@@ -407,7 +407,7 @@ button:hover, a.button:hover {
 
 /* ----------------------------------------------------------------------------------------------*/
 
-/* Pretty Select */
+/* Pretty Controls */
 .prettySelect {
 	position: relative;
 	z-index: 5000;
@@ -451,6 +451,28 @@ button:hover, a.button:hover {
 
 .prettySelectOptions li:hover {
 	background: #99C;
+}
+
+.prettyCheckbox, .prettyRadio {
+	display: inline-block;
+	position: relative;
+	top: 1px;
+	height: 13px;
+	width: 13px;
+	margin: 0 3px;
+	cursor: pointer;
+}
+
+.prettyCheckbox {
+	background: url('../images/checkbox.png') top left no-repeat;
+}
+
+.prettyRadio {
+	background: url('../images/radio.png') top left no-repeat;
+}
+
+.prettyCheckbox.checked, .prettyRadio.checked {
+	background-position: bottom left;
 }
 
 /* ----------------------------------------------------------------------------------------------*/

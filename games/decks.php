@@ -28,32 +28,6 @@
 	if (isset($_GET['success']) && in_array($_GET['success'], array('delete', 'create', 'edit', 'shuffle'))) echo "\t\t<div class=\"alertBox_success\">Your deck was successfully {$_GET['success']}".(substr($_GET['success'], -1) != 'e'?'e':'')."d</div>\n";
 	if (isset($_GET['new'])) {
 ?>
-		<form method="post" action="<?=SITEROOT?>/games/process/deck">
-			<input type="hidden" name="gameID" value="<?=$gameID?>">
-			<div class="tr">
-				<label class="textLabel">Deck Label</label>
-				<div class="inputCol"><input id="deckLabel" type="text" name="deckLabel" maxlength="50"></div>
-			</div>
-			<div class="tr">
-				<label class="textLabel">Deck Type</label>
-				<div class="inputCol">
-<? foreach ($deckTypes as $short => $full) echo "\t\t\t\t\t".'<p><input type="radio" name="deckType" value="'.$short.'">'.$full."</p>\n"; ?>
-				</div>
-			</div>
-			<div class="tr">
-				<div class="title">&nbsp;</div>
-				<div class="checkCol">Allow Access</div>
-			</div>
-<?
-		foreach ($allPlayers as $player) {
-			echo "\t\t\t<div class=\"tr user\">\n";
-			echo "\t\t\t\t<label class=\"textLabel\">".$player['label'].' ('.$player['username'].")</label>\n";
-			echo "\t\t\t\t".'<div class="checkCol"><input type="checkbox" name="addUser['.$player['userID']."]\"></div>\n";
-			echo "\t\t\t</div>\n";
-		}
-?>
-			<div id="submitDiv" class="inputCol"><button type="submit" name="create" class="btn_create"></button></div>
-		</form>
 		
 		<hr>
 <?

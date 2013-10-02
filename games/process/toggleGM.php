@@ -20,7 +20,7 @@
 			if ($isGM) $mysql->query("DELETE FROM forumAdmins WHERE userID = $playerID AND forumID = $forumID");
 			else $mysql->query("INSERT INTO forumAdmins (userID, forumID) VALUES ($playerID, $forumID)");
 
-			addGameHistory($gameID, ($isGM?'gmRemoved':'gmAdded'), $userID, 'NOW()', $playerID);
+			addGameHistory($gameID, ($isGM?'gmRemoved':'gmAdded'), $userID, 'NOW()', 'user', $playerID);
 			
 			if (isset($_POST['modal'])) echo 1;
 			else header('Location: '.SITEROOT."/games/$gameID?gmAdded=1");

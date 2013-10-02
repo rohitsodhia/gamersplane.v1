@@ -141,8 +141,8 @@ function updateSaves(save) {
 }
 
 jQuery.fn.prettySelect = function () {
-	$select = $(this);
-	$prettySelect = $('<div class="prettySelect">');
+	$select = $(this).wrap('<div class="prettySelect">');
+	$prettySelect = $select.parent();
 	$prettySelectCurrent = $('<div class="prettySelectCurrent">');
 	$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
 	$prettySelectOptions = $('<ul class="prettySelectOptions">');
@@ -152,7 +152,7 @@ jQuery.fn.prettySelect = function () {
 		if ($(this).text().length > longest.length) longest = $(this).text();
 		$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelectOptions);
 	});
-	$select.hide().after($prettySelect);
+	$select.hide();
 	$prettySelect.append($prettySelectCurrent).append($prettySelectDropdown).append($prettySelectOptions);
 	$prettySelectCurrent.text(longest).width($prettySelectCurrent.width());
 	$prettySelect.css('width', $prettySelect.width());
@@ -206,7 +206,36 @@ $(function() {
 		});
 	}
 
-	$('.loginLink').colorbox({ href: function () { return this.href + '?modal=1' }, iframe: true });
+	$('input[type="checkbox"]').each(function () {
+		$(this).wrap('<div class="prettyCheckbox"></div>');
+		if ($(this).is(':checked')) $(this).parent().addClass('checked');
+	}).hide().change(function (e) {
+		$(this).parent().toggleClass('checked');
+	});
+	$('.prettyCheckbox').click(function (e) {
+		$(this).toggleClass('checked');
+		$checkbox = $(this).find('input');
+		$checkbox.prop('checked', !$checkbox.prop('checked'));
+	});
+
+	$('input[type="radio"]').each(function () {
+		$(this).wrap('<div class="prettyRadio"></div>');
+		if ($(this).is(':checked')) $(this).parent().addClass('checked');
+	}).hide().change(function (e) {
+		$(this).parent().toggleClass('checked');
+	});
+	$('.prettyRadio').click(function (e) {
+		if (!$(this).hasClass('checked')) {
+			$radio = $(this).find('input');
+			radioName = $radio.attr('name');
+			$('input[name="' + radioName + '"]').prop('checked', false).parent().removeClass('checked');
+			$(this).addClass('checked');
+			$radio.prop('checked', true);
+		}
+	});
+
+
+	$('.loginLink').colorbox();
 
 	$('.placeholder').each(function () {
 		$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
