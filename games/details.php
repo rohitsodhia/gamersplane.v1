@@ -236,22 +236,32 @@
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
 				<div class="hbMargined">
 <?
-		$mapList = $mysql->query('SELECT mapID, name, rows, columns FROM maps WHERE gameID = '.$gameID);
+		$mapList = $mysql->query('SELECT mapID, name, rows, columns, visible FROM maps WHERE gameID = '.$gameID);
 		
 		if ($mapList->rowCount()) {
+?>
+					<div class="tr clearfix headers">
+						<div class="mapVisible"></div>
+						<div class="mapLink">Name</div>
+						<div class="mapSize">Size</div>
+						<div class="mapActions">Actions</div>
+					</div>
+<?
 			foreach ($mapList as $mapInfo) {
 ?>
-					<div class="tr">
+					<div class="tr clearfix">
+						<div class="mapVisible<?=$mapInfo['visible']?'':' invisible'?>"></div>
 						<div class="mapLink"><a href="<?=SITEROOT?>/tools/maps/view/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
 						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['columns']?></div>
 <?				if ($isGM) { ?>
-			 			<div><a href="<?=SITEROOT?>/tools/maps/edit/<?=$mapInfo['mapID']?>">Edit</a></div>
+			 			<div class="mapActions">
+			 				<a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/edit/" class="iconLink edit">Edit</a>
+			 				<a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/delete/" class="iconLink delete">Delete</a>
+			 			</div>
 <?				} else { ?>
- 						<div>&nbsp;</div>
 <?				} ?>
 					</div>
 <?
-				if ($firstMap) $firstMap = FALSE;
 			}
 		} else echo "					<p class=\"notice\">There are no maps available at this time</p>\n";
 ?>
@@ -290,11 +300,13 @@
 							<div class="deckType"><?=$deckTypes[$deckInfo['type']]?></div>
 						</div>
 						<div class="deckRemaining"><?=$cardsRemaining?></div>
+<?				if ($isGM) { ?>
 						<div class="deckActions">
-							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/edit/<?=$deckInfo['deckID']?>" title="Edit Deck" class="editDeck">Edit Deck</a>
-							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/shuffle/<?=$deckInfo['deckID']?>" title="Shuffle Deck" class="shuffleDeck">Shuffle Deck</a>
-							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/delete/<?=$deckInfo['deckID']?>" title="Delete Deck" class="deleteDeck">Delete Deck</a>
+							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/edit/" title="Edit Deck" class="iconLink edit">Edit Deck</a>
+							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/shuffle/" title="Shuffle Deck" class="iconLink shuffle">Shuffle Deck</a>
+							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/delete/" title="Delete Deck" class="iconLink delete">Delete Deck</a>
 						</div>
+<?				} ?>
 					</div>
 <?
 			}

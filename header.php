@@ -97,5 +97,5 @@
 			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
 		</div>
 <? } else { ?>
-<div id="page_<?=PAGE_ID?>" class="clearfix">
+<div id="page_<?=PAGE_ID?>" class="clearfix<?=strlen($dispatchInfo['bodyClass'])?" {$dispatchInfo['bodyClass']}":''?>">
 <? } ?>

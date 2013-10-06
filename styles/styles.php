@@ -1,20 +1,20 @@
 	<link href="<?=SITEROOT?>/styles/reset.css" rel="stylesheet">
 	<link href="<?=SITEROOT?>/styles/gamersPlane.css" rel="stylesheet">
-<? if (in_array($action, array('forums', 'pms'))) { ?>
+<? if (in_array($pathAction, array('forums', 'pms'))) { ?>
 	<link href="<?=SITEROOT?>/javascript/markItUp/skins/gp/style.css" rel="stylesheet">
 	<link href="<?=SITEROOT?>/javascript/markItUp/sets/bbcode/style.css" rel="stylesheet">
 <?
 	}
-	if (file_exists(FILEROOT.'/styles/'.$action.'.css')) {
+	if (file_exists(FILEROOT.'/styles/'.$pathAction.'.css')) {
 ?>
-	<link href="<?=SITEROOT?>/styles/<?=$action?>.css" rel="stylesheet">
+	<link href="<?=SITEROOT?>/styles/<?=$pathAction?>.css" rel="stylesheet">
 <?
 	}
 	if ($pathOptions[1] == 'maps') {
 ?>
 	<link href="<?=SITEROOT?>/styles/maps.css" rel="stylesheet">
 <? } ?>
-<? if ($action == 'characters' && file_exists(FILEROOT."/styles/characters/{$pathOptions[0]}.css")) { ?>
+<? if ($pathAction == 'characters' && file_exists(FILEROOT."/styles/characters/{$pathOptions[0]}.css")) { ?>
 	<link href="<?=SITEROOT?>/styles/characters/<?=$pathOptions[0]?>.css" rel="stylesheet">
 <? } ?>
 	<link href="<?=SITEROOT?>/styles/colorbox.css" rel="stylesheet">

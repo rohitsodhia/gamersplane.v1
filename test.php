@@ -1,5 +1,5 @@
 <?
-	$action = '';
+	$pathAction = '';
 	require_once('includes/requires.php');
 ?>
 <!DOCTYPE html>

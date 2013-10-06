@@ -3,22 +3,22 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#page_newMap label {
+#page_mapDetails label {
 	float: left;
 	text-align: right;
 	width: 100px;
 	margin-right: 10px;
 }
 
-#page_newMap input {
+#page_mapDetails input {
 	width: 200px;
 }
 
-#page_newMap #mapSize input {
+#page_mapDetails #mapSize input {
 	width: 30px;
 }
 
-#page_newMap .notice {
+#page_mapDetails .notice {
 	margin-left: 160px;
 	font-size: .85em;
 }

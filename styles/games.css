@@ -324,62 +324,72 @@
 	margin-top: 0;
 }
 
-#page_gameDetails #maps {
-	width: 470px;
-}
-
-#page_gameDetails #decks {
-	width: 470px;
-}
-
-#page_gameDetails #decks .tr div {
+#page_gameDetails .tr div {
 	display: inline-block;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
-#page_gameDetails #decks .headers div {
+#page_gameDetails .headers div {
 	font-weight: bold;
 	vertical-align: bottom;
 }
 
-#page_gameDetails #decks .deckLabel {
+#page_gameDetails .iconLink {
+	margin-right: 5px;
+}
+
+#page_gameDetails #maps {
+	width: 470px;
+}
+
+#page_gameDetails .headers .mapVisible {
+	background: none;
+}
+
+#page_gameDetails .mapVisible {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	background: url('../images/eye_mini.png') top left no-repeat;
+}
+
+#page_gameDetails .mapVisible.invisible {
+	background-position: bottom left;
+}
+
+#page_gameDetails .mapLink {
+	width: 200px;
+}
+
+#page_gameDetails .mapSize {
+	width: 75px;
+	margin: 0 10px;
+	text-align: center;
+}
+
+#page_gameDetails .deckRemaining {
+	width: 85px;
+	text-align: center;
+	margin: 0 10px;
+}
+#page_gameDetails #decks {
+	width: 470px;
+}
+
+#page_gameDetails .deckLabel {
 	width: 205px;
 }
 
-#page_gameDetails #decks .deckType {
+#page_gameDetails .deckType {
 	display: block !important;
 	font-size: .8em;
 	font-style: italic;
 }
 
-#page_gameDetails #decks .deckRemaining {
+#page_gameDetails .deckRemaining {
 	width: 85px;
 	text-align: center;
 	margin: 0 10px;
-}
-
-#page_gameDetails #decks .tr .deckActions a {
-	display: inline-block;
-	height: 20px;
-	width: 20px;
-	margin-right: 5px;
-	overflow: hidden;
-	text-indent: -9999px;
-	background-position: top left;
-	background-repeat: no-repeat;
-}
-
-#page_gameDetails .editDeck {
-	background-image: url('../images/edit_wheel.png');
-}
-
-#page_gameDetails .shuffleDeck {
-	width: 27px !important;
-	background-image: url('../images/shuffle.png');
-}
-
-#page_gameDetails .deleteDeck {
-	background-image: url('../images/cross.png');
 }
 
 #page_gameDetails #submitChar .fancyButton {
@@ -398,13 +408,22 @@
 	float: left;
 }
 
-#page_deckDetails label, #page_deckDetails .title {
+#page_deckDetails label, #page_deckDetails .title, #page_deckDetails .notice {
 	width: 130px;
 	margin-right: 10px;
 }
 
+#page_deckDetails .notice {
+	font-size: .8em;
+	color: #A00;
+}
+
 #page_deckDetails .inputCol p {
 	margin: .3em 0;
+}
+
+#page_deckDetails.editDeck #allowAccess {
+	margin-top: 1em;
 }
 
 #page_deckDetails a {

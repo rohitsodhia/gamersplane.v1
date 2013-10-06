@@ -1,6 +1,6 @@
 
 <?
-	if (($gameID || $action == 'characters') && !isset($_GET['modal'])) {
+	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) {
 		$userID = intval($_SESSION['userID']);
 		$fixedMenu = TRUE;
 ?>
@@ -16,7 +16,7 @@
 	</ul>
 <?		} ?>
 	<ul class="leftCol">
-<?		if ($gameInfo['isGM'] || $action == 'characters') { ?>
+<?		if ($gameInfo['isGM'] || $pathAction == 'characters') { ?>
 		<li id="fm_tools">
 			<a href="<?=SITEROOT?>/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
@@ -73,7 +73,7 @@
 <?
 		if ($gameID) {
 			$characters = $mysql->query("SELECT c.characterID, c.label, c.approved, u.userID, u.username FROM characters c, users u WHERE".($gameInfo['isGM']?'':" c.userID = $userID AND")." c.gameID = $gameID AND u.userID = c.userID ORDER BY c.approved DESC, u.username ASC, c.label ASC");
-			if ($characters->rowCount() && $action != 'characters') {
+			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
 			<a href="" class="menuLink">Characters</a>
@@ -101,7 +101,7 @@
 			}
 		}
 ?>
-<?=$gameID && $action != 'forums'?"			<li><a href=\"".SITEROOT."/forums/{$gameInfo['forumID']}\" target=\"_blank\" class=\"menuLink\">Forum</a></li>\n":''?>
+<?=$gameID && $pathAction != 'forums'?"			<li><a href=\"".SITEROOT."/forums/{$gameInfo['forumID']}\" target=\"_blank\" class=\"menuLink\">Forum</a></li>\n":''?>
 	</ul>
 </div></div>
 <? } ?>

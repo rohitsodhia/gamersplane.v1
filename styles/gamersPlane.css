@@ -467,12 +467,46 @@ button:hover, a.button:hover {
 	background: url('../images/checkbox.png') top left no-repeat;
 }
 
+.prettyCheckbox.disabled {
+	background-position: top right;
+	cursor: default;
+}
+
 .prettyRadio {
 	background: url('../images/radio.png') top left no-repeat;
 }
 
 .prettyCheckbox.checked, .prettyRadio.checked {
 	background-position: bottom left;
+}
+
+.prettyCheckbox.disabled.checked {
+	background-position: bottom right;
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
+.iconLink {
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	overflow: hidden;
+	text-indent: -9999px;
+	background-position: top left;
+	background-repeat: no-repeat;
+}
+
+.iconLink.edit {
+	background-image: url('../images/edit_wheel.png');
+}
+
+.iconLink.shuffle {
+	width: 27px !important;
+	background-image: url('../images/shuffle.png');
+}
+
+.iconLink.delete {
+	background-image: url('../images/cross.png');
 }
 
 /* ----------------------------------------------------------------------------------------------*/
