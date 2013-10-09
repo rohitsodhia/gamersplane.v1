@@ -15,7 +15,7 @@
 		
 		<div id="controlsContainer" class="clearfix">
 			<a id="newPM" href="<?=SITEROOT?>/pms/send" class="fancyButton">New PM</a>
-			<div id="controls" class="wingDiv" data-ratio=".8">
+			<div id="controls" class="wingDiv sectionControls" data-ratio=".8">
 				<div class="wingDivContent clearfix">
 					<a href="<?=SITEROOT?>/pms/"<?=$box == 'inbox'?' class="current"':''?>>Inbox</a>
 					<a href="<?=SITEROOT?>/pms/outbox"<?=$box == 'outbox'?' class="current"':''?>>Outbox</a>

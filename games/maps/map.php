@@ -2,17 +2,15 @@
 	$loggedIn = checkLogin();
 	
 	$userID = intval($_SESSION['userID']);
+	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
-	$playerCheck = $mysql->query("SELECT maps.gameID, IF(gms.userID, 1, 0) isGM FROM maps LEFT JOIN gms USING (gameID) WHERE gms.userID = $userID AND maps.mapID = $mapID");
+	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = $gameID AND m.gameID = p.gameID AND p.userID = $userID AND m.mapID = $mapID");
 	if (!$playerCheck->rowCount()) { header('Location: '.SITEROOT.'/403'); exit; }
-	else {
-		list($gameID, $isGM) = $playerCheck->fetch();
-		$isGM = $isGM?TRUE:FALSE;
-	}
-	$mapInfo = $mysql->query('SELECT maps.gameID, maps.name, maps.columns, maps.rows, maps.details, games.title, games.systemID, systems.fullName FROM maps, games, systems WHERE games.systemID = systems.systemID AND maps.gameID = games.gameID AND maps.mapID = '.$mapID);
+	else list($isGM) = $playerCheck->fetch();
+	$mapInfo = $mysql->query('SELECT m.gameID, m.name, m.columns, m.rows, m.info, g.title, g.systemID, s.fullName FROM maps m, games g, systems s WHERE g.systemID = s.systemID AND m.gameID = g.gameID AND m.mapID = '.$mapID);
 	$mapInfo = $mapInfo->fetch();
 	
-	$mapIcons = $mysql->query("SELECT * FROM maps_icons WHERE mapID = $mapID");
+	$mapIcons = $mysql->query("SELECT iconID, label, name, description, color, location FROM maps_icons WHERE mapID = $mapID");
 	$iconsInBox = array();
 	$iconsOnMap = array();
 	foreach ($mapIcons as $info) {
@@ -22,29 +20,16 @@
 			$iconsOnMap[$locParts[0]][$locParts[1]] = $info;
 		}
 	}
-	$mapData = $mysql->query("SELECT `column`, `row`, data FROM mapData WHERE mapID = $mapID");
+	$mapData = $mysql->query("SELECT `column`, row, data FROM mapData WHERE mapID = $mapID");
 	$bgData = array();
 	foreach ($mapData as $dataPiece) $bgData[$dataPiece['column']][$dataPiece['row']] = $dataPiece['data'];
-	$fixedMenu = TRUE;
 	$mapSize['width'] = $mapInfo['columns'] * 40;
 	$mapSize['height'] = $mapInfo['rows'] * 40;
 	$maxMapWindow['width'] = $mapInfo['columns'] >= 15?600:$mapInfo['columns'] * 40;
 	$maxMapWindow['height'] = $mapInfo['rows'] >= 15?600:$mapInfo['rows'] * 40;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<noscript><div class="alertBox_error">
-			<p>This page requires javascript to run.</p>
-			<p>Please make sure your browser is running javascript to use the GP mapping system.</p>
-		</div></noscript>
-		
-		<h1><?=printReady($mapInfo['name'])?></h1>
-		
-		<div id="mapInfo">
-			<h2>Map Info</h2>
-			<p><b>Game:</b> <?=$mapInfo['title']?> (<?=$mapInfo['fullName']?>)</p>
-			<p><b>Details:</b> <span id="detailsSpan"><? if (strlen($mapInfo['details'])) echo printReady($mapInfo['details']); elseif ($isGM) echo 'No details yet.'; ?></span> <sup><a id="detailsEdit" href="">[ Edit ]</a></sup></p>
-			<p class="reminder">Remember: you can see each icon's label by holding your mouse over it.</p>
-		</div>
+		<h1 class="headerbar"><?=printReady($mapInfo['name'])?></h1>
 		
 <? if ($isGM) { ?>
 		<div id="iconBox">
@@ -55,7 +40,7 @@
 			
 			<a id="addIcon" href="">Add Icon</a>
 			
-			<form id="iconForm" method="post" action="<?=SITEROOT?>/tools/process/maps/icons">
+			<form id="iconForm" method="post" action="<?=SITEROOT?>/games/process/maps/icons">
 				<input id="iconID" type="hidden" name="iconID">
 				<div class="tr">
 					<label class="textLabel">Color:</label>
@@ -77,10 +62,6 @@
 					<label class="textLabel">Name:</label>
 					<div><input id="iconName" type="text" name="name"></div>
 				</div>
-<!--				<div class="tr">
-					<label class="textLabel">Description:</label>
-					<div><textarea id="desc" name="desc"></textarea></div>
-				</div>-->
 				<div class="tr editDiv">
 					<button type="submit" name="save" class="btn_save"></button>
 					<button type="submit" name="delete" class="btn_delete"></button>
@@ -94,7 +75,7 @@
 		<div class="clearfix">
 			<div id="mapSidebar" style="height: <?=$maxMapWindow['height'] - 32?>px;">
 				<div id="mapControls">
-					<img src="<?=SITEROOT?>/images/mapControls.png">
+					<img src="<?=SITEROOT?>/images/maps/mapControls.png">
 					<a id="mapControls_up_top" href="" class="mapControls_up">&nbsp;</a>
 					<a id="mapControls_up_body" href="" class="mapControls_up">&nbsp;</a>
 					<a id="mapControls_right_top" href="" class="mapControls_right">&nbsp;</a>
@@ -104,7 +85,22 @@
 					<a id="mapControls_left_top" href="" class="mapControls_left">&nbsp;</a>
 					<a id="mapControls_left_body" href="" class="mapControls_left">&nbsp;</a>
 				</div>
-				<div id="textPane" style="height: <?=$maxMapWindow['height'] - 102?>px;">
+				<div id="mapSidebar_content" class="clearfix">
+					<div class="clearfix"><div id="mapSidebar_contentControls" class="wingDiv sectionControls" data-ratio=".8">
+						<div class="wingDivContent">
+							<a id="mapSidebar_contentControls_info" href="" class="current">Info</a>
+							<a id="mapSidebar_contentControls_box" href="">Box</a>
+							<a id="mapSidebar_contentControls_history" href="">History</a>
+						</div>
+						<div class="wing dlWing"></div>
+						<div class="wing drWing"></div>
+					</div></div>
+					<div id="mapSidebar_contentContainer" style="height: <?=$maxMapWindow['height'] - 92?>px;">
+						<div id="mapInfo">
+							<p><strong>Game:</strong> <?=$mapInfo['title']?> (<?=$mapInfo['fullName']?>)</p>
+							<p><strong>Info:</strong> <span id="infoSpan"><? if (strlen($mapInfo['info'])) echo printReady($mapInfo['info']); elseif ($isGM) echo 'No info yet.'; ?></span> <sup><a id="infoEdit" href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapID?>/editInfo">[ Edit ]</a></sup></p>
+							<p class="reminder">Remember: you can see each icon's label by holding your mouse over it.</p>
+						</div>
 <?
 	$iconActions = $mysql->query("SELECT ic.iconID, icons.label, icons.name, ic.mapID, ic.enactedBy, users.username, ic.action, ic.origin, ic.destination FROM maps_iconHistory ic, maps_icons icons, users WHERE ic.iconID = icons.iconID AND ic.enactedBy = users.userID ".($isGM?'':"AND ic.action = 'moved' ")."AND ic.mapID = $mapID ORDER BY ic.actionID");
 	foreach ($iconActions as $actionInfo) {
@@ -112,12 +108,13 @@
 		$actionInfo['origin'] = decToB26($locParts[0]).$locParts[1];
 		$locParts = explode('_', $actionInfo['destination']);
 		$actionInfo['destination'] = decToB26($locParts[0]).$locParts[1];
-		if ($actionInfo['action'] == 'moved') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> moved <b>{$actionInfo['name']}</b> ({$actionInfo['label']}) from ".(strlen($actionInfo['origin'])?strtoupper($actionInfo['origin']):'Box')." to ".(strlen($actionInfo['destination'])?strtoupper($actionInfo['destination']):'Box')."</p>\n";
-		elseif ($actionInfo['action'] == 'created') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> created <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
-		elseif ($actionInfo['action'] == 'edited') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> edited <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
-		elseif ($actionInfo['action'] == 'deleted') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> deleted <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
+		if ($actionInfo['action'] == 'moved') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> moved <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']}) from ".(strlen($actionInfo['origin'])?strtoupper($actionInfo['origin']):'Box')." to ".(strlen($actionInfo['destination'])?strtoupper($actionInfo['destination']):'Box')."</p>\n";
+		elseif ($actionInfo['action'] == 'created') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> created <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']})</p>\n";
+		elseif ($actionInfo['action'] == 'edited') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> edited <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']})</p>\n";
+		elseif ($actionInfo['action'] == 'deleted') echo "\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> deleted <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']})</p>\n";
 	}
 ?>
+					</div>
 				</div>
 			</div>
 			
@@ -161,10 +158,4 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="hideDiv"><form id="saveDetails" method="post" action="<?=SITEROOT?>/tools/process/maps/saveDetails">
-			<input type="hidden" name="mapID" value="<?=$mapID?>">
-			<textarea name="details"><?=$mapInfo['details']?></textarea>
-			<button type="submit" name="save" class="btn_save"></button>
-		</form></div>
 <? require_once(FILEROOT.'/footer.php'); ?>

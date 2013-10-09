@@ -18,42 +18,6 @@
 	right: 0;
 }
 
-#page_pms #controls a {
-	display: block;
-	float: left;
-	padding: 3px 15px;
-	color: #FDD;
-	background: #522;
-	border-top: 3px solid #222;
-	border-left: 2px solid #222;
-}
-
-#page_pms #controls a:first-child {
-	border-left: none;
-}
-
-#page_pms #controls .wing {
-	position: absolute;
-	top: 0;
-	border-style: solid;
-	border-color: #222;
-	border-top-color: transparent;
-	background: none;
-}
-
-#page_pms #controls .dlWing {
-	left: 0;
-}
-
-#page_pms #controls .drWing {
-	right: 0;
-}
-
-#page_pms #controls .current, #page_pms #controls a:hover {
-	color: #F00;
-	background: #222;
-}
-
 #page_pms #pms {
 	position: relative;
 }

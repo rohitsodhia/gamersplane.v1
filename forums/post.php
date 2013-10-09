@@ -139,7 +139,7 @@
 			
 			<hr>
 			
-			<div class="clearfix"><div id="sectionControls" class="wingDiv hbDark floatLeft" data-ratio=".8">
+			<div class="clearfix"><div class="wingDiv sectionControls floatLeft" data-ratio=".8">
 				<div>
 					<a href="" class="section_options current">Options</a>
 					<a href="" class="section_poll current">Poll</a>

@@ -1,9 +1,4 @@
 $(function() {
-	$('html').bind('contextmenu', function (e) {
-		alert(1);
-
-		e.preventDefault();
-	});
 	$('.mapIcon').bind('contextmenu', function (e) {
 		e.stopPropagation();
 
@@ -15,7 +10,11 @@ $(function() {
 	var maxCols = 15 < numCols?15:numCols;
 	var maxRows = 15 < numRows?15:numRows;
 	
-	$('#detailsEdit').colorbox({inline: true, href: '#saveDetails'});
+	$('#infoEdit').colorbox();
+
+	$('#mapSidebar_contentControls a').click(function (e) {
+		e.preventDefault();
+	});
 	
 	$('#addIcon').click(function (e) {
 		if ($('#iconID').val() != 0) {

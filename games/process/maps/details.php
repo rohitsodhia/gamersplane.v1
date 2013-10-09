@@ -14,7 +14,8 @@
 
 		echo 1;
 	} elseif (isset($_POST['edit']) && $gmCheck->rowCount()) {
-		$addMap = $mysql->prepare("UPDATE maps SET name = :name, rows = :rows, columns = :columns, visible = :visible WHERE gameID = $gameID");
+		$mapID = intval($_POST['mapID']);
+		$addMap = $mysql->prepare("UPDATE maps SET name = :name, rows = :rows, columns = :columns, visible = :visible WHERE gameID = $gameID AND mapID = $mapID");
 		$addMap->bindValue(':name', sanitizeString($_POST['name']));
 		$addMap->bindValue(':rows', sanitizeString($_POST['rows']));
 		$addMap->bindValue(':columns', sanitizeString($_POST['columns']));

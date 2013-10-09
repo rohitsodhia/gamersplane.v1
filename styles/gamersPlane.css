@@ -511,11 +511,11 @@ button:hover, a.button:hover {
 
 /* ----------------------------------------------------------------------------------------------*/
 
-#sectionControls {
+.sectionControls {
 	float: right;
 }
 
-#sectionControls a {
+.sectionControls a {
 	display: block;
 	float: left;
 	padding: .3em 15px;
@@ -525,11 +525,11 @@ button:hover, a.button:hover {
 	border-left: 2px solid #222;
 }
 
-#sectionControls a:first-child {
+.sectionControls a:first-child {
 	border-left: none;
 }
 
-#sectionControls .wing {
+.sectionControls .wing {
 	float: none;
 	position: absolute;
 	top: 0;
@@ -541,20 +541,20 @@ button:hover, a.button:hover {
 	background: none;
 }
 
-#sectionControls .dlWing {
+.sectionControls .dlWing {
 	left: 0;
 }
 
-#sectionControls .drWing {
+.sectionControls .drWing {
 	right: 0;
 }
 
-#sectionControls .current, #sectionControls a:hover {
+.sectionControls .current, .sectionControls a:hover {
 	color: #F00;
 	background: #222;
 }
 
-/* ---- */
+/* ----------------------------------------------------------------------------------------------*/
 
 /* IDs */
 .bodyContainer, #fixedMenu > div {

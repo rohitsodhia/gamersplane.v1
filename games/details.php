@@ -127,12 +127,12 @@
 						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 					</form>
 <?	 			} else { ?>
-					<p class="hbMargined notice">You have no characters you can submit at this time</p>
+					<p class="hbdMargined notice">You have no characters you can submit at this time</p>
 <?
 	 			}
 	 		} else {
 ?>
-					<p class="hbMargined notice">You cannot submit any more characters to this game</p>
+					<p class="hbdMargined notice">You cannot submit any more characters to this game</p>
 <?			} ?>
 				</div>
 			</div>
@@ -234,7 +234,7 @@
 				<div class="clearfix hbdTopper"><a id="newMap" href="<?=SITEROOT?>/games/<?=$gameID?>/maps/new" class="fancyButton smallButton">New Map</a></div>
 <?		} ?>
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 		$mapList = $mysql->query('SELECT mapID, name, rows, columns, visible FROM maps WHERE gameID = '.$gameID);
 		
@@ -251,7 +251,7 @@
 ?>
 					<div class="tr clearfix">
 						<div class="mapVisible<?=$mapInfo['visible']?'':' invisible'?>"></div>
-						<div class="mapLink"><a href="<?=SITEROOT?>/tools/maps/view/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
+						<div class="mapLink"><a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
 						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['columns']?></div>
 <?				if ($isGM) { ?>
 			 			<div class="mapActions">
@@ -272,7 +272,7 @@
 				<div class="clearfix hbdTopper"><a id="newDeck" href="<?=SITEROOT?>/games/<?=$gameID?>/decks/new" class="fancyButton smallButton">New Deck</a></div>
 <?		} ?>
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Decks</h2>
-				<div class="hbMargined">
+				<div class="hbdMargined">
 <?
 		$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
 		$decks = $decks->fetchAll();

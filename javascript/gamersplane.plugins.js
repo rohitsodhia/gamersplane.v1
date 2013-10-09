@@ -33,32 +33,35 @@ $.fn.autocomplete = function (pathOption, sendData) {
 };
 
 $.fn.prettySelect = function () {
-	$select = $(this).wrap('<div class="prettySelect">');
-	$prettySelect = $select.parent();
-	$prettySelectCurrent = $('<div class="prettySelectCurrent">');
-	$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
-	$prettySelectOptions = $('<ul class="prettySelectOptions">');
-	longest = '', current = '';
-	$select.find('option').each(function () {
-		if ($(this).val() == $select.val()) current = $(this).text();
-		if ($(this).text().length > longest.length) longest = $(this).text();
-		$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelectOptions);
-	});
-	$select.hide();
-	$prettySelect.append($prettySelectCurrent).append($prettySelectDropdown).append($prettySelectOptions);
-	$prettySelectCurrent.text(longest).width($prettySelectCurrent.width());
-	$prettySelect.css('width', $prettySelect.width());
-	$prettySelectOptions.width($prettySelect.outerWidth() - 2).hide();
-	$prettySelectCurrent.text(current);
+	$(this).each(function () {
+		$select = $(this).wrap('<div class="prettySelect">');
+		$prettySelect = $select.parent();
+		$prettySelectCurrent = $('<div class="prettySelectCurrent">');
+		$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
+		$prettySelectOptions = $('<ul class="prettySelectOptions">');
+		longest = '', current = '';
+		$select.find('option').each(function () {
+			if ($(this).val() == $select.val()) current = $(this).text();
+			if ($(this).text().length > longest.length) longest = $(this).text();
+			$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelectOptions);
+		});
+		if (current == '') current = $select.find('option:first').text();
+		$select.hide();
+		$prettySelect.append($prettySelectCurrent).append($prettySelectDropdown).append($prettySelectOptions);
+		$prettySelectCurrent.text(longest).width($prettySelectCurrent.width());
+		$prettySelect.css('width', $prettySelect.width());
+		$prettySelectOptions.width($prettySelect.outerWidth() - 2).hide();
+		$prettySelectCurrent.text(current);
 
-	$prettySelectCurrent.add($prettySelectDropdown).click(function (e) {
-		e.stopPropagation();
-		$prettySelectOptions.show();
-	});
-	$prettySelectOptions.children('li').click(function () {
-		$prettySelectCurrent.text($(this).text());
-		$prettySelectOptions.hide();
-		$select.val($(this).data('value'));
+		$prettySelectCurrent.add($prettySelectDropdown).click(function (e) {
+			e.stopPropagation();
+			$prettySelectOptions.show();
+		});
+		$prettySelectOptions.children('li').click(function () {
+			$prettySelectCurrent.text($(this).text());
+			$prettySelectOptions.hide();
+			$select.val($(this).data('value'));
+		});
 	});
 };
 

@@ -50,6 +50,22 @@ $(function() {
 		$('a').attr('target', '_parent');
 		parent.$.colorbox.resize({ 'innerWidth': $('body').data('modalWidth') } );
 		parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
+
+		$('textarea.ajaxForm_refreshParent').append('<input type="hidden" name="modal" value="1">').ajaxForm({
+			dataType: 'json',
+			success: function (data) {
+				if (data != 0) {
+					parent.document.location.reload();
+				}
+			}
+		});
+		$('textarea.ajaxForm_closeCB').append('<input type="hidden" name="modal" value="1">').ajaxForm({
+			success: function (data) {
+				if (data != 0) {
+					parent.$.colorbox.close();
+				}
+			}
+		});
 	}
 
 	$('.headerbar, .fancyButton, .wingDiv').each(setupWingContainer);
@@ -58,6 +74,12 @@ $(function() {
 		leftMargin = $('.headerbar .wing').css('border-right-width');
 		$('.hbMargined:not(textarea)').css({ 'margin-left': leftMargin, 'margin-right': leftMargin });
 		$('.hbTopper').css({ 'marginLeft': leftMargin });
+
+		leftMargin = leftMargin.slice(0, -2);
+		$('textarea.hbMargined').each(function () {
+			tWidth = $(this).parent().width();
+			$(this).css({ 'margin-left': leftMargin + 'px', 'margin-right': leftMargin + 'px', 'width': (tWidth - 2 * leftMargin) + 'px' });
+		});
 	}
 	if ($('.hbDark .wing').length) {
 		leftMargin = $('.hbDark .wing').css('border-right-width');

@@ -70,10 +70,6 @@
 /*	position: absolute;*/
 }
 
-#page_map #mapInfo {
-	margin: 1em 0;
-}
-
 #page_map #iconBox {
 	padding: 10px;
 }
@@ -207,11 +203,9 @@
 
 #page_map #mapSidebar, #page_editMap #mapSidebar {
 	float: right;
-	width: 230px;
-	margin-top: 40px;
-	padding: 15px;
-	background-color: #111;
-	border: 1px solid #666;
+	width: 250px;
+	margin-top: 20px;
+	padding-left: 15px;
 }
 
 #page_map #mapControls, #page_editMap #mapControls {
@@ -284,13 +278,18 @@
 	left: 10px;
 }
 
-#page_map #textPane {
-	margin-top: 20px;
-	padding-right: 10px;
-	overflow: auto;
+#page_map #mapSidebar_content {
+	margin-top: 1em;
 }
 
-#page_map #textPane p {
+#page_map #mapSidebar_contentContainer {
+	padding: 10px;
+	overflow: auto;
+	border: 1px solid #000;
+}
+
+#page_map #mapSidebar_contentContainer p {
+	margin-top: 0;
 	text-align: left;
 }
 
@@ -342,7 +341,7 @@
 	float: left;
 	height: 39px;
 	border-bottom: 1px solid #999;
-	background: url('../images/mapCH.jpg') top left no-repeat;
+	background: url('../images/maps/mapCH.png') top left no-repeat;
 }
 
 #page_map .cHeaderMin, #page_editMap .cHeaderMin {
@@ -353,7 +352,7 @@
 #page_map .rHeader, #page_editMap .rHeader {
 	border-right: 1px solid #999;
 	width: 39px;
-	background: url('../images/mapRH.jpg') top left no-repeat;
+	background: url('../images/maps/mapRH.png') top left no-repeat;
 }
 
 #page_map .rHeaderMin, #page_editMap .rHeaderMin {
@@ -422,14 +421,12 @@
 	border: 3px solid #CCC;
 }
 
+/* --------------------------------------------*/
 
-
-#page_map #saveDetails, #page_editMap #saveDetails {
-	width: 500px;
-	text-align: center;
+#page_editMapInfo textarea {
+	height: 10em;
 }
 
-#page_map #saveDetails textarea, #page_editMap #saveDetails textarea {
-	width: 492px;
-	height: 10em;
+#page_editMapInfo .alignCenter {
+	margin-top: 1em;
 }

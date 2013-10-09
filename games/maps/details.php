@@ -11,7 +11,7 @@
 
 	if ($action == 'edit') {
 		$mapID = intval($pathOptions[2]);
-		$mapDetails = $mysql->query("SELECT name, columns, rows, visible FROM maps where mapID = $mapID");
+		$mapDetails = $mysql->query("SELECT name, columns, rows, visible FROM maps WHERE gameID = $gameID AND mapID = $mapID");
 		$mapDetails = $mapDetails->fetch();
 	}
 ?>

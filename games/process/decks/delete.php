@@ -9,7 +9,7 @@
 		$mysql->query("DELETE FROM deckPermissions WHERE deckID = $deckID");
 		$mysql->query("DELETE FROM decks WHERE deckID = $deckID");
 		
-		addGameHistory($gameID, 'deckCreated', $userID, 'NOW()', 'deck', $deckID);
+		addGameHistory($gameID, 'deckDeleted', $userID, 'NOW()', 'deck', $deckID);
 		
 		echo 1;
 	} else echo 0;
