@@ -15,7 +15,7 @@
 		
 		<form id="saveDetails" method="post" action="<?=SITEROOT?>/games/process/maps/editInfo" class="ajaxForm_refreshParent">
 			<input type="hidden" name="mapID" value="<?=$mapID?>">
-			<textarea name="details" class="hbMargined"><?=$mapInfo?></textarea>
+			<textarea name="info" class="hbMargined"><?=$mapInfo?></textarea>
 			<div class="alignCenter"><button type="submit" name="save" class="fancyButton">Save</button></div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

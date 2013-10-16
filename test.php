@@ -470,7 +470,7 @@ mail('dhvanit.mehta@gmail.com', 'test', $var, 'Content-type: text/html;');*/
 		$mysql->query('UPDATE skillsList SET searchName = "'.$name.'" WHERE modifierID = '.$skill['skillID']);
 	}*/
 ?>
-<script>
+<!--<script>
 /*$(function () {
 	var var1 = 1, var2 = 2;
 	setTimeout(function (var1, var2) {
@@ -489,6 +489,15 @@ $('input[type="submit"]').click(function (e) {
 	$('input:checked').prop('checked', false);
 	$('input[value="val ' + val + '"]').prop('checked', true);
 	val++;
+});
+</script>-->
+<div id="test1" style="width: 50px; height: 50px; border: 1px solid #000;"></div>
+<div id="test2" style="width: 50px; height: 50px; border: 1px solid #000;"></div>
+<script>
+$(function () {
+$test1 = $('#test1');
+$test2 = $('#test2');
+$test1.add($test2).css('background', 'green');
 });
 </script>
 </body></html>

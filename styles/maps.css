@@ -26,52 +26,52 @@
 /* --------------------------------------------*/
 
 #page_map .mapIcon {
-	width: 39px;
-	height: 39px;
+	width: 37px;
+	height: 37px;
 	font-size: 1.2em;
 	font-weight: bold;
 	text-align: center;
 	line-height: 39px;
-	z-index: 1000;
+	color: #FFF;
+	border: 1px solid #000;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
 	cursor: pointer;
 }
 
 #page_map .blueIcon {
-	background-image: url('../images/mapIcon_blue.png');
+	background-color: #00B;
 }
 
 #page_map .greenIcon {
-	background-image: url('../images/mapIcon_green.png');
+	background-color: #0B0;
 }
 
 #page_map .greyIcon {
-	background-image: url('../images/mapIcon_grey.png');
+	background-color: #555;
 }
 
 #page_map .orangeIcon {
-	background-image: url('../images/mapIcon_orange.png');
+	background-color: #D72;
 }
 
 #page_map .redIcon {
-	background-image: url('../images/mapIcon_red.png');
+	background-color: #B00;
 }
 
 #page_map .whiteIcon {
-	background-image: url('../images/mapIcon_white.png');
+	background-color: #FFF;
 	color: #000;
 }
 
-#page_map #iconBox .mapIcon {
+#page_map #mapSidebar_content_box .mapIcon {
 	float: left;
 	margin-right: 10px;
 }
 
 #page_map #map .mapIcon {
 /*	position: absolute;*/
-}
-
-#page_map #iconBox {
-	padding: 10px;
 }
 
 #page_map .reminder {
@@ -85,11 +85,11 @@
 	width: 310px;
 }
 
-#page_map #iconBox {
-	background: #111;
-	border: 2px solid #BBB;
-	margin: 1em 0 2em;
-	min-height: 40px;
+#page_map #mapSidebar_content_box {
+}
+
+#page_map #mapSidebar_content_box hr {
+	margin: .6em 0;
 }
 
 #page_map #editDelBox {
@@ -108,25 +108,25 @@
 	position: absolute;
 }
 
-#page_map form {
-	margin-top: 1em;
+#page_map #iconBox {
+	min-height: 39px;
 }
 
-#page_map #iconForm {
-	display: none;
+#page_map form {
+	margin-top: 1em;
 }
 
 #page_map #iconForm .editDiv {
 	display: none;
 }
 
-#page_map #iconBox a {
+#page_map #mapSidebar_content_box a {
 	margin-right: 50px;
 }
 
 #page_map label {
 	float: left;
-	width: 100px;
+	width: 50px;
 }
 
 #page_map .small {
@@ -279,7 +279,12 @@
 }
 
 #page_map #mapSidebar_content {
+	position: relative;
 	margin-top: 1em;
+}
+
+#page_map #mapSidebar_content .wingDiv, #page_map #mapSidebar_content .wingDivContent {
+	overflow: visible;
 }
 
 #page_map #mapSidebar_contentContainer {
@@ -293,7 +298,7 @@
 	text-align: left;
 }
 
-#page_map #mapIconHolder {
+#page_map #sidebarIconHolder, #page_map #mapIconHolder {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -419,6 +424,39 @@
 	height: 34px;
 	width: 34px;
 	border: 3px solid #CCC;
+}
+
+#page_map #iconContextMenu {
+	position: absolute;
+	z-index: 5000;
+	display: none;
+}
+
+#page_map #iconContextMenu ul {
+	width: 150px;
+	margin: 0;
+	border-top: 1px solid #000;
+	background: #DDD;
+	list-style: none;
+}
+
+#page_map #iconContextMenu li {
+	border: 1px solid #000;
+	border-top: none;
+}
+
+#page_map #iconContextMenu a {
+	display: block;
+	padding: 3px;
+}
+
+#page_map #iconContextMenu a, #page_map #iconContextMenu a:active, #page_map #iconContextMenu a:visited {
+	color: #D00;
+}
+
+#page_map #iconContextMenu a:hover {
+	background: #EEE;
+	color: #06F;
 }
 
 /* --------------------------------------------*/

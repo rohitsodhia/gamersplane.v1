@@ -10,8 +10,7 @@
 		if ($mapCheck->rowCount()) {
 			$updateMap = $mysql->prepare("UPDATE maps SET info = :info where mapID = $mapID");
 			$updateMap->execute(array(':info' => $info));
-		}
-	}
-	
-	echo 1;
+			echo json_encode(array('success' => true));
+		} else echo json_encode(array('error' => 'Invalid user'));
+	} else echo json_encode(array('error' => 'Failed submit'));
 ?>

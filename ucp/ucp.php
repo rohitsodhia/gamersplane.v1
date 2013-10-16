@@ -75,13 +75,10 @@
 	$bdayParts = explode('-', $userInfo['birthday']);
 ?>
 					Month <select name="month">
-						<option>--</option>
 <? for ($count = 1; $count <= 12; $count++) echo "						<option".(intval($bdayParts[1]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select> Day <select name="day">
-						<option>--</option>
 <? for ($count = 1; $count <= 31; $count++) echo "						<option".(intval($bdayParts[2]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select> Year <select name="year">
-						<option>--</option>
 <? for ($count = date('Y') - 5; $count >= date('Y') - 100; $count--) echo "						<option".(intval($bdayParts[0]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select>
 				</div>

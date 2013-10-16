@@ -1,10 +1,5 @@
 $(function() {
 	$('select').prettySelect();
-	if ($('.prettySelectOptions').length) {
-		$('html').click(function () {
-			$('.prettySelectOptions').hide();
-		});
-	}
 
 	$('input[type="checkbox"]').prettyCheckbox();
 /*	$('input[type="checkbox"]').each(function () {
@@ -51,17 +46,18 @@ $(function() {
 		parent.$.colorbox.resize({ 'innerWidth': $('body').data('modalWidth') } );
 		parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
 
-		$('textarea.ajaxForm_refreshParent').append('<input type="hidden" name="modal" value="1">').ajaxForm({
+		$('form.ajaxForm_refreshParent').append('<input type="hidden" name="modal" value="1">').ajaxForm({
 			dataType: 'json',
 			success: function (data) {
-				if (data != 0) {
+				if (data.success == true) {
 					parent.document.location.reload();
 				}
 			}
 		});
-		$('textarea.ajaxForm_closeCB').append('<input type="hidden" name="modal" value="1">').ajaxForm({
+		$('form.ajaxForm_closeCB').append('<input type="hidden" name="modal" value="1">').ajaxForm({
+			dataType: 'json',
 			success: function (data) {
-				if (data != 0) {
+				if (data.success == true) {
 					parent.$.colorbox.close();
 				}
 			}
