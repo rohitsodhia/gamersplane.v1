@@ -6,7 +6,7 @@ $(function() {
 		$pageContainer = $('#page_map').parent(),
 		pageOffset = $pageContainer.offset(),
 		$iconID = $('#iconID'),
-		$sb_contentControls = $('#mapSidebar_contentControls a'),
+		$sb_contentControl = $('#mapSidebar_contentControls select'),
 		$sb_contentContainer = $('#mapSidebar_contentContainer'),
 		$sidebarIconHolder = $('#sidebarIconHolder'),
 		$iconBox = $('#iconBox'),
@@ -16,24 +16,25 @@ $(function() {
 		$addDiv = $('.addDiv'),
 		$iconLabel = $('#iconLabel'),
 		$iconName = $('#iconName'),
+		$sb_history = $('#mapSidebar_content_history'),
 		$mapIconHolder = $('#mapIconHolder'),
 		$map = $('#map'),
 		$rowHeaderDivs = $('#rowHeaders > div'),
 		$colHeaderDivs = $('#colHeaders > div'),
-		$iconContextMenu = $('#iconContextMenu');
+		icm_icon = null,
+		$iconContextMenu = $('#iconContextMenu'),
+		$icm_edit = $('#icm_edit'),
+		$icm_stb = $('#icm_stb');
 
 	$('#infoEdit').colorbox();
 
-	$sb_contentControls.click(function (e) {
-		e.preventDefault();
-
-		$('#mapSidebar_contentContainer > div').not('#sidebarIconHolder').hide();
-		$('#mapSidebar_content_' + this.id.split('_')[2]).show();
-		$sb_contentControls.filter('.current').removeClass('current');
-		$(this).addClass('current');
+	$sb_contentControl.change(function () {
+		$('#mapSidebar_contentContainer > div').hide();
+		$('#mapSidebar_content_' + $(this).val()).show();
 	});
 
 	$('#mapSidebar_contentContainer > div').not('#mapSidebar_content_box, #sidebarIconHolder').hide();
+	$iconForm.find('.editDiv').hide();
 	$iconForm.hide();
 	
 	$('#addIcon').click(function (e) {
@@ -58,39 +59,60 @@ $(function() {
 			},
 			success: function (data) {
 				if (data.success == true) {
-					$iconBox.append(data.iconHTML);
+					if (data.action == 'new') {
+						$icon = $(data.iconHTML);
+						$icon.draggable(mapIcon_draggableOptions).appendTo($iconBox);
+						locations[$icon.attr('id')] = '';
+					} else if (data.action == 'edit') {
+						$sb_history.append(data.history);
+						$icon = $('#icon_' + $iconForm.find('#iconID').val());
+					}
 				}
 			}
 		});
 	
 	var locations = Array();
-	$iconBox.add($map).on('dlbclick', '.mapIcon', function (e) {
+	$iconBox.add($map).on('dblclick', '.mapIcon', function (e) {
 		e.preventDefault();
 
 		var $icon = $(this);
 		$iconForm.slideUp(function () {
-			if ($icon.attr('id').split('_')[1] != $iconID.val()) { $.post(SITEROOT + '/games/ajax/maps/iconData', { iconID: $icon.attr('id').split('_')[1] }, function (data) {
-				data = data.split('~~~');
-				$iconColor.find('option[value=' + data[0] + ']').attr('selected', 'selected');
-				$iconLabel.val(data[1]);
-				$iconName.val(data[2]);
+			if ($icon.attr('id').split('_')[1] != $iconID.val()) {
+				console.log($icon.css('background-color'));
+				$iconColor.find('option[value=' + $icon.css('background-color') + ']').attr('selected', 'selected').parent().change();
+				$iconLabel.val($icon.text());
+				$iconName.val($icon.attr('title'));
 				$iconID.val($icon.attr('id').split('_')[1]);
 				$editDiv.css('display', 'block');
 				$addDiv.css('display', 'none');
 				$iconForm.slideDown();
-			}); }
+			}
 		});
 	}).on('contextmenu', '.mapIcon', function (e) {
 		e.stopPropagation();
 		e.preventDefault();
 
+		icm_icon = this;
 		$iconContextMenu.show().css({ 'top': e.pageY - pageOffset.top, 'left': e.pageX - pageOffset.left })
+		if (locations[this.id] == '') $iconContextMenu.addClass('inBox');
+		else $iconContextMenu.removeClass('inBox');
 	})
 	$('html').click(function () {
-		$iconContextMenu.hide();
+		if ($iconContextMenu.is(':visible')) $iconContextMenu.hide();
 	});
 	$(window).scroll(function () {
 		if ($iconContextMenu.is(':visible')) $iconContextMenu.hide();
+	});
+
+	$icm_edit.click(function (e) {
+		e.preventDefault();
+
+
+	});
+	$icm_stb.click(function (e) {
+		e.preventDefault();
+
+		sendToBox($(icm_icon));
 	});
 
 	var mapIcon_draggableOptions = {
@@ -109,16 +131,25 @@ $(function() {
 			}
 		},
 		stop: function (event, ui) {
-			$sidebarIconHolder.hide();
-			$mapIconHolder.hide();
+			$sidebarIconHolder.fadeOut();
+			$mapIconHolder.fadeOut();
+			containerID = ui.helper.parent().attr('id');
+			if (containerID == 'mapIconHolder') {
+				ui.helper.appendTo('#' + locations[ui.helper.attr('id')]).css({'top': 0, 'left': 0}).fadeIn();
+			} else if (containerID == 'sidebarIconHolder') {
+				ui.helper.appendTo($iconBox).css({'top': 0, 'left': 0}).fadeIn();
+			}
 		}
 	};
-	$('.mapIcon').draggable(mapIcon_draggableOptions).click(function (e) { e.preventDefault; }).each(function () {
+	$('.mapIcon').draggable(mapIcon_draggableOptions).each(function () {
 		locations[this.id] = $(this).parent().attr('id');
 		if (locations[this.id] == 'iconBox') locations[this.id] = '';
 	});
 	
 	function sendToBox(icon) {
+		if (locations[icon.attr('id')] != '') $.post(SITEROOT + '/games/ajax/maps/updateLoc', { iconID: icon.attr('id').split('_')[1], location: '' }, function (data) {
+						$sb_history.prepend(data);
+					});
 		icon.fadeOut(function () {
 			$(this).appendTo($iconBox).css({'top': 0, 'left': 0}).fadeIn();
 		});
@@ -127,7 +158,6 @@ $(function() {
 	$sb_contentContainer.droppable({
 		accept: '.mapIcon',
 		drop: function (event, ui) {
-			if (locations[ui.draggable.attr('id')] != '') $.post(SITEROOT + '/games/ajax/maps/updateLoc', { iconID: ui.draggable.attr('id').split('_')[1], location: '' });
 			sendToBox(ui.draggable);
 		}
 	});
@@ -138,10 +168,12 @@ $(function() {
 			var tile = this;
 			ui.draggable.fadeOut(function () {
 				if ($(tile).find('.mapIcon').length == 0 && locations[this.id] != tile.id) {
-					$.post(SITEROOT + '/games/ajax/maps/updateLoc', { iconID: this.id.split('_')[1], location: tile.id });
+					$.post(SITEROOT + '/games/ajax/maps/updateLoc', { iconID: this.id.split('_')[1], location: tile.id }, function (data) {
+						$sb_history.prepend(data);
+					});
 					$(this).appendTo('#' + tile.id).css({'top': 0, 'left': 0}).fadeIn();
 					locations[this.id] = tile.id;
-				} else $(this).appendTo('#' + locations[this.id]).css({'top': 0, 'left': 0}).fadeIn();
+				}
 			});
 		}
 	});

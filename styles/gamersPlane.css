@@ -408,17 +408,17 @@ button:hover, a.button:hover {
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Pretty Controls */
-.prettySelect {
+div.prettySelect {
 	position: relative;
 	z-index: 5000;
 	display: inline-block;
 }
 
-.prettySelect.open {
+div.prettySelect.open {
 	z-index: 5001;
 }
 
-.prettySelect, .prettySelectOptions {
+div.prettySelect, .prettySelectOptions {
 /*	border: 1px solid #CCC;
 	background-color: #EEE;*/
 	background: #DDF;
@@ -430,12 +430,12 @@ button:hover, a.button:hover {
 	border-radius: 6px;
 }
 
-.prettySelect > div {
+div.prettySelect > div {
 	display: inline-block;
 }
 
 .prettySelectDropdown {
-	background: url('../images/dropdown_arrow.png') center center no-repeat;
+	background: url('../images/dropdown_arrow_red.png') center center no-repeat;
 	width: 15px;
 	line-height: 1.25em;
 }

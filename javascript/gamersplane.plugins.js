@@ -62,16 +62,18 @@ $.fn.prettySelect = function () {
 			$(this).parent().find('.prettySelectOptions').show();
 		});
 		$prettySelectOptions.children('li').click(function () {
-			$parent = $(this).closest('.prettySelect');
+			$parent = $(this).closest('div.prettySelect');
 			$parent.removeClass('open');
-			$parent.find('.prettySelectCurrent').text($(this).text());
 			$parent.find('.prettySelectOptions').hide();
-			$parent.find('select').val($(this).data('value'));
+			$parent.find('select').val($(this).data('value')).change();
 		});
+	}).change(function () {
+		$parent = $(this).closest('div.prettySelect');
+		$parent.find('.prettySelectCurrent').text($(this).find('option[value=' + $(this).val() + ']').text());
 	});
 
 	$('html').click(function () {
-		$('.prettySelect').removeClass('open').find('.prettySelectOptions').hide();
+		$('div.prettySelect').removeClass('open').find('.prettySelectOptions').hide();
 	});
 };
 

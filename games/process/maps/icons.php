@@ -15,10 +15,14 @@
 		$newIcon->updateAttr('name', $name);
 		$newIcon->updateAttr('color', $color);
 		$newIcon->saveIcon();
-		echo json_encode(array('success' => TRUE, 'iconHTML' => (string) $newIcon));
+		echo json_encode(array('success' => TRUE, 'action' => 'new', 'iconHTML' => (string) $newIcon));
 	} elseif (isset($_POST['save']) && $iconID && strlen($label) && strlen($name)) {
-		$mysql->query("UPDATE maps_icons SET label = '$label', name ='$name', color = '$color' WHERE iconID = $iconID");
-		$mysql->query("INSERT INTO maps_iconHistory (iconID, mapID, enactedBy, enactedOn, action) VALUES ($iconID, $mapID, $userID, NOW()'edited')");
+		$newIcon = new Icon($iconID);
+		$newIcon->updateAttr('label', $label);
+		$newIcon->updateAttr('name', $name);
+		$newIcon->updateAttr('color', $color);
+		$history = $newIcon->saveIcon();
+		echo json_encode(array('success' => TRUE, 'action' => 'edit', 'history' => $history));
 	} elseif (isset($_POST['delete']) && $iconID) {
 		$mysql->query("DELETE FROM maps_icons WHERE iconID = $iconID");
 		$mysql->query("INSERT INTO maps_iconHistory (iconID, mapID, enactedBy, enactedOn, action) VALUES ($iconID, $mapID, $userID, NOW()'deleted')");

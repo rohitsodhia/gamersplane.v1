@@ -49,7 +49,7 @@
 						<div class="wingDivContent">
 							<select class="prettySelect">
 								<option value="info">Info</option>
-								<option value="box">Box</option>
+								<option value="box" selected="selected">Box</option>
 								<option value="history">History</option>
 							</select>
 						</div>
@@ -66,7 +66,7 @@
 <? if ($isGM) { ?>
 						<div id="mapSidebar_content_box">
 							<div id="iconBox" class="clearfix">
-<?		foreach ($iconsInBox as $icon) echo "\t\t\t\t\t\t\t\t<div id=\"icon_{$icon['iconID']}\" class=\"mapIcon {$icon['color']}Icon\" title=\"{$icon['name']}\">{$icon['label']}</div>\n"; ?>
+<?		foreach ($iconsInBox as $icon) { $icon = new Icon($icon['iconID']); echo $icon; } ?>
 							</div>
 							<hr>
 							
@@ -78,12 +78,12 @@
 								<div class="tr">
 									<label class="textLabel">Color:</label>
 									<div><select id="iconColor" name="color">
-										<option value="blue">Blue</option>
-										<option value="green">Green</option>
-										<option value="grey">Grey</option>
-										<option value="orange">Orange</option>
-										<option value="red">Red</option>
-										<option value="white">White</option>
+										<option value="0000BB">Blue</option>
+										<option value="00BB00">Green</option>
+										<option value="555555">Grey</option>
+										<option value="DD7722">Orange</option>
+										<option value="BB0000">Red</option>
+										<option value="FFFFFF">White</option>
 									</select></div>
 								</div>
 								<div class="tr">
@@ -95,27 +95,18 @@
 									<label class="textLabel">Name:</label>
 									<div><input id="iconName" type="text" name="name"></div>
 								</div>
-								<div class="tr editDiv">
-									<button type="submit" name="save" class="btn_save"></button>
-									<button type="submit" name="delete" class="btn_delete"></button>
+								<div class="tr editDiv alignCenter">
+									<button type="submit" name="save" class="fancyButton smallButton">Save</button>
+									<button type="submit" name="delete" class="fancyButton smallButton">Delete</button>
 								</div>
-								<div class="tr addDiv alignCenter"><button type="submit" name="submit" class="fancyButton">Save</button></div>
+								<div class="tr addDiv alignCenter"><button type="submit" name="submit" class="fancyButton smallButton">Save</button></div>
 							</form>
 						</div>
 <? } ?>
 						<div id="mapSidebar_content_history">
 <?
-	$iconActions = $mysql->query("SELECT ic.iconID, icons.label, icons.name, ic.mapID, ic.enactedBy, users.username, ic.action, ic.origin, ic.destination FROM maps_iconHistory ic, maps_icons icons, users WHERE ic.iconID = icons.iconID AND ic.enactedBy = users.userID ".($isGM?'':"AND ic.action = 'moved' ")."AND ic.mapID = $mapID ORDER BY ic.actionID");
-	foreach ($iconActions as $actionInfo) {
-		$locParts = explode('_', $actionInfo['origin']);
-		$actionInfo['origin'] = decToB26($locParts[0]).$locParts[1];
-		$locParts = explode('_', $actionInfo['destination']);
-		$actionInfo['destination'] = decToB26($locParts[0]).$locParts[1];
-		if ($actionInfo['action'] == 'moved') echo "\t\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> moved <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']}) from ".(strlen($actionInfo['origin'])?strtoupper($actionInfo['origin']):'Box')." to ".(strlen($actionInfo['destination'])?strtoupper($actionInfo['destination']):'Box')."</p>\n";
-		elseif ($actionInfo['action'] == 'created') echo "\t\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> created <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']})</p>\n";
-		elseif ($actionInfo['action'] == 'edited') echo "\t\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> edited <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']})</p>\n";
-		elseif ($actionInfo['action'] == 'deleted') echo "\t\t\t\t\t\t<p><a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> deleted <strong>{$actionInfo['name']}</strong> ({$actionInfo['label']})</p>\n";
-	}
+	$iconActions = $mysql->query("SELECT ih.iconID, i.label, i.name, i.mapID, ih.enactedBy, ih.enactedOn, u.username, ih.action, ih.origin, ih.destination FROM maps_iconHistory ih, maps_icons i, users u WHERE ih.iconID = i.iconID AND ih.enactedBy = u.userID ".($isGM?'':"AND ih.action = 'moved' ")."AND ih.mapID = $mapID ORDER BY ih.enactedOn DESC");
+	foreach ($iconActions as $actionInfo) echo Icon::displayHistory($actionInfo);
 ?>
 						</div>
 					</div>
@@ -153,7 +144,7 @@
 	for ($rCount = 1; $rCount <= $mapInfo['rows']; $rCount++) {
 		for ($cCount = 1; $cCount <= $mapInfo['columns']; $cCount++) {
 			echo "\t\t\t\t\t\t<div id=\"{$cCount}_{$rCount}\" class=\"mapTile col_$cCount row_$rCount\"".(isset($bgData[$cCount][$rCount])?' style="background-color: '.$bgData[$cCount][$rCount].';"':'').">\n";
-			if (isset($iconsOnMap[$cCount][$rCount])) echo "<div id=\"icon_{$iconsOnMap[$cCount][$rCount]['iconID']}\" class=\"mapIcon {$iconsOnMap[$cCount][$rCount]['color']}Icon\" title=\"{$iconsOnMap[$cCount][$rCount]['name']}\">{$iconsOnMap[$cCount][$rCount]['label']}</div>";
+			if (isset($iconsOnMap[$cCount][$rCount])) { $icon = new Icon($iconsOnMap[$cCount][$rCount]['iconID']); echo $icon; }
 			echo "</div>\n";
 		}
 	}
@@ -164,7 +155,7 @@
 		</div>
 
 		<div id="iconContextMenu"><ul>
-			<li><a href="">Edit</a></li>
-			<li><a href="">Send to box</a></li>
+			<li><a id="icm_edit" href="">Edit</a></li>
+			<li class="boxHide"><a id="icm_stb" href="">Send to box</a></li>
 		</ul></div>
 <? require_once(FILEROOT.'/footer.php'); ?>

@@ -40,34 +40,9 @@
 	cursor: pointer;
 }
 
-#page_map .blueIcon {
-	background-color: #00B;
-}
-
-#page_map .greenIcon {
-	background-color: #0B0;
-}
-
-#page_map .greyIcon {
-	background-color: #555;
-}
-
-#page_map .orangeIcon {
-	background-color: #D72;
-}
-
-#page_map .redIcon {
-	background-color: #B00;
-}
-
-#page_map .whiteIcon {
-	background-color: #FFF;
-	color: #000;
-}
-
 #page_map #mapSidebar_content_box .mapIcon {
 	float: left;
-	margin-right: 10px;
+	margin: 3px;
 }
 
 #page_map #map .mapIcon {
@@ -80,28 +55,11 @@
 	margin-top: 1.5em;
 }
 
-#page_map #actionHistory {
-	margin-right: 2px;
-	width: 310px;
-}
-
 #page_map #mapSidebar_content_box {
 }
 
 #page_map #mapSidebar_content_box hr {
 	margin: .6em 0;
-}
-
-#page_map #editDelBox {
-	float: right;
-	width: 65px;
-	height: 65px;
-	padding: 10px;
-	margin-left: 20px;
-	border: 1px solid #777;
-	background: #222;
-	font-size: .85em;
-	text-align: center;
 }
 
 #page_map #editDelBox .mapIcon {
@@ -116,12 +74,25 @@
 	margin-top: 1em;
 }
 
-#page_map #iconForm .editDiv {
-	display: none;
+#page_map #iconForm .fancyButton {
+	font-size: .85em;
+	line-height: 1em;
 }
 
 #page_map #mapSidebar_content_box a {
 	margin-right: 50px;
+}
+
+#page_map #mapSidebar_content_history p {
+	margin: 0;
+}
+
+#page_map #mapSidebar_content_history p.timestamp {
+	font-size: .8em;
+}
+
+#page_map #mapSidebar_content_history p.historyStr {
+	margin-bottom: .8em;
 }
 
 #page_map label {
@@ -285,6 +256,38 @@
 
 #page_map #mapSidebar_content .wingDiv, #page_map #mapSidebar_content .wingDivContent {
 	overflow: visible;
+}
+
+#page_map #mapSidebar_contentControls .prettySelect, #page_map #mapSidebar_contentControls .prettySelectOptions {
+	color: #FDD;
+	background: #522;
+	border: none;
+	border-top: .3em solid #222;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+}
+
+#page_map #mapSidebar_contentControls .prettySelectCurrent, #page_map #mapSidebar_contentControls .prettySelectDropdown, #page_map #mapSidebar_contentControls .prettySelectOptions li {
+}
+
+#page_map #mapSidebar_contentControls .prettySelectCurrent, #page_map #mapSidebar_contentControls .prettySelectOptions li {
+	padding: .3em 15px;
+}
+
+#page_map #mapSidebar_contentControls .prettySelectDropdown {
+	background-image: url('../images/dropdown_arrow_white.png');
+}
+
+#page_map #mapSidebar_contentControls .prettySelectOptions {
+	left: 0;
+	border: 1px solid #522;
+	border-top: .3em solid #222;
+}
+
+#page_map #mapSidebar_contentControls .prettySelectOptions li:hover {
+	background: #449;
+	color: #FFF	;
 }
 
 #page_map #mapSidebar_contentContainer {
@@ -457,6 +460,10 @@
 #page_map #iconContextMenu a:hover {
 	background: #EEE;
 	color: #06F;
+}
+
+#page_map #iconContextMenu.inBox .boxHide {
+	display: none;
 }
 
 /* --------------------------------------------*/
