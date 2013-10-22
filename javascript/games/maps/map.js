@@ -5,6 +5,8 @@ $(function() {
 		maxRows = 15 < numRows?15:numRows,
 		$pageContainer = $('#page_map').parent(),
 		pageOffset = $pageContainer.offset(),
+		$editToggle = $('#editToggle'),
+		editing = false,
 		$iconID = $('#iconID'),
 		$sb_contentControl = $('#mapSidebar_contentControls select'),
 		$sb_contentContainer = $('#mapSidebar_contentContainer'),
@@ -25,6 +27,12 @@ $(function() {
 		$iconContextMenu = $('#iconContextMenu'),
 		$icm_edit = $('#icm_edit'),
 		$icm_stb = $('#icm_stb');
+
+	$editToggle.click(function (e) {
+		e.preventDefault();
+
+		editing = editing?false:true;
+	})
 
 	$('#infoEdit').colorbox();
 
@@ -51,7 +59,7 @@ $(function() {
 
 	$iconForm.append('<input type="hidden" name="modal" value="1">').ajaxForm({
 			dataType: 'json',
-			beforeSubmit: function () {
+			beforeSubmit: function (data) {
 				if ($iconLabel.val().length != 1 && $iconLabel.val().length != 2) return false;
 				if ($iconName.val().length == 0) return false;
 
@@ -59,13 +67,16 @@ $(function() {
 			},
 			success: function (data) {
 				if (data.success == true) {
+					$sb_history.prepend(data.history);
 					if (data.action == 'new') {
 						$icon = $(data.iconHTML);
 						$icon.draggable(mapIcon_draggableOptions).appendTo($iconBox);
 						locations[$icon.attr('id')] = '';
 					} else if (data.action == 'edit') {
-						$sb_history.append(data.history);
 						$icon = $('#icon_' + $iconForm.find('#iconID').val());
+						$icon.css('background-color', '#' + $iconColor.val()).text($iconLabel.val()).attr('title', $iconName.val());
+					} else if (data.action == 'delete') {
+						$('#icon_' + $iconForm.find('#iconID').val()).remove();
 					}
 				}
 			}
@@ -78,8 +89,7 @@ $(function() {
 		var $icon = $(this);
 		$iconForm.slideUp(function () {
 			if ($icon.attr('id').split('_')[1] != $iconID.val()) {
-				console.log($icon.css('background-color'));
-				$iconColor.find('option[value=' + $icon.css('background-color') + ']').attr('selected', 'selected').parent().change();
+				$iconColor.val($icon.css('background-color')).change();
 				$iconLabel.val($icon.text());
 				$iconName.val($icon.attr('title'));
 				$iconID.val($icon.attr('id').split('_')[1]);
@@ -218,6 +228,11 @@ $(function() {
 	}).mouseup(function () {
 		clearTimeout(mapMoveTimer);
 	}).click(function (e) {
+		e.preventDefault();
+	});
+
+
+	$rowHeaderDivs.add($colHeaderDivs).find('a').click(function (e) {
 		e.preventDefault();
 	});
 });

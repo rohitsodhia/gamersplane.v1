@@ -265,9 +265,10 @@ label.leftLabel {
 }
 
 .editCharacter h2 a {
+	margin-left: 10px;
 	font-size: .6em;
 	font-weight: normal;
-	margin-left: 10px;
+	line-height: 1em;
 }
 
 #skills, #feats {

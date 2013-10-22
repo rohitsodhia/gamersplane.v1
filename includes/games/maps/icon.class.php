@@ -74,19 +74,11 @@
 			return $this->displayHistory($histInfo);
 		}
 
-		private function determineTextColor() {
-			$total = 0;
-			for ($count = 0; $count < 6; $count += 2) {
-				$total = hexdec(substr($this->color, $count, 2));
-			}
-			if ($total / 3 > 200) $this->textColor = '000';
-			else $this->textColor = 'FFF';
-		}
-
 		public static function displayHistory($info) {
 			if (!is_array($info)) {
+				global $mysql;
 				$info = intval($info);
-				$info = $this->mysql->query("SELECT ih.iconID, i.label, i.name, i.mapID, ih.enactedBy, ih.enactedOn, u.username, ih.action, ih.origin, ih.destination FROM maps_iconHistory ih, maps_icons i, users u WHERE ih.iconID = i.iconID AND ih.enactedBy = u.userID AND ih.actionID = $info");
+				$info = $mysql->query("SELECT ih.iconID, i.label, i.name, i.mapID, ih.enactedBy, ih.enactedOn, u.username, ih.action, ih.origin, ih.destination FROM maps_iconHistory ih, maps_icons i, users u WHERE ih.iconID = i.iconID AND ih.enactedBy = u.userID AND ih.actionID = $info");
 				$info = $info->fetch();
 			}
 			if ($info['action'] == 'moved') {
@@ -106,6 +98,23 @@
 	<p class="historyStr">$historyStr</p>
 </div>
 RTNSTR;
+		}
+
+		public function deleteIcon() {
+			$this->mysql->query("UPDATE maps_icons SET deleted = 1 WHERE iconID = {$this->iconID}");
+
+			$historyID = $this->addHistory('deleted');
+
+			return $this->displayHistory($historyID);
+		}
+
+		private function determineTextColor() {
+			$total = 0;
+			for ($count = 0; $count < 6; $count += 2) {
+				$total += hexdec(substr($this->color, $count, 2));
+			}
+			if ($total / 3 > 200) $this->textColor = '000';
+			else $this->textColor = 'FFF';
 		}
 
 		private function addHistory($action, /*$enactedOn = 'NOW()', */$origin = NULL, $destination = NULL) {

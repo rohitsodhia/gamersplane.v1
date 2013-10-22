@@ -249,9 +249,10 @@ label.leftLabel {
 }
 
 .editCharacter h2 a {
+	margin-left: 10px;
 	font-size: .6em;
 	font-weight: normal;
-	margin-left: 10px;
+	line-height: 1em;
 }
 
 #skills, #feats {
@@ -387,11 +388,11 @@ input.weapon_notes, .weapon_notes {
 }
 
 .armor_secondRow label, .viewCharacter .armor_secondRow span, .editCharacter .armor_secondRow input {
-	width: 90px;
+	width: 86px;
 }
 
 input.armor_notes, .armor_notes {
-	width: 400px;
+	width: 421px;
 	text-align: left;
 }
 

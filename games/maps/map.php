@@ -10,7 +10,7 @@
 	$mapInfo = $mysql->query('SELECT m.gameID, m.name, m.columns, m.rows, m.info, g.title, g.systemID, s.fullName FROM maps m, games g, systems s WHERE g.systemID = s.systemID AND m.gameID = g.gameID AND m.mapID = '.$mapID);
 	$mapInfo = $mapInfo->fetch();
 	
-	$mapIcons = $mysql->query("SELECT iconID, label, name, description, color, location FROM maps_icons WHERE mapID = $mapID");
+	$mapIcons = $mysql->query("SELECT iconID, label, name, description, color, location FROM maps_icons WHERE mapID = $mapID AND deleted = 0");
 	$iconsInBox = array();
 	$iconsOnMap = array();
 	foreach ($mapIcons as $info) {
@@ -29,7 +29,7 @@
 	$maxMapWindow['height'] = $mapInfo['rows'] >= 15?600:$mapInfo['rows'] * 40;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar"><?=printReady($mapInfo['name'])?></h1>
+		<h1 class="headerbar"><?=printReady($mapInfo['name']).($isGM?'<a id="toggleEdit" href="">[ Edit ]':'')?></h1>
 
 		<div class="clearfix">
 			<div id="mapSidebar" style="height: <?=$maxMapWindow['height'] - 32?>px;">
