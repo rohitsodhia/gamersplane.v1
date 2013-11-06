@@ -28,50 +28,6 @@
 		<h2><?=printReady($mapInfo['name'])?></h2>
 		
 		<div id="mapOptions">
-			<div id="staticMapOptions">
-				<div id="addCR"><form method="post" action="<?=SITEROOT?>/tools/process/maps/addCR">
-					<input id="mapID" type="hidden" name="mapID" value="<?=$mapID?>">
-					Add <select id="addType" name="addType"><option value="c"<?=$_SESSION['lastSet'] == 'c'?' selected="selected"':''?>>column</option><option value="r"<?=$_SESSION['lastSet'] == 'r'?' selected="selected"':''?>>row</option></select> 
-					<select id="addLoc" name="addLoc"><option value="a">after</option><option value="b">before</option></select> <select id="addPos" name="addPos"></select> 
-					<button id="addCol" type="submit" name="addCR" class="btn_add"></button>
-				</form></div>
-<? unset($_SESSION['lastSet']); ?>
-				<button id="saveMap" class="btn_save_disabled"></button>
-			</div>
-			<div id="tileOptions">
-				<div class="colorOption">
-					<div class="color" style="background-color: #383"></div>
-					<div class="name">Grass</div>
-				</div>
-				<div class="colorOption">
-					<div class="color" style="background-color: #040"></div>
-					<div class="name">Forest</div>
-				</div>
-				<div class="colorOption">
-					<div class="color" style="background-color: #39F"></div>
-					<div class="name">Water</div>
-				</div>
-				<div class="colorOption">
-					<div class="color" style="background-color: #33F"></div>
-					<div class="name">Deep Water</div>
-				</div>
-				<div class="colorOption">
-					<div class="color" style="background-color: #C96"></div>
-					<div class="name">Desert</div>
-				</div>
-				<div class="colorOption">
-					<div class="color" style="background-color: #AAA"></div>
-					<div class="name">Road</div>
-				</div>
-				<div class="colorOption">
-					<div class="color" style="background-color: #555"></div>
-					<div class="name">Building</div>
-				</div>
-				<br class="clearL">
-				<a id="selectAll">Select All</a>
-				<a id="unselectAll">Unselect All</a>
-				<a id="selectInverse">Select Inverse</a>
-			</div>
 			<br class="clear">
 		</div>
 		

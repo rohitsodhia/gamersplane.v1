@@ -94,14 +94,7 @@ $(function() {
 		return false;
 	});
 	
-	$('.mapTile').click(function (event) {
-		event.stopPropagation();
-//		if (!$(this).hasClass('selectedTile')) $('.selectedTile').removeClass('selectedTile');
-		$(this).toggleClass('selectedTile');
-		
-		if ($('.selectedTile').size()) $('#tileOptions').slideDown();
-		else $('#tileOptions').slideUp();
-	});
+	$('.mapTile').click();
 	
 	$('.colorOption').click(function (event) {
 		event.stopPropagation();

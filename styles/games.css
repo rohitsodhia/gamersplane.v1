@@ -147,7 +147,7 @@
 	width: 212px;
 }
 
-#page_listGames #filterGames ul {
+#page_listGames #filterGames > ul {
 	margin: .5em 0 1em;
 	clear: both;
 	list-style: none;

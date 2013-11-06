@@ -32,69 +32,92 @@ $.fn.autocomplete = function (pathOption, sendData) {
 	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
 };
 
-$.fn.prettySelect = function () {
-	$(this).each(function () {
-		$select = $(this).wrap('<div class="prettySelect">');
-		$prettySelect = $select.parent();
-		$prettySelectCurrent = $('<div class="prettySelectCurrent">');
-		$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
-		$prettySelectOptions = $('<ul class="prettySelectOptions">');
-		longest = '', current = '';
-		numOptions = $select.find('option').each(function () {
-			if ($(this).val() == $select.val()) current = $(this).text();
-			if ($(this).text().length > longest.length) longest = $(this).text();
-			$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelectOptions);
-		}).length;
-		if (current == '') current = $select.find('option:first').text();
-		$select.hide();
-		$prettySelect.append($prettySelectCurrent).append($prettySelectDropdown).append($prettySelectOptions);
-		$prettySelectCurrent.text(longest).width($prettySelectCurrent.width());
-		if (numOptions > 8) {
-			$prettySelectOptions.height($prettySelectCurrent.outerHeight() * 5);
+(function ($) {
+	$.fn.prettySelect = function (options) {
+		var $selects = $(this);
+
+		init();
+
+		if (options == 'render') $selects.filter(function () { return !$(this).has('.rendered'); }).each(function () { updateOptions($(this).parent()); });
+		if (options == 'updateOptions') $selects.each(function () { updateOptions($(this).parent()); });
+
+		function init() {
+			$selects.filter(function () { return $(this).parent('div.prettySelect').length != 1; }).each(function () {
+				$select = $(this).wrap('<div class="prettySelect">');
+				$prettySelect = $select.parent();
+				$prettySelectCurrent = $('<div class="prettySelectCurrent">');
+				$prettySelectLongest = $('<div class="prettySelectLongest">');
+				$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
+				$prettySelectOptions = $('<ul class="prettySelectOptions">');
+
+				$prettySelectCurrent.add($prettySelectDropdown).click(function (e) {
+					e.stopPropagation();
+					$prettySelect = $(this).parent(),
+					$prettySelectOptions = $prettySelect.find('.prettySelectOptions'),
+					numOptions = $prettySelect.find('option').length;
+
+					$prettySelect.addClass('open');
+					if (numOptions > 8) $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * 5);
+					else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions);
+					$prettySelectOptions.width($(this).parent().outerWidth() - 2).show();
+				});
+				$prettySelectOptions.on('click', 'li', function () {
+					$parent = $(this).closest('div.prettySelect');
+					$parent.removeClass('open');
+					$parent.find('.prettySelectOptions').hide();
+					$parent.find('select').val($(this).data('value')).change();
+				});
+				$select.hide();
+				$prettySelect.append($prettySelectCurrent).append($prettySelectLongest).append($prettySelectDropdown).append($prettySelectOptions);
+
+				updateOptions($prettySelect);
+			}).change(function () {
+				$parent = $(this).closest('div.prettySelect');
+				$parent.find('.prettySelectCurrent').text($(this).find('option[value=' + $(this).val() + ']').text());
+			});
 		}
-		$prettySelect.width($prettySelect.width());
-		$prettySelectOptions.width($prettySelect.outerWidth() - 2).hide();
-		$prettySelectCurrent.text(current);
 
-		$prettySelectCurrent.add($prettySelectDropdown).click(function (e) {
-			e.stopPropagation();
-			$(this).parent().addClass('open');
-			$(this).parent().find('.prettySelectOptions').show();
-		});
-		$prettySelectOptions.children('li').click(function () {
-			$parent = $(this).closest('div.prettySelect');
-			$parent.removeClass('open');
-			$parent.find('.prettySelectOptions').hide();
-			$parent.find('select').val($(this).data('value')).change();
-		});
-	}).change(function () {
-		$parent = $(this).closest('div.prettySelect');
-		$parent.find('.prettySelectCurrent').text($(this).find('option[value=' + $(this).val() + ']').text());
-	});
+		function updateOptions($prettySelect) {
+			$select = $prettySelect.find('select');
+			$prettySelectCurrent = $prettySelect.find('.prettySelectCurrent');
+			$prettySelectLongest = $prettySelect.find('.prettySelectLongest');
+			$prettySelectDropdown = $prettySelect.find('.prettySelectDropdown');
+			$prettySelectOptions = $prettySelect.find('.prettySelectOptions');
+			longest = '', current = '';
+			$prettySelectOptions.html('');
+			$prettySelect.find('option').each(function () {
+				if ($(this).val() == $select.val()) current = $(this).text();
+				if ($(this).text().length > longest.length) longest = $(this).text();
+				$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelect.find('.prettySelectOptions'));
+			});
+			if (current == '') current = $select.find('option:first').text();
+			$prettySelectLongest.text(longest);
+			$prettySelectCurrent.text(current);
+			$prettySelectCurrent.text(current);
+		}
 
-	$('html').click(function () {
-		$('div.prettySelect').removeClass('open').find('.prettySelectOptions').hide();
+		$('html').click(function () {
+			$('div.prettySelect').removeClass('open').find('.prettySelectOptions').hide();
+		});
+	};
+}(jQuery));
+
+$.fn.prettyCheckbox = function () {
+	$(this).each(function () {
+		$(this).wrap('<div class="prettyCheckbox"></div>');
+		if ($(this).is(':checked')) $(this).parent().addClass('checked');
+		if ($(this).data('disabled') == 'disabled') $(this).parent().addClass('disabled');
+	}).hide().change(function (e) {
+		$(this).parent().toggleClass('checked');
 	});
 };
 
-(function ($) {
-	$.fn.prettyCheckbox = function () {
-		$(this).each(function () {
-			$(this).wrap('<div class="prettyCheckbox"></div>');
-			if ($(this).is(':checked')) $(this).parent().addClass('checked');
-			if ($(this).data('disabled') == 'disabled') $(this).parent().addClass('disabled');
-		}).hide().change(function (e) {
-			$(this).parent().toggleClass('checked');
-		});
+toggleCheckbox = function(e) {
+	if (!$(this).hasClass('disabled')) {
+		$(this).toggleClass('checked');
+		$checkbox = $(this).find('input');
+		$checkbox.prop('checked', !$checkbox.prop('checked'));
 	}
+}
 
-	toggleCheckbox = function(e) {
-		if (!$(this).hasClass('disabled')) {
-			$(this).toggleClass('checked');
-			$checkbox = $(this).find('input');
-			$checkbox.prop('checked', !$checkbox.prop('checked'));
-		}
-	}
-
-	$('body').on('click', '.prettyCheckbox', toggleCheckbox);
-})(jQuery);
+$('body').on('click', '.prettyCheckbox', toggleCheckbox);

@@ -26,24 +26,25 @@ $(function() {
 		icm_icon = null,
 		$iconContextMenu = $('#iconContextMenu'),
 		$icm_edit = $('#icm_edit'),
-		$icm_stb = $('#icm_stb');
-
-	$editToggle.click(function (e) {
-		e.preventDefault();
-
-		editing = editing?false:true;
-	})
+		$icm_stb = $('#icm_stb'),
+		$addCRForm = $('#addCR form'),
+		$mapTiles = $('.mapTile'),
+		$tileOptions = $('#tileOptions');
 
 	$('#infoEdit').colorbox();
 
 	$sb_contentControl.change(function () {
+		section = $(this).val();
 		$('#mapSidebar_contentContainer > div').hide();
-		$('#mapSidebar_content_' + $(this).val()).show();
+		$('#mapSidebar_content_' + section).show().find('select').prettySelect('updateOptions');
+		if (section == 'mapOptions') toggleMapEdit(true);
+		else toggleMapEdit(false);
 	});
 
 	$('#mapSidebar_contentContainer > div').not('#mapSidebar_content_box, #sidebarIconHolder').hide();
 	$iconForm.find('.editDiv').hide();
 	$iconForm.hide();
+	$addCRForm.hide();
 	
 	$('#addIcon').click(function (e) {
 		if ($iconID.val() != 0) {
@@ -51,36 +52,36 @@ $(function() {
 				$iconID.val('');
 				$editDiv.css('display', 'none');
 				$addDiv.css('display', 'block');
-			}).slideDown();
-		} else $iconForm.slideToggle();
+			}).slideDown(function () { $iconColor.prettySelect('updateOptions'); });
+		} else $iconForm.slideToggle(function () { $iconColor.prettySelect('updateOptions'); });
 		
 		e.preventDefault();
 	});
 
 	$iconForm.append('<input type="hidden" name="modal" value="1">').ajaxForm({
-			dataType: 'json',
-			beforeSubmit: function (data) {
-				if ($iconLabel.val().length != 1 && $iconLabel.val().length != 2) return false;
-				if ($iconName.val().length == 0) return false;
+		dataType: 'json',
+		beforeSubmit: function (data) {
+			if ($iconLabel.val().length != 1 && $iconLabel.val().length != 2) return false;
+			if ($iconName.val().length == 0) return false;
 
-				return true;
-			},
-			success: function (data) {
-				if (data.success == true) {
-					$sb_history.prepend(data.history);
-					if (data.action == 'new') {
-						$icon = $(data.iconHTML);
-						$icon.draggable(mapIcon_draggableOptions).appendTo($iconBox);
-						locations[$icon.attr('id')] = '';
-					} else if (data.action == 'edit') {
-						$icon = $('#icon_' + $iconForm.find('#iconID').val());
-						$icon.css('background-color', '#' + $iconColor.val()).text($iconLabel.val()).attr('title', $iconName.val());
-					} else if (data.action == 'delete') {
-						$('#icon_' + $iconForm.find('#iconID').val()).remove();
-					}
+			return true;
+		},
+		success: function (data) {
+			if (data.success == true) {
+				$sb_history.prepend(data.history);
+				if (data.action == 'new') {
+					$icon = $(data.iconHTML);
+					$icon.draggable(mapIcon_draggableOptions).appendTo($iconBox);
+					locations[$icon.attr('id')] = '';
+				} else if (data.action == 'edit') {
+					$icon = $('#icon_' + $iconForm.find('#iconID').val());
+					$icon.css('background-color', '#' + $iconColor.val()).text($iconLabel.val()).attr('title', $iconName.val());
+				} else if (data.action == 'delete') {
+					$('#icon_' + $iconForm.find('#iconID').val()).remove();
 				}
 			}
-		});
+		}
+	});
 	
 	var locations = Array();
 	$iconBox.add($map).on('dblclick', '.mapIcon', function (e) {
@@ -172,7 +173,7 @@ $(function() {
 		}
 	});
 	
-	$('.mapTile').droppable({
+	$mapTiles.droppable({
 		accept: '.mapIcon',
 		drop: function (event, ui) {
 			var tile = this;
@@ -234,5 +235,67 @@ $(function() {
 
 	$rowHeaderDivs.add($colHeaderDivs).find('a').click(function (e) {
 		e.preventDefault();
+	});
+
+	var $addPosSel = $('#addPos');
+	var cr = '';
+	var numCols = $('.cHeader').each(function() {
+		var hClass = $(this).attr('class');
+		hClass = hClass.split(' ').filter(function (val) {
+			if (val.match(/(row|col)_\w+/)) return true;
+			else return false;
+		});
+		cr = hClass[0].split('_')[1];
+		$addPosSel.append('<option value="' + decToB26(cr) + '">' + decToB26(cr) + '&nbsp;</option>');
+
+		$addPosSel.children(':last-child').attr('selected', 'selected');
+		$addPosSel.change().prettySelect('updateOptions');
+	}).size();
+
+	function toggleMapEdit(setTo) {
+		if (setTo && setTo != editing) {
+			editing = true;
+			$map.addClass('editing');
+			$map.find('.mapIcon').hide();
+			$mapTiles.click(selectMapTile);
+//			$map.find('.mapIcon').addClass('tempDisableDrag').draggable('disable');
+		} else if (!setTo && setTo != editing) {
+			editing = false;
+			$map.removeClass('editing');
+			$map.find('.mapIcon').show();
+			$mapTiles.unbind('click');
+//			$map.find('.mapIcon').removeClass('tempDisableDrag').draggable('enable');
+		}
+	}
+
+	$('#addCR > a').click(function (e) {
+		e.preventDefault();
+
+		$(this).parent().find('select').prettySelect('updateOptions');
+		$addCRForm.slideToggle();
+	})
+
+	function selectMapTile (e) {
+		e.stopPropagation();
+		$(this).toggleClass('selectedTile');
+		
+		if ($('.selectedTile').size()) $tileOptions.slideDown();
+		else $tileOptions.slideUp();
+	}
+
+	$('#selectAll').click(function(e) {
+		e.preventDefault();
+		$mapTiles.not('.selectedTile').addClass('selectedTile');
+	});
+	
+	$('#unselectAll').click(function(e) {
+		e.preventDefault();
+		$map.find('.selectedTile').removeClass('selectedTile');
+		$tileOptions.slideUp();
+	});
+	
+	$('#selectInverse').click(function(e) {
+		e.preventDefault();
+		$mapTiles.toggleClass('selectedTile');
 	});
 });

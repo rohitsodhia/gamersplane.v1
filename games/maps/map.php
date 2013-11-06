@@ -7,7 +7,7 @@
 	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = $gameID AND m.gameID = p.gameID AND p.userID = $userID AND m.mapID = $mapID");
 	if (!$playerCheck->rowCount()) { header('Location: '.SITEROOT.'/403'); exit; }
 	else $isGM = $playerCheck->fetchColumn();
-	$mapInfo = $mysql->query('SELECT m.gameID, m.name, m.columns, m.rows, m.info, g.title, g.systemID, s.fullName FROM maps m, games g, systems s WHERE g.systemID = s.systemID AND m.gameID = g.gameID AND m.mapID = '.$mapID);
+	$mapInfo = $mysql->query('SELECT m.gameID, m.name, m.cols, m.rows, m.info, g.title, g.systemID, s.fullName FROM maps m, games g, systems s WHERE g.systemID = s.systemID AND m.gameID = g.gameID AND m.mapID = '.$mapID);
 	$mapInfo = $mapInfo->fetch();
 	
 	$mapIcons = $mysql->query("SELECT iconID, label, name, description, color, location FROM maps_icons WHERE mapID = $mapID AND deleted = 0");
@@ -20,16 +20,16 @@
 			$iconsOnMap[$locParts[0]][$locParts[1]] = $info;
 		}
 	}
-	$mapData = $mysql->query("SELECT `column`, row, data FROM mapData WHERE mapID = $mapID");
+	$mapData = $mysql->query("SELECT col, row, data FROM mapData WHERE mapID = $mapID");
 	$bgData = array();
-	foreach ($mapData as $dataPiece) $bgData[$dataPiece['column']][$dataPiece['row']] = $dataPiece['data'];
-	$mapSize['width'] = $mapInfo['columns'] * 40;
+	foreach ($mapData as $dataPiece) $bgData[$dataPiece['col']][$dataPiece['row']] = $dataPiece['data'];
+	$mapSize['width'] = $mapInfo['cols'] * 40;
 	$mapSize['height'] = $mapInfo['rows'] * 40;
-	$maxMapWindow['width'] = $mapInfo['columns'] >= 15?600:$mapInfo['columns'] * 40;
+	$maxMapWindow['width'] = $mapInfo['cols'] >= 15?600:$mapInfo['cols'] * 40;
 	$maxMapWindow['height'] = $mapInfo['rows'] >= 15?600:$mapInfo['rows'] * 40;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar"><?=printReady($mapInfo['name']).($isGM?'<a id="toggleEdit" href="">[ Edit ]':'')?></h1>
+		<h1 class="headerbar"><?=printReady($mapInfo['name'])?></h1>
 
 		<div class="clearfix">
 			<div id="mapSidebar" style="height: <?=$maxMapWindow['height'] - 32?>px;">
@@ -51,6 +51,9 @@
 								<option value="info">Info</option>
 								<option value="box" selected="selected">Box</option>
 								<option value="history">History</option>
+<? if ($isGM) { ?>
+								<option value="mapOptions">Map Options</option>
+<? } ?>
 							</select>
 						</div>
 						<div class="wing dlWing"></div>
@@ -109,6 +112,49 @@
 	foreach ($iconActions as $actionInfo) echo Icon::displayHistory($actionInfo);
 ?>
 						</div>
+<? if ($isGM) { ?>
+						<div id="mapSidebar_content_mapOptions">
+							<div id="staticMapOptions">
+								<div id="addCR">
+									<a href="">Add Row/Column</a>
+									<form method="post" action="<?=SITEROOT?>/games/process/maps/addCR">
+										<input id="mapID" type="hidden" name="mapID" value="<?=$mapID?>">
+										<div class="textLabel">Add</div>
+										<div class="psWrapper"><select id="addType" name="addType"><option value="c"<?=$_SESSION['lastSet'] == 'c'?' selected="selected"':''?>>column</option><option value="r"<?=$_SESSION['lastSet'] == 'r'?' selected="selected"':''?>>row</option></select></div>
+										<div class="psWrapper"><select id="addLoc" name="addLoc"><option value="a">after</option><option value="b">before</option></select></div>
+										<div class="psWrapper"><select id="addPos" name="addPos"></select></div>
+										<div class="alignCenter"><button id="addCol" type="submit" name="addCR" class="fancyButton">Add</button></div>
+									</form>
+								</div>
+<? unset($_SESSION['lastSet']); ?>
+								<div class="alignCenter"><button id="saveMap" class="btn_save_disabled"></button></div>
+							</div>
+							<div id="tileOptions" class="clearfix">
+								<div class="clearfix">
+<?
+	$count = 1;
+	$tiles = array('Grass' => '338833', 'Forest' => '004400', 'Water' => '3399FF', 'Deep Water' => '3333FF', 'Desert' => 'CC9966', 'Road' => 'AAAAAA', 'Building' => '555555');
+	foreach ($tiles as $tileName => $color) {
+		if ($count % 3 == 1) {
+			echo "								</div>\n";
+			echo "								<div class=\"clearfix\">\n";
+		}
+?>
+									<div class="colorOption">
+										<div class="color" style="background-color: #<?=$color?>"></div>
+										<div class="name"><?=$tileName?></div>
+									</div>
+<?
+		$count++;
+	}
+?>
+								</div>
+								<a id="selectAll" href="">Select All</a>
+								<a id="unselectAll" href="">Unselect All</a>
+								<a id="selectInverse" href="">Select Inverse</a>
+							</div>
+						</div>
+<? } ?>
 					</div>
 				</div>
 			</div>
@@ -117,7 +163,7 @@
 				<div id="colHeaders" style="width: <?=$maxMapWindow['width']?>px;"><div style="width: <?=$mapSize['width']?>px;">
 <?
 	$curCol = 'a';
-	for ($cCount = 1; $cCount <= $mapInfo['columns']; $cCount++) {
+	for ($cCount = 1; $cCount <= $mapInfo['cols']; $cCount++) {
 		echo "\t\t\t\t\t<div class=\"cHeader cHeaderMin col_$cCount\">\n";
 		echo "\t\t\t\t\t\t<a href=\"\">".$curCol++."</a>\n";
 		echo "\t\t\t\t\t\t<a href=\"".SITEROOT."/tools/process/maps/removeCR/$mapID/$cCount\" class=\"removeCol\">-</a>\n";
@@ -142,7 +188,7 @@
 	$count = 0;
 	$bg = '';
 	for ($rCount = 1; $rCount <= $mapInfo['rows']; $rCount++) {
-		for ($cCount = 1; $cCount <= $mapInfo['columns']; $cCount++) {
+		for ($cCount = 1; $cCount <= $mapInfo['cols']; $cCount++) {
 			echo "\t\t\t\t\t\t<div id=\"{$cCount}_{$rCount}\" class=\"mapTile col_$cCount row_$rCount\"".(isset($bgData[$cCount][$rCount])?' style="background-color: '.$bgData[$cCount][$rCount].';"':'').">\n";
 			if (isset($iconsOnMap[$cCount][$rCount])) { $icon = new Icon($iconsOnMap[$cCount][$rCount]['iconID']); echo $icon; }
 			echo "</div>\n";
