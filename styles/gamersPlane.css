@@ -149,7 +149,11 @@ h2 {
 }
 
 h3 {
-	line-height: 1.6em;
+	font-family: "AgencyFB";
+	font-size: 1.8em;
+	line-height: 1.2em;
+	margin-bottom: .35em;
+	text-decoration: none;
 }
 
 .headerbar, .wingDiv {
@@ -383,6 +387,15 @@ button:hover, a.button:hover {
 	color: #FFF;
 }
 
+.fancyButton.disabled button, .fancyButton.disabled button:visited, .fancyButton.disabled button:active {
+	background: #844;
+	color: #BBB;
+}
+
+.fancyButton.disabled:hover button {
+	text-shadow: 0 0 10px rgba(150, 150, 150, 1);
+}
+
 .fancyButton .dlWing, .fancyButton .urWing {
 	position: absolute;
 	top: 0;
@@ -395,10 +408,18 @@ button:hover, a.button:hover {
 	border-right: 32px solid #800;
 }
 
+.fancyButton.disabled .dlWing {
+	border-right-color: #844;
+}
+
 .fancyButton .urWing {
 	right: 0;
 	border-top: 45px solid #800;
 	border-right: 32px solid transparent;
+}
+
+.fancyButton.disabled .urWing {
+	border-top-color: #844;
 }
 
 .fancyButton:hover button {

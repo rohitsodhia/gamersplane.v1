@@ -5,54 +5,41 @@
 	$forumID = intval($pathOptions[0]);
 	$forumType = 'c';
 	
+	// Get current title and type
 	if ($forumID != 0) {
-		$forumInfo = $mysql->query('SELECT title, forumType FROM forums WHERE forumID = '.$forumID);
-		list($forumTitle, $forumType) = $forumInfo->fetch();
-	}
+		$forumInfo = $mysql->query('SELECT title, forumType, heritage FROM forums WHERE forumID = '.$forumID);
+		list($forumTitle, $forumType, $heritage) = $forumInfo->fetch();
+		$heritage = explode('-', $heritage);
+		foreach ($heritage as $key => $hForumID) {
+			$hForumID = intval($hForumID);
+			$heritage[$key] = $hForumID;
+		}
+	} else $heritage = array();
 	
-//	$permissions = retrievePermissions(array('read', 'moderate', 'createThread'), $userID, $forumID);
+	// If not root, get current permissions
 	if ($forumID != 0) {
 		$permissions = retrievePermissions($userID, $forumID, array('read', 'moderate', 'createThread'));
 		if ($permissions[$forumID]['read'] == 0) { header('Location: '.SITEROOT.'/forums'); exit; }
 	}
 	
-	$forumRD = array();
-/*	$mysql->query('SELECT forumData, threadData FROM forums_readData WHERE userID = '.$userID);
-	if ($mysql->rowCount()) {
-		list($forumRD, $threadRD) = $mysql->getList();
-		$forumRD = unserialize($forumRD);
-		$threadRD = unserialize($threadRD);
-		if (!is_array($threadRD)) $threadRD = array();
-	} else {
-		$mysql->query("INSERT INTO forums_readData (userID) VALUES ($userID)");
-		$mysql->query('SELECT MAX (postID) FROM posts');
-		list($maxPostID) = $mysql->getList();
-		$threadRD = array();
-	}
-	$markedRead = $forumRD[0];*/
-	$cLastRead = $mysql->query('SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = '.$forumID.' AND userID = '.$userID);
-	if ($cLastRead->rowCount()) $markedRead = $cLastRead->fetchColumn();
-	else {
-		$maxPostID = $mysql->query('SELECT MAX(postID) FROM posts');
-		$maxPostID = $maxPostID->fetchColumn();
-		$forumRD = array(0 => $maxPostID);
-		$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($userID, 0, $maxPostID)");
+	// Get lastRead for current forum; if none, create
+	if ($userID) {
+		$cLastRead = $mysql->query("SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = $forumID AND userID = $userID");
+		if ($cLastRead->rowCount()) $lastReadID = $cLastRead->fetchColumn();
+		else {
+			$lastReadID = $mysql->query('SELECT MAX(postID) FROM posts');
+			$lastReadID = $lastReadID->fetchColumn();
+			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($userID, 0, $lastReadID)");
+		}
 	}
 	
-	$heritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$forumID);
-	$heritage = $heritage->fetchColumn();
-	if ($heritage != '') $heritage = explode('-', $heritage);
-	else $heritage = array();
-	foreach ($heritage as $key => $hForumID) {
-		$hForumID = intval($hForumID);
-		$heritage[$key] = $hForumID;
-		if (!isset($forumRD[$hForumID])) $forumRD[$hForumID] = 0;
-		if ($forumRD[$hForumID] > $markedRead) $markedRead = $forumRD[$hForumID];
-	}
+	// Check if admin of current forum
 	$forumAdmin = $mysql->query('SELECT forumID FROM forumAdmins WHERE userID = '.$userID.' AND forumID IN (0'.(($forumID != 0)?', '.implode(', ', $heritage):'').')');
 	$forumAdmin = $forumAdmin->rowCount()?TRUE:FALSE;
 	
-	$forumInfos = $mysql->query('SELECT forumID, forumType FROM forums WHERE parentID = '.$forumID.' ORDER BY `order`');
+	// Get children
+	$forumStructure = array();
+	$forumInfos = $mysql->query("SELECT forumID, forumType FROM forums WHERE parentID = $forumID ORDER BY `order`");
 	if ($forumInfos->rowCount()) {
 		$forumIDs = array();
 		$categoryIDs = array();
@@ -64,7 +51,6 @@
 				$forumIDs[] = $forumInfo['forumID'];
 				$forumStructure[$forumInfo['forumID']] = array('type' => 'f');
 			}
-//			if (!isset($forumRD[$forumInfo['forumID']])) $forumRD[$forumInfo['forumID']] = 0;
 		}
 		
 		if (sizeof($categoryIDs) > 0) {
@@ -300,7 +286,7 @@
 			$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
 //			if (!isset($threadRD[$threadInfo['threadID']]) && $threadInfo['lp_postID'] > $markedRead) $threadRD[$threadInfo['threadID']] = array('forumID' => $forumID, 'lastRead' => 0, 'lastPost' => $threadInfo['lp_postID']);
 //			elseif (isset($threadRD[$threadInfo['threadID']])) $threadRD[$threadInfo['threadID']]['lastPost'] = $threadInfo['lp_postID'];
-			$forumIcon = ($threadInfo['lp_postID'] > $markedRead && $threadInfo['lp_postID'] > $threadInfo['lastRead'])?'new':'old';
+			$forumIcon = ($threadInfo['lp_postID'] > $lastReadID && $threadInfo['lp_postID'] > $threadInfo['lastRead'])?'new':'old';
 ?>
 				<div class="tr">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>

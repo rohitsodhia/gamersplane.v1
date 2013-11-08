@@ -336,12 +336,7 @@ label.leftLabel {
 }
 
 .powerCol h3 {
-	font-family: "AgencyFB";
-	font-size: 1.8em;
-	line-height: 1.2em;
 	text-align: center;
-	margin-bottom: .35em;
-	text-decoration: none;
 }
 
 .power span, .power a {

@@ -127,18 +127,20 @@
 									</form>
 								</div>
 <? unset($_SESSION['lastSet']); ?>
-								<div class="alignCenter"><button id="saveMap" class="btn_save_disabled"></button></div>
 							</div>
 							<div id="tileOptions" class="clearfix">
+								<h3>Tiles</h3>
 								<div class="clearfix">
 <?
 	$count = 1;
+	$first = TRUE;
 	$tiles = array('Grass' => '338833', 'Forest' => '004400', 'Water' => '3399FF', 'Deep Water' => '3333FF', 'Desert' => 'CC9966', 'Road' => 'AAAAAA', 'Building' => '555555');
 	foreach ($tiles as $tileName => $color) {
-		if ($count % 3 == 1) {
+		if ($count % 3 == 1 && !$first) {
 			echo "								</div>\n";
 			echo "								<div class=\"clearfix\">\n";
 		}
+		if ($first) $first = FALSE;
 ?>
 									<div class="colorOption">
 										<div class="color" style="background-color: #<?=$color?>"></div>
@@ -149,10 +151,11 @@
 	}
 ?>
 								</div>
-								<a id="selectAll" href="">Select All</a>
-								<a id="unselectAll" href="">Unselect All</a>
-								<a id="selectInverse" href="">Select Inverse</a>
+								<p><a id="selectAll" href="">Select All</a></p>
+								<p><a id="unselectAll" href="">Unselect All</a></p>
+								<p><a id="selectInverse" href="">Select Inverse</a></p>
 							</div>
+							<div class="alignCenter"><button id="saveMap" class="fancyButton disabled">Save</button></div>
 						</div>
 <? } ?>
 					</div>

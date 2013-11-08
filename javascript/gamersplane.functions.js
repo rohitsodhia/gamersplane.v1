@@ -30,6 +30,7 @@ function showSign(val) {
 	if (val >= 0) return '+' + val;
 	else return val;
 }
+
 function setupWingContainer() {
 	element = this.nodeName.toLowerCase();
 	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';
@@ -37,7 +38,7 @@ function setupWingContainer() {
 	else if ($(this).hasClass('wingDiv')) baseClass = 'wingDiv';
 	classes = $(this).attr('class');
 	modClasses = new Array();
-	modClasses['fancyButton'] = new Array('smallButton');
+	modClasses['fancyButton'] = new Array('smallButton', 'disabled');
 	modClasses['headerbar'] = new Array('hb_hasButton', 'hb_hasList');
 	hasDark = $(this).hasClass('hbDark')?true:false;
 	currentID = this.id;
@@ -51,7 +52,13 @@ function setupWingContainer() {
 		}
 //		if (baseClass == 'headerbar' && (classes.match(/hb_hasButton/) || classes.match(/hb_hasList/))) $(this).addClass
 	} else if (baseClass == 'fancyButton') {
-		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);//.attr('id', currentID + 'Wrapper');
+		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass).attr('id', 'ww_' + currentID);
+		if (typeof modClasses[baseClass] !== 'undefined') {
+			for (key in modClasses[baseClass]) {
+				modClass = modClasses[baseClass][key];
+					if (classes.match(new RegExp(modClass))) $(this).removeClass(modClass).parent().addClass(modClass);
+			}
+		}
 	}
 
 	if (element != 'a' && baseClass == 'fancyButton') wingMargins($(this).parent()[0]);

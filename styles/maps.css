@@ -117,19 +117,21 @@
 	height: 5em;
 }
 
-#page_map #staticMapOptions {
+#page_map #tileOptions h3 {
+	margin-top: .3em;
 }
 
-#page_map #tileOptions {
+#page_map #tileOptions > div {
 	display: none;
-	height: 77px;
 }
 
 #page_map .colorOption {
-	float: left;
-	margin: 0 10px;
+	display: inline-block;
+	margin: 0 8px;
 	width: 50px;
 	text-align: center;
+	vertical-align: top;
+	cursor: pointer;
 }
 
 #page_map .colorOption .color {
@@ -142,6 +144,11 @@
 	margin: .5em 0;
 	text-align: center;
 	font-size: .85em;
+}
+
+#page_map #addCR {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #444;
 }
 
 #page_map #addCR .textLabel {
@@ -158,8 +165,8 @@
 	text-align: right;
 }
 
-#page_map #saveMap {
-	margin-top: .5em;
+#page_map #ww_saveMap {
+	margin-top: 1em;
 }
 
 #page_map #mapOptions a {

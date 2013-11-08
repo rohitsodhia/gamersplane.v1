@@ -311,7 +311,8 @@
 		$userID = intval($userID);
 		if (!is_array($forumIDs)) $forumIDs = array($forumIDs);
 		$queryColumn = array('permissions' => '', 'general' => '', 'group' => '');
-		if ($types == '') $types = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
+		$allTypes = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
+		if ($types == '') $types = $allTypes;
 		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);
 		
 		foreach ($types as $value) {
@@ -504,83 +505,6 @@
 	}*/
 	
 /* MySQL Functions */
-	function setupInserts() {
-		$columns = '';
-		$values = '';
-		
-		$args = func_get_args();
-		if (func_num_args() == 1 && !is_array(current($args[0]))) {
-			$inserts = func_get_arg(0);
-			foreach ($inserts as $key => $value) {
-				$columns .= ', `'.$key.'`';
-				if (is_numeric($value)) $values .= ", $value";
-				else $values .= ', "'.$value.'"';
-			}
-			
-			$columns = substr($columns, 2);
-			$values = substr($values, 2);
-			$insertStr = "({$columns}) VALUES ({$values})";
-		} elseif (func_num_args() == 1 && is_array(current($args[0]))) {
-			$args = $args[0];
-			$insertStr = '(';
-			$first = TRUE;
-			foreach ($args as $inserts) {
-				if ($first) {
-					$values = '';
-					foreach ($inserts as $key => $value) {
-						$insertStr .= "`$key`, ";
-						if (is_numeric($value)) $values .= "$value, ";
-						else $values .= '"'.$value.'", ';
-					}
-					$insertStr = substr($insertStr, 0, -2).') VALUES ('.substr($values, 0, -2).'), ';
-					$first = FALSE;
-				} else {
-					$values = '';
-					foreach ($inserts as $value) {
-						if (is_numeric($value)) $values .= "$value, ";
-						else $values .= '"'.$value.'", ';
-					}
-					$insertStr .= '('.substr($values, 0, -2).'), ';
-				}
-			}
-			
-			$insertStr = substr($insertStr, 0, -2);
-		} elseif (func_num_args() > 1) {
-			$insertStr = '(';
-			$first = TRUE;
-			foreach ($args as $inserts) {
-				if ($first) {
-					foreach ($inserts as $value) $insertStr .= "`$value`, ";
-					$insertStr = substr($insertStr, 0, -2).') VALUES ';
-					$first = FALSE;
-				} else {
-					$values = '';
-					foreach ($inserts as $value) {
-						if (is_numeric($value)) $values .= "$value, ";
-						else $values .= '"'.$value.'", ';
-					}
-					$insertStr .= '('.substr($values, 0, -2).'), ';
-				}
-			}
-			
-			$insertStr = substr($insertStr, 0, -2);
-		}
-		
-		return $insertStr;
-	}
-	
-	function setupUpdates($updates) {
-		$updateString = '';
-		foreach ($updates as $key => $value) {
-			if (is_numeric($value)) $updateString .= ', `'.$key.'` = '.$value;
-			else $updateString .= ', `'.$key.'` = "'.$value.'"';
-		}
-		
-		if ($updateString[0] == ',') $updateString = substr($updateString, 2);
-		
-		return $updateString;
-	}
-	
 	function sql_forumPermissions($userID, $types, $forumIDs = NULL) {
 		if ($types == '') $types = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
 		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);

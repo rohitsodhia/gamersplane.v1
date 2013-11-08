@@ -29,7 +29,8 @@ $(function() {
 		$icm_stb = $('#icm_stb'),
 		$addCRForm = $('#addCR form'),
 		$mapTiles = $('.mapTile'),
-		$tileOptions = $('#tileOptions');
+		$tileOptions = $('#tileOptions > div'),
+		$saveMap = $('#ww_saveMap');
 
 	$('#infoEdit').colorbox();
 
@@ -41,7 +42,7 @@ $(function() {
 		else toggleMapEdit(false);
 	});
 
-	$('#mapSidebar_contentContainer > div').not('#mapSidebar_content_box, #sidebarIconHolder').hide();
+	$('#mapSidebar_contentContainer > div').not('#mapSidebar_content_mapOptions, #sidebarIconHolder').hide();
 	$iconForm.find('.editDiv').hide();
 	$iconForm.hide();
 	$addCRForm.hide();
@@ -286,16 +287,40 @@ $(function() {
 	$('#selectAll').click(function(e) {
 		e.preventDefault();
 		$mapTiles.not('.selectedTile').addClass('selectedTile');
+		$tileOptions.slideDown();
 	});
 	
 	$('#unselectAll').click(function(e) {
 		e.preventDefault();
-		$map.find('.selectedTile').removeClass('selectedTile');
+		$mapTiles.filter('.selectedTile').removeClass('selectedTile');
 		$tileOptions.slideUp();
 	});
 	
 	$('#selectInverse').click(function(e) {
 		e.preventDefault();
 		$mapTiles.toggleClass('selectedTile');
+	});
+
+	$('.colorOption').click(function (e) {
+		$mapTiles.filter('.selectedTile').css('background-color', '#' + $(this).children('.color').css('background-color')).removeClass('selectedTile');
+		$tileOptions.slideUp();
+		
+		if ($saveMap.hasClass('disabled')) {
+			$saveMap.removeClass('disabled');
+		}
+	});
+
+	$saveMap.click(function (e) {
+		e.preventDefault();
+		if (!$(this).hasClass('disabled')) {
+			var bgData = {};
+			$('.mapTile').each(function () {
+				if ($(this).css('background-color') != 'transparent') bgData[this.id] = $(this).css('background-color');
+			});
+			
+			$.post(SITEROOT + '/games/ajax/maps/save', { mapID: $('#mapID').val(), bgData: bgData });
+			
+			$(this).addClass('disabled');
+		}
 	});
 });
