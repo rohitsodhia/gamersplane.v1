@@ -306,7 +306,7 @@
 		return $family;
 	}
 	
-	function retrievePermissions($userID, $forumIDs = NULL, $types, $returnSDA = 0) {
+	function retrievePermissions($userID, $forumIDs, $types, $returnSDA = 0) {
 		global $mysql;
 		$userID = intval($userID);
 		if (!is_array($forumIDs)) $forumIDs = array($forumIDs);
@@ -314,77 +314,74 @@
 		$allTypes = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
 		if ($types == '') $types = $allTypes;
 		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);
-		
-		foreach ($types as $value) {
-			$queryColumn['permissions'] .= "`$value`, ";
-			$queryColumn['group'] .= "groupsP.`$value`, ";
-			$bTemplate[$value] = 0;
-			$bTemplate[$value.'_priority'] = 0;
-			$aTemplate[$value] = 1;
+
+		foreach ($types as $type) {
+			$queryColumn['permissions'] .= "`$type`, ";
+			$queryColumn['permissionSums'] .= "SUM(`$type`) `$type`, ";
+			$bTemplate[$type] = 0;
+			$aTemplate[$type] = 1;
 		}
 		$queryColumn['permissions'] = substr($queryColumn['permissions'], 0, -2);
-		$queryColumn['group'] = substr($queryColumn['group'], 0, -2);
+		$queryColumn['permissionSums'] = substr($queryColumn['permissionSums'], 0, -2);
 		
-		$forumInfos = $mysql->query('SELECT forumID, heritage FROM forums WHERE forumID IN ('.implode(', ', $forumIDs).')');
 		$allForumIDs = $forumIDs;
-		while (list($indivForumID, $heritage) = $forumInfos->fetch()) {
+		$forumInfos = $mysql->query('SELECT forumID, heritage FROM forums WHERE forumID IN ('.implode(', ', $allForumIDs).')');
+		while (list($indivForumID, $heritage) = $forumInfos->fetch(PDO::FETCH_NUM)) {
 			$heritages[$indivForumID] = explode('-', $heritage);
 			$intValHolder = array();
-			foreach ($heritages[$indivForumID] as $hForumID) {
-				$intValHolder[] = intval($hForumID);
+			foreach ($heritages[$indivForumID] as $key => $hForumID) {
+				$heritages[$indivForumID][$key] = intval($hForumID);
 				$allForumIDs[] = intval($hForumID);
 			}
-			$heritages[$indivForumID] = $intValHolder;
 		}
 		$allForumIDs = array_unique($allForumIDs);
 		sort($allForumIDs);
 		
-		$adminForums = array();
-		$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
-		while (list($adminForumID) = $adminIn->fetch()) $adminForums[] = $adminForumID;
-//		$forumString = 'IN (0, '.implode(', ', array_diff($allForumIDs, $adminForums)).')';
-		
-		if (in_array(0, $adminForums)) foreach ($forumIDs as $forumID) $permissions[$forumID] = $aTemplate;
-		else {
-			$forumString = implode(', ', $allForumIDs);
-			if (sizeof($allForumIDs) == 1) $forumString = '= '.$forumString;
-			else $forumString = 'IN ('.$forumString.')';
-			$permissionsInfos = $mysql->query('SELECT type, forumID, '.$queryColumn['permissions'].' FROM (SELECT type, forumID, '.$queryColumn['permissions'].' FROM forums_permissions WHERE type = "general" OR (type = "user" AND typeID = "'.$userID.'") UNION SELECT groupsP.type, groupsP.forumID, '.$queryColumn['group'].' FROM forums_permissions AS groupsP, forums_groupMemberships AS membership WHERE membership.groupID = groupsP.typeID AND membership.userID = '.$userID.' AND groupsP.type = "group") AS permissions WHERE forumID '.$forumString.' ORDER BY forumID');
-			$rawPermissions = array();
-			foreach ($permissionsInfos as $permissionInfo) {
-				$permissionForumID = $permissionInfo['forumID'];
-				if ($permissionInfo['type'] == 'user') $priority = 3;
-				elseif ($permissionInfo['type'] == 'group') $priority = 2;
-				elseif ($permissionInfo['type'] == 'general') $priority = 1;
-				
-				if (!isset($rawPermissions[$permissionForumID])) $rawPermissions[$permissionForumID] = $bTemplate;
-				
-				foreach ($types as $type) { if ($priority >= $rawPermissions[$permissionForumID][$type.'_priority'] && $permissionInfo[$type] != 0) {
-					$rawPermissions[$permissionForumID][$type] = $permissionInfo[$type];
-					$rawPermissions[$permissionForumID][$type.'_priority'] = $priority;
-				} }
-			}
-			
+		if ($userID) {
+			$adminForums = array();
+			$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
+			foreach ($adminIn as $indivAdmin) $adminForums[] = $indivAdmin['forumID'];
+			$getPermissionsFor = array();
+			$superFAdmin = array_search(0, $adminForums) !== FALSE?TRUE:FALSE;
 			foreach ($forumIDs as $forumID) {
-				if (isset($heritages[$forumID]) && sizeof(array_intersect($heritages[$forumID], $adminForums))) $rawPermissions[$forumID] = $aTemplate;
-				else {
-					if (!isset($rawPermissions[$forumID])) $rawPermissions[$forumID] = $bTemplate;
-					$currentParent = 1;
-					$rHeritage = array_reverse($heritages[$forumID]);
-					while (in_array(0, $rawPermissions[$forumID]) && $currentParent < sizeof($rHeritage)) {
-						if (isset($rawPermissions[$rHeritage[$currentParent]])) { foreach (array_keys($rawPermissions[$forumID], 0) as $type) {
-							if ($rawPermissions[$rHeritage[$currentParent]][$type] != 0) $rawPermissions[$forumID][$type] = $rawPermissions[$rHeritage[$currentParent]][$type];
+				if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = $aTemplate;
+				else $getPermissionsFor[] = $forumID;
+			}
+			foreach ($getPermissionsFor as $forumID) {
+				$getPermissionsFor = array_merge($getPermissionsFor, $heritages[$forumID]);
+			}
+			$getPermissionsFor = array_unique($getPermissionsFor);
+			sort($getPermissionsFor);
+		} else $getPermissionsFor = $allForumIDs;
+
+		if (sizeof($getPermissionsFor)) {
+			if (sizeof($getPermissionsFor) == 1) $forumString = '= '.$getPermissionsFor[0];
+			else {
+				$forumString = implode(', ', $getPermissionsFor);
+				$forumString = 'IN ('.$forumString.')';
+			}
+			$permissionsInfos = $mysql->query("SELECT forumID, {$queryColumn['permissionSums']} FROM (SELECT forumID, {$queryColumn['permissions']} FROM forums_permissions_general WHERE forumID {$forumString} UNION SELECT forumID, {$queryColumn['permissions']} FROM forums_permissions_groups_c WHERE userID = {$userID} AND forumID {$forumString} UNION SELECT forumID, {$queryColumn['permissions']} FROM forums_permissions_users WHERE userID = {$userID} AND forumID {$forumString}) permissions GROUP BY forumID");
+			$rawPermissions = $permissionsInfos->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+			$rawPermissions = array_map('reset', $rawPermissions);
+
+			foreach ($forumIDs as $forumID) {
+				if (!isset($permissions[$forumID])) {
+					if (isset($rawPermissions[$forumID])) $permissions[$forumID] = $rawPermissions[$forumID];
+					else $permissions[$forumID] = $bTemplate;
+					foreach (array_reverse($heritages[$forumID]) as $heritage) {
+						if ($heritage == $forumID) continue;
+						if (isset($rawPermissions[$heritage])) { foreach (array_keys($permissions[$forumID], 0) as $type) {
+							if ($rawPermissions[$heritage][$type] != 0) $permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
 						} }
-						$currentParent++;
 					}
 				}
 			}
-			
 			global $loggedIn;
 			foreach ($forumIDs as $forumID) {
-				foreach ($rawPermissions[$forumID] as $key => $value) if (strpos($key, '_priority')) unset($rawPermissions[$forumID][$key]);
-				$permissions[$forumID] = $rawPermissions[$forumID];
-				foreach ($types as $type) if ($permissions[$forumID][$type] != 1 || (!$loggedIn && $type != 'read')) $permissions[$forumID][$type] = 0;
+				foreach ($types as $type) {
+					if ($permissions[$forumID][$type] < 1 || (!$loggedIn && $type != 'read')) $permissions[$forumID][$type] = 0;
+					else $permissions[$forumID][$type] = 1;
+				}
 			}
 		}
 		

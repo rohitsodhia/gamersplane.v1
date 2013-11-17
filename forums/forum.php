@@ -4,17 +4,18 @@
 	$userID = intval($_SESSION['userID']);
 	$forumID = intval($pathOptions[0]);
 	$forumType = 'c';
+	$heritage = array();
 	
 	// Get current title and type
 	if ($forumID != 0) {
 		$forumInfo = $mysql->query('SELECT title, forumType, heritage FROM forums WHERE forumID = '.$forumID);
-		list($forumTitle, $forumType, $heritage) = $forumInfo->fetch();
+		list($forumTitle, $forumType, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
 		$heritage = explode('-', $heritage);
 		foreach ($heritage as $key => $hForumID) {
 			$hForumID = intval($hForumID);
 			$heritage[$key] = $hForumID;
 		}
-	} else $heritage = array();
+	}
 	
 	// If not root, get current permissions
 	if ($forumID != 0) {
@@ -52,7 +53,7 @@
 				$forumStructure[$forumInfo['forumID']] = array('type' => 'f');
 			}
 		}
-		
+
 		if (sizeof($categoryIDs) > 0) {
 			$forumInfos = $mysql->query('SELECT forumID, parentID FROM forums WHERE parentID IN ('.implode(', ', $categoryIDs).') ORDER BY `order`');
 			foreach ($forumInfos as $forumInfo) {
@@ -62,57 +63,32 @@
 			}
 		}
 		if ($forumID != 0 && $forumType == 'f') $forumIDs[] = $forumID;
-		
-		$permissions = retrievePermissions($userID, $forumIDs, array('read', 'moderate', 'createThread'));
+
+ 		$permissions = retrievePermissions($userID, $forumIDs, array('read', 'moderate', 'createThread'));
 		foreach ($forumStructure as $iForumID => $forumInfo) {
 			if ($forumInfo['type'] == 'c') {
 				foreach ($forumInfo['children'] as $cForumID => $cInfo) if (!$permissions[$cForumID]['read']) unset($forumStructure[$iForumID]['children'][$cForumID], $forumIDs[array_search($cForumID, $forumIDs)]);
 				if (!sizeof($forumStructure[$iForumID]['children'])) unset($forumStructure[$iForumID], $categoryIDs[array_search($iForumID, $categoryIDs)]);
 			} elseif (!$permissions[$iForumID]['read']) unset($forumStructure[$iForumID], $forumIDs[array_search($iForumID, $forumIDs)]);
 		}
-		
-		if ($forumID != 0 && (($forumType == 'f' && $permissions[$forumID]['read'] == 0) || ($forumType == 'c' && (!sizeof($forumIDs) && !sizeof($categoryIDs))))) { header('Location: '.SITEROOT.'/403'); exit; }
+
+//		if ($forumType == 'c' && (!sizeof($forumIDs) && !sizeof($categoryIDs))) { header('Location: '.SITEROOT.'/403'); exit; }
 		
 		$queryWhere = '';
 		foreach (array_merge($forumIDs, $categoryIDs) as $lForumID) $queryWhere .= 'forums.heritage LIKE "%'.str_pad($lForumID, HERITAGE_PAD, 0, STR_PAD_LEFT).'%" OR ';
-		
 		$forumInfos = array();
 		$indivLatestPosts = array();
-		$permissionsList = array($forumID => array('read' => 1));
-		$rForumInfos = $mysql->query('SELECT forums.forumID, forums.title, forums.description, forums.heritage, threadCount.numThreads, numPosts.numPosts, latestPosts.postID lpPostID, latestPosts.datePosted, latestPosts.authorID, latestPosts.username FROM forums LEFT JOIN (SELECT forumID, COUNT(threadID) numThreads FROM threads GROUP BY forumID) AS threadCount ON threadCount.forumID = forums.forumID LEFT JOIN (SELECT threads.forumID, COUNT(*) numPosts FROM posts, threads WHERE posts.threadID = threads.threadID GROUP BY threads.forumID) numPosts ON forums.forumID = numPosts.forumID LEFT JOIN (SELECT lastPost.forumID, lastPost.postID, lastPost.authorID, users.username, lastPost.datePosted FROM (SELECT forumID, postID, authorID, datePosted FROM (SELECT postID, forumID, authorID, datePosted FROM posts, threads WHERE posts.threadID = threads.threadID ORDER BY posts.datePosted DESC) lastPost GROUP BY forumID) lastPost, users WHERE users.userID = lastPost.authorID) AS latestPosts ON forums.forumID = latestPosts.forumID WHERE '.substr($queryWhere, 0, -4).' AND forums.forumID != '.$forumID.' ORDER BY forums.heritage');
+		$rForumInfos = $mysql->query('SELECT forums.forumID, forums.title, forums.description, forums.heritage, threadCount.numThreads, numPosts.numPosts, latestPosts.postID lpPostID, latestPosts.datePosted, latestPosts.authorID, latestPosts.username, IF(newPosts.forumID IS NOT NULL AND threadCount.numThreads, IFNULL(newPosts.newPosts,1), 0) newPosts FROM forums LEFT JOIN (SELECT forumID, COUNT(threadID) numThreads FROM threads GROUP BY forumID) AS threadCount ON threadCount.forumID = forums.forumID LEFT JOIN (SELECT threads.forumID, COUNT(*) numPosts FROM posts, threads WHERE posts.threadID = threads.threadID GROUP BY threads.forumID) numPosts ON forums.forumID = numPosts.forumID LEFT JOIN (SELECT lastPost.forumID, lastPost.postID, lastPost.authorID, users.username, lastPost.datePosted FROM (SELECT forumID, postID, authorID, datePosted FROM (SELECT postID, forumID, authorID, datePosted FROM posts, threads WHERE posts.threadID = threads.threadID ORDER BY posts.datePosted DESC) lastPost GROUP BY forumID) lastPost, users WHERE users.userID = lastPost.authorID) AS latestPosts ON forums.forumID = latestPosts.forumID LEFT JOIN (SELECT forumID, newPosts FROM forums_readData_newPosts WHERE userID = '.$userID.' GROUP BY forumID) newPosts ON forums.forumID = newPosts.forumID WHERE '.substr($queryWhere, 0, -4).' AND forums.forumID != '.$forumID.' ORDER BY forums.heritage');
 		foreach ($rForumInfos as $forumInfo) {
 			$indivLatestPosts[$forumInfo['forumID']] = $forumInfo['lpPostID'];
-			if (in_array($forumInfo['forumID'], array_merge($forumIDs, $categoryIDs))) {
-				$forumInfos[$forumInfo['forumID']] = $forumInfo;
-				$permissionsList[$forumInfo['forumID']] = array('read' => 1);
-			} else {
-				$permissionsList[$forumInfo['forumID']] = retrievePermissions($userID, $forumInfo['forumID'], 'read', TRUE);
-				if ($permissionsList[$forumInfo['forumID']]['read']) {
-					foreach ($forumInfos as $cForumID => $cForumInfo) { if (strpos($forumInfo['heritage'], $cForumInfo['heritage']) !== FALSE && in_array($cForumID, $forumIDs)) {
-						if ($forumInfo['lpPostID'] > $cForumInfo['lpPostID'] || $cForumInfo['lpPostID'] == NULL) {
-							$forumInfos[$cForumID]['lpPostID'] = $forumInfo['lpPostID'];
-							$forumInfos[$cForumID]['datePosted'] = $forumInfo['datePosted'];
-							$forumInfos[$cForumID]['authorID'] = $forumInfo['authorID'];
-							$forumInfos[$cForumID]['username'] = $forumInfo['username'];
-						}
-						$forumInfos[$cForumID]['numThreads'] += $forumInfo['numThreads'];
-						$forumInfos[$cForumID]['numPosts'] += $forumInfo['numPosts'];
-						break;
-					} }
-				}
-			}
+			$forumInfos[$forumInfo['forumID']] = $forumInfo;
 		}
 		
-		$children = array();
+/*		$children = array();
 		$hcInfos = $mysql->query('SELECT p.forumID pID, c.forumID cID FROM forums p LEFT JOIN forums c ON c.heritage LIKE CONCAT(p.heritage, "-%") WHERE p.forumID IN ('.implode(', ', array_merge($forumIDs, $categoryIDs)).')');
 		foreach ($hcInfos as $hcInfo) {
 			$children[$hcInfo['pID']][] = $hcInfo['cID'];
-		}
-		
-		$readData = array();
-		$rdInfos = $mysql->query("SELECT f.forumID, IF(MAX(np.forumID) IS NOT NULL, 1, 0) newPosts FROM forums f LEFT JOIN forums c ON c.heritage LIKE CONCAT(f.heritage, '%') LEFT JOIN (SELECT forumID, userID FROM forums_readData_newPosts WHERE userID = $userID GROUP BY forumID) np ON c.forumID = np.forumID WHERE f.forumID IN (".implode(', ', $forumIDs).') GROUP BY f.forumID');
-//		$mysql->query('SELECT f.forumID, IF(np.forumID IS NOT NULL, 1, 0) newPosts FROM forums f LEFT JOIN forums_readData_forums_c rdf ON f.forumID = rdf.forumID LEFT JOIN (SELECT t.forumID, MAX(r.lastPostID) lastPostID FROM threads t INNER JOIN threads_relPosts r USING (threadID) GROUP BY t.forumID) lp ON f.forumID = lp.forumID LEFT JOIN (SELECT forumID, userID FROM forums_readData_newPosts WHERE userID = '.$userID.' GROUP BY forumID) np ON f.forumID = np.forumID LEFT JOIN (SELECT t.forumID, MAX(rdt.lastRead) lastPostRead FROM threads t INNER JOIN threads_relPosts r USING (threadID) INNER JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = 2 GROUP BY t.forumID) lpr ON f.forumID = lpr.forumID WHERE rdf.userID = '.$userID.' AND f.forumID IN ('.implode(', ', array_merge($forumIDs, $categoryIDs)).')');
-		foreach ($rdInfos as $rdInfo) $readData[$rdInfo['forumID']] = $rdInfo['newPosts'];
+		}*/
 	}
 	
 	if ($forumID != 0 && $forumType != 'c') {
@@ -121,15 +97,12 @@
 		$threads = $mysql->query('SELECT threads.threadID, threads.locked, threads.sticky, first.title, first.postID fp_postID, first.datePosted fp_datePosted, first.authorID fp_authorID, tAuthor.username fp_username, last.postID lp_postID, last.datePosted lp_datePosted, last.authorID lp_authorID, lAuthor.username lp_username, postCount.numPosts, IFNULL(rd.lastRead, 0) lastRead FROM threads INNER JOIN threads_relPosts relPosts ON relPosts.threadID = threads.threadID INNER JOIN posts first ON relPosts.firstPostID = first.postID INNER JOIN posts last ON relPosts.lastPostID = last.postID INNER JOIN users tAuthor ON first.authorID = tAuthor.userID INNER JOIN users lAuthor ON last.authorID = lAuthor.userID LEFT JOIN (SELECT threadID, COUNT(*) AS numPosts FROM posts GROUP BY threadID) postCount ON threads.threadID = postCount.threadID LEFT JOIN forums_readData_threads rd ON threads.threadID = rd.threadID AND rd.userID = '.$userID.' WHERE threads.forumID = '.$forumID.' ORDER BY threads.sticky DESC, last.datePosted DESC');
 	}
 	
-//	$mysql->query('UPDATE forums_readData SET forumData = "'.sanatizeString(serialize($forumRD)).'", threadData = "'.sanatizeString(serialize($threadRD)).'" WHERE userID = '.$userID);
-	
 	$gameID = FALSE;
 	$isGM = FALSE;
 	$fixedMenu = FALSE;
 	if ($heritage[0] == 2) {
 		$gameInfo = $mysql->query("SELECT gameID FROM games WHERE forumID = ".intval($heritage[1]));
-		$gameInfo = $gameInfo->fetch();
-		$gameID = $gameInfo['gameID'];
+		$gameID = $gameInfo->fetchColumn();
 		$fixedMenu = TRUE;
 	}
 ?>
@@ -187,7 +160,7 @@
 				<div class="td numPosts"># of Posts</div>
 				<div class="td lastPost">Last Post</div>
 			</div>
-			<div class="sudoTable forumList">
+			<div class="sudoTable forumList hbdMargined">
 <?
 				if ($firstTable) $firstTable = FALSE;
 				foreach ($info['children'] as $cForumID => $cInfo) {
@@ -196,7 +169,7 @@
 					$cHeritage = explode('-', $forumInfo['heritage']);
 					foreach ($cHeritage as $key => $hForumID) $cHeritage[$key] = intval($hForumID);
 //					$forumIcon = checkNewPosts_new($cForumID, $readData, $permissionsList, $children[$cForumID])?'new':'old';
-					$forumIcon = $readData[$cForumID]?'new':'old';
+					$forumIcon = $forumInfo['newPosts']?'new':'old';
 ?>
 				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
@@ -233,7 +206,7 @@
 				<div class="td numPosts"># of Posts</div>
 				<div class="td lastPost">Last Post</div>
 			</div>
-			<div class="sudoTable forumList">
+			<div class="sudoTable forumList hbdMargined">
 <?
 					if ($firstTable) $firstTable = FALSE;
 				}
@@ -242,7 +215,7 @@
 				$fHeritage = explode('-', $forumInfo['heritage']);
 				foreach ($fHeritage as $key => $hForumID) $fHeritage[$key] = intval($hForumID);
 //				$forumIcon = checkNewPosts_new($iForumID, $readData, $permissionsList, $children[$iForumID])?'new':'old';
-				$forumIcon = $readData[$iForumID]?'new':'old';
+				$forumIcon = $forumInfo['newPosts']?'new':'old';
 ?>
 				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
@@ -270,14 +243,16 @@
 	if ($forumID != 0 && $forumType != 'c') {
 ?>
 		<div class="tableDiv threadTable<?=$firstTable?' firstTableDiv':''?>">
+<?		if ($permissions[$forumID]['createThread']) { ?>
 			<div id="newThread" class="clearfix"><a href="<?=SITEROOT?>/forums/newThread/<?=$forumID?>" class="fancyButton">New Thread</a></div>
+<? } ?>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
 				<div class="td threadInfo">Thread</div>
 				<div class="td numThreads"># of Threads</div>
 				<div class="td lastPost">Last Post</div>
 			</div>
-			<div class="sudoTable forumList">
+			<div class="sudoTable forumList hbdMargined">
 <?
 		if ($firstTable) $firstTable = FALSE;
 		
@@ -286,7 +261,7 @@
 			$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
 //			if (!isset($threadRD[$threadInfo['threadID']]) && $threadInfo['lp_postID'] > $markedRead) $threadRD[$threadInfo['threadID']] = array('forumID' => $forumID, 'lastRead' => 0, 'lastPost' => $threadInfo['lp_postID']);
 //			elseif (isset($threadRD[$threadInfo['threadID']])) $threadRD[$threadInfo['threadID']]['lastPost'] = $threadInfo['lp_postID'];
-			$forumIcon = ($threadInfo['lp_postID'] > $lastReadID && $threadInfo['lp_postID'] > $threadInfo['lastRead'])?'new':'old';
+			$forumIcon = ($threadInfo['lp_postID'] > $lastReadID && $threadInfo['lp_postID'] > $threadInfo['lastRead']) && $loggedIn?'new':'old';
 ?>
 				<div class="tr">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
@@ -294,7 +269,7 @@
 <?
 			if ($forumIcon == 'new') {
 ?>
-						<a href="<?=SITEROOT?>/forums/thread/<?=$threadInfo['threadID']?>?view=newPost"><img src="<?=SITEROOT?>/images/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="<?=SITEROOT?>/forums/thread/<?=$threadInfo['threadID']?>?view=newPost"><img src="<?=SITEROOT?>/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 			}
 			if ($threadInfo['numPosts'] > PAGINATE_PER_PAGE) {

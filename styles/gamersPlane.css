@@ -1499,11 +1499,11 @@ div.forumIcon {
 }
 
 div.forumIcon.newPosts {
-	background-position: 0px -30px;
+	background-position: -30px 0px;
 }
 
 div.forumIcon.sticky {
-	background-position: -30px 0px;
+	background-position: 0px -30px;
 }
 
 div.forumIcon.newPosts.sticky {

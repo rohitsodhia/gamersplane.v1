@@ -13,7 +13,7 @@
 	define('MODAL', (isset($_GET['modal']) && $_GET['modal'] == 1) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')?TRUE:FALSE);
 	define('CUR_TIMEZONE', '-08:00');
 	define('PAGINATE_PER_PAGE', 15);
-	define('HERITAGE_PAD', 3);
+	define('HERITAGE_PAD', 4);
 	$loggedIn = 0;
 	$fixedMenu = FALSE;
 

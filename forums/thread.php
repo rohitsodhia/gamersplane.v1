@@ -14,22 +14,6 @@
 	
 	if ($permissions['read'] == 0) { header('Location: '.SITEROOT.'/403'); exit; }
 	
-/*	$mysql->query('SELECT forumData, threadData FROM forums_readData WHERE userID = '.$userID);
-	if ($mysql->rowCount()) {
-		list($forumRD, $threadRD) = $mysql->getList();
-		$forumRD = unserialize($forumRD);
-		$threadRD = unserialize($threadRD);
-	} else {
-		$mysql->query("INSERT INTO forums_readData (userID) VALUES ($userID)");
-		$mysql->query('SELECT MAX(postID) FROM posts');
-		list($maxPostID) = $mysql->getList();
-		$forumRD = array(0 => $maxPostID);
-		$threadRD = array($threadID => array('forumID' => $threadInfo['forumID'], 'lastRead' => 0, 'lastPost' => 0));
-	}
-	
-	$markedRead = $forumRD[0];
-	foreach ($threadInfo['heritage'] as $hForumID) if ($markedRead < $forumRD[$hForumID]) $markedRead = $forumRD[$hForumID];*/
-	
 	if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
 //		$mysql->query('SELECT postID FROM posts WHERE postID > '.($threadRD[$threadID]['lastRead']?$threadRD[$threadID]['lastRead']:$markedRead).' AND threadID = '.$threadID.' LIMIT 1');
 		$nextPost = $mysql->query('SELECT p.postID FROM posts p INNER JOIN threads t USING (threadID) LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = '.$userID.' LEFT JOIN forums_readData_forums rdf ON t.forumID = rdf.forumID AND rdf.userID = '.$userID.' WHERE p.postID > rdt.lastRead AND p.postID > rdf.lastRead LIMIT 1');
@@ -38,11 +22,7 @@
 		header('Location: '.SITEROOT.'/forums/thread/'.$threadID.'?p='.$nextPost.'#p'.$nextPost); exit;
 	}
 	
-/*	$threadRD[$threadID]['forumID'] = $threadInfo['forumID'];
-	$threadRD[$threadID]['lastRead'] = $threadInfo['lastPostID'];
-	$threadRD[$threadID]['lastPost'] = $threadInfo['lastPostID'];
-	$mysql->query('UPDATE forums_readData SET threadData = "'.sanatizeString(serialize($threadRD)).'" WHERE userID = '.$userID);*/
-	$mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = $userID, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
+	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = $userID, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
 	
 	if (isset($_GET['p'])) {
 		$post = intval($_GET['p']);
@@ -135,8 +115,10 @@
 	}
 	
 	$postCount = 1;
-	$forumOptions = $mysql->query("SELECT showAvatars, postSide FROM users WHERE userID = $userID");
-	$forumOptions = $forumOptions->fetch();
+	if ($loggedIn) {
+		$forumOptions = $mysql->query("SELECT showAvatars, postSide FROM users WHERE userID = $userID");
+		$forumOptions = $forumOptions->fetch();
+	} else $forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
 	if ($forumOptions['postSide'] == 'r' || $forumOptions['postSide'] == 'c') $postSide = 'Right';
 	else $postSide = 'Left';
 	
@@ -148,7 +130,7 @@
 		<div class="postBlock post<?=$postSide?>">
 			<a name="p<?=$postInfo['postID']?>"></a>
 			<div class="posterDetails">
-<?			if (file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.jpg") && $forumOptions['showAvatars']) echo "				<div class=\"avatar\"><img src=\"".SITEROOT."/ucp/avatars/{$postInfo['userID']}.jpg\" width=\"100\"></div>\n"; ?>
+<?			if (file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png") && $forumOptions['showAvatars']) echo "				<div class=\"avatar\"><img src=\"".SITEROOT."/ucp/avatars/{$postInfo['userID']}.png\" width=\"100\"></div>\n"; ?>
 				<p class="posterName"><a href="<?=SITEROOT.'/ucp/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
 			</div>
 			<div class="postContent">
@@ -292,7 +274,7 @@
 		</form>
 <?
 	} elseif ($threadInfo['locked']) echo "\t\t\t<h2>Thread locked</h2>\n";
-	else echo "\t\t\t<h2>You do not have permission to post in this thread.</h2>\n";
+	else echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
 	
 	require_once(FILEROOT.'/footer.php');
 ?>

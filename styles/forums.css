@@ -118,8 +118,8 @@
 	border-style: solid;
 	border-color: #222;
 	border-width: 1px 2px;
-	border-right-color: #A66;
-	border-bottom-color: #A66;
+	border-right-color: #944;
+	border-bottom-color: #944;
 }
 
 #page_forum .sudoTable .tr:hover {
@@ -337,7 +337,7 @@
 }
 
 #page_forum_thread .posterDetails {
-	width: 170px;
+	width: 160px;
 }
 
 #page_forum_thread .postRight .posterDetails {
