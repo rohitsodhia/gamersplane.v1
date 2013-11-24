@@ -8,7 +8,7 @@
 
 <body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>">
 <? if (!MODAL) { ?>
-<header><div class="bodyContainer">
+<header class="bodyHeader"><div class="bodyContainer">
 	<a href="<?=SITEROOT?>/"><img id="logo" src="<?=SITEROOT?>/images/header_logo.png" alt="Gamers Plane Logo"></a>
 	
 	<div id="userMenu">

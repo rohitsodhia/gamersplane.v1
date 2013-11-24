@@ -6,7 +6,7 @@ $(function () {
 
 		$('span.' + oldOpen + ', form.' + oldOpen).hide();
 		$('span.' + newOpen + ', form.' + newOpen).show();
-		wingMargins('form.' + newOpen + ' .fancyButton');
+		wingMargins($('form.' + newOpen + ' .fancyButton')[0]);
 		$('form.' + newOpen + ' .wing').each(setupWings);
 
 		return e.preventDefault();

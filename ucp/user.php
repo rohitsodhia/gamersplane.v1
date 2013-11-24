@@ -12,10 +12,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$userInfo['username']?></h1>
 		<div id="leftCol">
-<? if (file_exists(FILEROOT."/ucp/avatars/$profileID.{$userInfo['avatarExt']}")) { ?>
-			<img src="<?=SITEROOT?>/ucp/avatars/<?=$profileID.'.'.$userInfo['avatarExt']?>" class="avatar">
-			
-<? } ?>
+			<img src="<?=SITEROOT.'/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png" class="avatar">
 			<div id="actions">
 				<a href="<?=SITEROOT?>/ucp/pms/send/?userID=<?=$profileID?>">Send Private Message</a>
 			</div>

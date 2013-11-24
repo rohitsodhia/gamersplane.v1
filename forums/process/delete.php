@@ -9,12 +9,12 @@
 		$postInfo = $postInfo->fetch();
 		$permissions = retrievePermissions($userID, $postInfo['forumID'], 'deletePost, deleteThread, moderate', TRUE);
 		
-		if ($postInfo['authorID'] != $userID && !$permissions['moderate'] || $postInfo['authorID'] == $userID && $postInfo['firstPostID'] != $postID && !$permissions['deletePost'] || $postInfo['authorID'] != $userID && $postInfo['firstPostID'] == $postID && !$permissions['deleteThread']) header('Location: '.SITEROOT.'/forums/thread/'.$postInfo['threadID'].'?deletePermission=1');
- 		elseif ($postID != $postInfo['firstPostID']) {
+ 		if ($permissions['moderate'] || $postInfo['authorID'] == $userID && $postID != $postInfo['firstPostID'] && $permissions['deletePost']) {
 			$mysql->query('DELETE FROM posts, rolls, deckDraws USING posts LEFT JOIN rolls ON posts.postID = rolls.postID LEFT JOIN deckDraws ON posts.postID = deckDraws.postID WHERE posts.postID = '.$postID);
-		} else {
+			echo 1;
+		} elseif ($permissions['moderate'] || $postInfo['authorID'] == $userID && $postID == $postInfo['firstPostID'] && $permissions['deleteThread']) {
 			$mysql->query('DELETE FROM threads, posts, rolls, deckDraws USING threads LEFT JOIN posts ON threads.threadID = posts.threadID LEFT JOIN rolls ON posts.postID = rolls.postID LEFT JOIN deckDraws ON posts.postID = deckDraws.postID WHERE threads.threadID = '.$postInfo['threadID']);
-		}
-		header('Location: '.SITEROOT.'/forums/'.$postInfo['forumID']);
-	} else header('Location: '.SITEROOT.'/forums');
+			echo 1;
+		} else echo 0;
+	} else echo 0;
 ?>

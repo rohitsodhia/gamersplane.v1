@@ -4,14 +4,14 @@
 	
 	$userID = intval($_SESSION['userID']);
 	$noChat = FALSE;
-	
+
 	$firstPost = FALSE;
 	$editPost = $pathOptions[0] == 'editPost'?TRUE:FALSE;
 	
 	if ($editPost) {
 		$postID = intval($pathOptions[1]);
 		$threadInfo = $mysql->query('SELECT threads.forumID, threads.threadID, threads.sticky, threads.allowRolls, threads.allowDraws FROM threads, posts WHERE threads.threadID = posts.threadID AND posts.postID = '.$postID);
-		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws) = $threadInfo->fetch();
+		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
 		
 		$rolls = $mysql->query('SELECT posts.postID, rolls.rollID, rolls.roll, rolls.indivRolls, rolls.reason, rolls.ra, rolls.total, rolls.visibility FROM posts, rolls WHERE posts.postID = '.$postID.' AND rolls.postID = posts.postID');
 		$temp = array();
@@ -62,7 +62,7 @@
 			$postInfo['message'] = $_SESSION['message'];
 			unset($_SESSION['message']);
 		}
-		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws']) = $threadInfo->fetch();
+		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws']) = $threadInfo->fetch(PDO::FETCH_NUM);
 		$permissions = retrievePermissions($userID, $forumID, 'write, moderate, addRolls, addDraws', TRUE);
 		if ($permissions['write'] != 1 && !$locked) { $noChat = TRUE; break; }
 		
@@ -74,7 +74,7 @@
 		}
 	} else $noChat = TRUE;
 	
-//	if ($noChat) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if ($noChat) { header('Location: '.SITEROOT.'/forums/'); exit; }
 	
 	if ($_SESSION['errors']) {
 		if ($_SESSION['lastURL'] == SITEROOT.'/forums/process/post') {
@@ -94,6 +94,16 @@
 		else $postInfo = $_SESSION['previewVars'];
 		$postInfo['postTitle'] = $postInfo['title'];
 	}
+
+	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?TRUE:FALSE;
+	$drawsAllowed = false;
+	if ($permissions['addDraws']) {
+		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = $userID");
+		if ($gmCheck->rowCount()) $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games WHERE games.forumID = '.$forumID.' AND games.gameID = decks.gameID GROUP BY decks.deckID');
+		else $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = '.$forumID.' AND decks.gameID = characters.gameID AND characters.userID = '.$userID.' AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = '.$userID.' GROUP BY decks.deckID');
+		if ($deckInfos->rowCount()) $drawsAllowed = TRUE;
+	}
+
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 <? if ($_GET['errors'] && $errors) { ?>
@@ -129,31 +139,39 @@
 	if (isset($postInfo, $postInfo['postTitle'])) $title = printReady($postInfo['postTitle'], array('stripslashes'));
 	elseif (isset($postInfo['threadTitle'])) $title = (substr($postInfo['threadTitle'], 0, 4) != 'Re: '?'Re: ':'').$postInfo['threadTitle'];
 ?>
-			<div id="basicPostInfo">
-				<label class="textLabel">Title:</label>
-				<input type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=$title?>" class="titleInput">
+			<div id="basicPostInfo" class="hbMargined">
+				<div class="table"><div>
+					<label class="textLabel" for="title">Title:</label>
+					<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=$title?>" class="titleInput"></div>
+				</div></div>
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady($postInfo['message'], array('stripslashes'))?></textarea>
 			</div>
-<?
- if ($firstPost) { ?>
 			
-			<hr>
-			
-			<div class="clearfix"><div class="wingDiv sectionControls floatLeft" data-ratio=".8">
+<?	if ($firstPost && ($permissions['addPoll'] || $rollsAllowed || $drawsAllowed)) { ?>
+			<div id="optionControls" class="clearfix hbdMargined"><div class="wingDiv sectionControls floatLeft">
 				<div>
-					<a href="" class="section_options current">Options</a>
-					<a href="" class="section_poll current">Poll</a>
-					<a href="" class="section_rolls_decks">Rolls and Decks</a>
+					<a href="" class="section_options<?=$firstPost?' current':''?>">Options</a>
+<?		if ($permissions['addPoll']) { ?>
+					<a href="" class="section_poll">Poll</a>
+<?		} ?>
+<?		if ($rollsAllowed || $drawsAllowed) { ?>
+					<a href="" class="section_rolls_decks<?=!$firstPost?' current':''?>">Rolls and Decks</a>
+<?		} ?>
 				</div>
 				<div class="wing dlWing"></div>
 				<div class="wing drWing"></div>
 			</div></div>
+<?	} ?>
 			<h2 class="headerbar hbDark">
+<?	if ($firstPost) { ?>
 				<span class="section_options">Thread Options</span>
 				<span class="section_poll hideDiv">Poll</span>
-				<span class="section_rolls_decks hideDiv">Rolls and Decks</span>
+<?	} ?>
+				<span class="section_rolls_decks<?=$firstPost?' hideDiv':''?>">Rolls and Decks</span>
 			</h2>
-			<div id="threadOptions" class="section_options">
+
+<?	if ($firstPost) { ?>
+			<div id="threadOptions" class="section_options hbdMargined">
 <?		if ($permissions['moderate']) { ?>
 				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Make thread sticky</p>
 <?
@@ -169,68 +187,67 @@
 <?		} ?>
 			</div>
 
-			<div id="poll" class="section_poll">
 <?
 		if ($permissions['addPoll']) {
 ?>
-				<p>If you don't want to add a poll to your thread, leave this section blank.</p>
+			<div id="poll" class="section_poll hbdMargined hideDiv table">
 <?			if ($pathOptions[0] == 'editPost') { ?>
-				<div class="tr">
-					<label for="allowRevoting" class="textLabel"><b>Delete Poll:</b></label>
-					<input id="deletePoll" type="checkbox" name="deletePoll"> If checked, your poll will be deleted and cannot be recovered.
+				<div class="clearfix">
+					<label for="allowRevoting"><b>Delete Poll:</b></label>
+					<div><input id="deletePoll" type="checkbox" name="deletePoll"> If checked, your poll will be deleted and cannot be recovered.</div>
 				</div>
 <?			} ?>
-				<div class="tr">
-					<label for="poll" class="textLabel"><b>Poll Question:</b></label>
-					<input id="poll" type="text" name="poll" value="<?=$postInfo['poll']?>">
+				<div class="clearfix">
+					<label for="pollQuestion"><b>Poll Question:</b></label>
+					<div><input id="pollQuestion" type="text" name="poll" value="<?=$postInfo['poll']?>" class="borderBox"></div>
 				</div>
-				<div class="tr">
-					<label for="pollOption" class="textLabel">
+				<div class="clearfix">
+					<label for="pollOption">
 						<b>Poll Options:</b>
 						<p>Place each option on a new line. You may enter up to <b>25</b> options.</p>
 					</label>
-					<textarea id="pollOptions" name="pollOptions"><?=$postInfo['pollOptions']?></textarea>
+					<div><textarea id="pollOptions" name="pollOptions"><?=$postInfo['pollOptions']?></textarea></div>
 				</div>
-				<div class="tr">
-					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>
-					<input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($postInfo['optionsPerUser'])?$postInfo['optionsPerUser']:'1'?>">
+				<div class="clearfix">
+					<label for="optionsPerUser"><b>Options per user:</b></label>
+					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($postInfo['optionsPerUser'])?$postInfo['optionsPerUser']:'1'?>" class="borderBox"></div>
 				</div>
-				<div class="tr">
-					<label for="allowRevoting" class="textLabel"><b>Allow Revoting:</b></label>
-					<input id="allowRevoting" type="checkbox" name="allowRevoting" <?=isset($postInfo['allowRevoting']) && $postInfo['allowRevoting']?' checked="checked"':''?>> If checked, people will be allowed to change their votes.
+				<div class="clearfix">
+					<label for="allowRevoting"><b>Allow Revoting:</b></label>
+					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=isset($postInfo['allowRevoting']) && $postInfo['allowRevoting']?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
 				</div>
 			</div>
 <?
 		}
 	}
 	
-	if ($permissions['addRolls'] && $allowRolls || $permissions['moderate']) {
+	if ($rollsAllowed) {
 ?>
-			<div id="rolls_decks" class="section_rolls_decks">
+			<div id="rolls_decks" class="section_rolls_decks hbdMargined hideDiv">
 				<div id="rollExplination">
 					Enter the text roll in the following format:<br>
 					(number of dice)d(dice type)+/-(modifier), i.e. 2d6+4, 1d10-2<br>
 					The roll will automatically be added to your post when you submit it. Only put one dice type per roll.
 				</div>
 <?
-	if (sizeof($rolls)) {
-		echo "\t\t\t\t<div id=\"postedRolls\">\n";
-		echo "\t\t\t\t\t<h3>Posted Rolls</h3>\n";
-		$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
-		$hidden = FALSE;
-		$showAll = FALSE;
-		foreach ($rolls as $roll) {
+		if (sizeof($rolls)) {
+			echo "\t\t\t\t<div id=\"postedRolls\">\n";
+			echo "\t\t\t\t\t<h3>Posted Rolls</h3>\n";
+			$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 			$hidden = FALSE;
-			
-			echo "\t\t\t\t\t<div class=\"rollInfo\">\n";
-			echo $roll['visibility'] > 0?"\t\t\t\t\t\t<div class=\"hidden\">".$visText[$roll['visibility']]."</div>\n":'';
-			echo "\t\t\t\t\t\t<div>";
-			if ($roll['visibility'] <= 2) echo $roll['reason'];
-			else { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
-			if ($roll['visibility'] <= 1) echo " - ({$roll['roll']}".($roll['ra']?', RA':'').')';
-			else { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
-			echo $hidden?'</span>':'';
-			echo "</div>\n";
+			$showAll = FALSE;
+			foreach ($rolls as $roll) {
+				$hidden = FALSE;
+				
+				echo "\t\t\t\t\t<div class=\"rollInfo\">\n";
+				echo $roll['visibility'] > 0?"\t\t\t\t\t\t<div class=\"hidden\">".$visText[$roll['visibility']]."</div>\n":'';
+				echo "\t\t\t\t\t\t<div>";
+				if ($roll['visibility'] <= 2) echo $roll['reason'];
+				else { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
+				if ($roll['visibility'] <= 1) echo " - ({$roll['roll']}".($roll['ra']?', RA':'').')';
+				else { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
+				echo $hidden?'</span>':'';
+				echo "</div>\n";
 ?>
 						<select name="nVisibility_<?=$roll['rollID']?>" tabindex="<?=tabOrder();?>">
 							<option value="0"<?=$roll['visibility'] == 0?' selected="selected"':''?>>Hide Nothing</option>
@@ -240,14 +257,12 @@
 						</select>
 						<input type="hidden" name="oVisibility_<?=$roll['rollID']?>" value="<?=$roll['visibility']?>">
 <?
-			if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">{$roll['indivRolls']} = {$roll['total']}</div>\n";
-			else echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">{$roll['indivRolls']} = {$roll['total']}</span></div>\n";
-			echo "\t\t\t\t\t</div>\n";
-//			echo "\t\t\t\t\t<div>{$roll['reason']} ({$roll['roll']}".($roll['ra']?', RA':'').")</div>\n";
-//			echo "\t\t\t\t\t<div class=\"indent\">{$roll['indivRolls']} = {$roll['total']}</div>\n";
+				if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">{$roll['indivRolls']} = {$roll['total']}</div>\n";
+				else echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">{$roll['indivRolls']} = {$roll['total']}</span></div>\n";
+				echo "\t\t\t\t\t</div>\n";
+			}
+			echo "\t\t\t\t</div>\n";
 		}
-		echo "\t\t\t\t</div>\n";
-	}
 ?>
 				<table id="rollsTable">
 					<tr>
@@ -256,10 +271,10 @@
 						<th class="reroll">Reroll Aces</th>
 						<th class="visibility">Visibility</th>
 					</tr>
-<? for ($count = 1; $count <= 4; $count++) { ?>
+<?		for ($count = 1; $count <= 4; $count++) { ?>
 					<tr>
-						<td class="reason"><input type="text" name="roll_reason_<?=$count?>" maxlength="100"<?=isset($postInfo['roll_reason_'.$count])?' value="'.$postInfo['roll_reason_'.$count].'"':''?> tabindex="<?=tabOrder();?>"></td>
-						<td class="roll"><input type="text" name="roll_roll_<?=$count?>" maxlength="50"<?=isset($postInfo['roll_roll_'.$count])?' value="'.$postInfo['roll_roll_'.$count].'"':''?> tabindex="<?=tabOrder();?>"></td>
+						<td class="reason"><input type="text" name="roll_reason_<?=$count?>" maxlength="100"<?=isset($postInfo['roll_reason_'.$count])?' value="'.$postInfo['roll_reason_'.$count].'"':''?> tabindex="<?=tabOrder();?>" class="borderBox"></td>
+						<td class="roll"><input type="text" name="roll_roll_<?=$count?>" maxlength="50"<?=isset($postInfo['roll_roll_'.$count])?' value="'.$postInfo['roll_roll_'.$count].'"':''?> tabindex="<?=tabOrder();?>" class="borderBox"></td>
 						<td class="reroll"><input type="checkbox" name="roll_ra_<?=$count?>"<?=isset($postInfo['roll_ra_'.$count])?' checked="checked"':''?> tabindex="<?=tabOrder();?>"></td>
 						<td class="visibility"><select name="roll_visibility_<?=$count?>" tabindex="<?=tabOrder();?>">
 							<option value="0"<?=$postInfo['roll_visibility_'.$count] == 0?' selected="selected"':''?>>Hide Nothing</option>
@@ -268,16 +283,15 @@
 							<option value="3"<?=$postInfo['roll_visibility_'.$count] == 3?' selected="selected"':''?>>Hide Everything</option>
 						</select></td>
 					</tr>
-<? } ?>
+<?		} ?>
 				</table>
-			
-<? } ?>
+			</div>
+<?	} ?>
 <?
-	if ($permissions['addDraws']) {
+	if ($drawsAllowed) {
 		$gmCheck = $mysql->query("SELECT gms.primary FROM gms INNER JOIN games USING (gameID) WHERE gms.userID = $userID");
 		if ($gmCheck->rowCount()) $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games WHERE games.forumID = '.$forumID.' AND games.gameID = decks.gameID GROUP BY decks.deckID');
 		else $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = '.$forumID.' AND decks.gameID = characters.gameID AND characters.userID = '.$userID.' AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = '.$userID.' GROUP BY decks.deckID');
-//		$mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = '.$forumID.' AND ((decks.gameID = characters.gameID AND characters.userID = '.$userID.' AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = '.$userID.') OR (decks.gameID = games.gameID AND games.gmID = '.$userID.')) GROUP BY decks.deckID');
 		if ($deckInfos->rowCount()) {
 			echo "\n\t\t\t\t<h3 id=\"decksHeader\">Decks</h3>\n";
 			echo "\t\t\t\t<p>Please remember, any cards you draw will be only visible to you until you reveal them. Reveal them by clicking them. An eye icon indicates they're visible, while an eye with a red slash through them indiates a hidden card.</p>\n";
@@ -310,8 +324,8 @@
 ?>
 			
 			<div id="submitDiv" class="alignCenter">
-            	<div class="fancyButton"><button type="submit" name="post" tabindex="<?=tabOrder();?>">Post</button></div>
-                <div class="fancyButton"><button type="submit" name="preview" tabindex="<?=tabOrder();?>">Preview</button></div>
+				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton">Post</button>
+				<button type="submit" name="preview" tabindex="<?=tabOrder();?>" class="fancyButton">Preview</button>
             </div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

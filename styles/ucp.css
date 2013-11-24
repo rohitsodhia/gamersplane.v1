@@ -92,6 +92,6 @@
 	margin-bottom: 0;
 }
 
-#page_ucp #changeOptions #games {
-	width: 400px;
+#page_ucp #postSide > div {
+	margin-bottom: 4px;
 }

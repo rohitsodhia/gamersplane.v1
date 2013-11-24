@@ -52,7 +52,8 @@ function setupWingContainer() {
 		}
 //		if (baseClass == 'headerbar' && (classes.match(/hb_hasButton/) || classes.match(/hb_hasList/))) $(this).addClass
 	} else if (baseClass == 'fancyButton') {
-		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass).attr('id', 'ww_' + currentID);
+		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);
+		if (currentID.length) $(this).parent().attr('id', 'ww_' + currentID);
 		if (typeof modClasses[baseClass] !== 'undefined') {
 			for (key in modClasses[baseClass]) {
 				modClass = modClasses[baseClass][key];

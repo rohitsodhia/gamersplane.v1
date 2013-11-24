@@ -7,7 +7,7 @@
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?
 		if ($gameID) {
-			$gameInfo = $mysql->query("SELECT g.gameID, s.shortName system, g.forumID, p.isGM FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = $userID WHERE g.gameID = $gameID");
+			$gameInfo = $mysql->query("SELECT g.gameID, s.shortName system, g.forumID, p.isGM FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = $userID WHERE g.gameID = {$gameID}");
 			$gameInfo = $gameInfo->fetch();
 ?>
 	<ul class="rightCol">

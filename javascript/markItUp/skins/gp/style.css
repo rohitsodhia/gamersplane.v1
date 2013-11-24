@@ -69,7 +69,9 @@
 }
 .markItUpHeader ul .markItUpDropMenu {
 	background:transparent url(images/menu.png) no-repeat 115% 50%;
-	margin-right:5px;
+}
+.markItUpHeader ul .markItUpDropMenu a {
+	margin-right: 6px;
 }
 .markItUpHeader ul .markItUpDropMenu li {
 	margin-right:0px;
@@ -92,6 +94,7 @@
 	top:18px; left:0px;	
 	background:#FFF8F8;
 	border:1px solid #3C769D;
+	border-bottom: none;
 	height:inherit;
 }
 .markItUpHeader ul ul li {
@@ -114,6 +117,7 @@
 	width:16px; height:16px;
 	text-indent:-10000px;
 	background-repeat:no-repeat;
+	background-position: center;
 	padding:3px;
 	margin:0px;
 }

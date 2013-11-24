@@ -11,8 +11,8 @@
 		header('Location: '.$_SESSION['lastURL'].'?preview=1');
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
-		$title = sanatizeString($_POST['title']);
-		$message = sanatizeString($_POST['message']);
+		$title = sanitizeString($_POST['title']);
+		$message = sanitizeString($_POST['message']);
 		
 		$rolls = array();
 		$draws = array();
@@ -121,7 +121,7 @@
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
 			$threadInfo = $mysql->query('SELECT forumID, locked, allowRolls, allowDraws FROM threads WHERE threadID = '.$threadID);
-			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch();
+			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
 			$permissions = retrievePermissions($userID, $forumID, 'write, addRolls, addDraws', TRUE);
 			if (!$permissions['write'] || $locked) { header('Location: '.SITEROOT.'/forums/'.$forumID); exit; }
 			
@@ -225,12 +225,7 @@
 			} }
 		}
 		
-		$threadRD = $mysql->query('SELECT threadData FROM forums_readData WHERE userID = '.$userID);
-		$threadRD = $threadRD->getList();
-		$threadRD = unserialize($threadRD);
-		if (!is_array($threadRD)) $threadRD = array();
-		$threadRD[$threadID] = array('forumID' => $forumID, 'lastRead' => $postID, 'lastPost' => $postID);	
-		$mysql->query('UPDATE forums_readData SET threadData = "'.sanatizeString(serialize($threadRD)).'" WHERE userID = '.$userID);
+		$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$threadID}, userID = {$userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		 
 		if ($postID && $threadID) header('Location: '.SITEROOT.'/forums/thread/'.$threadID.($postID == $postInfo['firstPostID']?'':'?p='.$postID.'#p'.$postID));
 		else header('Location: '.SITEROOT.'/403');

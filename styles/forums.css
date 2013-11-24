@@ -62,13 +62,8 @@
 	font-size: 1.1em;
 }
 
-#page_forum #administrateLink {
-	float: right;
-	margin-top: .5em;
-}
-
-#page_forum #rules {
-	margin-bottom: 1em;
+#page_forum #topLinks > div > div {
+	margin-bottom: .5em;
 }
 
 #page_forum #newThread {
@@ -236,14 +231,20 @@
 
 #page_forum_thread #threadMenu {
 	position: relative;
-	height: 24px;
 	margin: 1em 0;
 }
 
-#page_forum_thread #threadMenu #threadOptions {
-	position: absolute;
-	right: 0;
-	bottom: 0;
+#page_forum_thread #threadMenu > div {
+	display: inline-block;
+	width: 49.5%;
+}
+
+#page_forum_thread #threadMenu .rightCol > * {
+	vertical-align: middle;
+}
+
+#page_forum_thread #threadOptions {
+	display: inline-block;
 }
 
 #page_forum_thread #threadOptions button {
@@ -268,6 +269,10 @@
 
 #page_forum_thread .unlock {
 	background-position: bottom right;
+}
+
+#page_forum_thread #threadMenu .fancyButton {
+	margin-left: 15px;
 }
 
 #page_forum_thread #poll {
@@ -349,7 +354,12 @@
 }
 
 #page_forum_thread .posterDetails .avatar {
+	display: block;
 	text-align: center;
+}
+
+#page_forum_thread .posterDetails .avatar img {
+	width: 100px;
 }
 
 #page_forum_thread .posterDetails .posterName {
@@ -361,7 +371,7 @@
 #page_forum_thread .postContent {
 	position: relative;
 	padding: 15px;
-	border: 2px solid #000;
+	border: 2px solid #444;
 	border-radius: 10px;
 	line-height: 1.4em;
 	background: #FFF;
@@ -371,13 +381,11 @@
 	max-width: 705px;
 }
 
-#page_forum_thread .postRight .postContent {
-	background-position: top right;
+#page_forum_thread .postRight .postContent, #page_forum_thread .postRight .postActions {
 	margin-left: 180px;
 }
 
-#page_forum_thread .postLeft .postContent {
-	background-position: top left;
+#page_forum_thread .postLeft .postContent, #page_forum_thread .postLeft .postActions {
 	margin-right: 180px;
 }
 
@@ -398,18 +406,19 @@
 	background-position: top right;
 }
 
+#page_forum_thread .postHeader {
+	margin-bottom: .4em;
+	padding-bottom: .5em;
+	border-bottom: 1px solid #800;
+}
+
 #page_forum_thread .postedOn {
-	position: absolute;
-	top: 8px;
-	right: 15px;
+	float: right;
 	font-size: .8em;
 }
 
 #page_forum_thread .subject {
-	margin-bottom: .4em;
-	padding-bottom: .5em;
 	padding-right: 150px;
-	border-bottom: 1px solid #800;
 	font-size: 1.1em;
 	line-height: 1.2em;
 }
@@ -465,21 +474,7 @@
 #page_forum_thread div.postActions {
 	font-size: .9em;
 	padding-top: 8px;
-	clear: both;
-}
-
-#page_forum_thread .postRight .postActions {
-	background-position: top right;
-	margin-left: 180px;
-}
-
-#page_forum_thread .postLeft .postActions {
-	background-position: top left;
-	margin-right: 180px;
-}
-
-#page_forum_thread div.postActions div {
-	float: right;
+	text-align: right;
 }
 
 #page_forum_thread div.postActions a {
@@ -493,17 +488,6 @@
 
 #page_forum_thread #quickMod button {
 	margin-left: 10px;
-}
-
-#page_forum_thread label, #page_forum_post label {
-	width: 75px;
-	float: left;
-}
-
-#page_forum_thread input[type="text"], #page_forum_post input[type="text"] {
-/*	width: 562px;*/
-	width: 808px;
-	margin: 0 0 10px 5px;
 }
 
 #page_forum_thread #textAreaDiv {
@@ -538,12 +522,62 @@
 }
 
 #page_forum_post #basicPostInfo {
-/*	width: 650px;*/
+	margin-bottom: 1em;
+}
+
+#page_forum_post #basicPostInfo .table {
+	width: 100%;
+	margin-bottom: .5em;
+}
+
+/*#page_forum_post #basicPostInfo label, #page_forum_post #basicPostInfo input {
+	display: inline-block;
+}*/
+
+#page_forum_post #basicPostInfo label {
+	width: 75px;
+}
+
+#page_forum_post #basicPostInfo input {
+	width: 100%;
 }
 
 #page_forum_post .post {
 	margin-top: 10px;
 	margin-left: 15px;
+}
+
+#page_forum_post .hbDark {
+	margin-top: 0;
+}
+
+#page_forum_post #poll label {
+	width: 150px;
+	vertical-align: top;
+}
+
+#page_forum_post #poll label {
+}
+
+#page_forum_post #poll > div > div {
+	vertical-align: middle;
+}
+
+#page_forum_post #poll > div > * {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+#page_forum_post #pollQuestion {
+	width: 100%;
+}
+
+#page_forum_post #optionsPerUser {
+	width: 50px;
+}
+
+#page_forum_post #poll b {
+	font-weight: bold;
 }
 
 #page_forum_post #rollExplination {
@@ -600,7 +634,7 @@
 }
 
 #page_forum_post #rollsTable {
-	width: 840px;
+	width: 830px;
 }
 
 #page_forum_post #rollsTable input {
@@ -609,10 +643,12 @@
 
 #page_forum_post #rollsTable .reason {
 	width: 450px;
+	text-align: left;
 }
 
 #page_forum_post #rollsTable .roll {
 	width: 130px;
+	text-align: center;
 }
 
 #page_forum_post #rollsTable .roll input {
@@ -620,7 +656,7 @@
 }
 
 #page_forum_post #rollsTable .reason input, #page_forum_post #decksTable .reason input {
-	width: 415px;
+	width: 100%;
 	margin: 0;
 }
 
@@ -634,8 +670,7 @@
 }
 
 #page_forum_post #rollsTable .visibility {
-	width: 150px;
-	padding-left: 20px;
+	width: 140px;
 }
 
 #page_forum_post #rollsTable .indivRolls {

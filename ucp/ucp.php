@@ -44,10 +44,10 @@
 				</div>
 				<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images will be shrunk for GP use.</div>
 			</div>
-			<div class="tr">
+<!--			<div class="tr">
 				<label>Show Avatars?</label>
 				<div><input type="checkbox" name="showAvatars"<?=$userInfo['showAvatars'] == 1?' checked="checked"':''?>></div>
-			</div>
+			</div>-->
 			<div class="tr">
 				<label class="textLabel">Timezone</label>
 				<div>
@@ -148,7 +148,7 @@
 		</form>
 		
 		<form id="changeOptions" method="post" action="<?=SITEROOT?>/ucp/process/changeForumOptions" class="section_forumOptions hideDiv">
-			<div class="tr">
+			<div id="postSide" class="tr">
 				<label>Post Side</label>
 				<div><input type="radio" name="postSide" value="r"<?=$userInfo['postSide'] == 'r'?' checked="checked"':''?>> Right</div>
 				<div><input type="radio" name="postSide" value="l"<?=$userInfo['postSide'] == 'l'?' checked="checked"':''?>> Left</div>

@@ -1,19 +1,16 @@
 $(function() {
 	$('#messageTextArea').markItUp(mySettings);
 
-	leftMargin = $('.headerbar .wing').css('border-right-width');
-	$('form').css({ 'marginLeft': leftMargin, 'marginRight': leftMargin });
-	
-	$('#controls a').click(function (e) {
-		oldOpen = $('#controls .current').removeClass('current').attr('class');
-		newOpen = $(this).attr('class');
-		$(this).addClass('current');
+	$('#optionControls a').click(function (e) {
+		e.preventDefault();
 
-		$('span.' + oldOpen + ', form.' + oldOpen).hide();
-		$('span.' + newOpen + ', form.' + newOpen).show();
-		wingMargins('form.' + newOpen + ' .fancyButton');
-		$('form.' + newOpen + ' .wing').each(setupWings);
+		if (!$(this).hasClass('current')) {
+			oldOpen = $('#optionControls .current').removeClass('current').attr('class');
+			newOpen = $(this).attr('class');
+			$(this).addClass('current');
 
-		return e.preventDefault();
+			$('span.' + oldOpen + ', div.' + oldOpen).hide();
+			$('span.' + newOpen + ', div.' + newOpen).show();
+		}
 	})
 });

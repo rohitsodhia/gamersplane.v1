@@ -4,7 +4,7 @@
 <script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery.colorbox-min.js"></script>
 <script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery.form.js"></script>
 <? if (in_array($pathAction, array('forums', 'pms'))) { ?>
-<script type="text/javascript" src="<?=SITEROOT?>/javascript/markItUp/jquery.markitup.pack.js"></script>
+<script type="text/javascript" src="<?=SITEROOT?>/javascript/markItUp/jquery.markitup.js"></script>
 <script type="text/javascript" src="<?=SITEROOT?>/javascript/markItUp/sets/bbcode/set.js"></script>
 <? } elseif ($pathAction == 'chat') { ?>
 <script type="text/javascript" src="<?=SITEROOT?>/javascript/jquery.scrollTo-min.js"></script>

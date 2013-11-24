@@ -109,31 +109,30 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumTitle/*.($forumInfo['gameID']?' (Game)':'')*/:'s'?></h1>
 		
+		<div id="topLinks" class="clearfix hbMargined">
+			<div class="floatRight alignRight">
+				<div><? if ($forumID == 0) echo '<a href="'.SITEROOT.'/forums/search?search=latestPosts">Latest Posts</a>'; ?></div>
+				<div><? if ($forumAdmin) echo '<a href="'.SITEROOT.'/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
+			</div>
+			<div class="floatLeft alignLeft">
+				<div id="breadcrumbs">
 <? if ($forumID != 0) { ?>
-		<div id="breadcrumbs">
-			<a href="<?=SITEROOT?>/forums">Index</a><?=$forumID != 0?' > ':''?>
+					<a href="<?=SITEROOT?>/forums">Index</a><?=$forumID != 0?' > ':''?>
 <?
 		$breadcrumbs = $mysql->query('SELECT forumID, title FROM forums WHERE forumID IN ('.implode(',', $heritage).')');
 		$breadcrumbForums = array();
 		foreach ($breadcrumbs as $forumInfo) $breadcrumbForums[$forumInfo['forumID']] = printReady($forumInfo['title']);
 		$fCounter = 1;
 		foreach ($heritage as $hForumID) {
-			echo "\t\t\t<a href=\"".SITEROOT.'/forums/'.$hForumID.'">'.$breadcrumbForums[$hForumID].'</a>'.($fCounter != sizeof($heritage)?' > ':'')."\n";
+			echo "\t\t\t\t\t<a href=\"".SITEROOT.'/forums/'.$hForumID.'">'.$breadcrumbForums[$hForumID].'</a>'.($fCounter != sizeof($heritage)?' > ':'')."\n";
 			$fCounter++;
 		}
+	} else echo "\t\t\t\t\t&nbsp;\n";
 ?>
+				</div>
+				<div>Be sure to read and follow the <a href="<?=SITEROOT?>/forums/rules">guidelines for our forums</a>.</div>
+			</div>
 		</div>
-<? } ?>
-		
-		<div id="topLinkDiv"<?=$forumID == 0?' class="alignRight"':''?>>
-<?
-	if ($forumID == 0) echo "\t\t\t".'<a href="'.SITEROOT.'/forums/search?search=latestPosts">Latest Posts</a>'."\n";
-?>
-		</div>
-		
-<? if ($forumAdmin) echo "\t\t".'<a id="administrateLink" href="'.SITEROOT.'/forums/acp/'.$forumID.'">Administrative Control Panel</a>'."\n"; ?>
-		<p id="rules">Be sure to read and follow the <a href="<?=SITEROOT?>/forums/rules">guidelines for our forums</a>.</p>
-	
 <?
 	$forumIcon = '';
 	

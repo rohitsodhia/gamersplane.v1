@@ -605,17 +605,17 @@ div.prettySelect > div {
 	margin: 0 auto;
 }
 
-header {
+.bodyHeader {
 	position: relative;
 	background: url('../images/bodyComponents/background.jpg') 0 0 repeat-x;
 	z-index: 5000;
 }
 
-header, header .bodyContainer {
+.bodyHeader, .bodyHeader .bodyContainer {
 	height: 190px;
 }
 
-header img#logo {
+.bodyHeader img#logo {
 	margin: 5px 0 0 20px;
 }
 
@@ -683,6 +683,19 @@ footer .bodyContainer {
 
 .headerTR {
 
+}
+
+.table {
+	display: table;
+	border-collapse: collapse;
+}
+
+.table > div {
+	display: table-row;
+}
+
+.table > div > * {
+	display: table-cell;
 }
 
 .floatLeft {
