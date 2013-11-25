@@ -95,6 +95,7 @@
 		$postInfo['postTitle'] = $postInfo['title'];
 	}
 
+	print_r($threadInfo);
 	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?TRUE:FALSE;
 	$drawsAllowed = false;
 	if ($permissions['addDraws']) {
@@ -162,14 +163,16 @@
 				<div class="wing drWing"></div>
 			</div></div>
 <?	} ?>
+<?	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
 			<h2 class="headerbar hbDark">
-<?	if ($firstPost) { ?>
+<?		if ($firstPost) { ?>
 				<span class="section_options">Thread Options</span>
 				<span class="section_poll hideDiv">Poll</span>
-<?	} ?>
+<?		} ?>
 				<span class="section_rolls_decks<?=$firstPost?' hideDiv':''?>">Rolls and Decks</span>
 			</h2>
-
+<?	} ?>
+			
 <?	if ($firstPost) { ?>
 			<div id="threadOptions" class="section_options hbdMargined">
 <?		if ($permissions['moderate']) { ?>
@@ -190,29 +193,29 @@
 <?
 		if ($permissions['addPoll']) {
 ?>
-			<div id="poll" class="section_poll hbdMargined hideDiv table">
+			<div id="poll" class="section_poll hbdMargined hideDiv">
 <?			if ($pathOptions[0] == 'editPost') { ?>
 				<div class="clearfix">
 					<label for="allowRevoting"><b>Delete Poll:</b></label>
 					<div><input id="deletePoll" type="checkbox" name="deletePoll"> If checked, your poll will be deleted and cannot be recovered.</div>
 				</div>
 <?			} ?>
-				<div class="clearfix">
-					<label for="pollQuestion"><b>Poll Question:</b></label>
+				<div class="tr clearfix">
+					<label for="pollQuestion" class="textLabel"><b>Poll Question:</b></label>
 					<div><input id="pollQuestion" type="text" name="poll" value="<?=$postInfo['poll']?>" class="borderBox"></div>
 				</div>
-				<div class="clearfix">
-					<label for="pollOption">
+				<div class="tr clearfix">
+					<label for="pollOption" class="textLabel">
 						<b>Poll Options:</b>
 						<p>Place each option on a new line. You may enter up to <b>25</b> options.</p>
 					</label>
 					<div><textarea id="pollOptions" name="pollOptions"><?=$postInfo['pollOptions']?></textarea></div>
 				</div>
-				<div class="clearfix">
-					<label for="optionsPerUser"><b>Options per user:</b></label>
+				<div class="tr clearfix">
+					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>
 					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($postInfo['optionsPerUser'])?$postInfo['optionsPerUser']:'1'?>" class="borderBox"></div>
 				</div>
-				<div class="clearfix">
+				<div class="tr clearfix">
 					<label for="allowRevoting"><b>Allow Revoting:</b></label>
 					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=isset($postInfo['allowRevoting']) && $postInfo['allowRevoting']?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
 				</div>
@@ -223,32 +226,35 @@
 	
 	if ($rollsAllowed) {
 ?>
-			<div id="rolls_decks" class="section_rolls_decks hbdMargined hideDiv">
+			<div id="rolls_decks" class="section_rolls_decks hbdMargined<?=$firstPost?' hideDiv':''?>">
 				<div id="rollExplination">
 					Enter the text roll in the following format:<br>
 					(number of dice)d(dice type)+/-(modifier), i.e. 2d6+4, 1d10-2<br>
 					The roll will automatically be added to your post when you submit it. Only put one dice type per roll.
 				</div>
+<?		if (sizeof($rolls)) { ?>
+				<div id="postedRolls">
+					<h3>Posted Rolls</h3>
 <?
-		if (sizeof($rolls)) {
-			echo "\t\t\t\t<div id=\"postedRolls\">\n";
-			echo "\t\t\t\t\t<h3>Posted Rolls</h3>\n";
 			$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 			$hidden = FALSE;
 			$showAll = FALSE;
 			foreach ($rolls as $roll) {
 				$hidden = FALSE;
-				
-				echo "\t\t\t\t\t<div class=\"rollInfo\">\n";
-				echo $roll['visibility'] > 0?"\t\t\t\t\t\t<div class=\"hidden\">".$visText[$roll['visibility']]."</div>\n":'';
-				echo "\t\t\t\t\t\t<div>";
+?>
+					<div class="rollInfo">
+<?				if ($roll['visibility'] > 0) { ?>
+						<div class="hidden"><?=$visText[$roll['visibility']]?></div>
+<?				} ?>
+						<div>
+<?
 				if ($roll['visibility'] <= 2) echo $roll['reason'];
 				else { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
 				if ($roll['visibility'] <= 1) echo " - ({$roll['roll']}".($roll['ra']?', RA':'').')';
 				else { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
 				echo $hidden?'</span>':'';
-				echo "</div>\n";
 ?>
+						</div>
 						<select name="nVisibility_<?=$roll['rollID']?>" tabindex="<?=tabOrder();?>">
 							<option value="0"<?=$roll['visibility'] == 0?' selected="selected"':''?>>Hide Nothing</option>
 							<option value="1"<?=$roll['visibility'] == 1?' selected="selected"':''?>>Hide Roll/Result</option>
@@ -256,20 +262,32 @@
 							<option value="3"<?=$roll['visibility'] == 3?' selected="selected"':''?>>Hide Everything</option>
 						</select>
 						<input type="hidden" name="oVisibility_<?=$roll['rollID']?>" value="<?=$roll['visibility']?>">
-<?
-				if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">{$roll['indivRolls']} = {$roll['total']}</div>\n";
-				else echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">{$roll['indivRolls']} = {$roll['total']}</span></div>\n";
-				echo "\t\t\t\t\t</div>\n";
-			}
-			echo "\t\t\t\t</div>\n";
-		}
-?>
+<?				if ($roll['visibility'] == 0) { ?>
+						<div class="indent"><?=$roll['indivRolls']?> = <?=$roll['total']?></div>
+<?				} else { ?>
+						<div class="indent"><span class="hidden"><?=$roll['indivRolls']?> = <?=$roll['total']?></span></div>
+<?				} ?>
+					</div>
+<?			} ?>
+				</div>
+<?		} ?>
 				<table id="rollsTable">
 					<tr>
 						<th class="reason">Reason</th>
 						<th class="roll">Roll</th>
 						<th class="reroll">Reroll Aces</th>
 						<th class="visibility">Visibility</th>
+					</tr>
+					<tr id="blankRoll" class="hideDiv">
+						<td class="reason"><input type="text" name="roll_reason_(count)" maxlength="100" class="borderBox"></td>
+						<td class="roll"><input type="text" name="roll_roll_(count)" maxlength="50" class="borderBox"></td>
+						<td class="reroll"><input type="checkbox" name="roll_ra_(count)"></td>
+						<td class="visibility"><select name="roll_visibility_(count)">
+							<option value="0">Hide Nothing</option>
+							<option value="1">Hide Roll/Result</option>
+							<option value="2">Hide Dice &amp; Roll</option>
+							<option value="3">Hide Everything</option>
+						</select></td>
 					</tr>
 <?		for ($count = 1; $count <= 4; $count++) { ?>
 					<tr>
