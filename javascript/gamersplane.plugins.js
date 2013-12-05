@@ -2,29 +2,43 @@ $.fn.autocomplete = function (pathOption, sendData) {
 	function search(pathOption, sendData, $resultsDiv) {
 		$.post(SITEROOT + pathOption, sendData, function (data) {
 			if (data.length > 0) {
+				$inputBox.addClass('open');
 				$resultsDiv.html(data).slideDown();
-			} else $resultsDiv.slideUp();
+			} else {
+				$inputBox.removeClass('open');
+				$resultsDiv.slideUp();
+			}
 		});
 	}
 
 	var $inputBox = $(this), onWrapper = false, searchTimeout;
 	$inputBox.wrap('<div class="autocompleteWrapper"></div>').parent().attr('id', $inputBox.attr('id') + 'Wrapper');
-	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
+	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: ($inputBox.outerWidth(false) - 2) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
 	$inputBox.keyup(function () {
 		if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
 			$.extend(sendData, { search: $(this).val() });
 			clearTimeout(searchTimeout);
 			searchTimeout = setTimeout(function () { search(pathOption, sendData, $resultsDiv); }, 500);
-		} else $resultsDiv.slideUp();
+		} else {
+			$inputBox.removeClass('open');
+			$resultsDiv.slideUp();
+		}
 	}).blur(function () {
-		if (onWrapper == false) $resultsDiv.slideUp();
+		if (onWrapper == false) {
+			$inputBox.removeClass('open');
+			$resultsDiv.slideUp();
+		}
 	}).focus(function () {
-		if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) $resultsDiv.slideDown();
+		if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) {
+			$inputBox.addClass('open');
+			$resultsDiv.slideDown();
+		}
 	}).keypress(function (e) {
 		if (e.which == 13) e.preventDefault();
 	});
 	
 	$resultsDiv.on('click', 'a', function (e) {
+		$inputBox.removeClass('open');
 		$inputBox.val($(this).text());
 		$resultsDiv.slideUp();
 
@@ -57,8 +71,8 @@ $.fn.autocomplete = function (pathOption, sendData) {
 					numOptions = $prettySelect.find('option').length;
 
 					$prettySelect.addClass('open');
-					if (numOptions > 8) $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * 5);
-					else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions);
+					if (numOptions > 8) $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * 5 + 1);
+					else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions + 1);
 					$prettySelectOptions.width($(this).parent().outerWidth() - 2).show();
 				});
 				$prettySelectOptions.on('click', 'li', function () {
@@ -66,6 +80,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 					$parent.removeClass('open');
 					$parent.find('.prettySelectOptions').hide();
 					$parent.find('select').val($(this).data('value')).change();
+					console.log($parent.find('select').val());
 				});
 				$select.hide();
 				$prettySelect.append($prettySelectCurrent).append($prettySelectLongest).append($prettySelectDropdown).append($prettySelectOptions);
@@ -112,7 +127,7 @@ $.fn.prettyCheckbox = function () {
 	});
 };
 
-toggleCheckbox = function(e) {
+toggleCheckbox = function (e) {
 	if (!$(this).hasClass('disabled')) {
 		$(this).toggleClass('checked');
 		$checkbox = $(this).find('input');
@@ -120,4 +135,23 @@ toggleCheckbox = function(e) {
 	}
 }
 
-$('body').on('click', '.prettyCheckbox', toggleCheckbox);
+$.fn.prettyRadio = function () {
+	$(this).each(function () {
+		$(this).wrap('<div class="prettyRadio"></div>');
+		if ($(this).is(':checked')) $(this).parent().addClass('checked');
+	}).hide().change(function (e) {
+		$(this).parent().toggleClass('checked');
+	});
+};
+
+toggleRadio = function (e) {
+	if (!$(this).hasClass('checked')) {
+		$radio = $(this).find('input');
+		radioName = $radio.attr('name');
+		$('input[name="' + radioName + '"]').prop('checked', false).parent().removeClass('checked');
+		$(this).addClass('checked');
+		$radio.prop('checked', true);
+	}
+}
+
+$('body').on('click', '.prettyCheckbox', toggleCheckbox).on('click', '.prettyRadio', toggleRadio);

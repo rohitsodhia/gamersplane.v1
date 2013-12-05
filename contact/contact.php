@@ -20,7 +20,7 @@
 		<form method="post" action="<?=SITEROOT?>/contact/process/">
 			<p>All fields except "username" are required.</p>
 			<div class="tr">
-				<label class="textLabel">Name:</label>
+				<label>Name:</label>
 				<div class="inputField"><input type="text" name="name" maxlength="50" value="<?=$name?>"></div>
 			</div>
 			<div class="tr">
@@ -37,15 +37,15 @@
 				</div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Email Address:</label>
+				<label>Email Address:</label>
 				<div class="inputField"><input type="text" name="email" maxlength="100" value="<?=$info['email']?$info['email']:$email?>"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Subject:</label>
+				<label>Subject:</label>
 				<div class="inputField"><input type="text" name="subject" maxlength="100" value="<?=$subject?>" class="long"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Comment:</label>
+				<label>Comment:</label>
 				<div class="inputField"><textarea name="comment"><?=$comment?></textarea></div>
 			</div>
 			<div id="submitDiv" class="alignCenter"><button id="submit" type="submit" name="submit" class="fancyButton">Submit</button></div>

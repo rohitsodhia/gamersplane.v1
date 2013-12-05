@@ -33,6 +33,7 @@
 			</div>
 			<div>
 				<div class="noFloat notice">Username may be letters, numbers, underscores (_) and periods (.), up to 24 characters</div>
+				<div class="noFloat notice">Keep usernames PG-13. GamersPlane will act if we find your username unacceptable.</div>
 			</div>
 			
 			<div class="tr">

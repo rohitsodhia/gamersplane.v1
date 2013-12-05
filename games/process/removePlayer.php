@@ -15,7 +15,7 @@
 			if (isset($_POST['modal'])) echo 'No player';
 			else header('Location: '.SITEROOT.'/403');
 		} elseif ($gmCheck->rowCount() != 0 || $playerID == $userID) {
-			$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.str_pad(2, HERITAGE_PAD, 0, STR_PAD_LEFT).'-'.str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT).'%"');
+			$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.sql_forumIDPad(2).'-'.sql_forumIDPad($forumID).'%"');
 			$forumIDs = array();
 			foreach ($forums as $info) $forumIDs[] = $info['forumID'];
 			$mysql->query("DELETE FROM forumAdmins WHERE userID = $playerID AND forumID IN (".implode(', ', $forumIDs).")");

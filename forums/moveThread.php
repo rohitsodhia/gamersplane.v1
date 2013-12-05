@@ -10,7 +10,7 @@
 	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
 	$adminCheck = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, 2, {$heritage[1]})");
 	if (!$adminCheck->rowCount() || !in_array(2, $heritage)) { header('Location: '.SITEROOT.'/forums'); exit; }
-	$forumInfos = $mysql->query('SELECT forumID, title, parentID, heritage, `order` FROM forums WHERE heritage LIKE "002-'.str_pad($heritage[1], HERITAGE_PAD, 0, STR_PAD_LEFT).'%" ORDER BY LEFT(heritage, LENGTH(heritage) - 3), `order`');
+	$forumInfos = $mysql->query('SELECT forumID, title, parentID, heritage, `order` FROM forums WHERE heritage LIKE "002-'.sql_forumIDPad($heritage[1]).'%" ORDER BY LEFT(heritage, LENGTH(heritage) - 3), `order`');
 	$temp = array();
 	$forumOrder = array();
 	foreach ($forumInfos as $forumInfo) {

@@ -12,5 +12,17 @@ $(function() {
 			$('span.' + oldOpen + ', div.' + oldOpen).hide();
 			$('span.' + newOpen + ', div.' + newOpen).show();
 		}
-	})
+	});
+
+	$rollsTable = $('#rollsTable');
+	$('#addRoll').click(function (e) {
+		e.preventDefault();
+
+		$.post(SITEROOT + '/forums/ajax/addRoll', { count: $rollsTable.find('tr').length }, function (data) {
+			$newRow = $(data);
+			$newRow.find('input[type="checkbox"]').prettyCheckbox();
+			$newRow.find('select').prettySelect();
+			$newRow.appendTo($rollsTable);
+		})
+	});
 });

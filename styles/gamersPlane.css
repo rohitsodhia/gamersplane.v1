@@ -867,6 +867,14 @@ html[xmlns] .clearfix {
 	z-index: 5000;
 }
 
+.autocompleteWrapper input.open {
+-webkit-border-bottom-right-radius: 0;
+-webkit-border-bottom-left-radius: 0;
+-moz-border-radius-bottomright: 0;
+-moz-border-radius-bottomleft: 0;
+border-bottom-right-radius: 0;
+border-bottom-left-radius: 0;}
+
 .autocompleteResultsWrapper {
 	position: absolute;
 	left: 0;
@@ -876,6 +884,12 @@ html[xmlns] .clearfix {
 	display: none;
 	border: 1px solid #600;
 	background-color: #EEE;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
 }
 
 .autocompleteResults a {
@@ -984,9 +998,104 @@ html[xmlns] .clearfix {
 	left: -100px;
 }
 
+.cardBack.mid {
+	width: 72px;
+}
+
+.deck_pc.mid {
+	height: 90px;
+	width: 72px;
+}
+
+.deck_pc.mid img {
+	width: 936px;
+}
+
+.deck_pc.mid .hearts {
+	top: 0;
+}
+
+.deck_pc.mid .spades {
+	top: -90px;
+}
+
+.deck_pc.mid .diamonds {
+	top: -180px;
+}
+
+.deck_pc.mid .clubs {
+	top: -270px;
+}
+
+.deck_pc.mid .num_A {
+	left: 0;
+}
+
+.deck_pc.mid .num_2 {
+	left: -72px;
+}
+
+.deck_pc.mid .num_3 {
+	left: -144px;
+}
+
+.deck_pc.mid .num_4 {
+	left: -216px;
+}
+
+.deck_pc.mid .num_5 {
+	left: -288px;
+}
+
+.deck_pc.mid .num_6 {
+	left: -360px;
+}
+
+.deck_pc.mid .num_7 {
+	left: -432px;
+}
+
+.deck_pc.mid .num_8 {
+	left: -504px;
+}
+
+.deck_pc.mid .num_9 {
+	left: -576px;
+}
+
+.deck_pc.mid .num_10 {
+	left: -648px;
+}
+
+.deck_pc.mid .num_J {
+	left: -720px;
+}
+
+.deck_pc.mid .num_Q {
+	left: -792px;
+}
+
+.deck_pc.mid .num_K {
+	left: -864px;
+}
+
+.deck_pc.mid .blackJoker {
+	top: -360px;
+	left: 0;
+}
+
+.deck_pc.mid .redJoker {
+	top: -360px;
+	left: -72px;
+}
+
 .deck_pc.mini {
-	height: 62.5px;
-	width: 50px;
+	height: 60px;
+	width: 48px;
+}
+
+.deck_pc.mini img {
+	width: 624px;
 }
 
 .deck_pc.mini .hearts {
@@ -994,15 +1103,15 @@ html[xmlns] .clearfix {
 }
 
 .deck_pc.mini .spades {
-	top: -62.5px;
+	top: -60px;
 }
 
 .deck_pc.mini .diamonds {
-	top: -125px;
+	top: -120px;
 }
 
 .deck_pc.mini .clubs {
-	top: -187.5px;
+	top: -180px;
 }
 
 .deck_pc.mini .num_A {
@@ -1010,61 +1119,100 @@ html[xmlns] .clearfix {
 }
 
 .deck_pc.mini .num_2 {
-	left: -50px;
+	left: -48px;
 }
 
 .deck_pc.mini .num_3 {
-	left: -100px;
+	left: -96px;
 }
 
 .deck_pc.mini .num_4 {
-	left: -150px;
+	left: -144px;
 }
 
 .deck_pc.mini .num_5 {
-	left: -200px;
+	left: -192px;
 }
 
 .deck_pc.mini .num_6 {
-	left: -250px;
+	left: -240px;
 }
 
 .deck_pc.mini .num_7 {
-	left: -300px;
+	left: -288px;
 }
 
 .deck_pc.mini .num_8 {
-	left: -350px;
+	left: -336px;
 }
 
 .deck_pc.mini .num_9 {
-	left: -400px;
+	left: -384px;
 }
 
 .deck_pc.mini .num_10 {
-	left: -450px;
+	left: -432px;
 }
 
 .deck_pc.mini .num_J {
-	left: -500px;
+	left: -480px;
 }
 
 .deck_pc.mini .num_Q {
-	left: -550px;
+	left: -528px;
 }
 
 .deck_pc.mini .num_K {
-	left: -600px;
+	left: -576px;
 }
 
 .deck_pc.mini .blackJoker {
-	top: -250px;
+	top: -240px;
 	left: 0;
 }
 
 .deck_pc.mini .redJoker {
-	top: -250px;
-	left: -50px;
+	top: -240px;
+	left: -48px;
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
+/* Sprites */
+
+.sprite {
+	display: inline-block;
+	height: 20px;
+	padding: 0;
+	background: url('../images/sprites.png') top left no-repeat;
+}
+
+.sprite.downArrow, .sprite.upArrow {
+	width: 17px;
+}
+
+.sprite.downArrow {
+	background-position: 0 0;
+}
+
+.sprite.upArrow {
+	background-position: -17px 0;
+}
+
+.sprite.editWheel, .sprite.permissions, .sprite.cross {
+	width: 20px;
+}
+
+.sprite.editWheel {
+	background-position: -34px 0;
+}
+
+.sprite.permissions {
+	background-position: -54px 0;
+}
+
+.sprite.cross {
+	background-position: -74px 0;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -1730,6 +1878,7 @@ div.forumIcon.newPosts.sticky {
 #page_contact label {
 	width: 320px;
 	margin-right: 10px;
+	padding-top: 2px;
 	text-align: right;
 	float: left;
 }

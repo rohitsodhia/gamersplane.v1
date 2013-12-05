@@ -89,13 +89,13 @@
 				<h3 class="headerbar">Latest Posts</h3>
 				<div class="widgetBody">
 <?
-	$coreForums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "001-%" OR heritage LIKE "006-%"');
+	$coreForums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.sql_forumIDPad(1).'-%" OR heritage LIKE "'.sql_forumIDPad(6).'-%"');
 	$forumIDs = array();
 	foreach ($coreForums as $forum) $forumIDs[] = $forum['forumID'];
 	if ($loggedIn) {
-		$gameForums = $mysql->query('SELECT g.forumID FROM characters c, games g WHERE c.userID = '.$userID.' AND c.gameID IS NOT NULL AND c.approved = 1 AND c.gameID = g.gameID');
+		$gameForums = $mysql->query('SELECT g.forumID FROM players p, games g WHERE p.userID = '.$userID.' AND p.approved = 1 AND p.gameID = g.gameID');
 		if ($gameForums->rowCount()) {
-			$gameSForums = $mysql->prepare('SELECT forumID FROM forums WHERE heritage LIKE CONCAT("002-", LPAD(:forumID, 3, 0), "%")');
+			$gameSForums = $mysql->prepare('SELECT forumID FROM forums WHERE heritage LIKE CONCAT("'.sql_forumIDPad(2).'-", LPAD(:forumID, '.HERITAGE_PAD.', 0), "%")');
 			$gameForumIDs = array();
 			foreach ($gameForums as $gameForum) {
 				$gameSForums->bindValue(':forumID', $gameForum['forumID']);
@@ -104,7 +104,7 @@
 			}
 			$permissions = retrievePermissions($userID, $gameForumIDs, 'read');
 			foreach ($permissions as $pForumID => $permission) {
-				if ($permissions['read']) $forumIDs[] = $pForumID;
+				if ($permission['read']) $forumIDs[] = $pForumID;
 			}
 		}
 	}

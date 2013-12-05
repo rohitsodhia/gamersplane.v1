@@ -11,12 +11,12 @@
 		if (strcmp(filterString($_POST['label']), $_POST['label']) || $_POST['label'] == '') $errors .= 'invalidLabel=1&';
 
 		if ($errors != '?') {
-			if (isset($_POST['modal'])) echo 0;
-			else header('Location: '.SITEROOT.'/characters/my/'.substr($errors, 0, -1));
+			header('Location: '.SITEROOT.'/characters/my/'.substr($errors, 0, -1));
 		} else {
-			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, systemID) VALUES (:userID, :label, :systemID)');
+			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, mob, systemID) VALUES (:userID, :label, :mob, :systemID)');
 			$addCharacter->bindValue(':userID', $userID);
 			$addCharacter->bindValue(':label', $_POST['label']);
+			$addCharacter->bindValue(':mob', $_POST['mob'] == 1?1:0);
 			$addCharacter->bindValue(':systemID', $systemID);
 			$addCharacter->execute();
 			$characterID = $mysql->lastInsertId();
@@ -24,11 +24,9 @@
 			$mysql->query('INSERT INTO '.$systemShort.'_characters (characterID) VALUES ('.$characterID.')');
 			addCharacterHistory($characterID, 'created', $userID, 'NOW()', $systemID);
 
-			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/characters/'.$systemShort.'/'.$characterID.'/edit/new');
+			header('Location: '.SITEROOT.'/characters/'.$systemShort.'/'.$characterID.'/edit/new');
 		}
 	} else {
-		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/403');
+		header('Location: '.SITEROOT.'/403');
 	}
 ?>

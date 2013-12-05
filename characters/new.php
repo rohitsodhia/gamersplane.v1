@@ -2,9 +2,10 @@
 	$loggedIn = checkLogin();
 	
 	$userID = intval($_SESSION['userID']);
+	$mob = $pathOptions[1] == 'mob'?1:0;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">New Character</h1>
+		<h1 class="headerbar">New <?=$mob?'Mob':'Character'?></h1>
 		
 		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
 			<div class="tr">
@@ -22,6 +23,7 @@
 					<option value="1">Custom</option>
 				</select>
 			</div>
+			<input type="hidden" name="mob" value="<?=$mob?>">
 			<div class="tr alignCenter"><button type="submit" name="create" class="fancyButton">Create</button></div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

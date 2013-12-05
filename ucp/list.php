@@ -2,9 +2,9 @@
 	$loggedIn = checkLogin(0);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>GP's Gamers</h1>
+		<h1 class="headerbar">GP's Gamers</h1>
 		
-		<ul>
+		<ul class="clearfix hbMargined">
 <?
 	$userCount = $mysql->query('SELECT COUNT(userID) FROM users');
 	$userCount = $userCount->fetchColumn();
@@ -14,16 +14,12 @@
 	$usersOnPage = $mysql->query('SELECT userID, username, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate, avatarExt FROM users ORDER BY online DESC, username LIMIT '.(($page - 1) * $usersPerPage).', '.$usersPerPage);
 	$count = 0;
 	foreach ($usersOnPage as $userInfo) {
-
 		$count++;
-		if (file_exists(FILEROOT.'/ucp/avatars/'.$userInfo['userID'].'.'.$userInfo['avatarExt'])) $imageSize = getimagesize(FILEROOT.'/ucp/avatars/'.$userInfo['userID'].'.'.$userInfo['avatarExt']);
 ?>
 			<li<?=$count % 5 == 0?' class="last"':''?>>
 				<div class="onlineIndicator <?=$userInfo['online']?'online':'offline'?>"></div>
 				<a href="<?=SITEROOT.'/user/'.$userInfo['userID']?>" class="avatar">
-<? if (isset($imageSize)) { ?>
-					<img src="<?=SITEROOT?>/ucp/avatars/<?=$userInfo['userID'].'.'.$userInfo['avatarExt']?>" style="margin-top: <?=round((150 - $imageSize[1])/2)?>px;">
-<? } ?>
+					<img src="<?=SITEROOT.'/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$userInfo['userID']}.png")?$userInfo['userID']:'avatar')?>.png">
 				</a>
 				<p><a href="<?=SITEROOT.'/user/'.$userInfo['userID']?>"><?=$userInfo['username']?></a></p>
 			</li>

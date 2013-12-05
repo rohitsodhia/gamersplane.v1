@@ -70,7 +70,7 @@
 .markItUpHeader ul .markItUpDropMenu {
 	background:transparent url(images/menu.png) no-repeat 115% 50%;
 }
-.markItUpHeader ul .markItUpDropMenu a {
+.markItUpHeader ul .markItUpDropMenu > a {
 	margin-right: 6px;
 }
 .markItUpHeader ul .markItUpDropMenu li {

@@ -32,14 +32,14 @@
 	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, users.username, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
 	
 	
-//	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = $userID, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
+	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = $userID, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
 	$gameID = FALSE;
 	$isGM = FALSE;
 	if ($threadInfo['heritage'][0] == 2) {
 		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
-		$gameID = $gameID->fetchColumn;
+		$gameID = $gameID->fetchColumn();
 	}
-	
+
 	$rolls = $mysql->query("SELECT posts.postID, rolls.roll, rolls.indivRolls, rolls.ra, rolls.reason, rolls.total, rolls.visibility FROM posts, rolls WHERE posts.threadID = {$threadID} AND rolls.postID = posts.postID ORDER BY rolls.rollID");
 	$temp = array();
 	foreach ($rolls as $rollInfo) $temp[$rollInfo['postID']][] = $rollInfo;
@@ -93,7 +93,11 @@
 		$votes = $mysql->query("SELECT po.pollOptionID, COUNT(po.pollOptionID) numVotes FROM forums_pollOptions po, forums_pollVotes pv WHERE po.threadID = $threadID AND po.pollOptionID = pv.pollOptionID GROUP BY po.pollOptionID");
 		$numVotes = array();
 		$totalVotes = 0;
-		foreach ($votes as $voteInfo) { $numVotes[$voteInfo['pollOptionID']] = $voteInfo['numVotes']; $totalVotes += $voteInfo['numVotes']; }
+		foreach ($votes as $voteInfo) {
+			$numVotes[$voteInfo['pollOptionID']] = $voteInfo['numVotes'];
+			$totalVotes += $voteInfo['numVotes'];
+		}
+		$highestVotes = max($numVotes)?max($numVotes):0;
 ?>
 				<ul>
 <?
@@ -107,13 +111,13 @@
 			echo "						<div class=\"poll_option\">".printReady($optionInfo['option'])."</div>\n";
 			if (sizeof($castVotes)) {
 				if (!isset($numVotes[$optionInfo['pollOptionID']]))$numVotes[$optionInfo['pollOptionID']] = 0;
-				echo "						<div class=\"poll_votesCast\" ".($numVotes[$optionInfo['pollOptionID']]?' style="width: '.(75 + floor($numVotes[$optionInfo['pollOptionID']]/$totalVotes*425)).'px"':'').">".$numVotes[$optionInfo['pollOptionID']].", ".floor($numVotes[$optionInfo['pollOptionID']]/$totalVotes*100)."%</div>\n";
+				echo "						<div class=\"poll_votesCast\" ".($numVotes[$optionInfo['pollOptionID']]?' style="width: '.(100 + floor($numVotes[$optionInfo['pollOptionID']] / $highestVotes * 425)).'px"':'').">".$numVotes[$optionInfo['pollOptionID']].", ".floor($numVotes[$optionInfo['pollOptionID']] / $totalVotes * 100)."%</div>\n";
 			}
 			echo "					</li>\n";
 		}
 ?>
 				</ul>
-				<div id="poll_submit"><button type="submit" name="submit" class="btn_submit"></button></div>
+				<div id="poll_submit"><button type="submit" name="submit" class="fancyButton">Vote</button></div>
 			</form>
 <?
 	}
@@ -145,13 +149,14 @@
 					</header>
 <?
 			echo "\t\t\t\t\t<div class=\"post\">\n";
-			echo BBCode2Html(printReady($postInfo['message']))."\n";
+			echo printReady(BBCode2Html($postInfo['message']))."\n";
 			if ($postInfo['timesEdited']) { echo "\t\t\t\t\t\t".'<div class="editInfoDiv">Last edited '.date('F j, Y g:i a', $postInfo['lastEdit']).', a total of '.$postInfo['timesEdited'].' time'.(($postInfo['timesEdited'] > 1)?'s':'')."</div>\n"; }
 			echo "\t\t\t\t\t</div>\n";
 			
 			if (sizeof($rolls[$postInfo['postID']])) {
 ?>
-					<h4>Rolls</h4>
+					<div class="rolls">
+						<h4>Rolls</h4>
 <?
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 				$hidden = FALSE;
@@ -159,9 +164,10 @@
 				foreach ($rolls[$postInfo['postID']] as $roll) {
 					$showAll = $isGM || $userID == $postInfo['userID']?TRUE:FALSE;
 					$hidden = FALSE;
-					
-					echo "\t\t\t\t\t<div class=\"rollInfo\">";
-					echo "\t\t\t\t\t\t<div>";
+?>
+						<div class="rollInfo">
+							<div class="rollText">
+<?
 					echo $showAll && $roll['visibility'] > 0?'<span class="hidden">'.$visText[$roll['visibility']].'</span> ':'';
 					if ($roll['visibility'] <= 2) echo $roll['reason'];
 					elseif ($showAll) { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
@@ -172,8 +178,13 @@
 					echo "</div>\n";
 					if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">{$roll['indivRolls']} = {$roll['total']}</div>\n";
 					elseif ($showAll) echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">{$roll['indivRolls']} = {$roll['total']}</span></div>\n";
-					echo "\t\t\t\t\t</div>";
+?>
+						</div>
+<?
 				}
+?>
+					</div>
+<?
 	 		}
 			
 			if (sizeof($draws[$postInfo['postID']])) {
@@ -189,18 +200,19 @@
 						$count = 0;
 						foreach ($cardsDrawn as $cardDrawn) {
 							echo "\t\t\t\t\t\t<button type=\"submit\" name=\"position\" value=\"$count\">\n";
-							echo "\t\t\t\t\t\t\t".'<img src="'.SITEROOT.'/images/cards/'.$draw['type'].'/'.$cardDrawn.'_mini.png" alt="'.cardText($cardDrawn, $draw['type']).'" title="'.cardText($cardDrawn, $draw['type']).'">'."\n";
-							echo "\t\t\t\t\t\t\t<img src=\"".SITEROOT."/images/eye".($draw['reveals'][$count++] == 1?'':'_hidden').".png\" alt=\"Visible\" title=\"Visible\" height=\"25px\" class=\"eyeIcon\">\n";
+							echo "\t\t\t\t\t\t\t".getCardImg($cardDrawn, $draw['type'], 'mid')."\n";
+							$visText = $draw['reveals'][$count++]?'Visible':'Hidden';
+							echo "\t\t\t\t\t\t\t<div alt=\"{$visText}\" title=\"{$visText}\" class=\"eyeIcon".($visText == 'Hidden'?' hidden':'')."\"></div>\n";
 							echo "\t\t\t\t\t\t</button>\n";
 						}
 						echo "\t\t\t\t\t</form>\n";
 					} else {
-						echo "\t\t\t\t\t<div class=\"indent\">\n";
+						echo "\t\t\t\t\t<div>\n";
 						$cardsDrawn = explode('~', $draw['cardsDrawn']);
 						$count = 0;
 						foreach ($cardsDrawn as $cardDrawn) {
-							if ($draw['reveals'][$count++] == 1) echo "\t\t\t\t\t".'<img src="'.SITEROOT.'/images/cards/'.$draw['type'].'/'.$cardDrawn.'_mini.png" alt="'.cardText($cardDrawn, $draw['type']).'" title="'.cardText($cardDrawn, $draw['type']).'">'."\n";
-							else echo "\t\t\t\t\t\t<img src=\"".SITEROOT."/images/cards/back.png\" alt=\"Hidden Card\" title=\"Hidden Card\">\n";
+							if ($draw['reveals'][$count++] == 1) echo "\t\t\t\t\t\t".getCardImg($cardDrawn, $draw['type'], 'mid')."\n";
+							else echo "\t\t\t\t\t\t<img src=\"".SITEROOT."/images/tools/cards/back.png\" alt=\"Hidden Card\" title=\"Hidden Card\" class=\"cardBack mid\">\n";
 						}
 						echo "\t\t\t\t\t</div>\n";
 					}

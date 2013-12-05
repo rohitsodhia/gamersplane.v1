@@ -45,17 +45,11 @@
 	text-align: center;
 }
 
-#page_myCharacters #mobsList {
+#page_myCharacters #mobsList, #page_myCharacters #newChar {
 	margin-top: 2em;
 }
 
-/* --------------------------------------------*/
-
-#page_newCharacter h1 {
-	margin-bottom: .3em;
-}
-
-#page_newCharacter #newChar label {
+#page_myCharacters #newChar label {
 	float: left;
 	width: 120px;
 	text-align: right;
@@ -64,8 +58,12 @@
 	font-size: 1em;
 }
 
-#page_newCharacter #newChar input[type="text"] {
+#page_myCharacters #newChar input[type="text"] {
 	width: 200px;
+}
+
+#page_myCharacters #newChar .buttonPanel {
+	margin-left: 120px;
 }
 
 /* --------------------------------------------*/

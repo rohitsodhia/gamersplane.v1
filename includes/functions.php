@@ -63,7 +63,7 @@
 
 	function printReady($string, $options = array('stripslashes', 'nl2br')) {
 		if (in_array('nl2br', $options)) {
-			$string = str_replace('\r\n', "\n", $string);
+			$string = str_replace("\r\n", "\n", $string);
 			$string = nl2br($string);
 		}
 		if (in_array('stripslashes', $options)) $string = stripslashes($string);
@@ -253,6 +253,10 @@
 	function getCardImg($cardNum, $deckType, $size = '') {
 		global $mysql;
 
+		$validSizes = array('', 'mid', 'mini');
+		if (!in_array($size, $validSizes)) $size = '';
+		if ($size != '') $size = ' '.$size;
+
 		$deckInfo = $mysql->prepare("SELECT class, image FROM deckTypes WHERE short = :short");
 		$deckInfo->execute(array(':short' => $deckType));
 		$deckInfo = $deckInfo->fetch();
@@ -276,14 +280,26 @@
 			elseif ($classes == 54) return 'redJoker';
 		}
 
-		return '<div class="cardWindow deck_'.$deckInfo['class'].'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
-//		return '<div class="cardWindow deck_'.$deckInfo['class'].($size != ''?' mini':'').'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].($size != ''?'_mini':'').'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
+		return '<div class="cardWindow deck_'.$deckInfo['class'].$size.'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
 	}
 
 	
 /* Character Functions */
 	
 /* Forum Functions */
+	function buildForumStructure($rawForums) {
+		$forums = array(array('info' => $rawForums[0], 'children' => array()));
+		foreach ($rawForums as $key => $forum) { if ($key != 0) {
+			$heritage = array_map('intval', explode('-', $forum['heritage']));
+			$currentParent = &$forums[0];
+			for ($count = 0; $count + 1 < sizeof($heritage); $count++) {
+				$currentParent = &$currentParent['children'][$heritage[$count]];
+			}
+			$currentParent['children'][$forum['forumID']] = array('info' => $forum, 'children' => array());
+		} }
+		return $forums;
+	}
+
 	function retrieveHeritage($forumID, $parent = 0) {
 		global $mysql;
 		$level = 0;
@@ -502,6 +518,10 @@
 	}*/
 	
 /* MySQL Functions */
+	function sql_forumIDPad($forumID) {
+		return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
+	}
+
 	function sql_forumPermissions($userID, $types, $forumIDs = NULL) {
 		if ($types == '') $types = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
 		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);

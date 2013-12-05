@@ -1,7 +1,7 @@
 <? if (!MODAL) { ?>
 	</div>
 </div></div>
-<footer<?=$dispatchInfo['fixedGameMenu']?' class="withFixedMenu"':''?>><div class="bodyContainer">
+<footer<?=$fixedMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
 	<a href="<?=SITEROOT?>/contact">Contact Us</a>
 </div></footer>
 <? if (FIXED_GAME_MENU) require(FILEROOT.'/fixedGameMenu.php'); ?>

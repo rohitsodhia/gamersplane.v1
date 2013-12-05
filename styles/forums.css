@@ -3,28 +3,16 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-.quote {
-	margin: 10px 20px 20px;
+.quote, .note {
+	margin: 10px;
 	padding: 8px;
 	border: 1px solid #666;
-	background-color: #191919;
+	background-color: #EEE;
 }
 
-.quote .quotee {
+.quote div:first-child, .note div:first-child {
 	font-size: .85em;
-	font-weight: bold;
-	margin: 0 0 .5em 0;
-}
-
-.note {
-	margin: 10px 20px 20px;
-	padding: 8px;
-	border: 1px solid #666;
-	background-color: #191919;
-}
-
-.note div:first-child {
-	font-size: .85em;
+	line-height: 1em;
 	font-weight: bold;
 	margin: 0 0 .5em 0;
 	font-variant: small-caps;
@@ -279,14 +267,14 @@
 	border: 1px solid #444;
 	padding: 10px;
 	margin: 10px 0 20px;
-	background: #111;
+	background: #EEE;
 }
 
 #page_forum_thread #poll p {
 	font-size: .8em;
 }
 
-#page_forum_thread #poll_question {
+#page_forum_thread #poll #poll_question {
 	font-size: 1.1em;
 	font-weight: bold;
 }
@@ -301,26 +289,22 @@
 }
 
 #page_forum_thread #poll li div {
-	display: block;
-	float: left;
+	display: inline-block;
 }
 
 #page_forum_thread #poll .poll_input {
-	width: 30px;
+	width: 20px;
 }
 
 #page_forum_thread #poll .poll_option {
 	width: 300px;
-	padding-top: .1em;
 }
 
 #page_forum_thread #poll .poll_votesCast {
-	border: 1px solid #755;
-	border-right-color: #211;
-	border-bottom-color: #211;
-	background-color: #422;
-	text-align: right;
-	padding: 0 5px;
+	background-color: #B22;
+	color: #DDD;
+	text-align: left;
+	padding: 1px 5px;
 }
 
 #page_forum_thread #poll_submit {
@@ -328,17 +312,7 @@
 }
 
 #page_forum_thread .postBlock {
-	margin: 10px 0 30px;
-	background-image: url('../images/chatBody.jpg');
-	background-repeat: repeat-y;
-}
-
-#page_forum_thread .postRight {
-	background-position: top right;
-}
-
-#page_forum_thread .postLeft {
-	background-position: top left;
+	margin: 10px 0 20px;
 }
 
 #page_forum_thread .posterDetails {
@@ -407,7 +381,7 @@
 }
 
 #page_forum_thread .postHeader {
-	margin-bottom: .4em;
+	margin-bottom: .8em;
 	padding-bottom: .5em;
 	border-bottom: 1px solid #800;
 }
@@ -431,11 +405,11 @@
 
 #page_forum_thread div.postContent h4 {
 	font-weight: bold;
-	background: url('../images/fadeHR.jpg') bottom left no-repeat;
+	background: url('../images/fadeHR.png') bottom left no-repeat;
 	margin: 1.5em 0 .25em;
 }
 
-#page_forum_thread .postContent form, #page_forum_thread .postContent .indent, #page_forum_post #postedRolls .indent {
+#page_forum_thread .postContent .indent, #page_forum_post #postedRolls .indent {
 	margin: .25em 0 .5em 30px;
 }
 
@@ -447,17 +421,24 @@
 	margin-top: .6em;
 }
 
-#page_forum_thread .postContent form button {
+#page_forum_thread .postContent button {
 	position: relative;
 	height: auto;
 	padding: 0;
 	margin: 0 10px 0 0;
 }
 
-#page_forum_thread .postContent form button .eyeIcon {
+#page_forum_thread .eyeIcon {
 	position: absolute;
 	top: -10px;
 	right: -5px;
+	height: 25px;
+	width: 25px;
+	background: url('../images/eye.png') top left no-repeat;
+}
+
+#page_forum_thread .eyeIcon.hidden {
+	background-position: bottom left;
 }
 
 #page_forum_thread .postContent .indent img {
@@ -580,18 +561,15 @@
 }
 
 #page_forum_post #postedRolls, #page_forum_post #rollsTable {
-	margin-top: 1em;
+	margin-top: .3em;
 }
 
 #page_forum_post #postedRolls .rollInfo {
-	position: relative;
 	margin-bottom: 1em;
 }
 
-#page_forum_post #postedRolls select {
-	position: absolute;
-	top: 0;
-	left: 400px;
+#page_forum_post #postedRolls .prettySelect {
+	margin-bottom: 10px;
 }
 
 #page_forum_post #addPoll label {
@@ -682,6 +660,7 @@
 #page_forum_post #decksTable .reason {
 	width: 440px;
 	padding-left: 0;
+	padding-right: 15px;
 }
 
 #page_forum_post #decksTable .draw input {
@@ -702,6 +681,104 @@
 }
 
 /* --------------------------------------------*/
+
+#page_forumACP #forums, #page_forumACP #forums ul {
+	list-style: none;
+}
+
+#page_forumACP .sideWidget {
+	margin-top: 1em;
+	color: #777;
+}
+
+#page_forumACP #forums {
+	margin-left: 0;
+}
+
+#page_forumACP #forums ul {
+	margin-left: 15px;
+}
+
+#page_forumACP #forums li {
+	position: relative;
+}
+
+#page_forumACP #forums li div, #page_forumACP #forums li a {
+	padding: 2px 0;
+}
+
+#page_forumACP #forums li a, #page_forumACP #forums li a:visited, #page_forumACP #forums li a:active {
+	display: block;
+	color: #FFF;
+}
+
+#page_forumACP #forums li a:hover {
+	text-decoration: underline;
+}
+
+#page_forumACP #forums li.currentForum > a, #page_forumACP #forums li.currentForum > a:visited, #page_forumACP #forums li.currentForum > a:active {
+	font-weight: bold;
+	color: #C00;
+}
+
+#page_forumACP #forums ul li:before {
+	content: "-";
+	position: absolute;
+	left: -10px;
+	top: 2px;
+	color: #777;
+}
+
+#page_forumACP #forums ul li.adminLink:before {
+	color: #FFF;
+}
+
+#page_forumACP #controls {
+	float: right;
+}
+
+#page_forumACP #controls a {
+	display: block;
+	float: left;
+	padding: .3em 15px;
+	color: #FDD;
+	background: #522;
+	border-top: .3em solid #222;
+	border-left: 2px solid #222;
+}
+
+#page_forumACP #controls a:first-child {
+	border-left: none;
+}
+
+#page_forumACP #controls .wing {
+	float: none;
+	position: absolute;
+	top: 0;
+	margin: 0;
+	padding: 0;
+	border-style: solid;
+	border-color: #222;
+	border-top-color: transparent;
+	background: none;
+}
+
+#page_forumACP #controls .dlWing {
+	left: 0;
+}
+
+#page_forumACP #controls .drWing {
+	right: 0;
+}
+
+#page_forumACP #controls .current, #page_forumACP #controls a:hover {
+	color: #F00;
+	background: #222;
+}
+
+#page_forumACP .hbDark {
+	margin-top: 0;
+}
 
 #page_forumACP #acpMenu {
 	float: left;
@@ -734,15 +811,10 @@
 
 #page_forumACP .acpContent {
 	display: none;
-	margin-left: 170px;
 }
 
 #page_forumACP .acpContent.current {
 	display: block;
-}
-
-#page_forumACP h2 {
-	text-align: left;
 }
 
 #page_forumACP #breadcrumbs {
@@ -751,49 +823,53 @@
 	margin-bottom: 1em;
 }
 
-#page_forumACP #breadcrumbs #forumReturn {
-	float: right;
-}
-
-#page_forumACP #forumDetails label {
+#page_forumACP #details label {
 	float: left;
 	width: 150px;
 }
 
-#page_forumACP #forumDetails textarea {
+#page_forumACP #details input{
 	width: 300px;
-	height: 4.9em;
 }
 
-#page_forumACP #forumDetails button {
-	margin-left: 150px;
+#page_forumACP #details textarea {
+	width: 450px;
+	height: 6.5em;
+}
+
+#page_forumACP #details .buttonPanel {
+	margin-left: 130px;
 	margin-top: .5em;
 }
 
-#page_forumACP #forums h3 {
+#page_forumACP #subforums h3 {
 	margin: 1.5em 0 .5em;
 }
 
-#page_forumACP #forums h3.first {
+#page_forumACP #subforums h3.first {
 	margin-top: 0px;
 }
 
-#page_forumACP #categories .tr, #page_forumACP #forums .tr {
+#page_forumACP #subforums .buttonDiv > * {
+	text-indent: -9999px;
+}
+
+#page_forumACP #categories .tr, #page_forumACP #subforums .tr {
 	margin-left: 10px;
 }
 
-#page_forumACP #categories .buttonDiv, #page_forumACP #forums .buttonDiv {
+#page_forumACP #categories .buttonDiv, #page_forumACP #subforums .buttonDiv {
 	width: 30px;
 	text-align: center;
 	float: left;
 }
 
-#page_forumACP #categories .catNames, #page_forumACP #forums .forumNames {
+#page_forumACP #categories .catNames, #page_forumACP #subforums .forumNames {
 	padding: 2px 0;
 	margin-left: 160px;
 }
 
-#page_forumACP #forums .editLinks {
+#page_forumACP #subforums .editLinks {
 	float: left;
 	padding: 4px 10px 0;
 }
@@ -802,8 +878,12 @@
 	margin-left: 10px;
 }
 
-#page_forumACP #forums .delete {
+#page_forumACP #subforums .delete {
 	margin-left: 435px;
+}
+
+#page_forumACP #newForum {
+	margin-top: 1em;
 }
 
 #page_forumACP #newForum label {
@@ -816,12 +896,9 @@
 	width: 300px;
 }
 
-#page_forumACP #newForum button {
-	margin-left: 100px;
-}
-
-#page_forumACP #newForum {
-	margin-top: 1em;
+#page_forumACP #newForum .buttonPanel {
+	margin-top: .5em;
+	margin-left: 95px;
 }
 
 #page_forumACP #newPermission label {
@@ -839,31 +916,63 @@
 }
 
 #page_forumACP .gapAbove {
-	margin-top: 2em;
+	margin-top: 1em;
 }
 
-#page_forumACP .permissionsTitle, #page_forumACP .permissionsLink {
-	float: left;
+#page_forumACP .permission_edit, #page_forumACP .permission_delete {
+	font-size: .85em;
 }
 
-#page_forumACP #newPermission .permissionsTitle {
+#page_forumACP #permissions .permissions {
+	display: none;
+	margin-left: 20px;
+}
+
+#page_forumACP .permissionSet .tr {
+	padding-bottom: 0;
+}
+
+#page_forumACP .permission_label, #page_forumACP .permission_type {
+	display: inline-block;
+}
+
+#page_forumACP .permission_type {
 	width: 150px;
-}
-
-#page_forumACP .permissionsTitle {
-	width: 300px;
-}
-
-#page_forumACP .permissionsLink {
-	margin: 0 30px 0 0;
-}
-
-#page_forumACP .noFloat {
-	float: none;
 }
 
 #page_forumACP #updateDiv {
 	clear: both;
 	margin-top: 2.5em;
 	text-align: center;
+}
+
+/* --------------------------------------------*/
+
+#page_forumACP_newPermission #optList, #page_forumACP_newPermission #permissionsList {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#page_forumACP_newPermission #optList {
+	width: 200px;
+}
+
+#page_forumACP_newPermission #permissionsList {
+	width: 265px;
+}
+
+#page_forumACP_newPermission .tr {
+	padding-top: 0;
+}
+
+#page_forumACP_newPermission .permission_label, #page_forumACP_newPermission .permission_type {
+	display: inline-block;
+}
+
+#page_forumACP_newPermission .permission_type {
+	width: 150px;
+}
+
+#page_forumACP_newPermission .buttonPanel {
+	margin-top: .5em;
 }

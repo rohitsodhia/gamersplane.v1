@@ -95,25 +95,22 @@ function BBCode2Html($text) {
 //					 '<li>\1</li>'
 	);
 	$text = preg_replace($in, $out, $text);
-	while (preg_match('/\[quote(?:="(\w+?)")?](.*)\[\/quote\]/ms', $text)) $text = preg_replace('/\[quote(?:="(\w+?)")?](.*)\[\/quote\]/ms', '<blockquote class="quote"><div class="quotee">\1 says:</div>\2</blockquote>', $text);
-//	$text = preg_replace('/\<div class="quotee"\> says:\<\/div\>/', '<div>&nbsp;</div>', $text);
-	$text = preg_replace('/\<div class="quotee"\> says:\<\/div\>/', '<div>Quote:</div>', $text);
+	while (preg_match("/\[quote(?:=\"(\w+?)\")?]((?!\[quote).*?)\[\/quote\]/sm", $text)) $text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"(\w+?)\")?]((?!\[quote).*?)\[\/quote\][\r\n]*/sm", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
+	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
 	
 	$matches = NULL;
 	global $isGM;
 	global $postInfo;
 	$display = FALSE;
-	while (preg_match('/\[note="?(\w[\w +;,]+?)"?](.*)\[\/note\]/ms', $text, $matches)) {
-		$display = FALSE;
-		$allRecipients = '';
-		foreach (preg_split('/[^\w]+/', $matches[1]) as $eachUser) {
-			if ($eachUser == $_SESSION['username'] || $isGM || $_SESSION['userID'] == $postInfo['userID']) $display = TRUE;
-			if (strlen($eachUser)) $allRecipients .= $eachUser.', ';
+
+	$text = preg_replace('/\[note="?(\w[\w +;,]+)"?](.*?)\[\/note\][\n\r]*/ms', '<blockquote class="note"><div>Note to \1</div>\2</blockquote>', $text);
+	if (!$isGM && $postInfo['userID'] != $_SESSION['userID'] && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$noteTo = preg_split('/[^\w]+/', $match[1]);
+			if (!in_array($_SESSION['username'], $noteTo)) $text = str_replace($match[0], '', $text);
 		}
-		$text = preg_replace('/\[note="?(?:\w[\w +;,]+)"?](.*)\[\/note\]/ms', '<blockquote class="note"><div>Note to '.substr($allRecipients, 0, -2).'</div>'.($display?'\1':'').'</blockquote>', $text);
-		break;
 	}
-	
+
 // paragraphs
 //	$text = str_replace("\r", "", $text);
 //	$text = "<p>".preg_replace("/(\n){2,}/", "</p><p>", $text)."</p>";

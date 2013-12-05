@@ -20,25 +20,8 @@ $.cssHooks.backgroundColor = {
 
 $(function() {
 	$('select').prettySelect();
-
 	$('input[type="checkbox"]').prettyCheckbox();
-
-	$('input[type="radio"]').each(function () {
-		$(this).wrap('<div class="prettyRadio"></div>');
-		if ($(this).is(':checked')) $(this).parent().addClass('checked');
-	}).hide().change(function (e) {
-		$(this).parent().toggleClass('checked');
-	});
-	$('.prettyRadio').click(function (e) {
-		if (!$(this).hasClass('checked')) {
-			$radio = $(this).find('input');
-			radioName = $radio.attr('name');
-			$('input[name="' + radioName + '"]').prop('checked', false).parent().removeClass('checked');
-			$(this).addClass('checked');
-			$radio.prop('checked', true);
-		}
-	});
-
+	$('input[type="radio"]').prettyRadio();
 
 	$('.loginLink').colorbox();
 

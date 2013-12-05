@@ -2,7 +2,7 @@
 	$loggedIn = checkLogin();
 	
 	$userID = intval($_SESSION['userID']);
-	
+
 	if (isset($_POST['advanced'])) {
 		$_SESSION['message'] = $_POST['message'];
 		header('Location: '.SITEROOT.'/forums/post/'.intval($_POST['threadID']));
@@ -13,6 +13,27 @@
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 		$title = sanitizeString($_POST['title']);
 		$message = sanitizeString($_POST['message']);
+
+		if (preg_match_all('/\[note="?(\w[\w +;,]+)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
+			$allUsers = array();
+			foreach ($matches as $match) {
+				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) $allUsers[] = $eachUser;
+			}
+			$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = :username');
+			foreach ($allUsers as $key => $username) {
+				$userCheck->bindValue(':username', strtolower($username));
+				$userCheck->execute();
+				if (!$userCheck->rowCount()) unset($allUsers[$key]);
+			}
+			foreach ($matches as $match) {
+				$matchUsers = preg_split('/[^\w]+/', $match[1]);
+				$validUsers = array_intersect($matchUsers, $allUsers);
+				if (sizeof($matchUsers) != $validUsers) {
+					$validNote = preg_replace('/\[note.*?\]/', '[note="'.implode(',', $validUsers).'"]', $match[0]);
+					$message = str_replace($match[0], $validNote, $message);
+				}
+			}
+		}
 		
 		$rolls = array();
 		$draws = array();
@@ -27,7 +48,7 @@
 				$draws[intval($parts[2])][$parts[1]] = $value;
 			}
 		}
-		
+
 		if (sizeof($rolls)) { foreach ($rolls as $num => $roll) {
 			$cleanedRoll = array();
 			if ($roll['roll']) {
@@ -40,7 +61,7 @@
 					$indivRoll = $indivRoll[0];
 					$rollVals = rollDice($indivRoll, $ra);
 					$cleanedRoll['roll'] = $roll['roll'];
-					$cleanedRoll['reason'] = sanatizeString($roll['reason']);
+					$cleanedRoll['reason'] = sanitizeString($roll['reason']);
 					$cleanedRoll['ra'] = $ra;
 					$cleanedRoll['total'] = $rollVals['total'];
 					$cleanedRoll['indivRolls'] = $rollVals['indivRolls'];
@@ -49,11 +70,11 @@
 				}
 			} else unset($rolls[$num]);
 		} }
-		
+
 		if (sizeof($draws)) {
 			$deckInfos = $mysql->query('SELECT decks.deckID, decks.deck, decks.type, decks.position FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deckPermissions.userID = '.$userID.' AND decks.deckID IN ('.implode(',', array_keys($draws)).')');
 			$temp = array();
-			foreach ($deckInfo as $deckInfo) $temp[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
+			foreach ($deckInfos as $deckInfo) $temp[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
 			$deckInfos = $temp;
 			foreach ($draws as $deckID => &$draw) {
 				if (isset($deckInfos[$deckID]) && $draw['draw'] > 0) {
@@ -69,7 +90,7 @@
 					$draw['cardsDrawn'] = array();
 					for ($count = $deckInfos[$deckID]['position']; $count <= $deckInfos[$deckID]['position'] + $draw['draw'] - 1; $count++) $draw['cardsDrawn'][] = $deck[$count - 1];
 					$draw['cardsDrawn'] = implode('~', $draw['cardsDrawn']);
-					$draw['reason'] = sanatizeString($draw['reason']);
+					$draw['reason'] = sanitizeString($draw['reason']);
 					$draw['type'] = $deckInfos[$deckID]['type'];
 //					$draws[$drawID] = $draw;
 				} else unset($draws[$deckID]);
@@ -93,7 +114,7 @@
 			if (strlen($title) == 0) $_SESSION['errors']['noTitle'] = 1;
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
 			
-			$poll = array('poll' => sanatizeString($_POST['poll']), 'pollOptions' => preg_split('/\n/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
+			$poll = array('poll' => sanitizeString($_POST['poll']), 'pollOptions' => preg_split('/\n/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
 			if (strlen($poll['poll']) == 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noPoll'] = 1;
 			if (strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) <= 1) $_SESSION['errors']['noOptions'] = 1;
 			if ($poll['optionsPerUser'] == 0 && strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noOptionsPerUser'] = 1;
@@ -105,24 +126,34 @@
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
 			} else {
-				$mysql->query('INSERT INTO threads '.$mysql->setupInserts(array('forumID' => $forumID, 'sticky' => $sticky, 'allowRolls' => $allowRolls, 'allowDraws' => $allowDraws)));
+				$mysql->query("INSERT INTO threads SET forumID = $forumID, sticky = $sticky, allowRolls = $allowRolls, allowDraws = $allowDraws");
 				$threadID = $mysql->lastInsertId();
 				
-				$mysql->query('INSERT INTO posts '.$mysql->setupInserts(array('threadID' => $threadID, 'title' => $title, 'authorID' => $userID, 'message' => $message, 'datePosted' => date('Y-m-d H:i:s'))));
+				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = $userID, message = :message, datePosted = :datePosted");
+				$addPost->bindValue(':title', $title);
+				$addPost->bindValue(':message', $message);
+				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
+				$addPost->execute();
 				$postID = $mysql->lastInsertId();
 				
 				if (strlen($poll['poll']) && sizeof($poll['pollOptions'])) {
-					$mysql->query("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ($threadID, '{$poll['poll']}', {$poll['optionsPerUser']}, {$poll['allowRevoting']})");
-					$oInserts = '';
-					foreach ($poll['pollOptions'] as $option) $oInserts .= "($threadID, '".sanatizeString($option)."'), ";
-					$mysql->query('INSERT INTO forums_pollOptions (threadID, `option`) VALUES '.substr($oInserts, 0, -2));
+					$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ($threadID, :poll, :optionsPerUser, :allowRevoting)");
+					$addPoll->bindValue(':poll', $poll['poll']);
+					$addPoll->bindValue(':optionsPerUser', $poll['optionsPerUser']);
+					$addPoll->bindValue(':allowRevoting', $poll['allowRevoting']);
+					$addPoll->execute();
+					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = $threadID, `option` = :option");
+					foreach ($poll['pollOptions'] as $option) {
+						$addPollOptions->bindValue(':option', $option);
+						$addPollOptions->execute();
+					}
 				}
 			}
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
 			$threadInfo = $mysql->query('SELECT forumID, locked, allowRolls, allowDraws FROM threads WHERE threadID = '.$threadID);
 			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
-			$permissions = retrievePermissions($userID, $forumID, 'write, addRolls, addDraws', TRUE);
+			$permissions = retrievePermissions($userID, $forumID, 'write, addRolls, addDraws, moderate', TRUE);
 			if (!$permissions['write'] || $locked) { header('Location: '.SITEROOT.'/forums/'.$forumID); exit; }
 			
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
@@ -133,11 +164,12 @@
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
 			} else {
-//				$mysql->setTable('posts');
 				$datePosted = date('Y-m-d H:i:s');
-//				$mysql->setInserts(array('threadID' => $threadID, 'title' => $title, 'authorID' => $userID, 'message' => $message, 'datePosted' => $datePosted));
-//				$mysql->stdQuery('insert');
-				$mysql->query("INSERT INTO posts (threadID, title, authorID, message, datePosted) VALUES ($threadID, '$title', $userID, '$message', '$datePosted')");
+				$addPost = $mysql->prepare("INSERT INTO posts (threadID, title, authorID, message, datePosted) VALUES ($threadID, :title, $userID, :message, :datePosted)");
+				$addPost->bindValue(':title', $title);
+				$addPost->bindValue(':message', $message);
+				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
+				$addPost->execute();
 				$postID = $mysql->lastInsertId();
 			}
 		} elseif ($_POST['edit']) {
@@ -152,7 +184,7 @@
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
 			
 			if ($postInfo['firstPostID'] == $postID && !isset($_POST['deletePoll'])) {
-				$poll = array('poll' => sanatizeString($_POST['poll']), 'pollOptions' => preg_split('/(\r|\n)+/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
+				$poll = array('poll' => sanitizeString($_POST['poll']), 'pollOptions' => preg_split('/(\r|\n)+/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
 				if (strlen($poll['poll']) == 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noPoll'] = 1;
 				if (strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) <= 1) $_SESSION['errors']['noOptions'] = 1;
 				if ($poll['optionsPerUser'] == 0 && strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noOptionsPerUser'] = 1;
@@ -164,15 +196,22 @@
 				header('Location: '.$_SESSION['lastURL'].'/?errors=1');
 				exit;
 			} else {
-				$updates = array('message = "'.$message.'"');
-				if ($postInfo['firstPostID'] == $postID && strlen($title) != 0) $updates[] = 'title = "'.$title.'"';
-				
-				if (((time() + 300) > strtotime($postInfo['datePosted']) || (time() + 60) > strtotime($postInfo['lastEdit'])) && !$permissions['moderate'] && ($postInfo['title'] != $title || $postInfo['message'] != $message)) {
-					$updates[] = 'lastEdit = "'.date('Y-m-d H:i:s').'"';
-					$updates[] = 'timesEdited = '.($postInfo['timesEdited'] + 1);
+				$updatePostQuery = 'UPDATE POSTS SET message = :message';
+				$updates = array('message' => $message);
+				if ($postInfo['firstPostID'] == $postID && strlen($title) != 0) {
+					$updatePostQuery .= ', title = :title';
+					$updates['title'] = $title;
 				}
 				
-				$mysql->query('UPDATE posts SET '.implode(', ', $updates).' WHERE postID = '.$postID);
+				if (((time() + 300) > strtotime($postInfo['datePosted']) || (time() + 60) > strtotime($postInfo['lastEdit'])) && !$permissions['moderate'] && ($postInfo['title'] != $title || $postInfo['message'] != $message)) {
+					$updatePostQuery .= ', lastEdit = :lastEdit, timesEdited = :timesEdited';
+					$updates['lastEdit'] = date('Y-m-d H:i:s');
+					$updates['timesEdited'] = $postInfo['timesEdited'] + 1;
+				}
+				
+				$updatePost = $mysql->prepare($updatePostQuery.' WHERE postID = '.$postID);
+				foreach ($updates as $key => $value) $updatePost->bindValue(':'.$key, $value);
+				$updatePost->execute();
 				
 				$threadID = $postInfo['threadID'];
 				
@@ -187,17 +226,24 @@
 						$mysql->query("DELETE FROM po, pv USING forums_pollOptions po LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID WHERE po.threadID = $threadID");
 						$mysql->query("DELETE FROM forums_polls WHERE threadID = $threadID");
 					} elseif (strlen($poll['poll']) && sizeof($poll['pollOptions'])) {
-						$mysql->query("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ($threadID, '{$poll['poll']}', {$poll['optionsPerUser']}, {$poll['allowRevoting']}) ON DUPLICATE KEY UPDATE poll = '{$poll['poll']}', optionsPerUser = {$poll['optionsPerUser']}, allowRevoting = {$poll['allowRevoting']}");
-						
+						$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ($threadID, :poll, :optionsPerUser, :allowRevoting) ON DUPLICATE KEY UPDATE poll = :poll, optionsPerUser = :optionsPerUser, allowRevoting = :allowRevoting");
+						$addPoll->bindValue(':poll', $poll['poll']);
+						$addPoll->bindValue(':optionsPerUser', $poll['optionsPerUser']);
+						$addPoll->bindValue(':allowRevoting', $poll['allowRevoting']);
+						$addPoll->execute();
+
 						$pollOptions = $mysql->query("SELECT pollOptionID, `option` FROM forums_pollOptions WHERE threadID = $threadID");
 						$options = array();
 						foreach ($pollOptions as $optionInfo) $options[$optionInfo['pollOptionID']] = $optionInfo['option'];
 						$oInserts = '';
+						$addPollOption = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = $threadID, `option` = :option");
 						foreach ($poll['pollOptions'] as $option) {
 							if (in_array($option, $options)) unset($options[array_search($option, $options)]);
-							else $oInserts .= "($threadID, '".sanatizeString($option)."'), ";
+							else {
+								$addPollOption->bindValue(':option', $option);
+								$addPollOption->execute();
+							}
 						}
-						if (strlen($oInserts)) $mysql->query('INSERT INTO forums_pollOptions (threadID, `option`) VALUES '.substr($oInserts, 0, -2));
 						if (sizeof($options)) $mysql->query('DELETE FROM po, pv USING forums_pollOptions po LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID WHERE po.pollOptionID IN ('.implode(', ', array_keys($options)).')');
 					}
 				} else {
@@ -214,20 +260,38 @@
 		}
 		
 		if ($postID && $threadID && (sizeof($rolls) || sizeof($draws))) {
-			if (sizeof($rolls) && $permissions['addRolls'] && $allowRolls) {
-				foreach($rolls as $num => $roll) $rolls[$num]['postID'] = $postID;
-				$mysql->query('INSERT INTO rolls '.setupInserts($rolls));
+			if (sizeof($rolls) && $permissions['addRolls'] && ($allowRolls || $permissions['moderate'])) {
+				$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, roll = :roll, reason = :reason, ra = :ra, total = :total, indivRolls = :indivRolls, visibility = :visibility");
+				foreach($rolls as $roll) {
+					$addRoll->bindValue(':roll', $roll['roll']);
+					$addRoll->bindValue(':reason', $roll['reason']);
+					$addRoll->bindValue(':ra', $roll['ra']);
+					$addRoll->bindValue(':total', $roll['total']);
+					$addRoll->bindValue(':indivRolls', $roll['indivRolls']);
+					$addRoll->bindValue(':visibility', $roll['visibility']);
+					$addRoll->execute();
+				}
 			}
 			
-			if (sizeof($draws)) { foreach($draws as $deckID => $draw) {
-				$mysql->query('UPDATE decks SET position = position + '.$draw['draw'].' WHERE deckID = '.$deckID);
-				$mysql->query('INSERT INTO deckDraws '.$mysql->setupInserts(array('postID' => $postID, 'deckID' => $deckID, 'type' => $draw['type'], 'cardsDrawn' => $draw['cardsDrawn'], 'reveals' => "'".str_repeat('0', $draw['draw'])."'", 'reason' => $draw['reason'])));
-			} }
+			if (sizeof($draws)) {
+				print_r($draws);
+				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = :postID, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
+				foreach($draws as $deckID => $draw) {
+					$mysql->query('UPDATE decks SET position = position + '.$draw['draw'].' WHERE deckID = '.$deckID);
+					$addDraw->bindValue('postID', $postID);
+					$addDraw->bindValue('deckID', $deckID);
+					$addDraw->bindValue('type', $draw['type']);
+					$addDraw->bindValue('cardsDrawn', $draw['cardsDrawn']);
+					$addDraw->bindValue('reveals', str_repeat('0', $draw['draw']));
+					$addDraw->bindValue('reason', $draw['reason']);
+					$addDraw->execute();
+				}
+			}
 		}
 		
 		$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$threadID}, userID = {$userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		 
-		if ($postID && $threadID) header('Location: '.SITEROOT.'/forums/thread/'.$threadID.($postID == $postInfo['firstPostID']?'':'?p='.$postID.'#p'.$postID));
+		if ($postID && $threadID) header('Location: '.SITEROOT.'/forums/thread/'.$threadID.($postID == $postInfo['firstPostID'] && $_POST['threadID']?'':'?p='.$postID.'#p'.$postID));
 		else header('Location: '.SITEROOT.'/403');
 	} else header('Location: '.SITEROOT.'/forums/thread/'.$threadID);
 ?>

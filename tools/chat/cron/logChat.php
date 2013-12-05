@@ -15,7 +15,7 @@
 					$mysql->query("INSERT INTO forums (title, parentID, `order`) VALUES ('Chat Logs', {$info['forumID']}, $order)");
 					$forumID = $mysql->lastInsertId();
 					$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
-					$mysql->query("UPDATE forums SET heritage = '".str_pad(2, HERITAGE_PAD, 0, STR_PAD_LEFT)."-".str_pad($info['forumID'], HERITAGE_PAD, 0, STR_PAD_LEFT)."-".str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT)."' WHERE forumID = $forumID");
+					$mysql->query("UPDATE forums SET heritage = '".sql_forumIDPad(2)."-".sql_forumIDPad($info['forumID'])."-".sql_forumIDPad($forumID)."' WHERE forumID = $forumID");
 					$mysql->query("UPDATE games SET logForumID = $forumID WHERE gameID = {$info['gameID']}");
 					$info['logForumID'] = $forumID;
 				}

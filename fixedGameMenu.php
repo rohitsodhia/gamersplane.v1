@@ -11,7 +11,7 @@
 			$gameInfo = $gameInfo->fetch();
 ?>
 	<ul class="rightCol">
-		<li><a href="<?=SITEROOT.'/chat/'.$gameID?>" class="menuLink">Chat</a></li>
+<!--		<li><a href="<?=SITEROOT.'/chat/'.$gameID?>" class="menuLink">Chat</a></li>-->
 		<li><a href="<?=SITEROOT.'/games/'.$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
 <?		} ?>

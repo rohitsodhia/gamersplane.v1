@@ -1,73 +1,59 @@
 <?
-	function getTrinary($value) { return (intval($value) >= -1 && intval($value) <= 1)?intval($value):0; }
+	function getTrinary($value, $pType) {
+		$multipliers = array('general' => 1, 'group' => 2, 'user' => 4);
+		$value = (intval($value) == -1 || intval($value) == 1)?intval($value):0;
+		return $value * $multipliers[$pType];
+	}
 	
 	$loggedIn = checkLogin();
 	
 	$userID = intval($_SESSION['userID']);
 	$forumID = intval($_POST['forumID']);
-	$pType = in_array($_POST['type'], array('general', 'group', 'user'))?$_POST['type']:FALSE;
-	$updateType = in_array($_POST['save'], array('new', 'edit'))?$_POST['save']:FALSE;
-/*	if (isset($_POST['typeName']) && $pType != 'general') {
-		$typeName = sanatizeString($_POST['typeName']);
-		$mysql->query('SELECT gameID, title FROM games WHERE forumID = '.$forumID);
-		if ($mysql->rowCount() && $pType == 'user') {
-			$gameInfo = $mysql->fetch();
-			$mysql->query("SELECT users.userID FROM users, characters WHERE users.username = \"{$typeName}\" AND characters.gameID = {$gameInfo['gameID']} AND characters.approved = 1 AND users.userID = characters.userID");
-			if (!$mysql->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?{$updateType}={$pType}&notInGame=1"); exit; }
-			list($typeID) = $mysql->getList();
-		} elseif ($mysql->rowCount() && $pType == 'group') { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?noGameGroups=1"); exit; }
-		else {
-			$mysql->query("SELECT {$pType}ID FROM {$pType}s WHERE ".($pType == 'user'?'user':'').'name = "'.$typeName.'"');
-			if (!$mysql->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?{$updateType}={$pType}&invalidName=1"); exit; }
-			list($typeID) = $mysql->getList();
-		}
-	} else $typeID = intval($_POST['typeID']);
-	if ($updateType == 'new') {
-	}*/
+	$pType = in_array($_POST['pType'], array('general', 'group', 'user'))?$_POST['pType']:FALSE;
 	
-	$permissions = $_POST['permissions'];
-	if ($permissions['moderate']) foreach ($permissions as $key => $value) $permissions[$key] = 1;
-	else foreach ($permissions as $key => $value) $permissions[$key] = getTrinary($value);
+	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
+	$forumInfo = $mysql->query("SELECT forumID, title, forumType, parentID, heritage FROM forums WHERE forumID = $forumID");
+	$forumInfo = $forumInfo->fetch();
+	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $forumID != 10) || (!$pType && !isset($_POST['save']))) {
+		if (MODAL) echo 0;
+		else { header('Location: '.SITEROOT.'/forums/'); exit; }
+	} 
+
+	$gameForum = strpos($forumInfo['heritage'], sql_forumIDPad(2)) !== FALSE && $forumID != 10?TRUE:FALSE;
+	if ($gameForum) {
+		$heritage = explode('-', $forumInfo['heritage']);
+		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($heritage[1]));
+		$gameID = $gameID->fetchColumn();
+	} else $gameID = NULL;
 	
-	$family = retrieveHeritage($forumID);
-	$adminCheck = $mysql->query('SELECT forumID FROM forumAdmins WHERE userID = '.$userID.' AND forumID IN ('.implode(', ', array_keys($family)).', 0)');
-	if (!$adminCheck->rowCount()) { header('Location: '.SITEROOT.'/forums/'); exit; }
-	
-	if ($updateType == 'new') {
-		if (isset($_POST['typeName']) && $pType != 'general') {
-			$typeName = sanatizeString($_POST['typeName']);
-			$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.$forumID);
-			if ($gameID->rowCount() && $pType == 'user') {
-				$gameID = $gameID->fetchColumn();
-				$typeID = $mysql->query("SELECT users.userID FROM users, characters WHERE LOWER(users.username) = '".strtolower($typeName)."' AND characters.gameID = $gameID AND characters.approved = 1 AND users.userID = characters.userID");
-				if (!$mysql->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?{$updateType}={$pType}&notInGame=1"); exit; }
-				$typeID = $typeID->fetchColumn();
-				$adminCheck = $mysql->query('SELECT forumID FROM forumAdmins WHERE userID = '.$typeID.' AND forumID IN ('.implode(', ', array_keys($family)).', 0)');
-				if ($adminCheck->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?admin=".urlencode($typeName)); exit; }
-			} elseif ($gameID->rowCount() && $pType == 'group') { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?noGameGroups=1"); exit; }
-			else {
-				$typeID = $mysql->query("SELECT {$pType}ID FROM ".($pType == 'user'?'users':'forums_groups').' WHERE LOWER('.($pType == 'user'?'user':'').'name) = "'.strtolower($typeName).'"');
-				if (!$typeID->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?{$updateType}={$pType}&invalidName=1"); exit; }
-				$typeID = $typeID->fetchColumn();
-				if ($pType == 'user') {
-					$adminCheck = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $typeID AND forumID IN (".implode(', ', array_keys($family)).', 0)');
-					if ($adminCheck->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?admin=".urlencode($typeName)); exit; }
+	if (isset($_POST['add'])) {
+		$permissions = $_POST['permissions'];
+		if ($permissions['moderate']) foreach ($permissions as $key => $value) $permissions[$key] = 1;
+		else foreach ($permissions as $key => $value) $permissions[$key] = getTrinary($value, $pType);
+
+		if ($gameForum && $pType == 'user') $validOpt = $mysql->prepare("SELECT u.userID optID FROM users u INNER JOIN players p ON u.userID = p.userID and p.approved = 1 LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE u.username = ? AND p.gameID = {$gameID} AND per.forumID IS NULL LIMIT 1");
+		elseif ($pType == 'user') $validOpt = $mysql->prepare("SELECT u.userID optID FROM users u LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE u.username = ? AND per.forumID IS NULL LIMIT 1");
+		elseif ($pType == 'group') $validOpt = $mysql->prepare("SELECT fg.groupID optID FROM forums_groups fg LEFT JOIN forums_permissions_groups per ON fg.groupID = per.groupID AND per.forumID = {$forumID} WHERE fg.name = ? AND fg.ownerID = {$userID} LIMIT 1");
+
+		$search = sanitizeString($_POST['option'], 'like_clean', 'search_format');
+		$validOpt->execute(array($search));
+		$optID = $validOpt->fetchColumn();
+
+		if ($optID) $mysql->query("INSERT INTO forums_permissions_{$pType}s SET {$pType}ID = {$optID}, forumID = {$forumID}, `read` = {$permissions['read']}, `write` = {$permissions['write']}, `editPost` = {$permissions['editPost']}, `deletePost` = {$permissions['deletePost']}, `createThread` = {$permissions['createThread']}, `deleteThread` = {$permissions['deleteThread']}, `addPoll` = {$permissions['addPoll']}, `addRolls` = {$permissions['addRolls']}, `addDraws` = {$permissions['addDraws']}, `moderate` = {$permissions['moderate']}");
+
+		echo 1;
+	} elseif (isset($_POST['save'])) {
+		foreach ($_POST['permissions'] as $pType => $permissions) {
+			if ($pType == 'general') {
+				foreach ($permissions as $key => $value) $permissions[$key] = getTrinary($value, 'general');
+				$mysql->query("UPDATE forums_permissions_general SET `read` = {$permissions['read']}, `write` = {$permissions['write']}, `editPost` = {$permissions['editPost']}, `deletePost` = {$permissions['deletePost']}, `createThread` = {$permissions['createThread']}, `deleteThread` = {$permissions['deleteThread']}, `addPoll` = {$permissions['addPoll']}, `addRolls` = {$permissions['addRolls']}, `addDraws` = {$permissions['addDraws']} WHERE forumID = {$forumID}");
+			} else {
+				foreach ($permissions as $typeID => $permission) {
+					foreach ($permission as $key => $value) $permission[$key] = getTrinary($value, $pType);
+					$mysql->query("UPDATE forums_permissions_{$pType}s SET `read` = {$permission['read']}, `write` = {$permission['write']}, `editPost` = {$permission['editPost']}, `deletePost` = {$permission['deletePost']}, `createThread` = {$permission['createThread']}, `deleteThread` = {$permission['deleteThread']}, `addPoll` = {$permission['addPoll']}, `addRolls` = {$permission['addRolls']}, `addDraws` = {$permission['addDraws']}, `moderate` = {$permission['moderate']} WHERE {$pType}ID = {$typeID} AND forumID = {$forumID}");
 				}
 			}
-		
-			$mysql->query("INSERT INTO forums_permissions_{$pType}s ({$pType}ID, forumID) VALUES ($typeID, $forumID)");
-			header('Location: '.SITEROOT.'/forums/acp/permissions/'.$forumID.'?success=1');
-		} else header('Location: '.SITEROOT.'/forums/acp/permissions/'.$forumID);
-	} elseif ($updateType == 'edit') {
-		if ($pType == 'general') $mysql->query('UPDATE forums_permissions_general SET '.$mysql->setupUpdates($permissions).' WHERE forumID = '.$forumID);
-		else {
-			$typeID = intval($_POST['typeID']);
-			if ($pType == 'user') {
-				$adminCheck = $mysql->query('SELECT forumID FROM forumAdmins WHERE userID = '.$typeID.' AND forumID IN ('.implode(', ', array_keys($family)).', 0)');
-				if ($adminCheck->rowCount()) { header('Location: '.SITEROOT."/forums/acp/permissions/{$forumID}?admin=".urlencode($typeName)); exit; }
-			}
-			$mysql->query("UPDATE forums_permissions_{$pType}s SET ".$mysql->setupUpdates($permissions)." WHERE forumID = {$forumID} AND {$pType}ID = {$typeID}");
 		}
-		header('Location: '.SITEROOT.'/forums/acp/permissions/'.$forumID.'?success=1');
+		header('Location: '.SITEROOT.'/forums/acp/'.$forumID.'/permissions');
 	} else header('Location: '.SITEROOT.'/forums/');
 ?>

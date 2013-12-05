@@ -11,7 +11,7 @@
 				$values[] = sanitizeString($_POST['username'], '+lower');
 			} elseif (isset($_POST['email'])) {
 				$query .= 'LOWER(email) = ?';
-				$values[] .= sanatizeString($_POST['email'], '+lower');
+				$values[] .= sanitizeString($_POST['email'], '+lower');
 			}
 			
 			$userInfo = $mysql->prepare($query);

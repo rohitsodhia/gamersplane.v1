@@ -21,7 +21,7 @@
 		$numRows = $numRows->fetchColumn();
 		$mysql->query('INSERT INTO forums (title, parentID, `order`) VALUES ("'.sanatizeString($_POST['newForum']).'", '.$forumID.', '.intval($numRows + 1).')');
 		$forumID = $mysql->lastInsertId();
-		$mysql->query('UPDATE forums SET heritage = "'.$oHeritage.'-'.str_pad($forumID, 3, '0', STR_PAD_LEFT).'" WHERE forumID = '.$forumID);
+		$mysql->query('UPDATE forums SET heritage = "'.$oHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
 		
 		header('Location: '.SITEROOT.'/forums/acp/'.$forumID);

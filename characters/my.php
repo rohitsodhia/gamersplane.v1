@@ -22,7 +22,6 @@
 		</ul></div>
 <? } ?>
 		<div id="characterList">
-			<div class="clearfix hbdTopper"><a id="newCharLink" href="<?=SITEROOT?>/characters/new" class="fancyButton smallButton">New Character</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
 	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.mob = 0 AND c.userID = '.$userID.' ORDER BY s.fullName, c.label');
@@ -47,8 +46,7 @@
 	echo "\t\t\t".'<div id="noCharacters" class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any characters yet. You might wanna get started!</div>'."\n";
 ?>
 		</div>
-		<div id="mobsList">
-			<div class="clearfix hbdTopper"><a id="newMobLink" href="<?=SITEROOT?>/characters/new/mob" class="fancyButton smallButton">New Mob</a></div>
+<!--		<div id="mobsList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Mobs</h2>
 <?
 	$mobs = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.mob = 1 AND c.userID = '.$userID.' ORDER BY s.fullName, c.label');
@@ -63,7 +61,7 @@
 					<div class="systemType"><?=$info['fullName']?></div>
 					<div class="links">
 						<a href="<?=SITEROOT?>/characters/editLabel/<?=$info['characterID']?>" class="editLabel">Edit Label</a>
-						<a href="<?=SITEROOT?>/characters/delete/<?=$info['characterID']?>" class="delete">Delete Character</a>
+						<a href="<?=SITEROOT?>/characters/delete/<?=$info['characterID']?>" class="delete">Delete Mob</a>
 					</div>
 				</li>
 <?
@@ -72,5 +70,32 @@
 	} else $noItems = TRUE;
 	echo "\t\t\t".'<div id="noMobs" class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any mobs yet. You might wanna get started!</div>'."\n";
 ?>
-		</div>
+		</div>-->
+
+		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
+			<h2 class="headerbar hbDark">New Character/Mob</h1>
+			<div class="tr">
+				<label class="textLabel">Label</label>
+				<input type="text" name="label" maxlength="50">
+			</div>
+			<div class="tr">
+				<label class="textLabel">System</label>
+				<select name="system">
+					<option value="">Select One</option>
+<?
+	$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 AND systemID != 1 ORDER BY fullName');
+	foreach ($systems as $info) echo "\t\t\t\t\t".'<option value="'.$info['systemID'].'">'.printReady($info['fullName'])."</option>\n";
+?>
+					<option value="1">Custom</option>
+				</select>
+			</div>
+<!--			<div class="tr">
+				<label class="textLabel">Char or Mob?</label>
+				<select name="mob">
+					<option value="0">Character</option>
+					<option value="1">Mob</option>
+				</select>
+			</div>-->
+			<div class="tr buttonPanel"><button type="submit" name="create" class="fancyButton">Create</button></div>
+		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

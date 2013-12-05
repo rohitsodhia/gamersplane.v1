@@ -15,16 +15,16 @@ mySettings = {
 		{name:'Bold', key:'B', openWith:'[b]', closeWith:'[/b]'},
 		{name:'Italic', key:'I', openWith:'[i]', closeWith:'[/i]'},
 		{name:'Underline', key:'U', openWith:'[u]', closeWith:'[/u]'},
-		{name:'Strikethrough', key:'R', openWith:'[s]', closeWith:'[/s]'},
-		{name:'Color', key:'C', openWith:'[color="[![Text color]!]]"', closeWith:'[/color]',
+		{name:'Strikethrough', openWith:'[s]', closeWith:'[/s]'},
+		{name:'Color', openWith:'[color="[![Text color]!]]"', closeWith:'[/color]',
 		dropMenu :[
 			{name:'Red', openWith:'[color="red"]', closeWith:'[/color]' },
 			{name:'Blue', openWith:'[color="blue"]', closeWith:'[/color]' },
 			{name:'Green', openWith:'[color="green"]', closeWith:'[/color]' }
 		]},
 		{separator:'---------------' },
-		{name:'Image', key:'P', replaceWith:'[img][![Url]!][/img]'},
-		{name:'Link', key:'L', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
+		{name:'Image', replaceWith:'[img][![Url]!][/img]'},
+		{name:'Link', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
 		{separator:'---------------' },
 /*		{name:'Size', key:'S', openWith:'[size=[![Text size]!]]', closeWith:'[/size]',
 		dropMenu :[
@@ -38,7 +38,7 @@ mySettings = {
 		{name:'List item', openWith:'[*] '},
 		{separator:'---------------' },
 */		{name:'Quotes', openWith:'[quote]', closeWith:'[/quote]'},
-		{name:'Note', openWith:'[note=[![User(s)]!]]', closeWith:'[/note]'},/*
+		{name:'Note', openWith:'[note="[![User(s)]!]""]', closeWith:'[/note]'},/*
 		{name:'Code', openWith:'[code]', closeWith:'[/code]'}, 
 		{separator:'---------------' },
 		{name:'Clean', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
