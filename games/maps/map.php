@@ -49,7 +49,7 @@
 						<div class="wingDivContent">
 							<select class="prettySelect">
 								<option value="info">Info</option>
-								<option value="box" selected="selected">Box</option>
+								<option value="box">Box</option>
 								<option value="history">History</option>
 <? if ($isGM) { ?>
 								<option value="mapOptions">Map Options</option>

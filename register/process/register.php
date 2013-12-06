@@ -70,7 +70,7 @@
 				$message .= '<a href="http://gamersplane.com/register/activate/'.md5($username)."\">Activate account</a>\n";
 				$message .= 'Or copy and paste this URL into your browser: http://gamersplane.com/register/activate/'.md5($username)."\n\n";
 				$message .= 'Please do not respond to this email, as it will be ignored';
-				mail($email, 'Gamers Plane Activate Required', $message, 'From: contact@gamersplane.com');
+				mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
 				
 				wp_create_user($username, $password1, $email);
 				

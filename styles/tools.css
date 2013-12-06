@@ -110,6 +110,46 @@
 
 /* --------------------------------------------*/
 
+#page_tools_dice #controls, #page_tools_dice .wingDivContent {
+	overflow: visible;
+}
+
+#page_tools_dice #controls .prettySelect, #page_tools_dice #controls .prettySelectCurrent, #page_tools_dice #controls .prettySelectOptions {
+	background: #522;
+}
+
+#page_tools_dice #controls .prettySelect, #page_tools_dice #controls .prettySelectOptions {
+	color: #FDD;
+	border: none;
+	border-top: .3em solid #222;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+}
+
+#page_tools_dice #controls .prettySelectCurrent, #page_tools_dice #controls .prettySelectLongest, #page_tools_dice #controls .prettySelectDropdown, #page_tools_dice #controls .prettySelectOptions li {
+}
+
+#page_tools_dice #controls .prettySelectCurrent, #page_tools_dice #controls .prettySelectLongest, #page_tools_dice #controls .prettySelectOptions li {
+	padding: .3em 15px;
+}
+
+#page_tools_dice #controls .prettySelectDropdown {
+	background-image: url('../images/dropdown_arrow_white.png');
+}
+
+#page_tools_dice #controls .prettySelectOptions {
+	top: -3px;
+	left: -1px;
+	border: 1px solid #522;
+	border-top: .3em solid #222;
+}
+
+#page_tools_dice #controls .prettySelectOptions li:hover {
+	background: #449;
+	color: #FFF	;
+}
+
 #page_tools_dice #roller {
 	width: 400px;
 	margin-right: 20px;
@@ -119,12 +159,11 @@
 #page_tools_dice textarea {
 	height: 6.2em;
 	width: 275px;
-	float: left;
 }
 
 #page_tools_dice #customDice .fancyButton {
 	display: inline-block;
-	margin: 30px 0 0 15px;
+	margin: 0 0 20px 15px;
 }
 
 #page_tools_dice input[type="checkbox"] {
@@ -173,467 +212,4 @@
 
 #page_tools_dice #diceSpace .newestRolls p.error {
 	font-weight: bold;
-}
-
-/* --------------------------------------------*/
-
-#page_mapList .firstTR {
-	margin-top: 1em;
-}
-
-#page_mapList .tr {
-	border: 1px solid #000;
-	padding-left: 15px;
-}
-
-#page_mapList .tr:hover {
-	background: #111;
-	border-color: #333;
-}
-
-#page_mapList .tr .mapLink {
-	float: left;
-	width: 300px;
-}
-
-#page_mapList .tr .mapLink a {
-	display: block;
-}
-
-#page_mapList .tr .mapSize {
-	float: left;
-	width: 100px;
-}
-
-/* --------------------------------------------*/
-
-#page_newMap label {
-	float: left;
-	text-align: right;
-	width: 150px;
-	margin-right: 10px;
-}
-
-#page_newMap input {
-	width: 200px;
-}
-
-#page_newMap #mapSize input {
-	width: 30px;
-}
-
-#page_newMap .notice {
-	margin-left: 160px;
-	font-size: .85em;
-}
-
-/* --------------------------------------------*/
-
-#page_map .mapIcon {
-	width: 39px;
-	height: 39px;
-	font-size: 1.2em;
-	font-weight: bold;
-	text-align: center;
-	line-height: 39px;
-	z-index: 1000;
-	cursor: pointer;
-}
-
-#page_map .blueIcon {
-	background-image: url('../images/mapIcon_blue.png');
-}
-
-#page_map .greenIcon {
-	background-image: url('../images/mapIcon_green.png');
-}
-
-#page_map .greyIcon {
-	background-image: url('../images/mapIcon_grey.png');
-}
-
-#page_map .orangeIcon {
-	background-image: url('../images/mapIcon_orange.png');
-}
-
-#page_map .redIcon {
-	background-image: url('../images/mapIcon_red.png');
-}
-
-#page_map .whiteIcon {
-	background-image: url('../images/mapIcon_white.png');
-	color: #000;
-}
-
-#page_map #iconBox .mapIcon {
-	float: left;
-	margin-right: 10px;
-}
-
-#page_map #map .mapIcon {
-/*	position: absolute;*/
-}
-
-#page_map #mapInfo {
-	margin: 1em 0;
-}
-
-#page_map #iconBox {
-	padding: 10px;
-}
-
-#page_map .reminder {
-	font-size: .9em;
-	font-style: italic;
-	margin-top: 1.5em;
-}
-
-#page_map #actionHistory {
-	margin-right: 2px;
-	width: 310px;
-}
-
-#page_map #iconBox {
-	background: #111;
-	border: 2px solid #BBB;
-	margin: 1em 0 2em;
-	min-height: 40px;
-}
-
-#page_map #editDelBox {
-	float: right;
-	width: 65px;
-	height: 65px;
-	padding: 10px;
-	margin-left: 20px;
-	border: 1px solid #777;
-	background: #222;
-	font-size: .85em;
-	text-align: center;
-}
-
-#page_map #editDelBox .mapIcon {
-	position: absolute;
-}
-
-#page_map form {
-	margin-top: 1em;
-}
-
-#page_map #iconForm {
-	display: none;
-}
-
-#page_map #iconForm .editDiv {
-	display: none;
-}
-
-#page_map #iconBox a {
-	margin-right: 50px;
-}
-
-#page_map label {
-	float: left;
-	width: 100px;
-}
-
-#page_map .small {
-	font-size: .8em;
-}
-
-#page_map #iconLabel {
-	width: 50px;
-}
-
-#page_map #iconName {
-	width: 150px;
-}
-
-#page_map #desc {
-	width: 400px;
-	height: 5em;
-}
-
-#page_editMap #mapOptions {
-	height: 93px;
-	margin: 1em 0;
-	padding: 10px;
-	background: #111;
-	border: 2px solid #BBB;
-}
-
-#page_editMap #staticMapOptions {
-	float: right;
-	text-align: right;
-}
-
-#page_editMap #addCR button {
-	margin-left: 10px;
-}
-
-#page_editMap #addPos {
-	width: 40px;
-	text-align: right;
-}
-
-#page_editMap #saveMap {
-	margin-top: .5em;
-}
-
-#page_editMap #tileOptions {
-	display: none;
-	height: 77px;
-	width: 560px;
-}
-
-#page_editMap .colorOption {
-	float: left;
-	margin: 0 10px;
-	width: 50px;
-	text-align: center;
-}
-
-#page_editMap .colorOption .color {
-	width: 40px;
-	height: 40px;
-	margin: 0 5px;
-}
-
-#page_editMap .colorOption .name {
-	margin: .5em 0;
-	text-align: center;
-	font-size: .85em;
-}
-
-#page_editMap #mapOptions a {
-	margin-right: 20px;
-}
-
-#page_map #mapSidebar, #page_editMap #mapSidebar {
-	float: right;
-	width: 230px;
-	margin-top: 40px;
-	padding: 15px;
-	background-color: #111;
-	border: 1px solid #666;
-}
-
-#page_map #mapControls, #page_editMap #mapControls {
-	position: relative;
-	width: 50px;
-	height: 50px;
-}
-
-#page_map #mapControls a, #page_editMap #mapControls a {
-	position: absolute;
-}
-
-#page_map #mapControls_up_top, #page_map #mapControls_down_top, #page_editMap #mapControls_up_top, #page_editMap #mapControls_down_top {
-	width: 20px;
-	height: 10px;
-}
-
-#page_map #mapControls_right_top, #page_map #mapControls_left_top, #page_editMap #mapControls_right_top, #page_editMap #mapControls_left_top {
-	width: 10px;
-	height: 20px;
-}
-
-#page_map #mapControls_up_body, #page_map #mapControls_down_body, #page_editMap #mapControls_up_body, #page_editMap #mapControls_down_body {
-	width: 6px;
-	height: 12px;
-}
-
-#page_map #mapControls_right_body, #page_map #mapControls_left_body, #page_editMap #mapControls_right_body, #page_editMap #mapControls_left_body {
-	width: 12px;
-	height: 6px;
-}
-
-#page_map #mapControls_up_top, #page_editMap #mapControls_up_top {
-	top: 0;
-	left: 15px;
-}
-
-#page_map #mapControls_right_top, #page_editMap #mapControls_right_top {
-	top: 15px;
-	right: 0;
-}
-
-#page_map #mapControls_down_top, #page_editMap #mapControls_down_top {
-	bottom: 0;
-	left: 15px;
-}
-
-#page_map #mapControls_left_top, #page_editMap #mapControls_left_top {
-	top: 15px;
-	left: 0;
-}
-
-#page_map #mapControls_up_body, #page_editMap #mapControls_up_body {
-	top: 10px;
-	left: 22px;
-}
-
-#page_map #mapControls_right_body, #page_editMap #mapControls_right_body {
-	top: 22px;
-	right: 10px;
-}
-
-#page_map #mapControls_down_body, #page_editMap #mapControls_down_body {
-	bottom: 10px;
-	left: 22px;
-}
-
-#page_map #mapControls_left_body, #page_editMap #mapControls_left_body {
-	top: 22px;
-	left: 10px;
-}
-
-#page_map #textPane {
-	margin-top: 20px;
-	padding-right: 10px;
-	overflow: auto;
-}
-
-#page_map #textPane p {
-	text-align: left;
-}
-
-#page_map #mapIconHolder {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 100;
-	width: 39px;
-	height: 39px;
-}
-
-#page_map #mapContainer, #page_editMap #mapContainer {
-	position: relative;
-	z-index: 0;
-}
-
-#page_map .cHeader, #page_map .rHeader, #page_editMap .cHeader, #page_editMap .rHeader {
-	width: 40px;
-	height: 40px;
-	overflow: hidden;
-}
-
-#page_map #colHeaders, #page_editMap #colHeaders {
-	position: absolute;
-	top: 0;
-	left: 40px;
-	height: 40px;
-	z-index: 50;
-	overflow: hidden;
-}
-
-#page_map #rowHeaders, #page_editMap #rowHeaders {
-	position: absolute;
-	top: 40px;
-	left: 0;
-	width: 40px;
-	z-index: 50;
-	overflow: hidden;
-}
-
-#page_map #colHeaders > div, #page_map #rowHeaders > div, #page_editMap #colHeaders > div, #page_editMap #rowHeaders > div {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-#page_map .cHeader, #page_editMap .cHeader {
-	float: left;
-	height: 39px;
-	border-bottom: 1px solid #999;
-	background: url('../images/mapCH.jpg') top left no-repeat;
-}
-
-#page_map .cHeaderMin, #page_editMap .cHeaderMin {
-	height: 19px;
-	margin-top: 20px;
-}
-
-#page_map .rHeader, #page_editMap .rHeader {
-	border-right: 1px solid #999;
-	width: 39px;
-	background: url('../images/mapRH.jpg') top left no-repeat;
-}
-
-#page_map .rHeaderMin, #page_editMap .rHeaderMin {
-	width: 19px;
-	margin-left: 20px;
-}
-
-#page_map #mapContainer a, #page_editMap #mapContainer a {
-	color: #FFF;
-}
-
-#page_map #mapContainer a:hover, #page_editMap #mapContainer a:hover {
-	color: #FFF;
-}
-
-#page_map .cHeader > a, #page_map .rHeader > a, #page_editMap .cHeader > a, #page_editMap .rHeader > a {
-	display: block;
-	text-align: center;
-	font-weight: bold;
-	font-size: .8em;
-	overflow: hidden;
-}
-
-#page_map .cHeader > a, #page_editMap .cHeader > a {
-	width: 40px;
-	height: 20px;
-	text-transform: capitalize;
-	line-height: 21px;
-}
-
-#page_map .rHeader > a, #page_editMap .rHeader > a {
-	float: left;
-	width: 20px;
-	height: 40px;
-	line-height: 36px;
-}
-
-#page_map .rHeader > a:first-child, #page_editMap .rHeader > a:first-child {
-	width: 18px;
-	padding-left: 2px;
-}
-
-#page_map #mapWindow, #page_editMap #mapWindow {
-	position: relative;
-	top: 40px;
-	left: 40px;
-	overflow: hidden;
-}
-
-#page_map #map, #page_editMap #map {
-	position: relative;
-}
-
-#page_map .mapTile, #page_editMap .mapTile {
-	float: left;
-	height: 39px;
-	width: 39px;
-	border: 1px solid #999;
-	border-top: none;
-	border-left: none;
-}
-
-#page_map .selectedTile, #page_editMap .selectedTile {
-	height: 34px;
-	width: 34px;
-	border: 3px solid #CCC;
-}
-
-
-
-#page_map #saveDetails, #page_editMap #saveDetails {
-	width: 500px;
-	text-align: center;
-}
-
-#page_map #saveDetails textarea, #page_editMap #saveDetails textarea {
-	width: 492px;
-	height: 10em;
 }

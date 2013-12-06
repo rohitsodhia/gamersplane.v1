@@ -118,7 +118,7 @@
 		echo "\t\t\t\t\t<div class=\"post\">\n";
 		echo "\t\t\t\t\t\t<div class=\"forumIcon".($latestPost['newPosts']?' newPosts':'')."\"></div>\n";
 		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"".SITEROOT."/forums/threads/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"".SITEROOT."/users/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $postInfo['datePosted'])."</div>\n";
+		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"".SITEROOT."/users/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
 		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"".SITEROOT."/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}
