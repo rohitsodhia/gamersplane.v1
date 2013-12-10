@@ -110,6 +110,12 @@
 
 /* --------------------------------------------*/
 
+#page_tools_dice #roller {
+	width: 400px;
+	margin-right: 20px;
+	float: left;
+}
+
 #page_tools_dice #controls, #page_tools_dice .wingDivContent {
 	overflow: visible;
 }
@@ -150,37 +156,115 @@
 	color: #FFF	;
 }
 
-#page_tools_dice #roller {
-	width: 400px;
-	margin-right: 20px;
+#page_tools_dice .dice_basic textarea {
 	float: left;
-}
-
-#page_tools_dice textarea {
 	height: 6.2em;
 	width: 275px;
 }
 
-#page_tools_dice #customDice .fancyButton {
+#page_tools_dice #basic_customDice .fancyButton {
 	display: inline-block;
-	margin: 0 0 20px 15px;
+	margin: 20px 0 0 15px;
 }
 
-#page_tools_dice input[type="checkbox"] {
-	margin-left: 105px;
+#page_tools_dice .dice_basic .cbWrapper {
+	display: inline-block;
+	margin-top: 3px;
+	margin-left: 10px;
 }
 
-#page_tools_dice #indivDice > div {
+#page_tools_dice #basic_indivDice {
+	margin-top: 1em;
+}
+
+#page_tools_dice #basic_indivDice > div {
 	text-align: center;
 	margin-top: .5em;
 }
 
-#page_tools_dice #indivDice .fancyButton {
+#page_tools_dice #basic_indivDice .fancyButton {
 	margin: 0;
 }
 
-#page_tools_dice br.clear {
-	clear: both;
+#page_tools_dice .dice_sweote .dicePool {
+	float: left;
+	min-height: 60px;
+	width: 245px;
+	margin: .5em 0;
+	padding: 0 10px 10px 0;
+	background: #DDF;
+	border: 1px solid #400;
+	border-bottom-color: #900;
+	border-right-color: #900;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#page_tools_dice #ww_sweote_roll {
+	margin: 20px 0 0 20px;
+}
+
+#page_tools_dice #sweote_clear {
+	display: inline-block;
+	margin: 5px 0 0 50px;
+}
+
+#page_tools_dice .dice_sweote .dicePool .sweote_dice {
+	display: block;
+	float: left;
+	margin: 10px 0 0 10px;
+}
+
+#page_tools_dice .dice_sweote .addDiceLink {
+	display: inline-block;
+	width: 48%;
+	margin: 5px 0;
+	padding: 5px 10px;
+	border: 1px solid #000;
+	font-family: 'AgencyFB';
+	font-size: 2em;
+	line-height: 1em;
+}
+
+#page_tools_dice .dice_sweote .addDiceLink, #page_tools_dice .dice_sweote .addDiceLink:active, #page_tools_dice .dice_sweote .addDiceLink:visited {
+	color: #000;
+}
+
+#page_tools_dice .dice_sweote .addDiceLink:hover span {
+	text-decoration: underline;
+}
+
+#page_tools_dice .dice_sweote .addDiceLink span {
+	margin-left: 5px;
+}
+
+#page_tools_dice .dice_sweote .addDiceLink > * {
+	vertical-align: middle;
+}
+
+#page_tools_dice #sweote_ability {
+	background-color: rgba(79, 184, 71, .5);
+}
+
+#page_tools_dice #sweote_difficulty {
+	background-color: rgba(83, 35, 128, .5);
+}
+
+#page_tools_dice #sweote_proficiency {
+	background-color: rgba(255, 233, 0, .5);
+}
+
+#page_tools_dice #sweote_challenge {
+	background-color: rgba(229, 25, 55, .5);
+}
+
+#page_tools_dice #sweote_boost {
+	background-color: rgba(163, 217, 246, .5);
+}
+
+#page_tools_dice #sweote_setback {
+	background-color: rgba(0, 0, 0, .5);
 }
 
 #page_tools_dice #diceSpace {
@@ -190,9 +274,13 @@
 	background: #EEE;
 }
 
-#page_tools_dice #diceSpace div p {
+#page_tools_dice #diceSpace .roll {
 	padding: 1em;
 	margin: 0;
+}
+
+#page_tools_dice #diceSpace .roll p {
+	margin-bottom: 0;
 }
 
 /*#page_tools_dice #diceSpace .newestRoll {
@@ -206,10 +294,14 @@
 	border-bottom: 1px solid #D99;
 }
 
-#page_tools_dice #diceSpace .newestRolls p {
+#page_tools_dice #diceSpace .newestRolls {
 	background-color: #FFF;
 }
 
 #page_tools_dice #diceSpace .newestRolls p.error {
 	font-weight: bold;
+}
+
+#page_tools_dice #diceSpace .sweote_dice {
+	margin-right: 10px;
 }

@@ -80,7 +80,6 @@ $.fn.autocomplete = function (pathOption, sendData) {
 					$parent.removeClass('open');
 					$parent.find('.prettySelectOptions').hide();
 					$parent.find('select').val($(this).data('value')).change();
-					console.log($parent.find('select').val());
 				});
 				$select.hide();
 				$prettySelect.append($prettySelectCurrent).append($prettySelectLongest).append($prettySelectDropdown).append($prettySelectOptions);

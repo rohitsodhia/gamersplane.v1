@@ -72,19 +72,20 @@ function setupWingContainer() {
 
 function wingMargins(container) {
 	element = container.nodeName.toLowerCase();
-	if ($(container).hasClass('headerbar')) baseClass = 'headerbar';
-	else if ($(container).hasClass('fancyButton')) baseClass = 'fancyButton';
-	else if ($(container).hasClass('wingDiv')) baseClass = 'wingDiv';
-	if (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') $content = $(container).children('div:not(.wing)');
-	else $content = $(container).children('button');
+	$container = $(container);
+	if ($container.hasClass('headerbar')) baseClass = 'headerbar';
+	else if ($container.hasClass('fancyButton')) baseClass = 'fancyButton';
+	else if ($container.hasClass('wingDiv')) baseClass = 'wingDiv';
+	if (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') $content = $container.children('div:not(.wing)');
+	else $content = $container.children('button');
 	$content.height('auto');
 
-	var height = $(container).outerHeight()/* + 2*/;
-	var width = Math.ceil(height * ($(container).data('ratio') == undefined?.6:Number($(container).data('ratio'))));
-	$(container).data('height', height);
-	$(container).data('width', width);
+	var height = $container.outerHeight()/* + 2*/;
+	var width = Math.ceil(height * ($container.data('ratio') == undefined?.6:Number($container.data('ratio'))));
+	$container.data('height', height);
+	$container.data('width', width);
 	$content.css('margin', '0 ' + width + 'px').outerHeight($content.outerHeight());
-	$(container).children('.wing').each(setupWings);
+	$container.children('.wing').each(setupWings);
 }
 
 function setupWings() {

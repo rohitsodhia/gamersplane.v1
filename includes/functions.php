@@ -179,6 +179,7 @@
 	}
 	
 	function rollDice($roll, $rerollAces = 0) {
+		echo $roll;
 		list($numDice, $diceType) = explode('d', str_replace(' ', '', trim($roll)));
 		$numDice = intval($numDice);
 		if (strpos($diceType, '-')) { list($diceType, $modifier) = explode('-', $diceType); $modifier = intval('-'.$modifier); }
@@ -186,20 +187,17 @@
 		else $modifier = 0;
 		$diceType = intval($diceType);
 		if ($numDice > 0 && $diceType > 1 && $numDice <= 1000 && $diceType <= 1000) {
-			
 			$totalRoll = $modifier;
-//			$indivRolls = array();
 			$first = TRUE;
 			$firstAce = TRUE;
-			$aced;
+			$aced = FALSE;
 			$indivRolls = '( ';
 			for ($rollCount = 1; $rollCount <= $numDice; $rollCount++) {
 				$aced = FALSE;
 				
 				$curRoll = mt_rand(1, $diceType);
-//				$indivRolls[] = $curRoll;
 				$totalRoll += $curRoll;
-				
+
 				if ($rerollAces && $curRoll == $diceType) { $aced = TRUE; $rollCount -= 1; }
 				$indivRolls .= (!$first?', ':'').(($firstAce && $aced)?'[ ':'').$curRoll;
 				if ($firstAce && $aced) $firstAce = FALSE;
@@ -211,6 +209,23 @@
 			
 			return array('total' => $totalRoll, 'indivRolls' => $indivRolls, 'numDice' => $numDice, 'diceType' => $diceType, 'modifier' => $modifier);
 		} else return FALSE;
+	}
+
+	function sweote_rollDice($roll) {
+		$dice = array(
+			'ability' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage'),
+			'proficiency' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_success', 'success_advantage', 'success_advantage', 'success_advantage', 'advantage_advantage', 'advantage_advantage', 'triumph'),
+			'boost' => array(1 => '', '', 'success', 'advantage', 'success_advantage', 'advantage_advantage'),
+			'difficulty' => array(1 => '', 'failure', 'threat', 'threat', 'threat', 'failure_failure', 'failure_threat', 'threat_threat'),
+			'challenge' => array(1 => '', 'failure', 'failure', 'threat', 'threat', 'failure_failure', 'failure_failure', 'failure_threat', 'failure_threat', 'threat_threat', 'threat_threat', 'dispair'),
+			'setback' => array(1 => '', '', 'failure', 'failure', 'threat', 'threat'),
+			'force' => array(1 => 'whiteDot', 'whiteDot', 'whiteDot_whiteDot', 'whiteDot_whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot_blackDot'),
+			);
+		
+		$result = array('result' => $dice[$roll][mt_rand(1, sizeof($dice[$roll]))]);
+		$result['values'] = explode('_', $result['result']);
+
+		return $result;
 	}
 	
 	function newGlobalDeck($deckType) {

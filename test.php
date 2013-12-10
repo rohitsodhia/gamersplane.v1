@@ -490,7 +490,7 @@ $('input[type="submit"]').click(function (e) {
 	$('input[value="val ' + val + '"]').prop('checked', true);
 	val++;
 });
-</script>-->
+</script>
 <div id="test1" style="width: 50px; height: 50px; border: 1px solid #000;"></div>
 <div id="test2" style="width: 50px; height: 50px; border: 1px solid #000;"></div>
 <script>
@@ -499,5 +499,8 @@ $test1 = $('#test1');
 $test2 = $('#test2');
 $test1.add($test2).css('background', 'green');
 });
-</script>
+</script>-->
+<?
+	print_r(sweote_rollDice(array('ability', 'ability', 'proficiency', 'proficiency', 'boost')));
+?>
 </body></html>
