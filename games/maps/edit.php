@@ -11,7 +11,6 @@
 	$mapData = $mysql->query("SELECT `column`, `row`, data FROM mapData WHERE mapID = $mapID");
 	$bgData = array();
 	while ($dataPiece = $mapData->fetch()) $bgData[$dataPiece['column']][$dataPiece['row']] = $dataPiece['data'];
-	$fixedMenu = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 <? if ($_GET['exceededSize'] == 1) { ?>

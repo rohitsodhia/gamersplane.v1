@@ -19,7 +19,7 @@
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
 		<form method="post" action="<?=SITEROOT?>/characters/process/dnd3/">
-			<input type="hidden" name="characterID" value="<?=$characterID?>">
+			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			
 			<div class="tr labelTR">
 				<label id="label_name" class="medText lrBuffer borderBox shiftRight">Name</label>

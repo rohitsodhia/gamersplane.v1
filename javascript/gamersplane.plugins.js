@@ -13,7 +13,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 
 	var $inputBox = $(this), onWrapper = false, searchTimeout;
 	$inputBox.wrap('<div class="autocompleteWrapper"></div>').parent().attr('id', $inputBox.attr('id') + 'Wrapper');
-	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: ($inputBox.outerWidth(false) - 2) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
+	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
 	$inputBox.keyup(function () {
 		if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
 			$.extend(sendData, { search: $(this).val() });

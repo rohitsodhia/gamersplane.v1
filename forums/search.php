@@ -23,26 +23,25 @@
 	$numItems = 0;
 	if ($showBy == 'threads') {
 		$threadContent = '		<div class="tableDiv threadTable">
-			<h2 class="title"><div>Threads</div></h2>
-			<table id="threadList">
-				<tr>
-					<td class="forumIcon">&nbsp;</td>
-					<th class="threadName">Thread</th>
-					<th class="numPosts"># of Posts</th>
-					<th class="lastPost">Last Post</th>
-				</tr>'."\n";
+			<div class="tr headerTR headerbar hbDark">
+				<div class="td icon">&nbsp;</div>
+				<div class="td threadInfo">Thread</div>
+				<div class="td numPosts"># of Posts</div>
+				<div class="td lastPost">Last Post</div>
+			</div>
+			<div class="sudoTable forumList hbdMargined">'."\n";
 		
 		if ($searchResults->rowCount()) {
 			foreach ($searchResults as $threadInfo) {
 				$threadInfo['fp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['fp_datePosted']);
 				$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
 				$forumIcon = $threadInfo['newPosts']?'new':'old';
-				$threadContent .= '				<tr>
-						<td class="forumIcon"><img src="'.SITEROOT.'/images/forum_'.($threadInfo['sticky']?'sticky_':'').$forumIcon.'.jpg" title="'.($forumIcon == 'new'?'New':'No new').' posts in forum" alt="'.($forumIcon == 'new'?'New':'No new').' posts in forum"></td>
-						<td class="threadInfo">'."\n";
-				if ($forumIcon == 'new') $threadContent .= "						<a href=\"".SITEROOT."/forums/thread/{$threadInfo['threadID']}?view=newPost\"><img src=\"".SITEROOT."/images/newPost.png\" title=\"View new posts\" alt=\"View new posts\"></a>\n";
+				$threadContent .= '				<div class="tr">
+					<div class="td icon"><div class="forumIcon'.($forumIcon == 'new'?' newPosts':'').'" title="'.($forumIcon == 'new'?'New':'No new').' posts in thread" alt="'.($forumIcon == 'new'?'New':'No new').' posts in thread"></div></div>
+					<div class="td threadInfo">'."\n";
+				if ($forumIcon == 'new') $threadContent .= "						<a href=\"".SITEROOT."/forums/thread/{$threadInfo['threadID']}?view=newPost\"><img src=\"".SITEROOT."/images/forums/newPost.png\" title=\"View new posts\" alt=\"View new posts\"></a>\n";
 				if ($threadInfo['numPosts'] > PAGINATE_PER_PAGE) {
-					$threadContent .= "\t\t\t\t\t\t<div class=\"paginateDiv\">";
+					$threadContent .= "						<div class=\"paginateDiv\">\n";
 					$url = SITEROOT.'/forums/thread/'.$threadInfo['threadID'];
 					$numPages = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 					if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) $threadContent .= "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
@@ -53,23 +52,23 @@
 					}
 					$threadContent .= "\t\t\t\t\t\t</div>\n";
 				}
-				$threadContent .= '						<a href="'.SITEROOT.'/forums/thread/'.$threadInfo['threadID'].'">'.$threadInfo['title']."</a><br>\n";
-				$threadContent .= '						<div class="threadAuthor">by <a href="'.SITEROOT.'/ucp/'.$threadInfo['fp_authorID'].'" class="username">'.$threadInfo['fp_username'].'</a> on <span>'.date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span> in <a href=\"".SITEROOT."/forums/{$threadInfo['forumID']}\" class=\"forumName\">{$threadInfo['fTitle']}</a></div>\n";
-				$threadContent .= '						</td>
-						<td class="numPosts">'.$threadInfo['numPosts'].'</td>
-						<td class="lastPost">
-							<a href="'.SITEROOT.'/ucp/'.$threadInfo['lp_authorID'].'" class="username">'.$threadInfo['lp_username'].'</a><br><span>'.date('M j, Y g:i a', $threadInfo['lp_datePosted'])."</span>
-						</td>
-					</tr>\n";
+				$threadContent .= "						<a href=\"".SITEROOT."/forums/thread/{$threadInfo['threadID']}\">{$threadInfo['title']}</a><br>
+						<span class=\"threadAuthor\">by <a href=\"{SITEROOT}/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> on <span>".date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>
+					</div>
+					<div class=\"td numPosts\">".($threadInfo['numPosts']?$threadInfo['numPosts']:0)."</div>
+					<div class=\"td lastPost\">
+						<a href=\"".SITEROOT."/ucp/{$threadInfo['lp_authorID']}\" class=\"username\">{$threadInfo['lp_username']}</a><br><span>".date('M j, Y g:i a', $threadInfo['lp_datePosted'])."</span>
+					</div>
+				</div>\n";
 			}
-			$numItems = $searchResults->rowCount());
-		} else $threadContent .= "\t\t\t<tr><td colspan=\"4\"><h2>No new posts</h2></td></tr>\n";
-		$threadContent .= "			</table>
+			$numItems = $searchResults->rowCount();
+		} else $threadContent .= "\t\t\t\t<div class=\"tr noThreads\">No threads yet</div>\n";
+		$threadContent .= "			</div>
 		</div>\n";
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1>Search Results</h1>
+		<h1 class="headerbar">Search Results</h1>
 		
 		<p id="rules">Be sure to read and follow the <a href="<?=SITEROOT?>/forums/rules">guidelines for our forums</a>.</p>
 	

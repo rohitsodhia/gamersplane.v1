@@ -62,7 +62,7 @@
 	float: left;
 }
 
-#page_forum .tableDiv, #page_forumSearch .tableDiv {
+#page_forum .tableDiv, #page_forum_search .tableDiv {
 	margin-top: 15px;
 	padding-bottom: 5px;
 }
@@ -71,7 +71,7 @@
 	margin-top: 0;
 }*/
 
-#page_forum h2, #page_forumSearch h2 {
+#page_forum h2, #page_forum_search h2 {
 	position: relative;
 	float: right;
 	margin: 0;
@@ -79,21 +79,21 @@
 	line-height: 1.2em;
 }
 
-#page_forum h2, #page_forumSearch h2 {
+#page_forum h2, #page_forum_search h2 {
 }
 
-#page_forum .td {
+#page_forum .td, #page_forum_search .td {
 	position: relative;
 	display: inline-block;
 	vertical-align: middle;
 }
 
-#page_forum .headerTR .td {
+#page_forum .headerTR .td, #page_forum_search .headerTR .td {
 	padding-top: 8px;
 	padding-bottom: 8px;
 }
 
-#page_forum .sudoTable .tr {
+#page_forum .sudoTable .tr, #page_forum_search .sudoTable .tr {
 	position: relative;
 	top: -1px;
 	padding-left: 8px;
@@ -105,39 +105,39 @@
 	border-bottom-color: #944;
 }
 
-#page_forum .sudoTable .tr:hover {
+#page_forum .sudoTable .tr:hover, #page_forum_search .sudoTable .tr:hover {
 	background-color: #FFF2E0;
 }
 
-#page_forum .sudoTable .tr:last-child {
+#page_forum .sudoTable .tr:last-child, #page_forum_search .sudoTable .tr:last-child {
 	border-bottom-width: 2px;
 }
 
-#page_forum .tableDiv th, #page_forumSearch .tableDiv th {
+#page_forum .tableDiv th, #page_forum_search .tableDiv th {
 	text-align: center;
 	vertical-align: middle;
 }
 
-#page_forum .threadTable th, #page_forumSearch .threadTable th {
+#page_forum .threadTable th, #page_forum_search .threadTable th {
 	padding-top: 6px;
 }
 
-#page_forum .tableDiv td, #page_forumSearch .tableDiv td {
+#page_forum .tableDiv td, #page_forum_search .tableDiv td {
 	vertical-align: middle;
 	padding: 8px 2px;
 }
 
-#page_forum .tableDiv .noPosts td, #page_forumSearch.tableDiv .noPosts td {
+#page_forum .tableDiv .noPosts td, #page_forum_search.tableDiv .noPosts td {
 	height: 41px;
 }
 
-#page_forum .icon, #page_forum .icon, #page_forumSearch .icon, #page_forumSearch .icon {
+#page_forum .icon, #page_forum .icon, #page_forum_search .icon, #page_forum_search .icon {
 	width: 35px;
 	text-align: center;
 	vertical-align: middle;
 }
 
-#page_forum .name, #page_forum .threadInfo, #page_forumSearch .threadInfo {
+#page_forum .name, #page_forum .threadInfo, #page_forum_search .threadInfo {
 	padding-left: 5px;
 }
 
@@ -145,7 +145,7 @@
 	width: 415px;
 }
 
-#page_forum .threadInfo, #page_forumSearch .threadInfo {
+#page_forum .threadInfo, #page_forum_search .threadInfo {
 	width: 540px;
 }
 
@@ -154,20 +154,20 @@
 	margin: .5em 0 0;
 }
 
-#page_forum .threadInfo .threadAuthor, #page_forumSearch .threadInfo .threadAuthor {
+#page_forum .threadInfo .threadAuthor, #page_forum_search .threadInfo .threadAuthor {
 	margin-top: .2em;
 	font-size: .85em;
 }
 
-#page_forumSearch .threadAuthor .forumName, #page_forumSearch .threadInfo .threadAuthor .forumName:hover {
+#page_forum_search .threadAuthor .forumName, #page_forum_search .threadInfo .threadAuthor .forumName:hover {
 	color: #D60;
 }
 
-#page_forumSearch .tableDiv table .threadInfo .threadAuthor .forumName:hover {
+#page_forum_search .tableDiv table .threadInfo .threadAuthor .forumName:hover {
 	text-decoration: none;
 }
 
-#page_forum .numPosts, #page_forum .numThreads, #page_forumSearch .numPosts {
+#page_forum .numPosts, #page_forum .numThreads, #page_forum_search .numPosts {
 	width: 120px;
 	text-align: center;
 }
@@ -183,16 +183,16 @@
 	background-color: transparent;
 }
 
-#page_forum .lastPost, #page_forumSearch .lastPost {
+#page_forum .lastPost, #page_forum_search .lastPost {
 	width: 175px;
 	text-align: center;
 }
 
-#page_forum .lastPost span, #page_forumSearch .lastPost span {
+#page_forum .lastPost span, #page_forum_search .lastPost span {
 	font-size: .85em;
 }
 
-#page_forum #forumLinks, #page_forumSearch #forumLinks {
+#page_forum #forumLinks, #page_forum_search #forumLinks {
 	margin: 1em 10px;
 	height: 24px;
 	position: relative;
@@ -204,7 +204,7 @@
 	bottom: 0;
 }
 
-#page_forum #paginateDiv, #page_forumSearch #paginateDiv {
+#page_forum #paginateDiv, #page_forum_search #paginateDiv {
 	float: none;
 	position: absolute;
 	right: 0;

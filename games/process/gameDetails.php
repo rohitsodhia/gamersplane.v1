@@ -61,7 +61,7 @@
 			$addForum = $mysql->prepare('INSERT INTO forums (title, parentID, `order`) VALUES (:title, 2, '.$order.')');
 			$addForum->execute(array('title' => $details['title']));
 			$forumID = $mysql->lastInsertId();
-			$heritage = substr($heritage, 0, -3).sql_forumIDPad($forumID);
+			$heritage = sql_forumIDPad($forumID).'-'.sql_forumIDPad($forumID);
 			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);
 			$details['forumID'] = $forumID;
 			
@@ -99,7 +99,8 @@
 			
 //			mail('contact@gamersplane.com', 'New Game', "Game: {$details['title']}\nGM: {$_SESSION['username']}\nSystem: {$system}");
 			
-			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.game = '{$system}'");
+			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.systemID = {$
+				details['systemID']}");
 			$recips = '';
 			foreach ($lfgRecips as $info) $recips .= $info['email'].', ';
 			ob_start();

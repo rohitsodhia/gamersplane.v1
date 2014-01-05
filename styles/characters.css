@@ -60,6 +60,7 @@
 
 #page_myCharacters #newChar input[type="text"] {
 	width: 200px;
+	text-align: left;
 }
 
 #page_myCharacters #newChar .buttonPanel {

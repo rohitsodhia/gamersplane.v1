@@ -21,7 +21,6 @@
 		if ($info['location'] == '') $iconsInBox[] = $info;
 		else $iconsOnMap[$info['location']] = $info;
 	}
-	$fixedMenu = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<noscript><div class="alertBox_error">

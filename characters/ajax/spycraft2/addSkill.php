@@ -8,7 +8,7 @@
 		if ($charCheck->rowCount()) {
 			$name = sanitizeString($_POST['name'], 'rem_dup_spaces');
 			if (strlen($name)) {
-				$skillID = getSkill($name);
+				$skillID = getSkill($name, 'spycraft2');
 				$stat_1 = sanitizeString($_POST['stat_1']);
 				$stat_2 = sanitizeString($_POST['stat_2']);
 				$statBonus_1 = intval($_POST['statBonus_1']);

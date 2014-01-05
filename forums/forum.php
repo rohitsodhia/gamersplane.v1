@@ -99,11 +99,10 @@
 	
 	$gameID = FALSE;
 	$isGM = FALSE;
-	$fixedMenu = FALSE;
 	if ($heritage[0] == 2) {
 		$gameInfo = $mysql->query("SELECT gameID FROM games WHERE forumID = ".intval($heritage[1]));
 		$gameID = $gameInfo->fetchColumn();
-		$fixedMenu = TRUE;
+		$fixedGameMenu = TRUE;
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
@@ -248,7 +247,7 @@
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
 				<div class="td threadInfo">Thread</div>
-				<div class="td numThreads"># of Threads</div>
+				<div class="td numPosts"># of Posts</div>
 				<div class="td lastPost">Last Post</div>
 			</div>
 			<div class="sudoTable forumList hbdMargined">

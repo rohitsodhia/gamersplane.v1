@@ -8,7 +8,6 @@
 	$gmCheck = $mysql->query("SELECT 1 isGM FROM gms WHERE gameID = $gameID AND userID = $userID UNION SELECT 0 isGM FROM characters WHERE gameID = $gameID AND userID = $userID");
 	if (!$gmCheck->rowCount()) { header('Location: '.SITEROOT.'/403'); exit; }
 	$isGM = $gmCheck->fetchColumn();
-	$fixedMenu = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1>Maps</h1>

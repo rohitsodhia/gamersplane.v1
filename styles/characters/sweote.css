@@ -71,46 +71,21 @@ label.leftLabel {
 	display: inline-block;
 }
 
-.editCharacter #label label {
-	float: left;
-	text-align: right;
-	margin-right: 15px;
-	font-weight: bold;
-	font-size: 1em;
-}
-
-.editCharacter #label div {
-	width: 200px;
-	text-align: right;
-	font-size: .8em;
-}
-
-.editCharacter #size {
-	width: 65px;
-	text-align: center;
-}
-
-.editCharacter #label_size {
-	position: relative;
-	left: -3px;
-}
-
-.editCharacter #classes {
-	width: 350px;
-	text-align: left;
-}
-
-.editCharacter #levels {
-	width: 75px;
-}
-
-#stats, #savingThrows, #hp {
-	margin: 1.5em 0 .5em;
+.col {
 	float: left;
 }
 
-.viewCharacter #stats {
-	margin-top: 0;
+#stats, #defense {
+	float: left;
+	margin: 1em 0 .5em;
+}
+
+#stats .col:last-of-type, #defense .col:last-of-type {
+	margin-left: 10px;
+}
+
+#stats .shortText {
+	width: 80px;
 }
 
 .viewCharacter #stats .stat {
@@ -124,138 +99,15 @@ label.leftLabel {
 	text-align: center;
 }
 
-#savingThrows, #hp {
-	margin-left: 50px;
+#defense {
+	margin-left: 120px;
 }
 
-.viewCharacter #savingThrows {
-	margin-top: 0;
+#defense label {
+	width: 120px;
 }
 
-.viewCharacter #savingThrows .dataTR {
-	margin-bottom: 0;
-}
-
-#savingThrows .labelTR label {
-	text-align: center;
-}
-
-#savingThrows label.leftLabel, #savingThrows .fillerBlock {
-	width: 75px;
-}
-
-.editCharacter #savingThrows span {
-	display: inline-block;
-	width: 40px;
-	text-align: center;
-}
-
-.viewCharacter #savingThrows .dataTR > div {
-	text-align: center;
-}
-
-.editCharacter #hp {
-	margin-top: 2em;
-}
-
-.editCharacter #hp label {
-	margin-right: 10px;
-}
-
-.editCharacter #hp input {
-	margin-right: 20px;
-}
-
-.editCharacter #hp input#damageReduction {
-	width: 150px;
-}
-
-.viewCharacter #hp div {
-	padding: 3px 8px;
-	margin: 0 20px 0 10px;
-	border: 1px solid #555;
-}
-
-#ac {
-	margin-top: 1.5em;
-}
-
-#ac label, .viewCharacter #ac .dataTR div {
-	text-align: center;
-	width: 60px;
-}
-
-.viewCharacter #ac .first {
-	margin-right: 10px;
-}
-
-.viewCharacter #ac .dataTR div {
-	text-align: center;
-}
-
-.editCharacter #ac .tr div {
-	display: inline-block;
-	width: 50px;
-	text-align: center;
-}
-
-.editCharacter #ac #ac_total {
-	width: 60px;
-}
-
-.editCharacter #ac .tr .sizeVal {
-	width: 40px;
-	margin: 0 10px;
-	text-align: center;
-}
-
-.editCharacter #ac input.first {
-	margin: 0 20px;
-}
-
-#combatBonuses {
-	margin-top: 1.5em;
-}
-
-.viewCharacter #combatBonuses .dataTR div {
-	text-align: center;
-}
-
-#combatBonuses .labelTR label {
-	text-align: center;
-}
-
-.editCharacter #combatBonuses .labelTR .first {
-	margin-left: 115px;
-}
-
-.viewCharacter #combatBonuses .labelTR .first {
-	margin-left: 105px;
-}
-
-#combatBonuses label.leftLabel {
-	text-align: right;
-}
-
-#combatBonuses span {
-	display: inline-block;
-	width: 40px;
-	text-align: center;
-}
-
-.editCharacter .textareaDiv, .viewCharacter .textDiv {
-/*	width: 450px;*/
-	margin-top: 1em;
-}
-
-.editCharacter h2 a {
-	margin-left: 10px;
-	font-size: .6em;
-	font-weight: normal;
-	line-height: 1em;
-}
-
-#skills, #feats {
+#skills, #talents {
 	margin-top: 1em;
 }
 
@@ -268,7 +120,7 @@ label.leftLabel {
 }
 
 #skills {
-	width: 555px;
+	width: 520px;
 }
 
 #addSkillWrapper {
@@ -276,45 +128,41 @@ label.leftLabel {
 	position: relative;
 }
 
-#addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {
+#addSkillWrapper .fancyButton, #addTalentWrapper .fancyButton {
 	top: -1px;
 	margin-left: 5px;
 	vertical-align: middle;
+}
+
+.skill_stat {
+	width: 70px;
 }
 
 .skill span {
 	display: inline-block;
 }
 
-.skill .skill_stat {
-	text-transform: smallcaps;
+#talents {
+	width: 420px;
 }
 
-.skill .skill_total {
-	text-align: center;
-}
-
-#feats {
-	width: 385px;
-}
-
-#feats span, #feats a {
+#talents span, #talents a {
 	display: inline-block;
 }
 
-.editCharacter .feat_name {
+.editCharacter .talent_name {
 	width: 245px;
 }
 
-.viewCharacter .feat_name {
+.viewCharacter .talent_name {
 	width: 295px;
 }
 
-.feat_notesLink {
+.talent_notesLink {
 	font-size: .8em;
 }
 
-.viewCharacter .feat_notes {
+.viewCharacter .talent_notes {
 	display: none;
 }
 
@@ -396,17 +244,7 @@ input.armor_notes, .armor_notes {
 	text-align: left;
 }
 
-#items, #spells {
-	float: left;
-	width: 465px;
-	margin-top: 1em;
-}
-
-#spells {
-	float: right;
-}
-
-#items textarea, #spells textarea {
+#items textarea {
 	width: 100%;
 	height: 12.4em;
 }
@@ -427,15 +265,15 @@ input.armor_notes, .armor_notes {
 
 /* --------------------------------------------*/
 
-#page_characterSheet_dnd3_editFeatNotes {
+#page_characterSheet_dnd3_editTalentNotes {
 	text-align: center;
 }
 
-#page_characterSheet_dnd3_editFeatNotes textarea {
+#page_characterSheet_dnd3_editTalentNotes textarea {
 	width: 450px;
 	height: 8em;
 }
 
-#page_characterSheet_dnd3_featNotes #notes {
+#page_characterSheet_dnd3_talentNotes #notes {
 	margin-top: 0;
 }

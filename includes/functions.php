@@ -5,6 +5,10 @@
 */
 
 /* General Functions */
+	function addPackage($package) {
+		include_once(FILEROOT."/includes/packages/{$package}.package.php");
+	}
+
 	function randomAlphaNum($length) {
 		$validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$randomStr = "";
@@ -46,17 +50,19 @@
 		array_shift($options);
 //		if (sizeof($options) == 0) $options = array('strip_tags');
 
+		if (in_array('search_format', $options)) {
+			$string = strtolower($string);
+//			$string = str_replace('-', ' ', $string)
+			$string = str_replace("'", '', $string);
+			$string = preg_replace('/[^A-za-z0-9]/', ' ', $string);
+			if (!in_array('rem_dup_spaces', $options)) $options[] = 'rem_dup_spaces';
+		}
+
 		/*if (in_array('trim', $options)) */$string = trim($string);
 		/*if (in_array('strip_tags', $options)) */$string = strip_tags($string);
 		if (in_array('lower', $options)) $string = strtolower($string);
 		if (in_array('like_clean', $options)) $string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
 		if (in_array('rem_dup_spaces', $options)) $string = preg_replace('/\s+/', ' ', $string);
-
-		if (in_array('search_format', $options)) {
-			$string = strtolower($string);
-//			$string = str_replace('-', ' ', $string)
-			$string = preg_replace('/[^A-za-z0-9]/', ' ', $string);
-		}
 
 		return $string;
 	}
@@ -121,10 +127,19 @@
 	}
 
 /* Character Functions */
+	function getSystemID($system) {
+		global $mysql;
+
+		$systemID = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :system');
+		$systemID->execute(array(':system' => $system));
+		if ($systemID->rowCount()) return $systemID->fetchColumn();
+		else return FALSE;
+	}
+
 	function includeSystemInfo($system) {
 		if (is_dir(FILEROOT.'/includes/characters/'.$system)) 
 			foreach (glob(FILEROOT.'/includes/characters/'.$system.'/*') as $file) 
-				include($file);
+				include_once($file);
 	}
 
 	function getCharInfo($characterID, $system) {
@@ -179,7 +194,6 @@
 	}
 	
 	function rollDice($roll, $rerollAces = 0) {
-		echo $roll;
 		list($numDice, $diceType) = explode('d', str_replace(' ', '', trim($roll)));
 		$numDice = intval($numDice);
 		if (strpos($diceType, '-')) { list($diceType, $modifier) = explode('-', $diceType); $modifier = intval('-'.$modifier); }

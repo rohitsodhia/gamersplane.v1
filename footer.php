@@ -1,10 +1,10 @@
 <? if (!MODAL) { ?>
 	</div>
 </div></div>
-<footer<?=$fixedMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
+<footer<?=$fixedGameMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
 	<a href="<?=SITEROOT?>/contact">Contact Us</a>
 </div></footer>
-<? if (FIXED_GAME_MENU) require(FILEROOT.'/fixedGameMenu.php'); ?>
+<? if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
 <? } else { ?>
 </div>
 <? } ?>

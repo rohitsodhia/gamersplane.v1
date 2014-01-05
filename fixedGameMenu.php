@@ -2,7 +2,6 @@
 <?
 	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) {
 		$userID = intval($_SESSION['userID']);
-		$fixedMenu = TRUE;
 ?>
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?

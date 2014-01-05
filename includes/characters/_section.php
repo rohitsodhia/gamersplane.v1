@@ -1,18 +1,22 @@
 <?
-	function getSkill($skillName) {
+	function getSkill($skillName, $system) {
 		global $mysql;
 
 		$skillCheck = $mysql->prepare('SELECT skillID FROM skillsList WHERE LOWER(searchName) = :searchName');
 		$skillCheck->bindValue(':searchName', sanitizeString($skillName, 'search_format'));
 		$skillCheck->execute();
-		if ($skillCheck->rowCount()) return $skillCheck->fetchColumn();
+		if ($skillCheck->rowCount()) $skillID = $skillCheck->fetchColumn();
 		else {
 			$userID = intval($_SESSION['userID']);
 			$addNewSkill = $mysql->prepare("INSERT INTO skillsList (name, userDefined) VALUES (:name, $userID)");
 			$addNewSkill->bindValue(':name', $skillName);
 			$addNewSkill->execute();
-			return $mysql->lastInsertId();
+			$skillID = $mysql->lastInsertId();
 		}
+		$systemID = getSystemID($system);
+		$mysql->query("INSERT INTO system_skill_map SET systemID = $systemID, skillID = $skillID");
+
+		return $skillID;
 	}
 
 	function getFeat($featName) {

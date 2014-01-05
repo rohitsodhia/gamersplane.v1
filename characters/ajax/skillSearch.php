@@ -4,13 +4,16 @@
 		$characterID = intval($_POST['characterID']);
 		$system = sanitizeString($_POST['system']);
 		
-		$validateSystem = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :shortName');
-		$validateSystem->execute(array(':shortName' => $system));
-		if ($validateSystem->rowCount()) {
-			$skills = $mysql->prepare("SELECT skillsList.skillID, skillsList.name FROM skillsList LEFT JOIN (SELECT skillID FROM {$system}_skills WHERE characterID = $characterID) {$system}_skills ON skillsList.skillID = {$system}_skills.skillID WHERE name LIKE ? AND {$system}_skills.skillID IS NULL LIMIT 5");
+		if ($systemID = getSystemID($system)) {
+			$skills = $mysql->prepare("SELECT sl.skillID, sl.name, ssm.skillID IS NOT NULL systemSkill FROM skillsList sl LEFT JOIN (SELECT skillID FROM {$system}_skills WHERE characterID = $characterID) ss ON sl.skillID = ss.skillID LEFT JOIN system_skill_map ssm ON ssm.systemID = $systemID AND ssm.skillID = sl.skillID WHERE sl.name LIKE ? AND ss.skillID IS NULL ORDER BY systemSkill DESC, sl.name LIMIT 5");
 			$skills->execute(array("%$search%"));
+			$lastType = NULL;
 			foreach ($skills as $info) {
-				echo "<a href=\"\">{$info['name']}</a>\n";
+				$classes = array();
+				if (!$info['systemSkill']) $classes[] = 'nonSystemSkill';
+				if ($info['systemSkill'] != $lastType && $lastType != NULL) $classes[] = 'lineAbove';
+				$lastType = $info['systemSkill'];
+				echo "<a href=\"\"".(sizeof($classes)?' class="'.implode(' ', $classes).'"':'').">{$info['name']}</a>\n";
 			}
 		}
 	}

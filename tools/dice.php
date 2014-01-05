@@ -8,7 +8,7 @@
 			<div class="clearfix"><div id="controls" class="wingDiv sectionControls" data-ratio=".8">
 				<div class="wingDivContent">
 					<select class="prettySelect">
-						<option value="basic">Info</option>
+						<option value="basic">Basic Dice</option>
 						<option value="sweote">Star Wars: Edge of the Empire</option>
 					</select>
 				</div>

@@ -7,7 +7,6 @@
 	if ($charInfo->rowCount()) {
 		$charInfo = $charInfo->fetch();
 		$gameID = $charInfo['gameID'];
-		$fixedMenu = TRUE;
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 			$numVals = array('size', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'fort_base', 'fort_magic', 'fort_race', 'fort_misc', 'ref_base', 'ref_magic', 'ref_race', 'ref_misc', 'will_base', 'will_magic', 'will_race', 'will_misc', 'hp', 'ac_total', 'ac_armor', 'ac_shield', 'ac_dex', 'ac_class', 'ac_natural', 'ac_deflection', 'ac_misc', 'initiative_misc', 'bab', 'melee_misc', 'ranged_misc');
 			$textVals = array('name', 'race', 'class', 'dr', 'skills', 'feats', 'weapons', 'armor', 'items', 'spells', 'notes');

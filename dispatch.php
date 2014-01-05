@@ -46,7 +46,7 @@
 		}
 		$requireLoc = $dispatchInfo['file'];
 		define('PAGE_ID', $dispatchInfo['pageID']);
-		define('FIXED_GAME_MENU', $dispatchInfo['fixedGameMenu']?TRUE:FALSE);
+		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?TRUE:FALSE;
 
 		require($requireLoc);
 	}
