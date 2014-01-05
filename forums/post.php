@@ -318,9 +318,11 @@
 				</table>
 <?
 		}
-	}
 ?>
 			</div>
+<?
+	}
+?>
 			
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton">Post</button>
