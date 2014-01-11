@@ -23,15 +23,23 @@
 			
 			<div class="tr labelTR">
 				<label id="label_name" class="medText lrBuffer borderBox shiftRight">Name</label>
-				<label id="label_race" class="medText lrBuffer borderBox shiftRight">Race</label>
-				<label id="label_career" class="medText lrBuffer borderBox shiftRight">Career</label>
-				<label id="label_alignment" class="medText lrBuffer borderBox shiftRight">Specialization</label>
+				<label id="label_species" class="medText lrBuffer borderBox shiftRight">Species</label>
 			</div>
 			<div class="tr">
 				<input type="text" name="name" value="<?=$charInfo['name']?>" class="medText lrBuffer">
-				<input type="text" name="race" value="<?=$charInfo['race']?>" class="medText lrBuffer">
+				<input type="text" name="species" value="<?=$charInfo['species']?>" class="medText lrBuffer">
+			</div>
+			<div class="tr labelTR">
+				<label id="label_career" class="medText lrBuffer borderBox shiftRight">Career</label>
+				<label id="label_specialization" class="medText lrBuffer borderBox shiftRight">Specialization</label>
+				<label id="label_totalXP" class="shortText lrBuffer borderBox shiftRight">Total XP</label>
+				<label id="label_spentXP" class="shortText lrBuffer borderBox shiftRight">Spent XP</label>
+			</div>
+			<div class="tr">
 				<input type="text" name="career" value="<?=$charInfo['career']?>" class="medText lrBuffer">
 				<input type="text" name="specialization" value="<?=$charInfo['specialization']?>" class="medText lrBuffer">
+				<input type="text" name="totalXP" value="<?=$charInfo['totalXP']?>" class="shortText lrBuffer">
+				<input type="text" name="spentXP" value="<?=$charInfo['spentXP']?>" class="shortText lrBuffer">
 			</div>
 			
 			<div class="clearfix">
@@ -43,7 +51,7 @@
 ?>
 						<div class="tr">
 							<label id="label_<?=$short?>" class="textLabel shortText lrBuffer leftLabel"><?=$stat?></label>
-							<input type="text" id="<?=$short?>" name="<?=$short?>" value="<?=$charInfo[strtolower($stat)]?>" maxlength="2" class="stat lrBuffer">
+							<input type="text" id="<?=strtolower($stat)?>" name="<?=strtolower($stat)?>" value="<?=$charInfo[strtolower($stat)]?>" maxlength="2" class="stat lrBuffer">
 						</div>
 <?
 		if ($count % 3 == 2) echo "					</div>\n";
@@ -139,15 +147,26 @@
 <?
 	$weapons = $mysql->query('SELECT * FROM dnd3_weapons WHERE characterID = '.$characterID);
 	$weaponNum = 1;
-	while (($weaponInfo = $weapons->fetch()) || $weaponNum <= 2) weaponFormFormat($weaponNum++, $weaponInfo);
+	while (($weaponInfo = $weapons->fetch()) || $weaponNum <= 1) weaponFormFormat($weaponNum++, $weaponInfo);
 ?>
 					</div>
 				</div>
-			</div>
 			
-			<div id="items">
-				<h2 class="headerbar hbDark">Items</h2>
-				<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
+				<div id="items">
+					<h2 class="headerbar hbDark">Items</h2>
+					<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
+				</div>
+			</div>
+
+			<div class="clearfix">
+				<div id="motivations" class="floatLeft">
+					<h2 class="headerbar hbDark">Motivations</h2>
+					<textarea name="motivations" class="hbdMargined"><?=$charInfo['motivations']?></textarea>
+				</div>
+				<div id="obligations" class="floatRight">
+					<h2 class="headerbar hbDark">Obligations</h2>
+					<textarea name="obligations" class="hbdMargined"><?=$charInfo['obligations']?></textarea>
+				</div>
 			</div>
 
 			<div id="notes">

@@ -6,25 +6,21 @@
 						<div class="weapon<?=$weaponNum == 1?' first':''?>">
 							<div class="tr labelTR">
 								<label class="medText lrBuffer borderBox shiftRight">Name</label>
-								<label class="shortText alignCenter lrBuffer">Attack Bonus</label>
-								<label class="shortText alignCenter lrBuffer">Damage</label>
+								<label class="weapons_skill lrBuffer borderBox shiftRight">Skill</label>
 							</div>
-							<div class="tr">
+							<div class="tr weapon_firstRow">
 								<input type="text" name="weapons[<?=$weaponNum?>][name]" value="<?=$weaponInfo['name']?>" class="weapon_name medText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][ab]" value="<?=$weaponInfo['ab']?>" class="weapons_ab shortText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][damage]" value="<?=$weaponInfo['damage']?>" class="weapon_damage shortText lrBuffer">
+								<input type="text" name="weapons[<?=$weaponNum?>][skill]" value="<?=$weaponInfo['skill']?>" class="weapons_skill lrBuffer">
 							</div>
 							<div class="tr labelTR weapon_secondRow">
-								<label class="shortText alignCenter lrBuffer">Critical</label>
+								<label class="shortText alignCenter lrBuffer">Damage</label>
 								<label class="shortText alignCenter lrBuffer">Range</label>
-								<label class="shortText alignCenter lrBuffer">Type</label>
-								<label class="shortNum alignCenter lrBuffer">Size</label>
+								<label class="shortText alignCenter lrBuffer">Critical</label>
 							</div>
 							<div class="tr weapon_secondRow">
-								<input type="text" name="weapons[<?=$weaponNum?>][critical]" value="<?=$weaponInfo['critical']?>" class="weapon_crit shortText lrBuffer">
+								<input type="text" name="weapons[<?=$weaponNum?>][damage]" value="<?=$weaponInfo['damage']?>" class="weapon_damage shortText lrBuffer">
 								<input type="text" name="weapons[<?=$weaponNum?>][range]" value="<?=$weaponInfo['range']?>" class="weapon_range shortText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][type]" value="<?=$weaponInfo['type']?>" class="weapon_type shortText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][size]" value="<?=$weaponInfo['size']?>" class="weapon_size shortNum lrBuffer">
+								<input type="text" name="weapons[<?=$weaponNum?>][critical]" value="<?=$weaponInfo['critical']?>" class="weapon_crit shortText lrBuffer">
 							</div>
 							<div class="tr labelTR">
 								<label class="lrBuffer shiftRight">Notes</label>

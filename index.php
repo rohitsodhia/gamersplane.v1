@@ -108,7 +108,7 @@
 			}
 		}
 	}
-	$latestPosts = $mysql->query('SELECT t.threadID, p.title, u.userID, u.username, p.datePosted, f.forumID, f.title fTitle, IF(np.newPosts IS NULL, 0, 1) newPosts FROM threads t INNER JOIN threads_relPosts rp ON t.threadID = rp.threadID INNER JOIN posts p ON rp.firstPostID = p.postID LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = '.($loggedIn?$userID:'NULL').' LEFT JOIN forums f ON t.forumID = f.forumID LEFT JOIN forums_readData_newPosts np ON t.threadID = np.threadID AND np.userID = '.($loggedIn?$userID:'NULL').' WHERE t.forumID IN ('.implode(', ', $forumIDs).') ORDER BY rp.lastPostID DESC LIMIT 3');
+	$latestPosts = $mysql->query('SELECT t.threadID, p.title, u.userID, u.username, p.datePosted, f.forumID, f.title fTitle, IF(np.newPosts IS NULL, 0, 1) newPosts FROM threads t INNER JOIN threads_relPosts rp ON t.threadID = rp.threadID INNER JOIN posts p ON rp.lastPostID = p.postID LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = '.($loggedIn?$userID:'NULL').' LEFT JOIN forums f ON t.forumID = f.forumID LEFT JOIN forums_readData_newPosts np ON t.threadID = np.threadID AND np.userID = '.($loggedIn?$userID:'NULL').' WHERE t.forumID IN ('.implode(', ', $forumIDs).') ORDER BY rp.lastPostID DESC LIMIT 3');
 
 	$first = TRUE;
 	foreach ($latestPosts as $latestPost) {
@@ -117,7 +117,7 @@
 		else $first = FALSE;
 		echo "\t\t\t\t\t<div class=\"post\">\n";
 		echo "\t\t\t\t\t\t<div class=\"forumIcon".($latestPost['newPosts']?' newPosts':'')."\"></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"".SITEROOT."/forums/threads/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
+		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"".SITEROOT."/forums/thread/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
 		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"".SITEROOT."/users/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
 		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"".SITEROOT."/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
 		echo "\t\t\t\t\t</div>\n";

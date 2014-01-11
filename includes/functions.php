@@ -53,7 +53,7 @@
 		if (in_array('search_format', $options)) {
 			$string = strtolower($string);
 //			$string = str_replace('-', ' ', $string)
-			$string = str_replace("'", '', $string);
+//			$string = str_replace("'", '', $string);
 			$string = preg_replace('/[^A-za-z0-9]/', ' ', $string);
 			if (!in_array('rem_dup_spaces', $options)) $options[] = 'rem_dup_spaces';
 		}

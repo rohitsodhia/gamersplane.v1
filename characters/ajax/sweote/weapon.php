@@ -1,4 +1,4 @@
 <?
-	includeSystemInfo('dnd3');
+	includeSystemInfo('sweote');
 	weaponFormFormat($_POST['weaponNum']);
 ?>

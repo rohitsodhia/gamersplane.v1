@@ -87,7 +87,10 @@ $.fn.autocomplete = function (pathOption, sendData) {
 				updateOptions($prettySelect);
 			}).change(function () {
 				$parent = $(this).closest('div.prettySelect');
-				$parent.find('.prettySelectCurrent').text($(this).find('option[value=' + $(this).val() + ']').text());
+				text = '';
+				if ($(this).find('option[value="' + $(this).val() + '"]').length) text = $(this).find('option[value="' + $(this).val() + '"]').text();
+				else text = $(this).val();
+				$parent.find('.prettySelectCurrent').text(text);
 			});
 		}
 

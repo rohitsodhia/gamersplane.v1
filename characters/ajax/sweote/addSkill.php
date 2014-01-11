@@ -10,7 +10,7 @@
 			if (strlen($name)) {
 				$skillID = getSkill($name, 'sweote');
 				$stat = sanitizeString($_POST['stat']);
-				$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat);
+				$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'rank' => 0);
 				$addSkill = $mysql->query("INSERT INTO sweote_skills (characterID, skillID, stat) VALUES ($characterID, $skillID, '$stat')");
 				if ($addSkill->rowCount()) skillFormFormat($skillInfo);
 			}

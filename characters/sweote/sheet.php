@@ -2,7 +2,7 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM dnd3_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
+	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM sweote_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
 	if ($charInfo->rowCount()) {
 		$charInfo = $charInfo->fetch();
@@ -10,55 +10,55 @@
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
 			$noChar = FALSE;
+			includeSystemInfo('sweote');
 		}
 	}
-	
-	$alignments = array('lg' => 'Lawful Good', 'ng' => 'Neutral Good', 'cg' => 'Chaotic Good', 'ln' => 'Lawful Neutral', 'tn' => 'True Neutral', 'cn' => 'Chaotic Neutral', 'le' => 'Lawful Evil', 'ne' => 'Neutral Evil', 'ce' => 'Chaotic Evil'); 
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/dnd3.png"></div>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/sweote.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd3/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/sweote/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
-			<label id="label_race" class="medText">Race</label>
+			<label id="label_species" class="medText">Species</label>
 		</div>
 		<div class="tr dataTR">
 			<div class="medText"><?=$charInfo['name']?></div>
-			<div class="medText"><?=$charInfo['race']?></div>
+			<div class="medText"><?=$charInfo['species']?></div>
 		</div>
 		
 		<div class="tr labelTR">
-			<label id="label_classes" class="longText">Class(es)/Level(s)</label>
-			<label id="label_alignment" class="medText">Alignment</label>
+			<label id="label_career" class="medText">Career</label>
+			<label id="label_specialization" class="medText">Specialization</label>
+			<label id="label_totalXP" class="shortText">Total XP</label>
+			<label id="label_spentXP" class="shortText">Spent XP</label>
 		</div>
 		<div class="tr dataTR">
-			<div class="longText"><?=$charInfo['class']?></div>
-			<div class="longText"><?=$alignments[$charInfo['alignment']]?></div>
+			<div class="medText"><?=$charInfo['career']?></div>
+			<div class="medText"><?=$charInfo['specialization']?></div>
+			<div class="shortText"><?=$charInfo['totalXP']?></div>
+			<div class="shortText"><?=$charInfo['spentXP']?></div>
 		</div>
 		
 		<div class="clearfix">
 			<div id="stats">
 <?
-	$statBonus = array();
-	foreach (array('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
-		$bonus = showSign(floor(($charInfo[$short] - 10)/2));
+	$count = 0;
+	foreach ($stats as $short => $stat) {
+		if ($count % 3 == 0) echo "				<div class=\"col\">\n";
 ?>
-				<div class="tr">
-					<label id="label_<?=$short?>" class="shortText leftLabel"><?=$stat?></label>
-					<div class="stat"><?=$charInfo[$short]?></div>
-					<span id="<?=$short?>Modifier"><?=$bonus?></span>
-				</div>
+					<div class="tr">
+						<label id="label_<?=$short?>" class="shortText leftLabel"><?=$stat?></label>
+						<div class="stat"><?=$charInfo[strtolower($stat)]?></div>
+					</div>
 <?
-		$statBonus[$short] = $bonus;
+		if ($count % 3 == 2) echo "					</div>\n";
+		$count++;
 	}
-	
-	$charInfo['size'] = showSign($charInfo['size']);
 ?>
 			</div>
 			
@@ -69,13 +69,13 @@
 					<label class="statCol shortNum lrBuffer">Base</label>
 					<label class="statCol shortNum lrBuffer">Ability</label>
 					<label class="statCol shortNum lrBuffer">Magic</label>
-					<label class="statCol shortNum lrBuffer">Race</label>
+					<label class="statCol shortNum lrBuffer">Species</label>
 					<label class="statCol shortNum lrBuffer">Misc</label>
 				</div>
 <?
-	$fortBonus = showSign($charInfo['fort_base'] + $statBonus['con'] + $charInfo['fort_magic'] + $charInfo['fort_race'] + $charInfo['fort_misc']);
-	$refBonus = showSign($charInfo['ref_base'] + $statBonus['dex'] + $charInfo['ref_magic'] + $charInfo['ref_race'] + $charInfo['ref_misc']);
-	$willBonus = showSign($charInfo['will_base'] + $statBonus['wis'] + $charInfo['will_magic'] + $charInfo['will_race'] + $charInfo['will_misc']);
+	$fortBonus = showSign($charInfo['fort_base'] + $statBonus['con'] + $charInfo['fort_magic'] + $charInfo['fort_species'] + $charInfo['fort_misc']);
+	$refBonus = showSign($charInfo['ref_base'] + $statBonus['dex'] + $charInfo['ref_magic'] + $charInfo['ref_species'] + $charInfo['ref_misc']);
+	$willBonus = showSign($charInfo['will_base'] + $statBonus['wis'] + $charInfo['will_magic'] + $charInfo['will_species'] + $charInfo['will_misc']);
 ?>
 				<div id="fortRow" class="tr dataTR">
 					<label class="leftLabel">Fortitude</label>
@@ -83,7 +83,7 @@
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['fort_base'])?></div>
 					<div class="shortNum lrBuffer statBonus_con"><?=$statBonus['con']?></div>
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['fort_magic'])?></div>
-					<div class="shortNum lrBuffer"><?=showSign($charInfo['fort_race'])?></div>
+					<div class="shortNum lrBuffer"><?=showSign($charInfo['fort_species'])?></div>
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['fort_misc'])?></div>
 				</div>
 				<div id="refRow" class="tr dataTR">
@@ -92,7 +92,7 @@
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['ref_base'])?></div>
 					<div class="shortNum lrBuffer statBonus_dex"><?=$statBonus['dex']?></div>
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['ref_magic'])?></div>
-					<div class="shortNum lrBuffer"><?=showSign($charInfo['ref_race'])?></div>
+					<div class="shortNum lrBuffer"><?=showSign($charInfo['ref_species'])?></div>
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['ref_misc'])?></div>
 				</div>
 				<div id="willRow" class="tr dataTR">
@@ -101,7 +101,7 @@
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['will_base'])?></div>
 					<div class="shortNum lrBuffer statBonus_wis"><?=$statBonus['wis']?></div>
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['will_magic'])?></div>
-					<div class="shortNum lrBuffer"><?=showSign($charInfo['will_race'])?></div>
+					<div class="shortNum lrBuffer"><?=showSign($charInfo['will_species'])?></div>
 					<div class="shortNum lrBuffer"><?=showSign($charInfo['will_misc'])?></div>
 				</div>
 			</div>
@@ -194,7 +194,7 @@
 						<label class="shortNum alignCenter lrBuffer">Misc</label>
 					</div>
 <?
-	$skills = $mysql->query('SELECT dnd3_skills.skillID, skillsList.name, dnd3_skills.stat, dnd3_skills.ranks, dnd3_skills.misc FROM dnd3_skills INNER JOIN skillsList USING (skillID) WHERE dnd3_skills.characterID = '.$characterID.' ORDER BY skillsList.name');
+	$skills = $mysql->query('SELECT sweote_skills.skillID, skillsList.name, sweote_skills.stat, sweote_skills.ranks, sweote_skills.misc FROM sweote_skills INNER JOIN skillsList USING (skillID) WHERE sweote_skills.characterID = '.$characterID.' ORDER BY skillsList.name');
 	if ($skills->rowCount()) { foreach ($skills as $skill) { ?>
 					<div id="skill_<?=$skill['skillID']?>" class="skill tr clearfix">
 						<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
@@ -210,11 +210,11 @@
 				<h2 class="headerbar hbDark">Feats/Abilities</h2>
 				<div class="hbdMargined">
 <?
-	$feats = $mysql->query('SELECT dnd3_feats.featID, featsList.name, dnd3_feats.notes FROM dnd3_feats INNER JOIN featsList USING (featID) WHERE dnd3_feats.characterID = '.$characterID.' ORDER BY featsList.name');
+	$feats = $mysql->query('SELECT sweote_feats.featID, featsList.name, sweote_feats.notes FROM sweote_feats INNER JOIN featsList USING (featID) WHERE sweote_feats.characterID = '.$characterID.' ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $feat) { ?>
 					<div id="feat_<?=$feat['featID']?>" class="feat tr clearfix">
 						<span class="feat_name"><?=mb_convert_case($feat['name'], MB_CASE_TITLE)?></span>
-						<a href="<?=SITEROOT?>/characters/dnd3/<?=$characterID?>/featNotes/<?=$feat['featID']?>" class="feat_notesLink">Notes</a>
+						<a href="<?=SITEROOT?>/characters/sweote/<?=$characterID?>/featNotes/<?=$feat['featID']?>" class="feat_notesLink">Notes</a>
 					</div>
 <?	} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n"; ?>
 				</div>
@@ -226,7 +226,7 @@
 				<h2 class="headerbar hbDark">Weapons</h2>
 				<div class="hbdMargined">
 <?
-	$weapons = $mysql->query('SELECT * FROM dnd3_weapons WHERE characterID = '.$characterID);
+	$weapons = $mysql->query('SELECT * FROM sweote_weapons WHERE characterID = '.$characterID);
 	foreach ($weapons as $weapon) {
 	?>
 					<div class="weapon">
@@ -268,7 +268,7 @@
 				<h2 class="headerbar hbDark">Armor</h2>
 				<div class="hbdMargined">
 <?
-	$armors = $mysql->query('SELECT * FROM dnd3_armors WHERE characterID = '.$characterID);
+	$armors = $mysql->query('SELECT * FROM sweote_armors WHERE characterID = '.$characterID);
 	foreach ($armors as $armor) {
 ?>
 					<div class="armor">

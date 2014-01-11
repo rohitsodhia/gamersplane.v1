@@ -1,3 +1,3 @@
 $(function() {
-	$('.feat_notesLink').colorbox();
+	$('.talent_notesLink').colorbox();
 });

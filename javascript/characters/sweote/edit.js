@@ -4,9 +4,10 @@ $(function() {
 	
 	$('#addSkill').click(function (e) {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			$.post(SITEROOT + '/characters/ajax/sweote/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
+			console.log({ characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val() });
+			$.post(SITEROOT + '/characters/ajax/sweote/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val() }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
-				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
+				$(data).hide().appendTo('#skills .hbdMargined').slideDown().find('input[type="checkbox"]').prettyCheckbox();
 				$('#skillName').val('').trigger('blur');
 			});
 		}
@@ -30,7 +31,7 @@ $(function() {
 		$.post(SITEROOT + '/characters/ajax/sweote/removeTalent', { characterID: characterID, talentID: talentID }, function (data) {
 			if (parseInt(data) == 1) { $('#talent_' + talentID).slideUp(function () {
 				$(this).remove();
-				if ($('.talent').size() == 0) $('<p id="noTalents">This character currently has no talents/abilities.</p>').hide().appendTo('#talents .hbdMargined').slideDown();
+				if ($('.talent').size() == 0) $('<p id="noTalents">This character currently has no talents.</p>').hide().appendTo('#talents .hbdMargined').slideDown();
 			}); }
 		});
 		
@@ -50,6 +51,7 @@ $(function() {
 		
 		e.preventDefault()
 	});
+	$('.talent_notesLink').colorbox();
 	$('#talents').on('click', '.talent_remove', removeTalent);
 	
 	$('#addWeapon').click(function (e) {

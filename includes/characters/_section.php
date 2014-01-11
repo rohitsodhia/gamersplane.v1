@@ -8,8 +8,9 @@
 		if ($skillCheck->rowCount()) $skillID = $skillCheck->fetchColumn();
 		else {
 			$userID = intval($_SESSION['userID']);
-			$addNewSkill = $mysql->prepare("INSERT INTO skillsList (name, userDefined) VALUES (:name, $userID)");
+			$addNewSkill = $mysql->prepare("INSERT INTO skillsList (name, searchName, userDefined) VALUES (:name, :searchName, $userID)");
 			$addNewSkill->bindValue(':name', $skillName);
+			$addNewSkill->bindValue(':searchName', sanitizeString($skillName, 'search_format'));
 			$addNewSkill->execute();
 			$skillID = $mysql->lastInsertId();
 		}
