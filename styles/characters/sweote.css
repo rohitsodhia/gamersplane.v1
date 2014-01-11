@@ -84,13 +84,17 @@ label.leftLabel {
 	margin-left: 10px;
 }
 
+.viewCharacter #stats .col:last-of-type {
+	margin-left: 20px;
+}
+
 #stats .shortText {
 	width: 80px;
 }
 
-.viewCharacter #stats .stat {
-	border-right: 1px solid #555;
-	border-left: 1px solid #555;
+.viewCharacter #stats .stat, .viewCharacter #defense .tr div {
+	padding: 3px 0;
+	border: 1px solid #555;
 }
 
 #stats div.stat, #stats span {
@@ -103,8 +107,17 @@ label.leftLabel {
 	margin-left: 120px;
 }
 
+.viewCharacter #defense {
+	margin-left: 110px;
+}
+
 #defense label {
 	width: 120px;
+}
+
+#defense .tr div {
+	display: inline-block;
+	text-align: center;
 }
 
 .editCharacter h2 a {
@@ -145,6 +158,10 @@ label.leftLabel {
 	width: 70px;
 }
 
+.skill_career img {
+	height: 13px;
+}
+
 .skill span {
 	display: inline-block;
 }
@@ -174,7 +191,7 @@ label.leftLabel {
 }
 
 #weapons {
-	width: 388px;
+	width: 430px;
 }
 
 .weapon {
@@ -191,9 +208,6 @@ label.leftLabel {
 
 .viewCharacter #weapons span {
 	display: inline-block;
-}
-
-.viewCharacter .weapon .lrBuffer {
 }
 
 .viewCharacter .weapon .labelTR {
@@ -225,8 +239,7 @@ input.weapon_notes, .weapon_notes {
 }
 
 #items {
-	float: right;
-	width: 540px;
+	width: 500px;
 }
 
 #items textarea {

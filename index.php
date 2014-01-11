@@ -12,7 +12,7 @@
 	$postInfo = $posts->fetch();
 	$postInfo['datePosted'] = switchTimezone($_SESSION['timezone'], $postInfo['datePosted']);
 	echo "\t\t\t\t<h2 class=\"headerbar\"><a href=\"".SITEROOT.'/forums/thread/'.$postInfo['threadID'].'">'.$postInfo['title']."</a></h2>\n";
-	echo "\t\t\t\t<h4>".date('F j, Y g:i a', $postInfo['datePosted']).' by <a href="'.SITEROOT.'/users/'.$postInfo['userID'].'" class="username">'.$postInfo['username']."</a></h4>\n";
+	echo "\t\t\t\t<h4>".date('F j, Y g:i a', $postInfo['datePosted']).' by <a href="'.SITEROOT.'/user/'.$postInfo['userID'].'" class="username">'.$postInfo['username']."</a></h4>\n";
 	echo "\t\t\t\t<hr>\n";
 	echo BBCode2Html(filterString(printReady($postInfo['message'])));
 	if ($loggedIn) echo "\t\t\t\t<div class=\"readMore\">To comment to this post or to read what others thought, please <a href=\"".SITEROOT.'/forums/thread/'.$postInfo['threadID']."\">click here</a>.</div>\n";
@@ -33,7 +33,7 @@
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 				echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
 				echo "\t\t\t\t\t\t\t<p class=\"title\"><a href=\"".SITEROOT."/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
-				echo "\t\t\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/users/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
+				echo "\t\t\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
 				echo "\t\t\t\t\t\t</div>\n";
 			}
 			echo "\t\t\t\t\t</div>\n";
@@ -75,7 +75,7 @@
 		else $first = FALSE;
 		echo "\t\t\t\t<div class=\"gameInfo\">\n";
 		echo "\t\t\t\t\t<p class=\"title\"><a href=\"".SITEROOT."/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
-		echo "\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/users/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
+		echo "\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
 //		if ($slotsLeft == 0) echo "\t\t\t\t<p class=\"details\">No Slots Remaining</p>\n";
 //		else echo "\t\t\t\t<p class=\"details\">{$slotsLeft} Slots Still Open</p>\n";
 //		echo "\t\t\t\t\t<p class=\"details\">Started on ".date('M j, Y g:i a', $gameInfo['started'])."</p>\n";
@@ -118,7 +118,7 @@
 		echo "\t\t\t\t\t<div class=\"post\">\n";
 		echo "\t\t\t\t\t\t<div class=\"forumIcon".($latestPost['newPosts']?' newPosts':'')."\"></div>\n";
 		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"".SITEROOT."/forums/thread/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"".SITEROOT."/users/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
+		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"".SITEROOT."/user/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
 		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"".SITEROOT."/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}

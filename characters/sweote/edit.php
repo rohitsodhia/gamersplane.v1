@@ -143,7 +143,7 @@
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
-					<div>
+					<div class="hbMargined">
 <?
 	$weapons = $mysql->query('SELECT * FROM dnd3_weapons WHERE characterID = '.$characterID);
 	$weaponNum = 1;
@@ -152,7 +152,7 @@
 					</div>
 				</div>
 			
-				<div id="items">
+				<div id="items" class="floatRight">
 					<h2 class="headerbar hbDark">Items</h2>
 					<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
 				</div>

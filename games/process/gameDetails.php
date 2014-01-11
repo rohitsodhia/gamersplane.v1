@@ -99,8 +99,7 @@
 			
 //			mail('contact@gamersplane.com', 'New Game', "Game: {$details['title']}\nGM: {$_SESSION['username']}\nSystem: {$system}");
 			
-			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.systemID = {$
-				details['systemID']}");
+			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.systemID = {$details['systemID']}");
 			$recips = '';
 			foreach ($lfgRecips as $info) $recips .= $info['email'].', ';
 			ob_start();
