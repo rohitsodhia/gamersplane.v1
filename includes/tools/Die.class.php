@@ -1,5 +1,5 @@
 <?
-	abstract class Dice {
+	abstract class BaseDie {
 		var $sides;
 		var $result;
 		

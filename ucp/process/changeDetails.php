@@ -60,10 +60,11 @@
 		$aim = sanitizeString($_POST['aim']);
 		$gmail = sanitizeString($_POST['gmail']);
 		$twitter = sanitizeString($_POST['twitter']);
+		$stream = sanitizeString($_POST['stream']);
 		$games = sanitizeString($_POST['games']);
 		$newGameMail = $_POST['newGameMail']?1:0;
 		
-		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, avatarExt = :avatarExt, timezone = :timezone, showTZ = :showTZ, gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
+		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, avatarExt = :avatarExt, timezone = :timezone, showTZ = :showTZ, gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, stream = :stream, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
 		$updateUser->execute(array(
 			'showAvatars' => $showAvatars,
 			'avatarExt' => $ext,
@@ -76,6 +77,7 @@
 			'aim' => $aim,
 			'gmail' => $gmail,
 			'twitter' => $twitter,
+			'stream' => $stream,
 			'games' => $games,
 			'newGameMail' => $newGameMail,
 			'userID' => $userID

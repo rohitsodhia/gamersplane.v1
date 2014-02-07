@@ -45,11 +45,11 @@
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<div class="tr basicInfo charName">
 				<label class="name">Normal Name:</label>
-				<input type="text" name="normName" maxlength="50" value="<?=sanatizeString($charInfo['normName'])?>">
+				<input type="text" name="normName" maxlength="50" value="<?=sanitizeString($charInfo['normName'])?>">
 			</div>
 			<div class="tr basicInfo charName">
 				<label class="name">Super Name:</label>
-				<input type="text" name="superName" maxlength="50" value="<?=sanatizeString($charInfo['superName'])?>">
+				<input type="text" name="superName" maxlength="50" value="<?=sanitizeString($charInfo['superName'])?>">
 			</div>
 			<div class="tr basicInfo he">
 				<label class="name">Calculated Health:</label>

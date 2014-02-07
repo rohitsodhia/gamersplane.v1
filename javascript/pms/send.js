@@ -15,7 +15,7 @@ function checkUsername() {
 }
 
 function ajax_searchUser(username) {
-	return $.post(SITEROOT + '/pms/ajax/userSearch', { username: username }, function (data) {
+	return $.post('/pms/ajax/userSearch', { username: username }, function (data) {
 		if ($(data).find('user').size()) {
 			$('#invalidUser').fadeOut('normal');
 			userValid = true;

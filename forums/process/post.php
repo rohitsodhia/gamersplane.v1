@@ -1,6 +1,13 @@
 <?
+	$sweoteDice = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
+	function validateSWOETEDice($value) {
+		global $sweoteDice;
+		if (in_array($value, array_keys($sweoteDice))) return TRUE;
+		else return FALSE;
+	}
+
+
 	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 
 	if (isset($_POST['advanced'])) {
@@ -37,41 +44,48 @@
 		
 		$rolls = array();
 		$draws = array();
-		foreach ($_POST as $key => $value) {
-			if (substr($key, 0, 4) == 'roll') {
-				$parts = explode('_', $key);
-				if (!isset($rolls[$parts[2]])) $rolls[$parts[2]] = array();
-				$rolls[intval($parts[2])][$parts[1]] = $value;
-			} elseif (substr($key, 0, 4) == 'deck') {
-				$parts = explode('_', $key);
-				if (!isset($draws[$parts[2]])) $draws[$parts[2]] = array();
-				$draws[intval($parts[2])][$parts[1]] = $value;
-			}
-		}
 
-		if (sizeof($rolls)) { foreach ($rolls as $num => $roll) {
+		if (sizeof($_POST['rolls'])) { foreach ($_POST['rolls'] as $num => $roll) {
 			$cleanedRoll = array();
-			if ($roll['roll']) {
-				$ra = $roll['ra']?1:0;
-				$indivRoll = parseRolls($roll['roll']);
-				if (!$indivRoll) {
-//					unset($rolls[$num]);
-					$_SESSION['errors']['badRoll'] = 1;
-				} else {
-					$indivRoll = $indivRoll[0];
-					$rollVals = rollDice($indivRoll, $ra);
-					$cleanedRoll['roll'] = $roll['roll'];
-					$cleanedRoll['reason'] = sanitizeString($roll['reason']);
-					$cleanedRoll['ra'] = $ra;
-					$cleanedRoll['total'] = $rollVals['total'];
-					$cleanedRoll['indivRolls'] = $rollVals['indivRolls'];
-					$cleanedRoll['visibility'] = $roll['visibility'];
-					$rolls[$num] = $cleanedRoll;
+			if (strlen($roll['roll'])) {
+				if ($roll['type'] == 'basic') {
+					$indivRoll = parseRolls($roll['roll']);
+					$ra = $roll['ra']?1:0;
+					if (!$indivRoll) {
+						$_SESSION['errors']['badRoll'] = 1;
+					} else {
+						$indivRoll = $indivRoll[0];
+						$rollVals = rollDice($indivRoll, $ra);
+						$cleanedRoll['type'] = 'basic';
+						$cleanedRoll['reason'] = sanitizeString($roll['reason']);
+						$cleanedRoll['roll'] = $roll['roll'];
+						$cleanedRoll['indivRolls'] = $rollVals['indivRolls'];
+						$cleanedRoll['result'] = $rollVals['result'];
+						$cleanedRoll['visibility'] = $roll['visibility'];
+						$cleanedRoll['extras'] = array('ra' => $ra);
+						$rolls[$num] = $cleanedRoll;
+					}
+				} elseif ($roll['type'] == 'sweote') {
+					$validRolls = array_filter(explode(',', $roll['roll']), 'validateSWOETEDice');
+					if (sizeof($validRolls)) {
+						$results = array();
+						foreach ($validRolls as $validRoll) {
+							$result = sweote_rollDice($sweoteDice[$validRoll]);
+							$results[] = $result['result'];
+						}
+						$cleanedRoll['type'] = 'sweote';
+						$cleanedRoll['reason'] = sanitizeString($roll['reason']);
+						$cleanedRoll['roll'] = implode(',', $validRolls);
+						$cleanedRoll['indivRolls'] = $results;
+						$cleanedRoll['visibility'] = $roll['visibility'];
+						$rolls[$num] = $cleanedRoll;
+					}
 				}
 			} else unset($rolls[$num]);
 		} }
 
-		if (sizeof($draws)) {
+		if (sizeof($_POST['decks'])) {
+			$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?TRUE:FALSE; });
 			$deckInfos = $mysql->query('SELECT decks.deckID, decks.deck, decks.type, decks.position FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deckPermissions.userID = '.$userID.' AND decks.deckID IN ('.implode(',', array_keys($draws)).')');
 			$temp = array();
 			foreach ($deckInfos as $deckInfo) $temp[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
@@ -92,11 +106,14 @@
 					$draw['cardsDrawn'] = implode('~', $draw['cardsDrawn']);
 					$draw['reason'] = sanitizeString($draw['reason']);
 					$draw['type'] = $deckInfos[$deckID]['type'];
-//					$draws[$drawID] = $draw;
 				} else unset($draws[$deckID]);
 			}
 		}
-		
+
+		var_dump($rolls);
+		var_dump($draws);
+
+		die();		
 		$postID = 0;
 		$threadID = 0;
 		$noChat = FALSE;

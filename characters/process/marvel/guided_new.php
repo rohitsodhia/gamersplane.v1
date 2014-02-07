@@ -21,7 +21,7 @@
 		$charInfo = $mysql->fetch();
 		
 		if ($_GET['step'] == 'basics') {
-			$updates = array('normName' => sanatizeString($_POST['normName']), 'superName' => sanatizeString($_POST['superName']));
+			$updates = array('normName' => sanitizeString($_POST['normName']), 'superName' => sanitizeString($_POST['superName']));
 			
 			$stonesSpent = 0;
 			if ($_SESSION['stepDone']['basic']) {
@@ -93,13 +93,13 @@
 			} else {
 				$stonesSpent = ($actionInfo['cost'] >= 0)?$marvel_cost[$_POST['level'] + $actionInfo['cost'] + $_POST['offset']]:abs($actionInfo['cost']);
 				if ($actionInfo['playerActionID']) {
-					$updates = array('level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+					$updates = array('level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 					
 					$mysql->setWhere('playerActionID = '.$actionInfo['playerActionID']);
 					$mysql->setUpdates($updates);
 					$mysql->stdQuery('update', 'where');
 				} else {
-					$inserts = array('characterID' => $characterID, 'actionID' => $actionID, 'level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+					$inserts = array('characterID' => $characterID, 'actionID' => $actionID, 'level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 					
 					$mysql->setInserts($inserts);
 					$mysql->stdQuery('insert');
@@ -158,13 +158,13 @@
 				else { $stonesSpent = $marvel_cost[$level + $cost + $offset] + $extraStones; }
 				
 				if ($modifierInfo['playerModifierID']) {
-					$updates = array('level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+					$updates = array('level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 					
 					$mysql->setWhere('playerModifierID = '.$modifierInfo['playerModifierID']);
 					$mysql->setUpdates($updates);
 					$mysql->stdQuery('update', 'where');
 				} else {
-					$inserts = array('characterID' => $characterID, 'modifierID' => $modifierInfo['modifierID'], 'level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+					$inserts = array('characterID' => $characterID, 'modifierID' => $modifierInfo['modifierID'], 'level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 					
 					$mysql->setInserts($inserts);
 					$mysql->stdQUery('insert');

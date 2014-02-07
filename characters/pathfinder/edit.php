@@ -2,10 +2,9 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM pathfinder_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
+	$charInfo = getCharInfo($characterID, 'pathfinder');
+	if ($charInfo) {
 		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
 		includeSystemInfo('pathfinder');
@@ -18,7 +17,7 @@
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<form method="post" action="<?=SITEROOT?>/characters/process/pathfinder/<?=$pathOptions[1]?>">
+		<form method="post" action="<?=SITEROOT?>/characters/process/pathfinder/">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			
 			<div class="tr labelTR">
@@ -40,7 +39,6 @@
 				<input type="text" id="classes" name="class" value="<?=$charInfo['class']?>" class="lrBuffer">
 				<select name="alignment" class="lrBuffer">
 <?
-	$alignments = array('lg' => 'Lawful Good', 'ng' => 'Neutral Good', 'cg' => 'Chaotic Good', 'ln' => 'Lawful Neutral', 'tn' => 'True Neutral', 'cn' => 'Chaotic Neutral', 'le' => 'Lawful Evil', 'ne' => 'Neutral Evil', 'ce' => 'Chaotic Evil');
 	foreach ($alignments as $alignShort => $alignment) {
 ?>
 					<option value="<?=$alignShort?>"<?=$charInfo['alignment'] == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
@@ -52,8 +50,7 @@
 				<div id="stats">
 <?
 	$statBonus = array();
-	foreach (array('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
+	foreach ($stats as $short => $stat) {
 		$bonus = floor(($charInfo[$short] - 10)/2);
 		if ($bonus >= 0) $bonus = '+'.$bonus;
 ?>
@@ -65,8 +62,6 @@
 <?
 		$statBonus[$short] = $bonus;
 	}
-	
-	if ($charInfo['size'] > 0) $charInfo['size'] = '+'.$charInfo['size'];
 ?>
 				</div>
 				
@@ -244,12 +239,9 @@
 						<div id="addSkillWrapper">
 							<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
 							<select id="skillStat" name="newSkill[stat]">
-								<option value="str">Str</option>
-								<option value="dex">Dex</option>
-								<option value="con">Con</option>
-								<option value="int">Int</option>
-								<option value="wis">Wis</option>
-								<option value="cha">Cha</option>
+<?
+	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
+?>
 							</select>
 							<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
 						</div>

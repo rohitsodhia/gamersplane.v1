@@ -29,11 +29,11 @@
 		} else {
 			$stonesSpent = ($actionInfo['cost'] >= 0)?$marvel_cost[$_POST['level'] + $actionInfo['cost'] + $_POST['offset']]:abs($actionInfo['cost']);
 			if ($actionInfo['playerActionID']) {
-				$updates = array('level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+				$updates = array('level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 				
 				$mysql->query('UPDATE marvel_playerActions SET '.setupUpdates($updates).' WHERE playerActionID = '.$actionInfo['playerActionID']);
 			} else {
-				$inserts = array('characterID' => $characterID, 'actionID' => $actionID, 'level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+				$inserts = array('characterID' => $characterID, 'actionID' => $actionID, 'level' => intval($_POST['level']), 'offset' => intval($_POST['offset']), 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 				
 				$mysql->query('INSERT INTO marvel_playerActions '.setupInserts($inserts);
 			}

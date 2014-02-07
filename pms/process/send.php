@@ -8,9 +8,9 @@
 		unset($_SESSION['errorTime']);
 		
 		$pmID = intval($_POST['pmID']);
-		$username = sanatizeString($_POST['username']);
-		$title = sanatizeString($_POST['title']);
-		$message = sanatizeString($_POST['message']);
+		$username = sanitizeString($_POST['username']);
+		$title = sanitizeString($_POST['title']);
+		$message = sanitizeString($_POST['message']);
 		
 /*		if ($pathOptions[1] == 'reply') {
 			$mysql->setTable('pms');
@@ -21,7 +21,9 @@
 			if (!$mysql->numRow()) { header('Location: '.SITEROOT.'/unauthorized'); }
 		}*/
 		
-		$recipientCheck = $mysql->query("SELECT userID FROM users WHERE username = '$username'");
+		$recipientCheck = $mysql->prepare("SELECT userID FROM users WHERE username = :username");
+		$recipientCheck->bindValue(':username', $username);
+		$recipientCheck->execute();
 		$recipientID = $recipientCheck->fetchColumn();
 		
 		if (!$recipientID) $_SESSION['errors']['invalidUser'] = TRUE;

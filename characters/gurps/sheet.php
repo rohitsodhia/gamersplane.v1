@@ -2,10 +2,9 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM gurps_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
+	$charInfo = getCharInfo($characterID, 'gurps');
+	if ($charInfo) {
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
 			$noChar = FALSE;

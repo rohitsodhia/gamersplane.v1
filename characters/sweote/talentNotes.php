@@ -3,8 +3,7 @@
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$talentID = intval($pathOptions[3]);
-	$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-	if ($charCheck->rowCount()) {
+	if (allowCharEdit($characterID, $userID)) {
 		$talentInfo = $mysql->query("SELECT tl.name, ct.notes FROM sweote_talents ct INNER JOIN sweote_talentsList tl USING (talentID) WHERE ct.talentID = $talentID AND ct.characterID = $characterID");
 		if ($talentInfo->rowCount()) $talentInfo = $talentInfo->fetch();
 	} else $noChar = TRUE;

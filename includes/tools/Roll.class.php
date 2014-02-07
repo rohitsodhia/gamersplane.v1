@@ -8,7 +8,9 @@
 		const VIS_HIDE_ROLL_RESULT = 2;
 		const VIS_HIDE_ALL = 3;
 
-		abstract function __construct($dice);
+		abstract function __construct();
+
+		abstract function newRoll($diceString);
 
 		abstract function roll();
 
@@ -17,5 +19,7 @@
 		function getData() {
 			return $this->rolls;
 		}
+
+		abstract function showHTML();
 	}
 ?>

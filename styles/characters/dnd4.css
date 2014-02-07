@@ -339,12 +339,17 @@ label.leftLabel {
 	text-align: center;
 }
 
-.power span, .power a {
+.power span, .power input {
 	display: inline-block;
 }
 
 .power .power_name {
 	width: 250px;
+	vertical-align: middle;
+}
+
+.power .power_remove {
+	height: 15px;
 }
 
 #items textarea {

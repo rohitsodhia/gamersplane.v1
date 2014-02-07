@@ -3,8 +3,7 @@
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$featID = intval($pathOptions[3]);
-	$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-	if ($charCheck->rowCount()) {
+	if (allowCharEdit($characterID, $userID)) {
 		$featInfo = $mysql->query("SELECT featsList.name, spycraft2_feats.notes FROM spycraft2_feats INNER JOIN featsList USING (featID) WHERE spycraft2_feats.featID = $featID AND spycraft2_feats.characterID = $characterID");
 		if ($featInfo->rowCount()) $featInfo = $featInfo->fetch();
 	} else $noChar = TRUE;

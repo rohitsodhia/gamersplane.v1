@@ -1,5 +1,5 @@
 <?
-	class BasicDice extends Dice {
+	class BasicDie extends BaseDie {
 		function __construct($sides) {
 			parent::__construct($sides);
 			if ($this->sides < 2) throw new Exception('Less than 2 sides');

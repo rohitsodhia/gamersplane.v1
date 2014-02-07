@@ -1,8 +1,9 @@
 <?
 	$loggedIn = checkLogin();
 	
+	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$label = $mysql->query('SELECT label FROM characters WHERE userID = '.intval($_SESSION['userID']).' AND characterID = '.$characterID);
+	$label = $mysql->query('SELECT label FROM characters WHERE userID = '.$userID.' AND characterID = '.$characterID);
 	if ($label->rowCount() == 0) { header('Location: '.SITEROOT.'/403'); }
 	$label = $label->fetchColumn();
 ?>

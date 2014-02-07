@@ -92,7 +92,7 @@ $(function() {
 	
 	$('#addSkill').click(function (e) {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name' && $('#skillStat_1').val() != $('#skillStat_2').val()) {
-			$.post(SITEROOT + '/characters/ajax/spycraft2/addSkill', {
+			$.post('/characters/ajax/spycraft2/addSkill', {
 				characterID: characterID,
 				name: $('#skillName').val(),
 				stat_1: $('#skillStat_1').val(),
@@ -111,7 +111,7 @@ $(function() {
 	
 	$('#skills').on('click', '.skill_remove', function (e) {
 		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/spycraft2/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
+		$.post('/characters/ajax/spycraft2/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
 				if ($('.skill').length == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
@@ -132,7 +132,7 @@ $(function() {
 	$('#focusName').autocomplete('/characters/ajax/spycraft2/focusSearch', { characterID: characterID });
 
 	$('#addFocus').click(function (e) {
-		if ($('#focusName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFocus', { characterID: characterID, name: $('#focusName').val() }, function (data) {
+		if ($('#focusName').val().length >= 3) { $.post('/characters/ajax/spycraft2/addFocus', { characterID: characterID, name: $('#focusName').val() }, function (data) {
 			if ($('#noFocuses').size()) {
 				$('#noFocuses').slideUp();
 				$('#focuses .labelTR').slideDown();
@@ -146,7 +146,7 @@ $(function() {
 	
 	$('#focuses').on('click', '.focus_remove', function (e) {
 		var focusID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/spycraft2/removeFocus', { characterID: characterID, focusID: focusID }, function (data) {
+		$.post('/characters/ajax/spycraft2/removeFocus', { characterID: characterID, focusID: focusID }, function (data) {
 			if (parseInt(data) == 1) { $('#focus_' + focusID).slideUp(function () {
 				$(this).remove();
 				if ($('.focus').size() == 0) {
@@ -162,7 +162,7 @@ $(function() {
 	$('#featName').autocomplete('/characters/ajax/featSearch', { characterID: characterID, system: 'spycraft2' });
 	
 	$('#addFeat').click(function (e) {
-		if ($('#featName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/spycraft2/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
+		if ($('#featName').val().length >= 3) { $.post('/characters/ajax/spycraft2/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
 			if ($('#noFeats').size()) $('#noFeats').slideUp();
 			$(data).hide().appendTo('#feats .hbdMargined').slideDown();
 			$('#featName').val('').trigger('blur');
@@ -178,7 +178,7 @@ $(function() {
 		e.preventDefault();
 	}).on('click', '.feat_remove', function (e) {
 		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/spycraft2/removeFeat', { characterID: characterID, featID: featID }, function (data) {
+		$.post('/characters/ajax/spycraft2/removeFeat', { characterID: characterID, featID: featID }, function (data) {
 			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
 				$(this).remove();
 				if ($('.feat').size() == 0) $('#noFeats').slideDown();
@@ -189,13 +189,13 @@ $(function() {
 	});
 	
 	$('#addWeapon').click(function (e) {
-		$.post(SITEROOT + '/characters/ajax/spycraft2/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+		$.post('/characters/ajax/spycraft2/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
 		
 		e.preventDefault()
 	});
 	
 	$('#addArmor').click(function (e) {
-		$.post(SITEROOT + '/characters/ajax/spycraft2/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
+		$.post('/characters/ajax/spycraft2/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
 		
 		e.preventDefault()
 	});

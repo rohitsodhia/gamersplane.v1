@@ -2,10 +2,9 @@
 	if (checkLogin(0)) {
 		includeSystemInfo('marvel');
 
-		$userID = intval($_SESSION['userID']);
+		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
 			$name = preg_replace('/\s+/', ' ', $_POST['challengeName']);
 			$stones = intval($_POST['stones']);
 			$count = $mysql->query('SELECT COUNT(challengeID) FROM marvel_challenges WHERE characterID = '.$characterID);

@@ -105,6 +105,10 @@
 				<div><input type="text" name="twitter" value="<?=printReady($userInfo['twitter'])?>"></div>
 			</div>
 			<div class="tr">
+				<label class="textLabel">Game Stream (Twitch, etc.)</label>
+				<div><input type="text" name="stream" value="<?=printReady($userInfo['stream'])?>"></div>
+			</div>
+			<div class="tr">
 				<label class="textLabel">What games are you into?</label>
 				<div><input id="games" type="text" name="games" value="<?=printReady($userInfo['games'])?>"></div>
 			</div>

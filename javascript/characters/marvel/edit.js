@@ -15,7 +15,7 @@ $(function() {
 	$('#actionSearch').autocomplete('/characters/ajax/marvel/actionSearch', { characterID: characterID });
 	$('#addAction').click(function (e) {
 		var actionName = $('#actionForm input').val();
-		$.post(SITEROOT + '/characters/ajax/marvel/addAction', { characterID: characterID, actionName: actionName }, function (data) {
+		$.post('/characters/ajax/marvel/addAction', { characterID: characterID, actionName: actionName }, function (data) {
 			if (data.length > 0) {
 				$(data).hide();
 				if ($('#actions .actionRow:last-of-type .action').length == 3) $('<div class="actionRow clearfix"></div>').html(data).appendTo('#actions .hbdMargined');
@@ -43,7 +43,7 @@ $(function() {
 	$('#modifierSearch').autocomplete('/characters/ajax/marvel/modifierSearch', { characterID: characterID });
 	$('#addModifier').click(function (e) {
 		var modifierName = $('#modifierForm input').val();
-		$.post(SITEROOT + '/characters/ajax/marvel/addModifier', { characterID: characterID, modifierName: modifierName }, function (data) {
+		$.post('/characters/ajax/marvel/addModifier', { characterID: characterID, modifierName: modifierName }, function (data) {
 			if (data.length > 0) {
 				$(data).hide();
 				if ($('#modifiers .modifierRow:last-of-type .modifier').length == 3) $('<div class="modifierRow clearfix"></div>').html(data).appendTo('#modifiers .hbdMargined');
@@ -66,7 +66,7 @@ $(function() {
 	$('#addChallenge').click(function (e) {
 		var challengeName = $('#challengeName').val();
 		var stones = $('#challengeStones').val();
-		$.post(SITEROOT + '/characters/ajax/marvel/addChallenge', { characterID: characterID, challengeName: challengeName, stones: stones }, function (data) {
+		$.post('/characters/ajax/marvel/addChallenge', { characterID: characterID, challengeName: challengeName, stones: stones }, function (data) {
 			if (data.length > 0) {
 				$(data).hide().appendTo('#challenges .hbdMargined').slideDown();
 				$('#addChallenge, #challengeStones').val('');

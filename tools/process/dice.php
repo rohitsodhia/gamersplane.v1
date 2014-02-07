@@ -21,14 +21,14 @@
 			
 			echo '<roll>';
 			echo '<dice>'.$roll.'</dice>';
-			echo '<indivRolls>'.$results['indivRolls'].'</indivRolls>';
-			echo '<total>'.$results['total'].'</total>';
+			echo '<indivRolls>'.displayIndivDice($results['indivRolls']).'</indivRolls>';
+			echo '<result>'.$results['result'].'</result>';
 			echo '</roll>';
 		}
 	} elseif ($_POST['rollType'] == 'sweote') {
 		$rolls = $_POST['dice'];
 		foreach($rolls as $roll) {
-			$result = sweote_rollDice($roll, $rerollAces);
+			$result = sweote_rollDice($roll);
 			
 			echo '<roll>';
 			echo '<dice>'.$roll.'</dice>';

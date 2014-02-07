@@ -1,6 +1,6 @@
 $.fn.autocomplete = function (pathOption, sendData) {
 	function search(pathOption, sendData, $resultsDiv) {
-		$.post(SITEROOT + pathOption, sendData, function (data) {
+		$.post(pathOption, sendData, function (data) {
 			if (data.length > 0) {
 				$inputBox.addClass('open');
 				$resultsDiv.html(data).slideDown();

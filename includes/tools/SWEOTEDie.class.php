@@ -1,7 +1,7 @@
 <?
-	class SWEOTEDice extends Dice {
+	class SWEOTEDie extends BaseDie {
 		private $type;
-		private $rawTypes = array(
+		private $dice = array(
 			'ability' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage'),
 			'proficiency' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_success', 'success_advantage', 'success_advantage', 'success_advantage', 'advantage_advantage', 'advantage_advantage', 'triumph'),
 			'boost' => array(1 => '', '', 'success', 'advantage', 'success_advantage', 'advantage_advantage'),
@@ -12,25 +12,19 @@
 			);
 
 		public function __construct($type) {
-			if (!$this->validDiceType($type)) throw new Exception('Invalid type');
-			parent::__construct(sizeof($this->rawTypes[$type]));
+			if (!array_key_exists($type, $this->dice)) throw new Exception('Invalid type');
+			parent::__construct(sizeof($this->dice[$type]));
+			$this->type = $type;
 		}
 
 		public function __toString() {
 			return $result;
 		}
 
-		static public function validDiceType($type) {
-			if (array_key_exists($type, $this->rawTypes)) return true;
-			else return false;
-		}
-
-		static public function validDiceTypes() {
-			return array_keys($this->rawTypes);
-		}
-		
 		public function roll() {
-			$this->result = mt_rand(1, $this->sides);
+			$this->result = $this->dice[$this->type][mt_rand(1, $this->sides)];
+
+			return $this->result;
 		}
 	}
 ?>

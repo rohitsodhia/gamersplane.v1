@@ -1,8 +1,8 @@
 <?
 	if (checkLogin(0)) {
+		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = {$_SESSION['userID']}");
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
 			$talentID = intval($_POST['talentID']);
 			$removeTalent = $mysql->query("DELETE FROM sweote_talents WHERE characterID = $characterID AND talentID = $talentID");
 			if ($removeTalent->rowCount()) echo 1;

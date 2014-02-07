@@ -22,7 +22,7 @@ $(function() {
 	});
 	
 	$newDeck.find('a').click(function (e) {
-		$.post(SITEROOT + '/tools/ajax/newDeck', { newDeck: this.id.split('_')[1] }, function (data) {
+		$.post('/tools/ajax/newDeck', { newDeck: this.id.split('_')[1] }, function (data) {
 			deckInfo = data.split('~');
 			$deckName.text(deckInfo[1]);
 			$cardsLeft.text(deckInfo[2]);
@@ -37,7 +37,7 @@ $(function() {
 	$drawCards.click(function (e) {
 		numCards = parseInt($numCards.val()), size = $(this).closest('#fm_cards').length > 0?'mini':'';
 		if (numCards >= 1) {
-			$.post(SITEROOT + '/tools/process/cards', { ajax: true, numCards: numCards, size: size }, function (data) {
+			$.post('/tools/process/cards', { ajax: true, numCards: numCards, size: size }, function (data) {
 				if (data.length > 0) {
 					$cardSpaceContent.css('top', 0).html(data);
 					$arrows.addClass('hideArrow');

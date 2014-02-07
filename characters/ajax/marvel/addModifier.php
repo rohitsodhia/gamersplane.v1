@@ -2,10 +2,9 @@
 	if (checkLogin(0)) {
 		includeSystemInfo('marvel');
 
-		$userID = intval($_SESSION['userID']);
+		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
 			$name = sanitizeString($_POST['modifierName'], 'rem_dup_spaces');
 			$modifierID = $mysql->prepare('SELECT modifierID FROM marvel_modifiersList WHERE name = :name');
 			$modifierID->execute(array(':name' => strtolower($name)));

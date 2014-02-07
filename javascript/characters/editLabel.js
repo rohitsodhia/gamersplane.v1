@@ -6,7 +6,8 @@ $(function () {
 		},
 		success: function (data) {
 			if (data == 'updated') {
-				parent.$('#char_' + $('#characterID').val() + ' .charLabel').text($('#newLabel').val());
+				console.log(parent.$('#char_' + $('#characterID').val() + ' .label').html());
+				parent.$('#char_' + $('#characterID').val() + ' .label').text($('#newLabel').val());
 				parent.$.colorbox.close();
 			}
 		}

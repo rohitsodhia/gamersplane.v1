@@ -10,7 +10,7 @@
 		
 		echo '<roll>';
 		echo '<dice>'.$roll.'</dice>';
-		echo '<indivRolls>'.$results['indivRolls'].'</indivRolls>';
+		echo '<indivRolls>'.displayIndivDice($results['indivRolls']).'</indivRolls>';
 		echo '<total>'.$results['total'].'</total>';
 		echo '</roll>';
 //		echo "\t\t\t<p>".$roll."<br>\n\t\t\t".$results['indivRolls'].' = '.$results['total']."</p>\n";

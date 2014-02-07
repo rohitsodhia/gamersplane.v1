@@ -55,7 +55,7 @@ $(function() {
 	
 	function removeSkill () {
 		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/pathfinder/removeSkill', { characterID: $('#characterID').val(), skillID: skillID }, function (data) {
+		$.post('/characters/ajax/pathfinder/removeSkill', { characterID: $('#characterID').val(), skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
 				if ($('.skill').size() == 0) $('<p id="noSkills">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
@@ -74,7 +74,7 @@ $(function() {
 	
 	$('#addSkill').click(function () {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			$.post(SITEROOT + '/characters/ajax/pathfinder/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
+			$.post('/characters/ajax/pathfinder/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
 				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');
@@ -88,7 +88,7 @@ $(function() {
 	
 	function removeFeat() {
 		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/pathfinder/removeFeat', { characterID: $('#characterID').val(), featID: featID }, function (data) {
+		$.post('/characters/ajax/pathfinder/removeFeat', { characterID: $('#characterID').val(), featID: featID }, function (data) {
 			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
 				$(this).remove();
 				if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
@@ -102,7 +102,7 @@ $(function() {
 	
 	$('#addFeat').click(function () {
 		if ($('#featName').val().length >= 3) {
-			$.post(SITEROOT + '/characters/ajax/pathfinder/addFeat', { characterID: $('#characterID').val(), name: $('#featName').val() }, function (data) {
+			$.post('/characters/ajax/pathfinder/addFeat', { characterID: $('#characterID').val(), name: $('#featName').val() }, function (data) {
 				if ($('#noFeats').size()) $('#noFeats').remove();
 				$(data).hide().appendTo('#feats .hbdMargined').slideDown();
 				$('#featName').val('').trigger('blur');
@@ -115,13 +115,13 @@ $(function() {
 	$('#feats').on('click', '.feat_remove', removeFeat);
 	
 	$('#addWeapon').click(function (e) {
-		$.post(SITEROOT + '/characters/ajax/pathfinder/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+		$.post('/characters/ajax/pathfinder/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
 		
 		e.preventDefault()
 	});
 	
 	$('#addArmor').click(function (e) {
-		$.post(SITEROOT + '/characters/ajax/pathfinder/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data.replace(/armorNum/g, armorNum)).hide().appendTo('#armor > div').slideDown(); } );
+		$.post('/characters/ajax/pathfinder/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data.replace(/armorNum/g, armorNum)).hide().appendTo('#armor > div').slideDown(); } );
 		
 		e.preventDefault()
 	});

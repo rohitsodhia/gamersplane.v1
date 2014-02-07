@@ -1,7 +1,7 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	$loggedIn = checkLogin();
-	
+
 	$userID = intval($_SESSION['userID']);
 	$noChat = FALSE;
 
@@ -13,7 +13,7 @@
 		$threadInfo = $mysql->query('SELECT threads.forumID, threads.threadID, threads.sticky, threads.allowRolls, threads.allowDraws FROM threads, posts WHERE threads.threadID = posts.threadID AND posts.postID = '.$postID);
 		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
 		
-		$rolls = $mysql->query('SELECT posts.postID, rolls.rollID, rolls.roll, rolls.indivRolls, rolls.reason, rolls.ra, rolls.total, rolls.visibility FROM posts, rolls WHERE posts.postID = '.$postID.' AND rolls.postID = posts.postID');
+		$rolls = $mysql->query('SELECT posts.postID, rolls.rollID, rolls.roll, rolls.indivRolls, rolls.reason, rolls.ra, rolls.result, rolls.visibility FROM posts, rolls WHERE posts.postID = '.$postID.' AND rolls.postID = posts.postID');
 		$temp = array();
 		foreach ($rolls as $rollInfo) $temp[] = $rollInfo;
 		$rolls = $temp;
@@ -226,18 +226,21 @@
 			<div id="rolls_decks" class="section_rolls_decks hbdMargined<?=$firstPost?' hideDiv':''?>">
 <?
 		if ($rollsAllowed) {
+?>
+				<div id="rolls">
+<?
 			if ($drawsAllowed) {
 ?>
-				<h3 id="rollsHeader">Rolls</h3>
+					<h3 id="rollsHeader">Rolls</h3>
 <?			} ?>
-				<div id="rollExplination">
-					Enter the text roll in the following format:<br>
-					(number of dice)d(dice type)+/-(modifier), i.e. 2d6+4, 1d10-2<br>
-					The roll will automatically be added to your post when you submit it. Only put one dice type per roll.
-				</div>
+					<div id="rollExplination">
+						For "Basic" type rolls, Enter the text roll in the following format:<br>
+						(number of dice)d(dice type)+/-(modifier), i.e. 2d6+4, 1d10-2<br>
+						The roll will automatically be added to your post when you submit it.
+					</div>
 <?			if (sizeof($rolls)) { ?>
-				<div id="postedRolls">
-					<h3>Posted Rolls</h3>
+					<div id="postedRolls">
+						<h3>Posted Rolls</h3>
 <?
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 				$hidden = FALSE;
@@ -245,14 +248,14 @@
 				foreach ($rolls as $roll) {
 					$hidden = FALSE;
 ?>
-					<div class="rollInfo">
-						<select name="nVisibility_<?=$roll['rollID']?>" tabindex="<?=tabOrder();?>">
-							<option value="0"<?=$roll['visibility'] == 0?' selected="selected"':''?>>Hide Nothing</option>
-							<option value="1"<?=$roll['visibility'] == 1?' selected="selected"':''?>>Hide Roll/Result</option>
-							<option value="2"<?=$roll['visibility'] == 2?' selected="selected"':''?>>Hide Dice &amp; Roll</option>
-							<option value="3"<?=$roll['visibility'] == 3?' selected="selected"':''?>>Hide Everything</option>
-						</select>
-						<div>
+						<div class="rollInfo">
+							<select name="nVisibility_<?=$roll['rollID']?>" tabindex="<?=tabOrder();?>">
+								<option value="0"<?=$roll['visibility'] == 0?' selected="selected"':''?>>Hide Nothing</option>
+								<option value="1"<?=$roll['visibility'] == 1?' selected="selected"':''?>>Hide Roll/Result</option>
+								<option value="2"<?=$roll['visibility'] == 2?' selected="selected"':''?>>Hide Dice &amp; Roll</option>
+								<option value="3"<?=$roll['visibility'] == 3?' selected="selected"':''?>>Hide Everything</option>
+							</select>
+							<div>
 <?
 					if ($roll['visibility'] <= 2) echo $roll['reason'];
 					else { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
@@ -260,65 +263,75 @@
 					else { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
 					echo $hidden?'</span>':'';
 ?>
-						</div>
-						<input type="hidden" name="oVisibility_<?=$roll['rollID']?>" value="<?=$roll['visibility']?>">
+							</div>
+							<input type="hidden" name="oVisibility_<?=$roll['rollID']?>" value="<?=$roll['visibility']?>">
 <?					if ($roll['visibility'] == 0) { ?>
-						<div class="indent"><?=$roll['indivRolls']?> = <?=$roll['total']?></div>
+							<div class="indent"><?=displayIndivDice($roll['indivRolls'])?> = <?=$roll['total']?></div>
 <?					} else { ?>
-						<div class="indent"><span class="hidden"><?=$roll['indivRolls']?> = <?=$roll['total']?></span></div>
+							<div class="indent"><span class="hidden"><?=displayIndivDice($roll['indivRolls'])?> = <?=$roll['total']?></span></div>
 <?					} ?>
-					</div>
+						</div>
 <?				} ?>
-				</div>
+					</div>
 <?			} ?>
-				<table id="rollsTable">
-					<tr>
-						<th class="reason">Reason</th>
-						<th class="roll">Roll</th>
-						<th class="reroll">Reroll Aces</th>
-						<th class="visibility">Visibility</th>
-					</tr>
-<?			rollTR(1); ?>
-				</table>
-				<a id="addRoll" href="">Add another roll</a>
+					<div id="addRoll">
+						<span>Add new roll: </span>
+						<select>
+							<option value="basic">Basic</option>
+							<option value="sweote">SWEOTE</option>
+						</select>
+						<button type="submit" class="fancyButton">Add</button>
+					</div>
+					<div id="newRolls">
+<?
+	if (isset($postInfo['rolls'])) { foreach ($postInfo['rolls'] as $count => $roll) {
+		rollTR($count, $roll['type'], $roll);
+	} }
+?>
+					</div>
+				</div>
 <?		} ?>
 <?
 		if ($drawsAllowed) {
+?>
+				<div id="draws">
+<?
 			if ($rollsAllowed) {
 ?>
-				<h3 id="decksHeader">Decks</h3>
+					<h3 id="decksHeader">Decks</h3>
 <?			} ?>
-				<p>Please remember, any cards you draw will be only visible to you until you reveal them. Reveal them by clicking them. An eye icon indicates they're visible, while an eye with a red slash through them indiates a hidden card.</p>
-				<table id="decksTable">
+					<p>Please remember, any cards you draw will be only visible to you until you reveal them. Reveal them by clicking them. An eye icon indicates they're visible, while an eye with a red slash through them indiates a hidden card.</p>
+					<table id="decksTable">
 <?
 			$firstDeck = TRUE;
 			foreach ($deckInfos as $deckInfo) {
 				if ($draws[$deckInfo['deckID']]) {
 					$draw = $draws[$deckInfo['deckID']];
 ?>
-					<tr><td colspan="2">
-						<b><?=$deckInfo['label']?></b> has <?=(sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1)?> cards left.
-						<p>Cards Drawn: <?=$draw['reason']?></p>
+						<tr><td colspan="2">
+							<b><?=$deckInfo['label']?></b> has <?=(sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1)?> cards left.
+							<p>Cards Drawn: <?=$draw['reason']?></p>
 <?
 					$cardsDrawn = explode('~', $draw['cardsDrawn']);
 					foreach ($cardsDrawn as $cardDrawn) echo "\t\t\t\t\t\t".getCardImg($cardDrawn, $deckInfo['type'], 'mini')."\n";
 ?>
-					</td></tr>
+						</td></tr>
 <?				} else { ?>
-					<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deckInfo['label']?></b> has <?=sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1?> cards left</td></tr>
-					<tr>
-						<td class="reason"><input type="text" name="deck_reason_<?=$deckInfo['deckID']?>" maxlength="100"<?=isset($postInfo['deck_reason_'.$deckInfo['deckID']])?' value="'.$postInfo['deck_reason_'.$deckInfo['deckID']].'"':''?> tabindex="<?=tabOrder();?>"></td>
-						<td class="draw">Draw <input type="text" name="deck_draw_<?=$deckInfo['deckID']?>" maxlength="2"<?=isset($postInfo['deck_draw_'.$deckInfo['deckID']])?' value="'.$postInfo['deck_draw_'.$deckInfo['deckID']].'"':''?> tabindex="<?=tabOrder();?>"> cards</td>
-					</tr>
+						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deckInfo['label']?></b> has <?=sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1?> cards left</td></tr>
+						<tr>
+							<td class="reason"><input type="text" name="decks[<?=$deckInfo['deckID']?>][reason]" maxlength="100"<?=isset($postInfo['deck'][$deckInfo['deckID']]['reason'])?' value="'.$postInfo['deck'][$deckInfo['deckID']]['reason'].'"':''?> tabindex="<?=tabOrder();?>"></td>
+							<td class="draw">Draw <input type="text" name="decks[<?=$deckInfo['deckID']?>][draw]" maxlength="2"<?=isset($postInfo['deck'][$deckInfo['deckID']]['draw'])?' value="'.$postInfo['deck'][$deckInfo['deckID']]['draw'].'"':''?> tabindex="<?=tabOrder();?>"> cards</td>
+						</tr>
 <?
 				}
 				if ($firstDeck) $firstDeck = FALSE;
 			}
 ?>
-				</table>
+					</table>
 <?
 		}
 ?>
+				</div>
 			</div>
 <?
 	}

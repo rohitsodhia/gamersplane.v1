@@ -2,13 +2,12 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM shadowrun4_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
+	$charInfo = getCharInfo($characterID, 'shadowrun4');
+	if ($charInfo) {
 		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
-		includeSystemInfo('shadowrun');
+		includeSystemInfo('shadowrun4');
 	} else $noChar = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
@@ -23,7 +22,7 @@
 			
 			<div class="tr">
 				<label for="name" class="textLabel">Name:</label>
-				<input type="text" name="name" value="<?=$charInfo['name']?>" maxlength="50">
+				<input type="text" name="name" va 		lue="<?=$charInfo['name']?>" maxlength="50">
 			</div>
 			<div class="tr">
 				<label for="metatype" class="textLabel">Metatype:</label>
@@ -33,7 +32,7 @@
 			<div class="clearfix">
 				<div id="stats">
 <?
-	foreach (array('body' => 'Body', 'agility' => 'Agility', 'reaction' => 'Reaction', 'strength' => 'Strength', 'charisma' => 'Charisma', 'intuition' => 'Intuition', 'logic' => 'Logic', 'willpower' => 'Willpower', 'edge_total' => 'Total Edge', 'edge_current' => 'Current Edge', 'essence' => 'Essence', 'mag_res' => 'Magic or Resonance', 'initiative' => 'Initiative', 'initiative_passes' => 'Initiative Passes', 'matrix_initiative' => 'Matrix Initiative', 'astral_initiative' => 'Astral Initiative') as $stat => $statName) {
+	foreach ($stats as $stat => $statName) {
 		if ($stat == 'body' || $stat == 'edge_total') echo "\t\t\t\t\t<div class=\"statCol\">\n";
 ?>
 						<div class="tr">

@@ -142,6 +142,13 @@
 				include_once($file);
 	}
 
+	function allowCharEdit($characterID, $userID) {
+		global $mysql;
+		$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = $characterID AND (c.userID = $userID OR p.userID = $userID)");
+		if ($charCheck->rowCount()) return TRUE;
+		else return FALSE;
+	}
+
 	function getCharInfo($characterID, $system) {
 		global $mysql;
 		
@@ -152,15 +159,15 @@
 		if ($checkSystem->rowCount()) {
 			$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM {$system}_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 			if ($charInfo->rowCount()) return $charInfo->fetch();
-			else return false;
-		} else return false;
+			else return FALSE;
+		} else return FALSE;
 	}
 
 	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
 		global $mysql;
 		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
 
-		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return false;
+		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return FALSE;
 		if ($enactedOn == '') $enactedOn = 'NOW()';
 
 		$addCharHistory = $mysql->prepare("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action, additionalInfo) VALUES ($characterID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :additionalInfo)");
@@ -174,7 +181,7 @@
 		global $mysql;
 		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
 
-		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return false;
+		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return FALSE;
 		if ($enactedOn == '') $enactedOn = 'NOW()';
 
 		$addGameHistory = $mysql->prepare("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, affectedType, affectedID) VALUES ($gameID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :affectedType, :affectedID)");
@@ -202,27 +209,31 @@
 		$diceType = intval($diceType);
 		if ($numDice > 0 && $diceType > 1 && $numDice <= 1000 && $diceType <= 1000) {
 			$totalRoll = $modifier;
-			$first = TRUE;
-			$firstAce = TRUE;
-			$aced = FALSE;
-			$indivRolls = '( ';
-			for ($rollCount = 1; $rollCount <= $numDice; $rollCount++) {
-				$aced = FALSE;
-				
+			$indivRolls = array('dice' => array(), 'mod' => intval($modifier));
+			for ($rollCount = 0; $rollCount < $numDice; $rollCount++) {
 				$curRoll = mt_rand(1, $diceType);
 				$totalRoll += $curRoll;
 
-				if ($rerollAces && $curRoll == $diceType) { $aced = TRUE; $rollCount -= 1; }
-				$indivRolls .= (!$first?', ':'').(($firstAce && $aced)?'[ ':'').$curRoll;
-				if ($firstAce && $aced) $firstAce = FALSE;
-				elseif (!$firstAce && !$aced) { $indivRolls .= ' ]'; $firstAce = TRUE; }
-				
-				if ($first) $first = FALSE;
+				if (isset($indivRolls['dice'][$rollCount]) && is_array($indivRolls['dice'][$rollCount])) $indivRolls['dice'][$rollCount][] = $curRoll;
+				elseif ($curRoll == $diceType && $rerollAces) $indivRolls['dice'][$rollCount] = array($curRoll);
+				else $indivRolls['dice'][$rollCount] = $curRoll;
+
+				if ($curRoll == $diceType && $rerollAces) $rollCount -= 1;
 			}
-			$indivRolls .= ' )'.($modifier >= 0?' + ':' - ').intval(abs($modifier));//.' = '.$totalRoll;
 			
-			return array('total' => $totalRoll, 'indivRolls' => $indivRolls, 'numDice' => $numDice, 'diceType' => $diceType, 'modifier' => $modifier);
+			return array('result' => $totalRoll, 'indivRolls' => $indivRolls, 'numDice' => $numDice, 'diceType' => $diceType, 'modifier' => $modifier);
 		} else return FALSE;
+	}
+
+	function displayIndivDice($dice) {
+		$diceString = '( ';
+
+		foreach ($dice as &$die) {
+			if (is_array($die)) $die = '[ '.implode(', ', $die).' ]';
+		}
+		$diceString .= implode(', ', $dice).' )';
+		
+		return $diceString;
 	}
 
 	function sweote_rollDice($roll) {
@@ -240,6 +251,10 @@
 		$result['values'] = explode('_', $result['result']);
 
 		return $result;
+	}
+
+	function sweote_displayDice($roll) {
+
 	}
 	
 	function newGlobalDeck($deckType) {

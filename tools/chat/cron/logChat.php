@@ -38,7 +38,7 @@
 					
 					$mysql->query("INSERT INTO threads (forumID) VALUES ({$gameInfos[$gameID]['logForumID']})");
 					$threadID = $mysql->lastInsertId();
-					$mysql->query("INSERT INTO posts (threadID, title, authorID, message, datePosted) VALUES ($threadID, '".sanatizeString($title)."', {$gameInfos[$gameID]['gmID']}, '".sanatizeString($message)."', NOW())");
+					$mysql->query("INSERT INTO posts (threadID, title, authorID, message, datePosted) VALUES ($threadID, '".sanitizeString($title)."', {$gameInfos[$gameID]['gmID']}, '".sanitizeString($message)."', NOW())");
 				}
 				$mysql->query('UPDATE chat_sessions SET locked = 0 WHERE gameID IN ('.implode(', ', $gameIDs).')');
 				$mysql->query('UPDATE chat_messages SET logged = 1 WHERE gameID IN ('.implode(', ', $gameIDs).')');

@@ -2,18 +2,16 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM pathfinder_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
+	$charInfo = getCharInfo($characterID, 'pathfinder');
+	if ($charInfo) {
 		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
 			$noChar = FALSE;
+			includeSystemInfo('pathfinder');
 		}
 	}
-
-	$alignments = array('lg' => 'Lawful Good', 'ng' => 'Neutral Good', 'cg' => 'Chaotic Good', 'ln' => 'Lawful Neutral', 'tn' => 'True Neutral', 'cn' => 'Chaotic Neutral', 'le' => 'Lawful Evil', 'ne' => 'Neutral Evil', 'ce' => 'Chaotic Evil');
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
@@ -45,8 +43,7 @@
 			<div id="stats">
 <?
 	$statBonus = array();
-	foreach (array('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
+	foreach ($stats as $short => $stat) {
 		$bonus = showSign(floor(($charInfo[$short] - 10)/2));
 ?>
 				<div class="tr dataTR">

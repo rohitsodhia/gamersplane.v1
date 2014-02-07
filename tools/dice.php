@@ -98,7 +98,7 @@
 	$rerollAces = $_POST['rerollAces']?1:0;
 	if (sizeof($rolls) && is_array($rolls)) { foreach($rolls as $roll) {
 		$results = rollDice($roll, $rerollAces);
-		echo "\t\t\t<div><p>".$roll."<br>\n\t\t\t".$results['indivRolls'].' = '.$results['total']."</p></div>\n";
+		echo "\t\t\t<div><p>".$roll."<br>\n\t\t\t".displayIndivDice($results['indivRolls']).' = '.$results['result']."</p></div>\n";
 	} }
 ?>
 		</div>

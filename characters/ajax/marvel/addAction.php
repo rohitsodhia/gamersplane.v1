@@ -4,8 +4,7 @@
 		
 		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
 			$name = sanitizeString($_POST['actionName'], 'rem_dup_spaces');
 			$actionID = $mysql->prepare('SELECT actionID FROM marvel_actionsList WHERE LOWER(name) = :name');
 			$actionID->execute(array(':name' => strtolower($name)));

@@ -19,7 +19,7 @@
 	if (isset($_POST['addForum'])) {
 		$numRows = $mysql->query('SELECT COUNT(forumID) FROM forums WHERE parentID = '.$forumID);
 		$numRows = $numRows->fetchColumn();
-		$mysql->query('INSERT INTO forums (title, parentID, `order`) VALUES ("'.sanatizeString($_POST['newForum']).'", '.$forumID.', '.intval($numRows + 1).')');
+		$mysql->query('INSERT INTO forums (title, parentID, `order`) VALUES ("'.sanitizeString($_POST['newForum']).'", '.$forumID.', '.intval($numRows + 1).')');
 		$forumID = $mysql->lastInsertId();
 		$mysql->query('UPDATE forums SET heritage = "'.$oHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');

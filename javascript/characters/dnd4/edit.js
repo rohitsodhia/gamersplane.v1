@@ -88,7 +88,7 @@ $(function() {
 	});
 	
 	$('#addAttack').click(function (e) {
-		$.post(SITEROOT + '/characters/ajax/dnd4/addAttack', { count: $('.attackBonusSet').size() + 1 }, function (data) {
+		$.post('/characters/ajax/dnd4/addAttack', { count: $('.attackBonusSet').size() + 1 }, function (data) {
 			$(data).hide().appendTo('#combatBonuses').slideDown();
 		});
 		
@@ -102,7 +102,7 @@ $(function() {
 		if ($(this).val() == '') $(this).val('Skill Name').css('color', '#666');
 		$('#skillAjaxResults').slideUp();
 	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post(SITEROOT + '/characters/ajax/skillSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' }, function (data) {
+		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post('/characters/ajax/skillSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' }, function (data) {
 			if (data.length > 0) {
 				$('#skillAjaxResults').html(data).slideDown();
 				
@@ -121,7 +121,7 @@ $(function() {
 	
 	function removeSkill (e) {
 		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/dnd4/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
+		$.post('/characters/ajax/dnd4/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
 				$(this).remove();
 				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
@@ -140,7 +140,7 @@ $(function() {
 	
 	$('#addSkill').click(function (e) {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			$.post(SITEROOT + '/characters/ajax/dnd4/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
+			$.post('/characters/ajax/dnd4/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
 				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');
@@ -153,7 +153,7 @@ $(function() {
 	
 	function removeFeat(e) {
 		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post(SITEROOT + '/characters/ajax/dnd4/removeFeat', { characterID: characterID, featID: featID }, function (data) {
+		$.post('/characters/ajax/dnd4/removeFeat', { characterID: characterID, featID: featID }, function (data) {
 			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
 				$(this).remove();
 				if ($('.feat').size() == 0) $('<p id=\"noFeats\">This character currently has no feats/features.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
@@ -168,7 +168,7 @@ $(function() {
 	}).blur(function () {
 		$('#featAjaxResults').slideUp();
 	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post(SITEROOT + '/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' }, function (data) {
+		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post('/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' }, function (data) {
 			if (data.length > 0) {
 				$('#featAjaxResults').html(data).slideDown();
 				
@@ -186,7 +186,7 @@ $(function() {
 	$('#featName').autocomplete('/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' });
 	
 	$('#addFeat').click(function (e) {
-		if ($('#featName').val().length >= 3) { $.post(SITEROOT + '/characters/ajax/dnd4/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
+		if ($('#featName').val().length >= 3) { $.post('/characters/ajax/dnd4/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
 			if ($('#noFeats').size()) $('#noFeats').remove();
 			$(data).hide().appendTo('#feats .hbdMargined').slideDown();
 			$('#featName').val('').trigger('blur');
@@ -200,9 +200,10 @@ $(function() {
 	$('#powerName').autocomplete('/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID });
 
 	function removePower(e) {
-		var power = $(this).val();
-		$.post(SITEROOT + '/characters/ajax/dnd4/removePower', { characterID: characterID, power: power }, function (data) {
-			if (data == 1) { $('#power_' + power.replace(' ', '_')).slideUp(function () {
+		var powerID = $(this).val();
+		var $parent = $(this).parent();
+		$.post('/characters/ajax/dnd4/removePower', { characterID: characterID, powerID: powerID }, function (data) {
+			if (data == 1) { $parent.slideUp(function () {
 				$(this).remove();
 			}); }
 		});
@@ -213,7 +214,7 @@ $(function() {
 	$('#addPower').click(function (e) {
 		var type = $('#powerType').val();
 		if ($('#powerName').val().length >= 3 && $('#powerName').val() != 'Power') {
-			$.post(SITEROOT + '/characters/ajax/dnd4/addPower', { characterID: characterID, name: $('#powerName').val(), type: type }, function (data) {
+			$.post('/characters/ajax/dnd4/addPower', { characterID: characterID, name: $('#powerName').val(), type: type }, function (data) {
 				var appendDiv = '';
 				if (type == 'a') appendDiv = 'atwill';
 				else if (type == 'e') appendDiv = 'encounter';
@@ -225,5 +226,5 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('#powers').on('click', '.power_remove', removePower).on('click', '.power_remove', removePower);
+	$('#powers').on('click', '.power_remove', removePower);
 });

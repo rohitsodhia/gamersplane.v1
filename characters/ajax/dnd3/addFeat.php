@@ -4,8 +4,7 @@
 		
 		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
 			$name = sanitizeString($_POST['name'], 'rem_dup_spaces');
 			if (strlen($name)) {
 				$featID = getFeat($name);

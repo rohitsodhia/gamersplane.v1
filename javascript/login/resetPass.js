@@ -50,7 +50,7 @@ $(function () {
 		},
 		success: function (data) {
 			if (data == 'success') {
-				document.location = SITEROOT + '/login/?resetSuccess=1';
+				document.location = '/login/?resetSuccess=1';
 			} else {
 				document.location.reload();
 			}

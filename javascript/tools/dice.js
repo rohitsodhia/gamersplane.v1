@@ -25,7 +25,7 @@ $(function() {
 			$('div.newestRolls').removeClass('newestRolls');
 			$('<div>').addClass('roll newestRolls').prependTo($diceSpace);
 			$(data).find('roll').each(function() {
-				if ($(this).find('total').text() != '') $('.newestRolls').append($(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text());
+				if ($(this).find('result').text() != '') $('.newestRolls').append($(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('result').text());
 				else $('<p class="error">Sorry, there was some error. We don\'t let you roll d1s... the answer\'s 1 anyway, and you need to roll a positive number of dice.</p>').appendTo('.newestRolls');
 			});
 			$('.newestRolls').slideDown(400);
@@ -53,7 +53,7 @@ $(function() {
 				if (curClass.substring(0, 7) != 'sweote_') dice.push(curClass);
 			});
 		});
-		$.post(SITEROOT + '/tools/process/dice/', { rollType: 'sweote', dice: dice }, function (data) {
+		$.post('/tools/process/dice/', { rollType: 'sweote', dice: dice }, function (data) {
 			$('.newestRolls').removeClass('newestRolls');
 			$newestRolls = $('<div>').addClass('newestRolls roll').prependTo($diceSpace);
 			values = {};

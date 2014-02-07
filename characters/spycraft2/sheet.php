@@ -12,6 +12,7 @@
 			$charInfo['level'] = 0;
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;
+			includeSystemInfo('spycraft2');
 		}
 	}
 ?>
@@ -47,8 +48,7 @@
 			<div id="stats">
 <?
 	$statBonus = array();
-	foreach (array('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
+	foreach ($stats as $short => $stat) {
 		$bonus = showSign(floor(($charInfo[$short] - 10)/2));
 ?>
 					<div class="tr">

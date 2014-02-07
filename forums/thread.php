@@ -40,7 +40,7 @@
 		$gameID = $gameID->fetchColumn();
 	}
 
-	$rolls = $mysql->query("SELECT posts.postID, rolls.roll, rolls.indivRolls, rolls.ra, rolls.reason, rolls.total, rolls.visibility FROM posts, rolls WHERE posts.threadID = {$threadID} AND rolls.postID = posts.postID ORDER BY rolls.rollID");
+	$rolls = $mysql->query("SELECT posts.postID, rolls.roll, rolls.indivRolls, rolls.ra, rolls.reason, rolls.result, rolls.visibility FROM posts, rolls WHERE posts.threadID = {$threadID} AND rolls.postID = posts.postID ORDER BY rolls.rollID");
 	$temp = array();
 	foreach ($rolls as $rollInfo) $temp[$rollInfo['postID']][] = $rollInfo;
 	$rolls = $temp;
@@ -176,8 +176,8 @@
 					elseif ($showAll) { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
 					echo $hidden?'</span>':'';
 					echo "</div>\n";
-					if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">{$roll['indivRolls']} = {$roll['total']}</div>\n";
-					elseif ($showAll) echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">{$roll['indivRolls']} = {$roll['total']}</span></div>\n";
+					if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">".displayIndivDice($roll['indivRolls'])." = {$roll['result']}</div>\n";
+					elseif ($showAll) echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">".displayIndivDice($roll['indivRolls'])." = {$roll['result']}</span></div>\n";
 ?>
 						</div>
 <?

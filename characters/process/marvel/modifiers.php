@@ -43,11 +43,11 @@
 			else { $stonesSpent = $marvel_cost[$level + $cost + $offset] + $extraStones; }
 			
 			if ($modifierInfo['playerModifierID']) {
-				$updates = array('level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+				$updates = array('level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 				
 				$mysql->query('UPDATE marvel_playerModifiers SET '.setupUpdates($updates).' WHERE playerModifierID = '.$modifierInfo['playerModifierID']);
 			} else {
-				$inserts = array('characterID' => $characterID, 'modifierID' => $modifierInfo['modifierID'], 'level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanatizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
+				$inserts = array('characterID' => $characterID, 'modifierID' => $modifierInfo['modifierID'], 'level' => $level, 'offset' => $offset, 'extraStones' => $extraStones, 'timesTaken' => $timesTaken, 'details' => sanitizeString($_POST['details']), 'stonesSpent' => formatStones($stonesSpent));
 				
 				$mysql->query('INSERT INTO marvel_playerModifiers '.$mysql->setupInserts($inserts));
 			}

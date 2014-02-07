@@ -159,7 +159,7 @@ $(function() {
 	});
 	
 	function sendToBox(icon) {
-		if (locations[icon.attr('id')] != '') $.post(SITEROOT + '/games/ajax/maps/updateLoc', { iconID: icon.attr('id').split('_')[1], location: '' }, function (data) {
+		if (locations[icon.attr('id')] != '') $.post('/games/ajax/maps/updateLoc', { iconID: icon.attr('id').split('_')[1], location: '' }, function (data) {
 						$sb_history.prepend(data);
 					});
 		icon.fadeOut(function () {
@@ -180,7 +180,7 @@ $(function() {
 			var tile = this;
 			ui.draggable.fadeOut(function () {
 				if ($(tile).find('.mapIcon').length == 0 && locations[this.id] != tile.id) {
-					$.post(SITEROOT + '/games/ajax/maps/updateLoc', { iconID: this.id.split('_')[1], location: tile.id }, function (data) {
+					$.post('/games/ajax/maps/updateLoc', { iconID: this.id.split('_')[1], location: tile.id }, function (data) {
 						$sb_history.prepend(data);
 					});
 					$(this).appendTo('#' + tile.id).css({'top': 0, 'left': 0}).fadeIn();
@@ -318,7 +318,7 @@ $(function() {
 				if ($(this).css('background-color') != 'transparent') bgData[this.id] = $(this).css('background-color');
 			});
 			
-			$.post(SITEROOT + '/games/ajax/maps/save', { mapID: $('#mapID').val(), bgData: bgData });
+			$.post('/games/ajax/maps/save', { mapID: $('#mapID').val(), bgData: bgData });
 			
 			$(this).addClass('disabled');
 		}

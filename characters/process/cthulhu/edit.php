@@ -9,7 +9,7 @@
 		$textVals = array('name', 'race', 'class', 'dr', 'skills', 'feats', 'weapons', 'armor', 'items', 'spells', 'notes');
 		foreach ($_POST as $key => $value) {
 			if ($key == 'alignment') $updates['pathfinder_characters`.`alignment'] = in_array($value, array('lg', 'ng', 'cg', 'ln', 'tn', 'cn', 'le', 'ne', 'ce'))?$value:'tn';
-			elseif (in_array($key, $textVals)) $updates['pathfinder_characters`.`'.$key] = sanatizeString($value);
+			elseif (in_array($key, $textVals)) $updates['pathfinder_characters`.`'.$key] = sanitizeString($value);
 			elseif (in_array($key, $numVals)) $updates['pathfinder_characters`.`'.$key] = intval($value);
 		}
 		

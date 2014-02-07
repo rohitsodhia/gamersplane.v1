@@ -56,7 +56,7 @@ $(function() {
 				if ($(this).css('background-color') != 'transparent') bgData[this.id] = rgb2hex($(this).css('background-color'));
 			});
 			
-			$.post(SITEROOT + '/tools/ajax/maps/save', { mapID: $('#mapID').val(), bgData: bgData });
+			$.post('/tools/ajax/maps/save', { mapID: $('#mapID').val(), bgData: bgData });
 			
 			$(this).addClass('btn_save_disabled').removeClass('btn_save');
 		}

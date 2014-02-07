@@ -1,3 +1,3 @@
 function deleted() {
-	document.location = SITEROOT + '/pms';
+	document.location = '/pms';
 }

@@ -8,8 +8,7 @@ _backup/
 javascript/markItUp/sets/default/
 javascript/markItUp/skins/markitup/
 javascript/markItUp/skins/simple/
-blog/wp-content/themes/twentyeleven/
-blog/wp-content/themes/twentyten/
-blog/wp-content/themes/twentytwelve/
 ucp/avatars/
 *.pdf
+*.sql
+blog/

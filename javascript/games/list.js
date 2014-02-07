@@ -1,6 +1,6 @@
 $(function() {
 	$('form').ajaxForm({
-		url: SITEROOT + '/games/ajax/gamesSearch',
+		url: '/games/ajax/gamesSearch',
 		type: 'post',
 		success: function (data) {
 			$('#gamesList').slideUp(function () {

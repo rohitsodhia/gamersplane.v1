@@ -10,7 +10,7 @@ $(function () {
 		},
 		success: function (data) {
 			if (data == '1') {
-				document.location = SITEROOT + '/contact/success';
+				document.location = '/contact/success';
 			} else $('#jsError').slideDown();
 		}
 	});

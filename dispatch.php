@@ -4,7 +4,7 @@
 	error_reporting(E_ALL & ~E_NOTICE);
 //	error_reporting(E_ALL);
 	
-	if ($_SERVER['SERVER_NAME'] == 'localhost') $reqPath = $_SERVER['REDIRECT_URL'];
+	if ($_SERVER['SERVER_NAME'] == 'gamersplane.local') $reqPath = $_SERVER['REDIRECT_URL'];
 	else $reqPath = $_SERVER['SCRIPT_URL'];
 
 //	echo $reqPath;

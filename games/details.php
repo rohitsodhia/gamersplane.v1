@@ -252,7 +252,7 @@
 					<div class="tr clearfix">
 						<div class="mapVisible<?=$mapInfo['visible']?'':' invisible'?>"></div>
 						<div class="mapLink"><a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
-						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['columns']?></div>
+						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['cols']?></div>
 <?				if ($isGM) { ?>
 			 			<div class="mapActions">
 			 				<a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/edit/" class="iconLink edit">Edit</a>

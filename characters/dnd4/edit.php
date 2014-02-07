@@ -2,10 +2,9 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM dnd4_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
+	$charInfo = getCharInfo($characterID, 'dnd4');
+	if ($charInfo) {
 		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 			$charInfo['level'] = 0;
@@ -36,7 +35,6 @@
 				<input type="text" name="race" value="<?=$charInfo['race']?>" class="medText lrBuffer">
 				<select name="alignment" class="lrBuffer">
 <?
-	$alignments = array('g' => 'Good', 'lg' => 'Lawful Good', 'e' => 'Evil', 'ce' => 'Chaotic Evil', 'u' => 'Unaligned'); 
 	foreach ($alignments as $alignShort => $alignment) {
 ?>
 					<option value="<?=$alignShort?>"<?=$charInfo['alignment'] == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
@@ -65,8 +63,7 @@
 					</div>
 <?
 	$statBonus = array();
-	foreach (array('Strength', 'Constitution', 'Dexterity', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
+	foreach ($stats as $short => $stat) {
 		$bonus = floor(($charInfo[$short] - 10) / 2);
 ?>
 					<div class="tr">
@@ -246,12 +243,10 @@
 						<div id="addSkillWrapper">
 							<input id="skillName" type="text" name="newSkill[name]" value="Skill Name" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
 							<select id="skillStat" name="newSkill[stat]">
-								<option value="str">Str</option>
-								<option value="dex">Dex</option>
-								<option value="con">Con</option>
-								<option value="int">Int</option>
-								<option value="wis">Wis</option>
-								<option value="cha">Cha</option>
+<?
+	foreach ($stats as $short => $stat) 
+		echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
+?>
 							</select>
 							<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
 						</div>
@@ -263,7 +258,7 @@
 							<label class="shortNum alignCenter lrBuffer">Misc</label>
 						</div>
 <?
-	$skills = $mysql->query('SELECT dnd4_skills.skillID, skillsList.name, dnd4_skills.stat, dnd4_skills.ranks, dnd4_skills.misc FROM dnd4_skills INNER JOIN skillsList USING (skillID) ORDER BY skillsList.name');
+	$skills = $mysql->query('SELECT dnd4_skills.skillID, skillsList.name, dnd4_skills.stat, dnd4_skills.ranks, dnd4_skills.misc FROM dnd4_skills INNER JOIN skillsList USING (skillID) WHERE dnd4_skills.characterID = '.$characterID.' ORDER BY skillsList.name');
 	if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
 		skillFormFormat($skillInfo, $statBonus[$skillInfo['stat']]);
 	} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
@@ -278,7 +273,7 @@
 							<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
 						</div>
 <?
-	$feats = $mysql->query('SELECT dnd4_feats.featID, featsList.name FROM dnd4_feats INNER JOIN featsList USING (featID) ORDER BY featsList.name');
+	$feats = $mysql->query('SELECT dnd4_feats.featID, featsList.name FROM dnd4_feats INNER JOIN featsList USING (featID) WHERE dnd4_feats.characterID = '.$characterID.' ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
 		featFormFormat($characterID, $featInfo);
 	} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/features.</p>\n";
@@ -300,7 +295,7 @@
 						<button id="addPower" type="submit" name="newPower_add" class="fancyButton">Add</button>
 					</div>
 <?
-	$unsortedPowers = $mysql->query('SELECT powerID, name, type FROM dnd4_powers WHERE characterID = '.$characterID);
+	$unsortedPowers = $mysql->query("SELECT cp.powerID, pl.name, cp.type FROM dnd4_powers cp INNER JOIN dnd4_powersList pl USING (powerID) WHERE cp.characterID = $characterID");
 	$powers = array('a' => array(), 'e' => array(), 'd' => array());
 	foreach ($unsortedPowers as $power) $powers[$power['type']][] = array('powerID' => $power['powerID'], 'name' => $power['name']);
 ?>

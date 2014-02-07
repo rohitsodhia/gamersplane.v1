@@ -6,7 +6,7 @@
 	$gmCheck = $mysql->query("SELECT `primary` FROM gms WHERE gameID = $gameID AND userID = $userID");
 	$isGM = $gmCheck->rowCount()?TRUE:FALSE;
 	if (isset($_POST['create']) && $isGM) {
-		$deckLabel = sanatizeString($_POST['deckLabel']);
+		$deckLabel = sanitizeString($_POST['deckLabel']);
 		$type = $_POST['deckType'];
 		$deckInfo = $mysql->prepare('SELECT short, deckSize FROM decks WHERE short = :short');
 		$deckInfo->execute(array($type));
@@ -15,9 +15,10 @@
 		$deck = array();
 		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) $deck[] = $count;
 		shuffle($deck);
-		$deck = sanatizeString(implode('~', $deck));
+		$deck = sanitizeString(implode('~', $deck));
 		
-		$mysql->query('INSERT INTO decks (label, type, deck, position, gameID) VALUES ("'.$deckLabel.'", "'.$type.'", "'.$deck.'", 1, '.$gameID.')');
+		$addDeck = $mysql->prepare("INSERT INTO decks (label, type, deck, position, gameID) VALUES (:label, $type, :deck, 1, $gameID)");
+		$addDeck->execute(array(':label' => $deckLabel, ':type' => $type, ':deck' => $deck));
 		$deckID = $mysql->lastInsertId();
 		$deckPermissionsQ = $mysql->prepare('INSERT INTO deckPermissions SET deckID = :deckID, userID = :userID)');
 		$deckPermissionsQ->bindValue(':deckID', $deckID);
@@ -26,7 +27,7 @@
 		$deckPermissionsQ->execute();
 		foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
 		
-		$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckCreated')");
+		addGameHistory($gameID, 'deckCreated', $userID);
 		
 		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=create');
 	} elseif (isset($_POST['shuffle']) && $isGM) {
@@ -36,10 +37,11 @@
 		$deck = array();
 		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) $deck[] = $count;
 		shuffle($deck);
-		$deck = sanatizeString(implode('~', $deck));
-		$mysql->query('UPDATE decks SET position = 1, deck = "'.$deck.'", lastShuffle = "'.gmdate('Y-m-d H:i:s').'" WHERE deckID = '.$deckID);
+		$deck = sanitizeString(implode('~', $deck));
+		$updateDeck = $mysql->prepare("UPDATE decks SET position = 1, deck = :deck, lastShuffle = :lastShuffle WHERE deckID = $deckID");
+		$updateDeck->execute(array(':deck' => $deck, ':lastShuffle' => gmdate('Y-m-d H:i:s')));
 		
-		$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckShuffled')");
+		addGameHistory($gameID, 'deckShuffled', $userID);
 			
 		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=shuffle');
 	} elseif (isset($_POST['submit']) && $isGM) {
@@ -48,15 +50,15 @@
 		if ($deckInfo->rowCount()) {
 			$deckInfo = $deckInfo->fetch();
 			$updateStr = '';
-			if ($deckInfo['label'] != sanatizeString($_POST['deckLabel'])) $updateStr .= 'label = "'.sanatizeString($_POST['deckLabel']).'" AND ';
-			if ($deckInfo['type'] != sanatizeString($_POST['deckType'])) {
-				$updateStr .= 'type = '.sanatizeString($_POST['deckType']).' AND ';
+			if ($deckInfo['label'] != sanitizeString($_POST['deckLabel'])) $updateStr .= 'label = "'.sanitizeString($_POST['deckLabel']).'" AND ';
+			if ($deckInfo['type'] != sanitizeString($_POST['deckType'])) {
+				$updateStr .= 'type = '.sanitizeString($_POST['deckType']).' AND ';
 				$deck = array();
-				$type = sanatizeString($_POST['deckType']);
+				$type = sanitizeString($_POST['deckType']);
 				if ($type == 'pcwj') for ($count = 1; $count <= 54; $count++) $deck[] = $count;
 				elseif ($type == 'pcwoj') for ($count = 1; $count <= 52; $count++) $deck[] = $count;
 				shuffle($deck);
-				$updateStr .= 'deck = "'.sanatizeString(implode('~', $deck)).'" AND ';
+				$updateStr .= 'deck = "'.sanitizeString(implode('~', $deck)).'" AND ';
 			}
 			$mysql->query('UPDATE decks SET '.substr($updateStr, 0, -5).' WHERE deckID = '.$deckID);
 			
@@ -68,6 +70,7 @@
 			$deckPermissionsQ->execute();
 			foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
 			
+			addGameHistory($gameID, 'deckEdited', $userID);
 			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckEdited')");
 		}
 		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=edit');

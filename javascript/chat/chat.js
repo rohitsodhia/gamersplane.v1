@@ -1,7 +1,7 @@
 function sendMessage() {
 	var message = $('#message input').val();
 	var gameID = $('#gameID').val();
-	$.post(SITEROOT + '/chat/ajax/sendMessage', { message: message, gameID: gameID }, function (data) {
+	$.post('/chat/ajax/sendMessage', { message: message, gameID: gameID }, function (data) {
 		if ($(data).find('success').size()) {
 //			var postInfo = $(data).find('success');
 //			$('#chatArea').append('<div class="chatItem"><b>[' + $(postInfo).find('date').text() + '] ' + $(postInfo).find('username').text() + '</b>: ' + message).scrollTo('max');
@@ -13,7 +13,7 @@ function sendMessage() {
 
 function getNewMessages() {
 	var gameID = $('#gameID').val();
-	$.post(SITEROOT + '/chat/ajax/retrieveMessages', { gameID: gameID }, function (data) {
+	$.post('/chat/ajax/retrieveMessages', { gameID: gameID }, function (data) {
 //		alert(data);
 //		alert($(data).find('messages').size());
 		$(data).find('message').each(function() {
@@ -25,7 +25,7 @@ function getNewMessages() {
 
 function getUsers() {
 	var gameID = $('#gameID').val();
-	$.post(SITEROOT + '/chat/ajax/retrieveUsers', { gameID: gameID }, function (data) {
+	$.post('/chat/ajax/retrieveUsers', { gameID: gameID }, function (data) {
 		$('#users').html('');
 		$(data).find('user').each(function() {
 			$('#users').append('<div class="user">' + $(this).text() + '</div>');

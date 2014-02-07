@@ -11,8 +11,8 @@
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;
 			$noChar = FALSE;
+			includeSystemInfo('spycraft2');
 		}
-		includeSystemInfo('spycraft2');
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
@@ -49,8 +49,7 @@
 				<div id="stats">
 <?
 	$statBonus = array();
-	foreach (array('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
+	foreach ($stats as $short => $stat) {
 		$bonus = floor(($charInfo[$short] - 10)/2);
 		if ($bonus >= 0) $bonus = '+'.$bonus;
 ?>
@@ -238,21 +237,15 @@
 					<div id="addSkillWrapper">
 						<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
 						<select id="skillStat_1" name="newSkill[stat_1]">
-							<option value="str">Str</option>
-							<option value="dex">Dex</option>
-							<option value="con">Con</option>
-							<option value="int">Int</option>
-							<option value="wis">Wis</option>
-							<option value="cha">Cha</option>
+<?
+	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
+?>
 						</select>
 						<select id="skillStat_2" name="newSkill[stat_2]">
 							<option value=""></option>
-							<option value="str">Str</option>
-							<option value="dex">Dex</option>
-							<option value="con">Con</option>
-							<option value="int">Int</option>
-							<option value="wis">Wis</option>
-							<option value="cha">Cha</option>
+<?
+	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
+?>
 						</select>
 						<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
 					</div>

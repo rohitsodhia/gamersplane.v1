@@ -14,7 +14,7 @@
 	
 	if (strlen(trim($_POST['search']))) {
 		$search = array();
-		foreach(preg_split('/\s+/', sanatizeString($_POST['search']), NULL, PREG_SPLIT_NO_EMPTY) as $part) $search[] = "games.title LIKE '%$part%'";
+		foreach(preg_split('/\s+/', sanitizeString($_POST['search']), NULL, PREG_SPLIT_NO_EMPTY) as $part) $search[] = "games.title LIKE '%$part%'";
 		$search = implode(' OR ', $search);
 	}
 	

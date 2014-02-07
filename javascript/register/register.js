@@ -14,7 +14,7 @@ function checkUsername() {
 	var charValidation = validChars.exec(username);
 	
 	if (username.length <= 24 && username.length >= 4 && charValidation) {
-		$.post(SITEROOT + '/register/ajax/loginSearch', { username: username }, function (data) {
+		$.post('/register/ajax/loginSearch', { username: username }, function (data) {
 			if ($(data).find('user').size()) {
 				$('#userLong').fadeOut('normal');
 				$('#userInvalid').fadeOut('normal', function () {
@@ -95,7 +95,7 @@ function checkEmail() {
 	var email = $('#email').val();
 	
 	if (email.length != 0) {
-		$.post(SITEROOT + '/register/ajax/loginSearch', { email: email }, function (data) {
+		$.post('/register/ajax/loginSearch', { email: email }, function (data) {
 			if ($(data).find('user').size()) {
 				$('#emailTaken').fadeIn('normal');
 				

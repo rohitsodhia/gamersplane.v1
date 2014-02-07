@@ -2,15 +2,16 @@
 	if (checkLogin(0)) {
 		includeSystemInfo('spycraft2');
 
-		$userID = intval($_SESSION['userID']);
+		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
 			$name = sanitizeString($_POST['name'], 'rem_dup_spaces');
 			if (strlen($name)) {
 				$skillID = getSkill($name, 'spycraft2');
-				$stat_1 = sanitizeString($_POST['stat_1']);
-				$stat_2 = sanitizeString($_POST['stat_2']);
+				if (array_key_exists($_POST['stat_1'], $stats)) $stat_1 = $_POST['stat_1'];
+				else exit;
+				if (array_key_exists($_POST['stat_2'], $stats)) $stat_2 = $_POST['stat_2'];
+				else $stat_2 = '';
 				$statBonus_1 = intval($_POST['statBonus_1']);
 				$statBonus_2 = intval($_POST['statBonus_2']);
 				$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat_1' => $stat_1, 'stat_2' => $stat_2, 'ranks' => 0, 'misc' => 0, 'error' => '', 'threat' => '');

@@ -2,10 +2,9 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM dnd4_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
-	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
+	$noChar = FALSE;
+	$charInfo = getCharInfo($characterID, 'dnd4');
+	if ($charInfo) {
 		$gameID = $charInfo['gameID'];
 		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
@@ -13,10 +12,9 @@
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;
 			$noChar = FALSE;
+			includeSystemInfo('dnd4');
 		}
 	}
-	
-	$alignments = array('g' => 'Good', 'lg' => 'Lawful Good', 'e' => 'Evil', 'ce' => 'Chaotic Evil', 'u' => 'Unaligned'); 
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
@@ -25,7 +23,7 @@
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd3/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
+		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd4/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
 			<label id="label_race" class="medText">Race</label>
@@ -58,8 +56,7 @@
 				</div>
 <?
 	$statBonus = array();
-	foreach (array('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') as $stat) {
-		$short = strtolower(substr($stat, 0, 3));
+	foreach ($stats as $short => $stat) {
 		$bonus = floor(($charInfo[$short] - 10) / 2);
 ?>
 				<div class="tr dataTR">
@@ -268,7 +265,7 @@
 						<label class="shortNum alignCenter lrBuffer">Misc</label>
 					</div>
 <?
-	$skills = $mysql->query('SELECT dnd4_skills.skillID, skillsList.name, dnd4_skills.stat, dnd4_skills.ranks, dnd4_skills.misc FROM dnd4_skills INNER JOIN skillsList USING (skillID) ORDER BY skillsList.name');
+	$skills = $mysql->query('SELECT dnd4_skills.skillID, skillsList.name, dnd4_skills.stat, dnd4_skills.ranks, dnd4_skills.misc FROM dnd4_skills INNER JOIN skillsList USING (skillID) WHERE dnd4_skills.characterID = '.$characterID.' ORDER BY skillsList.name');
 	if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
 ?>
 					<div id="skill_<?=$skillInfo['skillID']?>" class="skill tr clearfix">
@@ -287,7 +284,7 @@
 				<h2 class="headerbar hbDark">Feats/Features</h2>
 				<div class="hbdMargined">
 <?
-	$feats = $mysql->query('SELECT dnd4_feats.featID, featsList.name FROM dnd4_feats INNER JOIN featsList USING (featID) ORDER BY featsList.name');
+	$feats = $mysql->query('SELECT dnd4_feats.featID, featsList.name FROM dnd4_feats INNER JOIN featsList USING (featID) WHERE dnd4_feats.characterID = '.$characterID.' ORDER BY featsList.name');
 	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
 ?>
 					<div id="feat_<?=$featInfo['featID']?>" class="feat tr clearfix">

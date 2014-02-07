@@ -4,9 +4,8 @@
 	if (isset($_POST['save'])) {
 		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
-		$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-		$updates = array();
-		if ($charCheck->rowCount()) {
+		if (allowCharEdit($characterID, $userID)) {
+			$updates = array();
 			$numVals = array('str', 'con', 'dex', 'int', 'wis', 'cha', 'ac_armor', 'ac_class', 'ac_feats', 'ac_enh', 'ac_misc', 'fort_class', 'fort_feats', 'fort_enh', 'fort_misc', 'ref_class', 'ref_feats', 'ref_enh', 'ref_misc', 'will_class', 'will_feats', 'will_enh', 'will_misc', 'init_misc', 'hp', 'surges', 'speed_base', 'speed_armor', 'speed_item', 'speed_misc', 'ap', 'piSkill', 'ppSkill');
 			$textVals = array('name', 'race', 'alignment', 'class', 'paragon', 'epic', 'weapons', 'armor', 'items', 'notes');
 			foreach (array_merge($numVals, $textVals) as $value) $updates[] = "`$value` = :$value";

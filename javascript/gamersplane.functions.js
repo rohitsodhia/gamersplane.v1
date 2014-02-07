@@ -122,7 +122,7 @@ function updateCombatBonuses() {
 
 function fm_rollDice(dice, rerollAces) {
 	rerollAces = typeof rerollAces == 'undefined' ? 0 : rerollAces;
-	$.post(SITEROOT + '/tools/ajax/dice', { dice: dice, rerollAces: rerollAces }, function (data) {
+	$.post('/tools/ajax/dice', { dice: dice, rerollAces: rerollAces }, function (data) {
 		$('#fm_diceRoller .newestRolls').removeClass('newestRolls');
 		var first = true;
 		var classes = '';

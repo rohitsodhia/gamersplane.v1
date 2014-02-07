@@ -66,7 +66,7 @@
 ?>
 						<div class="power">
 							<span id="power_<?=$power['powerID']?>" class="power_name"><?=mb_convert_case($power['name'], MB_CASE_TITLE)?></span>
-							<input type="image" name="removePower_<?=$power['powerID']?>" src="<?=SITEROOT?>/images/cross.png" value="{$power['name']}" class="power_remove lrBuffer">
+							<input type="image" name="removePower_<?=$power['powerID']?>" src="<?=SITEROOT?>/images/cross.png" value="<?=$power['powerID']?>" class="power_remove lrBuffer">
 						</div>
 <?
 		}
