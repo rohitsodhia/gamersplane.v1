@@ -12,3 +12,4 @@ ucp/avatars/
 *.pdf
 *.sql
 blog/
+test*.php
