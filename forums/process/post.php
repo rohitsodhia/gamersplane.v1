@@ -1,11 +1,5 @@
 <?
-	$sweoteDice = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
-	function validateSWOETEDice($value) {
-		global $sweoteDice;
-		if (in_array($value, array_keys($sweoteDice))) return TRUE;
-		else return FALSE;
-	}
-
+	addPackage('tools');
 
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
@@ -48,39 +42,13 @@
 		if (sizeof($_POST['rolls'])) { foreach ($_POST['rolls'] as $num => $roll) {
 			$cleanedRoll = array();
 			if (strlen($roll['roll'])) {
-				if ($roll['type'] == 'basic') {
-					$indivRoll = parseRolls($roll['roll']);
-					$ra = $roll['ra']?1:0;
-					if (!$indivRoll) {
-						$_SESSION['errors']['badRoll'] = 1;
-					} else {
-						$indivRoll = $indivRoll[0];
-						$rollVals = rollDice($indivRoll, $ra);
-						$cleanedRoll['type'] = 'basic';
-						$cleanedRoll['reason'] = sanitizeString($roll['reason']);
-						$cleanedRoll['roll'] = $roll['roll'];
-						$cleanedRoll['indivRolls'] = $rollVals['indivRolls'];
-						$cleanedRoll['result'] = $rollVals['result'];
-						$cleanedRoll['visibility'] = $roll['visibility'];
-						$cleanedRoll['extras'] = array('ra' => $ra);
-						$rolls[$num] = $cleanedRoll;
-					}
-				} elseif ($roll['type'] == 'sweote') {
-					$validRolls = array_filter(explode(',', $roll['roll']), 'validateSWOETEDice');
-					if (sizeof($validRolls)) {
-						$results = array();
-						foreach ($validRolls as $validRoll) {
-							$result = sweote_rollDice($sweoteDice[$validRoll]);
-							$results[] = $result['result'];
-						}
-						$cleanedRoll['type'] = 'sweote';
-						$cleanedRoll['reason'] = sanitizeString($roll['reason']);
-						$cleanedRoll['roll'] = implode(',', $validRolls);
-						$cleanedRoll['indivRolls'] = $results;
-						$cleanedRoll['visibility'] = $roll['visibility'];
-						$rolls[$num] = $cleanedRoll;
-					}
-				}
+				$rollObj = RollFactory::getRoll($roll['type']);
+				if (!isset($roll['options'])) $roll['options'] = array();
+				$rollObj->newRoll($roll['roll'], $roll['options']);
+				$rollObj->roll();
+				$rollObj->setReason($roll['reason']);
+				$rollObj->setVisibility($roll['visibility']);
+				$rolls[$num] = $rollObj;
 			} else unset($rolls[$num]);
 		} }
 
@@ -110,10 +78,6 @@
 			}
 		}
 
-		var_dump($rolls);
-		var_dump($draws);
-
-		die();		
 		$postID = 0;
 		$threadID = 0;
 		$noChat = FALSE;
@@ -278,20 +242,12 @@
 		
 		if ($postID && $threadID && (sizeof($rolls) || sizeof($draws))) {
 			if (sizeof($rolls) && $permissions['addRolls'] && ($allowRolls || $permissions['moderate'])) {
-				$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, roll = :roll, reason = :reason, ra = :ra, total = :total, indivRolls = :indivRolls, visibility = :visibility");
 				foreach($rolls as $roll) {
-					$addRoll->bindValue(':roll', $roll['roll']);
-					$addRoll->bindValue(':reason', $roll['reason']);
-					$addRoll->bindValue(':ra', $roll['ra']);
-					$addRoll->bindValue(':total', $roll['total']);
-					$addRoll->bindValue(':indivRolls', $roll['indivRolls']);
-					$addRoll->bindValue(':visibility', $roll['visibility']);
-					$addRoll->execute();
+					$roll->forumSave($postID);
 				}
 			}
 			
 			if (sizeof($draws)) {
-				print_r($draws);
 				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = :postID, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
 				foreach($draws as $deckID => $draw) {
 					$mysql->query('UPDATE decks SET position = position + '.$draw['draw'].' WHERE deckID = '.$deckID);

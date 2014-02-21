@@ -71,7 +71,7 @@
 										<option value="2"<?=isset($data['visibility']) && $data['visibility'] == 2?' selected="selected"':NULL?>>Hide Dice &amp; Roll</option>
 										<option value="3"<?=isset($data['visibility']) && $data['visibility'] == 3?' selected="selected"':NULL?>>Hide Everything</option>
 									</select></div>
-									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][ra]"<?=isset($data['ra'])?' checked="checked"':NULL?>></div>
+									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][options][rerollAces]"<?=isset($data['options']['rerollAces'])?' checked="checked"':NULL?>></div>
 								</div>
 							</div>
 <?

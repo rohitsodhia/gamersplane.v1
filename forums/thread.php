@@ -1,5 +1,6 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+	addPackage('tools');
 	$loggedIn = checkLogin(0);
 	
 	$userID = intval($_SESSION['userID']);
@@ -40,9 +41,13 @@
 		$gameID = $gameID->fetchColumn();
 	}
 
-	$rolls = $mysql->query("SELECT posts.postID, rolls.roll, rolls.indivRolls, rolls.ra, rolls.reason, rolls.result, rolls.visibility FROM posts, rolls WHERE posts.threadID = {$threadID} AND rolls.postID = posts.postID ORDER BY rolls.rollID");
+	$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.threadID = {$threadID} AND r.postID = p.postID ORDER BY r.rollID");
 	$temp = array();
-	foreach ($rolls as $rollInfo) $temp[$rollInfo['postID']][] = $rollInfo;
+	foreach ($rolls as $rollInfo) {
+		$rollObj = RollFactory::getRoll($rollInfo['type']);
+		$rollObj->forumLoad($rollInfo);
+		$temp[$rollInfo['postID']][] = $rollObj;
+	}
 	$rolls = $temp;
 	
 	$draws = $mysql->query("SELECT posts.postID, deckDraws.drawID, deckDraws.type, deckDraws.cardsDrawn, deckDraws.reveals, deckDraws.reason FROM posts, deckDraws WHERE posts.threadID = {$threadID} AND deckDraws.postID = posts.postID");
@@ -166,9 +171,9 @@
 					$hidden = FALSE;
 ?>
 						<div class="rollInfo">
-							<div class="rollText">
 <?
-					echo $showAll && $roll['visibility'] > 0?'<span class="hidden">'.$visText[$roll['visibility']].'</span> ':'';
+					$roll->showHTML($showAll);
+/*					echo $showAll && $roll['visibility'] > 0?'<span class="hidden">'.$visText[$roll['visibility']].'</span> ':'';
 					if ($roll['visibility'] <= 2) echo $roll['reason'];
 					elseif ($showAll) { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
 					else echo 'Secret Roll';
@@ -177,7 +182,7 @@
 					echo $hidden?'</span>':'';
 					echo "</div>\n";
 					if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">".displayIndivDice($roll['indivRolls'])." = {$roll['result']}</div>\n";
-					elseif ($showAll) echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">".displayIndivDice($roll['indivRolls'])." = {$roll['result']}</span></div>\n";
+					elseif ($showAll) echo "\t\t\t\t\t\t<div class=\"indent\"><span class=\"hidden\">".displayIndivDice($roll['indivRolls'])." = {$roll['result']}</span></div>\n";*/
 ?>
 						</div>
 <?

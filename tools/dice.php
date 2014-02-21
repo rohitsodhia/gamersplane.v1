@@ -29,20 +29,20 @@
 						<textarea id="basic_dice" name="dice"><?=$_POST['dice']?></textarea>
 						<button id="basic_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
 						<div class="cbWrapper">
-							<input id="basic_rerollAces" type="checkbox" name="rerollAces"<? if ($_POST['rerollAces']) echo ' checked="checked"'; ?>>Reroll Aces
+							<input id="basic_rerollAces" type="checkbox" name="options[rerollAces]"<? if ($_POST['rerollAces']) echo ' checked="checked"'; ?>><label for="basic_rerollAces">Reroll Aces</label>
 						</div>
 					</div>
 					<div id="basic_indivDice">
 						<div>
-							<button type="submit" name="d4" class="diceButton fancyButton">d4</button>
-							<button type="submit" name="d6" class="diceButton fancyButton">d6</button>
-							<button type="submit" name="d8" class="diceButton fancyButton">d8</button>
-							<button type="submit" name="d10" class="diceButton fancyButton">d10</button>
+							<button type="submit" name="dice" value="d4" class="diceButton fancyButton">d4</button>
+							<button type="submit" name="dice" value="d6" class="diceButton fancyButton">d6</button>
+							<button type="submit" name="dice" value="d8" class="diceButton fancyButton">d8</button>
+							<button type="submit" name="dice" value="d10" class="diceButton fancyButton">d10</button>
 						</div>
 						<div>
-							<button type="submit" name="d12" class="diceButton fancyButton">d12</button>
-							<button type="submit" name="d20" class="diceButton fancyButton">d20</button>
-							<button type="submit" name="d100" class="diceButton fancyButton">d100</button>
+							<button type="submit" name="dice" value="d12" class="diceButton fancyButton">d12</button>
+							<button type="submit" name="dice" value="d20" class="diceButton fancyButton">d20</button>
+							<button type="submit" name="dice" value="d100" class="diceButton fancyButton">d100</button>
 						</div>
 					</div>
 				</form>

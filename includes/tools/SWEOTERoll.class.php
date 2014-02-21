@@ -1,73 +1,116 @@
 <?
 	class SWEOTERoll extends Roll {
-		private $rolls = array();
-		private $dice = array();
-		private $shortMap = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
-		private $total = array('success' => 0, 'advantage' => 0, 'triumph' => 0, 'failure' => 0, 'threat' => 0, 'dispair' => 0, 'whiteDot' => 0, 'blackDot' => 0);
+		private $d_shortMap = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
+		private $totals = array('success' => 0, 'advantage' => 0, 'triumph' => 0, 'failure' => 0, 'threat' => 0, 'dispair' => 0, 'whiteDot' => 0, 'blackDot' => 0);
+		private $resultsMap = array('', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage', 'triumph', 'failure', 'threat', 'failure_failure', 'failure_threat', 'threat_threat', 'dispair', 'whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot_blackDot');
 
 		function __construct() { }
 
 		function newRoll($diceString) {
 			preg_match_all('/(\w+)/', $diceString, $rolls, PREG_SET_ORDER);
-			foreach ($rolls as $roll) {
+			if (sizeof($rolls)) { foreach ($rolls as $roll) {
 				$die = strtolower($roll[0]);
-				if (strlen($die) == 1 && array_key_exists($die, $this->shortMap)) $die = $this->shortMap[$die];
-				elseif (!in_array($die, $this->shortMap)) continue;
+				if (strlen($die) == 1 && array_key_exists($die, $this->d_shortMap)) $die = $this->d_shortMap[$die];
+				elseif (!in_array($die, $this->d_shortMap)) continue;
 
-				$this->rolls[] = array('die' => $die, 'results' => array());
+				$this->rolls[] = array('die' => $die, 'result' => NULL);
 				if (!array_key_exists($die, $this->dice)) $this->dice[$die] = new SWEOTEDie($die);
-			}
+			} }
 		}
 
 		function roll() {
 			foreach ($this->rolls as $key => &$roll) {
 				$result = $this->dice[$roll['die']]->roll();
 
-				$roll['results'] = $result;
+				$roll['result'] = $result;
 
-				if (strlen($result)) foreach (explode('_', $result) as $icon) $this->total[$icon]++;
+				if (strlen($result)) foreach (explode('_', $result) as $icon) $this->totals[$icon]++;
 			}
 		}
 
-		function forumLoad($rollID) {
-
+		function forumLoad($rollData) {
+			$this->reason = $rollData['reason'];
+			$this->newRoll($rollData['roll']);
+			$rollData['indivRolls'] = unserialize($rollData['indivRolls']);
+			foreach ($rollData['indivRolls'] as $key => $roll) {
+				$this->rolls[$key]['result'] = $this->resultsMap[$roll];
+			}
+			$rollData['results'] = unserialize($rollData['results']);
+			$count = 0;
+			foreach ($this->totals as $symbol => $total) {
+				$this->totals[$symbol] = $rollData['results'][$count++];
+			}
+			$this->setVisibility($rollData['visibility']);
 		}
 
 		function forumSave($postID) {
 			global $mysql;
 
-			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'basic', reason = :reason, roll = :roll, indivRolls = :indivRolls, total = :total, visibility = :visibility, ra = :ra");
-			$addRoll->bindValue(':reason', $roll['reason']);
-			$addRoll->bindValue(':roll', $roll['roll']);
-			$addRoll->bindValue(':ra', $roll['ra']);
-			$addRoll->bindValue(':total', $roll['total']);
-			$addRoll->bindValue(':indivRolls', $roll['indivRolls']);
-			$addRoll->bindValue(':visibility', $roll['visibility']);
+			$rolls = $indivRolls = $totals = array();
+			foreach ($this->rolls as $roll) {
+				$rolls[] = $roll['die'];
+				$indivRolls[] = array_search($roll['result'], $this->resultsMap);
+			}
+			$count = 0;
+			foreach ($this->totals as $total) {
+				$totals[$count++] = $total;
+			}
+
+			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'sweote', reason = :reason, roll = :roll, indivRolls = :indivRolls, results = :results, visibility = :visibility");
+			$addRoll->bindValue(':reason', $this->reason);
+			$addRoll->bindValue(':roll', implode(',', array_map(function ($value) { return $value[0]; }, $rolls)));
+			$addRoll->bindValue(':indivRolls', serialize($indivRolls));
+			$addRoll->bindValue(':results', serialize($totals));
+			$addRoll->bindValue(':visibility', $this->visibility);
 			$addRoll->execute();
 		}
 
 		function getResults() {
-			return $this->total;
 		}
 
-		function showHTML($reason = '') {
+		function setReason($reason) {
+			$this->reason = $reason;
+		}
+
+		function setVisibility($visibility) {
+			$this->visibility = $visibility;
+		}
+
+		function showHTML($showAll = FALSE) {
 			if (sizeof($this->rolls)) {
 				echo '<div class="roll">';
 				$totalString = '';
-				foreach ($this->rolls as $count => $roll) {
-					echo "<div class=\"sweote_dice {$roll['die']} {$roll['results']}\"><div></div></div>";
-				}
-				echo '<p>';
-				if ($this->total['success']) $totalString .= $this->total['success'].' Success'.($this->total['success'] > 1?'es':'').', ';
-				if ($this->total['advantage']) $totalString .= $this->total['advantage'].' Advantage, ';
-				if ($this->total['triumph']) $totalString .= $this->total['triumph'].' Triumph, ';
-				if ($this->total['failure']) $totalString .= $this->total['failure'].' Failure'.($this->total['failure'] > 1?'s':'').', ';
-				if ($this->total['threat']) $totalString .= $this->total['threat'].' Threat, ';
-				if ($this->total['dispair']) $totalString .= $this->total['dispair'].' Dispair, ';
-				if ($this->total['whiteDot']) $totalString .= $this->total['whiteDot'].' White Force Point'.($this->total['whiteDot'] > 1?'s':'').', ';
-				if ($this->total['blackDot']) $totalString .= $this->total['blackDot'].' Black Force Point'.($this->total['blackDot'] > 1?'s':'').', ';
-				echo substr($totalString, 0, -2);
+				echo '<p class="rollString">';
+				echo ($showAll && $this->visibility > 0)?'<span class="hidden">'.$this->visText[$this->visibility].'</span> ':'';
+				if ($this->visibility <= 2) echo $this->reason;
+				elseif ($showAll) { echo '<span class="hidden">'.($this->reason != ''?"{$this->reason}":''); $hidden = TRUE; }
+				else echo 'Secret Roll';
+				echo $hidden?'</span>':'';
 				echo '</p>';
+				if ($this->visibility <= 1 || $showAll) {
+					echo '<div class="rollResults">';
+					foreach ($this->rolls as $count => $roll) {
+						echo "<div class=\"sweote_dice {$roll['die']} {$roll['result']}\">";
+						if ($this->visibility == 0 || $showAll) echo '<div></div>';
+						echo '</div>';
+					}
+					echo '</div>';
+				}
+				if ($this->visibility == 0 || $showAll) {
+					echo '<p>';
+					if ($this->visibility != 0) echo '<span class="hidden">';
+					if ($this->totals['success']) $totalString .= $this->totals['success'].' Success'.($this->totals['success'] > 1?'es':'').', ';
+					if ($this->totals['advantage']) $totalString .= $this->totals['advantage'].' Advantage, ';
+					if ($this->totals['triumph']) $totalString .= $this->totals['triumph'].' Triumph, ';
+					if ($this->totals['failure']) $totalString .= $this->totals['failure'].' Failure'.($this->totals['failure'] > 1?'s':'').', ';
+					if ($this->totals['threat']) $totalString .= $this->totals['threat'].' Threat, ';
+					if ($this->totals['dispair']) $totalString .= $this->totals['dispair'].' Dispair, ';
+					if ($this->totals['whiteDot']) $totalString .= $this->totals['whiteDot'].' White Force Point'.($this->totals['whiteDot'] > 1?'s':'').', ';
+					if ($this->totals['blackDot']) $totalString .= $this->totals['blackDot'].' Black Force Point'.($this->totals['blackDot'] > 1?'s':'').', ';
+					echo substr($totalString, 0, -2);
+					if ($this->visibility != 0) echo '</span>';
+					echo '</p>';
+				}
 				echo '</div>';
 			}
 		}

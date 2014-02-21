@@ -137,6 +137,11 @@ toggleCheckbox = function (e) {
 	}
 }
 
+toggleLinkedCheckbox = function (e) {
+	linkedID = $(this).attr('for');
+	if ($('#' + linkedID).length) $('#' + linkedID).parent().trigger('click');
+}
+
 $.fn.prettyRadio = function () {
 	$(this).each(function () {
 		$(this).wrap('<div class="prettyRadio"></div>');
@@ -156,4 +161,4 @@ toggleRadio = function (e) {
 	}
 }
 
-$('body').on('click', '.prettyCheckbox', toggleCheckbox).on('click', '.prettyRadio', toggleRadio);
+$('body').on('click', '.prettyCheckbox', toggleCheckbox).on('click', 'label', toggleLinkedCheckbox).on('click', '.prettyRadio', toggleRadio);

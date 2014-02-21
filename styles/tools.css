@@ -167,6 +167,10 @@
 	margin: 20px 0 0 15px;
 }
 
+#page_tools_dice #basic_customDice label {
+	display: inline;
+}
+
 #page_tools_dice .dice_basic .cbWrapper {
 	display: inline-block;
 	margin-top: 3px;
@@ -281,6 +285,10 @@
 
 #page_tools_dice #diceSpace .roll p {
 	margin-bottom: 0;
+}
+
+#page_tools_dice #diceSpace .rollString {
+	margin: 0;
 }
 
 /*#page_tools_dice #diceSpace .newestRoll {

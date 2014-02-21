@@ -417,6 +417,14 @@
 	color: #666;
 }
 
+#page_forum_thread .rollResults {
+	margin-left: 30px;
+}
+
+#page_forum_thread .sweote_dice {
+	margin-left: 10px;
+}
+
 #page_forum_thread .postContent form {
 	margin-top: .6em;
 }

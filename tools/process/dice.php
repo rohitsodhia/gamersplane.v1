@@ -1,41 +1,8 @@
 <?
-	header('Content-Type: text/xml');
-	echo '<?xml version="1.0" ?>';
-	
-	echo '<rolls type="'.$_POST['rollType'].'">';
-	if ($_POST['rollType'] == 'basic') {
-		$rolls = array();
-		if (isset($_POST['roll'])) {
-			preg_match_all('/\d+d\d+([+-]\d+)?/', $_POST['dice'], $rolls);
-			$rolls = $rolls[0];
-			$rerollAces = $_POST['rerollAces']?1:0;
-		} else { foreach ($_POST as $key => $value) {
-			if (preg_match('/d[\d]+/', $key)) {
-				$rolls = array('1'.$key);
-				$rerollAces = 0;
-				break;
-			}
-		} }
-		foreach($rolls as $roll) {
-			$results = rollDice($roll, $rerollAces);
-			
-			echo '<roll>';
-			echo '<dice>'.$roll.'</dice>';
-			echo '<indivRolls>'.displayIndivDice($results['indivRolls']).'</indivRolls>';
-			echo '<result>'.$results['result'].'</result>';
-			echo '</roll>';
-		}
-	} elseif ($_POST['rollType'] == 'sweote') {
-		$rolls = $_POST['dice'];
-		foreach($rolls as $roll) {
-			$result = sweote_rollDice($roll);
-			
-			echo '<roll>';
-			echo '<dice>'.$roll.'</dice>';
-			echo '<result>'.$result['result'].'</result>';
-			echo '<values>'.implode(',', $result['values']).'</values>';
-			echo '</roll>';
-		}
-	}
-	echo '</rolls>';
+	addPackage('tools');
+	$roll = RollFactory::getRoll($_POST['rollType']);
+	$options = isset($_POST['options']) && is_array($_POST['options'])?$_POST['options']:array();
+	$roll->newRoll($_POST['dice'], $options);
+	$roll->roll();
+	$roll->showHTML();
 ?>
