@@ -11,6 +11,8 @@ $(function() {
 
 			$('span.' + oldOpen + ', div.' + oldOpen).hide();
 			$('span.' + newOpen + ', div.' + newOpen).show();
+
+			$('#addRoll .fancyButton').each(function () { wingMargins($(this)[0]); });
 		}
 	});
 

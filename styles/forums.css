@@ -623,6 +623,10 @@
 	font-weight: bold;
 }
 
+#page_forum_post #addRoll .fancyButton {
+	vertical-align: middle;
+}
+
 #page_forum_post .rollWrapper {
 	position: relative;
 	margin-top: 4px;

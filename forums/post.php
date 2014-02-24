@@ -348,7 +348,7 @@
 ?>
 			
 			<div id="submitDiv" class="alignCenter">
-				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton">Post</button>
+				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
 				<button type="submit" name="preview" tabindex="<?=tabOrder();?>" class="fancyButton">Preview</button>
             </div>
 		</form>
