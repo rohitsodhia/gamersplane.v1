@@ -46,6 +46,7 @@
 		}
 
 		function forumLoad($rollData) {
+			$this->rollID = $rollData['rollID'];
 			$this->reason = $rollData['reason'];
 			$this->parseRolls($rollData['roll']);
 			$rollData['indivRolls'] = unserialize($rollData['indivRolls']);
@@ -81,14 +82,6 @@
 		}
 
 		function getResults() {
-		}
-
-		function setReason($reason) {
-			$this->reason = $reason;
-		}
-
-		function setVisibility($visibility) {
-			$this->visibility = $visibility;
 		}
 
 		function showHTML($showAll = FALSE) {

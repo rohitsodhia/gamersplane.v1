@@ -395,6 +395,7 @@
 	padding-right: 150px;
 	font-size: 1.1em;
 	line-height: 1.2em;
+	font-weight: bold;
 }
 
 #page_forum_thread div.postContent hr {
@@ -417,11 +418,11 @@
 	color: #666;
 }
 
-#page_forum_thread .rollResults {
+#page_forum_thread .rollResults, #page_forum_post .rollResults {
 	margin-left: 30px;
 }
 
-#page_forum_thread .sweote_dice {
+#page_forum_thread .sweote_dice, #page_forum_post .sweote_dice {
 	margin-left: 10px;
 }
 
@@ -572,12 +573,14 @@
 	margin-top: .3em;
 }
 
-#page_forum_post #postedRolls .rollInfo {
-	margin-bottom: 1em;
+#page_forum_post #postedRolls {
+	margin-bottom: .5em;
+	padding-bottom: .5em;
+	border-bottom: 1px solid #333;
 }
 
-#page_forum_post #postedRolls .prettySelect {
-	margin-bottom: 10px;
+#page_forum_post #postedRolls .rollInfo {
+	margin-bottom: 2em;
 }
 
 #page_forum_post #addPoll label {

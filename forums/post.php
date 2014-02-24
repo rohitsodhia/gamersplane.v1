@@ -1,5 +1,6 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+	addPackage('tools');
 	$loggedIn = checkLogin();
 
 	$userID = intval($_SESSION['userID']);
@@ -7,15 +8,19 @@
 
 	$firstPost = FALSE;
 	$editPost = $pathOptions[0] == 'editPost'?TRUE:FALSE;
-	
+
 	if ($editPost) {
 		$postID = intval($pathOptions[1]);
-		$threadInfo = $mysql->query('SELECT threads.forumID, threads.threadID, threads.sticky, threads.allowRolls, threads.allowDraws FROM threads, posts WHERE threads.threadID = posts.threadID AND posts.postID = '.$postID);
-		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
+		$threadInfo = $mysql->query("SELECT t.forumID, t.threadID, t.sticky, t.allowRolls, t.allowDraws, f.heritage FROM threads t, posts p, forums f WHERE t.threadID = p.threadID AND f.forumID = t.forumID AND p.postID = $postID");
+		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws, $heritage) = $threadInfo->fetch(PDO::FETCH_NUM);
 		
-		$rolls = $mysql->query('SELECT posts.postID, rolls.rollID, rolls.roll, rolls.indivRolls, rolls.reason, rolls.ra, rolls.result, rolls.visibility FROM posts, rolls WHERE posts.postID = '.$postID.' AND rolls.postID = posts.postID');
+		$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.threadID = {$threadID} AND r.postID = p.postID ORDER BY r.rollID");
 		$temp = array();
-		foreach ($rolls as $rollInfo) $temp[] = $rollInfo;
+		foreach ($rolls as $rollInfo) {
+			$rollObj = RollFactory::getRoll($rollInfo['type']);
+			$rollObj->forumLoad($rollInfo);
+			$temp[] = $rollObj;
+		}
 		$rolls = $temp;
 		
 		$draws = $mysql->query('SELECT deckDraws.deckID, deckDraws.type, deckDraws.cardsDrawn, deckDraws.reason FROM posts, deckDraws WHERE posts.postID = '.$postID.' AND deckDraws.postID = posts.postID');
@@ -56,7 +61,7 @@
 		if ($permissions['createThread'] != 1) $noChat = TRUE;
 	} elseif ($pathOptions[0] == 'post') {
 		$threadID = intval($pathOptions[1]);
-		$threadInfo = $mysql->query('SELECT threads.forumID, first.title, threads.locked, threads.allowRolls, threads.allowDraws FROM threads, threads_relPosts relPosts, posts first WHERE threads.threadID = '.$threadID.' AND threads.threadID = relPosts.threadID AND relPosts.firstPostID = first.postID LIMIT 1');
+		$threadInfo = $mysql->query("SELECT threads.forumID, first.title, threads.locked, threads.allowRolls, threads.allowDraws, forums.heritage FROM threads, forums, threads_relPosts relPosts, posts first WHERE threads.threadID = $threadID AND forums.forumID = threads.forumID AND threads.threadID = relPosts.threadID AND relPosts.firstPostID = first.postID LIMIT 1");
 		if ($threadInfo->rowCount() == 0) { $noChat = TRUE; break; }
 		if (isset($_SESSION['message'])) {
 			$postInfo['message'] = $_SESSION['message'];
@@ -93,6 +98,18 @@
 		if (isset($postInfo)) $postInfo = $_SESSION['previewVars'] + $postInfo;
 		else $postInfo = $_SESSION['previewVars'];
 		$postInfo['postTitle'] = $postInfo['title'];
+	}
+
+	$heritage = explode('-', $heritage);
+	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
+	$gameID = FALSE;
+	$isGM = FALSE;
+	if ($heritage[0] == 2) {
+		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($heritage[1]));
+		$gameID = $gameID->fetchColumn();
+		
+		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = $userID");
+		if ($gmCheck->rowCount()) $isGM = TRUE;
 	}
 
 	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?TRUE:FALSE;
@@ -245,31 +262,24 @@
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 				$hidden = FALSE;
 				$showAll = FALSE;
+				$first = TRUE;
 				foreach ($rolls as $roll) {
+					$showAll = $isGM || $userID == $postInfo['userID']?TRUE:FALSE;
 					$hidden = FALSE;
 ?>
 						<div class="rollInfo">
-							<select name="nVisibility_<?=$roll['rollID']?>" tabindex="<?=tabOrder();?>">
-								<option value="0"<?=$roll['visibility'] == 0?' selected="selected"':''?>>Hide Nothing</option>
-								<option value="1"<?=$roll['visibility'] == 1?' selected="selected"':''?>>Hide Roll/Result</option>
-								<option value="2"<?=$roll['visibility'] == 2?' selected="selected"':''?>>Hide Dice &amp; Roll</option>
-								<option value="3"<?=$roll['visibility'] == 3?' selected="selected"':''?>>Hide Everything</option>
+							<select name="nVisibility[<?=$roll->getRollID()?>]" tabindex="<?=tabOrder();?>">
+								<option value="0"<?=$roll->getVisibility() == 0?' selected="selected"':''?>>Hide Nothing</option>
+								<option value="1"<?=$roll->getVisibility() == 1?' selected="selected"':''?>>Hide Roll/Result</option>
+								<option value="2"<?=$roll->getVisibility() == 2?' selected="selected"':''?>>Hide Dice &amp; Roll</option>
+								<option value="3"<?=$roll->getVisibility() == 3?' selected="selected"':''?>>Hide Everything</option>
 							</select>
 							<div>
 <?
-					if ($roll['visibility'] <= 2) echo $roll['reason'];
-					else { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
-					if ($roll['visibility'] <= 1) echo " - ({$roll['roll']}".($roll['ra']?', RA':'').')';
-					else { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
-					echo $hidden?'</span>':'';
+					$roll->showHTML($showAll);
 ?>
 							</div>
-							<input type="hidden" name="oVisibility_<?=$roll['rollID']?>" value="<?=$roll['visibility']?>">
-<?					if ($roll['visibility'] == 0) { ?>
-							<div class="indent"><?=displayIndivDice($roll['indivRolls'])?> = <?=$roll['total']?></div>
-<?					} else { ?>
-							<div class="indent"><span class="hidden"><?=displayIndivDice($roll['indivRolls'])?> = <?=$roll['total']?></span></div>
-<?					} ?>
+							<input type="hidden" name="oVisibility[<?=$roll->getRollID()?>]" value="<?=$roll->getVisibility()?>">
 						</div>
 <?				} ?>
 					</div>
@@ -285,7 +295,7 @@
 					<div id="newRolls">
 <?
 	if (isset($postInfo['rolls'])) { foreach ($postInfo['rolls'] as $count => $roll) {
-		rollTR($count, $roll['type'], $roll);
+		rollTR($count, $roll->type, $roll);
 	} }
 ?>
 					</div>

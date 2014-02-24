@@ -232,11 +232,9 @@
 					$allowDraws = $postInfo['allowDraws'];
 				}
 				
-				foreach ($_POST as $key => $value) { if (substr($key, 0, 11) == 'nVisibility') {
-					$rollID = explode('_', $key);
-					$rollID = $rollID[1];
-					if (intval($_POST['nVisibility_'.$rollID]) != intval($_POST['oVisibility_'.$rollID])) $mysql->query('UPDATE rolls SET visibility = '.intval($_POST['nVisibility_'.$rollID])." WHERE rollID = $rollID");
-				} }
+				foreach ($_POST['nVisibility'] as $rollID => $nVisibility) {
+					if (intval($nVisibility) != intval($_POST['oVisibility'][$rollID])) $mysql->query('UPDATE rolls SET visibility = '.intval($nVisibility)." WHERE rollID = $rollID");
+				}
 			}
 		}
 		
