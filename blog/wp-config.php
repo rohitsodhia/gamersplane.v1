@@ -42,14 +42,14 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         '>ahJjthCKt/No{ d ;DTLLXHY8uaT&_>]sS:QT(WMJxPw&Cn&=/QR$j,}Dqifm9}');
-define('SECURE_AUTH_KEY',  '<#.XRb*}MPWQAD?H-45qq]q+qMC&JqU`OyBU.>V&H|y,=VcOK1i#7D}Z+gP&UG2^');
-define('LOGGED_IN_KEY',    'DsW_X?Re10/}.zfn,T.<xkfE/s&X*MHxq?2(8jbBqTO$f_?!tsaKYGmx})*d!FdR');
-define('NONCE_KEY',        'WByR}td#{p*ET_{sI[+h:zn*XH{-b~XyLiRPj=&m}R}iZ,lrq0raht98Q/rda/ip');
-define('AUTH_SALT',        '/cnk[!l_04 WTE|?wd]=~w @DNc5q6F7-C}K$)0A#I5}0&S**7z#CUUzF]N=%(M,');
-define('SECURE_AUTH_SALT', 'cXb,t]+wW?xzSGhDU(3.z U/h ^}*HC[gzJ&V_~IF?A#idE/D`TvI9hz7oYW G&C');
-define('LOGGED_IN_SALT',   '08zc<wd,dd:9P?,},MjC[)px/3)-+A!KGOY:?0#+YxJ210xqZ0oqEABr6d:P==.@');
-define('NONCE_SALT',       'rdq!XTgpDq?O.5ZC.~?|yv]SY[k#6t;dG[ZoR7=w9E^S+1E1TbeoJ%1X3i*]w$W[');
+define('AUTH_KEY',         '<Y-v0HCDT()8->L@`$43;*(oA5[RC(w]>pW9iMO{?,u1`a<{FK$Q e-4C&{UK<e0');
+define('SECURE_AUTH_KEY',  'pnIr>G+YvI3y-/yK.c3J,l#$y9ZIX3r#>:J!.v{OdGz=DFo3S3F~sH0 R.[[D9IA');
+define('LOGGED_IN_KEY',    'm) 0Bz#K%u%5!4#o.)<(t=?BpGF=K`_$/ARhOa5,@]hM;tnP;0i!{PR:#$MEHqNS');
+define('NONCE_KEY',        '17JHxp)vy9f!m=]fFD2p@%N6:sQMlQrY`nY:50avH)c.GQ? /fP 8T6%%D*@dZ[*');
+define('AUTH_SALT',        'P,Les=6+dW4pEM3iG}V|!#VT[dhs:R~uuLNW&nxVP ,73!`19XWtF~6aR )-L5{!');
+define('SECURE_AUTH_SALT', 'KGjdR8gsJcJ861&}Po)3{yVTb5KmsL4:c(]7{1Of0OKvF~~1QJ`KS>J&}Av3{4va');
+define('LOGGED_IN_SALT',   '`NSzKOu1?u#g$3/e{1SsMQ0>xc1fymgtkkW|N5@c9?lUXm;!RprbV*X9s&B0xPQI');
+define('NONCE_SALT',       're|wR^KyPr4EGAIqzpzzZ3N`WCH[*#s=o5&94,xJaXG3v:w$?Y}v-IQZHzI}<umd');
 
 /**#@-*/
 
@@ -80,6 +80,16 @@ define('WPLANG', '');
  */
 define('WP_DEBUG', false);
 
+/* Multisite */
+define('SUNRISE', TRUE);
+define('WP_ALLOW_MULTISITE', true);
+define('MULTISITE', true);
+define('SUBDOMAIN_INSTALL', false);
+define('DOMAIN_CURRENT_SITE', 'gamersplane.local');
+define('PATH_CURRENT_SITE', '/blog/');
+define('SITE_ID_CURRENT_SITE', 1);
+define('BLOG_ID_CURRENT_SITE', 1)
+;
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */

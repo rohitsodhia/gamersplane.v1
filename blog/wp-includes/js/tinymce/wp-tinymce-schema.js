@@ -4,7 +4,7 @@
  * Duck-punched by WordPress core to support a sane schema superset.
  *
  * Copyright, Moxiecode Systems AB
- * Released under LGPL License.
+ * Released under LGPL
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
@@ -96,7 +96,7 @@
 					'dl[A][dd|dt]' +
 					'dt[A][C|B]' +
 					'dd[A][C]' +
-					'a[A|href|target|download|ping|rel|media|type][C|B]' +
+					'a[A|href|target|download|ping|rel|media|type][B]' +
 					'em[A][B]' +
 					'strong[A][B]' +
 					'small[A][B]' +
@@ -441,7 +441,7 @@
 		textBlockElementsMap = createLookupTable('text_block_elements', 'h1 h2 h3 h4 h5 h6 p div address pre form ' +
 						'blockquote center dir fieldset header footer article section hgroup aside nav figure');
 		blockElementsMap = createLookupTable('block_elements', 'hr table tbody thead tfoot ' +
-						'th tr td li ol ul caption dl dt dd noscript menu isindex samp option datalist select optgroup', textBlockElementsMap);
+						'th tr td li ol ul caption dl dt dd noscript menu isindex option datalist select optgroup', textBlockElementsMap);
 
 		// Converts a wildcard expression string to a regexp for example *a will become /.*a/.
 		function patternToRegExp(str) {
@@ -704,7 +704,7 @@
 			elements.img.attributesDefault = [{name: 'alt', value: ''}];
 
 			// Remove these if they are empty by default
-			each(split('ol,ul,sub,sup,blockquote,span,font,a,table,tbody,tr,strong,em,b,i'), function(name) {
+			each(split('ol,ul,sub,sup,blockquote,span,font,a,table,tbody,tr'), function(name) {
 				if (elements[name]) {
 					elements[name].removeEmpty = true;
 				}
