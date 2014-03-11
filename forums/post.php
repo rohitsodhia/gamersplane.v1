@@ -294,9 +294,9 @@
 					</div>
 					<div id="newRolls">
 <?
-	if (isset($postInfo['rolls'])) { foreach ($postInfo['rolls'] as $count => $roll) {
-		rollTR($count, $roll->type, $roll);
-	} }
+			if (isset($postInfo['rolls'])) { foreach ($postInfo['rolls'] as $count => $roll) {
+				rollTR($count, $roll->type, $roll);
+			} }
 ?>
 					</div>
 				</div>
@@ -338,10 +338,10 @@
 			}
 ?>
 					</table>
+				</div>
 <?
 		}
 ?>
-				</div>
 			</div>
 <?
 	}

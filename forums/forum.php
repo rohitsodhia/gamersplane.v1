@@ -30,7 +30,7 @@
 		else {
 			$lastReadID = $mysql->query('SELECT MAX(postID) FROM posts');
 			$lastReadID = $lastReadID->fetchColumn();
-			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($userID, 0, $lastReadID)");
+			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($userID, $forumID, $lastReadID)");
 		}
 	}
 	
