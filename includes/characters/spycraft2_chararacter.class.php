@@ -1,43 +1,16 @@
 <?
-	class spycraft2_character {
-		private $userID ;
-		private $charID;
-		private $name;
-		private $classes;
-		private $stats = array('str' => 0, 'dex' => 0, 'con' => 0, 'int' => 0, 'wis' => 0, 'cha' => 0);
-		private $ac = array('class' => 0, 'armor' => 0, 'dex' => 0, 'misc' => 0);
-		private $damage = array('vitality' => 0, 'wounds' => 0, 'subdual' => 'stress' => 0);
-		private $saves = array ('fort' => array('base' => 0, 'misc' => 0),
-								'ref' => array('base' => 0, 'misc' => 0),
-								'will' => array('base' => 0, 'misc' => 0));
-		private $initiative = array('class' => 0, 'misc' => 0);
-		private $attackBonus = array('base' => 0, 'misc' => array('melee' => 0, 'ranged' => 0));
-		private $actionDice = array('total' => 0, 'type' => '');
-		private $checks = array('knowledge' => 0, 'request' => 0, 'gear' => 0);
-		private $skills = array();
-		private $weapons = array();
-		private $items = array();
-		private $experience = 0;
-		private $gold = 0;
-		private $abilities = array();
-		private $feats = array();
-		private $languages = array();
-		
-		public function __construct($userID) {
-			$this->userID = $userID;
-		}
-		
-		public function setCharID($charID) {
-			$this->charID = $charID;
-			
-			return TRUE;
-		}
-		
-		public function setName($name) {
-			$this->name = $name;
-			
-			return TRUE;
-		}
+	class spycraft2_character extends d20character {
+		protected $ac = array('class' => 0, 'armor' => 0, 'dex' => 0, 'misc' => 0);
+		protected $damage = array('vitality' => 0, 'wounds' => 0, 'subdual' => 'stress' => 0);
+		protected $initiative = array('class' => 0, 'misc' => 0);
+		protected $attackBonus = array('base' => 0, 'misc' => array('melee' => 0, 'ranged' => 0));
+		protected $actionDice = array('total' => 0, 'type' => '');
+		protected $checks = array('knowledge' => 0, 'request' => 0, 'gear' => 0);
+		protected $weapons = array();
+		protected $gold = 0;
+		protected $abilities = array();
+		protected $feats = array();
+		protected $languages = array();
 		
 		public function addClass($class, $level) {
 			array_push($this->classes, $class);

@@ -8,13 +8,16 @@
 -- PHP Version: 5.3.13
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+SET time_zone = "+00:00";-- phpMyAdmin SQL Dump
+-- version 3.3.10.4
+-- http://www.phpmyadmin.net
+--
+-- Host: mysql.gamersplane.com
+-- Generation Time: Feb 24, 2014 at 03:19 PM
+-- Server version: 5.1.56
+-- PHP Version: 5.3.27
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Database: `gamersplane`
@@ -64,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `characterHistory` (
   `action` varchar(30) NOT NULL,
   `additionalInfo` varchar(50) NOT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -84,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   PRIMARY KEY (`characterID`),
   KEY `userID` (`userID`),
   KEY `gameID` (`gameID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -100,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `chat_messages` (
   `message` text NOT NULL,
   `logged` tinyint(1) NOT NULL,
   PRIMARY KEY (`chatID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -142,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `subject` text NOT NULL,
   `comment` text NOT NULL,
   PRIMARY KEY (`contactID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -270,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `deckDraws` (
   PRIMARY KEY (`drawID`),
   KEY `postID` (`postID`),
   KEY `deckID` (`deckID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -301,7 +304,7 @@ CREATE TABLE IF NOT EXISTS `decks` (
   `lastShuffle` datetime NOT NULL,
   PRIMARY KEY (`deckID`),
   KEY `gameID` (`gameID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -355,7 +358,7 @@ CREATE TABLE IF NOT EXISTS `dnd3_armors` (
   `speed` varchar(4) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`characterID`,`armorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -456,7 +459,7 @@ CREATE TABLE IF NOT EXISTS `dnd3_weapons` (
   `notes` text NOT NULL,
   `test` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`characterID`,`weaponID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -554,7 +557,7 @@ CREATE TABLE IF NOT EXISTS `dnd4_powers` (
   `name` varchar(50) NOT NULL,
   `type` varchar(1) NOT NULL,
   PRIMARY KEY (`powerID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -569,7 +572,7 @@ CREATE TABLE IF NOT EXISTS `dnd4_powersList` (
   `userDefined` int(11) DEFAULT NULL,
   PRIMARY KEY (`powerID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -599,7 +602,7 @@ CREATE TABLE IF NOT EXISTS `featsList` (
   `userDefined` int(11) DEFAULT NULL,
   PRIMARY KEY (`featID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=298 ;
 
 -- --------------------------------------------------------
 
@@ -630,7 +633,7 @@ CREATE TABLE IF NOT EXISTS `forums` (
   `order` tinyint(4) NOT NULL,
   PRIMARY KEY (`forumID`),
   KEY `parentID` (`parentID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=101 ;
 
 -- --------------------------------------------------------
 
@@ -659,7 +662,7 @@ CREATE TABLE IF NOT EXISTS `forums_groups` (
   `gameGroup` tinyint(1) NOT NULL,
   PRIMARY KEY (`groupID`),
   KEY `ownerID` (`ownerID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -669,16 +672,16 @@ CREATE TABLE IF NOT EXISTS `forums_groups` (
 CREATE TABLE IF NOT EXISTS `forums_permissions_c` (
 `forumID` int(11)
 ,`userID` bigint(11)
-,`read` bigint(11)
-,`write` bigint(11)
-,`editPost` bigint(11)
-,`deletePost` bigint(11)
-,`createThread` bigint(11)
-,`deleteThread` bigint(11)
-,`addPoll` bigint(11)
-,`addRolls` bigint(11)
-,`addDraws` bigint(11)
-,`moderate` bigint(11)
+,`read` bigint(20)
+,`write` bigint(20)
+,`editPost` bigint(20)
+,`deletePost` bigint(20)
+,`createThread` bigint(20)
+,`deleteThread` bigint(20)
+,`addPoll` bigint(20)
+,`addRolls` bigint(20)
+,`addDraws` bigint(20)
+,`moderate` bigint(20)
 );
 -- --------------------------------------------------------
 
@@ -732,16 +735,16 @@ CREATE TABLE IF NOT EXISTS `forums_permissions_groups` (
 CREATE TABLE IF NOT EXISTS `forums_permissions_groups_c` (
 `userID` int(11)
 ,`forumID` int(11)
-,`read` int(4)
-,`write` int(4)
-,`editPost` int(4)
-,`deletePost` int(4)
-,`createThread` int(4)
-,`deleteThread` int(4)
-,`addPoll` int(4)
-,`addRolls` int(4)
-,`addDraws` int(4)
-,`moderate` int(4)
+,`read` bigint(20)
+,`write` bigint(20)
+,`editPost` bigint(20)
+,`deletePost` bigint(20)
+,`createThread` bigint(20)
+,`deleteThread` bigint(20)
+,`addPoll` bigint(20)
+,`addRolls` bigint(20)
+,`addDraws` bigint(20)
+,`moderate` bigint(20)
 );
 -- --------------------------------------------------------
 
@@ -777,7 +780,7 @@ CREATE TABLE IF NOT EXISTS `forums_pollOptions` (
   `threadID` int(11) NOT NULL,
   `option` varchar(200) NOT NULL,
   PRIMARY KEY (`pollOptionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -846,7 +849,7 @@ CREATE TABLE IF NOT EXISTS `forums_readData_forums_c` (
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `forums_readdata_newposts`
+-- Stand-in structure for view `forums_readData_newPosts`
 --
 CREATE TABLE IF NOT EXISTS `forums_readData_newPosts` (
 `forumID` int(11)
@@ -885,7 +888,7 @@ CREATE TABLE IF NOT EXISTS `gameHistory` (
   `affectedType` varchar(20) DEFAULT NULL,
   `affectedID` int(11) DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -915,7 +918,7 @@ CREATE TABLE IF NOT EXISTS `games` (
   KEY `gmID` (`gmID`),
   KEY `forumID` (`forumID`),
   KEY `groupID` (`groupID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -1019,7 +1022,7 @@ CREATE TABLE IF NOT EXISTS `maps` (
   `info` varchar(300) NOT NULL,
   `visible` tinyint(1) NOT NULL,
   PRIMARY KEY (`mapID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1037,7 +1040,7 @@ CREATE TABLE IF NOT EXISTS `maps_iconHistory` (
   `origin` varchar(10) DEFAULT NULL,
   `destination` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1055,7 +1058,7 @@ CREATE TABLE IF NOT EXISTS `maps_icons` (
   `location` varchar(7) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`iconID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1090,7 +1093,7 @@ CREATE TABLE IF NOT EXISTS `marvel_actionsList` (
   `source` varchar(50) NOT NULL,
   `userDefined` int(11) DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
 
 -- --------------------------------------------------------
 
@@ -1102,7 +1105,7 @@ CREATE TABLE IF NOT EXISTS `marvel_actionSpecialties` (
   `actionSpecialtyID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`actionSpecialtyID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1116,7 +1119,7 @@ CREATE TABLE IF NOT EXISTS `marvel_challenges` (
   `challenge` varchar(200) NOT NULL,
   `stones` tinyint(4) NOT NULL,
   PRIMARY KEY (`challengeID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1179,7 +1182,7 @@ CREATE TABLE IF NOT EXISTS `marvel_modifiersList` (
   `multipleAllowed` varchar(40) NOT NULL,
   `source` varchar(50) NOT NULL,
   PRIMARY KEY (`modifierID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
 
 -- --------------------------------------------------------
 
@@ -1209,7 +1212,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `enactedOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `actedUpon` int(11) NOT NULL,
   PRIMARY KEY (`notificationID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1229,7 +1232,7 @@ CREATE TABLE IF NOT EXISTS `pathfinder_armors` (
   `speed` varchar(4) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`armorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1337,7 +1340,7 @@ CREATE TABLE IF NOT EXISTS `pathfinder_weapons` (
   `size` varchar(1) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`weaponID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1372,7 +1375,7 @@ CREATE TABLE IF NOT EXISTS `pms` (
   PRIMARY KEY (`pmID`),
   KEY `recipientID` (`recipientID`),
   KEY `senderID` (`senderID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1392,7 +1395,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   PRIMARY KEY (`postID`),
   KEY `threadID` (`threadID`),
   KEY `authorID` (`authorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -1411,7 +1414,7 @@ CREATE TABLE IF NOT EXISTS `rolls` (
   `visibility` tinyint(1) NOT NULL,
   PRIMARY KEY (`rollID`),
   KEY `postID` (`postID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1466,7 +1469,7 @@ CREATE TABLE IF NOT EXISTS `skillsList` (
   `userDefined` int(11) DEFAULT NULL,
   PRIMARY KEY (`skillID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=111 ;
 
 -- --------------------------------------------------------
 
@@ -1486,7 +1489,7 @@ CREATE TABLE IF NOT EXISTS `spycraft2_armors` (
   `dc` varchar(4) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`armorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1575,7 +1578,7 @@ CREATE TABLE IF NOT EXISTS `spycraft2_focusesList` (
   `searchName` varchar(50) DEFAULT NULL,
   `userDefined` int(11) DEFAULT NULL,
   PRIMARY KEY (`focusID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=34 ;
 
 -- --------------------------------------------------------
 
@@ -1614,7 +1617,7 @@ CREATE TABLE IF NOT EXISTS `spycraft2_weapons` (
   `size` varchar(10) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`weaponID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1634,7 +1637,7 @@ CREATE TABLE IF NOT EXISTS `spycraft_armors` (
   `speed` varchar(4) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`armorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1729,7 +1732,102 @@ CREATE TABLE IF NOT EXISTS `spycraft_weapons` (
   `size` varchar(1) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`weaponID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sweote_characters`
+--
+
+CREATE TABLE IF NOT EXISTS `sweote_characters` (
+  `characterID` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `species` varchar(20) NOT NULL,
+  `career` varchar(20) NOT NULL,
+  `specialization` varchar(100) NOT NULL,
+  `totalXP` tinyint(4) NOT NULL,
+  `spentXP` tinyint(4) NOT NULL,
+  `brawn` tinyint(1) NOT NULL,
+  `agility` tinyint(1) NOT NULL,
+  `intellect` tinyint(1) NOT NULL,
+  `cunning` tinyint(1) NOT NULL,
+  `willpower` tinyint(1) NOT NULL,
+  `presence` tinyint(1) NOT NULL,
+  `defense_melee` tinyint(4) NOT NULL,
+  `defense_ranged` tinyint(4) NOT NULL,
+  `soak` tinyint(4) NOT NULL,
+  `strain_max` tinyint(4) NOT NULL,
+  `strain_current` tinyint(4) NOT NULL,
+  `wounds_max` tinyint(4) NOT NULL,
+  `wounds_current` tinyint(4) NOT NULL,
+  `motivations` text NOT NULL,
+  `obligations` text NOT NULL,
+  `items` text NOT NULL,
+  `notes` text NOT NULL,
+  PRIMARY KEY (`characterID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sweote_skills`
+--
+
+CREATE TABLE IF NOT EXISTS `sweote_skills` (
+  `skillID` int(11) NOT NULL,
+  `characterID` int(11) NOT NULL,
+  `stat` varchar(3) NOT NULL,
+  `rank` tinyint(1) NOT NULL,
+  `career` tinyint(1) NOT NULL,
+  PRIMARY KEY (`skillID`,`characterID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sweote_talents`
+--
+
+CREATE TABLE IF NOT EXISTS `sweote_talents` (
+  `characterID` int(11) NOT NULL,
+  `talentID` int(11) NOT NULL,
+  `notes` text NOT NULL,
+  PRIMARY KEY (`characterID`,`talentID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sweote_talentsList`
+--
+
+CREATE TABLE IF NOT EXISTS `sweote_talentsList` (
+  `talentID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `searchName` varchar(50) NOT NULL,
+  `userDefined` int(11) DEFAULT NULL,
+  PRIMARY KEY (`talentID`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=141 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sweote_weapons`
+--
+
+CREATE TABLE IF NOT EXISTS `sweote_weapons` (
+  `weaponID` int(11) NOT NULL AUTO_INCREMENT,
+  `characterID` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `skill` varchar(30) NOT NULL,
+  `damage` varchar(20) NOT NULL,
+  `range` varchar(20) NOT NULL,
+  `critical` tinyint(1) NOT NULL,
+  `notes` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`weaponID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1743,7 +1841,19 @@ CREATE TABLE IF NOT EXISTS `systems` (
   `fullName` varchar(40) NOT NULL,
   `enabled` tinyint(1) NOT NULL,
   PRIMARY KEY (`systemID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `system_skill_map`
+--
+
+CREATE TABLE IF NOT EXISTS `system_skill_map` (
+  `systemID` int(11) NOT NULL,
+  `skillID` int(11) NOT NULL,
+  PRIMARY KEY (`systemID`,`skillID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1760,12 +1870,12 @@ CREATE TABLE IF NOT EXISTS `threads` (
   `allowDraws` tinyint(1) NOT NULL,
   PRIMARY KEY (`threadID`),
   KEY `forumID` (`forumID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `threads_relposts`
+-- Stand-in structure for view `threads_relPosts`
 --
 CREATE TABLE IF NOT EXISTS `threads_relPosts` (
 `threadID` int(11)
@@ -1804,7 +1914,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `newGameMail` tinyint(1) NOT NULL DEFAULT '1',
   `postSide` varchar(1) NOT NULL DEFAULT 'r',
   PRIMARY KEY (`userID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -1875,7 +1985,7 @@ CREATE TABLE IF NOT EXISTS `wordFilter` (
   `word` varchar(50) NOT NULL,
   `spam` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`wordID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -1884,7 +1994,7 @@ CREATE TABLE IF NOT EXISTS `wordFilter` (
 --
 DROP TABLE IF EXISTS `forums_permissions_c`;
 
-CREATE VIEW `forums_permissions_c` AS select `bp`.`forumID` AS `forumID`,ifnull(`gp`.`userID`,`up`.`userID`) AS `userID`,if((ifnull(`up`.`read`,0) <> 0),`up`.`read`,if((ifnull(`gp`.`read`,0) <> 0),`gp`.`read`,`bp`.`read`)) AS `read`,if((ifnull(`up`.`write`,0) <> 0),`up`.`write`,if((ifnull(`gp`.`write`,0) <> 0),`gp`.`write`,`bp`.`write`)) AS `write`,if((ifnull(`up`.`editPost`,0) <> 0),`up`.`editPost`,if((ifnull(`gp`.`editPost`,0) <> 0),`gp`.`editPost`,`bp`.`editPost`)) AS `editPost`,if((ifnull(`up`.`deletePost`,0) <> 0),`up`.`deletePost`,if((ifnull(`gp`.`deletePost`,0) <> 0),`gp`.`deletePost`,`bp`.`deletePost`)) AS `deletePost`,if((ifnull(`up`.`createThread`,0) <> 0),`up`.`createThread`,if((ifnull(`gp`.`createThread`,0) <> 0),`gp`.`createThread`,`bp`.`createThread`)) AS `createThread`,if((ifnull(`up`.`deleteThread`,0) <> 0),`up`.`deleteThread`,if((ifnull(`gp`.`deleteThread`,0) <> 0),`gp`.`deleteThread`,`bp`.`deleteThread`)) AS `deleteThread`,if((ifnull(`up`.`addPoll`,0) <> 0),`up`.`addPoll`,if((ifnull(`gp`.`addPoll`,0) <> 0),`gp`.`addPoll`,`bp`.`addPoll`)) AS `addPoll`,if((ifnull(`up`.`addRolls`,0) <> 0),`up`.`addRolls`,if((ifnull(`gp`.`addRolls`,0) <> 0),`gp`.`addRolls`,`bp`.`addRolls`)) AS `addRolls`,if((ifnull(`up`.`addDraws`,0) <> 0),`up`.`addDraws`,if((ifnull(`gp`.`addDraws`,0) <> 0),`gp`.`addDraws`,`bp`.`addDraws`)) AS `addDraws`,if((ifnull(`up`.`moderate`,0) <> 0),`up`.`moderate`,if((ifnull(`gp`.`moderate`,0) <> 0),`gp`.`moderate`,`bp`.`moderate`)) AS `moderate` from ((`forums_permissions_general` `bp` left join `forums_permissions_groups_c` `gp` on((`bp`.`forumID` = `gp`.`forumID`))) left join `forums_permissions_users` `up` on((`bp`.`forumID` = `up`.`forumID`))) where (isnull(`gp`.`userID`) or isnull(`up`.`userID`) or (`gp`.`userID` = `up`.`userID`));
+CREATE ALGORITHM=UNDEFINED DEFINER=`gamersplane`@`66.33.192.0/255.255.224.0` SQL SECURITY DEFINER VIEW `forums_permissions_c` AS select `bp`.`forumID` AS `forumID`,ifnull(`gp`.`userID`,`up`.`userID`) AS `userID`,if((ifnull(`up`.`read`,0) <> 0),`up`.`read`,if((ifnull(`gp`.`read`,0) <> 0),`gp`.`read`,`bp`.`read`)) AS `read`,if((ifnull(`up`.`write`,0) <> 0),`up`.`write`,if((ifnull(`gp`.`write`,0) <> 0),`gp`.`write`,`bp`.`write`)) AS `write`,if((ifnull(`up`.`editPost`,0) <> 0),`up`.`editPost`,if((ifnull(`gp`.`editPost`,0) <> 0),`gp`.`editPost`,`bp`.`editPost`)) AS `editPost`,if((ifnull(`up`.`deletePost`,0) <> 0),`up`.`deletePost`,if((ifnull(`gp`.`deletePost`,0) <> 0),`gp`.`deletePost`,`bp`.`deletePost`)) AS `deletePost`,if((ifnull(`up`.`createThread`,0) <> 0),`up`.`createThread`,if((ifnull(`gp`.`createThread`,0) <> 0),`gp`.`createThread`,`bp`.`createThread`)) AS `createThread`,if((ifnull(`up`.`deleteThread`,0) <> 0),`up`.`deleteThread`,if((ifnull(`gp`.`deleteThread`,0) <> 0),`gp`.`deleteThread`,`bp`.`deleteThread`)) AS `deleteThread`,if((ifnull(`up`.`addPoll`,0) <> 0),`up`.`addPoll`,if((ifnull(`gp`.`addPoll`,0) <> 0),`gp`.`addPoll`,`bp`.`addPoll`)) AS `addPoll`,if((ifnull(`up`.`addRolls`,0) <> 0),`up`.`addRolls`,if((ifnull(`gp`.`addRolls`,0) <> 0),`gp`.`addRolls`,`bp`.`addRolls`)) AS `addRolls`,if((ifnull(`up`.`addDraws`,0) <> 0),`up`.`addDraws`,if((ifnull(`gp`.`addDraws`,0) <> 0),`gp`.`addDraws`,`bp`.`addDraws`)) AS `addDraws`,if((ifnull(`up`.`moderate`,0) <> 0),`up`.`moderate`,if((ifnull(`gp`.`moderate`,0) <> 0),`gp`.`moderate`,`bp`.`moderate`)) AS `moderate` from ((`forums_permissions_general` `bp` left join `forums_permissions_groups_c` `gp` on((`bp`.`forumID` = `gp`.`forumID`))) left join `forums_permissions_users` `up` on((`bp`.`forumID` = `up`.`forumID`))) where (isnull(`gp`.`userID`) or isnull(`up`.`userID`) or (`gp`.`userID` = `up`.`userID`));
 
 -- --------------------------------------------------------
 
@@ -1893,7 +2003,7 @@ CREATE VIEW `forums_permissions_c` AS select `bp`.`forumID` AS `forumID`,ifnull(
 --
 DROP TABLE IF EXISTS `forums_permissions_groups_c`;
 
-CREATE VIEW `forums_permissions_groups_c` AS select `gm`.`userID` AS `userID`,`gp`.`forumID` AS `forumID`,if((max(`gp`.`read`) = 2),2,min(`gp`.`read`)) AS `read`,if((max(`gp`.`write`) = 2),2,min(`gp`.`write`)) AS `write`,if((max(`gp`.`editPost`) = 2),2,min(`gp`.`editPost`)) AS `editPost`,if((max(`gp`.`deletePost`) = 2),2,min(`gp`.`deletePost`)) AS `deletePost`,if((max(`gp`.`createThread`) = 2),2,min(`gp`.`createThread`)) AS `createThread`,if((max(`gp`.`deleteThread`) = 2),2,min(`gp`.`deleteThread`)) AS `deleteThread`,if((max(`gp`.`addPoll`) = 2),2,min(`gp`.`addPoll`)) AS `addPoll`,if((max(`gp`.`addRolls`) = 2),2,min(`gp`.`addRolls`)) AS `addRolls`,if((max(`gp`.`addDraws`) = 2),2,min(`gp`.`addDraws`)) AS `addDraws`,if((max(`gp`.`moderate`) = 2),2,min(`gp`.`moderate`)) AS `moderate` from (`forums_groupMemberships` `gm` join `forums_permissions_groups` `gp` on((`gm`.`groupID` = `gp`.`groupID`))) group by `gp`.`forumID`,`gm`.`userID`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`gamersplane`@`66.33.192.0/255.255.224.0` SQL SECURITY DEFINER VIEW `forums_permissions_groups_c` AS select `gm`.`userID` AS `userID`,`gp`.`forumID` AS `forumID`,if((max(`gp`.`read`) = 2),2,min(`gp`.`read`)) AS `read`,if((max(`gp`.`write`) = 2),2,min(`gp`.`write`)) AS `write`,if((max(`gp`.`editPost`) = 2),2,min(`gp`.`editPost`)) AS `editPost`,if((max(`gp`.`deletePost`) = 2),2,min(`gp`.`deletePost`)) AS `deletePost`,if((max(`gp`.`createThread`) = 2),2,min(`gp`.`createThread`)) AS `createThread`,if((max(`gp`.`deleteThread`) = 2),2,min(`gp`.`deleteThread`)) AS `deleteThread`,if((max(`gp`.`addPoll`) = 2),2,min(`gp`.`addPoll`)) AS `addPoll`,if((max(`gp`.`addRolls`) = 2),2,min(`gp`.`addRolls`)) AS `addRolls`,if((max(`gp`.`addDraws`) = 2),2,min(`gp`.`addDraws`)) AS `addDraws`,if((max(`gp`.`moderate`) = 2),2,min(`gp`.`moderate`)) AS `moderate` from (`forums_groupMemberships` `gm` join `forums_permissions_groups` `gp` on((`gm`.`groupID` = `gp`.`groupID`))) group by `gp`.`forumID`,`gm`.`userID`;
 
 -- --------------------------------------------------------
 
@@ -1902,22 +2012,22 @@ CREATE VIEW `forums_permissions_groups_c` AS select `gm`.`userID` AS `userID`,`g
 --
 DROP TABLE IF EXISTS `forums_readData_forums_c`;
 
-CREATE VIEW `forums_readData_forums_c` AS select `f`.`forumID` AS `forumID`,`rdf`.`userID` AS `userID`,max(`rdf`.`lastRead`) AS `cLastRead` from ((`forums` `f` left join `forums` `p` on((`f`.`heritage` like concat(`p`.`heritage`,'%')))) left join `forums_readData_forums` `rdf` on((`p`.`forumID` = `rdf`.`forumID`))) where (`rdf`.`userID` is not null) group by `f`.`forumID`,`rdf`.`userID`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`gamersplane`@`66.33.192.0/255.255.224.0` SQL SECURITY DEFINER VIEW `forums_readData_forums_c` AS select `f`.`forumID` AS `forumID`,`rdf`.`userID` AS `userID`,max(`rdf`.`lastRead`) AS `cLastRead` from ((`forums` `f` left join `forums` `p` on((`f`.`heritage` like concat(`p`.`heritage`,'%')))) left join `forums_readData_forums` `rdf` on((`p`.`forumID` = `rdf`.`forumID`))) where (`rdf`.`userID` is not null) group by `f`.`forumID`,`rdf`.`userID`;
 
 -- --------------------------------------------------------
 
 --
--- Structure for view `forums_readdata_newposts`
+-- Structure for view `forums_readData_newPosts`
 --
 DROP TABLE IF EXISTS `forums_readData_newPosts`;
 
-CREATE VIEW `forums_readData_newPosts` AS select `t`.`forumID` AS `forumID`,`rdf`.`userID` AS `userID`,`t`.`threadID` AS `threadID`,`r`.`lastPostID` AS `lastPostID`,`rdt`.`lastRead` AS `lastRead`,`rdf`.`cLastRead` AS `cLastRead`,if(((`r`.`lastPostID` > ifnull(`rdt`.`lastRead`,0)) and (`r`.`lastPostID` > `rdf`.`cLastRead`)),1,0) AS `newPosts` from (((`threads` `t` join `threads_relPosts` `r` on((`t`.`threadID` = `r`.`threadID`))) left join `forums_readData_forums_c` `rdf` on((`t`.`forumID` = `rdf`.`forumID`))) left join `forums_readData_threads` `rdt` on(((`t`.`threadID` = `rdt`.`threadID`) and (`rdf`.`userID` = `rdt`.`userID`)))) having (`newPosts` = 1);
+CREATE ALGORITHM=UNDEFINED DEFINER=`gamersplane`@`66.33.192.0/255.255.224.0` SQL SECURITY DEFINER VIEW `forums_readData_newPosts` AS select `t`.`forumID` AS `forumID`,`rdf`.`userID` AS `userID`,`t`.`threadID` AS `threadID`,`r`.`lastPostID` AS `lastPostID`,`rdt`.`lastRead` AS `lastRead`,`rdf`.`cLastRead` AS `cLastRead`,if(((`r`.`lastPostID` > ifnull(`rdt`.`lastRead`,0)) and (`r`.`lastPostID` > `rdf`.`cLastRead`)),1,0) AS `newPosts` from (((`threads` `t` join `threads_relPosts` `r` on((`t`.`threadID` = `r`.`threadID`))) left join `forums_readData_forums_c` `rdf` on((`t`.`forumID` = `rdf`.`forumID`))) left join `forums_readData_threads` `rdt` on(((`t`.`threadID` = `rdt`.`threadID`) and (`rdf`.`userID` = `rdt`.`userID`)))) having (`newPosts` = 1);
 
 -- --------------------------------------------------------
 
 --
--- Structure for view `threads_relposts`
+-- Structure for view `threads_relPosts`
 --
 DROP TABLE IF EXISTS `threads_relPosts`;
 
-CREATE VIEW `threads_relPosts` AS select `posts`.`threadID` AS `threadID`,min(`posts`.`postID`) AS `firstPostID`,max(`posts`.`postID`) AS `lastPostID` from `posts` group by `posts`.`threadID`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`gamersplane`@`66.33.192.0/255.255.224.0` SQL SECURITY DEFINER VIEW `threads_relPosts` AS select `posts`.`threadID` AS `threadID`,min(`posts`.`postID`) AS `firstPostID`,max(`posts`.`postID`) AS `lastPostID` from `posts` group by `posts`.`threadID`;
