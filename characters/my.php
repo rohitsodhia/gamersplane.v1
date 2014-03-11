@@ -24,56 +24,57 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
-	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.mob = 0 AND c.userID = '.$userID.' ORDER BY s.fullName, c.label');
+	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.$userID.' ORDER BY s.fullName, c.type, c.label');
 	
 	$noItems = FALSE;
 	if ($characters->rowCount()) {
-		echo "\t\t\t<ul class=\"hbdMargined hbAttachedList\">\n";
+		echo "\t\t\t<ul id=\"userChars\" class=\"hbdMargined hbAttachedList\">\n";
 		foreach ($characters as $info) {
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a>
-					<div class="systemType"><?=$info['fullName']?></div>
-					<div class="links">
-						<a href="<?=SITEROOT?>/characters/editLabel/<?=$info['characterID']?>" class="editLabel">Edit Label</a>
-						<a href="<?=SITEROOT?>/characters/delete/<?=$info['characterID']?>" class="delete">Delete Character</a>
+					<a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
+					><div class="charType"><?=$charLabelMap[$info['type']]?></div
+					><div class="systemType"><?=$info['fullName']?></div
+					><div class="links">
+						<a href="<?=SITEROOT?>/characters/editBasic/<?=$info['characterID']?>" class="editBasic sprite pencil" title="Edit Label/Type" alt="Edit Label/Type"></a>
+						<a href="<?=SITEROOT?>/characters/delete/<?=$info['characterID']?>" class="delete sprite cross" title="Delete Character" alt="Delete Character"></a>
 					</div>
 				</li>
 <?
 		}
 		echo "\t\t\t</ul>\n";
 	} else $noItems = TRUE;
-	echo "\t\t\t".'<div id="noCharacters" class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any characters yet. You might wanna get started!</div>'."\n";
+	echo "\t\t\t".'<div class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any characters yet. You might wanna get started!</div>'."\n";
 ?>
 		</div>
-<!--		<div id="mobsList">
-			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Mobs</h2>
+
+		<div id="libraryFavorites">
+			<div class="clearfix hbdTopper"><a href="<?=SITEROOT?>/characters/library/" class="fancyButton">Character Library</a></div>
+			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
 <?
-	$mobs = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.mob = 1 AND c.userID = '.$userID.' ORDER BY s.fullName, c.label');
-	
+	$libraryItems = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND f.userID = $userID AND f.characterID = c.characterID");
 	$noItems = FALSE;
-	if ($mobs->rowCount()) {
-		echo "\t\t\t<ul class=\"hbdMargined hbAttachedList\">\n";
-		foreach ($mobs as $info) {
+	if ($libraryItems->rowCount()) {
+		echo "\t\t\t<ul id=\"libraryChars\" class=\"hbdMargined hbAttachedList\">\n";
+		foreach ($libraryItems as $info) {
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a>
-					<div class="systemType"><?=$info['fullName']?></div>
-					<div class="links">
-						<a href="<?=SITEROOT?>/characters/editLabel/<?=$info['characterID']?>" class="editLabel">Edit Label</a>
-						<a href="<?=SITEROOT?>/characters/delete/<?=$info['characterID']?>" class="delete">Delete Mob</a>
-					</div>
+					<a href="<?=SITEROOT?>/characters/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
+					><a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
+					><div class="charType"><?=$charLabelMap[$info['type']]?></div
+					><div class="systemType"><?=$info['fullName']?></div
+					><div class="owner"><a href="<?=SITEROOT?>/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
 <?
 		}
 		echo "\t\t\t</ul>\n";
 	} else $noItems = TRUE;
-	echo "\t\t\t".'<div id="noMobs" class="noItems'.($noItems == FALSE?' hideDiv':'').'">It seems you don\'t have any mobs yet. You might wanna get started!</div>'."\n";
+	echo "\t\t\t".'<div class="noItems'.($noItems == FALSE?' hideDiv':'').'">You don\'t have anything from the library favorited. Check out what you\'re missing!</div>'."\n";
 ?>
-		</div>-->
+		</div>
 
 		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
-			<h2 class="headerbar hbDark">New Character/Mob</h1>
+			<h2 class="headerbar hbDark">New Character</h1>
 			<div class="tr">
 				<label class="textLabel">Label</label>
 				<input type="text" name="label" maxlength="50">
@@ -89,13 +90,14 @@
 					<option value="1">Custom</option>
 				</select>
 			</div>
-<!--			<div class="tr">
-				<label class="textLabel">Char or Mob?</label>
-				<select name="mob">
-					<option value="0">Character</option>
-					<option value="1">Mob</option>
+			<div class="tr">
+				<label class="textLabel">Type</label>
+				<select name="type">
+<?
+	foreach ($charLabelMap as $key => $type) echo "\t\t\t\t\t<option value=\"{$key}\">{$type}</option>\n";
+?>
 				</select>
-			</div>-->
+			</div>
 			<div class="tr buttonPanel"><button type="submit" name="create" class="fancyButton">Create</button></div>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

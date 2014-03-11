@@ -1,3 +1,3 @@
 $(function () {
-	$('#newCharLink, #newMobLink, .editLabel, .delete').colorbox();
+	$('#newCharLink, #newMobLink, .editBasic, .delete, .unfavorite').colorbox();
 });

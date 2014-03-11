@@ -5,7 +5,8 @@
 		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
 		$label = sanitizeString($_POST['label']);
-		$labelCheck = $mysql->query("SELECT label FROM characters WHERE userID = $userID AND characterID = $characterID");
+		$type = intval($_POST['type']);
+		$labelCheck = $mysql->query("SELECT label, type FROM characters WHERE userID = $userID AND characterID = $characterID");
 		
 		if ($labelCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo 0;
@@ -14,9 +15,9 @@
 			if (isset($_POST['modal'])) echo 'invalidLabel';
 			else header("Location: {$_SESSION['lastURL']}?invalidLabel=1");
 		} else {
-			$updateLabel = $mysql->prepare("UPDATE characters SET label = :label WHERE characterID = $characterID");
+			$updateLabel = $mysql->prepare("UPDATE characters SET label = :label, type = {$type} WHERE characterID = $characterID");
 			$updateLabel->execute(array(':label' => $label));
-			addCharacterHistory($characterID, 'labelEdited', $userID);
+			addCharacterHistory($characterID, 'basicEdited', $userID);
 			if (isset($_POST['modal'])) echo 'updated';
 			else header('Location: '.SITEROOT.'/characters/my?label=1');
 		}

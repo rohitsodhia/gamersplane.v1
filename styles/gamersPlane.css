@@ -1330,7 +1330,7 @@ border-bottom-left-radius: 0;}
 	background-position: -17px 0;
 }
 
-.sprite.editWheel, .sprite.permissions, .sprite.cross {
+.sprite.editWheel, .sprite.permissions, .sprite.cross, .sprite.pencil {
 	width: 20px;
 }
 
@@ -1344,6 +1344,19 @@ border-bottom-left-radius: 0;}
 
 .sprite.cross {
 	background-position: -74px 0;
+}
+
+.sprite.pencil {
+	background-position: -94px 0;
+}
+
+.sprite.tassel, .sprite.tassel.off:hover {
+	width: 14px;
+	background-position: -114px 0;
+}
+
+.sprite.tassle.off, .sprite.tassel:hover {
+	background-position: -114px -20px;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
