@@ -2,28 +2,44 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$noChar = FALSE;
-	$charInfo = getCharInfo($characterID, 'dnd4');
+	$noChar = TRUE;
+	$system = 'dnd4';
+	$charInfo = getCharInfo($characterID, $system);
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
+		if ($viewerStatus = allowCharView($characterID, $userID)) {
 			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
 			$charInfo['level'] = 0;
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;
 			$noChar = FALSE;
 			includeSystemInfo('dnd4');
+
+			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 		}
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/dnd4.png"></div>
+<? if (!$noChar) { ?>
+		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
+			<div>
+<?		if ($viewerStatus == 'edit') { ?>
+				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+<?		} else { ?>
+				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
+<?		} ?>
+			</div>
+			<div class="wing ulWing"></div>
+			<div class="wing urWing"></div>
+		</div></div>
+<? } ?>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/dnd4/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
+		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
+
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
 			<label id="label_race" class="medText">Race</label>
@@ -304,21 +320,21 @@
 				<div id="powers_atwill" class="powerCol first">
 					<h3>At-Will</h3>
 <?
-	$powers = $mysql->query('SELECT name FROM dnd4_powers WHERE type = "a" AND characterID = '.$characterID);
+	$powers = $mysql->query('SELECT pl.name FROM dnd4_powers p INNER JOIN dnd4_powersList pl ON p.powerID = pl.powerID WHERE p.type = "a" AND p.characterID = '.$characterID);
 	foreach ($powers as $power) echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
 ?>
 			</div>
 			<div id="powers_encounter" class="powerCol">
 				<h3>Encounter</h3>
 <?
-	$powers = $mysql->query('SELECT name FROM dnd4_powers WHERE type = "e" AND characterID = '.$characterID);
+	$powers = $mysql->query('SELECT pl.name FROM dnd4_powers p INNER JOIN dnd4_powersList pl ON p.powerID = pl.powerID WHERE p.type = "e" AND p.characterID = '.$characterID);
 	foreach ($powers as $power) echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
 ?>
 			</div>
 			<div id="powers_daily" class="powerCol">
 				<h3>Daily</h3>
 <?
-	$powers = $mysql->query('SELECT name FROM dnd4_powers WHERE type = "d" AND characterID = '.$characterID);
+	$powers = $mysql->query('SELECT pl.name FROM dnd4_powers p INNER JOIN dnd4_powersList pl ON p.powerID = pl.powerID WHERE p.type = "d" AND p.characterID = '.$characterID);
 	foreach ($powers as $power) echo "\t\t\t\t\t<div id=\"power_".str_replace(' ', '_', $power['name'])."\" class=\"power\">".mb_convert_case($power['name'], MB_CASE_TITLE)."</div>\n";
 ?>
 				</div>

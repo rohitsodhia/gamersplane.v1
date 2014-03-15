@@ -2,30 +2,39 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cthulhu.*, characters.userID, gms.gameID IS NOT NULL isGM FROM cthulhu_characters cthulhu INNER JOIN characters ON cthulhu.characterID = characters.characterID LEFT JOIN (SELECT gameID, `primary` FROM gms WHERE userID = $userID) gms ON characters.gameID = gms.gameID WHERE cthulhu.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
-			$numVals = array('size', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'fort_base', 'fort_magic', 'fort_race', 'fort_misc', 'ref_base', 'ref_magic', 'ref_race', 'ref_misc', 'will_base', 'will_magic', 'will_race', 'will_misc', 'hp', 'ac_total', 'ac_armor', 'ac_shield', 'ac_dex', 'ac_class', 'ac_natural', 'ac_deflection', 'ac_misc', 'initiative_misc', 'bab', 'melee_misc', 'ranged_misc');
-			$textVals = array('name', 'race', 'class', 'dr', 'skills', 'feats', 'weapons', 'armor', 'items', 'spells', 'notes');
-			foreach ($charInfo as $key => $value) {
-				if (in_array($key, $textVals)) $charInfo[$key] = strlen($value)?printReady($value):'&nbsp';
-				elseif (in_array($key, $numVals)) $charInfo[$key] = intval($value);
-			}
+	$system = 'cthulhu';
+	$charInfo = getCharInfo($characterID, $system);
+	if ($charInfo) {
+		if ($viewerStatus = allowCharView($characterID, $userID)) {
 			$noChar = FALSE;
+
+			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 		}
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1>Character Sheet</h1>
-		<h2><img src="<?=SITEROOT?>/images/logos/cthulhu.jpg"></h2>
+<? if (!$noChar) { ?>
+		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
+			<div>
+<?		if ($viewerStatus == 'edit') { ?>
+				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+<?		} else { ?>
+				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
+<?		} ?>
+			</div>
+			<div class="wing ulWing"></div>
+			<div class="wing urWing"></div>
+		</div></div>
+<? } ?>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div id="editCharLink"><a href="<?=SITEROOT?>/characters/cthulhu/<?=$characterID?>/edit">Edit Character</a></div>
+		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
+
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
 		</div>

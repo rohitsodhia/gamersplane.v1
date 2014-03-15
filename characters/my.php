@@ -24,7 +24,7 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
-	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.$userID.' ORDER BY s.fullName, c.type, c.label');
+	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.systemID = s.systemID LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = '.$userID.' ORDER BY s.fullName, c.type, c.label');
 	
 	$noItems = FALSE;
 	if ($characters->rowCount()) {
@@ -32,12 +32,13 @@
 		foreach ($characters as $info) {
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
+					<a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
 					><div class="charType"><?=$charLabelMap[$info['type']]?></div
 					><div class="systemType"><?=$info['fullName']?></div
 					><div class="links">
-						<a href="<?=SITEROOT?>/characters/editBasic/<?=$info['characterID']?>" class="editBasic sprite pencil" title="Edit Label/Type" alt="Edit Label/Type"></a>
-						<a href="<?=SITEROOT?>/characters/delete/<?=$info['characterID']?>" class="delete sprite cross" title="Delete Character" alt="Delete Character"></a>
+						<a href="/characters/editBasic/<?=$info['characterID']?>" class="editBasic sprite pencil" title="Edit Label/Type" alt="Edit Label/Type"></a>
+						<a href="/characters/process/libraryToggle/<?=$info['characterID']?>" class="libraryToggle sprite book<?=$info['inLibrary']?'':' off'?>" title="<?=$info['inLibrary']?'Remove from':'Add to'?> Library" alt="<?=$info['inLibrary']?'Remove from':'Add to'?> Library"></a>
+						<a href="/characters/delete/<?=$info['characterID']?>" class="delete sprite cross" title="Delete Character" alt="Delete Character"></a>
 					</div>
 				</li>
 <?
@@ -49,7 +50,7 @@
 		</div>
 
 		<div id="libraryFavorites">
-			<div class="clearfix hbdTopper"><a href="<?=SITEROOT?>/characters/library/" class="fancyButton">Character Library</a></div>
+			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
 <?
 	$libraryItems = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND f.userID = $userID AND f.characterID = c.characterID");
@@ -59,11 +60,11 @@
 		foreach ($libraryItems as $info) {
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="<?=SITEROOT?>/characters/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
-					><a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
+					<a href="/characters/library/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
+					><a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
 					><div class="charType"><?=$charLabelMap[$info['type']]?></div
 					><div class="systemType"><?=$info['fullName']?></div
-					><div class="owner"><a href="<?=SITEROOT?>/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
+					><div class="owner"><a href="/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
 <?
 		}
@@ -73,7 +74,7 @@
 ?>
 		</div>
 
-		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
+		<form id="newChar" action="/characters/process/new/" method="post">
 			<h2 class="headerbar hbDark">New Character</h1>
 			<div class="tr">
 				<label class="textLabel">Label</label>

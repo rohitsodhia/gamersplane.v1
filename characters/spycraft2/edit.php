@@ -2,11 +2,10 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$noChar = FALSE;
+	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'spycraft2');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
+		if (allowCharView($characterID, $userID)) {
 			$charInfo['level'] = 0;
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;

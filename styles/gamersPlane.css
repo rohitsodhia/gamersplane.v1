@@ -1355,8 +1355,17 @@ border-bottom-left-radius: 0;}
 	background-position: -114px 0;
 }
 
-.sprite.tassle.off, .sprite.tassel:hover {
+.sprite.tassel.off, .sprite.tassel:hover {
 	background-position: -114px -20px;
+}
+
+.sprite.book, .sprite.book.off:hover {
+	width: 16px;
+	background-position: -128px 0;
+}
+
+.sprite.book.off, .sprite.book:hover {
+	background-position: -128px -20px;
 }
 
 /* ----------------------------------------------------------------------------------------------*/

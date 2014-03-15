@@ -138,23 +138,25 @@
 
 #page_charLibrary .charLabel, #page_charLibrary .systemType, #page_charLibrary .playerLink {
 	display: inline-block;
+	vertical-align: middle;
 }
 
 #page_charLibrary .charLabel {
-	width: 210px;
+	width: 180px;
 	padding-right: 15px;
 	border-right: 1px solid #999;
 }
 
 #page_charLibrary .systemType {
-	width: 200px;
+	width: 180px;
 	padding: 0 15px;
 	border-right: 1px solid #999;
 	text-align: center;
 }
 
 #page_charLibrary .playerLink {
-	margin-left: 15px;
+	width: 180px;
+	padding-left: 15px;
 }
 
 #page_charLibrary #noResults {
@@ -167,13 +169,44 @@
 
 /* --------------------------------------------*/
 
+.viewCharacter h1.headerbar {
+	margin-bottom: 0;
+}
+
+#sheetActions > div {
+	background-color: #AAA;
+	padding: 3px 5px;
+}
+
+#sheetActions .wing {
+	float: none;
+	position: absolute;
+	top: 0;
+	margin: 0;
+	padding: 0;
+	border-style: solid;
+	border-color: #AAA;
+	border-right-color: transparent;
+	background: none;
+}
+
+#sheetActions .ulWing {
+	left: 0;
+	border-left-color: transparent;
+}
+
+#sheetActions .urWing {
+	right: 0;
+	border-right-color: transparent;
+}
+
+#sheetActions a {
+	margin: 0 5px;
+}
+
 #charSheetLogo {
 	margin: 1em 0;
 	text-align: center;
-}
-
-#editCharacter {
-	margin-bottom: 1em;
 }
 
 #noCharFound {

@@ -3,24 +3,39 @@
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$noChar = TRUE;
-	$charInfo = getCharInfo($characterID, 'marvel');
+	$system = 'marvel';
+	$charInfo = getCharInfo($characterID, $system);
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
-			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
+		if ($viewerStatus = allowCharView($characterID, $userID)) {
 			$noChar = FALSE;
-			includeSystemInfo('marvel');
+			includeSystemInfo($system);
+
+			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 		}
-	} else $noChar = TRUE;
+	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/marvel.png"></div>
+<? if (!$noChar) { ?>
+		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
+			<div>
+<?		if ($viewerStatus == 'edit') { ?>
+				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+<?		} else { ?>
+				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
+<?		} ?>
+			</div>
+			<div class="wing ulWing"></div>
+			<div class="wing urWing"></div>
+		</div></div>
+<? } ?>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/marvel/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
+		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
+
 		<div class="tr basicInfo">
 			<label class="name">Secret Identity:</label>
 			<div><?=$charInfo['normName'] != ''?printReady($charInfo['normName']):'&nbsp;'?></div>

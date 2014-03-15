@@ -5,8 +5,7 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'dnd4');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
+		if (allowCharView($characterID, $userID)) {
 			$charInfo['level'] = 0;
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;

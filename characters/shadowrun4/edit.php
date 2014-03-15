@@ -5,10 +5,11 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'shadowrun4');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
-		includeSystemInfo('shadowrun4');
-	} else $noChar = TRUE;
+		if (allowCharView($characterID, $userID)) {
+			$noChar = FALSE;
+			includeSystemInfo('shadowrun4');
+		}
+	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Edit Character Sheet</h1>
@@ -18,7 +19,7 @@
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
 		<form method="post" action="<?=SITEROOT?>/characters/process/shadowrun4/">
-			<input type="hidden" name="characterID" value="<?=$characterID?>">
+			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			
 			<div class="tr">
 				<label for="name" class="textLabel">Name:</label>

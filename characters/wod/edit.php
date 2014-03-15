@@ -5,8 +5,7 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'wod');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
+		if (allowCharView($characterID, $userID)) $noChar = FALSE;
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

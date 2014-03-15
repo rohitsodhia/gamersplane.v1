@@ -40,14 +40,14 @@
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'games.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 'systems.fullName ASC';*/
 	$orderBy = 's.fullName ASC';
-	$characters = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary l, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND l.characterID = c.characterID ORDER BY $orderBy");
+	$characters = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN systems s ON c.systemID = s.systemID INNER JOIN users u ON c.userID = u.userID LEFT JOIN players p ON c.gameID = p.gameID AND p.userID = $userID WHERE c.userID != $userID AND p.userID IS NULL  ORDER BY $orderBy");
 	
 	if ($characters->rowCount()) { foreach ($characters as $info) {
 ?>
 				<li class="clearfix">
-					<a href="<?=SITEROOT?>/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="charLabel"><?=$info['label']?></a
+					<a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="charLabel"><?=$info['label']?></a
 					><div class="systemType"><?=$info['fullName']?></div
-					><div class="playerLink"><a href="<?=SITEROOT?>/ucp/<?=$info['gmID']?>" class="username"><?=$info['username']?></a></div>
+					><div class="playerLink"><a href="/ucp/<?=$info['gmID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
 <?
 	} } else echo "\t\t\t\t<div id=\"noResults\">Doesn't seem like anyone is sharing any characters right now. Maybe you should share one of yours?</div>\n";

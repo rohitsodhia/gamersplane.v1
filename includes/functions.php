@@ -142,10 +142,23 @@
 				include_once($file);
 	}
 
+	function allowCharView($characterID, $userID) {
+		global $mysql;
+		if ($editStatus = allowCharEdit($characterID, $userID)) return $editStatus;
+		else {
+			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = $characterID AND inLibrary = 1");
+			if ($libraryCheck->rowCount()) {
+				$charCheck = $mysql->query("SELECT c.characterID FROM characters c INNER JOIN players p ON c.gameID = p.gameID AND p.isGM = 0 WHERE c.characterID = $characterID AND c.userID != $userID AND p.userID = $userID");
+				if ($charCheck->rowCount()) return FALSE;
+				else return 'library';
+			} else return FALSE;
+		}
+	}
+
 	function allowCharEdit($characterID, $userID) {
 		global $mysql;
 		$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = $characterID AND (c.userID = $userID OR p.userID = $userID)");
-		if ($charCheck->rowCount()) return TRUE;
+		if ($charCheck->rowCount()) return 'edit';
 		else return FALSE;
 	}
 
@@ -157,7 +170,7 @@
 		$checkSystem = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :system');
 		$checkSystem->execute(array(':system' => $system));
 		if ($checkSystem->rowCount()) {
-			$charInfo = $mysql->query("SELECT cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM {$system}_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
+			$charInfo = $mysql->query("SELECT c.label, cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM {$system}_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
 			if ($charInfo->rowCount()) return $charInfo->fetch();
 			else return FALSE;
 		} else return FALSE;

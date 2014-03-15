@@ -5,8 +5,7 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'deadlands');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
+		if (allowCharView($characterID, $userID)) {
 			$charInfo['wounds'] = explode(',', $charInfo['wounds']);
 			$noChar = FALSE;
 		}

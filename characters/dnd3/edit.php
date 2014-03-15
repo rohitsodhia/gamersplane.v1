@@ -5,8 +5,7 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'dnd3');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
+		if (allowCharView($characterID, $userID)) {
 			$noChar = FALSE;
 			includeSystemInfo('dnd3');
 		}

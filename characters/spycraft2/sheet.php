@@ -3,27 +3,43 @@
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$noChar = TRUE;
-	$charInfo = getCharInfo($characterID, 'spycraft2');
+	$system = 'spycraft2';
+	$charInfo = getCharInfo($characterID, $system);
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
+		if ($viewerStatus = allowCharView($characterID, $userID)) {
 			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
-			$noChar = FALSE;
 			$charInfo['level'] = 0;
 			preg_match_all('/\d+/', $charInfo['class'], $matches);
 			foreach ($matches[0] as $level) $charInfo['level'] += $level;
-			includeSystemInfo('spycraft2');
+			$noChar = FALSE;
+			includeSystemInfo($system);
+
+			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 		}
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/spycraft2.png"></div>
+<? if (!$noChar) { ?>
+		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
+			<div>
+<?		if ($viewerStatus == 'edit') { ?>
+				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+<?		} else { ?>
+				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
+<?		} ?>
+			</div>
+			<div class="wing ulWing"></div>
+			<div class="wing urWing"></div>
+		</div></div>
+<? } ?>
+		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<div class="actions"><a id="editCharacter" href="<?=SITEROOT?>/characters/spycraft2/<?=$characterID?>/edit" class="fancyButton">Edit Character</a></div>
+		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
+
 		<div class="tr labelTR tr-noPadding">
 			<label id="label_name" class="medText">Name</label>
 			<label id="label_codename" class="medText">Codename</label>

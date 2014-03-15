@@ -3,10 +3,9 @@
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$featID = intval($pathOptions[3]);
-	$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = $characterID AND userID = $userID");
-	if ($charCheck->rowCount()) {
+	if (allowCharEdit($characterID, $userID)) {
 		$featInfo = $mysql->query("SELECT featsList.name, dnd3_feats.notes FROM dnd3_feats INNER JOIN featsList USING (featID) WHERE dnd3_feats.featID = $featID AND dnd3_feats.characterID = $characterID");
-		if ($featInfo->rowCount()) $featInfo = $featInfo->getList();
+		if ($featInfo->rowCount()) $featInfo = $featInfo->fetch();
 	} else $noChar = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

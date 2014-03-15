@@ -5,9 +5,10 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'pathfinder');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
-		includeSystemInfo('pathfinder');
+		if (allowCharView($characterID, $userID)) {
+			$noChar = FALSE;
+			includeSystemInfo('pathfinder');
+		}
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

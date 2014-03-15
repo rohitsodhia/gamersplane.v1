@@ -5,8 +5,7 @@
 	$noChar = TRUE;
 	$charInfo = getCharInfo($characterID, 'gurps');
 	if ($charInfo) {
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] == $userID || $charInfo['isGM']) $noChar = FALSE;
+		if (allowCharView($characterID, $userID)) $noChar = FALSE;
 		if (isset($_GET['new'])) {
 			foreach(array('st', 'dx', 'iq', 'ht', 'hp', 'will', 'per', 'fp') as $key) $charInfo[$key] = 10;
 			$charInfo['speed'] = 5;

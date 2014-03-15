@@ -2,12 +2,10 @@
 	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT cthulhu.*, characters.userID, gms.gameID IS NOT NULL isGM FROM cthulhu_characters cthulhu INNER JOIN characters ON cthulhu.characterID = characters.characterID LEFT JOIN (SELECT gameID, `primary` FROM gms WHERE userID = $userID) gms ON characters.gameID = gms.gameID WHERE cthulhu.characterID = $characterID");
 	$noChar = TRUE;
-	if ($charInfo->rowCount()) {
-		$charInfo = $charInfo->fetch();
-		$gameID = $charInfo['gameID'];
-		if ($charInfo['userID'] != $userID && !$charInfo['isGM']) {
+	$charInfo = getCharInfo($characterID, 'cthulhu');
+	if ($charInfo) {
+		if (allowCharView($characterID, $userID)) {
 			$numVals = array('size', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'fort_base', 'fort_magic', 'fort_race', 'fort_misc', 'ref_base', 'ref_magic', 'ref_race', 'ref_misc', 'will_base', 'will_magic', 'will_race', 'will_misc', 'hp', 'ac_total', 'ac_armor', 'ac_shield', 'ac_dex', 'ac_class', 'ac_natural', 'ac_deflection', 'ac_misc', 'initiative_misc', 'bab', 'melee_misc', 'ranged_misc');
 			$textVals = array('name', 'race', 'class', 'dr', 'skills', 'feats', 'weapons', 'armor', 'items', 'spells', 'notes');
 /*			foreach ($charInfo as $key => $value) {
