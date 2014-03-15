@@ -63,11 +63,10 @@
 				}
 			}
 			
-			$updateChar = $mysql->prepare('UPDATE dnd3_characters SET '.implode($updates, ', ').' WHERE characterID = :characterID');
+			$updateChar = $mysql->prepare('UPDATE dnd3_characters SET '.implode($updates, ', ')." WHERE characterID = $characterID");
 			foreach (array_merge($numVals, $textVals) as $value) $updateChar->bindValue(":$value", $_POST[$value]);
- 			$updateChar->bindValue(':characterID', $characterID);
 			$updateChar->execute();
-			$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action) VALUES ($characterID, $userID, NOW(), 'editedChar')");
+			addCharacterHistory($characterID, 'editedChar');
 		}
 		
 		header('Location: '.SITEROOT.'/characters/dnd3/'.$characterID);
