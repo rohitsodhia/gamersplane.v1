@@ -1,19 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Dec 05, 2013 at 07:17 PM
--- Server version: 5.5.24-log
--- PHP Version: 5.3.13
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";-- phpMyAdmin SQL Dump
 -- version 3.3.10.4
 -- http://www.phpmyadmin.net
 --
 -- Host: mysql.gamersplane.com
--- Generation Time: Feb 24, 2014 at 03:19 PM
+-- Generation Time: Mar 14, 2014 at 10:09 PM
 -- Server version: 5.1.56
 -- PHP Version: 5.3.27
 
@@ -145,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `subject` text NOT NULL,
   `comment` text NOT NULL,
   PRIMARY KEY (`contactID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 -- --------------------------------------------------------
 
@@ -552,11 +542,10 @@ CREATE TABLE IF NOT EXISTS `dnd4_feats` (
 --
 
 CREATE TABLE IF NOT EXISTS `dnd4_powers` (
-  `powerID` int(11) NOT NULL AUTO_INCREMENT,
   `characterID` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `powerID` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(1) NOT NULL,
-  PRIMARY KEY (`powerID`)
+  PRIMARY KEY (`characterID`,`powerID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -568,11 +557,11 @@ CREATE TABLE IF NOT EXISTS `dnd4_powers` (
 CREATE TABLE IF NOT EXISTS `dnd4_powersList` (
   `powerID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `searchName` varchar(50) DEFAULT NULL,
+  `searchName` varchar(50) NOT NULL,
   `userDefined` int(11) DEFAULT NULL,
   PRIMARY KEY (`powerID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -888,7 +877,7 @@ CREATE TABLE IF NOT EXISTS `gameHistory` (
   `affectedType` varchar(20) DEFAULT NULL,
   `affectedID` int(11) DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 -- --------------------------------------------------------
 
@@ -1395,7 +1384,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   PRIMARY KEY (`postID`),
   KEY `threadID` (`threadID`),
   KEY `authorID` (`authorID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
 
 -- --------------------------------------------------------
 
@@ -1406,12 +1395,13 @@ CREATE TABLE IF NOT EXISTS `posts` (
 CREATE TABLE IF NOT EXISTS `rolls` (
   `rollID` int(11) NOT NULL AUTO_INCREMENT,
   `postID` int(11) NOT NULL,
-  `roll` varchar(20) NOT NULL,
-  `indivRolls` varchar(50) NOT NULL,
-  `ra` tinyint(1) NOT NULL,
-  `reason` varchar(50) NOT NULL,
-  `total` tinyint(4) NOT NULL,
+  `type` varchar(10) NOT NULL,
+  `reason` varchar(100) NOT NULL,
+  `roll` varchar(50) NOT NULL,
+  `indivRolls` varchar(100) NOT NULL,
+  `results` varchar(100) NOT NULL,
   `visibility` tinyint(1) NOT NULL,
+  `extras` varchar(20) NOT NULL,
   PRIMARY KEY (`rollID`),
   KEY `postID` (`postID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -1870,7 +1860,7 @@ CREATE TABLE IF NOT EXISTS `threads` (
   `allowDraws` tinyint(1) NOT NULL,
   PRIMARY KEY (`threadID`),
   KEY `forumID` (`forumID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -1906,15 +1896,16 @@ CREATE TABLE IF NOT EXISTS `users` (
   `gender` varchar(1) NOT NULL,
   `birthday` date NOT NULL,
   `showAge` tinyint(1) NOT NULL,
-  `location` varchar(100) NOT NULL,
-  `aim` varchar(50) NOT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `aim` varchar(50) DEFAULT NULL,
   `gmail` varchar(50) DEFAULT NULL,
   `twitter` varchar(50) DEFAULT NULL,
+  `stream` varchar(100) DEFAULT NULL,
   `games` varchar(200) DEFAULT NULL,
   `newGameMail` tinyint(1) NOT NULL DEFAULT '1',
   `postSide` varchar(1) NOT NULL DEFAULT 'r',
   PRIMARY KEY (`userID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
 
 -- --------------------------------------------------------
 
