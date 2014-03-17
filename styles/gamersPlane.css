@@ -1407,7 +1407,28 @@ border-bottom-left-radius: 0;}
 }
 
 #followLinks a {
+	display: inline-block;
+	height: 20px;
+	width: 20px;
 	margin-left: 10px;
+	background-image: url('../images/bodyComponents/socialSprites.png');
+	background-repeat: none;
+}
+
+#fl_twitter {
+	background-position: 0 0;
+}
+
+#fl_facebook {
+	background-position: -20px 0;
+}
+
+#fl_stumbleupon {
+	background-position: -40px 0;
+}
+
+#fl_twitch {
+	background-position: -60px 0;
 }
 
 #mainMenu a, #userMenu a {

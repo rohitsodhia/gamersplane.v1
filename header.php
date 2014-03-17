@@ -30,10 +30,10 @@
 	</div>
 	
 	<div id="followLinks">
-		<a href="http://twitter.com/GamersPlane" target="_blank"><img src="<?=SITEROOT?>/images/bodyComponents/twitter.png" height="20"></a>
-		<a href="https://www.facebook.com/pages/Gamers-Plane/245904792107862" target="_blank"><img src="<?=SITEROOT?>/images/bodyComponents/facebook.png" height="20"></a>
-<!--		<script src="http://www.stumbleupon.com/hostedbadge.php?s=6"></script>-->
-		<a href="http://www.stumbleupon.com/submit?url=http://gamersplane.com" target="_blank"><img src="<?=SITEROOT?>/images/bodyComponents/stumble.png" height="20"></a>
+		<a id="fl_twitter" href="http://twitter.com/GamersPlane" target="_blank" title="Twitter"></a>
+		<a id="fl_facebook" href="https://www.facebook.com/pages/Gamers-Plane/245904792107862" target="_blank" title="Facebook"></a>
+		<a id="fl_stumbleupon" href="http://www.stumbleupon.com/submit?url=http://gamersplane.com" target="_blank" title="StumbleUpon"></a>
+		<a id="fl_twitch" href="http://www.twitch.tv/gamersplane" target="_blank" title="Twitch"></a>
 	</div>
 	
 	<div id="mainMenu">
@@ -41,7 +41,7 @@
 			<li><a href="<?=SITEROOT?>/tools" class="first">Tools</a></li>
 <? if ($loggedIn) { ?>
 			<li>
-				<a href="<?=SITEROOT?>/characters">My Characters</a>
+				<a href="<?=SITEROOT?>/characters">Characters</a>
 <?
 		$header_characters = $mysql->query('SELECT c.characterID, c.label, s.shortName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.intval($_SESSION['userID']).' ORDER BY c.label');
 		if ($header_characters->rowCount()) {
@@ -60,7 +60,7 @@
 ?>
 			</li>
 			<li>
-				<a href="<?=SITEROOT?>/games">My Games</a>
+				<a href="<?=SITEROOT?>/games">Games</a>
 <?
 		$header_games = $mysql->query('SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = '.intval($_SESSION['userID']).' AND p.gameID = g.gameID ORDER BY g.title');
 		if ($header_games->rowCount()) {
