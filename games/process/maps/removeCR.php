@@ -6,8 +6,7 @@
 	$whichCR = $pathOptions[4];
 	$mapInfo = $mysql->query("SELECT maps.rows, maps.columns, maps.bgData FROM maps INNER JOIN gms ON maps.gameID = gms.gameID WHERE gms.userID = $userID AND maps.mapID = $mapID");
 	if (!$mapInfo->rowCount()) { header('Location: '.SITEROOT.'/tools/maps'); exit; }
-	$mapInfo = $mapInfo->fetch();
-	list($rows, $columns, $bgData) = $mapInfo();
+	list($rows, $columns, $bgData) = $mapInfo->fetch(PDO::FETCH_NUM);
 	
 	if (preg_match('/\d{1,2}/', $whichCR)) $type = 'r';
 	else {

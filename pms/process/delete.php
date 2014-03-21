@@ -6,7 +6,7 @@
 	
 	if (isset($_POST['delete'])) {
 		$recipientCheck = $mysql->query('SELECT recipientID, senderID FROM pms WHERE pmID = '.$pmID);
-		list($recipientID, $senderID) = $recipientCheck->fetch();
+		list($recipientID, $senderID) = $recipientCheck->fetch(PDO::FETCH_NUM);
 		
 		if ($recipientID == $userID || $senderID == $userID) {
 			$mysql->query('DELETE FROM pms WHERE pmID = '.$pmID);

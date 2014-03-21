@@ -5,7 +5,7 @@
 	$threadID = intval($pathOptions[1]);
 	
 	$forumInfo = $mysql->query('SELECT forums.forumID, forums.heritage FROM threads, forums WHERE forums.forumID = threads.forumID AND threads.threadID = '.$threadID);
-	list($forumID, $heritage) = $forumInfo->fetch();
+	list($forumID, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
 	$heritage = explode('-', $heritage);
 	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
 	$adminCheck = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, 2, {$heritage[1]})");

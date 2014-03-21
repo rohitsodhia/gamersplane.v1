@@ -11,7 +11,7 @@
 	$adminForums = $temp;
 	if ($forumID != 0) {
 		$forumInfo = $mysql->query('SELECT parentID, heritage FROM forums WHERE forumID = '.$forumID);
-		list($parentID, $heritage) = $forumInfo->fetch();
+		list($parentID, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
 		$heritage = explode('-', $heritage);
 		foreach ($heritage as $key => $hForumID) $heritage[$key] = intval($hForumID);
 	}

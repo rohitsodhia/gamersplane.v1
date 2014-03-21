@@ -57,9 +57,9 @@
 			$details['start'] = $details['created'];
 
 			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
-			list($order, $heritage) = $forumInfo->fetch();
+			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
 			$addForum = $mysql->prepare('INSERT INTO forums (title, parentID, `order`) VALUES (:title, 2, '.$order.')');
-			$addForum->execute(array('title' => $details['title']));
+			$addForum->execute(array(':title' => $details['title']));
 			$forumID = $mysql->lastInsertId();
 			$heritage = sql_forumIDPad($forumID).'-'.sql_forumIDPad($forumID);
 			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);

@@ -19,7 +19,7 @@
 			}
 			
 			$forumID = $mysql->query("SELECT forumID FROM games WHERE gameID = $gameID");
-			list($forumID) = $forumID->fetch();
+			$forumID = $forumID->fetchColumn();
 			$mysql->query("DELETE FROM gms WHERE gameID = $gameID AND userID = $gmID");
 			$mysql->query("DELETE FROM forumAdmins WHERE userID = $gmID AND forumID = $forumID");
 			
