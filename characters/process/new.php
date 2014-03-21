@@ -16,7 +16,7 @@
 			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, mob, systemID) VALUES (:userID, :label, :mob, :systemID)');
 			$addCharacter->bindValue(':userID', $userID);
 			$addCharacter->bindValue(':label', $_POST['label']);
-			$addCharacter->bindValue(':mob', $_POST['mob'] == 1?1:0);
+			$addCharacter->bindValue(':type', $_POST['type'] == 1?1:0);
 			$addCharacter->bindValue(':systemID', $systemID);
 			$addCharacter->execute();
 			$characterID = $mysql->lastInsertId();
