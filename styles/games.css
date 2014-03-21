@@ -122,7 +122,7 @@
 	width: 250px;
 }
 
-#page_newGame input#numPlayers, #page_newGame input#timesPer, #page_editGame input#numPlayers, #page_editGame input#charsPerPlayer, #page_editGame input#timesPer {
+#page_newGame input#numPlayers, #page_newGame input#timesPer, #page_newGame input#charsPerPlayer, #page_editGame input#numPlayers, #page_editGame input#timesPer, #page_editGame input#charsPerPlayer {
 	text-align: center;
 	width: 30px;
 }
