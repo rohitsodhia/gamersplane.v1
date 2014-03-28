@@ -137,16 +137,6 @@
 				</div>
 			</div>
 <?
-		} elseif (!$inGame) {
-			$hasRightCol = TRUE;
-?>
-			<div class="rightCol">
-				<div id="applyToGame">
-					<h2 class="headerbar hbDark">Join Game</h2>
-					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
-				</div>
-			</div>
-<?
 		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {
 			$hasRightCol = TRUE;
 ?>
@@ -157,6 +147,16 @@
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
 					</form>
+				</div>
+			</div>
+<?
+		} elseif (!$inGame) {
+			$hasRightCol = TRUE;
+?>
+			<div class="rightCol">
+				<div id="applyToGame">
+					<h2 class="headerbar hbDark">Join Game</h2>
+					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
 				</div>
 			</div>
 <?
