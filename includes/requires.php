@@ -1,5 +1,6 @@
 <?
-//	require_once('mysqlConnection.php');
+	require_once('systems.class.php');
+	
 	require_once('connect.php');
 	require_once('variables.php');
 //	require_once('classes.php');

@@ -29,13 +29,18 @@
 //	echo $pathAction;
 //	print_r($pathOptions);
 //	print_r($_SESSION);
-	
+
 	$requireLoc = '';
 	
 	if ($pathAction == 'facebook') header('Location: http://www.facebook.com/pages/Gamers-Plane/245904792107862');
 	else {
 		$moddedPath = $pathAction?$pathAction:'';
-		foreach ($pathOptions as $pathOption) $moddedPath .= '/'.(is_numeric($pathOption)?'(###)':$pathOption);
+		foreach ($pathOptions as $pathOption) {
+			$moddedPath .= '/';
+			if (is_numeric($pathOption)) $moddedPath .= '(###)';
+			elseif ($systems->getSystemID($pathOption)) $moddedPath .= '(system)';
+			else $moddedPath .= $pathOption;
+		}
 //		echo $moddedPath;
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute(array($moddedPath.'/'));

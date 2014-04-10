@@ -17,8 +17,8 @@
 				<select name="system">
 					<option value="">Select One</option>
 <?
-	$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 AND systemID != 1 ORDER BY fullName');
-	foreach ($systems as $info) echo "\t\t\t\t\t".'<option value="'.$info['systemID'].'">'.printReady($info['fullName'])."</option>\n";
+	$allSystems = $systems->getAllSystems(TRUE);
+	foreach ($allSystems as $systemID => $systemInfo) echo "\t\t\t\t\t".'<option value="'.$systemID.'">'.printReady($systemInfo['fullName'])."</option>\n";
 ?>
 					<option value="1">Custom</option>
 				</select>

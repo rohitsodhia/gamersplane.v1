@@ -127,19 +127,12 @@
 	}
 
 /* Character Functions */
-	function getSystemID($system) {
-		global $mysql;
-
-		$systemID = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :system');
-		$systemID->execute(array(':system' => $system));
-		if ($systemID->rowCount()) return $systemID->fetchColumn();
-		else return FALSE;
-	}
-
 	function includeSystemInfo($system) {
-		if (is_dir(FILEROOT.'/includes/characters/'.$system)) 
+		if (is_dir(FILEROOT.'/includes/characters/'.$system)) {
+			require_once(FILEROOT.'/includes/characters/d20Character.class.php');
 			foreach (glob(FILEROOT.'/includes/characters/'.$system.'/*') as $file) 
-				include_once($file);
+				require_once($file);
+		}
 	}
 
 	function allowCharView($characterID, $userID) {

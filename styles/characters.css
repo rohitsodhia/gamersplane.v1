@@ -169,7 +169,7 @@
 
 /* --------------------------------------------*/
 
-.viewCharacter h1.headerbar {
+#page_characterSheet h1.headerbar, #page_characterSheet_edit h1.headerbar {
 	margin-bottom: 0;
 }
 
@@ -214,4 +214,25 @@
 	font-weight: bold;
 	text-align: center;
 	margin: 1em 0;
+}
+
+#classWrapper {
+	position: relative;
+	display: inline-block;
+	padding-right: 80px;
+}
+
+#classWrapper a {
+	position: absolute;
+	top: 1em;
+	right: 0;
+	font-size: .8em;
+}
+
+#classWrapper .classSet {
+	margin-top: .5em;
+}
+
+#classWrapper .classSet:first-of-type {
+	margin-top: 0;
 }

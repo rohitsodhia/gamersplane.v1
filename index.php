@@ -131,8 +131,8 @@
 				<p>Gamers Plane has a number of systems built into our site, including:</p>
 				<ul>
 <?
-	$systems = $mysql->query('SELECT fullName FROM (SELECT fullName FROM systems WHERE systemID != 0 ORDER BY RAND() LIMIT 5) s ORDER BY fullName');
-	foreach ($systems as $info) echo "\t\t\t\t\t<li>{$info['fullName']}</li>\n";
+	$randSystems = $systems->getRandomSystems(5);
+	foreach ($randSystems as $info) echo "\t\t\t\t\t<li>{$info['fullName']}</li>\n";
 ?>
 				</ul>
 				<p>And many more availabe and coming!</p>

@@ -4,9 +4,7 @@
 		$characterID = intval($_POST['characterID']);
 		$system = sanitizeString($_POST['system']);
 
-		$validateSystem = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :shortName');
-		$validateSystem->execute(array(':shortName' => $system));
-		if ($validateSystem->rowCount()) {
+		if ($systems->getSystemID($system)) {
 			$feats = $mysql->prepare("SELECT featsList.featID, featsList.name FROM featsList LEFT JOIN (SELECT featID FROM {$system}_feats WHERE characterID = $characterID) {$system}_feats ON featsList.featID = {$system}_feats.featID WHERE searchName LIKE ? AND {$system}_feats.featID IS NULL LIMIT 5");
 			$feats->execute(array("%$search%"));
 			foreach ($feats as $info) {

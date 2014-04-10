@@ -9,7 +9,7 @@
 		$userID = intval($_SESSION['userID']);
 		$gameID = intval($_POST['gameID']);
 		$details['title'] = $_POST['title'];
-		$systemInfo = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE systemID = '.intval($_POST['system']));
+		$systemInfo = $systems->getSystemInfo(intval($_POST['system']));
 		if ($systemInfo->rowCount()) {
 			$systemInfo = $systemInfo->fetch();
 			$details['systemID'] = intval($_POST['system']);

@@ -19,12 +19,11 @@
 <!--				<div class="tr"><input id="search" name="search" type="text" class="placeholder" data-placeholder="Search for..."></div>-->
 				<ul class="clearfix">
 <?
-	$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1');
-	$totalNumSystems = $systems->rowCount();
-	foreach ($systems as $info) echo "					<li><input id=\"system_{$info['shortName']}\" type=\"checkbox\" name=\"filterSystem[]\" value=\"{$info['systemID']}\"".(isset($_GET['filter']) && array_search($info['systemID'], $_GET['filterSystem']) !== FALSE || !isset($_GET['filter'])?' checked="checked"':'')."> <label for=\"system_{$info['shortName']}\">{$info['fullName']}</label></li>\n"
+	$allSystems = $systems->getAllSystems();
+	foreach ($allSystems as $systemID => $systemInfo) echo "					<li><input id=\"system_{$systemInfo['shortName']}\" type=\"checkbox\" name=\"filterSystem[]\" value=\"{$systemID}\"".(isset($_GET['filter']) && array_search($systemID, $_GET['filterSystem']) !== FALSE || !isset($_GET['filter'])?' checked="checked"':'')."> <label for=\"system_{$systemInfo['shortName']}\">{$systemInfo['fullName']}</label></li>\n"
 ?>
 				</ul>
-				<input type="hidden" name="numSystems" value="<?=$systems->rowCount()?>">
+				<input type="hidden" name="numSystems" value="<?=sizeof($allSystems)?>">
 				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 			</form>
 		</div>

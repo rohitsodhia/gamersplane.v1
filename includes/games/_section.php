@@ -1,3 +1,3 @@
 <?
-	if ($pathOptions[1] == 'maps') require('maps/icon.class.php');
+	if ($pathOptions[1] == 'maps') require('maps/Icon.class.php');
 ?>

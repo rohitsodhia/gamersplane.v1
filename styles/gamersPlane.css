@@ -608,7 +608,7 @@ div.prettySelect > div {
 .bodyHeader {
 	position: relative;
 	background: url('../images/bodyComponents/background.jpg') 0 0 repeat-x;
-	z-index: 5000;
+	z-index: 10000;
 }
 
 .bodyHeader, .bodyHeader .bodyContainer {
@@ -750,6 +750,10 @@ br.gap {
 
 .alignRight {
 	text-align: right;
+}
+
+.alignTop {
+	vertical-align: top;
 }
 
 .redStones {

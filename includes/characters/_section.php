@@ -14,7 +14,7 @@
 			$addNewSkill->execute();
 			$skillID = $mysql->lastInsertId();
 		}
-		$systemID = getSystemID($system);
+		$systemID = $systems->getSystemID($system);
 		$mysql->query("INSERT INTO system_skill_map SET systemID = $systemID, skillID = $skillID");
 
 		return $skillID;

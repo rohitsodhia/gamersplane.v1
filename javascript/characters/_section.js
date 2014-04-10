@@ -1,9 +1,5 @@
 $(function () {
-	if ($('body').hasClass('viewCharacter')) {
-		$('#sheetActions').setupWingContainer();
-	}
-
-	$('.characterSheet .favoriteChar').click(function (e) {
+	$('#page_characterSheet .favoriteChar').click(function (e) {
 		e.preventDefault();
 		$link = $(this);
 		characterID = $('#characterID').val();
@@ -15,4 +11,11 @@ $(function () {
 			}
 		});
 	});
+
+	if ($('#classWrapper')) {
+		$('#classWrapper a').click(function (e) {
+			e.preventDefault();
+			$(this).parent().find('.classSet').eq(0).clone().appendTo($(this).parent());
+		});
+	}
 });

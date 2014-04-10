@@ -12,9 +12,8 @@
 	$lfgs = $mysql->query('SELECT systemID FROM lfg WHERE userID = '.$userID);
 	$lfgVals = array();
 	while ($game = $lfgs->fetchColumn()) $lfgVals[] = $game;
-	$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 AND systemID != 1 ORDER BY fullName');
-	$systems = $systems->fetchAll();
-	foreach ($systems as $info) echo "\t\t\t\t<div class=\"game\"><input id=\"cb_{$info['shortName']}\" type=\"checkbox\" name=\"lfg[{$info['systemID']}]\" value=\"1\"".(in_array($info['systemID'], $lfgVals)? ' checked="checked"':'')."> <label for=\"cb_{$info['shortName']}\">{$info['fullName']}</label></div>\n";
+	$allSystems = $systems->getAllSystems(TRUE);
+	foreach ($allSystems as $systemID => $systemInfo) echo "\t\t\t\t<div class=\"game\"><input id=\"cb_{$systemInfo['shortName']}\" type=\"checkbox\" name=\"lfg[{$systemID}]\" value=\"1\"".(in_array($systemID, $lfgVals)? ' checked="checked"':'')."> <label for=\"cb_{$systemInfo['shortName']}\">{$systemInfo['fullName']}</label></div>\n";
 ?>
 			</div>
 			<div id="submitDiv"><button type="submit" name="update" class="fancyButton">Update</button></div>

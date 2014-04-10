@@ -1,0 +1,417 @@
+/*
+	Gamers Plane Characters: D&D3/3.5 CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+
+.cell {
+	display: inline-block;
+}
+
+label {
+	font-size: .8em;
+	display: inline-block;
+}
+
+label.shiftRight {
+	padding-left: 8px;
+}
+
+input[type="text"] {
+	width: 40px;
+	text-align: center;
+}
+
+.shortText, input.shortText {
+	width: 100px;
+}
+
+.medText, input.medText {
+	width: 200px;
+}
+
+.longText, input.longText {
+	width: 350px;
+}
+
+input.shortText, input.medText, input.longText {
+	text-align: left;
+}
+
+.shortNum, input.shortNum {
+	width: 40px;
+}
+
+.medNum, input.medNum {
+	width: 60px;
+}
+
+label.leftLabel {
+	font-size: 1em;
+}
+
+.lrBuffer {
+	margin-right: 9px;
+	margin-left: 9px;
+}
+
+#page_characterSheet_edit .labelTR {
+	padding-bottom: 0;
+}
+
+#page_characterSheet .labelTR {
+	padding: 0;
+}
+
+#page_characterSheet .dataTR {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet .dataTR > div {
+	display: inline-block;
+}
+
+#page_characterSheet_edit #label_levels {
+	position: relative;
+	left: -2px;
+}
+
+#page_characterSheet_edit #levels {
+	width: 75px;
+}
+
+#stats, #savingThrows, #hp {
+	margin: 1.5em 0 .5em;
+	float: left;
+}
+
+#page_characterSheet #stats {
+	margin-top: 0;
+}
+
+#page_characterSheet #stats .stat {
+	border-right: 1px solid #555;
+	border-left: 1px solid #555;
+}
+
+#stats div.stat, #stats span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#savingThrows, #hp {
+	margin-left: 50px;
+}
+
+#page_characterSheet #savingThrows {
+	margin-top: 0;
+}
+
+#page_characterSheet #savingThrows .dataTR {
+	margin-bottom: 0;
+}
+
+#savingThrows .labelTR label {
+	text-align: center;
+}
+
+#savingThrows label.leftLabel, #savingThrows .fillerBlock {
+	width: 75px;
+}
+
+#page_characterSheet_edit #savingThrows span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet #savingThrows .dataTR > div {
+	text-align: center;
+}
+
+#page_characterSheet_edit #hp {
+	margin-top: 2em;
+}
+
+#page_characterSheet_edit #hp label {
+	margin-right: 10px;
+}
+
+#page_characterSheet_edit #hp input {
+	margin-right: 20px;
+}
+
+#page_characterSheet_edit #hp input#damageReduction {
+	width: 150px;
+}
+
+#page_characterSheet #hp div {
+	padding: 3px 8px;
+	margin: 0 20px 0 10px;
+	border: 1px solid #555;
+}
+
+#ac {
+	margin-top: 1.5em;
+}
+
+#ac label, #page_characterSheet #ac .dataTR div {
+	text-align: center;
+	width: 60px;
+}
+
+#page_characterSheet #ac .first {
+	margin-right: 10px;
+}
+
+#page_characterSheet #ac .dataTR div {
+	text-align: center;
+}
+
+#page_characterSheet_edit #ac .tr div {
+	display: inline-block;
+	width: 50px;
+	text-align: center;
+}
+
+#page_characterSheet_edit #ac #ac_total {
+	width: 60px;
+}
+
+#page_characterSheet_edit #ac .tr .sizeVal {
+	width: 40px;
+	margin: 0 10px;
+	text-align: center;
+}
+
+#page_characterSheet_edit #ac input.first {
+	margin: 0 20px;
+}
+
+#combatBonuses {
+	margin-top: 1.5em;
+}
+
+#page_characterSheet #combatBonuses .dataTR div {
+	text-align: center;
+}
+
+#combatBonuses .labelTR label {
+	text-align: center;
+}
+
+#page_characterSheet_edit #combatBonuses .labelTR .first {
+	margin-left: 115px;
+}
+
+#page_characterSheet #combatBonuses .labelTR .first {
+	margin-left: 105px;
+}
+
+#combatBonuses label.leftLabel {
+	text-align: right;
+}
+
+#combatBonuses span {
+	display: inline-block;
+	width: 40px;
+	text-align: center;
+}
+
+#page_characterSheet_edit .textareaDiv, #page_characterSheet .textDiv {
+/*	width: 450px;*/
+	margin-top: 1em;
+}
+
+#page_characterSheet_edit h2 a {
+	margin-left: 10px;
+	font-size: .6em;
+	font-weight: normal;
+	line-height: 1em;
+}
+
+#skills, #feats {
+	margin-top: 1em;
+}
+
+#weapons, #armor {
+	margin-top: 2em;
+}
+
+#weapons .remove, #armor .remove {
+	font-size: .85em;
+}
+
+#skills {
+	width: 555px;
+}
+
+#addSkillWrapper {
+	margin: 1em 0;
+	position: relative;
+}
+
+#addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {
+	top: -1px;
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
+.skill span {
+	display: inline-block;
+}
+
+.skill .skill_stat {
+	text-transform: smallcaps;
+}
+
+.skill .skill_total {
+	text-align: center;
+}
+
+#feats {
+	width: 385px;
+}
+
+#feats span, #feats a {
+	display: inline-block;
+}
+
+#page_characterSheet_edit .feat_name {
+	width: 245px;
+}
+
+#page_characterSheet .feat_name {
+	width: 295px;
+}
+
+.feat_notesLink {
+	font-size: .8em;
+}
+
+#page_characterSheet .feat_notes {
+	display: none;
+}
+
+#weapons {
+	width: 490px;
+}
+
+.weapon, .armor {
+	margin: 20px 0 0;
+	padding-top: 10px;
+	border-top: 1px solid #777;
+}
+
+.weapon input, .armor input {
+	text-align: center;
+}
+
+.weapon:first-child, .armor:first-child {
+	margin-top: 0;
+	padding-top: 0;
+	border-top: none;
+}
+
+#page_characterSheet #weapons span, #page_characterSheet #armor span {
+	display: inline-block;
+}
+
+#page_characterSheet .weapon .lrBuffer {
+	margin-right: 5px;
+	margin-left: 0;
+}
+
+#page_characterSheet .armor .lrBuffer {
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+#page_characterSheet .weapon .labelTR, #page_characterSheet .armor .labelTR {
+	padding-top: .5em;
+}
+
+#page_characterSheet .weapon .labelTR:first-child, #page_characterSheet .armor .labelTR:first-child {
+	padding-top: 0;
+}
+
+.weapon .medText {
+	width: 216px;
+	text-align: left;
+}
+
+.weapon_secondRow label, #page_characterSheet .weapon_secondRow span, #page_characterSheet_edit .weapon_secondRow input {
+	width: 98px;
+}
+
+input.weapon_notes, .weapon_notes {
+	width: 469px;
+	text-align: left;
+}
+
+#armor {
+	width: 440px;
+}
+
+#page_characterSheet_edit .armor_firstRow label.shortText, #page_characterSheet .armor_firstRow .shortText, #page_characterSheet_edit .armor_firstRow input.shortText {
+	width: 70px;
+}
+
+.armor .medText {
+	width: 230px;
+	text-align: left;
+}
+
+.armor_secondRow label, #page_characterSheet .armor_secondRow span, #page_characterSheet_edit .armor_secondRow input {
+	width: 86px;
+}
+
+input.armor_notes, .armor_notes {
+	width: 421px;
+	text-align: left;
+}
+
+#items, #spells {
+	float: left;
+	width: 465px;
+	margin-top: 1em;
+}
+
+#spells {
+	float: right;
+}
+
+#items textarea, #spells textarea {
+	width: 100%;
+	height: 12.4em;
+}
+
+#notes {
+	margin-top: 2.5em;
+}
+
+#notes textarea {
+	width: 100%;
+	height: 16.2em;
+}
+
+#submitDiv {
+	text-align: center;
+	margin-top: 1em;
+}
+
+/* --------------------------------------------*/
+
+#page_characterSheet_dnd3_editFeatNotes {
+	text-align: center;
+}
+
+#page_characterSheet_dnd3_editFeatNotes textarea {
+	width: 450px;
+	height: 8em;
+}
+
+#page_characterSheet_dnd3_featNotes #notes {
+	margin-top: 0;
+}

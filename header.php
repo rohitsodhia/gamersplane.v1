@@ -41,18 +41,18 @@
 			<li><a href="<?=SITEROOT?>/tools" class="first">Tools</a></li>
 <? if ($loggedIn) { ?>
 			<li>
-				<a href="<?=SITEROOT?>/characters">Characters</a>
+				<a href="<?=SITEROOT?>/characters/my/">Characters</a>
 <?
 		$header_characters = $mysql->query('SELECT c.characterID, c.label, s.shortName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.intval($_SESSION['userID']).' ORDER BY c.label');
 		if ($header_characters->rowCount()) {
 			echo "				<ul>\n";
 			$count = 0;
-			foreach ($header_characters as $character) {
+			foreach ($header_characters as $hCharacter) {
 				if ($count > 5) {
 					echo "					".'<li><a href="'.SITEROOT.'/characters/my">All characters</a></li>'."\n";
 					break;
 				}
-				echo "					".'<li><a href="'.SITEROOT.'/characters/'.$character['shortName'].'/'.$character['characterID'].'">'.$character['label'].'</a></li>'."\n";
+				echo "					".'<li><a href="'.SITEROOT.'/characters/'.$hCharacter['shortName'].'/'.$hCharacter['characterID'].'">'.$hCharacter['label'].'</a></li>'."\n";
 				$count++;
 			}
 			echo "				</ul>\n";
