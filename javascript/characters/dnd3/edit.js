@@ -144,12 +144,6 @@ $(function() {
 	$('.feat_notesLink').colorbox();
 	$('#feats').on('click', '.feat_remove', removeFeat);
 	
-	$('#addWeapon').click(function (e) {
-		$.post('/characters/ajax/dnd3/weapon', { weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
-		
-		e.preventDefault()
-	});
-	
 	$('#addArmor').click(function (e) {
 		$.post('/characters/ajax/dnd3/armor', { armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
 		

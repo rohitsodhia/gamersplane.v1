@@ -107,9 +107,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 				if ($(this).text().length > longest.length) longest = $(this).text();
 				$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelect.find('.prettySelectOptions'));
 			});
-			console.log(current);
 			if (current == '') current = $select.find('option:first').text();
-			console.log(current);
 			$prettySelectLongest.text(longest);
 			$prettySelectCurrent.text(current);
 		}

@@ -1,6 +1,6 @@
 <?
 	function getSkill($skillName, $system) {
-		global $mysql;
+		global $mysql, $systems;
 
 		$skillCheck = $mysql->prepare('SELECT skillID FROM skillsList WHERE LOWER(searchName) = :searchName');
 		$skillCheck->bindValue(':searchName', sanitizeString($skillName, 'search_format'));
@@ -15,7 +15,9 @@
 			$skillID = $mysql->lastInsertId();
 		}
 		$systemID = $systems->getSystemID($system);
-		$mysql->query("INSERT INTO system_skill_map SET systemID = $systemID, skillID = $skillID");
+		try {
+			$mysql->query("INSERT INTO system_skill_map SET systemID = $systemID, skillID = $skillID");
+		} catch (Exception $e) { }
 
 		return $skillID;
 	}

@@ -18,6 +18,7 @@ label.shiftRight {
 }
 
 input[type="text"] {
+	vertical-align: middle;
 	width: 40px;
 	text-align: center;
 }
@@ -51,8 +52,8 @@ label.leftLabel {
 }
 
 .lrBuffer {
-	margin-right: 9px;
-	margin-left: 9px;
+	margin-right: 10px;
+	margin-left: 10px;
 }
 
 #page_characterSheet_edit .labelTR {
@@ -71,13 +72,8 @@ label.leftLabel {
 	display: inline-block;
 }
 
-#page_characterSheet_edit #label_levels {
-	position: relative;
-	left: -2px;
-}
-
-#page_characterSheet_edit #levels {
-	width: 75px;
+#classWrapper {
+	padding-right: 110px;
 }
 
 #stats, #savingThrows, #hp {
@@ -131,7 +127,7 @@ label.leftLabel {
 }
 
 #page_characterSheet_edit #hp {
-	margin-top: 2em;
+	margin-top: 1.5em;
 }
 
 #page_characterSheet_edit #hp label {
@@ -142,17 +138,19 @@ label.leftLabel {
 	margin-right: 20px;
 }
 
-#page_characterSheet_edit #hp input#damageReduction {
-	width: 150px;
+#page_characterSheet #hp .tr {
+	display: block;
 }
 
-#page_characterSheet #hp div {
+#page_characterSheet #hp .tr div {
+	display: inline-block;
 	padding: 3px 8px;
 	margin: 0 20px 0 10px;
 	border: 1px solid #555;
 }
 
-#ac {
+#ac, #speed {
+	float: left;
 	margin-top: 1.5em;
 }
 
@@ -187,6 +185,14 @@ label.leftLabel {
 
 #page_characterSheet_edit #ac input.first {
 	margin: 0 20px;
+}
+
+#page_characterSheet_edit #speed {
+	margin: 46px 0 0 50px;
+}
+
+#page_characterSheet #speed {
+	margin: 36px 0 0 50px;
 }
 
 #combatBonuses {
@@ -258,6 +264,10 @@ label.leftLabel {
 	vertical-align: middle;
 }
 
+.skill {
+	padding: 2px 0;
+}
+
 .skill span {
 	display: inline-block;
 }
@@ -268,6 +278,10 @@ label.leftLabel {
 
 .skill .skill_total {
 	text-align: center;
+}
+
+.skill_remove {
+	margin-right: 0;
 }
 
 #feats {
@@ -394,24 +408,4 @@ input.armor_notes, .armor_notes {
 #notes textarea {
 	width: 100%;
 	height: 16.2em;
-}
-
-#submitDiv {
-	text-align: center;
-	margin-top: 1em;
-}
-
-/* --------------------------------------------*/
-
-#page_characterSheet_dnd3_editFeatNotes {
-	text-align: center;
-}
-
-#page_characterSheet_dnd3_editFeatNotes textarea {
-	width: 450px;
-	height: 8em;
-}
-
-#page_characterSheet_dnd3_featNotes #notes {
-	margin-top: 0;
 }

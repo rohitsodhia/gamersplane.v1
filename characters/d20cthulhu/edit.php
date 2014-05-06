@@ -1,20 +1,30 @@
-<?	global $character; ?>
-		<form method="post" action="<?=SITEROOT?>/characters/process/dnd3/">
-			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-			
 			<div class="tr labelTR">
 				<label id="label_name" class="medText lrBuffer borderBox shiftRight">Name</label>
-				<label id="label_classes" class="medText lrBuffer borderBox shiftRight">Class(es)</label>
+				<label id="label_professions" class="medText lrBuffer borderBox shiftRight">Profession(s)</label>
 				<label id="label_levels" class="shortNum lrBuffer borderBox">Level(s)</label>
 			</div>
 			<div class="tr">
-				<input type="text" name="name" value="<?=$charInfo['name']?>" class="medText alignTop lrBuffer">
+				<input type="text" name="name" value="<?=$this->getName()?>" class="medText alignTop lrBuffer">
 				<div id="classWrapper">
-					<a href="">[ Add Class ]</a>
+					<a href="">[ Add Profession ]</a>
+<?
+	$hasProfessions = FALSE;
+	foreach ($this->getProfessions() as $profession => $level) {
+		$hasProfessions = TRUE;
+?>
 					<div class="classSet">
-						<input type="text" name="class[]" value="<?=$charInfo['class']?>" class="medText lrBuffer">
-						<input type="text" name="level[]" value="<?=$charInfo['class']?>" class="shortNum lrBuffer">
+						<input type="text" name="profession[]" value="<?=$profession?>" class="medText lrBuffer">
+						<input type="text" name="level[]" value="<?=$level?>" class="shortNum lrBuffer">
 					</div>
+<?
+	}
+	if (!$hasProfessions) {
+?>
+					<div class="classSet">
+						<input type="text" name="profession[]" class="medText lrBuffer">
+						<input type="text" name="level[]" class="shortNum lrBuffer">
+					</div>
+<?	} ?>
 				</div>
 			</div>
 			
@@ -23,12 +33,11 @@
 <?
 	$stats = d20Character_consts::getStatNames();
 	foreach ($stats as $short => $stat) {
-		$bonus = floor(($character->getStat($short) - 10)/2);
 ?>
 					<div class="tr">
 						<label id="label_<?=$short?>" class="textLabel shortText lrBuffer leftLabel"><?=$stat?></label>
-						<input type="text" id="<?=$short?>" name="<?=$short?>" value="<?=$character->getStat($short)?>" maxlength="2" class="stat lrBuffer">
-						<span id="<?=$short?>Modifier"><?=showSign($bonus)?></span>
+						<input type="text" id="<?=$short?>" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="2" class="stat lrBuffer">
+						<span id="<?=$short?>Modifier"><?=$this->getStatMod($short)?></span>
 					</div>
 <?
 		$statBonus[$short] = $bonus;
@@ -43,76 +52,58 @@
 						<label class="statCol shortNum lrBuffer">Base</label>
 						<label class="statCol shortNum lrBuffer">Ability</label>
 						<label class="statCol shortNum lrBuffer">Magic</label>
-						<label class="statCol shortNum lrBuffer">Race</label>
 						<label class="statCol shortNum lrBuffer">Misc</label>
 					</div>
-	<?
-	$fortBonus = showSign($charInfo['fort_base'] + $statBonus['con'] + $charInfo['fort_magic'] + $charInfo['fort_race'] + $charInfo['fort_misc']);
-	$refBonus = showSign($charInfo['ref_base'] + $statBonus['dex'] + $charInfo['ref_magic'] + $charInfo['ref_race'] + $charInfo['ref_misc']);
-	$willBonus = showSign($charInfo['will_base'] + $statBonus['wis'] + $charInfo['will_magic'] + $charInfo['will_race'] + $charInfo['will_misc']);
+<?	foreach (d20Character_consts::getSaveNames() as $save => $saveFull) { ?>
+					<div id="<?=$save?>Row" class="tr">
+						<label class="leftLabel"><?=$saveFull?></label>
+						<span id="<?=$save?>Total" class="shortNum lrBuffer addStat_<?=d20Character_consts::getSaveStats($save)?>"><?=showSign($this->getSave('fort', 'total'))?></span>
+						<input type="text" name="saves[<?=$save?>][base]" value="<?=$this->getSave($save, 'base')?>" class="lrBuffer">
+						<span class="shortNum lrBuffer statBonus_<?=d20Character_consts::getSaveStats($save)?>"><?=$this->getStatMod(d20Character_consts::getSaveStats($save))?></span>
+						<input type="text" name="saves[<?=$save?>][magic]"  value="<?=$this->getSave($save, 'magic')?>" class="lrBuffer">
+						<input type="text" name="saves[<?=$save?>][misc]"  value="<?=$this->getSave($save, 'misc')?>" class="lrBuffer">
+					</div>
+<?
+	}
 ?>
-					<div id="fortRow" class="tr">
-						<label class="leftLabel">Fortitude</label>
-						<span id="fortTotal" class="shortNum lrBuffer addStat_con"><?=$fortBonus?></span>
-						<input type="text" name="fort_base"  value="<?=$charInfo['fort_base']?>" class="lrBuffer">
-						<span class="shortNum lrBuffer statBonus_con"><?=$statBonus['con']?></span>
-						<input type="text" name="fort_magic"  value="<?=$charInfo['fort_magic']?>" class="lrBuffer">
-						<input type="text" name="fort_race"  value="<?=$charInfo['fort_race']?>" class="lrBuffer">
-						<input type="text" name="fort_misc"  value="<?=$charInfo['fort_misc']?>" class="lrBuffer">
-					</div>
-					<div id="refRow" class="tr">
-						<label class="leftLabel">Reflex</label>
-						<span id="refTotal" class="shortNum lrBuffer addStat_dex"><?=$refBonus?></span>
-						<input type="text" name="ref_base"  value="<?=$charInfo['ref_base']?>" class="lrBuffer">
-						<span class="shortNum lrBuffer statBonus_dex"><?=$statBonus['dex']?></span>
-						<input type="text" name="ref_magic"  value="<?=$charInfo['ref_magic']?>" class="lrBuffer">
-						<input type="text" name="ref_race"  value="<?=$charInfo['ref_race']?>" class="lrBuffer">
-						<input type="text" name="ref_misc"  value="<?=$charInfo['ref_misc']?>" class="lrBuffer">
-					</div>
-					<div id="willRow" class="tr">
-						<label class="leftLabel">Will</label>
-						<span id="willTotal" class="shortNum lrBuffer addStat_wis"><?=$willBonus?></span>
-						<input type="text" name="will_base"  value="<?=$charInfo['will_base']?>" class="lrBuffer">
-						<span class="shortNum lrBuffer statBonus_wis"><?=$statBonus['wis']?></span>
-						<input type="text" name="will_magic"  value="<?=$charInfo['will_magic']?>" class="lrBuffer">
-						<input type="text" name="will_race"  value="<?=$charInfo['will_race']?>" class="lrBuffer">
-						<input type="text" name="will_misc"  value="<?=$charInfo['will_misc']?>" class="lrBuffer">
-					</div>
 				</div>
 				
 				<div id="hp">
-					<label class="leftLabel textLabel">Total HP</label>
-					<input type="text" name="hp" value="<?=$charInfo['hp']?>" class="medNum">
-					<label class="leftLabel textLabel">Damage Reduction</label>
-					<input id="damageReduction" type="text" name="dr" value="<?=$charInfo['dr']?>" class="medText">
+					<div class="tr">
+						<label class="leftLabel textLabel">Total HP</label>
+						<input type="text" name="hp[total]" value="<?=$this->getHP('total')?>" class="medNum">
+						<label class="leftLabel textLabel">Subdual HP</label>
+						<input type="text" name="hp[subdual]" value="<?=$this->getHP('subdual')?>" class="medNum">
+					</div>
+					<div class="tr">
+						<label class="leftLabel textLabel">Max Sanity</label>
+						<input type="text" name="sanity[max]" value="<?=$this->getSanity('max')?>" class="medNum">
+						<label class="leftLabel textLabel">Current Sanity</label>
+						<input type="text" name="sanity[current]" value="<?=$this->getSanity('current')?>" class="medNum">
+					</div>
 				</div>
 			</div>
 			
-			<div id="ac">
-				<div class="tr labelTR">
-					<label class="lrBuffer">Total AC</label>
-					<div class="fillerBlock cell">&nbsp;</div>
-					<label>Armor</label>
-					<label>Shield</label>
-					<label>Dex</label>
-					<label>Class</label>
-					<label>Size</label>
-					<label>Natural</label>
-					<label>Deflection</label>
-					<label>Misc</label>
+			<div class="clearfix">
+				<div id="ac">
+					<div class="tr labelTR">
+						<label class="lrBuffer">Total AC</label>
+						<div class="fillerBlock cell">&nbsp;</div>
+						<label>Armor</label>
+						<label>Dex</label>
+						<label>Misc</label>
+					</div>
+					<div class="tr">
+						<div id="ac_total" class="lrBuffer"><?=$this->getAC('total')?></div>
+						<div> = 10 + </div>
+						<input type="text" name="ac[armor]" value="<?=$this->getAC('armor')?>" class="acComponents lrBuffer">
+						<input type="text" name="ac[dex]" value="<?=$this->getAC('dex')?>" class="acComponents lrBuffer">
+						<input type="text" name="ac[misc]" value="<?=$this->getAC('misc')?>" class="acComponents lrBuffer">
+					</div>
 				</div>
-<? $acTotal = 10 + $charInfo['ac_armor'] + $charInfo['ac_shield'] + $charInfo['ac_dex'] + $charInfo['ac_class'] + $charInfo['size'] + $charInfo['ac_natural'] + $charInfo['ac_deflection'] + $charInfo['ac_misc']; ?>
-				<div class="tr">
-					<div id="ac_total" class="lrBuffer addSize"><?=$acTotal?></div>
-					<div> = 10 + </div>
-					<input type="text" name="ac_armor" value="<?=$charInfo['ac_armor']?>" class="acComponents lrBuffer">
-					<input type="text" name="ac_shield" value="<?=$charInfo['ac_shield']?>" class="acComponents lrBuffer">
-					<input type="text" name="ac_dex" value="<?=$charInfo['ac_dex']?>" class="acComponents lrBuffer">
-					<input type="text" name="ac_class" value="<?=$charInfo['ac_class']?>" class="acComponents lrBuffer">
-					<div class="sizeVal lrBuffer"><?=showSign($charInfo['size'])?></div>
-					<input type="text" name="ac_natural" value="<?=$charInfo['ac_natural']?>" class="acComponents lrBuffer">
-					<input type="text" name="ac_deflection" value="<?=$charInfo['ac_deflection']?>" class="acComponents lrBuffer">
-					<input type="text" name="ac_misc" value="<?=$charInfo['ac_misc']?>" class="acComponents lrBuffer">
+				<div id="speed">
+					<label class="leftLabel textLabel">Speed</label>
+					<input type="text" name="speed" value="<?=$this->getSpeed()?>" class="lrBuffer">
 				</div>
 			</div>
 			
@@ -122,42 +113,31 @@
 					<label class="statCol shortNum lrBuffer">Total</label>
 					<label class="statCol shortNum lrBuffer">Base</label>
 					<label class="statCol shortNum lrBuffer">Ability</label>
-					<label class="statCol shortNum lrBuffer">Size</label>
 					<label class="statCol shortNum lrBuffer">Misc</label>
 				</div>
-<?
-	$initTotal = showSign($statBonus['dex'] + $charInfo['initiative_misc']);
-	$meleeTotal = showSign($charInfo['bab'] + $statBonus['str'] + $charInfo['size'] + $charInfo['melee_misc']);
-	$rangedTotal = showSign($charInfo['bab'] + $statBonus['dex'] + $charInfo['size'] + $charInfo['ranged_misc']);
-?>
 				<div id="init" class="tr">
 					<label class="leftLabel shortText">Initiative</label>
-					<span id="initTotal" class="shortNum lrBuffer addStat_dex"><?=$initTotal?></span>
+					<span id="initTotal" class="shortNum lrBuffer addStat_dex"><?=showSign($this->getInitiative('total'))?></span>
 					<span class="lrBuffer">&nbsp;</span>
-					<span class="shortNum lrBuffer statBonus_dex"><?=$statBonus['dex']?></span>
-					<span class="lrBuffer">&nbsp;</span>
-					<input type="text" name="initiative_misc" value="<?=$charInfo['initiative_misc']?>" class="lrBuffer">
+					<span class="shortNum lrBuffer statBonus_dex"><?=$this->getStatMod('dex')?></span>
+					<input type="text" name="initiative[misc]" value="<?=$this->getInitiative('misc')?>" class="lrBuffer">
 				</div>
 				<div id="melee" class="tr">
 					<label class="leftLabel shortText">Melee</label>
-					<span id="meleeTotal" class="shortNum lrBuffer addStat_str addSize"><?=$meleeTotal?></span>
-					<input id="bab" type="text" name="bab" value="<?=$charInfo['bab']?>" class="lrBuffer">
-					<span class="shortNum lrBuffer statBonus_str"><?=$statBonus['str']?></span>
-					<span class="shortNum lrBuffer sizeVal"><?=showSign($charInfo['size'])?></span>
-					<input id="melee_misc" type="text" name="melee_misc" value="<?=$charInfo['melee_misc']?>" class="lrBuffer">
+					<span id="meleeTotal" class="shortNum lrBuffer addStat_str"><?=showSign($this->getAttackBonus('total', 'melee') + $this->getStatMod('str'))?></span>
+					<input id="bab" type="text" name="attackBonus[base]" value="<?=$this->getAttackBonus('base')?>" class="lrBuffer">
+					<span class="shortNum lrBuffer statBonus_str"><?=$this->getStatMod('str')?></span>
+					<input id="melee_misc" type="text" name="attackBonus[misc][melee]" value="<?=$this->getAttackBonus('misc', 'melee')?>" class="lrBuffer">
 				</div>
-<? $charInfo['bab'] = showSign($charInfo['bab']); ?>
 				<div id="ranged" class="tr">
 					<label class="leftLabel shortText">Ranged</label>
-					<span id="rangedTotal" class="shortNum lrBuffer addStat_dex addSize"><?=$rangedTotal?></span>
-					<span class="shortNum lrBuffer bab"><?=$charInfo['bab']?></span>
-					<span class="shortNum lrBuffer statBonus_dex"><?=$statBonus['dex']?></span>
-					<span class="shortNum lrBuffer sizeVal"><?=showSign($charInfo['size'])?></span>
-					<input id="ranged_misc" type="text" name="ranged_misc" value="<?=$charInfo['ranged_misc']?>" class="lrBuffer">
+					<span id="rangedTotal" class="shortNum lrBuffer addStat_dex"><?=showSign($this->getAttackBonus('total', 'ranged') + $this->getStatMod('dex'))?></span>
+					<span class="shortNum lrBuffer bab"><?=showSign($this->getAttackBonus('base'))?></span>
+					<span class="shortNum lrBuffer statBonus_dex"><?=$this->getStatMod('dex')?></span>
+					<input id="ranged_misc" type="text" name="attackBonus[misc][ranged]" value="<?=$this->getAttackBonus('misc', 'ranged')?>" class="lrBuffer">
 				</div>
 			</div>
 			
-			<? /*
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
@@ -165,6 +145,7 @@
 						<div id="addSkillWrapper">
 							<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
 							<select id="skillStat" name="newSkill[stat]">
+								<option value="">N/A</option>
 <?
 	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
 ?>
@@ -178,13 +159,7 @@
 							<label class="shortNum alignCenter lrBuffer">Ranks</label>
 							<label class="shortNum alignCenter lrBuffer">Misc</label>
 						</div>
-<?
-	$skills = $mysql->query("SELECT dnd3_skills.skillID, skillsList.name, dnd3_skills.stat, dnd3_skills.ranks, dnd3_skills.misc FROM dnd3_skills INNER JOIN skillsList USING (skillID) WHERE dnd3_skills.characterID = $characterID ORDER BY skillsList.name");
-	if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
-		skillFormFormat($skillInfo, $statBonus[$skillInfo['stat']]);
-	} } else { ?>
-						<p id="noSkills">This character currently has no skills.</p>
-<?	} ?>
+<?	$this->showSkillsEdit(); ?>
 					</div>
 				</div>
 				<div id="feats" class="floatRight">
@@ -194,13 +169,7 @@
 							<input id="featName" type="text" name="newFeat_name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
 							<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
 						</div>
-<?
-	$feats = $mysql->query("SELECT dnd3_feats.featID, featsList.name FROM dnd3_feats INNER JOIN featsList USING (featID) WHERE dnd3_feats.characterID = $characterID ORDER BY featsList.name");
-	if ($feats->rowCount()) { foreach ($feats as $featInfo) {
-		featFormFormat($characterID, $featInfo);
-	} } else { ?>
-					<p id="noFeats">This character currently has no feats/abilities.</p>
-<?	} ?>
+<?	$this->showFeatsEdit(); ?>
 					</div>
 				</div>
 			</div>
@@ -209,24 +178,7 @@
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
 					<div>
-<?
-	$weapons = $mysql->query('SELECT * FROM dnd3_weapons WHERE characterID = '.$characterID);
-	$weaponNum = 1;
-	while (($weaponInfo = $weapons->fetch()) || $weaponNum <= 2) weaponFormFormat($weaponNum++, $weaponInfo);
-?>
-					</div>
-				</div>
-				<div id="armor" class="floatRight">
-					<h2 class="headerbar hbDark">Armor <a id="addArmor" href="">[ Add Armor ]</a></h2>
-					<div>
-<?
-	$armors = $mysql->query('SELECT * FROM dnd3_armors WHERE characterID = '.$characterID);
-	$armorNum = 1;
-	foreach ($armors as $armorInfo) {
-		armorFormFormat($armorNum++, $armorInfo);
-	}
-	if ($armorNum == 1) armorFormFormat(1);
-?>
+<?	$this->showWeaponsEdit(2); ?>
 					</div>
 				</div>
 			</div>
@@ -234,21 +186,20 @@
 			<div class="clearfix">
 				<div id="items">
 					<h2 class="headerbar hbDark">Items</h2>
-					<textarea name="items" class="hbdMargined"><?=$charInfo['items']?></textarea>
+					<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
 				</div>
 				
 				<div id="spells">
 					<h2 class="headerbar hbDark">Spells</h2>
-					<textarea name="spells" class="hbdMargined"><?=$charInfo['spells']?></textarea>
+					<textarea name="spells" class="hbdMargined"><?=$this->getSpells()?></textarea>
 				</div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<textarea name="notes" class="hbdMargined"><?=$charInfo['notes']?></textarea>
+				<textarea name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
 			</div>
 			
 			<div id="submitDiv">
 				<button type="submit" name="save" class="fancyButton">Save</button>
 			</div>
-		</form> */ ?>

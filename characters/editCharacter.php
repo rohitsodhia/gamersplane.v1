@@ -8,13 +8,16 @@
 	if ($systems->getSystemID(SYSTEM)) {
 		includeSystemInfo(SYSTEM);
 		$charClass = SYSTEM.'Character';
-		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Character Sheet';
+		$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';
 		if ($character = new $charClass($characterID)) {
 			$character->load();
 			$charPermissions = $character->checkPermissions();
-			if ($charPermissions) {
+			if ($charPermissions == 'edit') {
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+				$addJSFiles[] = 'characters/_edit.js';
+				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
+
 			}
 		}
 	} else { header('Location: '.SITEROOT.'/404/'); exit; }
@@ -26,11 +29,11 @@
 <?	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <?	} else { ?>
-		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-
-
-<?
-		$character->showEdit();
-	}
-?>
+		<form method="post" action="<?=SITEROOT?>/characters/process/editCharacter/">
+			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
+			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">
+			
+<?		$character->showEdit(); ?>
+		</form>
+<?	} ?>
 <?	require_once(FILEROOT.'/footer.php'); ?>

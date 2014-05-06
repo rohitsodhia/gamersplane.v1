@@ -1,0 +1,42 @@
+$(function () {
+	var characterID = parseInt($('#characterID').val()), system = $('#system').val();
+
+	if ($('#classWrapper')) {
+		$('#classWrapper a').click(function (e) {
+			e.preventDefault();
+			$(this).parent().find('.classSet').eq(0).clone().appendTo($(this).parent());
+		});
+	}
+
+	$('#skillName').autocomplete('/characters/ajax/skillSearch/', { search: $(this).val(), characterID: characterID, system: system });
+	$('#skills').on('click', '.skill_remove', function (e) {
+		var skillID = $(this).parent().attr('id').split('_')[1];
+		$.post('/characters/ajax/removeSkill/', { characterID: characterID, system: system, skillID: skillID }, function (data) {
+			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
+				$(this).remove();
+				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
+			}); }
+		});
+		
+		e.preventDefault();
+	});
+
+	$('#featName').autocomplete('/characters/ajax/featSearch/', { search: $(this).val(), characterID: characterID, system: system });
+	$('#feats').on('click', '.feat_remove', function (e) {
+		var featID = $(this).parent().attr('id').split('_')[1];
+		$.post('/characters/ajax/removeFeat/', { characterID: characterID, system: system, featID: featID }, function (data) {
+			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
+				$(this).remove();
+				if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
+			}); }
+		});
+		
+		e.preventDefault()
+	});
+
+	$('#addWeapon').click(function (e) {
+		e.preventDefault();
+
+		$.post('/characters/ajax/addWeapon/', { system: system, weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+	});
+});

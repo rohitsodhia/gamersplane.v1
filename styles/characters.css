@@ -216,6 +216,15 @@
 	margin: 1em 0;
 }
 
+#page_characterSheet_edit #label_levels {
+	position: relative;
+	left: -2px;
+}
+
+#page_characterSheet_edit #levels {
+	width: 75px;
+}
+
 #classWrapper {
 	position: relative;
 	display: inline-block;
@@ -235,4 +244,17 @@
 
 #classWrapper .classSet:first-of-type {
 	margin-top: 0;
+}
+
+#submitDiv {
+	text-align: center;
+	margin-top: 1em;
+}
+
+#page_featNotes #notes, #page_editFeatNotes #notes {
+	margin-top: 0;
+}
+
+#page_editFeatNotes #notes {
+	height: 8em;
 }

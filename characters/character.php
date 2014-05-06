@@ -15,6 +15,7 @@
 			if ($charPermissions) {
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+				$addJSFiles[] = 'characters/_sheet.js';
 			}
 		}
 	} else { header('Location: '.SITEROOT.'/404/'); exit; }
@@ -40,7 +41,6 @@
 		<h2 id="noCharFound">No Character Found</h2>
 <?	} else { ?>
 		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-
 
 <?
 		$character->showSheet();

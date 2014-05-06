@@ -3,9 +3,10 @@
 		protected $userID ;
 		protected $characterID;
 		protected $name;
+		protected $experience = 0;
 		protected $stats = array('str' => 10, 'dex' => 10, 'con' => 10, 'int' => 10, 'wis' => 10, 'cha' => 10);
 		protected $ac = array();
-		protected $damage = array();
+		protected $hp = array();
 		protected $speed = 0;
 		protected $saves = array ('fort' => array('base' => 0, 'magic' => 0, 'misc' => 0),
 								  'ref' => array('base' => 0, 'magic' => 0, 'misc' => 0),
@@ -13,8 +14,11 @@
 		protected $initiative = array();
 		protected $attackBonus = array();
 		protected $skills = array();
+		protected $feats = array();
 		protected $items = '';
-		protected $experience = 0;
+		protected $notes = '';
+
+		protected $mongoIgnore = array('save' => array('mongoIgnore', 'skills', 'feats'), 'load' => array('_id', 'system'));
 		
 		public function __construct($characterID, $userID = NULL) {
 			require_once(FILEROOT.'/includes/characters/d20Character_consts.class.php');
@@ -22,8 +26,6 @@
 			$this->characterID = $characterID;
 			if ($userID == NULL) $this->userID = intval($_SESSION['userID']);
 			else $this->userID = $userID;
-
-			return $this->checkPermissions();
 		}
 
 		public function checkPermissions($userID = NULL) {
@@ -61,10 +63,6 @@
 			return $this->name;
 		}
 		
-		public function displayName() {
-			return $this->name;
-		}
-		
 		public function setStat($stat, $value = 10) {
 			if (in_array($stat, array_keys($this->stats))) {
 				$value = intval($value);
@@ -74,12 +72,12 @@
 		
 		public function getStat($stat = NULL) {
 			if ($stat == NULL) return $this->stats;
-			elseif (in_array($stat, array_keys($this->stats))) return $this->$stat;
+			elseif (in_array($stat, array_keys($this->stats))) return $this->stats[$stat];
 			else return FALSE;
 		}
 
 		public function getStatMod($stat) {
-			if (in_array($stat, array_keys($this->stats))) return floor($this->$stat / 2);
+			if (in_array($stat, array_keys($this->stats))) return showSign(floor(($this->stats[$stat] - 10) / 2));
 			else return FALSE;
 		}
 
@@ -89,19 +87,20 @@
 		}
 
 		public function getAC($key = NULL) {
-			if ($key == NULL) return array_merge(array('total' => array_sum($this->ac)), $this->ac);
+			if ($key == NULL) return array_merge(array('total' => array_sum($this->ac) + 10), $this->ac);
 			elseif (in_array($key, array_keys($this->ac))) return $this->ac[$key];
+			elseif ($key == 'total') return array_sum($this->ac) + 10;
 			else return FALSE;
 		}
 
-		public function setDamage($key, $value) {
-			if (in_array($key, array_keys($this->damage))) $this->damage[$key] = intval($value);
+		public function setHP($key, $value) {
+			if (in_array($key, array_keys($this->hp))) $this->hp[$key] = intval($value);
 			else return FALSE;
 		}
 
-		public function getDamage($key = NULL) {
-			if (in_array($key, array_keys($this->damage))) return $this->damage[$key];
-			elseif ($key == NULL) return $this->damage;
+		public function getHP($key = NULL) {
+			if (in_array($key, array_keys($this->hp))) return $this->hp[$key];
+			elseif ($key == NULL) return $this->hp;
 			else return FALSE;
 		}
 
@@ -126,20 +125,45 @@
 			if (in_array($save, array_keys($this->saves))) {
 				if ($key == NULL) return $this->saves[$save];
 				elseif (in_array($key, array_keys($this->saves[$save]))) return $this->saves[$save][$key];
+				elseif ($key == 'total') return array_sum($this->saves[$save]);
 				else return FALSE;
 			} elseif ($save == NULL) return $this->saves;
 			else return FALSE;
 		}
 
 		public function setInitiative($key, $value) {
-			if (in_array($key, array_keys($this->ac))) $this->ac[$key] = intval($value);
+			if (in_array($key, array_keys($this->initiative))) $this->initiative[$key] = intval($value);
 			else return FALSE;
 		}
 
 		public function getInitiative($key = NULL) {
-			if ($key == NULL) return array_merge(array('total' => array_sum($this->initiative)), $this->initiative);
+			if ($key == NULL) return array_merge(array('total' => array_sum($this->initiative) + $this->getStatMod('dex')), $this->initiative);
 			elseif (in_array($key, array_keys($this->initiative))) return $this->initiative[$key];
+			if ($key == 'total') return array_sum($this->initiative) + $this->getStatMod('dex');
 			else return FALSE;
+		}
+
+		public function setAttackBonus($key, $value, $type = NULL) {
+			if (in_array($key, array_keys($this->attackBonus))) {
+				if (is_array($this->attackBonus[$key]) && in_array($type, array_keys($this->attackBonus[$key]))) $this->attackBonus[$key][$type] = intval($value);
+				elseif (!is_array($this->attackBonus[$key])) $this->attackBonus[$key] = $value;
+				else return FALSE;
+			} else return FALSE;
+		}
+
+		public function getAttackBonus($key = NULL, $type = NULL) {
+			if ($key == NULL) return $this->attackBonus;
+			elseif ($key == 'total' && $type != NULL) {
+				$total = 0;
+				foreach ($this->attackBonus as $value) {
+					if (is_array($value)) $total += $value[$type];
+					else $total += $value;
+				}
+			} elseif (in_array($key, array_keys($this->attackBonus))) {
+				if (is_array($this->attackBonus[$key]) && in_array($type, array_keys($this->attackBonus[$key]))) return $this->attackBonus[$key][$type];
+				elseif (!is_array($this->attackBonus[$key])) return $this->attackBonus[$key];
+				else return FALSE;
+			} else return FALSE;
 		}
 
 		public function setItems($value) {
@@ -161,16 +185,18 @@
 		public function save() {
 			global $mongo;
 
-			$classVars = array_merge(array('system' => $this::SYSTEM), get_object_vars($this));
+			$classVars = get_object_vars($this);
+			foreach ($this->mongoIgnore['save'] as $key) unset($classVars[$key]);
+			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
 			$mongo->characters->update(array('characterID' => $this->characterID), $classVars, array('upsert' => TRUE));
 		}
 
 		public function load() {
 			global $mongo;
 
-			$result = $mongo->characters->find(array('characterID' => $this->characterID))->getNext();
+			$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
 			foreach ($result as $key => $value) {
-				if (!in_array($key, array('_id', 'system'))) $this->$key = $value;
+				if (!in_array($key, $this->mongoIgnore['load'])) $this->$key = $value;
 			}
 		}
 	}

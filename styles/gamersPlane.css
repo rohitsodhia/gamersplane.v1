@@ -433,6 +433,7 @@ div.prettySelect {
 	position: relative;
 	z-index: 5000;
 	display: inline-block;
+	vertical-align: middle;
 }
 
 div.prettySelect.open {
