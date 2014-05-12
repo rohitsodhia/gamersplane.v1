@@ -15,16 +15,17 @@
 			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, type, systemID) VALUES (:userID, :label, :type, :systemID)');
 			$addCharacter->bindValue(':userID', $userID);
 			$addCharacter->bindValue(':label', $_POST['label']);
-			$addCharacter->bindValue(':type', intval($_POST['type']));
+			$addCharacter->bindValue(':type', $_POST['type']);
 			$addCharacter->bindValue(':systemID', $systemID);
 			$addCharacter->execute();
 			$characterID = $mysql->lastInsertId();
 
-			require_once(FILEROOT.'/includes/characters/d20Character.class.php');
-			require_once(FILEROOT.'/includes/characters/'.$systemShort.'/'.$systems->getClass($systemID).'Character.class.php');
+			require_once(FILEROOT.'/includes/packages/'.$systemShort.'Character.package.php');
 
-			$charClass = $systems->getClass($systemID).'Character';
+			$charClass = $systemShort.'Character';
 			$newChar = new $charClass($characterID);
+			$newChar->setLabel($_POST['label']);
+			$newChar->setType($_POST['type']);
 			$newChar->save();
 			addCharacterHistory($characterID, 'created', $userID, 'NOW()', $systemID);
 

@@ -95,8 +95,16 @@ label.leftLabel {
 	left: -3px;
 }
 
+#page_characterSheet_edit #classWrapper {
+	margin-right: 10px;
+}
+
 #page_characterSheet_edit #label_alignment {
-	margin-left: 88px;
+	margin-left: 90px;
+}
+
+#page_characterSheet_edit #ps_alignment {
+	vertical-align: top;
 }
 
 #stats, #savingThrows, #hp {
@@ -266,15 +274,18 @@ label.leftLabel {
 	width: 555px;
 }
 
-#addSkillWrapper {
+#addSkillWrapper, #addFeatWrapper {
 	margin: 1em 0;
 	position: relative;
+}
+
+#addSkillWrapper > *, #addFeatWrapper > * {
+	vertical-align: middle;
 }
 
 #addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {
 	top: -1px;
 	margin-left: 5px;
-	vertical-align: middle;
 }
 
 .skill span {
@@ -318,7 +329,7 @@ label.leftLabel {
 }
 
 .weapon, .armor {
-	margin: 20px 0 0;
+	margin: 10px 0 0;
 	padding-top: 10px;
 	border-top: 1px solid #777;
 }

@@ -1,10 +1,11 @@
+var characterID = parseInt($('#characterID').val()), system = $('#system').val();
 $(function () {
-	var characterID = parseInt($('#characterID').val()), system = $('#system').val();
-
 	if ($('#classWrapper')) {
 		$('#classWrapper a').click(function (e) {
 			e.preventDefault();
-			$(this).parent().find('.classSet').eq(0).clone().appendTo($(this).parent());
+			$classSet = $(this).parent().find('.classSet').eq(0).clone();
+			$classSet.find('input').val('');
+			$classSet.appendTo($(this).parent());
 		});
 	}
 
@@ -34,9 +35,20 @@ $(function () {
 		e.preventDefault()
 	});
 
-	$('#addWeapon').click(function (e) {
+	if ($('#addWeapon').length) { $('#addWeapon').click(function (e) {
 		e.preventDefault();
 
 		$.post('/characters/ajax/addWeapon/', { system: system, weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+	}); }
+	if ($('#addArmor').length) { $('#addArmor').click(function (e) {
+		e.preventDefault();
+
+		$.post('/characters/ajax/addArmor/', { system: system, armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
+	}); }
+
+	$('#weapons, #armor').on('click', '.remove', function (e) {
+		$(this).parent().parent().remove();
+
+		e.preventDefault()
 	});
 });

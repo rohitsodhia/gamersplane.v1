@@ -1,5 +1,5 @@
 <?
-	class dnd3Character extends d20character {
+	class dnd3Character extends d20Character {
 		const SYSTEM = 'dnd3';
 
 		protected $race = '';
@@ -15,6 +15,7 @@
 		protected $initiative = array('misc' => 0);
 		protected $attackBonus = array('base' => 0, 'misc' => array('melee' => 0, 'ranged' => 0));
 		protected $weapons = array();
+		protected $armor = array();
 		protected $spells = '';
 
 		public function setRace($value) {
@@ -48,8 +49,10 @@
 			else return FALSE;
 		}
 
-		public function classEditFormat() {
-
+		public function displayClasses() {
+			array_walk($this->classes, function ($value, $key) {
+				echo $key.' - '.$value.'<br>';
+			});
 		}
 
 		public function setAlignment($value) {
@@ -57,7 +60,7 @@
 		}
 
 		public function getAlignment() {
-			return $this->alignment;
+			return dnd3_consts::getAlignments($this->alignment);
 		}
 
 		public function setDamageReduction($value) {
@@ -71,8 +74,7 @@
 		public function addSkill($skillID, $name, $post) {
 			global $mysql;
 
-			if (array_key_exists($post['stat'], array_keys($this->stats))) $stat = sanitizeString($post['stat']);
-			elseif ($post['stat'] == '') $stat = 'n/a';
+			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
 			else return;
 			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'ranks' => 0, 'misc' => 0);
 			$addSkill = $mysql->query("INSERT INTO ".self::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
@@ -141,7 +143,7 @@
 
 		public function featEditFormat($featInfo) {
 ?>
-						<div id="feat_<?=$featInfo['featID']?>" class="feat tr clearfix">
+						<div id="feat_<?=$featInfo['featID']?>" class="feat clearfix">
 							<span class="feat_name textLabel"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
 							<a href="<?=SITEROOT?>/characters/<?=self::SYSTEM?>/<?=$this->characterID?>/editFeatNotes/<?=$featInfo['featID']?>" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
 							<input type="image" name="featRemove_<?=$featInfo['featID']?>" src="<?=SITEROOT?>/images/cross.png" value="<?=$featInfo['featID']?>" class="feat_remove lrBuffer">
@@ -184,12 +186,9 @@
 		}
 
 		public function showWeaponsEdit($min) {
-			global $mysql;
-
-			$system = self::SYSTEM;
-			$weapons = $mysql->query("SELECT * FROM {$system}_weapons WHERE characterID = {$this->characterID}");
 			$weaponNum = 0;
-			while (($weaponInfo = $weapons->fetch()) || $weaponNum < $min) $this->weaponEditFormat($weaponNum++, $weaponInfo);
+			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
@@ -224,15 +223,13 @@
 							<div class="tr">
 								<input type="text" name="weapons[<?=$weaponNum?>][notes]" value="<?=$weaponInfo['notes']?>" class="weapon_notes lrBuffer">
 							</div>
+							<div class="tr alignRight lrBuffer"><a href="" class="remove">[ Remove ]</a></div>
 						</div>
 <?
 		}
 
 		public function displayWeapons() {
-			global $mysql;
-
-			$weapons = $mysql->query('SELECT * FROM '.self::SYSTEM.'_weapons WHERE characterID = '.$this->characterID);
-			foreach ($weapons as $weapon) {
+			foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
 						<div class="tr labelTR">
@@ -267,17 +264,14 @@
 <?
 			}
 		}
-		public function showArmorsEdit($min) {
-			global $mysql;
-
-			$system = self::SYSTEM;
-			$armors = $mysql->query("SELECT * FROM {$system}_armors WHERE characterID = {$this->characterID}");
+		public function showArmorEdit($min) {
 			$armorNum = 0;
-			while (($armorInfo = $armors->fetch()) || $armorNum < $min) $this->armorEditFormat($armorNum++, $armorInfo);
+			foreach ($this->armor as $armorInfo) $this->armorEditFormat($armorNum++, $armorInfo);
+			if ($armorNum < $min) while ($armorNum < $min) $this->armorEditFormat($armorNum++);
 		}
 
 		public function armorEditFormat($armorNum, $armorInfo = array()) {
-		if (!is_array($armorInfo) || sizeof($armorInfo) == 0) $armorInfo = array();
+			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) $armorInfo = array();
 ?>
 						<div class="armor<?=$armorNum == 1?' first':''?>">
 							<div class="tr labelTR armor_firstRow">
@@ -286,9 +280,9 @@
 								<label class="shortText alignCenter lrBuffer">Max Dex</label>
 							</div>
 							<div class="tr armor_firstRow">
-								<input type="text" name="armors[<?=$armorNum?>][name]" value="<?=$armorInfo['name']?>" class="armor_name medText lrBuffer">
-								<input type="text" name="armors[<?=$armorNum?>][ac]" value="<?=$armorInfo['ac']?>" class="armors_ac shortText lrBuffer">
-								<input type="text" name="armors[<?=$armorNum?>][maxDex]" value="<?=$armorInfo['maxDex']?>" class="armor_maxDex shortText lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][name]" value="<?=$armorInfo['name']?>" class="armor_name medText lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][ac]" value="<?=$armorInfo['ac']?>" class="armor_ac shortText lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][maxDex]" value="<?=$armorInfo['maxDex']?>" class="armor_maxDex shortText lrBuffer">
 							</div>
 							<div class="tr labelTR armor_secondRow">
 								<label class="shortText alignCenter lrBuffer">Type</label>
@@ -297,57 +291,53 @@
 								<label class="shortNum alignCenter lrBuffer">Speed</label>
 							</div>
 							<div class="tr armor_secondRow">
-								<input type="text" name="armors[<?=$armorNum?>][type]" value="<?=$armorInfo['type']?>" class="armor_type shortText lrBuffer">
-								<input type="text" name="armors[<?=$armorNum?>][check]" value="<?=$armorInfo['check']?>" class="armor_check shortText lrBuffer">
-								<input type="text" name="armors[<?=$armorNum?>][spellFailure]" value="<?=$armorInfo['spellFailure']?>" class="armor_spellFailure shortText lrBuffer">
-								<input type="text" name="armors[<?=$armorNum?>][speed]" value="<?=$armorInfo['speed']?>" class="armor_speed shortNum lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][type]" value="<?=$armorInfo['type']?>" class="armor_type shortText lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][check]" value="<?=$armorInfo['check']?>" class="armor_check shortText lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][spellFailure]" value="<?=$armorInfo['spellFailure']?>" class="armor_spellFailure shortText lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][speed]" value="<?=$armorInfo['speed']?>" class="armor_speed shortNum lrBuffer">
 							</div>
 							<div class="tr labelTR">
 								<label class="lrBuffer shiftRight">Notes</label>
 							</div>
 							<div class="tr">
-								<input type="text" name="armors[<?=$armorNum?>][notes]" value="<?=$armorInfo['notes']?>" class="armor_notes lrBuffer">
+								<input type="text" name="armor[<?=$armorNum?>][notes]" value="<?=$armorInfo['notes']?>" class="armor_notes lrBuffer">
 							</div>
 							<div class="tr alignRight lrBuffer"><a href="" class="remove">[ Remove ]</a></div>
 						</div>
 <?
 		}
 
-		public function displayArmors() {
-			global $mysql;
-
-			$system = self::SYSTEM;
-			$armors = $mysql->query("SELECT * FROM {$system}_armors WHERE characterID = {$this->characterID}");
-			foreach ($weapons as $weapon) {
+		public function displayArmor() {
+			foreach ($this->armor as $armor) {
 ?>
-					<div class="weapon">
-						<div class="tr labelTR">
+					<div class="armor">
+						<div class="tr labelTR armor_firstRow">
 							<label class="medText lrBuffer">Name</label>
-							<label class="shortText alignCenter lrBuffer">Attack Bonus</label>
-							<label class="shortText alignCenter lrBuffer">Damage</label>
+							<label class="shortText alignCenter lrBuffer">AC Bonus</label>
+							<label class="shortText alignCenter lrBuffer">Max Dex</label>
 						</div>
-						<div class="tr">
-							<span class="weapon_name medText lrBuffer"><?=$weapon['name']?></span>
-							<span class="weapons_ab shortText lrBuffer alignCenter"><?=$weapon['ab']?></span>
-							<span class="weapon_damage shortText lrBuffer alignCenter"><?=$weapon['damage']?></span>
+						<div class="tr armor_firstRow">
+							<span class="armor_name medText lrBuffer"><?=$armor['name']?></span>
+							<span class="armors_ac shortText lrBuffer alignCenter"><?=$armor['ac']?></span>
+							<span class="armor_maxDex shortText lrBuffer alignCenter"><?=$armor['maxDex']?></span>
 						</div>
-						<div class="tr labelTR weapon_secondRow">
-							<label class="shortText alignCenter lrBuffer">Critical</label>
-							<label class="shortText alignCenter lrBuffer">Range</label>
+						<div class="tr labelTR armor_secondRow">
 							<label class="shortText alignCenter lrBuffer">Type</label>
-							<label class="shortNum alignCenter lrBuffer">Size</label>
+							<label class="shortText alignCenter lrBuffer">Check Penalty</label>
+							<label class="shortText alignCenter lrBuffer">Spell Failure</label>
+							<label class="shortNum alignCenter lrBuffer">Speed</label>
 						</div>
-						<div class="tr weapon_secondRow">
-							<span class="weapon_crit shortText lrBuffer alignCenter"><?=$weapon['critical']?></span>
-							<span class="weapon_range shortText lrBuffer alignCenter"><?=$weapon['range']?></span>
-							<span class="weapon_type shortText lrBuffer alignCenter"><?=$weapon['type']?></span>
-							<span class="weapon_size shortText lrBuffer alignCenter"><?=$weapon['size']?></span>
+						<div class="tr armor_secondRow">
+							<span class="armor_type shortText lrBuffer alignCenter"><?=$armor['type']?></span>
+							<span class="armor_check shortText lrBuffer alignCenter"><?=$armor['check']?></span>
+							<span class="armor_spellFailure shortText lrBuffer alignCenter"><?=$armor['spellFailure']?></span>
+							<span class="armor_speed shortText lrBuffer alignCenter"><?=$armor['speed']?></span>
 						</div>
 						<div class="tr labelTR">
 							<label class="lrBuffer">Notes</label>
 						</div>
 						<div class="tr">
-							<span class="weapon_notes lrBuffer"><?=$weapon['notes']?></span>
+							<span class="armor_notes lrBuffer"><?=$armor['notes']?></span>
 						</div>
 					</div>
 <?
@@ -360,10 +350,6 @@
 
 		public function getSpells() {
 			return $this->spells;
-		}
-
-		public function getNotes() {
-			return $this->notes;
 		}
 
 		public function save() {
@@ -385,11 +371,22 @@
 			foreach ($data['weapons'] as $weapon) { if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) $weaponsTmp[] = $weapon; }
 			$data['weapons'] = $weaponsTmp;
 
+			$armorTmp = array();
+			foreach ($data['armor'] as $armor) { if (strlen($armor['name']) && strlen($armor['ac'])) $armorsTmp[] = $armor; }
+			$data['armors'] = $armorsTmp;
+
 			unset($data['save'], $data['characterID'], $data['system'], $data['classes'], $data['level'], $data['newSkill'], $data['newFeat_name'], $data['skills'], $data['save']);
 
 			foreach ($data as $key => $value) if (isset($this->$key)) $this->$key = $value;
 
 			parent::save();
+		}
+
+		public function delete() {
+			$mysql->query('DELETE FROM '.self::SYSTEM.'_skills WHERE characterID = '.$this->characterID);
+			$mysql->query('DELETE FROM '.self::SYSTEM.'_feats WHERE characterID = '.$this->characterID);
+			
+			parent::delete();
 		}
 	}
 ?>

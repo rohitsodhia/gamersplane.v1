@@ -1,5 +1,5 @@
 <?
-	class d20CthulhuCharacter extends d20character {
+	class d20cthulhuCharacter extends d20Character {
 		const SYSTEM = 'd20cthulhu';
 
 		protected $professions = array();
@@ -25,8 +25,10 @@
 			else return FALSE;
 		}
 
-		public function professionEditFormat() {
-
+		public function displayProfessions() {
+			array_walk($this->professions(), function ($value, $key) {
+				echo $key.' - '.$value.'<br>';
+			});
 		}
 
 		public function setSanity($key, $value) {
@@ -43,7 +45,7 @@
 		public function addSkill($skillID, $name, $post) {
 			global $mysql;
 
-			if (array_key_exists($post['stat'], array_keys($this->stats))) $stat = sanitizeString($post['stat']);
+			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
 			elseif ($post['stat'] == '') $stat = 'n/a';
 			else return;
 			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'ranks' => 0, 'misc' => 0);
@@ -113,7 +115,7 @@
 
 		public function featEditFormat($featInfo) {
 ?>
-						<div id="feat_<?=$featInfo['featID']?>" class="feat tr clearfix">
+						<div id="feat_<?=$featInfo['featID']?>" class="feat clearfix">
 							<span class="feat_name textLabel"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
 							<a href="<?=SITEROOT?>/characters/<?=self::SYSTEM?>/<?=$this->characterID?>/editFeatNotes/<?=$featInfo['featID']?>" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
 							<input type="image" name="featRemove_<?=$featInfo['featID']?>" src="<?=SITEROOT?>/images/cross.png" value="<?=$featInfo['featID']?>" class="feat_remove lrBuffer">
@@ -156,11 +158,9 @@
 		}
 
 		public function showWeaponsEdit($min) {
-			global $mysql;
-
-			$weapons = $mysql->query('SELECT * FROM '.self::SYSTEM.'_weapons WHERE characterID = '.$this->characterID);
 			$weaponNum = 0;
-			while (($weaponInfo = $weapons->fetch()) || $weaponNum < $min) $this->weaponEditFormat($weaponNum++, $weaponInfo);
+			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
@@ -195,15 +195,13 @@
 							<div class="tr">
 								<input type="text" name="weapons[<?=$weaponNum?>][notes]" value="<?=$weaponInfo['notes']?>" class="weapon_notes lrBuffer">
 							</div>
+							<div class="tr alignRight lrBuffer"><a href="" class="remove">[ Remove ]</a></div>
 						</div>
 <?
 		}
 
 		public function displayWeapons() {
-			global $mysql;
-
-			$weapons = $mysql->query('SELECT * FROM '.self::SYSTEM.'_weapons WHERE characterID = '.$this->characterID);
-			foreach ($weapons as $weapon) {
+			foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
 						<div class="tr labelTR">
@@ -247,10 +245,6 @@
 			return $this->spells;
 		}
 
-		public function getNotes() {
-			return $this->notes;
-		}
-
 		public function save() {
 			global $mysql;
 
@@ -275,6 +269,13 @@
 			foreach ($data as $key => $value) if (isset($this->$key)) $this->$key = $value;
 
 			parent::save();
+		}
+
+		public function delete() {
+			$mysql->query('DELETE FROM '.self::SYSTEM.'_skills WHERE characterID = '.$this->characterID);
+			$mysql->query('DELETE FROM '.self::SYSTEM.'_feats WHERE characterID = '.$this->characterID);
+			
+			parent::delete();
 		}
 	}
 ?>

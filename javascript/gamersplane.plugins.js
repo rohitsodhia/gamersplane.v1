@@ -59,6 +59,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 			$selects.filter(function () { return $(this).parent('div.prettySelect').length != 1; }).each(function () {
 				$select = $(this).wrap('<div class="prettySelect">');
 				$prettySelect = $select.parent();
+				if ($select.attr('id') && $select.attr('id').length > 0) $prettySelect.attr('id', 'ps_' + $select.attr('id'));
 				$prettySelectCurrent = $('<div class="prettySelectCurrent">');
 				$prettySelectLongest = $('<div class="prettySelectLongest">');
 				$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');

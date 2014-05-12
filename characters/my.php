@@ -33,7 +33,7 @@
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
 					<a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
-					><div class="charType"><?=$charLabelMap[$info['type']]?></div
+					><div class="charType"><?=$info['type']?></div
 					><div class="systemType"><?=$info['fullName']?></div
 					><div class="links">
 						<a href="/characters/editBasic/<?=$info['characterID']?>" class="editBasic sprite pencil" title="Edit Label/Type" alt="Edit Label/Type"></a>
@@ -95,7 +95,7 @@
 				<label class="textLabel">Type</label>
 				<select name="type">
 <?
-	foreach ($charLabelMap as $key => $type) echo "\t\t\t\t\t<option value=\"{$key}\">{$type}</option>\n";
+	foreach ($charLabelMap as $type) echo "\t\t\t\t\t<option value=\"{$type}\">{$type}</option>\n";
 ?>
 				</select>
 			</div>

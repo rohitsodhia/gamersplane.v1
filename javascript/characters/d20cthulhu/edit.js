@@ -41,7 +41,7 @@ $(function() {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
 			if ($('#skillStat').val() != '') statBonus = parseInt($('#' + $('#skillStat').val() + 'Modifier').text());
 			else statBonus = 0;
-			$.post('/characters/ajax/addSkill', { characterID: characterID, system: system, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: statBonus }, function (data) {
+			$.post('/characters/ajax/addSkill/', { characterID: characterID, system: system, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: statBonus }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
 				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');
@@ -68,7 +68,7 @@ $(function() {
 		
 		e.preventDefault()
 	});
-	$('.feat_notesLink').colorbox();
+	$('#feats').on('click', '.feat_notesLink', function (e) { $(this).colorbox(); });
 	
 	$('#weapons').on('click', '.remove', function (e) {
 		$(this).parent().parent().remove();

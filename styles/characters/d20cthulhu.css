@@ -253,15 +253,18 @@ label.leftLabel {
 	width: 555px;
 }
 
-#addSkillWrapper {
+#addSkillWrapper, #addFeatWrapper {
 	margin: 1em 0;
 	position: relative;
+}
+
+#addSkillWrapper > *, #addFeatWrapper > * {
+	vertical-align: middle;
 }
 
 #addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {
 	top: -1px;
 	margin-left: 5px;
-	vertical-align: middle;
 }
 
 .skill {
@@ -313,7 +316,7 @@ label.leftLabel {
 }
 
 .weapon, .armor {
-	margin: 20px 0 0;
+	margin: 10px 0 0;
 	padding-top: 10px;
 	border-top: 1px solid #777;
 }

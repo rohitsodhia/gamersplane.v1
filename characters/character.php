@@ -6,7 +6,7 @@
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->getSystemID(SYSTEM)) {
-		includeSystemInfo(SYSTEM);
+		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Character Sheet';
 		if ($character = new $charClass($characterID)) {
@@ -35,15 +35,17 @@
 			<div class="wing urWing"></div>
 		</div></div>
 <?	} ?>
+<?	if (file_exists(SITEROOT.'/images/logos/'.SYSTEM.'.png')) { ?>
 		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=SYSTEM?>.png"></div>
+<?	} ?>
 		
 <?	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <?	} else { ?>
 		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 
-<?
-		$character->showSheet();
-	}
-?>
+		<div id="charDetails">
+<?		$character->showSheet(); ?>
+		</div>
+<?	} ?>
 <?	require_once(FILEROOT.'/footer.php'); ?>

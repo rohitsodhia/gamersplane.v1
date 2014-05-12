@@ -1,8 +1,5 @@
 <?
-	abstract class d20Character {
-		protected $userID ;
-		protected $characterID;
-		protected $name;
+	abstract class d20Character extends Character {
 		protected $experience = 0;
 		protected $stats = array('str' => 10, 'dex' => 10, 'con' => 10, 'int' => 10, 'wis' => 10, 'cha' => 10);
 		protected $ac = array();
@@ -16,53 +13,13 @@
 		protected $skills = array();
 		protected $feats = array();
 		protected $items = '';
-		protected $notes = '';
 
-		protected $mongoIgnore = array('save' => array('mongoIgnore', 'skills', 'feats'), 'load' => array('_id', 'system'));
-		
 		public function __construct($characterID, $userID = NULL) {
-			require_once(FILEROOT.'/includes/characters/d20Character_consts.class.php');
+			$this->mongoIgnore = array('save' => array('mongoIgnore', 'skills', 'feats'), 'load' => array('_id', 'system'));
 
-			$this->characterID = $characterID;
-			if ($userID == NULL) $this->userID = intval($_SESSION['userID']);
-			else $this->userID = $userID;
+			parent::__construct($characterID, $userID);
 		}
 
-		public function checkPermissions($userID = NULL) {
-			global $mysql;
-
-			if ($userID == NULL) $userID = $this->userID;
-			else $userID = intval($userID);
-
-			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = $userID OR p.userID = $userID)");
-			if ($charCheck->rowCount()) return 'edit';
-
-			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$this->characterID} AND inLibrary = 1");
-			if ($libraryCheck->rowCount()) {
-				$charCheck = $mysql->query("SELECT c.characterID FROM characters c INNER JOIN players p ON c.gameID = p.gameID AND p.isGM = 0 WHERE c.characterID = $characterID AND c.userID != $userID AND p.userID = $userID");
-				if ($charCheck->rowCount()) return FALSE;
-				else return 'library';
-			} else return FALSE;
-		}
-		
-		public function showSheet() {
-			require_once(FILEROOT.'/characters/'.$this::SYSTEM.'/sheet.php');
-		}
-		
-		public function showEdit() {
-			require_once(FILEROOT.'/characters/'.$this::SYSTEM.'/edit.php');
-		}
-		
-		public function setName($name) {
-			$this->name = $name;
-			
-			return TRUE;
-		}
-
-		public function getName() {
-			return $this->name;
-		}
-		
 		public function setStat($stat, $value = 10) {
 			if (in_array($stat, array_keys($this->stats))) {
 				$value = intval($value);
@@ -180,24 +137,6 @@
 
 		public function getExperience() {
 			return $this->experience;
-		}
-
-		public function save() {
-			global $mongo;
-
-			$classVars = get_object_vars($this);
-			foreach ($this->mongoIgnore['save'] as $key) unset($classVars[$key]);
-			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
-			$mongo->characters->update(array('characterID' => $this->characterID), $classVars, array('upsert' => TRUE));
-		}
-
-		public function load() {
-			global $mongo;
-
-			$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
-			foreach ($result as $key => $value) {
-				if (!in_array($key, $this->mongoIgnore['load'])) $this->$key = $value;
-			}
 		}
 	}
 ?>

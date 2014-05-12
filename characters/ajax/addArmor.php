@@ -4,7 +4,7 @@
 		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 		$charClass = SYSTEM.'Character';
 		if ($character = new $charClass($characterID)) {
-			$character->weaponEditFormat($_POST['weaponNum']);
+			$character->armorEditFormat($_POST['armorNum']);
 		}
 	}
 ?>

@@ -209,6 +209,10 @@
 	text-align: center;
 }
 
+#charDetails {
+	margin-top: 1em;
+}
+
 #noCharFound {
 	font-size: 2em;
 	font-weight: bold;
@@ -229,6 +233,7 @@
 	position: relative;
 	display: inline-block;
 	padding-right: 80px;
+	vertical-align: top;
 }
 
 #classWrapper a {

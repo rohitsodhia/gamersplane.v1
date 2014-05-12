@@ -1,11 +1,10 @@
 <?
 	if (checkLogin(0)) {
-		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
-		$system = $_POST['system'];
-		if ($systems->getSystemID($system)) {
-			includeSystemInfo($system);
-			$charClass = $system.'Character';
+		define('SYSTEM', $_POST['system']);
+		if ($systems->getSystemID(SYSTEM)) {
+			require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
+			$charClass = SYSTEM.'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->load();
 				$charPermissions = $character->checkPermissions();

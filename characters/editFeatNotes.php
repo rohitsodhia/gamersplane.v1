@@ -7,7 +7,7 @@
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->getSystemID(SYSTEM)) {
-		includeSystemInfo(SYSTEM);
+		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Edit Feat Notes';
 		if ($character = new $charClass($characterID)) {

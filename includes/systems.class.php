@@ -8,11 +8,10 @@
 		private function __construct() {
 			global $mysql;
 
-			$systems = $mysql->query('SELECT systemID, shortName, fullName, class FROM systems WHERE enabled = 1 ORDER BY fullName');
+			$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 ORDER BY fullName');
 			foreach ($systems as $system) {
 				$this->shortNames[$system['systemID']] = $system['shortName'];
 				$this->fullNames[$system['systemID']] = $system['fullName'];
-				$this->classes[$system['systemID']] = $system['class'];
 			}
 		}
 
@@ -60,10 +59,6 @@
 			$systemID = $this->getSystemID($shortName);
 			if ($systemID) return $this->fullNames[$systemID];
 			else return FALSE;
-		}
-
-		public function getClass($systemID) {
-			return isset($this->classes[$systemID])?$this->classes[$systemID]:FALSE;
 		}
 	}
 ?>

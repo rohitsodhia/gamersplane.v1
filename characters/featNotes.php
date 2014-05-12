@@ -7,7 +7,7 @@
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->getSystemID(SYSTEM)) {
-		includeSystemInfo(SYSTEM);
+		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Feat Notes';
 		if ($character = new $charClass($characterID)) {
@@ -29,6 +29,6 @@
 <? } elseif (!isset($featInfo)) { ?>
 		<h2 id="noFeat">This character does not have this feat/ability.</h2>
 <? } else { ?>
-		<div id="notes"><?=printReady($featInfo['notes'])?></div>
+		<div id="notes" class="hbMargined"><?=strlen($featInfo['notes'])?printReady($featInfo['notes']):'No notes.'?></div>
 <? } ?>
 <? require_once(FILEROOT.'/footer.php'); ?>
