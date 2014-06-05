@@ -1,9 +1,9 @@
 $(function() {
 	var characterID = parseInt($('#characterID').val());
-	var levels = $('#classes').val().match(/\d+/g);
 	var level = 0;
 	var oldLevel = 0;
-	for (cLevel in levels) level += parseInt(levels[cLevel]);
+	$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
+	if (isNaN(level)) level = 0;
 	var statBonus = { 'str': parseInt($('#strModifier').text()),
 					  'con': parseInt($('#conModifier').text()),
 					  'dex': parseInt($('#dexModifier').text()),
@@ -11,7 +11,7 @@ $(function() {
 					  'wis': parseInt($('#wisModifier').text()),
 					  'cha': parseInt($('#chaModifier').text()) }
 	
-	function updateSaves(save, level) {
+	function updateSaves(save) {
 		var total = 0;
 		if (save.substring(0, 1) == 'f') {
 			save = 'fort';
@@ -25,15 +25,17 @@ $(function() {
 		} else if (save.substring(0, 1) == 'a') save = 'ac';
 		
 		total += Math.floor(level / 2) + 10;
-		$('#' + save +'Row input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
+		$('#' + save +'Row input').each(function () {
+			total += $(this).val().length?parseInt($(this).val()):0;
+		});
 		$('#' + save + 'Total').text(showSign(total));
 	}
 
-	$('#classes').blur(function() {
+	$('#classWrapper').on('blur', '.levelInput', function() {
 		oldLevel = level;
 		level = 0;
-		var levels = $(this).val().match(/\d+/g);
-		for (cLevel in levels) level += parseInt(levels[cLevel]);
+		$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
+		if (isNaN(level)) level = 0;
 		$('.addHL').each(function () {
 			$(this).text(showSign(parseInt($(this).text()) - Math.floor(oldLevel / 2) + Math.floor(level / 2)));
 		});
@@ -52,13 +54,13 @@ $(function() {
 		$('#' + this.id + 'ModifierPL').text(showSign(modifier + Math.floor(level / 2)));
 		
 		if (this.id == 'str' || this.id == 'con') {
-			updateSaves('fort', level);
+			updateSaves('fort');
 			$('#fortStatBonus').text(showSign(parseInt(statBonus['con'] > statBonus['str']?statBonus['con']:statBonus['str'])));
 		} else if (this.id == 'dex' || this.id == 'int') {
-			updateSaves('ref', level);
+			updateSaves('ref');
 			$('#refStatBonus').text(showSign(parseInt(statBonus['dex'] > statBonus['int']?statBonus['dex']:statBonus['int'])));
 		} else/* if (this.id == 'wis' || this.id == 'cha')*/ {
-			updateSaves('will', level);
+			updateSaves('will');
 			$('#willStatBonus').text(showSign(parseInt(statBonus['wis'] > statBonus['cha']?statBonus['wis']:statBonus['cha'])));
 		}
 		
@@ -72,9 +74,9 @@ $(function() {
 		$('#bloodiedVal').text(Math.floor(hp / 2));
 		$('#surgeVal').text(Math.floor(hp / 4));
 	});
-	$('#saves input').blur(function () { updateSaves($(this).attr('name'), level); });
-	$('#init_misc').blur(function () { $('#init_total').text(showSign(statBonus['dex'] + Math.floor(level / 2) + $(this).val().length?parseInt($(this).val()):0)); });
-	$('#movement input, #passiveSenses input, #combatBonuses input').blur(function () {
+	$('#saves input').blur(function () {  updateSaves($(this).attr('name').substring(6, 7)); });
+	$('#init_misc').blur(function () { $('#init_total').text(showSign(statBonus['dex'] + Math.floor(level / 2) + ($(this).val().length?parseInt($(this).val()):0))); });
+	$('#movement input, #passiveSenses input, #attacks input').blur(function () {
 		var total = 0;
 		$(this).parent().find('input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
 		if ($(this).parent().parent().attr('id') == 'passiveSenses') {
@@ -89,54 +91,11 @@ $(function() {
 	
 	$('#addAttack').click(function (e) {
 		$.post('/characters/ajax/dnd4/addAttack', { count: $('.attackBonusSet').size() + 1 }, function (data) {
-			$(data).hide().appendTo('#combatBonuses').slideDown();
+			$(data).hide().appendTo('#attacks').slideDown();
 		});
 		
 		e.preventDefault();
 	});
-	
-/*	$('#skillName').focus(function () {
-		if ($(this).val() == 'Skill Name') $(this).val('').css('color', '#FFF');
-		if ($('#skillAjaxResults a').size() > 1 && $(this).val() >= 3) $('#skillAjaxResults').slideDown();
-	}).blur(function () {
-		if ($(this).val() == '') $(this).val('Skill Name').css('color', '#666');
-		$('#skillAjaxResults').slideUp();
-	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post('/characters/ajax/skillSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' }, function (data) {
-			if (data.length > 0) {
-				$('#skillAjaxResults').html(data).slideDown();
-				
-				$('#skillAjaxResults a').click(function (e) {
-					$('#skillName').val($(this).text());
-					
-					e.preventDefault();
-				});
-			} else $('#skillAjaxResults').slideUp();
-		}); } else $('#skillAjaxResults').slideUp();
-	}).keypress(function (event) {
-		if (event.which == 13) return false;
-	});*/
-	
-	$('#skillName').autocomplete('/characters/ajax/skillSearch', { search: $('#skillName').val(), characterID: characterID, system: 'dnd4' });
-	
-	function removeSkill (e) {
-		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post('/characters/ajax/dnd4/removeSkill', { characterID: characterID, skillID: skillID }, function (data) {
-			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
-				$(this).remove();
-				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
-			}); }
-		});
-		
-		e.preventDefault();
-	}
-	
-	function updateSkill() {
-		var stat = $(this).parent().find('.skill_total').attr('class').match(/addStat_(\w{3})/)[1];
-		var total = statBonus[stat];
-		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { total += parseInt($(this).val()); });
-		$(this).parent().find('.skill_total').text(showSign(total));
-	}
 	
 	$('#addSkill').click(function (e) {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
@@ -149,7 +108,12 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('#skills').on('click', '.skill_remove', removeSkill).on('change', '.skill input', updateSkill);
+	$('#skills').on('change', '.skill input', function () {
+		var stat = $(this).parent().find('.skill_total').attr('class').match(/addStat_(\w{3})/)[1];
+		var total = statBonus[stat];
+		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { total += parseInt($(this).val()); });
+		$(this).parent().find('.skill_total').text(showSign(total));
+	});
 	
 	function removeFeat(e) {
 		var featID = $(this).parent().attr('id').split('_')[1];
@@ -163,28 +127,6 @@ $(function() {
 		e.preventDefault();
 	}
 	
-/*	$('#featName').focus(function () {
-		if ($('#featAjaxResults a').size() > 1 && $(this).val() >= 3) $('#featAjaxResults').slideDown();
-	}).blur(function () {
-		$('#featAjaxResults').slideUp();
-	}).keyup(function () {
-		if ($(this).val().length >= 3 && $(this).val() != 'Skill Name') { $.post('/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' }, function (data) {
-			if (data.length > 0) {
-				$('#featAjaxResults').html(data).slideDown();
-				
-				$('#featAjaxResults a').click(function (e) {
-					$('#featName').val($(this).text());
-					
-					e.preventDefault();
-				});
-			} else $('#featAjaxResults').slideUp();
-		}); } else $('#featAjaxResults').slideUp();
-	}).keypress(function (event) {
-		if (event.which == 13) return false;
-	});*/
-
-	$('#featName').autocomplete('/characters/ajax/featSearch', { search: $(this).val(), characterID: characterID, system: 'dnd4' });
-	
 	$('#addFeat').click(function (e) {
 		if ($('#featName').val().length >= 3) { $.post('/characters/ajax/dnd4/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
 			if ($('#noFeats').size()) $('#noFeats').remove();
@@ -194,23 +136,9 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('.feat_notesLink').colorbox();
-	$('#feats').on('click', '.feat_remove', removeFeat);
 	
 	$('#powerName').autocomplete('/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID });
 
-	function removePower(e) {
-		var powerID = $(this).val();
-		var $parent = $(this).parent();
-		$.post('/characters/ajax/dnd4/removePower', { characterID: characterID, powerID: powerID }, function (data) {
-			if (data == 1) { $parent.slideUp(function () {
-				$(this).remove();
-			}); }
-		});
-		
-		e.preventDefault();
-	}
-	
 	$('#addPower').click(function (e) {
 		var type = $('#powerType').val();
 		if ($('#powerName').val().length >= 3 && $('#powerName').val() != 'Power') {
@@ -226,5 +154,15 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('#powers').on('click', '.power_remove', removePower);
+	$('#powers').on('click', '.power_remove', function (e) {
+		var powerID = $(this).val();
+		var $parent = $(this).parent();
+		$.post('/characters/ajax/dnd4/removePower/', { characterID: characterID, powerID: powerID }, function (data) {
+			if (data == 1) { $parent.slideUp(function () {
+				$(this).remove();
+			}); }
+		});
+		
+		e.preventDefault();
+	});
 });

@@ -5,7 +5,7 @@
 	$forumID = intval($_POST['forumID']);
 	
 	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	if (!$isAdmin->rowCount()) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!$isAdmin->rowCount()) { header('Location: /forums/'); exit; }
 	
 	$toDo = '';
 	$actionKey = '';
@@ -41,7 +41,7 @@
 		}
 		$mysql->query("UPDATE forums SET `order` = IF(`order` = $oldPosition, $newPosition, $oldPosition) WHERE `order` IN ($oldPosition, $newPosition) AND parentID = $forumID");
 		
-		header('Location: '.SITEROOT."/forums/acp/{$forumID}/subforums");
+		header("Location: /forums/acp/{$forumID}/subforums");
 	} elseif ($toDo == 'new') {
 		$pForumID = $forumID;
 		$baseHeritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$pForumID);
@@ -56,6 +56,6 @@
 		$mysql->query('UPDATE forums SET heritage = "'.$baseHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
 		
-		header('Location: '.SITEROOT.'/forums/acp/'.$pForumID.'/subforums');
-	} else header('Location: '.SITEROOT.'/forums/');
+		header('Location: /forums/acp/'.$pForumID.'/subforums');
+	} else header('Location: /forums/');
 ?>

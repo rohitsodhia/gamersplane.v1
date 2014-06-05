@@ -12,13 +12,13 @@
 			$mysql->query('DELETE FROM pms WHERE pmID = '.$pmID);
 			
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/pms/?deleteSuc=1');
+			else header('Location: /pms/?deleteSuc=1');
 		} else {
 			if (isset($_POST['modal'])) echo 0;
-			else header('Location: '.SITEROOT.'/403');
+			else header('Location: /403');
 		}
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/pms');
+		else header('Location: /pms');
 	}
 ?>

@@ -17,8 +17,8 @@
 		
 		if ($action == 'lock') $mysql->query('UPDATE threads SET locked = locked ^ 1 WHERE threadID = '.$threadID);
 		elseif ($action == 'sticky') $mysql->query('UPDATE threads SET sticky = sticky ^ 1 WHERE threadID = '.$threadID);
-		elseif ($action == 'move') { header('Location: '.SITEROOT.'/forums/moveThread/'.$threadID); exit; }
+		elseif ($action == 'move') { header('Location: /forums/moveThread/'.$threadID); exit; }
 	}
 	
-	header('Location: '.SITEROOT.'/forums/thread/'.$threadID);
+	header('Location: /forums/thread/'.$threadID);
 ?>

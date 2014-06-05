@@ -54,7 +54,7 @@
 			$_SESSION['errorVals']['username'] = $_POST['username'];
 			$_SESSION['errorVals']['email'] = $_POST['email'];
 			$_SESSION['errorTime'] = time() + 300;
-			header('Location: '.SITEROOT.'/register?failed=1');
+			header('Location: /register?failed=1');
 		} else {
 			$addUser = $mysql->prepare('INSERT INTO users SET username = :username, password = :password, email = :email, joinDate = :joinDate, referrence = :referrence');
 			$addUser->bindValue(':username', $username);
@@ -73,8 +73,8 @@
 				
 				wp_create_user($username, $password1, $email);
 				
-				header('Location: '.SITEROOT.'/register/success/'.$username);
-			} else header('Location: '.SITEROOT.'/register?failed=1');
+				header('Location: /register/success/'.$username);
+			} else header('Location: /register?failed=1');
 		}
-	} else header('Location: '.SITEROOT.'/register/');
+	} else header('Location: /register/');
 ?>

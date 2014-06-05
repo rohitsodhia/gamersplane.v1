@@ -19,7 +19,7 @@
 		} elseif ($password1 != $password2) $errors .= 'passMismatch=1&';
 		
 		if (strlen($errors) > 1) {
-			header('Location: '.SITEROOT.'/ucp/cp'.$errors);
+			header('Location: /ucp/cp'.$errors);
 		} else {
 			unset($_SESSION['errors']);
 			unset($_SESSION['errorTime']);
@@ -27,7 +27,7 @@
 			$mysql->query('UPDATE users SET '.$updates.' WHERE userID = '.$userID);
 			$_SESSION['timezone'] = $timezone;
 			
-			header('Location: '.SITEROOT.'/ucp/cp/?updated=1');
+			header('Location: /ucp/cp/?updated=1');
 		}
-	} else header('Location: '.SITEROOT.'/user');
+	} else header('Location: /user');
 ?>

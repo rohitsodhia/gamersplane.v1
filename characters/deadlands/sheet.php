@@ -1,140 +1,89 @@
-<?
-	$loggedIn = checkLogin();
-	$userID = intval($_SESSION['userID']);
-	$characterID = intval($pathOptions[1]);
-	$noChar = TRUE;
-	$system = 'deadlands';
-	$charInfo = getCharInfo($characterID, $system);
-	if ($charInfo) {
-		if ($viewerStatus = allowCharView($characterID, $userID)) {
-			foreach ($charInfo as $key => $value) if ($value == '') $charInfo[$key] = '&nbsp;';
-			$charInfo['wounds'] = explode(',', $charInfo['wounds']);
-			$noChar = FALSE;
+			<div id="nameDiv" class="tr clearfix">
+				<label>Name:</label>
+				<div><?=$this->getName?></div>
+			</div>
 			
-			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+			<div class="clearfix">
+				<div class="triCol">
+					<h2 class="headerbar hbDark">Mental</h2>
+<?
+	$first = TRUE;
+	foreach (deadlands_consts::getStats() as $abbrev => $label) {
+		if ($abbrev == 'def') {
+			$first = TRUE;
+?>
+				</div>
+				<div class="triCol">
+					<h2 class="headerbar hbDark">Corporeal</h2>
+<?
 		}
-	}
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Character Sheet</h1>
-<? if (!$noChar) { ?>
-		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
-			<div>
-<?		if ($viewerStatus == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
-<?		} else { ?>
-				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
-<?		} ?>
-			</div>
-			<div class="wing ulWing"></div>
-			<div class="wing urWing"></div>
-		</div></div>
-<? } ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
-		
-<? if ($noChar) { ?>
-		<h2 id="noCharFound">No Character Found</h2>
-<? } else { ?>
-		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-
-		<div id="nameDiv" class="tr">
-			<label>Name:</label>
-			<div><?=$charInfo['name']?></div>
-		</div>
-		
-		<div class="clearfix">
-			<div class="triCol">
-				<h2 class="headerbar hbDark">Mental</h2>
-<?
-	$first = TRUE;
-	foreach (array('cog' => 'Cognition', 'kno' => 'Knowledge', 'mie' => 'Mien', 'sma' => 'Smarts', 'spi' => 'Spirit') as $abbrev => $label) {
-?>
-				<div class="hbdMargined statDiv<?=$first?' firstStatDiv':''?>">
-					<div class="statDice">
-						<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." $label"?>
+					<div class="hbdMargined statDiv<?=$first?' firstStatDiv':''?>">
+						<div class="statDice">
+							<?=$this->getStats($abbrev, 'dice')." $label"?>
+						</div>
+						<div class="skillTitle"><?=$label?> Skills</div>
+						<?=printReady($this->getStats($abbrev, 'skills'))?>
 					</div>
-					<div class="skillTitle"><?=$label?> Skills</div>
-					<?=printReady($charInfo[$abbrev.'Skills'])?>
-				</div>
 <?
 		if ($first) $first = FALSE;
 	}
 ?>
-			</div>
-			<div class="triCol">
-				<h2 class="headerbar hbDark">Corporeal</h2>
-<?
-	$first = TRUE;
-	foreach (array('def' => 'Deftness', 'nim' => 'Nimbleness', 'str' => 'Strength', 'qui' => 'Quickness', 'vig' => 'Vigor') as $abbrev => $label) {
-?>
-				<div class="hbdMargined">
-					<div class="statDiv<?=$first?' firstStatDiv':''?>">
-						<?=$charInfo[$abbrev.'NumDice'].' d '.$charInfo[$abbrev.'DieType']." $label"?>
-					</div>
-					<div class="skillTitle"><?=$label?> Skills</div>
-					<?=printReady($charInfo[$abbrev.'Skills'])?>
 				</div>
-<?
-		if ($first) $first = FALSE;
-	}
-?>
-			</div>
-			<div class="triCol lastTriCol">
-				<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['edge_hind'])?></div>
-				
-				<h2 class="headerbar hbDark">Worst Nightmare</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['nightmare'])?></div>
-				
-				<h2 class="headerbar hbDark">Wounds</h2>
-				<div id="woundsDiv" class="clearfix">
-					<div class="indivWoundDiv">
-						<div>Head</div>
-						<?=$charInfo['wounds'][0]?>
+				<div class="triCol lastTriCol">
+					<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
+					<div class="hbdMargined"><?=printReady($this->getEdgesHindrances())?></div>
+					
+					<h2 class="headerbar hbDark">Worst Nightmare</h2>
+					<div class="hbdMargined"><?=printReady($this->getNightmare())?></div>
+					
+					<h2 class="headerbar hbDark">Wounds</h2>
+					<div id="woundsDiv" class="clearfix">
+						<div class="indivWoundDiv">
+							<div>Head</div>
+							<?=$this->getWounds('head')?>
+						</div>
+						<div class="indivWoundDiv subTwoCol">
+							<div>Left Hand</div>
+							<?=$this->getWounds('leftHand')?>
+						</div>
+						<div class="indivWoundDiv subTwoCol">
+							<div>Right Hand</div>
+							<?=$this->getWounds('rightHand')?>
+						</div>
+						<div class="indivWoundDiv">
+							<div>Guts</div>
+							<?=$this->getWounds('guts')?>
+						</div>
+						<div class="indivWoundDiv subTwoCol">
+							<div>Left Leg</div>
+							<?=$this->getWounds('leftLeg')?>
+						</div>
+						<div class="indivWoundDiv subTwoCol">
+							<div>Right Leg</div>
+							<?=$this->getWounds('rightLeg')?>
+						</div>
 					</div>
-					<div class="indivWoundDiv subTwoCol">
-						<div>Left Hand</div>
-						<?=$charInfo['wounds'][1]?>
-					</div>
-					<div class="indivWoundDiv subTwoCol">
-						<div>Right Hand</div>
-						<?=$charInfo['wounds'][2]?>
-					</div>
-					<div class="indivWoundDiv">
-						<div>Guts</div>
-						<?=$charInfo['wounds'][3]?>
-					</div>
-					<div class="indivWoundDiv subTwoCol">
-						<div>Left Leg</div>
-						<?=$charInfo['wounds'][4]?>
-					</div>
-					<div class="indivWoundDiv subTwoCol">
-						<div>Right Leg</div>
-						<?=$charInfo['wounds'][5]?>
+					
+					<div id="windDiv">
+						<div>Wind</div><?=printReady($this->getWind())?>
 					</div>
 				</div>
-				
-				<div id="windDiv">
-					<div>Wind</div><?=printReady($charInfo['wind'])?>
+			</div>
+			
+			<div class="clearfix">
+				<div class="twoCol">
+					<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
+					<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
+					
+					<h2 class="headerbar hbDark">Arcane Abilities</h2>
+					<div class="hbdMargined"><?=printReady($this->getArcane())?></div>
+				</div>
+				<div class="twoCol lastTwoCol">
+					<h2 class="headerbar hbDark">Equipment</h2>
+					<div class="hbdMargined"><?=printReady($this->getEquipment())?></div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="clearfix">
-			<div class="twoCol">
-				<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['weapons'])?></div>
-				
-				<h2 class="headerbar hbDark">Arcane Abilities</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['arcane'])?></div>
-			</div>
-			<div class="twoCol lastTwoCol">
-				<h2 class="headerbar hbDark">Equipment</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['equipment'])?></div>
-			</div>
-		</div>
-		
-		<h2 class="headerbar hbDark">Background/Notes</h2>
-		<div class="hbdMargined"><?=printReady($charInfo['notes'])?></div>
-<? } ?>
-<? require_once(FILEROOT.'/footer.php'); ?>
+			
+			<h2 class="headerbar hbDark">Background/Notes</h2>
+			<div class="hbdMargined"><?=printReady($this->getNotes)?></div>

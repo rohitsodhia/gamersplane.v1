@@ -72,6 +72,6 @@
 			addCharacterHistory($characterID, 'editedChar');
 		}
 		
-		header('Location: '.SITEROOT.'/characters/spycraft/'.$characterID);
-	} else header('Location: '.SITEROOT.'/403');
+		header('Location: /characters/spycraft/'.$characterID);
+	} else header('Location: /403');
 ?>

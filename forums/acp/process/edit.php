@@ -5,7 +5,7 @@
 	$forumID = intval($_POST['forumID']);
 	
 	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	if (!$isAdmin->rowCount()) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!$isAdmin->rowCount()) { header('Location: /forums/'); exit; }
 	
 	$toDo = '';
 	$actionKey = '';
@@ -20,6 +20,6 @@
 			$updateForum->execute();
 		}
 		
-		header('Location: '.SITEROOT.'/forums/acp/'.$forumID);
-	} else header('Location: '.SITEROOT.'/forums/');
+		header('Location: /forums/acp/'.$forumID);
+	} else header('Location: /forums/');
 ?>

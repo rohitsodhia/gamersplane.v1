@@ -16,7 +16,7 @@
 		foreach ($heritage as $key => $hForumID) $heritage[$key] = intval($hForumID);
 	}
 	
-	if (!(in_array(0, $adminForums) || array_intersect($adminForums, $heritage))) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!(in_array(0, $adminForums) || array_intersect($adminForums, $heritage))) { header('Location: /forums/'); exit; }
 	
 	$gameInfo = $mysql->query('SELECT gameID, groupID FROM games WHERE forumID = '.$forumID);
 	$gameInfo = $gameInfo->fetch();
@@ -26,13 +26,13 @@
 		<h1>Forum ACP: Permissions</h1>
 		
 		<div id="breadcrumbs">
-			<a id="forumReturn" href="<?=SITEROOT.'/forums/'.($forumID?$forumID:'')?>">Return to forum</a>
+			<a id="forumReturn" href="<?='/forums/'.($forumID?$forumID:'')?>">Return to forum</a>
 			
 <?
 	$parentAdmin = 0;
 	if (in_array(0, $adminForums)) {
 		$parentAdmin = 1;
-		echo "\t\t\t<a href=\"".SITEROOT.'/forums/acp/0">Index</a>'.($forumID != 0?' > ':'')."\n";
+		echo "\t\t\t<a href=\"/forums/acp/0\">Index</a>".($forumID != 0?' > ':'')."\n";
 	} else echo "\t\t\tIndex".($forumID != 0?' > ':'')."\n";
 	if ($forumID != 0) {
 		$breadcrumbs = $mysql->query('SELECT forumID, title FROM forums WHERE forumID IN ('.implode(',', $heritage).')');
@@ -41,7 +41,7 @@
 		$fCounter = 1;
 		foreach ($heritage as $hForumID) {
 			if (!$parentAdmin) $parentAdmin = in_array($hForumID, $adminForums)?1:0;
-			if ($parentAdmin) echo "\t\t\t<a href=\"".SITEROOT.'/forums/acp/'.$hForumID.'">'.$breadcrumbForums[$hForumID].'</a>'.($fCounter != sizeof($heritage)?' > ':'')."\n";
+			if ($parentAdmin) echo "\t\t\t<a href=\"/forums/acp/".$hForumID.'">'.$breadcrumbForums[$hForumID].'</a>'.($fCounter != sizeof($heritage)?' > ':'')."\n";
 			else echo "\t\t\t".$breadcrumbForums[$hForumID].($fCounter != sizeof($heritage)?' > ':'')."\n";
 			$fCounter++;
 		}
@@ -73,7 +73,7 @@
 		</div>
 <? 		} ?>
 		
-		<form id="newPermission" method="post" action="<?=SITEROOT?>/forums/process/acp/permissions">
+		<form id="newPermission" method="post" action="/forums/process/acp/permissions">
 			<input type="hidden" name="forumID" value="<?=$forumID?>">
 			<input type="hidden" name="type" value="<?=$pType?>">
 <?
@@ -116,7 +116,7 @@
 		<h3>General</h3>
 		<div class="tr">
 			<div class="permissionsTitle">General</div>
-			<div class="permissionsLink noFloat"><?=$gameInfo?'&nbsp;':'<a href="'.SITEROOT.'/forums/acp/permissions/'.$forumID.'/?edit=general">Edit</a>'?></div>
+			<div class="permissionsLink noFloat"><?=$gameInfo?'&nbsp;':'<a href="/forums/acp/permissions/'.$forumID.'/?edit=general">Edit</a>'?></div>
 		</div>
 		<br class="clear">
 		
@@ -128,14 +128,14 @@
 ?>
 		<div class="tr">
 			<div class="permissionsTitle"><?=$permission['name'].($gameInfo && $gameInfo['groupID'] == $permission['groupID']?' (Game Group)':'')?></div>
-			<div class="permissionsLink<?=$gameInfo?' noFloat':''?>"><a href="<?=SITEROOT?>/forums/acp/permissions/<?=$forumID?>/?edit=group&id=<?=$permission['groupID']?>">Edit</a></div>
+			<div class="permissionsLink<?=$gameInfo?' noFloat':''?>"><a href="/forums/acp/permissions/<?=$forumID?>/?edit=group&id=<?=$permission['groupID']?>">Edit</a></div>
 <? if (!$gameInfo) { ?>
-			<div class="permissionsLink noFloat"><a href="<?=SITEROOT?>/forums/acp/permissions/<?=$forumID?>/?delete=group&id=<?=$permission['groupID']?>">Delete</a></div>
+			<div class="permissionsLink noFloat"><a href="/forums/acp/permissions/<?=$forumID?>/?delete=group&id=<?=$permission['groupID']?>">Delete</a></div>
 <? } ?>
 		</div>
 <?
 	} } else echo "\t\t\t<div class=\"tr\">No group level permissions for this forum.</div>\n";
-	if (!$gameInfo) echo "\t\t\t<div class=\"tr\"><a href=\"".SITEROOT."/forums/acp/permissions/{$forumID}?new=group\">Add Group Permission</a></div>\n";
+	if (!$gameInfo) echo "\t\t\t<div class=\"tr\"><a href=\"/forums/acp/permissions/{$forumID}?new=group\">Add Group Permission</a></div>\n";
 	
 	echo "\t\t<h3 class=\"gapAbove\">User</h3>\n";
 	
@@ -144,12 +144,12 @@
 ?>
 		<div class="tr">
 			<div class="permissionsTitle"><?=$permission['username']?></div>
-			<div class="permissionsLink"><a href="<?=SITEROOT?>/forums/acp/permissions/<?=$forumID?>/?edit=user&id=<?=$permission['userID']?>">Edit</a></div>
-			<div class="permissionsLink noFloat"><a href="<?=SITEROOT?>/forums/acp/permissions/<?=$forumID?>/?delete=user&id=<?=$permission['userID']?>">Delete</a></div>
+			<div class="permissionsLink"><a href="/forums/acp/permissions/<?=$forumID?>/?edit=user&id=<?=$permission['userID']?>">Edit</a></div>
+			<div class="permissionsLink noFloat"><a href="/forums/acp/permissions/<?=$forumID?>/?delete=user&id=<?=$permission['userID']?>">Delete</a></div>
 		</div>
 <?
 	} } else echo "\t\t\t<div class=\"tr\">No user level permissions for this forum.</div>\n";
-	echo "\t\t\t<div class=\"tr\"><a href=\"".SITEROOT."/forums/acp/permissions/{$forumID}?new=user\">Add User Permission</a></div>\n";
+	echo "\t\t\t<div class=\"tr\"><a href=\"/forums/acp/permissions/{$forumID}?new=user\">Add User Permission</a></div>\n";
 ?>
 		</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

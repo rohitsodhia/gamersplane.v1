@@ -3,7 +3,7 @@
 	
 	$profileID = intval($pathOptions[0]);
 	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$profileID);
-	if ($userCheck->rowCount() == 0) { header('Location: '.SITEROOT.'/404'); exit; }
+	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }
 	$userInfo = $userCheck->fetch();
 	$userInfo['joinDate'] = switchTimezone($_SESSION['timezone'], $userInfo['joinDate']);
 	
@@ -12,9 +12,9 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$userInfo['username']?></h1>
 		<div id="leftCol">
-			<img src="<?=SITEROOT.'/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png" class="avatar">
+			<img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png" class="avatar">
 			<div id="actions">
-				<a href="<?=SITEROOT?>/ucp/pms/send/?userID=<?=$profileID?>">Send Private Message</a>
+				<a href="/ucp/pms/send/?userID=<?=$profileID?>">Send Private Message</a>
 			</div>
 		</div>
 		<div id="rightCol">
@@ -69,7 +69,7 @@
 		foreach ($charStats as $game) {
 			$count++;
 			echo "\t\t\t\t\t<div class=\"game".($count % 3 == 0?' third':'')."\">\n";
-			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.png\"></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"/images/logos/{$game['shortName']}.png\"></div>\n";
 			echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['fullName']}</p>\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['numChars']} Char".($game['numChars'] == 1?'':'s')." - ".round($game['numChars'] / $numChars * 100, 2)."%</p>\n";
@@ -98,7 +98,7 @@
 		foreach ($gameStats as $game) {
 			$count++;
 			echo "\t\t\t\t\t<div class=\"game".($count % 3 == 0?' third':'')."\">\n";
-			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"".SITEROOT."/images/logos/{$game['shortName']}.png\"></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"gameLogo\"><img src=\"/images/logos/{$game['shortName']}.png\"></div>\n";
 			echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['fullName']}</p>\n";
 			echo "\t\t\t\t\t\t\t<p>{$game['numGames']} Game".($game['numGames'] == 1?'':'s')." - ".round($game['numGames'] / $numGames * 100, 2)."%</p>\n";

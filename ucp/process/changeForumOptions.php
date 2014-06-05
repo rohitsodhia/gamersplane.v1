@@ -9,6 +9,6 @@
 		
 		$mysql->query("UPDATE users SET postSide = '$postSide' WHERE userID = $userID");
 		
-		header('Location: '.SITEROOT.'/ucp/cp/?updated=1');
-	} else header('Location: '.SITEROOT.'/user');
+		header('Location: /ucp/cp/?updated=1');
+	} else header('Location: /user');
 ?>

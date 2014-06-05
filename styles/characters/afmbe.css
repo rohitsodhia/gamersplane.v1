@@ -60,6 +60,7 @@ h2 {
 #primaryStatsCol input, #secondaryStatsCol input {
 	width: 30px;
 	margin: 0 6px;
+	text-align: center; 
 }
 
 .twoCol {
@@ -76,7 +77,7 @@ h2 {
 	height: 8.6em;
 }
 
-.editCharacter #notes {
+#page_characterSheet_edit #notes {
 	width: 912px;
 	height: 19.7em;
 }

@@ -1,7 +1,7 @@
 <?
 	function rollTR($count, $type = 'basic', $data = array()) {
 		echo "						<div class=\"rollWrapper\">\n";
-		echo "							<button class=\"close\"><img src=\"".SITEROOT."/images/cross.png\"></button>\n";
+		echo "							<button class=\"close\"><img src=\"/images/cross.png\"></button>\n";
 		if ($type == 'sweote') {
 ?>
 							<div class="table newRoll sweoteRoll">
@@ -15,7 +15,7 @@
 									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data['reason'])?" value=\"{$data['reason']}\"":NULL?> class="borderBox"></div>
 									<div class="roll">
 										<div class="dicePool">
-											<div class="add"><img src="<?=SITEROOT?>/images/plus.png"></div>
+											<div class="add"><img src="/images/plus.png"></div>
 											<div class="selectedDice">
 <?
 			if (isset($data['roll']) && strlen($data['roll'])) {
@@ -87,7 +87,7 @@
 							<div class="permission_label"><?=$label?></div>
 							<a href="" class="permission_edit">[ Edit ]</a>
 <?	if (!$gameForum && $type != 'general') { ?>
-							<a href="<?=SITEROOT?>/forums/acp/<?=$forumID?>/deletePermission/<?=$type?>/<?=$typeID?>/" class="permission_delete">[ Delete ]</a>
+							<a href="/forums/acp/<?=$forumID?>/deletePermission/<?=$type?>/<?=$typeID?>/" class="permission_delete">[ Delete ]</a>
 <?	} ?>
 						</div>
 						<div class="permissions">

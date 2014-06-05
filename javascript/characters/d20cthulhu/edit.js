@@ -1,3 +1,4 @@
+var statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 $(function() {
 	function updateAC() {
 		var total = 10;
@@ -8,7 +9,7 @@ $(function() {
 		$('#ac_total').text(total);
 	}
 
-	var statBonus = { 'str': parseInt($('#strModifier').text()),
+	statBonus = { 'str': parseInt($('#strModifier').text()),
 						'con': parseInt($('#conModifier').text()),
 						'dex': parseInt($('#dexModifier').text()),
 						'int': parseInt($('#intModifier').text()),
@@ -29,7 +30,7 @@ $(function() {
 		else if (this.id == 'con') { updateSaves('fort'); }
 		else if (this.id == 'wis') { updateSaves('will'); }
 		
-		statBonus[this.id] = modifier;
+		statBonus[this.id] = parseInt(modifier);
 	});
 	
 	$('#savingThrows input').blur(function () { updateSaves($(this).attr('name')); });
@@ -68,7 +69,6 @@ $(function() {
 		
 		e.preventDefault()
 	});
-	$('#feats').on('click', '.feat_notesLink', function (e) { $(this).colorbox(); });
 	
 	$('#weapons').on('click', '.remove', function (e) {
 		$(this).parent().parent().remove();

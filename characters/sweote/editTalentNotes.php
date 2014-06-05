@@ -16,7 +16,7 @@
 <? } elseif (!isset($talentInfo)) { ?>
 		<h2 id="noTalent">This character does not have this talent.</h2>
 <? } else { ?>
-		<form method="post" action="<?=SITEROOT?>/characters/process/sweote/editTalentNotes/">
+		<form method="post" action="/characters/process/sweote/editTalentNotes/">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="talentID" type="hidden" name="talentID" value="<?=$talentID?>">
 			<textarea name="notes"><?=$talentInfo['notes']?></textarea>

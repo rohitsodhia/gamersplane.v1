@@ -20,18 +20,18 @@
 			if (md5($userInfo['email'].'r3Qu'.$key) == $_POST['validationStr']) {
 				$mysql->query('UPDATE users SET password = "'.hash('sha256', SVAR.$pass1).'" WHERE userID = '.$userInfo['userID']);
 				if ($_POST['ajaxForm']) echo 'success'
-				else header('Location: '.SITEROOT.'/login/?resetSuccess=1');
+				else header('Location: /login/?resetSuccess=1');
 			} else {
 				$errors['invalidValidation'] = 1;
 
 				if ($_POST['ajaxForm']) echo json_encode($errors);
-				else header('Location: '.SITEROOT.'/login/resetPass?'.http_build_query($errors);
+				else header('Location: /login/resetPass?'.http_build_query($errors);
 			}
 		} else {
 			if (!$userCheck->rowCount()) $errors['invalidUser'] = 1;
 
 			if ($_POST['ajaxForm']) echo json_encode($errors);
-			else header('Location: '.SITEROOT.'/login/resetPass?'.http_build_query($errors);
+			else header('Location: /login/resetPass?'.http_build_query($errors);
 		}
-	} else header('Location: '.SITEROOT.'/login/resetPass');
+	} else header('Location: /login/resetPass');
 ?>

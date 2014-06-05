@@ -9,7 +9,7 @@
 	$forumInfo = $mysql->query("SELECT forumID, title, forumType, parentID, heritage FROM forums WHERE forumID = $forumID");
 	$forumInfo = $forumInfo->fetch();
 	$permissionType = in_array($pathOptions[3], array('group', 'user'))?$pathOptions[3]:FALSE;
-	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $forumID != 10) || !$permissionType) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $forumID != 10) || !$permissionType) { header('Location: /forums/'); exit; }
 	$gameForum = strpos($forumInfo['heritage'], sql_forumIDPad(2)) !== FALSE && $forumID != 10?TRUE:FALSE;
 	if ($gameForum) {
 		$heritage = explode('-', $forumInfo['heritage']);
@@ -27,7 +27,7 @@
 
 	if ((!$gameForum && $permissionType == 'user') || $validOpts->rowCount()) {
 ?>
-		<form method="post" action="<?=SITEROOT?>/forums/process/acp/permissions">
+		<form method="post" action="/forums/process/acp/permissions">
 			<div id="optList">
 				<input id="gameForum" type="hidden" name="gameForum" value="<?=$gameForum?>">
 				<input id="permissionType" type="hidden" name="pType" value="<?=$permissionType?>">

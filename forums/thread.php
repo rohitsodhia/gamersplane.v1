@@ -5,7 +5,7 @@
 	
 	$userID = intval($_SESSION['userID']);
 	$threadID = intval($pathOptions[1]);
-	if (!threadID) { header('Location: '.SITEROOT.'/forums'); exit; }
+	if (!threadID) { header('Location: /forums'); exit; }
 	
 	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.cLastRead lastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = {$userID} WHERE threads.threadID = {$threadID}");
 	$threadInfo = $threadInfo->fetch();
@@ -13,7 +13,7 @@
 	foreach ($threadInfo['heritage'] as $key => $value) $threadInfo['heritage'][$key] = intval($value);
 	$permissions = retrievePermissions($userID, $threadInfo['forumID'], array('read', 'write', 'editPost', 'deletePost', 'deleteThread', 'moderate'), TRUE);
 	
-	if ($permissions['read'] == 0) { header('Location: '.SITEROOT.'/403'); exit; }
+	if ($permissions['read'] == 0) { header('Location: /403'); exit; }
 
 	if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
 		$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID} AND postID <= {$threadInfo['lastReadID']}");
@@ -63,11 +63,11 @@
 		<div class="hbMargined">
 			<div id="threadMenu" class="clearfix">
 				<div class="leftCol">
-					<a href="<?=SITEROOT.'/forums/'.$threadInfo['forumID']?>">Back to the forums</a>
+					<a href="<?='/forums/'.$threadInfo['forumID']?>">Back to the forums</a>
 				</div>
 				<div class="rightCol alignRight">
 <? if ($permissions['moderate']) { ?>
-					<form id="threadOptions" method="post" action="<?=SITEROOT?>/forums/process/modThread">
+					<form id="threadOptions" method="post" action="/forums/process/modThread">
 <?
 	$sticky = $threadInfo['sticky']?'unsticky':'sticky';
 	$lock = $threadInfo['locked']?'unlock':'lock';
@@ -78,14 +78,14 @@
 					</form>
 <? } ?>
 <?	if ($permissions['write']) { ?>
-					<a href="<?=SITEROOT?>/forums/post/<?=$threadID?>" class="fancyButton">Reply</a>
+					<a href="/forums/post/<?=$threadID?>" class="fancyButton">Reply</a>
 <?	} ?>
 				</div>
 			</div>
 <?
 	if ($pollInfo) {
 ?>
-			<form id="poll" method="post" action="<?=SITEROOT?>/forums/process/vote">
+			<form id="poll" method="post" action="/forums/process/vote">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($pollInfo['poll'])?></p>
 <? 
@@ -143,8 +143,8 @@
 			<div class="postBlock post<?=$postSide?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
-					<a href="<?=SITEROOT.'/ucp/'.$postInfo['userID']?>" class="avatar"><img src="<?=SITEROOT.'/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png"></a>
-					<p class="posterName"><a href="<?=SITEROOT.'/ucp/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
+					<a href="<?='/ucp/'.$postInfo['userID']?>" class="avatar"><img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png"></a>
+					<p class="posterName"><a href="<?='/ucp/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
 				</div>
 				<div class="postContent">
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>
@@ -199,7 +199,7 @@
 				foreach ($draws[$postInfo['postID']] as $draw) {
 					echo "\t\t\t\t\t<div>".printReady($draw['reason'])."</div>\n";
 					if ($postInfo['userID'] == $userID) {
-						echo "\t\t\t\t\t<form method=\"post\" action=\"".SITEROOT."/forums/process/cardVis\">\n";
+						echo "\t\t\t\t\t<form method=\"post\" action=\"/forums/process/cardVis\">\n";
 						echo "\t\t\t\t\t\t<input type=\"hidden\" name=\"drawID\" value=\"{$draw['drawID']}\">\n";
 						$cardsDrawn = explode('~', $draw['cardsDrawn']);
 						$count = 0;
@@ -217,7 +217,7 @@
 						$count = 0;
 						foreach ($cardsDrawn as $cardDrawn) {
 							if ($draw['reveals'][$count++] == 1) echo "\t\t\t\t\t\t".getCardImg($cardDrawn, $draw['type'], 'mid')."\n";
-							else echo "\t\t\t\t\t\t<img src=\"".SITEROOT."/images/tools/cards/back.png\" alt=\"Hidden Card\" title=\"Hidden Card\" class=\"cardBack mid\">\n";
+							else echo "\t\t\t\t\t\t<img src=\"/images/tools/cards/back.png\" alt=\"Hidden Card\" title=\"Hidden Card\" class=\"cardBack mid\">\n";
 						}
 						echo "\t\t\t\t\t</div>\n";
 					}
@@ -227,10 +227,10 @@
 				</div>
 				<div class="postActions">
 <?
-			if ($permissions['write']) echo "						<a href=\"".SITEROOT."/forums/post/{$threadID}?quote={$postInfo['postID']}\">Quote</a>\n";
+			if ($permissions['write']) echo "						<a href=\"/forums/post/{$threadID}?quote={$postInfo['postID']}\">Quote</a>\n";
 			if (($postInfo['userID'] == $userID && !$threadInfo['locked']) || $permissions['moderate']) {
-				if ($permissions['moderate'] || $permissions['editPost']) echo "					<a href=\"".SITEROOT."/forums/editPost/{$postInfo['postID']}\">Edit</a>\n";
-				if ($permissions['moderate'] || $permissions['deletePost'] && $postInfo['postID'] != $threadInfo['firstPostID'] || $permissions['deleteThread'] && $postInfo['postID'] == $threadInfo['firstPostID']) echo "					<a href=\"".SITEROOT."/forums/delete/{$postInfo['postID']}\" class=\"deletePost\">Delete</a>\n";
+				if ($permissions['moderate'] || $permissions['editPost']) echo "					<a href=\"/forums/editPost/{$postInfo['postID']}\">Edit</a>\n";
+				if ($permissions['moderate'] || $permissions['deletePost'] && $postInfo['postID'] != $threadInfo['firstPostID'] || $permissions['deleteThread'] && $postInfo['postID'] == $threadInfo['firstPostID']) echo "					<a href=\"/forums/delete/{$postInfo['postID']}\" class=\"deletePost\">Delete</a>\n";
 			}
 ?>
 				</div>
@@ -262,7 +262,7 @@
 	
 	if ($permissions['moderate']) {
 ?>
-			<div class="clearfix"><form id="quickMod" method="post" action="<?=SITEROOT?>/forums/process/modThread">
+			<div class="clearfix"><form id="quickMod" method="post" action="/forums/process/modThread">
 <?
 	$sticky = $threadInfo['sticky']?'Unsticky':'Sticky';
 	$lock = $threadInfo['locked']?'Unlock':'lock';
@@ -280,7 +280,7 @@
 		</div>
 	
 <?	if ($permissions['write'] && $userID != 0 && !$threadInfo['locked']) { ?>
-		<form method="post" action="<?=SITEROOT?>/forums/process/post">
+		<form method="post" action="/forums/process/post">
 			<h2 class="headerbar hbDark">Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
 			<input type="hidden" name="title" value="Re: <?=$threadInfo['title']?>">

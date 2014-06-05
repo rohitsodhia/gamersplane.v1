@@ -9,7 +9,7 @@
 	$permissions = retrievePermissions($userID, $postInfo['forumID'], 'deletePost, deleteThread, moderate', TRUE);
 	$deleteType = ($postInfo['firstPostID'] == $postID)?'thread':'post';
 	
-	if ($postInfo['authorID'] != $userID && !$permissions['moderate'] || $postInfo['authorID'] == $userID && $postInfo['firstPostID'] != $postID && !$permissions['deletePost'] || $postInfo['authorID'] != $userID && $postInfo['firstPostID'] == $postID && !$permissions['deleteThread']) { header('Location: '.SITEROOT.'/forums/thread/'.$postInfo['threadID']); exit; }
+	if ($postInfo['authorID'] != $userID && !$permissions['moderate'] || $postInfo['authorID'] == $userID && $postInfo['firstPostID'] != $postID && !$permissions['deletePost'] || $postInfo['authorID'] != $userID && $postInfo['firstPostID'] == $postID && !$permissions['deleteThread']) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Delete <?=ucwords($deleteType)?></h1>
@@ -17,7 +17,7 @@
 		<p class="alignCenter">Are you sure you wanna delete this <?=$deleteType?>?</p>
 		<p class="alignCenter">This cannot be reversed!</p>
 		
-		<form method="post" action="<?=SITEROOT?>/forums/process/delete/" class="alignCenter">
+		<form method="post" action="/forums/process/delete/" class="alignCenter">
 			<input type="hidden" name="postID" value="<?=$postID?>">
 			<button type="submit" name="delete" class="fancyButton">Delete</button>
 			<button type="submit" name="cancel" class="fancyButton">Cancel</button>

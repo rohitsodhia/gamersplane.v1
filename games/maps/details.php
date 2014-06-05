@@ -4,7 +4,7 @@
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
-	if (!$gmCheck->rowCount()) { header('Location: '.SITEROOT.'/tools/maps'); exit; }
+	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
 
 	$action = $pathOptions[3];
 	$mapDetails = array('name' => '', 'rows' => 10, 'columns' => 10, 'visible' => 0);
@@ -18,7 +18,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$action == 'edit'?'Edit':'New'?> Map</h1>
 		
-		<form method="post" action="<?=SITEROOT?>/games/process/maps/details" class="hbMargined">
+		<form method="post" action="/games/process/maps/details" class="hbMargined">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 <? if ($action == 'edit') {?>
 			<input type="hidden" name="mapID" value="<?=$mapID?>">

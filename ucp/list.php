@@ -18,10 +18,10 @@
 ?>
 			<li<?=$count % 5 == 0?' class="last"':''?>>
 				<div class="onlineIndicator <?=$userInfo['online']?'online':'offline'?>"></div>
-				<a href="<?=SITEROOT.'/user/'.$userInfo['userID']?>" class="avatar">
-					<img src="<?=SITEROOT.'/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$userInfo['userID']}.png")?$userInfo['userID']:'avatar')?>.png">
+				<a href="<?='/user/'.$userInfo['userID']?>" class="avatar">
+					<img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$userInfo['userID']}.png")?$userInfo['userID']:'avatar')?>.png">
 				</a>
-				<p><a href="<?=SITEROOT.'/user/'.$userInfo['userID']?>"><?=$userInfo['username']?></a></p>
+				<p><a href="<?='/user/'.$userInfo['userID']?>"><?=$userInfo['username']?></a></p>
 			</li>
 <? } ?>
 		</ul>

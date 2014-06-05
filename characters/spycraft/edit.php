@@ -13,12 +13,12 @@
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Edit Character Sheet</h1>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/spycraft.png"></div>
+		<div id="charSheetLogo"><img src="/images/logos/spycraft.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <? } else { ?>
-		<form method="post" action="<?=SITEROOT?>/characters/process/spycraft/">
+		<form method="post" action="/characters/process/spycraft/">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			
 			<div class="tr labelTR">

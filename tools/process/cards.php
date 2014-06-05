@@ -23,5 +23,5 @@
 		}
 	}
 	
-	if (!isset($_POST['ajax'])) header('Location: '.SITEROOT.'/tools/cards');
+	if (!isset($_POST['ajax'])) header('Location: /tools/cards');
 ?>

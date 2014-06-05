@@ -8,5 +8,5 @@ $(function () {
 				parent.$.colorbox.close();
 			}
 		}
-	});
+	}).find('button').focus();
 });

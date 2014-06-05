@@ -35,13 +35,13 @@
 			} else {
 				logout();
 				wp_logout();
-				if ($redirect) { header('Location: '.SITEROOT.'/login?redirect=1'); exit; }
+				if ($redirect) { header('Location: /login?redirect=1'); exit; }
 				
 				return FALSE;
 			}
 		} else {
 //			logout();
-			if ($redirect) { header('Location: '.SITEROOT.'/login?redirect=1'); exit; }
+			if ($redirect) { header('Location: /login?redirect=1'); exit; }
 			
 			return FALSE;
 		}

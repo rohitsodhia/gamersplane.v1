@@ -16,7 +16,7 @@
 <? } elseif (!isset($featInfo)) { ?>
 		<h2 id="noFeat">This character does not have this feat/ability.</h2>
 <? } else { ?>
-		<form method="post" action="<?=SITEROOT?>/characters/process/spycraft2/editFeatNotes/">
+		<form method="post" action="/characters/process/spycraft2/editFeatNotes/">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="featID" type="hidden" name="featID" value="<?=$featID?>">
 			<textarea id="notes" name="notes"><?=$featInfo['notes']?></textarea>

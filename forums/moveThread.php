@@ -9,7 +9,7 @@
 	$heritage = explode('-', $heritage);
 	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
 	$adminCheck = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, 2, {$heritage[1]})");
-	if (!$adminCheck->rowCount() || !in_array(2, $heritage)) { header('Location: '.SITEROOT.'/forums'); exit; }
+	if (!$adminCheck->rowCount() || !in_array(2, $heritage)) { header('Location: /forums'); exit; }
 	$forumInfos = $mysql->query('SELECT forumID, title, parentID, heritage, `order` FROM forums WHERE heritage LIKE "002-'.sql_forumIDPad($heritage[1]).'%" ORDER BY LEFT(heritage, LENGTH(heritage) - 3), `order`');
 	$temp = array();
 	$forumOrder = array();
@@ -27,7 +27,7 @@
 		
 		<p>Where would you like to move the thread to?</p>
 		
-		<form method="post" action="<?=SITEROOT?>/forums/process/moveThread/" class="alignCenter">
+		<form method="post" action="/forums/process/moveThread/" class="alignCenter">
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
 			<div>
 <? foreach ($forumOrder as $oForumID) echo "\t\t\t\t<div class=\"tr\"><input type=\"radio\" name=\"destinationID\" value=\"$oForumID\"".($oForumID == $forumID?' checked="checked"':'')."><span style=\"margin-left: ".((sizeof(explode('-', $forumInfos[$oForumID]['heritage'])) - 1) * 20)."px\">".printReady($forumInfos[$oForumID]['title'])."</span>".($oForumID == $forumID?' <i>[ Currently Here ]</i>':'')."</div>\n"; ?>

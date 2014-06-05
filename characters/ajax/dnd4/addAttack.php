@@ -1,4 +1,6 @@
 <?
-	includeSystemInfo('dnd4');
-	attackFormFormat($_POST['count']);
+	require_once(FILEROOT.'/includes/packages/dnd4Character.package.php');
+	if ($character = new dnd4Character($characterID)) {
+		$character->attackEditFormat($_POST['attackNum']);
+	}
 ?>

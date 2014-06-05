@@ -3,104 +3,13 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-.cell {
-	display: inline-block;
-}
-
-.viewCharacter .total {
-	font-weight: bold;
-}
-
-h2 img {
-	margin-bottom: 1em;
-}
-
-.labelTR label {
-	font-size: .8em;
-}
-
-label {
-	display: inline-block;
-}
-
-label.shiftRight {
-	padding-left: 8px;
-}
-
-input[type="text"] {
-	width: 40px;
-	text-align: center;
-}
-
-.shortText, input.shortText {
-	width: 100px;
-	text-align: left;
-}
-
-.medText, input.medText {
-	width: 200px;
-	text-align: left;
-}
-
-.longText, input.longText {
-	width: 350px;
-	text-align: left;
-}
-
-.shortNum, input.shortNum {
-	width: 40px;
-}
-
-.medNum, input.medNum {
-	width: 60px;
-}
-
-label.leftLabel {
-	font-size: 1em;
-}
-
 .lrBuffer {
 	margin-right: 5px;
 	margin-left: 5px;
 }
 
-.editCharacter .labelTR {
-	padding-bottom: 0;
-}
-
-.viewCharacter .labelTR {
-	padding: 0;
-}
-
-.viewCharacter .dataTR {
-	margin-bottom: 1em;
-}
-
-.viewCharacter .dataTR > div {
-	display: inline-block;
-}
-
-.editCharacter #label label {
-	float: left;
-	text-align: right;
-	margin-right: 15px;
-	font-weight: bold;
-	font-size: 1em;
-}
-
-.editCharacter #label div {
-	width: 200px;
-	text-align: right;
-	font-size: .8em;
-}
-
-.editCharacter #size {
-	width: 65px;
-	text-align: center;
-}
-
-.editCharacter #levels {
-	width: 75px;
+#page_characterSheet_edit #label_paragon {
+	margin-left: 85px;
 }
 
 #stats {
@@ -108,19 +17,19 @@ label.leftLabel {
 	float: left;
 }
 
-.viewCharacter #stats {
+#page_characterSheet #stats {
 	margin-top: 0;
 }
 
-.viewCharacter #stats .dataTR {
+#page_characterSheet #stats .dataTR {
 	margin-bottom: 0;
 }
 
-.editCharacter #stats .tr div {
+#page_characterSheet_edit #stats .tr div {
 	display: inline-block;
 }
 
-.viewCharacter #stats .dataTR .stat {
+#page_characterSheet #stats .dataTR .stat {
 	border-right: 1px solid #555;
 	border-left: 1px solid #555;
 }
@@ -130,11 +39,11 @@ label.leftLabel {
 	margin: 1.5em 0 0 70px;
 }
 
-.viewCharacter #saves {
+#page_characterSheet #saves {
 	margin-top: 0;
 }
 
-.viewCharacter #saves .dataTR {
+#page_characterSheet #saves .dataTR {
 	margin-bottom: 0;
 }
 
@@ -146,13 +55,13 @@ label.leftLabel {
 	width: 75px;
 }
 
-.editCharacter #saves span {
+#page_characterSheet_edit #saves span {
 	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
 
-.viewCharacter #saves .dataTR > div {
+#page_characterSheet #saves .dataTR > div {
 	text-align: center;
 }
 
@@ -160,11 +69,11 @@ label.leftLabel {
 	display: inline-block;
 }
 
-.editCharacter #hpCol, .editCharacter #combatBonuses {
+#page_characterSheet_edit #hpCol, #page_characterSheet_edit #attacks {
 	margin-top: 1.5em;
 }
 
-.viewCharacter #hpCol, .viewCharacter #combatBonuses {
+#page_characterSheet #hpCol, #page_characterSheet #attacks {
 	margin-top: 2.5em;
 }
 
@@ -192,30 +101,31 @@ label.leftLabel {
 	width: 150px;
 }
 
-#combatBonuses {
+#attacks {
 	float: left;
+	width: 485px;
 	margin-left: 60px;
 }
 
-#combatBonuses .attackBonusSet {
+#attacks .attackBonusSet {
 	margin-top: 1em;
 }
 
-#combatBonuses .attackBonusSet:first-of-type {
+#attacks .attackBonusSet:first-of-type {
 	margin-top: 0;
 }
 
-.viewCharacter #combatBonuses .tr div {
+#page_characterSheet #attacks .tr div {
 	display: inline-block;
 }
 
-#combatBonuses span {
+#attacks span {
 	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
 
-#combatBonuses .ability {
+#attacks .ability {
 	width: 366px;
 	text-align: left;
 }
@@ -228,20 +138,24 @@ label.leftLabel {
 	margin-top: 2em;
 }
 
-.editCharacter .textareaDiv, .viewCharacter .textDiv {
+#page_characterSheet_edit .textareaDiv, #page_characterSheet .textDiv {
 	width: 465px;
 	margin-top: 1em;
 }
 
-.editCharacter .textareaDiv textarea {
+#page_characterSheet_edit .textareaDiv textarea {
 	height: 10em;
 }
 
-.editCharacter h2 a {
+#page_characterSheet_edit h2 a {
 	margin-left: 10px;
 	font-size: .6em;
 	font-weight: normal;
 	line-height: 1em;
+}
+
+#addSkillWrapper > *, #addFeatWrapper > *, #addPowerWrapper > * {
+	vertical-align: middle;
 }
 
 #skills {
@@ -254,9 +168,7 @@ label.leftLabel {
 }
 
 #addSkillWrapper .fancyButton {
-	top: -1px;
 	margin-left: 5px;
-	vertical-align: middle;
 }
 
 .skill span {
@@ -284,20 +196,18 @@ label.leftLabel {
 }
 
 #addFeatWrapper .fancyButton {
-	top: -1px;
 	margin-left: 5px;
-	vertical-align: middle;
 }
 
 #feats span, #feats a {
 	display: inline-block;
 }
 
-.editCharacter .feat_name {
+#page_characterSheet_edit .feat_name {
 	width: 260px;
 }
 
-.viewCharacter .feat_name {
+#page_characterSheet .feat_name {
 	width: 350px;
 }
 
@@ -320,9 +230,7 @@ label.leftLabel {
 }
 
 #addPowerWrapper .fancyButton {
-	top: -1px;
 	margin-left: 5px;
-	vertical-align: middle;
 }
 
 .powerCol {

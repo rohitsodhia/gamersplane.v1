@@ -5,7 +5,7 @@
 	$gameID = intval($pathOptions[0]);
 	
 	$gmCheck = $mysql->query("SELECT `primary` FROM gms WHERE gameID = $gameID AND userID = $userID");
-	if ($gmCheck->rowCount() == 0) { header('Location: '.SITEROOT.'/games/list'); exit; }
+	if ($gmCheck->rowCount() == 0) { header('Location: /games/list'); exit; }
 //	$gameInfo = $mysql->fetch();
 	
 	$players = $mysql->query('SELECT u.userID, u.username, c.characterID, c.label FROM users u, characters c WHERE u.userID = c.userID AND c.gameID = '.$gameID.' AND c.approved = 1');
@@ -45,7 +45,7 @@
 			$numCardsLeft = $totalNumCards - $deckInfo['position'] + 1;
 			$lastShuffleAgo = time() - strtotime($deckInfo['lastShuffle']);
 ?>
-		<form method="post" action="<?=SITEROOT?>/games/process/deck">
+		<form method="post" action="/games/process/deck">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="deckID" value="<?=$deckID?>">
 			<p class="alignCenter">There are <b><?=$numCardsLeft?></b> cards still left in this deck<? if ($deckInfo['lastShuffle'] != '0000-00-00 00:00:00') echo ' and it was last shuffled on <b>'.date('F j, Y g:i:s a', strtotime($deckInfo['lastShuffle'])).'</b>'.(($lastShuffleAgo < 3600)?', '.intval(date('i', $lastShuffleAgo)).' minutes ago':''); ?>.</p>
@@ -67,7 +67,7 @@
 		} else {
 			$deckInfo = $decks[$deckID];
 ?>
-		<form method="post" action="<?=SITEROOT?>/games/process/deck">
+		<form method="post" action="/games/process/deck">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="deckID" value="<?=$deckID?>">
 			<div class="tr">
@@ -110,7 +110,7 @@
 <?
 		} else {
 ?>
-		<form method="post" action="<?=SITEROOT?>/games/process/deck">
+		<form method="post" action="/games/process/deck">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="deckID" value="<?=$deckID?>">
 			

@@ -10,7 +10,7 @@
 		$type = $_POST['deckType'];
 		$deckInfo = $mysql->prepare('SELECT short, deckSize FROM decks WHERE short = :short');
 		$deckInfo->execute(array($type));
-		if ($deckInfo->rowCount() == 0) { header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?new=1&invalidDeck=1'); exit; }
+		if ($deckInfo->rowCount() == 0) { header('Location: /games/'.$gameID.'/decks?new=1&invalidDeck=1'); exit; }
 		$deckInfo = $deckInfo->fetch();
 		$deck = array();
 		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) $deck[] = $count;
@@ -29,7 +29,7 @@
 		
 		addGameHistory($gameID, 'deckCreated', $userID);
 		
-		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=create');
+		header('Location: /games/'.$gameID.'/decks?success=create');
 	} elseif (isset($_POST['shuffle']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$deckInfo = $mysql->query('SELECT type, deckSize FROM decks WHERE deckID = '.$deckID);
@@ -43,7 +43,7 @@
 		
 		addGameHistory($gameID, 'deckShuffled', $userID);
 			
-		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=shuffle');
+		header('Location: /games/'.$gameID.'/decks?success=shuffle');
 	} elseif (isset($_POST['submit']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$deckInfo = $mysql->query('SELECT decks.label, decks.type, decks.deck, decks.position FROM decks INNER JOIN games ON decks.gameID = games.gameID INNER JOIN gms ON games.gameID = gms.gameID WHERE decks.deckID = '.$deckID.' AND gms.userID = '.$userID.' LIMIT 1');
@@ -73,7 +73,7 @@
 			addGameHistory($gameID, 'deckEdited', $userID);
 			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckEdited')");
 		}
-		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=edit');
+		header('Location: /games/'.$gameID.'/decks?success=edit');
 	} elseif (isset($_POST['delete']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$gmCheck = $mysql->query('SELECT decks.label FROM decks INNER JOIN games ON decks.gameID = games.gameID INNER JOIN gms ON games.gameID = gms.gameID WHERE decks.deckID = '.$deckID.' AND gms.userID = '.$userID.' LIMIT 1');
@@ -81,6 +81,6 @@
 		
 		$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckDeleted')");
 		
-		header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?success=delete');
-	} else header('Location: '.SITEROOT.'/games/');
+		header('Location: /games/'.$gameID.'/decks?success=delete');
+	} else header('Location: /games/');
 ?>

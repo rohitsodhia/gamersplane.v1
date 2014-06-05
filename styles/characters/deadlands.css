@@ -25,7 +25,7 @@
 	margin-right: 0;
 }
 
-.editCharacter textarea {
+#page_characterSheet_edit textarea {
 	width: 100%;
 	height: 6.2em;
 }
@@ -40,7 +40,7 @@
 	padding-top: .75em;
 }
 
-#page_characterSheet_deadlands_sheet .statDiv {
+#page_characterSheet .statDiv {
 	border-top: 1px solid #AAA;
 }
 
@@ -49,11 +49,11 @@
 	padding-top: 0;
 }
 
-#page_characterSheet_deadlands_sheet .firstStatDiv {
+#page_characterSheet .firstStatDiv {
 	border-top: none;
 }
 
-.editCharacter .statDiv input {
+#page_characterSheet_edit .statDiv input {
 	width: 30px;
 	text-align: center;
 }
@@ -62,11 +62,11 @@
 	margin-top: .75em;
 }
 
-.editCharacter #edge_hind {
+#page_characterSheet_edit #edge_hind {
 	height: 20em;
 }
 
-.editCharacter #nightmare {
+#page_characterSheet_edit #nightmare {
 	height: 12.4em;
 }
 
@@ -119,20 +119,20 @@
 	margin-top: 1.5em;
 }
 
-.editCharacter #weapons, .editCharacter #arcane, .editCharacter #equipment {
+#page_characterSheet_edit #weapons, #page_characterSheet_edit #arcane, #page_characterSheet_edit #equipment {
 	height: 10em;
 }
 
-.editCharacter #equipment {
+#page_characterSheet_edit #equipment {
 	height: 25.4em;
 }
 
-.editCharacter #notes {
+#page_characterSheet_edit #notes {
 	height: 24.8em;
 	width: 912px;
 }
 
-.editCharacter #submitDiv {
+#page_characterSheet_edit #submitDiv {
 	clear: both;
 	text-align: center;
 	margin-top: 1em;

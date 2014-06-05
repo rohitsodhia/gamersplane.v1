@@ -256,6 +256,85 @@
 	margin-top: 1em;
 }
 
+.cell {
+	display: inline-block;
+}
+
+label {
+	font-size: .8em;
+	display: inline-block;
+}
+
+label.shiftRight {
+	padding-left: 8px;
+}
+
+input[type="text"] {
+	width: 40px;
+	text-align: center;
+}
+
+.shortText, input.shortText {
+	width: 100px;
+}
+
+.medText, input.medText {
+	width: 200px;
+}
+
+.longText, input.longText {
+	width: 350px;
+}
+
+input.shortText, input.medText, input.longText {
+	text-align: left;
+}
+
+.shortNum, input.shortNum {
+	width: 40px;
+}
+
+.medNum, input.medNum {
+	width: 60px;
+}
+
+.statSelect {
+	width: 100px;
+}
+
+#page_characterSheet .statSelect > * {
+	display: inline-block;
+}
+
+#page_characterSheet .statShort {
+	width: 50px;
+}
+
+label.leftLabel {
+	font-size: 1em;
+}
+
+.lrBuffer {
+	margin-right: 9px;
+	margin-left: 9px;
+}
+
+#page_characterSheet_edit .labelTR {
+	padding-bottom: 0;
+}
+
+#page_characterSheet .labelTR {
+	padding: 0;
+}
+
+#page_characterSheet .dataTR {
+	margin-bottom: 1em;
+}
+
+#page_characterSheet .dataTR > div {
+	display: inline-block;
+}
+
 #page_featNotes #notes, #page_editFeatNotes #notes {
 	margin-top: 0;
 }

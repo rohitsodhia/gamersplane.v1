@@ -4,7 +4,7 @@
 	$userID = intval($_SESSION['userID']);
 	$mapID = intval($pathOptions[2]);
 	$gmCheck = $mysql->query("SELECT maps.gameID FROM maps INNER JOIN gms USING (gameID) WHERE gms.userID = $userID AND maps.mapID = $mapID");
-	if (!$gmCheck->rowCount()) { header('Location: '.SITEROOT.'/403'); exit; }
+	if (!$gmCheck->rowCount()) { header('Location: /403'); exit; }
 	$gameInfo = $gmCheck->fetch();
 	$mapInfo = $mysql->query('SELECT gameID, name, columns, rows FROM maps WHERE mapID = '.$mapID);
 	$mapInfo = $mapInfo->fetch();
@@ -33,7 +33,7 @@
 		<div class="clearfix">
 			<div id="mapSidebar" style="height: <?=$mapInfo['rows'] * 40 > 570?570:$mapInfo['rows'] * 40?>px;">
 				<div id="mapControls">
-					<img src="<?=SITEROOT?>/images/mapControls.png">
+					<img src="/images/mapControls.png">
 					<a id="mapControls_up_top" href="" class="mapControls_up">&nbsp;</a>
 					<a id="mapControls_up_body" href="" class="mapControls_up">&nbsp;</a>
 					<a id="mapControls_right_top" href="" class="mapControls_right">&nbsp;</a>
@@ -52,7 +52,7 @@
 	for ($cCount = 1; $cCount <= $mapInfo['columns']; $cCount++) {
 		echo "\t\t\t\t\t<div class=\"cHeader cHeaderMin col_$cCount\">\n";
 		echo "\t\t\t\t\t\t<a href=\"\">".$curCol++."</a>\n";
-		echo "\t\t\t\t\t\t<a href=\"".SITEROOT."/tools/process/maps/removeCR/$mapID/$cCount\" class=\"removeCol\">-</a>\n";
+		echo "\t\t\t\t\t\t<a href=\"/tools/process/maps/removeCR/$mapID/$cCount\" class=\"removeCol\">-</a>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}
 ?>
@@ -62,7 +62,7 @@
 	for ($rCount = 1; $rCount <= $mapInfo['rows']; $rCount++) {
 		echo "\t\t\t\t\t<div class=\"rHeader rHeaderMin row_$rCount\">\n";
 		echo "\t\t\t\t\t\t<a href=\"\">".$rCount."</a>\n";
-		echo "\t\t\t\t\t\t<a href=\"".SITEROOT."/tools/process/maps/removeCR/$mapID/$rCount\" class=\"removeCol\">-</a>\n";
+		echo "\t\t\t\t\t\t<a href=\"/tools/process/maps/removeCR/$mapID/$rCount\" class=\"removeCol\">-</a>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}
 ?>

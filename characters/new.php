@@ -7,7 +7,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">New <?=$mob?'Mob':'Character'?></h1>
 		
-		<form id="newChar" action="<?=SITEROOT?>/characters/process/new/" method="post">
+		<form id="newChar" action="/characters/process/new/" method="post">
 			<div class="tr">
 				<label class="textLabel">Label</label>
 				<input type="text" name="label" maxlength="50">

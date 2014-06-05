@@ -87,10 +87,10 @@
 				$locParts = explode('_', $info['destination']);
 				$info['destination'] = decToB26($locParts[0]).$locParts[1];
 
-				$historyStr = "<a href=\"".SITEROOT."/ucp/{$info['enactedBy']}\">{$info['username']}</a> moved <strong>{$info['name']}</strong> ({$info['label']}) from ".(strlen($info['origin'])?strtoupper($info['origin']):'Box')." to ".(strlen($info['destination'])?strtoupper($info['destination']):'Box');
-			} elseif ($info['action'] == 'created') $historyStr = "<a href=\"".SITEROOT."/ucp/{$info['enactedBy']}\">{$info['username']}</a> created <strong>{$info['name']}</strong> ({$info['label']})";
-			elseif ($info['action'] == 'edited') $historyStr = "<a href=\"".SITEROOT."/ucp/{$info['enactedBy']}\">{$info['username']}</a> edited <strong>{$info['name']}</strong> ({$info['label']})";
-			elseif ($info['action'] == 'deleted') $historyStr = "<a href=\"".SITEROOT."/ucp/{$info['enactedBy']}\">{$info['username']}</a> deleted <strong>{$info['name']}</strong> ({$info['label']})";
+				$historyStr = "<a href=\"/ucp/{$info['enactedBy']}\">{$info['username']}</a> moved <strong>{$info['name']}</strong> ({$info['label']}) from ".(strlen($info['origin'])?strtoupper($info['origin']):'Box')." to ".(strlen($info['destination'])?strtoupper($info['destination']):'Box');
+			} elseif ($info['action'] == 'created') $historyStr = "<a href=\"/ucp/{$info['enactedBy']}\">{$info['username']}</a> created <strong>{$info['name']}</strong> ({$info['label']})";
+			elseif ($info['action'] == 'edited') $historyStr = "<a href=\"/ucp/{$info['enactedBy']}\">{$info['username']}</a> edited <strong>{$info['name']}</strong> ({$info['label']})";
+			elseif ($info['action'] == 'deleted') $historyStr = "<a href=\"/ucp/{$info['enactedBy']}\">{$info['username']}</a> deleted <strong>{$info['name']}</strong> ({$info['label']})";
 			$dateStr = date('m/d/y H:i:s', strtotime($info['enactedOn']));
 			return <<<RTNSTR
 <div class="historyItem">

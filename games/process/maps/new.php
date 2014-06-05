@@ -7,7 +7,7 @@
 		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
 		if (!$gmCheck->rowCount()) {
 			if (isset($_POST['modal'])) echo -1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID);
+			else header('Location: /games/'.$gameID);
 		} else {
 			$mapName = sanitizeString($_POST['mapName']);
 			$rows = intval($_POST['rows']);
@@ -23,11 +23,11 @@
 				$mapID = $mysql->lastInsertId();
 				
 				if (isset($_POST['modal'])) echo $mapID;
-				else header('Location: '.SITEROOT.'/games/'.$gameID.'/maps/edit/'.$mapID);
+				else header('Location: /games/'.$gameID.'/maps/edit/'.$mapID);
 			}
 		}
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/games/');
+		else header('Location: /games/');
 	}
 ?>

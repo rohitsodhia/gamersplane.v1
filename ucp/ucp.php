@@ -3,7 +3,7 @@
 	
 	$userID = intval($_SESSION['userID']);
 	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$userID);
-	if ($userCheck->rowCount() == 0) { header('Location: '.SITEROOT.'/404'); exit; }
+	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }
 	$userInfo = $userCheck->fetch();
 	$userInfo['joinDate'] = switchTimezone($_SESSION['timezone'], $userInfo['joinDate']);
 ?>
@@ -30,12 +30,12 @@
 			<span class="section_security hideDiv">Security</span>
 			<span class="section_forumOptions hideDiv">Forum Options</span>
 		</h2>
-		<form id="changeOptions" method="post" action="<?=SITEROOT?>/ucp/process/changeDetails" enctype="multipart/form-data" class="section_profile">
+		<form id="changeOptions" method="post" action="/ucp/process/changeDetails" enctype="multipart/form-data" class="section_profile">
 			<div class="tr">
 				<label class="textLabel">Avatar</label>
 <? if (file_exists(FILEROOT."/ucp/avatars/$userID.{$userInfo['avatarExt']}")) { ?>
 				<div id="avatar">
-					<img src="<?=SITEROOT?>/ucp/avatars/<?=$userID.'.'.$userInfo['avatarExt']?>">
+					<img src="/ucp/avatars/<?=$userID.'.'.$userInfo['avatarExt']?>">
 					<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
 				</div>
 <? } ?>
@@ -121,7 +121,7 @@
 			</div>
 		</form>
 
-		<form method="post" action="<?=SITEROOT?>/ucp/process/changeInfo" class="section_security hideDiv">
+		<form method="post" action="/ucp/process/changeInfo" class="section_security hideDiv">
 			<div class="tr">
 				<label>User Since</label>
 				<div><?=date('F j, Y H:i a', $userInfo['joinDate'])?></div>
@@ -151,7 +151,7 @@
 			</div>
 		</form>
 		
-		<form id="changeOptions" method="post" action="<?=SITEROOT?>/ucp/process/changeForumOptions" class="section_forumOptions hideDiv">
+		<form id="changeOptions" method="post" action="/ucp/process/changeForumOptions" class="section_forumOptions hideDiv">
 			<div id="postSide" class="tr">
 				<label>Post Side</label>
 				<div><input type="radio" name="postSide" value="r"<?=$userInfo['postSide'] == 'r'?' checked="checked"':''?>> Right</div>

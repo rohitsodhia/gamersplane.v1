@@ -5,7 +5,7 @@
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
 	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p, maps m WHERE p.isGM = 1 AND p.gameID = $gameID AND m.gameID = p.gameID AND m.mapID = $mapID AND p.userID = $userID");
-	if (!$gmCheck->rowCount()) { header('Location: '.SITEROOT.'/tools/maps'); exit; }
+	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Delete Map</h1>
@@ -15,7 +15,7 @@
 	$mapDetails = $mapDetails->fetch();
 	extract($mapDetails);
 ?>
-		<form method="post" action="<?=SITEROOT?>/games/process/maps/delete" class="hbMargined">
+		<form method="post" action="/games/process/maps/delete" class="hbMargined">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="mapID" value="<?=$mapID?>">
 			

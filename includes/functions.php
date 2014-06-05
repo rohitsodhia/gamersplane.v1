@@ -48,18 +48,14 @@
 	function sanitizeString($string) {
 		$options = func_get_args();
 		array_shift($options);
-//		if (sizeof($options) == 0) $options = array('strip_tags');
 
 		if (in_array('search_format', $options)) {
-			$string = strtolower($string);
-//			$string = str_replace('-', ' ', $string)
-//			$string = str_replace("'", '', $string);
 			$string = preg_replace('/[^A-za-z0-9]/', ' ', $string);
-			if (!in_array('rem_dup_spaces', $options)) $options[] = 'rem_dup_spaces';
+			$options = array('lower', 'rem_dup_spaces');
 		}
 
-		/*if (in_array('trim', $options)) */$string = trim($string);
-		/*if (in_array('strip_tags', $options)) */$string = strip_tags($string);
+		$string = trim($string);
+		$string = strip_tags($string);
 		if (in_array('lower', $options)) $string = strtolower($string);
 		if (in_array('like_clean', $options)) $string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
 		if (in_array('rem_dup_spaces', $options)) $string = preg_replace('/\s+/', ' ', $string);
@@ -127,46 +123,13 @@
 	}
 
 /* Character Functions */
-	function includeSystemInfo($system) {
-		if (is_dir(FILEROOT.'/includes/characters/'.$system)) {
-			require_once(FILEROOT.'/includes/characters/d20Character.class.php');
-			foreach (glob(FILEROOT.'/includes/characters/'.$system.'/*') as $file) 
-				require_once($file);
-		}
-	}
-
-	function allowCharView($characterID, $userID) {
+	function getCharacterClass($characterID) {
 		global $mysql;
-		if ($editStatus = allowCharEdit($characterID, $userID)) return $editStatus;
-		else {
-			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = $characterID AND inLibrary = 1");
-			if ($libraryCheck->rowCount()) {
-				$charCheck = $mysql->query("SELECT c.characterID FROM characters c INNER JOIN players p ON c.gameID = p.gameID AND p.isGM = 0 WHERE c.characterID = $characterID AND c.userID != $userID AND p.userID = $userID");
-				if ($charCheck->rowCount()) return FALSE;
-				else return 'library';
-			} else return FALSE;
-		}
-	}
 
-	function allowCharEdit($characterID, $userID) {
-		global $mysql;
-		$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = $characterID AND (c.userID = $userID OR p.userID = $userID)");
-		if ($charCheck->rowCount()) return 'edit';
+		$system = $mysql->query('SELECT s.shortName FROM systems s INNER JOIN characters c USING (systemID) WHERE c.characterID = '.$characterID);
+
+		if ($system->rowCount()) return $system->fetchColumn();
 		else return FALSE;
-	}
-
-	function getCharInfo($characterID, $system) {
-		global $mysql;
-		
-		$characterID = intval($characterID);
-		$userID = intval($_SESSION['userID']);
-		$checkSystem = $mysql->prepare('SELECT systemID FROM systems WHERE shortName = :system');
-		$checkSystem->execute(array(':system' => $system));
-		if ($checkSystem->rowCount()) {
-			$charInfo = $mysql->query("SELECT c.label, cd.*, c.userID, gms.primaryGM IS NOT NULL isGM FROM {$system}_characters cd INNER JOIN characters c ON cd.characterID = c.characterID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON c.gameID = gms.gameID WHERE cd.characterID = $characterID");
-			if ($charInfo->rowCount()) return $charInfo->fetch();
-			else return FALSE;
-		} else return FALSE;
 	}
 
 	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
@@ -330,11 +293,8 @@
 			elseif ($classes == 54) return 'redJoker';
 		}
 
-		return '<div class="cardWindow deck_'.$deckInfo['class'].$size.'"><img src="'.SITEROOT.'/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
+		return '<div class="cardWindow deck_'.$deckInfo['class'].$size.'"><img src="/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
 	}
-
-	
-/* Character Functions */
 	
 /* Forum Functions */
 	function buildForumStructure($rawForums) {
@@ -454,118 +414,6 @@
 		if (sizeof($forumIDs) == 1 && $returnSDA) return $permissions[$forumIDs[0]];
 		else return $permissions;
 	}
-	
-/*	function retrievePermissions_new($userID, $types, $forumIDs, $returnSDA = FALSE) {
-		$mysql = new mysqlConnection();
-		$userID = intval($userID);
-		$mysql->query(sql_forumPermissions($userID, $types, $forumIDs));
-		$permissions = array();
-		while ($permission = $mysql->fetch()) {
-			$permissions[$permission['forumID']] = $permission;
-			unset($permissions[$permission['forumID']]['forumID']);
-		}*/
-//		if (!is_array($forumIDs)) $forumIDs = array($forumIDs);
-//		if ($types == '') $types = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
-//		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);
-		
-/*		foreach ($types as $value) {
-			$queryColumn['permissions'] .= "`$value`, ";
-			$bTemplate[$value] = 0;
-			$bTemplate[$value.'_priority'] = 0;
-			$aTemplate[$value] = 1;
-		}
-		$queryColumn['permissions'] = substr($queryColumn['permissions'], 0, -2);
-		
-		$mysql->query('SELECT forumID, heritage FROM forums WHERE forumID IN ('.implode(', ', $forumIDs).')');
-		$allForumIDs = $forumIDs;
-		$heritages = array();
-		while (list($indivForumID, $heritage) = $mysql->getList()) {
-			$heritages[$indivForumID] = explode('-', $heritage);
-			$intValHolder = array();
-			foreach ($heritages[$indivForumID] as $hForumID) {
-				$intValHolder[] = intval($hForumID);
-				$allForumIDs[] = intval($hForumID);
-			}
-			$heritages[$indivForumID] = $intValHolder;
-		}
-		$allForumIDs = array_unique($allForumIDs);
-		sort($allForumIDs);
-		
-		$adminForums = array();
-		$mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
-		while (list($adminForumID) = $mysql->fetch()) $adminForums[] = $adminForumID;
-		
-		if (in_array(0, $adminForums)) foreach ($forumIDs as $forumID) $permissions[$forumID] = $aTemplate;
-		else {
-			$forumIDsString = implode(', ', $allForumIDs);
-			if (sizeof($allForumIDs) == 1) $forumIDsString = '= '.$forumIDsString;
-			else $forumIDsString = 'IN ('.$forumIDsString.')';
-			$mysql->query('SELECT forumID, '.$queryColumn['permissions'].' FROM forums_permissions_c WHERE forumID '.$forumIDsString.' ORDER BY forumID');
-			$iPermissions = array();
-			while ($permissionInfo = $mysql->fetch()) $iPermissions[$permissionInfo['forumID']] = $permissionInfo;
-			
-			foreach ($forumIDs as $forumID) {
-				if (isset($heritages[$forumID]) && sizeof(array_intersect($heritages[$forumID], $adminForums))) $iPermissions[$forumID] = $aTemplate;
-				else {
-					if (!isset($iPermissions[$forumID])) $iPermissions[$forumID] = $bTemplate;
-					$currentParent = 1;
-					$rHeritage = array_reverse($heritages[$forumID]);
-					while (in_array(0, $iPermissions[$forumID]) && $currentParent < sizeof($rHeritage)) {
-						if (isset($iPermissions[$rHeritage[$currentParent]])) { foreach (array_keys($iPermissions[$forumID], 0) as $type) {
-							if ($iPermissions[$rHeritage[$currentParent]][$type] != 0) $iPermissions[$forumID][$type] = $iPermissions[$rHeritage[$currentParent]][$type];
-						} }
-						$currentParent++;
-					}
-				}
-			}
-			
-			global $loggedIn;
-			foreach ($forumIDs as $forumID) {
-				$permissions[$forumID] = $iPermissions[$forumID];
-				foreach ($types as $type) if ($permissions[$forumID][$type] != 1 || (!$loggedIn && $type != 'read')) $permissions[$forumID][$type] = 0;
-			}
-		}
-		
-//		if (is_numeric($forumIDs) == 1 && $returnSDA) return $permissions[$forumIDs];
-//		else return $permissions;
-	}*/
-	
-/*	function checkNewPosts($forumID, $forumRD, $threadRD, $latestPost, $indivLatestPosts, $permissions, $hasChildren) {
-		$mysql = new mysqlConnection();
-		$markedRead = array($forumID => $forumRD[0]);
-		$scanForums = array($forumID);
-		
-		$lastPull = 0;
-		$indivLatestPulls = array($forumID => 0);
-		
-		$heritageInfos = $mysql->query('SELECT forumID, parentID, heritage FROM forums WHERE heritage LIKE "%'.str_pad($forumID, 3, '0', STR_PAD_LEFT).'%" ORDER BY heritage');
-		foreach ($heritageInfos as $info) { if ($permissions[$info['forumID']]['read']) {
-			if (strpos($info['heritage'], str_pad($forumID, 3, '0', STR_PAD_LEFT).'-') !== FALSE){
-				$scanForums[] = $info['forumID'];
-				$indivLatestPulls[$info['forumID']] = 0;
-				$markedRead[$info['forumID']] = $forumRD[$info['forumID']] > $markedRead[$info['parentID']]?$forumRD[$info['forumID']]:$markedRead[$info['parentID']];
-			} elseif (isset($forumRD[$info['forumID']]) && $forumRD[$info['forumID']] > $markedRead[$forumID]) $markedRead[$forumID] = $forumRD[$info['forumID']];
-		} }
-		if ($markedRead[$forumID] >= $latestPost) return FALSE;
-		
-		foreach ($threadRD as $threadID => $threadInfo) { if (in_array($threadInfo['forumID'], $scanForums)) {
-			if ($threadInfo['lastRead'] < $threadInfo['lastPost'] && $threadInfo['lastPost'] > $markedRead[$threadInfo['forumID']]) return TRUE;
-			if($indivLatestPulls[$threadInfo['forumID']] < $threadInfo['lastPost']) $indivLatestPulls[$threadInfo['forumID']] = $threadInfo['lastPost'];
-		} }
-		
-		foreach ($scanForums as $sForumID) if ($indivLatestPulls[$sForumID] < $indivLatestPosts[$sForumID] && $markedRead[$sForumID] < $indivLatestPosts[$sForumID]) return TRUE;
-		
-		return FALSE;
-	}
-	
-	function checkNewPosts_new($forumID, $readData, $permissions, $children) {
-		$mysql = new mysqlConnection();
-		
-		if (($readData[$forumID]['unreadThreads'] || $readData[$forumID]['lastPostID'] > $readData[$forumID]['cLastRead'] && $readData[$forumID]['cLastRead'] > $readData[$forumID]['lastPostRead']) && $permissions[$forumID]['read'] == 1) return TRUE;
-		else foreach ($children as $cForumID) if (($readData[$cForumID]['unreadThreads'] || $readData[$cForumID]['lastPostID'] > $readData[$cForumID]['cLastRead'] && $readData[$cForumID]['cLastRead'] > $readData[$cForumID]['lastPostRead']) && $permissions[$cForumID]['read'] == 1) return TRUE;
-		
-		return FALSE;
-	}*/
 	
 /* MySQL Functions */
 	function sql_forumIDPad($forumID) {

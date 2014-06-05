@@ -1,5 +1,5 @@
 <?
-	if ($_POST['validate'] != 'M3FnvL763xjm8HJfZ6kn') { header('Location: '.SITEROOT.'/'); exit; }
+	if ($_POST['validate'] != 'M3FnvL763xjm8HJfZ6kn') { header('Location: /'); exit; }
 	
 	$userID = intval($_SESSION['userID']);
 	$mapID = intval($_POST['mapID']);
@@ -15,10 +15,10 @@
 <body>
 <?
 	if ($iconHistory->rowCount()) { foreach ($iconHistory as $actionInfo) {
-		if ($actionInfo['action'] == 'moved') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> moved <b>{$actionInfo['name']}</b> ({$actionInfo['label']}) from ".(strlen($actionInfo['origin'])?strtoupper($actionInfo['origin']):'Box')." to ".(strlen($actionInfo['destination'])?strtoupper($actionInfo['destination']):'Box')."</p>\n";
-		elseif ($actionInfo['action'] == 'created') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> created <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
-		elseif ($actionInfo['action'] == 'edited') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> edited <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
-		elseif ($actionInfo['action'] == 'deleted') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"".SITEROOT."/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> deleted <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
+		if ($actionInfo['action'] == 'moved') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> moved <b>{$actionInfo['name']}</b> ({$actionInfo['label']}) from ".(strlen($actionInfo['origin'])?strtoupper($actionInfo['origin']):'Box')." to ".(strlen($actionInfo['destination'])?strtoupper($actionInfo['destination']):'Box')."</p>\n";
+		elseif ($actionInfo['action'] == 'created') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> created <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
+		elseif ($actionInfo['action'] == 'edited') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> edited <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
+		elseif ($actionInfo['action'] == 'deleted') echo "\t\t\t\t<p>(".date('m/d/y H:i', strtotime($actionInfo['enactedOn'])).") <a href=\"/ucp/{$actionInfo['enactedBy']}\">{$actionInfo['username']}</a> deleted <b>{$actionInfo['name']}</b> ({$actionInfo['label']})</p>\n";
 	} } else echo "<p>No history yet.</p>\n";
 ?>
 </body>

@@ -5,12 +5,12 @@
 		<h1 class="headerbar">Tools</h1>
 		
 		<div id="toolsList">
-			<a href="<?=SITEROOT?>/tools/dice">
-				<img src="<?=SITEROOT?>/images/tools/dice.png">
+			<a href="/tools/dice">
+				<img src="/images/tools/dice.png">
 				<p>Dice Roller</p>
 			</a>
-			<a href="<?=SITEROOT?>/tools/cards">
-				<img src="<?=SITEROOT?>/images/tools/fannedCards.png">
+			<a href="/tools/cards">
+				<img src="/images/tools/fannedCards.png">
 				<p>Deck of Cards</p>
 			</a>
 		</div>

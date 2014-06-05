@@ -14,6 +14,6 @@
 			$mysql->query("INSERT INTO players (gameID, userID) VALUES ($gameID, $userID)");
 			addGameHistory($gameID, 'appliedToGame');
 		}
-		header('Location: '.SITEROOT.'/games/'.$gameID);
-	} else header('Location: '.SITEROOT.'/403');
+		header('Location: /games/'.$gameID);
+	} else header('Location: /403');
 ?>

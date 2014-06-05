@@ -38,19 +38,22 @@
 				<div id="savingThrows">
 					<div class="tr labelTR">
 						<div class="fillerBlock cell">&nbsp;</div>
-						<label class="statCol shortNum lrBuffer">Total</label>
-						<label class="statCol shortNum lrBuffer">Base</label>
-						<label class="statCol shortNum lrBuffer">Ability</label>
-						<label class="statCol shortNum lrBuffer">Magic</label>
-						<label class="statCol shortNum lrBuffer">Race</label>
-						<label class="statCol shortNum lrBuffer">Misc</label>
+						<label class="shortNum lrBuffer">Total</label>
+						<label class="shortNum lrBuffer">Base</label>
+						<label class="statSelect lrBuffer">Ability</label>
+						<label class="shortNum lrBuffer">Magic</label>
+						<label class="shortNum lrBuffer">Race</label>
+						<label class="shortNum lrBuffer">Misc</label>
 					</div>
 <?	foreach (d20Character_consts::getSaveNames() as $save => $saveFull) { ?>
 					<div id="<?=$save?>Row" class="tr dataTR">
 						<label class="leftLabel"><?=$saveFull?></label>
-						<div id="fortTotal" class="shortNum lrBuffer"><?=showSign($this->getSave('fort', 'total'))?></div>
+						<div id="fortTotal" class="shortNum lrBuffer"><?=showSign($this->getSave($save, 'total'))?></div>
 						<div class="shortNum lrBuffer"><?=showSign($this->getSave($save, 'base'))?></div>
-						<div class="shortNum lrBuffer"><?=$this->getStatMod(d20Character_consts::getSaveStats($save))?></div>
+						<div class="statSelect lrBuffer">
+							<div class="statShort"><?=ucwords($this->getSave($save, 'stat'))?></div>
+							<div class="shortNum"><?=$this->getStatMod($this->getSave($save, 'stat'))?></div>
+						</div>
 						<div class="shortNum lrBuffer"><?=showSign($this->getSave($save, 'magic'))?></div>
 						<div class="shortNum lrBuffer"><?=showSign($this->getSave($save, 'race'))?></div>
 						<div class="shortNum lrBuffer"><?=showSign($this->getSave($save, 'misc'))?></div>
@@ -62,7 +65,7 @@
 					<label class="leftLabel textLabel">Total HP</label>
 					<div><?=$this->getHP('total')?></div>
 					<label class="leftLabel textLabel">Damage Reduction</label>
-					<div><?=$this->getDamageReduction()?></div>
+					<div><?=strlen($this->getDamageReduction())?$this->getDamageReduction():'&nbsp;'?></div>
 				</div>
 			</div>
 			
@@ -96,33 +99,42 @@
 			<div id="combatBonuses" class="clearFix">
 				<div class="tr labelTR">
 					<div class="fillerBlock cell shortText">&nbsp;</div>
-					<label class="statCol shortNum">Total</label>
-					<label class="statCol shortNum">Base</label>
-					<label class="statCol shortNum">Ability</label>
-					<label class="statCol shortNum">Size</label>
-					<label class="statCol shortNum">Misc</label>
+					<label class="shortNum">Total</label>
+					<label class="shortNum">Base</label>
+					<label class="statSelect">Ability</label>
+					<label class="shortNum">Size</label>
+					<label class="shortNum">Misc</label>
 				</div>
 				<div id="init" class="tr dataTR">
 					<label class="leftLabel shortText">Initiative</label>
 					<span id="initTotal" class="shortNum"><?=showSign($this->getInitiative('total'))?></span>
-					<span>&nbsp;</span>
-					<span class="shortNum statBonus_dex"><?=$this->getStatMod('dex')?></span>
-					<span>&nbsp;</span>
+					<span class="shortNum">&nbsp;</span>
+					<span class="statSelect">
+						<span class="statShort"><?=ucwords($this->getInitiative('stat'))?></span>
+						<span class="shortNum"><?=$this->getStatMod($this->getInitiative('stat'))?></span>
+					</span>
+					<span class="shortNum">&nbsp;</span>
 					<div class="shortNum"><?=showSign($this->getInitiative('misc'))?></div>
 				</div>
 				<div id="melee" class="tr dataTR">
 					<label class="leftLabel shortText">Melee</label>
-					<span id="meleeTotal" class="shortNum"><?=showSign($this->getAttackBonus('total', 'melee') + $this->getStatMod('str'))?></span>
+					<span id="meleeTotal" class="shortNum"><?=showSign($this->getAttackBonus('total', 'melee'))?></span>
 					<div class="shortNum"><?=showSign($this->getAttackBonus('base'))?></div>
-					<span class="shortNum statBonus_str"><?=$this->getStatMod('str')?></span>
+					<span class="statSelect">
+						<span class="statShort"><?=ucwords($this->getAttackBonus('stat', 'melee'))?></span>
+						<span class="shortNum"><?=$this->getStatMod($this->getAttackBonus('stat', 'melee'))?></span>
+					</span>
 					<span class="shortNum sizeVal"><?=showSign($this->getSize())?></span>
 					<div class="shortNum"><?=showSign($this->getAttackBonus('misc', 'melee'))?></div>
 				</div>
 				<div id="ranged" class="tr dataTR">
 					<label class="leftLabel shortText">Ranged</label>
-					<span id="rangedTotal" class="shortNum"><?=showSign($this->getAttackBonus('total', 'ranged') + $this->getStatMod('dex'))?></span>
+					<span id="rangedTotal" class="shortNum"><?=showSign($this->getAttackBonus('total', 'ranged'))?></span>
 					<span class="shortNum bab"><?=showSign($this->getAttackBonus('base'))?></span>
-					<span class="shortNum statBonus_dex"><?=$this->getStatMod('dex')?></span>
+					<span class="statSelect">
+						<span class="statShort"><?=ucwords($this->getAttackBonus('stat', 'ranged'))?></span>
+						<span class="shortNum"><?=$this->getStatMod($this->getAttackBonus('stat', 'ranged'))?></span>
+					</span>
 					<span class="shortNum sizeVal"><?=showSign($this->getSize())?></span>
 					<div class="shortNum"><?=showSign($this->getAttackBonus('misc', 'ranged'))?></div>
 				</div>

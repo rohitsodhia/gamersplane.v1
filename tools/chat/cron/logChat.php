@@ -44,5 +44,5 @@
 				$mysql->query('UPDATE chat_messages SET logged = 1 WHERE gameID IN ('.implode(', ', $gameIDs).')');
 			}
 		}
-	} else header('Location: '.SITEROOT.'/');
+	} else header('Location: /');
 ?>

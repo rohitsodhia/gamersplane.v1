@@ -12,9 +12,16 @@
 		protected $mongoIgnore = array('save' => array('mongoIgnore'), 'load' => array('_id', 'system'));
 		
 		public function __construct($characterID, $userID = NULL) {
-			$this->characterID = $characterID;
+			$this->characterID = intval($characterID);
 			if ($userID == NULL) $this->userID = intval($_SESSION['userID']);
 			else $this->userID = $userID;
+		}
+
+		public function clearVar($var) {
+			if (isset($this->$var)) {
+				if (is_array($this->$var)) $this->$var = array();
+				else $this->$var = NULL;
+			}
 		}
 
 		public function setLabel($label) {
@@ -26,7 +33,8 @@
 		}
 
 		public function setType($type) {
-			if (Character_consts::getCharTypes($type)) $this->type = $type;
+			global $charTypes;
+			if (in_array($type, $charTypes)) $this->type = $type;
 		}
 
 		public function getType() {
@@ -64,7 +72,7 @@
 
 			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$this->characterID} AND inLibrary = 1");
 			if ($libraryCheck->rowCount()) {
-				$charCheck = $mysql->query("SELECT c.characterID FROM characters c INNER JOIN players p ON c.gameID = p.gameID AND p.isGM = 0 WHERE c.characterID = $characterID AND c.userID != $userID AND p.userID = $userID");
+				$charCheck = $mysql->query("SELECT c.characterID FROM characters c INNER JOIN players p ON c.gameID = p.gameID AND p.isGM = 0 WHERE c.characterID = {$this->characterID} AND c.userID != $userID AND p.userID = $userID");
 				if ($charCheck->rowCount()) return FALSE;
 				else return 'library';
 			} else return FALSE;
@@ -98,6 +106,7 @@
 			global $mongo;
 
 			$classVars = get_object_vars($this);
+			var_dump($classVars);
 			foreach ($this->mongoIgnore['save'] as $key) unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
 			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => TRUE));
@@ -107,14 +116,23 @@
 		public function load() {
 			global $mongo;
 
-			$result = $mongo->characters->findOne(array('characterID' => (string) $this->characterID));
+			$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
 			foreach ($result as $key => $value) {
 				if (!in_array($key, $this->mongoIgnore['load'])) $this->$key = $value;
 			}
 		}
 
 		public function delete() {
-			$mongo->characters->remove(array('characterID' => $this->characterID));
+			global $mysql, $mongo;
+
+			$userID = intval($_SESSION['userID']);
+
+			$mysql->query('DELETE FROM characters WHERE characterID = '.$this->characterID);
+			$tables = $mysql->query("SHOW TABLES LIKE '".$this::SYSTEM."_%'");
+			while ($table = $tables->fetchColumn()) $mysql->query('DELETE FROM '.$table.' WHERE characterID = '.$this->characterID);
+			$mongo->characters->remove(array('characterID' => (string) $this->characterID));
+			
+			addCharacterHistory($this->characterID, 'deleted', $userID, 'NOW()');
 		}
 	}
 ?>

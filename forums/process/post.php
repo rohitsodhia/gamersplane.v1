@@ -6,7 +6,7 @@
 
 	if (isset($_POST['advanced'])) {
 		$_SESSION['message'] = $_POST['message'];
-		header('Location: '.SITEROOT.'/forums/post/'.intval($_POST['threadID']));
+		header('Location: /forums/post/'.intval($_POST['threadID']));
 	} elseif (isset($_POST['preview'])) {
 		$_SESSION['previewVars'] = $_POST;
 		header('Location: '.$_SESSION['lastURL'].'?preview=1');
@@ -87,7 +87,7 @@
 			$forumID = intval($_POST['new']);
 			$permissions = retrievePermissions($userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', TRUE);
 			
-			if (!$permissions['createThread']) { header('Location: '.SITEROOT.'/forums/'.$forumID); exit; }
+			if (!$permissions['createThread']) { header('Location: /forums/'.$forumID); exit; }
 			$sticky = isset($_POST['sticky']) && $permissions['moderate']?1:0;
 			$allowRolls = isset($_POST['allowRolls']) && $permissions['addRolls']?1:0;
 			$allowDraws = isset($_POST['allowDraws']) && $permissions['addDraws']?1:0;
@@ -135,7 +135,7 @@
 			$threadInfo = $mysql->query('SELECT forumID, locked, allowRolls, allowDraws FROM threads WHERE threadID = '.$threadID);
 			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
 			$permissions = retrievePermissions($userID, $forumID, 'write, addRolls, addDraws, moderate', TRUE);
-			if (!$permissions['write'] || $locked) { header('Location: '.SITEROOT.'/forums/'.$forumID); exit; }
+			if (!$permissions['write'] || $locked) { header('Location: /forums/'.$forumID); exit; }
 			
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
 			
@@ -161,7 +161,7 @@
 			
 			$permissions = retrievePermissions($userID, $forumID, 'editPost, addPoll, addRolls, addDraws, moderate', TRUE);
 			
-			if (!$postInfo || ($postInfo['authorID'] == $userID && !$permissions['editPost']) || ($postInfo['authorID'] != $userID && !$permissions['moderate']) || ($postInfo['locked'] && !$permissions['moderate'])) { header('Location: '.SITEROOT.'/forums/thread/'.$postInfo['threadID']); exit; }
+			if (!$postInfo || ($postInfo['authorID'] == $userID && !$permissions['editPost']) || ($postInfo['authorID'] != $userID && !$permissions['moderate']) || ($postInfo['locked'] && !$permissions['moderate'])) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
 			
 			if ($postInfo['firstPostID'] == $postID && !isset($_POST['deletePoll'])) {
@@ -262,7 +262,7 @@
 		
 		$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$threadID}, userID = {$userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		 
-		if ($postID && $threadID) header('Location: '.SITEROOT.'/forums/thread/'.$threadID.($postID == $postInfo['firstPostID'] && $_POST['threadID']?'':'?p='.$postID.'#p'.$postID));
-		else header('Location: '.SITEROOT.'/403');
-	} else header('Location: '.SITEROOT.'/forums/thread/'.$threadID);
+		if ($postID && $threadID) header('Location: /forums/thread/'.$threadID.($postID == $postInfo['firstPostID'] && $_POST['threadID']?'':'?p='.$postID.'#p'.$postID));
+		else header('Location: /403');
+	} else header('Location: /forums/thread/'.$threadID);
 ?>

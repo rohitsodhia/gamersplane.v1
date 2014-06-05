@@ -20,7 +20,7 @@
 	// If not root, get current permissions
 	if ($forumID != 0) {
 		$permissions = retrievePermissions($userID, $forumID, array('read', 'moderate', 'createThread'));
-		if ($permissions[$forumID]['read'] == 0) { header('Location: '.SITEROOT.'/forums'); exit; }
+		if ($permissions[$forumID]['read'] == 0) { header('Location: /forums'); exit; }
 	}
 	
 	// Get lastRead for current forum; if none, create
@@ -72,7 +72,7 @@
 			} elseif (!$permissions[$iForumID]['read']) unset($forumStructure[$iForumID], $forumIDs[array_search($iForumID, $forumIDs)]);
 		}
 
-//		if ($forumType == 'c' && (!sizeof($forumIDs) && !sizeof($categoryIDs))) { header('Location: '.SITEROOT.'/403'); exit; }
+//		if ($forumType == 'c' && (!sizeof($forumIDs) && !sizeof($categoryIDs))) { header('Location: /403'); exit; }
 		
 		$queryWhere = '';
 		foreach (array_merge($forumIDs, $categoryIDs) as $lForumID) $queryWhere .= 'forums.heritage LIKE "%'.sql_forumIDPad($lForumID).'%" OR ';
@@ -110,26 +110,26 @@
 		
 		<div id="topLinks" class="clearfix hbMargined">
 			<div class="floatRight alignRight">
-				<div><? if ($forumID == 0) echo '<a href="'.SITEROOT.'/forums/search?search=latestPosts">Latest Posts</a>'; ?></div>
-				<div><? if ($forumAdmin) echo '<a href="'.SITEROOT.'/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
+				<div><? if ($forumID == 0) echo '<a href="/forums/search?search=latestPosts">Latest Posts</a>'; ?></div>
+				<div><? if ($forumAdmin) echo '<a href="/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
 			</div>
 			<div class="floatLeft alignLeft">
 				<div id="breadcrumbs">
 <? if ($forumID != 0) { ?>
-					<a href="<?=SITEROOT?>/forums">Index</a><?=$forumID != 0?' > ':''?>
+					<a href="/forums">Index</a><?=$forumID != 0?' > ':''?>
 <?
 		$breadcrumbs = $mysql->query('SELECT forumID, title FROM forums WHERE forumID IN ('.implode(',', $heritage).')');
 		$breadcrumbForums = array();
 		foreach ($breadcrumbs as $forumInfo) $breadcrumbForums[$forumInfo['forumID']] = printReady($forumInfo['title']);
 		$fCounter = 1;
 		foreach ($heritage as $hForumID) {
-			echo "\t\t\t\t\t<a href=\"".SITEROOT.'/forums/'.$hForumID.'">'.$breadcrumbForums[$hForumID].'</a>'.($fCounter != sizeof($heritage)?' > ':'')."\n";
+			echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">{$breadcrumbForums[$hForumID]}</a>".($fCounter != sizeof($heritage)?' > ':'')."\n";
 			$fCounter++;
 		}
 	} else echo "\t\t\t\t\t&nbsp;\n";
 ?>
 				</div>
-				<div>Be sure to read and follow the <a href="<?=SITEROOT?>/forums/rules">guidelines for our forums</a>.</div>
+				<div>Be sure to read and follow the <a href="/forums/rules">guidelines for our forums</a>.</div>
 			</div>
 		</div>
 <?
@@ -172,14 +172,14 @@
 				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
 					<div class="td name">
-						<a href="<?=SITEROOT?>/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
+						<a href="/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
 <?=($forumInfo['description'] != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forumInfo['description'])."</div>\n":''?>
 					</div>
 					<div class="td numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></div>
 					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
 					<div class="td lastPost">
 <?
-					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"".SITEROOT.'/ucp/'.$forumInfo['authorID'].'" class="username">'.$forumInfo['username'].'</a><br><span>'.date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
+					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span>".date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
 					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
@@ -218,14 +218,14 @@
 				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
 					<div class="td name">
-						<a href="<?=SITEROOT?>/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
+						<a href="/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
 <?=($forumInfo['description'] != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forumInfo['description'])."</div>\n":''?>
 					</div>
 					<div class="td numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></div>
 					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
 					<div class="td lastPost">
 <?
-					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"".SITEROOT.'/ucp/'.$forumInfo['authorID'].'" class="username">'.$forumInfo['username'].'</a><br><span>'.date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
+					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span>".date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
 					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
@@ -242,7 +242,7 @@
 ?>
 		<div class="tableDiv threadTable<?=$firstTable?' firstTableDiv':''?>">
 <?		if ($permissions[$forumID]['createThread']) { ?>
-			<div id="newThread" class="clearfix"><a href="<?=SITEROOT?>/forums/newThread/<?=$forumID?>" class="fancyButton">New Thread</a></div>
+			<div id="newThread" class="clearfix"><a href="/forums/newThread/<?=$forumID?>" class="fancyButton">New Thread</a></div>
 <? } ?>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
@@ -267,14 +267,14 @@
 <?
 			if ($forumIcon == 'new') {
 ?>
-						<a href="<?=SITEROOT?>/forums/thread/<?=$threadInfo['threadID']?>?view=newPost"><img src="<?=SITEROOT?>/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="/forums/thread/<?=$threadInfo['threadID']?>?view=newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 			}
 			if ($threadInfo['numPosts'] > PAGINATE_PER_PAGE) {
 ?>
 						<div class="paginateDiv">
 <?
-				$url = SITEROOT.'/forums/thread/'.$threadInfo['threadID'];
+				$url = '/forums/thread/'.$threadInfo['threadID'];
 				$numPages = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 				if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
 				else {
@@ -285,12 +285,12 @@
 				echo "\t\t\t\t\t\t</div>\n";
 			}
 ?>
-						<a href="<?=SITEROOT?>/forums/thread/<?=$threadInfo['threadID']?>"><?=$threadInfo['title']?></a><br>
-						<span class="threadAuthor">by <a href="<?=SITEROOT?>/ucp/<?=$threadInfo['fp_authorID']?>" class="username"><?=$threadInfo['fp_username']?></a> on <span><?=date('M j, Y g:i a', $threadInfo['fp_datePosted'])?></span></span>
+						<a href="/forums/thread/<?=$threadInfo['threadID']?>"><?=$threadInfo['title']?></a><br>
+						<span class="threadAuthor">by <a href="/ucp/<?=$threadInfo['fp_authorID']?>" class="username"><?=$threadInfo['fp_username']?></a> on <span><?=date('M j, Y g:i a', $threadInfo['fp_datePosted'])?></span></span>
 					</div>
 					<div class="td numPosts"><?=$threadInfo['numPosts']?$threadInfo['numPosts']:0?></div>
 					<div class="td lastPost">
-						<a href="<?=SITEROOT?>/ucp/<?=$threadInfo['lp_authorID']?>" class="username"><?=$threadInfo['lp_username']?></a><br><span><?=date('M j, Y g:i a', $threadInfo['lp_datePosted'])?></span>
+						<a href="/ucp/<?=$threadInfo['lp_authorID']?>" class="username"><?=$threadInfo['lp_username']?></a><br><span><?=date('M j, Y g:i a', $threadInfo['lp_datePosted'])?></span>
 					</div>
 				</div>
 <?
@@ -303,7 +303,7 @@
 		<div id="forumLinks">
 			<div id="forumOptions">
 <? if ($loggedIn) { ?>
-				<a href="<?=SITEROOT?>/forums/process/read/<?=$forumID?>">Mark Forum As Read</a>
+				<a href="/forums/process/read/<?=$forumID?>">Mark Forum As Read</a>
 <? } ?>
 			</div>
 <? 

@@ -1,3 +1,0 @@
-<?
-	$packageRoot = FILEROOT.'/includes/characters/';
-?>

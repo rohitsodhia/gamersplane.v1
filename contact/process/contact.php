@@ -23,7 +23,7 @@
 			$_SESSION['errorTime'] = time() + 300;
 
 			if (isset($_POST['modal'])) echo 0;
-			else header('Location: '.SITEROOT.'/contact/failed');
+			else header('Location: /contact/failed');
 		} else {
 			$addContact = $mysql->prepare('INSERT INTO contact SET name = :name, date = :date, username = :username, email = :email, subject = :subject, comment = :comment');
 			$addContact->bindValue(':name', $inserts['name']);
@@ -43,7 +43,7 @@
 			unset($_SESSION['errorVals']);
 
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/contact/success');
+			else header('Location: /contact/success');
 		}
-	} else { header('Location: '.SITEROOT.'/contact'); }
+	} else { header('Location: /contact'); }
 ?>

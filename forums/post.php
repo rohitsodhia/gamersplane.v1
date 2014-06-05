@@ -79,16 +79,16 @@
 		}
 	} else $noChat = TRUE;
 	
-	if ($noChat) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if ($noChat) { header('Location: /forums/'); exit; }
 	
 	if ($_SESSION['errors']) {
-		if ($_SESSION['lastURL'] == SITEROOT.'/forums/process/post') {
+		if ($_SESSION['lastURL'] == '/forums/process/post') {
 			$errors = $_SESSION['errors'];
 			if (isset($postInfo)) $postInfo = $_SESSION['errorVals'] + $postInfo;
 			else $postInfo = $_SESSION['errorVals'];
 			$postInfo['postTitle'] = $postInfo['title'];
 		}
-		if ($_SESSION['lastURL'] != SITEROOT.'/forums/process/post' || time() > $_SESSION['errorTime']) {
+		if ($_SESSION['lastURL'] != '/forums/process/post' || time() > $_SESSION['errorTime']) {
 			unset($_SESSION['errors']);
 			unset($_SESSION['errorVals']);
 		}
@@ -146,7 +146,7 @@
 		<hr>
 		
 <? } ?>
-		<form method="post" action="<?=SITEROOT?>/forums/process/post">
+		<form method="post" action="/forums/process/post">
 <?
 	if ($pathOptions[0] == 'newThread') echo "\t\t\t".'<input type="hidden" name="new" value="'.$forumID.'">'."\n";
 	elseif ($pathOptions[0] == 'editPost') echo "\t\t\t".'<input type="hidden" name="edit" value="'.$postID.'">'."\n";

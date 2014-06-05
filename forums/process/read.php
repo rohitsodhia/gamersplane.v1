@@ -12,5 +12,5 @@
 	$mysql->query('DELETE rdt FROM forums f INNER JOIN forums c INNER JOIN threads t INNER JOIN forums_readData_threads rdt WHERE f.forumID = '.$forumID.' AND c.heritage LIKE CONCAT(f.heritage, "%") AND c.forumID = t.forumID AND t.threadID = rdt.threadID AND rdt.userID = '.$userID);
 	$mysql->query('INSERT forums_readData_forums SET userID = '.$userID.', forumID = '.$forumID.', lastRead = '.$lpPostID);
 	
-	header('Location: '.SITEROOT.'/forums/'.($forumID?$forumID:''));
+	header('Location: /forums/'.($forumID?$forumID:''));
 ?>

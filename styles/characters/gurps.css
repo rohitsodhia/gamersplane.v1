@@ -15,59 +15,55 @@
 	width: 200px;
 }
 
-#stats {
-	float: left;
-	width: 500px;
+.twoCol {
+	width: 465px;
+	margin-top: 1em;
 }
 
 #stats .statCol {
 	float: left;
-	width: 60px;
+	width: 120px;
 }
 
 #stats .largeCol {
-	width: 140px;
-	font-size: .7em;
+	width: 200px;
 }
 
-#stats .statCol .statRow {
-	text-align: center;
-	padding: 6px 0;
+#stats .tr > * {
+	vertical-align: middle;
 }
 
-.editCharacter #stats .statCol .blank {
-	padding: 9px 0;
-}
-
-.editCharacter #stats .statCol label.statRow {
-	font-size: 1.3em;
-	padding: 9px 0;
-}
-
-.editCharacter #stats .largeCol label.statRow {
-	padding: 9px 0;
-}
-
-#stats .statCol .statRow input {
+#stats label {
 	width: 40px;
+	font-size: 1.2em;
+}
+
+#stats .largeCol label {
+	width: 120px;
+	font-size: .85em;
+}
+
+#stats .tr > div {
+	display: inline-block;
+	width: 30px;
+	padding: 5px;
 	text-align: center;
+	border: 1px solid #888;
+}
+
+#stats .largeCol .tr > div {
+	font-size: 1em;
 }
 
 #langDiv {
-	width: 390px;
+	margin-top: 0;
 }
 
 #langDiv textarea {
 	height: 5.7em;
 }
 
-.twoCol {
-	width: 465px;
-	margin-top: 1em;
-}
-
 textarea {
-	width: 100%;
 	height: 12.4em;
 }
 
@@ -76,11 +72,5 @@ textarea {
 }
 
 #notesDiv textarea {
-	width: 920px;
 	height: 10em;
-}
-
-#submitDiv {
-	margin-top: 1em;
-	text-align: center;
 }

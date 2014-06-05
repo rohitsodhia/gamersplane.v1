@@ -12,5 +12,5 @@
 		$mysql->query("UPDATE deckDraws SET reveals = '{$drawInfo['reveals']}' WHERE drawID = $drawID");
 	}
 	
-	header('Location: '.SITEROOT."/forums/thread/{$drawInfo['threadID']}#p{$drawInfo['postID']}");
+	header("Location: /forums/thread/{$drawInfo['threadID']}#p{$drawInfo['postID']}");
 ?>

@@ -9,6 +9,15 @@ $(function () {
 		});
 	}
 
+	$('.abilitySelect').change(function () {
+		$statMod = $(this).parent().siblings('.abilitySelectMod');
+		$total = $('#' + $statMod.data('totalEle'));
+		oldStat = $statMod.data('statHold');
+		newStat = $(this).val();
+		$statMod.html(showSign(statBonus[newStat])).removeClass('statBonus_' + oldStat).addClass('statBonus_' + newStat).data('statHold', newStat);
+		$total.removeClass('addStat_' + oldStat).addClass('addStat_' + newStat).html(showSign(parseInt($total.html()) - statBonus[oldStat] + statBonus[newStat]));
+	});
+
 	$('#skillName').autocomplete('/characters/ajax/skillSearch/', { search: $(this).val(), characterID: characterID, system: system });
 	$('#skills').on('click', '.skill_remove', function (e) {
 		var skillID = $(this).parent().attr('id').split('_')[1];
@@ -34,6 +43,7 @@ $(function () {
 		
 		e.preventDefault()
 	});
+	$('#feats').on('click', '.feat_notesLink', function (e) { $(this).colorbox(); });
 
 	if ($('#addWeapon').length) { $('#addWeapon').click(function (e) {
 		e.preventDefault();

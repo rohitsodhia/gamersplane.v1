@@ -8,7 +8,7 @@
 			$charClass = $system.'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->load();
-				$charPermissions = $character->checkPermissions();
+				$charPermissions = $character->checkPermissions($userID);
 				if ($charPermissions == 'edit') {
 					$skillID = intval($_POST['skillID']);
 					$character->removeSkill($skillID);

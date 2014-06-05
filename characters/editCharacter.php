@@ -11,7 +11,7 @@
 		$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';
 		if ($character = new $charClass($characterID)) {
 			$character->load();
-			$charPermissions = $character->checkPermissions();
+			$charPermissions = $character->checkPermissions($userID);
 			if ($charPermissions == 'edit') {
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
@@ -20,18 +20,18 @@
 
 			}
 		}
-	} else { header('Location: '.SITEROOT.'/404/'); exit; }
+	} else { header('Location: /404/'); exit; }
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Edit Character Sheet</h1>
-<?	if (file_exists(SITEROOT.'/images/logos/'.SYSTEM.'.png')) { ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=SYSTEM?>.png"></div>
+<?	if (file_exists('/images/logos/'.SYSTEM.'.png')) { ?>
+		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>
 <?	} ?>
 		
 <?	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <?	} else { ?>
-		<form method="post" action="<?=SITEROOT?>/characters/process/editCharacter/">
+		<form method="post" action="/characters/process/editCharacter/">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">
 			

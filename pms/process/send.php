@@ -18,7 +18,7 @@
 			$mysql->setWhere('pmID = '.$pmID);
 			$mysql->stdQuery('select', 'selectCols', 'where');
 			
-			if (!$mysql->numRow()) { header('Location: '.SITEROOT.'/unauthorized'); }
+			if (!$mysql->numRow()) { header('Location: /unauthorized'); }
 		}*/
 		
 		$recipientCheck = $mysql->prepare("SELECT userID FROM users WHERE username = :username");
@@ -36,7 +36,7 @@
 			$_SESSION['message']['message'] = $message;
 			$_SESSION['errorTime'] = time() + 300;
 			
-			header('Location: '.SITEROOT.'/pms/send/failed');
+			header('Location: /pms/send/failed');
 		} else {
 			unset($_SESSION['errors']);
 			unset($_SESSION['errorTime']);
@@ -50,7 +50,7 @@
 			$sendMessage->bindValue(':replyTo', $pmID);
 			$sendMessage->execute();
 			
-			header('Location: '.SITEROOT.'/pms/?sent=1');
+			header('Location: /pms/?sent=1');
 		}
-	} else header('Location: '.SITEROOT.'/pms');
+	} else header('Location: /pms');
 ?>

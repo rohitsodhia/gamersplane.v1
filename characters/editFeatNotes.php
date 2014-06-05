@@ -11,7 +11,7 @@
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Edit Feat Notes';
 		if ($character = new $charClass($characterID)) {
-			$charPermissions = $character->checkPermissions();
+			$charPermissions = $character->checkPermissions($userID);
 			if ($charPermissions == 'edit') {
 				$featInfo = $mysql->query("SELECT fl.name, f.notes FROM ".SYSTEM."_feats f INNER JOIN featsList fl USING (featID) WHERE f.featID = $featID AND f.characterID = $characterID");
 				if ($featInfo->rowCount()) $featInfo = $featInfo->fetch();
@@ -29,7 +29,7 @@
 <? } elseif (!isset($featInfo)) { ?>
 		<h2 id="noFeat">This character does not have this feat/ability.</h2>
 <? } else { ?>
-		<form id="featDescForm" method="post" action="<?=SITEROOT?>/characters/process/editFeatNotes/">
+		<form id="featDescForm" method="post" action="/characters/process/editFeatNotes/">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="system" type="hidden" name="system" value="<?=SYSTEM?>">
 			<input id="featID" type="hidden" name="featID" value="<?=$featID?>">

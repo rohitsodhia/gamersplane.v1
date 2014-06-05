@@ -24,10 +24,10 @@ Enter your current username and the following code
 It will take you to a page where you can enter a new password of your choice.";
 			mail($email, 'Gamers Plane Password Reset', $body, "From: contact@gamersplane.com\r\nReply-To: contact@gamersplane.com");
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/login/requestReset?success=1'.(isset($_POST['modal'])?'&modal=1':''));
+			else header('Location: /login/requestReset?success=1'.(isset($_POST['modal'])?'&modal=1':''));
 		} else {
 			if (isset($_POST['modal'])) echo 0;
-			else header('Location: '.SITEROOT.'/login/requestReset?invalidEmail=1');
+			else header('Location: /login/requestReset?invalidEmail=1');
 		}
-	} else header('Location: '.SITEROOT.'/login/requestReset');
+	} else header('Location: /login/requestReset');
 ?>

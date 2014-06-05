@@ -10,7 +10,7 @@
 		if (strcmp(filterString($_POST['label']), $_POST['label']) || $_POST['label'] == '') $errors .= 'invalidLabel=1&';
 
 		if ($errors != '?') {
-			header('Location: '.SITEROOT.'/characters/my/'.substr($errors, 0, -1));
+			header('Location: /characters/my/'.substr($errors, 0, -1));
 		} else {
 			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, type, systemID) VALUES (:userID, :label, :type, :systemID)');
 			$addCharacter->bindValue(':userID', $userID);
@@ -29,9 +29,9 @@
 			$newChar->save();
 			addCharacterHistory($characterID, 'created', $userID, 'NOW()', $systemID);
 
-			header('Location: '.SITEROOT.'/characters/'.$systemShort.'/'.$characterID.'/edit/new');
+			header('Location: /characters/'.$systemShort.'/'.$characterID.'/edit/new');
 		}
 	} else {
-		header('Location: '.SITEROOT.'/403');
+		header('Location: /403');
 	}
 ?>

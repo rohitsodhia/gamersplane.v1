@@ -12,7 +12,7 @@
 		
 		if ($charCheck->rowCount() == 0 && $gmCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo -1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID.'/?charError=1');
+			else header('Location: /games/'.$gameID.'/?charError=1');
 		} else {
 			if ($pendingAction == 'approve') $mysql->query('UPDATE characters SET approved = 1 WHERE characterID = '.$characterID);
 			else $mysql->query('UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = '.$characterID);
@@ -20,10 +20,10 @@
 			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', 'character', $characterID);
 			
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID);
+			else header('Location: /games/'.$gameID);
 		}
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/games/'.($gameID?$gameID:''));
+		else header('Location: /games/'.($gameID?$gameID:''));
 	}
 ?>

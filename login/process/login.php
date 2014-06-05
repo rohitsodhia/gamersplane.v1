@@ -16,12 +16,12 @@
 			
 			if ($userInfo['active'] == 0 || $userInfo['password'] != $password) {
 				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 0)');
-				if (isset($_POST['modal'])) echo SITEROOT.'/login?failed=1';
-				else header('Location: '.SITEROOT.'/login?failed=1');
+				if (isset($_POST['modal'])) echo '/login/?failed=1';
+				else header('Location: /login?failed=1');
 			} else {
 				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');
 //				$mysql->query('SELECT userID FROM loginRecords WHERE userID = '.$userInfo['userID'].' AND attemptStamp > SUBTIME(NOW(), "12:00:00")');
-//				if ($mysql->numRows > 5) { header('Location: '.SITEROOT.'/login?spammed=1'); exit; }
+//				if ($mysql->numRows > 5) { header('Location: /login?spammed=1'); exit; }
 			
 				$_SESSION['userID'] = $userInfo['userID'];
 				$_SESSION['username'] = $userInfo['username'];
@@ -35,13 +35,13 @@
 				
 				if (isset($_POST['modal'])) echo 1;
 				else {
-					if (isset($_SESSION['currentURL']) && $_SESSION['currentURL'] != SITEROOT) header('Location: '.$_SESSION['currentURL']);
-					else header('Location: '.SITEROOT.'/');
+					if (isset($_SESSION['currentURL'])) header('Location: '.$_SESSION['currentURL']);
+					else header('Location: /');
 				}
 			}
 		} else {
 			if (isset($_POST['modal'])) echo 0;
-			else header('Location: '.SITEROOT.'/login?failed=1');
+			else header('Location: /login?failed=1');
 		}
-	} else { header('Location: '.SITEROOT.'/login'); }
+	} else { header('Location: /login'); }
 ?>

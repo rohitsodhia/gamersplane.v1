@@ -14,7 +14,7 @@
 <? } ?>
 		<h1 class="headerbar">Reset Password</h1>
 		
-		<form method="post" action="<?=SITEROOT?>/login/process/resetPass">
+		<form method="post" action="/login/process/resetPass">
 			<div class="tr">
 				<label class="textLabel">Username:</label>
 				<input type="text" name="username" maxlength="50">

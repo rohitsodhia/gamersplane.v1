@@ -10,13 +10,13 @@
 			$charClass = SYSTEM.'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->load();
-				$charPermissions = $character->checkPermissions();
+				$charPermissions = $character->checkPermissions($userID);
 				if ($charPermissions == 'edit') {
 					$character->save();
-					header('Location: '.SITEROOT.'/characters/'.SYSTEM.'/'.$characterID); exit;
+					header('Location: /characters/'.SYSTEM.'/'.$characterID); exit;
 				}
 			}
 		}
 	}
-	header('Location: '.SITEROOT.'/403');
+	header('Location: /403');
 ?>

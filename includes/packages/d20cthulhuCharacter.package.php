@@ -1,4 +1,4 @@
 <?
-	require_once(FILEROOT.'/includes/packages/Character.package.php');
-	require_once(FILEROOT.'/includes/characters/d20cthulhuCharacter.class.php');
+	require_once(FILEROOT.'/includes/packages/d20Character.package.php');
+	require_once(FILEROOT.'/includes/characters/d20cthulhu/d20cthulhuCharacter.class.php');
 ?>

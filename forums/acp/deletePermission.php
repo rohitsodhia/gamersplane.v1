@@ -10,7 +10,7 @@
 	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
 	$forumInfo = $mysql->query("SELECT forumID, title, forumType, parentID, heritage FROM forums WHERE forumID = $forumID");
 	$forumInfo = $forumInfo->fetch();
-	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $pType == 'group') || $pType == NULL || $typeID == 0) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $pType == 'group') || $pType == NULL || $typeID == 0) { header('Location: /forums/'); exit; }
 	
 	$gameInfo = $mysql->query('SELECT gameID, groupID FROM games WHERE forumID = '.$forumID);
 	$gameInfo = $gameInfo->fetch();
@@ -25,7 +25,7 @@
 		
 		<p>Are you sure you want to delete the permissions for  <strong><?=$name?></strong> in the forum <strong><?=$forumInfo['title']?></strong>? This cannot be reversed!</p>
 
-		<form method="post" action="<?=SITEROOT?>/forums/process/acp/deletePermission">
+		<form method="post" action="/forums/process/acp/deletePermission">
 			<input type="hidden" name="forumID" value="<?=$forumID?>">
 			<input type="hidden" name="pType" value="<?=$pType?>">
 			<input type="hidden" name="typeID" value="<?=$typeID?>">

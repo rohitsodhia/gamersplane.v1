@@ -70,6 +70,6 @@
 			addCharacterHistory($characterID, 'editedChar');
 		}
 		
-		header('Location: '.SITEROOT.'/characters/pathfinder/'.$characterID);
-	} else header('Location: '.SITEROOT.'/403');
+		header('Location: /characters/pathfinder/'.$characterID);
+	} else header('Location: /403');
 ?>

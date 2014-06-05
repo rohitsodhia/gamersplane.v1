@@ -6,7 +6,7 @@
 	$userID = intval($_SESSION['userID']);
 	
 	$pmCheck = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.message, pms.datestamp, pms.viewed FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE (recipientID = '.$userID." OR senderID = $userID) AND pmID = $pmID");
-	if (!$pmCheck->rowCount()) { header('Location: '.SITEROOT.'/pms/'); exit; }
+	if (!$pmCheck->rowCount()) { header('Location: /pms/'); exit; }
 	$pmInfo = $pmCheck->fetch();
 	$pmInfo['datestamp'] = switchTimezone($_SESSION['timezone'], $pmInfo['datestamp'], $_SESSION['dst']);
 	
@@ -16,8 +16,8 @@
 		<h1 class="headerbar">Private Message</h1>
 		
 		<div id="buttonsDiv">
-			<a href="<?=SITEROOT?>/pms/reply/<?=$pmID?>" class="fancyButton">Reply</a>
-			<a href="<?=SITEROOT?>/pms/delete/<?=$pmID?>" class="fancyButton deletePM">Delete</a>
+			<a href="/pms/reply/<?=$pmID?>" class="fancyButton">Reply</a>
+			<a href="/pms/delete/<?=$pmID?>" class="fancyButton deletePM">Delete</a>
 		</div>
 		
 		<div class="tr">
@@ -26,7 +26,7 @@
 		</div>
 		<div class="tr">
 			<div class="leftCol">From</div>
-			<div class="rightCol"><a href="<?=SITEROOT.'/'.$pmInfo['senderID']?>" class="username"><?=$pmInfo['senderName']?></a></div>
+			<div class="rightCol"><a href="<?='/'.$pmInfo['senderID']?>" class="username"><?=$pmInfo['senderName']?></a></div>
 		</div>
 		<div class="tr">
 			<div class="leftCol">When</div>

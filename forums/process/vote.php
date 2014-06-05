@@ -33,5 +33,5 @@
 		}
 	}
 	
-	header('Location: '.SITEROOT.'/forums/thread/'.$threadID);
+	header('Location: /forums/thread/'.$threadID);
 ?>

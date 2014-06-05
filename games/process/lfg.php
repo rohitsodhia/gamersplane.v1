@@ -10,9 +10,9 @@
 		foreach ($_POST['lfg'] as $systemID => $junk) $lfgInsert->execute();
 		
 		if (isset($_POST['modal'])) echo 1;
-		else header('Location: '.SITEROOT.'/games/lfg');
+		else header('Location: /games/lfg');
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/games/');
+		else header('Location: /games/');
 	}
 ?>

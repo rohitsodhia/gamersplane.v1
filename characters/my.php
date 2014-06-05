@@ -62,7 +62,7 @@
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
 					<a href="/characters/library/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
 					><a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
-					><div class="charType"><?=$charLabelMap[$info['type']]?></div
+					><div class="charType"><?=$info['type']?></div
 					><div class="systemType"><?=$info['fullName']?></div
 					><div class="owner"><a href="/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
@@ -95,7 +95,7 @@
 				<label class="textLabel">Type</label>
 				<select name="type">
 <?
-	foreach ($charLabelMap as $type) echo "\t\t\t\t\t<option value=\"{$type}\">{$type}</option>\n";
+	foreach ($charTypes as $type) echo "\t\t\t\t\t<option value=\"{$type}\">{$type}</option>\n";
 ?>
 				</select>
 			</div>

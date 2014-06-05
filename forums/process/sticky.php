@@ -11,5 +11,5 @@
 	
 	if ($permissions['moderate']) $mysql->query('UPDATE threads SET sticky = sticky ^ 1 WHERE threadID = '.$threadID);
 	
-	header('Location: '.SITEROOT.'/forums/thread/'.$threadID);
+	header('Location: /forums/thread/'.$threadID);
 ?>

@@ -24,7 +24,7 @@
 		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
 			<div>
 <?		if ($viewerStatus == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+				<a id="editCharacter" href="/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
 <?		} else { ?>
 				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
 <?		} ?>
@@ -33,7 +33,7 @@
 			<div class="wing urWing"></div>
 		</div></div>
 <? } ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
+		<div id="charSheetLogo"><img src="/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
@@ -294,7 +294,7 @@
 	if ($focuses->rowCount()) { foreach ($focuses as $focusInfo) {
 ?>
 					<div id="focus_<?=$focusInfo['focusID']?>" class="focus tr clearfix">
-						<span class="shortNum alignCenter"><?=$focusInfo['forte']?'<img src="'.SITEROOT.'/images/check.png">':''?></span>
+						<span class="shortNum alignCenter"><?=$focusInfo['forte']?'<img src="/images/check.png">':''?></span>
 						<span class="focus_name"><?=mb_convert_case($focusInfo['name'], MB_CASE_TITLE)?></span>
 					</div>
 <?
@@ -312,7 +312,7 @@
 					<div id="feat_<?=$featInfo['featID']?>" class="feat tr clearfix">
 						<span class="feat_name"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
 <?		if ($featInfo['hasNotes']) { ?>
-						<a href="<?=SITEROOT?>/characters/spycraft2/<?=$characterID?>/featNotes/<?=$featInfo['featID']?>" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
+						<a href="/characters/spycraft2/<?=$characterID?>/featNotes/<?=$featInfo['featID']?>" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
 <?		} ?>
 					</div>
 <?

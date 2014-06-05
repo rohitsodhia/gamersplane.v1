@@ -18,7 +18,7 @@
 		} else $checkPostsSince = date('Y-m-d H:i:s', strtotime('-3 Hour'));
 		$showBy = 'threads';
 		$searchResults = $mysql->query('SELECT t.threadID, t.forumID, f.title fTitle, t.locked, t.sticky, fp.title, fp.postID fp_postID, fp.datePosted fp_datePosted, fp.authorID fp_authorID, fpu.username fp_username, lp.postID lp_postID, lp.datePosted lp_datePosted, lp.authorID lp_authorID, lpu.username lp_username, pc.numPosts, np.newPosts FROM threads t LEFT JOIN posts p USING (threadID) LEFT JOIN threads_relPosts rp USING (threadID) LEFT JOIN posts fp ON rp.firstPostID = fp.postID LEFT JOIN users fpu ON fp.authorID = fpu.userID LEFT JOIN posts lp ON rp.lastPostID = lp.postID LEFT JOIN users lpu ON lp.authorID = lpu.userID LEFT JOIN (SELECT threadID, COUNT(*) numPosts FROM posts GROUP BY threadID) pc ON t.threadID = pc.threadID LEFT JOIN forums f USING (forumID) LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = '.$userID.' LEFT JOIN forums_readData_forums_c rdf ON t.forumID = rdf.forumID AND rdf.userID = '.$userID.' LEFT JOIN forums_readData_newPosts np ON t.threadID = np.threadID AND np.userID = '.$userID.' LEFT JOIN ('.sql_forumPermissions($userID, 'read').') p ON t.forumID = p.forumID WHERE p.read = 1 AND p.datePosted > NOW() - INTERVAL 1 YEAR GROUP BY t.threadID ORDER BY rp.lastPostID DESC');
-	} else { header('Location: '.SITEROOT.'/forums'); exit; }
+	} else { header('Location: /forums'); exit; }
 	
 	$numItems = 0;
 	if ($showBy == 'threads') {
@@ -39,10 +39,10 @@
 				$threadContent .= '				<div class="tr">
 					<div class="td icon"><div class="forumIcon'.($forumIcon == 'new'?' newPosts':'').'" title="'.($forumIcon == 'new'?'New':'No new').' posts in thread" alt="'.($forumIcon == 'new'?'New':'No new').' posts in thread"></div></div>
 					<div class="td threadInfo">'."\n";
-				if ($forumIcon == 'new') $threadContent .= "						<a href=\"".SITEROOT."/forums/thread/{$threadInfo['threadID']}?view=newPost\"><img src=\"".SITEROOT."/images/forums/newPost.png\" title=\"View new posts\" alt=\"View new posts\"></a>\n";
+				if ($forumIcon == 'new') $threadContent .= "						<a href=\"/forums/thread/{$threadInfo['threadID']}?view=newPost\"><img src=\"/images/forums/newPost.png\" title=\"View new posts\" alt=\"View new posts\"></a>\n";
 				if ($threadInfo['numPosts'] > PAGINATE_PER_PAGE) {
 					$threadContent .= "						<div class=\"paginateDiv\">\n";
-					$url = SITEROOT.'/forums/thread/'.$threadInfo['threadID'];
+					$url = '/forums/thread/'.$threadInfo['threadID'];
 					$numPages = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 					if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) $threadContent .= "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
 					else {
@@ -52,12 +52,12 @@
 					}
 					$threadContent .= "\t\t\t\t\t\t</div>\n";
 				}
-				$threadContent .= "						<a href=\"".SITEROOT."/forums/thread/{$threadInfo['threadID']}\">{$threadInfo['title']}</a><br>
-						<span class=\"threadAuthor\">by <a href=\"{SITEROOT}/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> on <span>".date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>
+				$threadContent .= "						<a href=\"/forums/thread/{$threadInfo['threadID']}\">{$threadInfo['title']}</a><br>
+						<span class=\"threadAuthor\">by <a href=\"/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> on <span>".date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>
 					</div>
 					<div class=\"td numPosts\">".($threadInfo['numPosts']?$threadInfo['numPosts']:0)."</div>
 					<div class=\"td lastPost\">
-						<a href=\"".SITEROOT."/ucp/{$threadInfo['lp_authorID']}\" class=\"username\">{$threadInfo['lp_username']}</a><br><span>".date('M j, Y g:i a', $threadInfo['lp_datePosted'])."</span>
+						<a href=\"/ucp/{$threadInfo['lp_authorID']}\" class=\"username\">{$threadInfo['lp_username']}</a><br><span>".date('M j, Y g:i a', $threadInfo['lp_datePosted'])."</span>
 					</div>
 				</div>\n";
 			}
@@ -70,7 +70,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Search Results</h1>
 		
-		<p id="rules">Be sure to read and follow the <a href="<?=SITEROOT?>/forums/rules">guidelines for our forums</a>.</p>
+		<p id="rules">Be sure to read and follow the <a href="/forums/rules">guidelines for our forums</a>.</p>
 	
 <?=$threadContent?>
 				

@@ -1,5 +1,5 @@
 <?
-	if (checkLogin(0)) { header('Location: '.SITEROOT.'/'); exit; }
+	if (checkLogin(0)) { header('Location: /'); exit; }
 	
 	if ($_SESSION['errors']) {
 		if (preg_match('/register\/.*$/', $_SESSION['lastURL'])) {
@@ -15,7 +15,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Registration</h1>
 
-		<form method="post" action="<?=SITEROOT?>/register/process/register">
+		<form method="post" action="/register/process/register">
 <? if ($_GET['failed'] && sizeof($errors)) { ?>
 			<div class="alertBox_error">
 				There was a problem with your registration. Please see the errors below and try again.

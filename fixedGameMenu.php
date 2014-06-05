@@ -10,17 +10,17 @@
 			$gameInfo = $gameInfo->fetch();
 ?>
 	<ul class="rightCol">
-<!--		<li><a href="<?=SITEROOT.'/chat/'.$gameID?>" class="menuLink">Chat</a></li>-->
-		<li><a href="<?=SITEROOT.'/games/'.$gameID?>" class="menuLink">Game Details</a></li>
+<!--		<li><a href="<?='/chat/'.$gameID?>" class="menuLink">Chat</a></li>-->
+		<li><a href="<?='/games/'.$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
 <?		} ?>
 	<ul class="leftCol">
 <?		if ($gameInfo['isGM'] || $pathAction == 'characters') { ?>
 		<li id="fm_tools">
-			<a href="<?=SITEROOT?>/tools" class="menuLink">Tools</a>
+			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
 				<li id="fm_diceRoller">
-					<a href="<?=SITEROOT?>/tools/dice" class="menuLink">Dice Roller</a>
+					<a href="/tools/dice" class="menuLink">Dice Roller</a>
 					<div class="subwindow">
 						<div class="floatLeft">
 							<div id="fm_customDiceRoll">
@@ -38,7 +38,7 @@
 					</div>
 				</li>
 				<li id="fm_cards">
-					<a href="<?=SITEROOT?>/tools/cards" class="menuLink">Cards</a>
+					<a href="/tools/cards" class="menuLink">Cards</a>
 					<div class="subwindow">
 <?		$cardCount = isset($_SESSION['deck']) && count($_SESSION['deck'])?array_count_values($_SESSION['deck']):array(0, 0); ?>
 						<div class="cardControls">
@@ -86,12 +86,12 @@
 						echo "				<li>\n";
 						if ($gameInfo['isGM']) {
 ?>
-					<p class="username"><a href="<?=SITEROOT?>/ucp/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
+					<p class="username"><a href="/ucp/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
 <?
 						}
 					}
 ?>
-					<p class="charName"><a href="<?=SITEROOT?>/characters/<?=$gameInfo['system']?>/sheet/<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
+					<p class="charName"><a href="/characters/<?=$gameInfo['system']?>/sheet/<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
 <?				} ?>
 				</li>
 			</ul>
@@ -100,7 +100,7 @@
 			}
 		}
 ?>
-<?=$gameID && $pathAction != 'forums'?"			<li><a href=\"".SITEROOT."/forums/{$gameInfo['forumID']}\" target=\"_blank\" class=\"menuLink\">Forum</a></li>\n":''?>
+<?=$gameID && $pathAction != 'forums'?"			<li><a href=\"/forums/{$gameInfo['forumID']}\" target=\"_blank\" class=\"menuLink\">Forum</a></li>\n":''?>
 	</ul>
 </div></div>
 <? } ?>

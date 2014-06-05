@@ -10,7 +10,7 @@
 		$playerCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = $playerID AND approved = 1");
 		if ($gmCheck->rowCount() == 0 || $playerCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo -1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID);
+			else header('Location: /games/'.$gameID);
 		} else {
 			$isGM = $playerCheck->fetchColumn();
 			$mysql->query("UPDATE players SET isGM = isGM ^ 1 WHERE gameID = $gameID AND userID = $playerID");
@@ -23,10 +23,10 @@
 			addGameHistory($gameID, ($isGM?'gmRemoved':'gmAdded'), $userID, 'NOW()', 'user', $playerID);
 			
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT."/games/$gameID?gmAdded=1");
+			else header("Location: /games/{$gameID}/?gmAdded=1");
 		}
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/games/');
+		else header('Location: /games/');
 	}
 ?>

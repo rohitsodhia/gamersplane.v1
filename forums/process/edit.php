@@ -29,7 +29,7 @@
 //				$mysql->stdQuery('update', 'where');
 			}
 			
-//			header('Location: '.SITEROOT.'/chat/success/edit/'.$postInfo['threadID']);
-		} else header('Location: '.SITEROOT.'/unauthorized');
-	} else header('Location: '.SITEROOT.'/forums');
+//			header('Location: /chat/success/edit/'.$postInfo['threadID']);
+		} else header('Location: /unauthorized');
+	} else header('Location: /forums');
 ?>

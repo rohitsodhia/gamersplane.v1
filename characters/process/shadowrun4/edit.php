@@ -17,6 +17,6 @@
 			addCharacterHistory($characterID, 'editedChar');
 		}
 
-		header('Location: '.SITEROOT.'/characters/shadowrun4/'.$characterID);
-	} else header('Location: '.SITEROOT.'/403');
+		header('Location: /characters/shadowrun4/'.$characterID);
+	} else header('Location: /403');
 ?>

@@ -48,7 +48,7 @@
  			$updateChar->bindValue(':characterID', $characterID);
 			$updateChar->execute();
 			addCharacterHistory($characterID, 'editedChar');
-			header('Location: '.SITEROOT.'/characters/marvel/'.$characterID);
-		} else header('Location: '.SITEROOT.'/403');
-	} else header('Location: '.SITEROOT.'/403');
+			header('Location: /characters/marvel/'.$characterID);
+		} else header('Location: /403');
+	} else header('Location: /403');
 ?>

@@ -11,11 +11,11 @@
 	$posts = $mysql->query('SELECT t.threadID, p.title, u.userID, u.username, p.message, p.datePosted FROM threads t, threads_relPosts rp, posts p, users u WHERE t.threadID = rp.threadID AND t.forumID = 3 AND rp.firstPostID = p.postID AND p.authorID = u.userID ORDER BY datePosted DESC LIMIT 1');
 	$postInfo = $posts->fetch();
 	$postInfo['datePosted'] = switchTimezone($_SESSION['timezone'], $postInfo['datePosted']);
-	echo "\t\t\t\t<h2 class=\"headerbar\"><a href=\"".SITEROOT.'/forums/thread/'.$postInfo['threadID'].'">'.$postInfo['title']."</a></h2>\n";
-	echo "\t\t\t\t<h4>".date('F j, Y g:i a', $postInfo['datePosted']).' by <a href="'.SITEROOT.'/user/'.$postInfo['userID'].'" class="username">'.$postInfo['username']."</a></h4>\n";
+	echo "\t\t\t\t<h2 class=\"headerbar\"><a href=\"/forums/thread/{$postInfo['threadID']}/\">{$postInfo['title']}</a></h2>\n";
+	echo "\t\t\t\t<h4>".date('F j, Y g:i a', $postInfo['datePosted']).' by <a href="/user/'.$postInfo['userID'].'" class="username">'.$postInfo['username']."</a></h4>\n";
 	echo "\t\t\t\t<hr>\n";
 	echo BBCode2Html(filterString(printReady($postInfo['message'])));
-	if ($loggedIn) echo "\t\t\t\t<div class=\"readMore\">To comment to this post or to read what others thought, please <a href=\"".SITEROOT.'/forums/thread/'.$postInfo['threadID']."\">click here</a>.</div>\n";
+	if ($loggedIn) echo "\t\t\t\t<div class=\"readMore\">To comment to this post or to read what others thought, please <a href=\"/forums/thread/{$postInfo['threadID']}\">click here</a>.</div>\n";
 ?>
 			</div>
 			<div class="sideWidget">
@@ -32,14 +32,14 @@
 				$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 				echo "\t\t\t\t\t\t<div class=\"gameInfo\">\n";
-				echo "\t\t\t\t\t\t\t<p class=\"title\"><a href=\"".SITEROOT."/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
-				echo "\t\t\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
+				echo "\t\t\t\t\t\t\t<p class=\"title\"><a href=\"/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
+				echo "\t\t\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
 				echo "\t\t\t\t\t\t</div>\n";
 			}
 			echo "\t\t\t\t\t</div>\n";
 		} else {
 			echo "\t\t\t\t\t\t<p>You're not in any games yet.</p>\n";
-			echo "\t\t\t\t\t\t<div class=\"noGameLink\"><a href=\"".SITEROOT."/games/list\">Join a game!</a></div>\n";
+			echo "\t\t\t\t\t\t<div class=\"noGameLink\"><a href=\"/games/list\">Join a game!</a></div>\n";
 		}
 		echo "\t\t\t\t\t</div>\n";
 	} else {
@@ -50,8 +50,8 @@
 					Without you!
 
 					<div class="tr clearfix">
-						<a href="<?=SITEROOT?>/login" class="login loginLink">Login</a>
-						<a href="<?=SITEROOT?>/register" class="register">Register</a>
+						<a href="/login" class="login loginLink">Login</a>
+						<a href="/register" class="register">Register</a>
 					</div>
 				</div>
 <? } ?>
@@ -74,8 +74,8 @@
 		if (!$first) echo "\t\t\t\t\t<hr>\n";
 		else $first = FALSE;
 		echo "\t\t\t\t<div class=\"gameInfo\">\n";
-		echo "\t\t\t\t\t<p class=\"title\"><a href=\"".SITEROOT."/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
-		echo "\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"".SITEROOT."/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
+		echo "\t\t\t\t\t<p class=\"title\"><a href=\"/games/{$gameInfo['gameID']}\">{$gameInfo['title']}</a> (".($slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}").")</p>\n";
+		echo "\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
 //		if ($slotsLeft == 0) echo "\t\t\t\t<p class=\"details\">No Slots Remaining</p>\n";
 //		else echo "\t\t\t\t<p class=\"details\">{$slotsLeft} Slots Still Open</p>\n";
 //		echo "\t\t\t\t\t<p class=\"details\">Started on ".date('M j, Y g:i a', $gameInfo['started'])."</p>\n";
@@ -117,9 +117,9 @@
 		else $first = FALSE;
 		echo "\t\t\t\t\t<div class=\"post\">\n";
 		echo "\t\t\t\t\t\t<div class=\"forumIcon".($latestPost['newPosts']?' newPosts':'')."\"></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"".SITEROOT."/forums/thread/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"".SITEROOT."/user/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
-		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"".SITEROOT."/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
+		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"/forums/thread/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
+		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"/user/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
+		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}
 ?>
@@ -136,7 +136,7 @@
 ?>
 				</ul>
 				<p>And many more availabe and coming!</p>
-<?=$loggedIn?"				<p>If you have a system you want added, <a href=\"".SITEROOT."/forums/thread/2\">let us know</a>!</p>\n":''?>
+<?=$loggedIn?"				<p>If you have a system you want added, <a href=\"/forums/thread/2\">let us know</a>!</p>\n":''?>
 			</div>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

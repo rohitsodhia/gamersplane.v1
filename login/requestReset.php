@@ -15,7 +15,7 @@
 <? } else { ?>
 		<p>Forgot your password? Just reset it!</p>
 		<p>Enter the email address associated with your account below, and we'll help you get a new password.</p>
-		<form method="post" action="<?=SITEROOT?>/login/process/requestReset">
+		<form method="post" action="/login/process/requestReset">
 <?=MODAL?'			<input type="hidden" name="modal" value="1">'."\n":''?>
 			<input type="text" name="email" maxlength="100">
 			<button type="submit" name="submit" value="submit" class="fancyButton">Submit</button>

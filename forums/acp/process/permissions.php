@@ -16,7 +16,7 @@
 	$forumInfo = $forumInfo->fetch();
 	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $forumID != 10) || (!$pType && !isset($_POST['save']))) {
 		if (MODAL) echo 0;
-		else { header('Location: '.SITEROOT.'/forums/'); exit; }
+		else { header('Location: /forums/'); exit; }
 	} 
 
 	$gameForum = strpos($forumInfo['heritage'], sql_forumIDPad(2)) !== FALSE && $forumID != 10?TRUE:FALSE;
@@ -35,7 +35,7 @@
 		elseif ($pType == 'user') $validOpt = $mysql->prepare("SELECT u.userID optID FROM users u LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE u.username = ? AND per.forumID IS NULL LIMIT 1");
 		elseif ($pType == 'group') $validOpt = $mysql->prepare("SELECT fg.groupID optID FROM forums_groups fg LEFT JOIN forums_permissions_groups per ON fg.groupID = per.groupID AND per.forumID = {$forumID} WHERE fg.name = ? AND fg.ownerID = {$userID} LIMIT 1");
 
-		$search = sanitizeString($_POST['option'], 'like_clean', 'search_format');
+		$search = sanitizeString($_POST['option'], 'search_format');
 		$validOpt->execute(array($search));
 		$optID = $validOpt->fetchColumn();
 
@@ -54,6 +54,6 @@
 				}
 			}
 		}
-		header('Location: '.SITEROOT.'/forums/acp/'.$forumID.'/permissions');
-	} else header('Location: '.SITEROOT.'/forums/');
+		header('Location: /forums/acp/'.$forumID.'/permissions');
+	} else header('Location: /forums/');
 ?>

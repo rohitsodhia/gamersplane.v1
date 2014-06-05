@@ -1,6 +1,6 @@
 <?
 	if (checkLogin(0)) {
-		$search = sanitizeString($_POST['search'], 'like_clean', 'search_format');
+		$search = sanitizeString($_POST['search'], 'search_format');
 		$characterID = intval($_POST['characterID']);
 		$system = sanitizeString($_POST['system']);
 		

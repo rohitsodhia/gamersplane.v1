@@ -5,7 +5,7 @@
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
 	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = $gameID AND m.gameID = p.gameID AND p.userID = $userID AND m.mapID = $mapID");
-	if (!$playerCheck->rowCount()) { header('Location: '.SITEROOT.'/403'); exit; }
+	if (!$playerCheck->rowCount()) { header('Location: /403'); exit; }
 	else $isGM = $playerCheck->fetchColumn();
 	$mapInfo = $mysql->query('SELECT m.gameID, m.name, m.cols, m.rows, m.info, g.title, g.systemID, s.fullName FROM maps m, games g, systems s WHERE g.systemID = s.systemID AND m.gameID = g.gameID AND m.mapID = '.$mapID);
 	$mapInfo = $mapInfo->fetch();
@@ -34,7 +34,7 @@
 		<div class="clearfix">
 			<div id="mapSidebar" style="height: <?=$maxMapWindow['height'] - 32?>px;">
 				<div id="mapControls">
-					<img src="<?=SITEROOT?>/images/maps/mapControls.png">
+					<img src="/images/maps/mapControls.png">
 					<a id="mapControls_up_top" href="" class="mapControls_up">&nbsp;</a>
 					<a id="mapControls_up_body" href="" class="mapControls_up">&nbsp;</a>
 					<a id="mapControls_right_top" href="" class="mapControls_right">&nbsp;</a>
@@ -63,7 +63,7 @@
 					<div id="mapSidebar_contentContainer" style="height: <?=$maxMapWindow['height'] - 92?>px;">
 						<div id="mapSidebar_content_info">
 							<p><strong>Game:</strong> <?=$mapInfo['title']?> (<?=$mapInfo['fullName']?>)</p>
-							<p><strong>Info:</strong> <span id="infoSpan"><? if (strlen($mapInfo['info'])) echo printReady($mapInfo['info']); elseif ($isGM) echo 'No info yet.'; ?></span> <sup><a id="infoEdit" href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapID?>/editInfo">[ Edit ]</a></sup></p>
+							<p><strong>Info:</strong> <span id="infoSpan"><? if (strlen($mapInfo['info'])) echo printReady($mapInfo['info']); elseif ($isGM) echo 'No info yet.'; ?></span> <sup><a id="infoEdit" href="/games/<?=$gameID?>/maps/<?=$mapID?>/editInfo">[ Edit ]</a></sup></p>
 							<p class="reminder">Remember: you can see each icon's label by holding your mouse over it.</p>
 						</div>
 <? if ($isGM) { ?>
@@ -75,7 +75,7 @@
 							
 							<a id="addIcon" href="">Add Icon</a>
 							
-							<form id="iconForm" method="post" action="<?=SITEROOT?>/games/process/maps/icons">
+							<form id="iconForm" method="post" action="/games/process/maps/icons">
 								<input id="iconID" type="hidden" name="iconID">
 								<input type="hidden" name="mapID" value="<?=$mapID?>">
 								<div class="tr">
@@ -117,7 +117,7 @@
 							<div id="staticMapOptions">
 								<div id="addCR">
 									<a href="">Add Row/Column</a>
-									<form method="post" action="<?=SITEROOT?>/games/process/maps/addCR">
+									<form method="post" action="/games/process/maps/addCR">
 										<input id="mapID" type="hidden" name="mapID" value="<?=$mapID?>">
 										<div class="textLabel">Add</div>
 										<div class="psWrapper"><select id="addType" name="addType"><option value="c"<?=$_SESSION['lastSet'] == 'c'?' selected="selected"':''?>>column</option><option value="r"<?=$_SESSION['lastSet'] == 'r'?' selected="selected"':''?>>row</option></select></div>
@@ -169,7 +169,7 @@
 	for ($cCount = 1; $cCount <= $mapInfo['cols']; $cCount++) {
 		echo "\t\t\t\t\t<div class=\"cHeader cHeaderMin col_$cCount\">\n";
 		echo "\t\t\t\t\t\t<a href=\"\">".$curCol++."</a>\n";
-		echo "\t\t\t\t\t\t<a href=\"".SITEROOT."/tools/process/maps/removeCR/$mapID/$cCount\" class=\"removeCol\">-</a>\n";
+		echo "\t\t\t\t\t\t<a href=\"/tools/process/maps/removeCR/$mapID/$cCount\" class=\"removeCol\">-</a>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}
 ?>
@@ -179,7 +179,7 @@
 	for ($rCount = 1; $rCount <= $mapInfo['rows']; $rCount++) {
 		echo "\t\t\t\t\t<div class=\"rHeader rHeaderMin row_$rCount\">\n";
 		echo "\t\t\t\t\t\t<a href=\"\">".$rCount."</a>\n";
-		echo "\t\t\t\t\t\t<a href=\"".SITEROOT."/tools/process/maps/removeCR/$mapID/$rCount\" class=\"removeCol\">-</a>\n";
+		echo "\t\t\t\t\t\t<a href=\"/tools/process/maps/removeCR/$mapID/$rCount\" class=\"removeCol\">-</a>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}
 ?>

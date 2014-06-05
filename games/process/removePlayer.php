@@ -13,7 +13,7 @@
 
 		if ($playerCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo 'No player';
-			else header('Location: '.SITEROOT.'/403');
+			else header('Location: /403');
 		} elseif ($gmCheck->rowCount() != 0 || $playerID == $userID) {
 			$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.sql_forumIDPad(2).'-'.sql_forumIDPad($forumID).'%"');
 			$forumIDs = array();
@@ -29,17 +29,17 @@
 			
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) echo 'Removed';
-				else header('Location: '.SITEROOT.'/games/'.$gameID.'/?removed=1');
+				else header('Location: /games/'.$gameID.'/?removed=1');
 			} elseif (isset($_POST['leave'])) {
 				if (isset($_POST['modal'])) echo 'Left';
-				else header('Location: '.SITEROOT.'/games/my');
+				else header('Location: /games/my');
 			}
 		} else {
 			if (isset($_POST['modal'])) echo 'Invalid player';
-			else header('Location: '.SITEROOT.'/games/'.$gameID.'/?notInGame=1');
+			else header('Location: /games/'.$gameID.'/?notInGame=1');
 		}
 	} else {
 		if (isset($_POST['modal'])) echo 'No submit';
-		else header('Location: '.SITEROOT.'/games/');
+		else header('Location: /games/');
 	}
 ?>

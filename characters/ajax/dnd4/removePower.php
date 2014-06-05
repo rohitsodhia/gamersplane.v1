@@ -1,12 +1,15 @@
 <?
 	if (checkLogin(0)) {
-		$userID = intval($_SESSION['userID']);
+		require_once(FILEROOT.'/includes/packages/dnd4Character.package.php');
+
+		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		if (allowCharEdit($characterID, $userID)) {
-			$powerID = intval($_POST['powerID']);
-			$removePower = $mysql->query("DELETE FROM dnd4_powers WHERE characterID = $characterID AND powerID = $powerID");
-			if ($removePower->rowCount()) echo 1;
-			else echo 0;
-		} else echo 0;
+		if ($character = new dnd4Character($characterID)) {
+			$character->load();
+			$charPermissions = $character->checkPermissions($userID);
+			if ($charPermissions == 'edit') {
+				$character->removePower($_POST['powerID']);
+			}
+		}
 	}
 ?>

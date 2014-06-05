@@ -122,15 +122,11 @@ function updateCombatBonuses() {
 
 function fm_rollDice(dice, rerollAces) {
 	rerollAces = typeof rerollAces == 'undefined' ? 0 : rerollAces;
-	$.post('/tools/ajax/dice', { dice: dice, rerollAces: rerollAces }, function (data) {
+	$.post('/tools/process/dice', { rollType: 'basic', dice: dice, rerollAces: rerollAces }, function (data) {
 		$('#fm_diceRoller .newestRolls').removeClass('newestRolls');
 		var first = true;
 		var classes = '';
-		$('<div>').addClass('newestRolls').prependTo('#fm_diceRoller .floatRight');
-		$(data).find('roll').each(function() {
-			if ($(this).find('total').text() != '') $('#fm_diceRoller .newestRolls').html($(this).find('dice').text() + '<br>' + $(this).find('indivRolls').text() + ' = ' + $(this).find('total').text());
-			else $('<p class="error">Sorry, there was some error. We don\'t let you roll d1s... the answer\'s 1 anyway, and you need to roll a positive number of dice.</p>').appendTo('.newestRolls');
-		});
+		$(data).addClass('newestRolls').prependTo('#fm_diceRoller .floatRight');
 		$('#fm_diceRoller .newestRolls').slideDown(400);
 	});
 }

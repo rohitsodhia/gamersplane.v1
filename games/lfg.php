@@ -5,7 +5,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Looking for Game</h1>
 		
-		<form id="myLFG" method="post" action="<?=SITEROOT?>/games/process/lfg">
+		<form id="myLFG" method="post" action="/games/process/lfg">
 			<p>Looking for a game, but no one's running? Maybe the ones running right now just aren't right? Check off the games you want to play in,<!-- and list details or custom games you're interested in below,--> and GMs can make a game that matches!</p>
 			<div id="systems" class="clearfix">
 <?

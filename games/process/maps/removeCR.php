@@ -5,7 +5,7 @@
 	$mapID = intval($pathOptions[3]);
 	$whichCR = $pathOptions[4];
 	$mapInfo = $mysql->query("SELECT maps.rows, maps.columns, maps.bgData FROM maps INNER JOIN gms ON maps.gameID = gms.gameID WHERE gms.userID = $userID AND maps.mapID = $mapID");
-	if (!$mapInfo->rowCount()) { header('Location: '.SITEROOT.'/tools/maps'); exit; }
+	if (!$mapInfo->rowCount()) { header('Location: /tools/maps'); exit; }
 	list($rows, $columns, $bgData) = $mapInfo->fetch(PDO::FETCH_NUM);
 	
 	if (preg_match('/\d{1,2}/', $whichCR)) $type = 'r';
@@ -29,5 +29,5 @@
 	
 	$mysql->query('UPDATE maps SET '.(($type == 'c')?"columns = columns":"rows = rows")." - 1, bgData = '".implode(';', $bgData)."' where mapID = $mapID");
 	
-	header('Location: '.SITEROOT.'/tools/maps/'.$mapID);
+	header('Location: /tools/maps/'.$mapID);
 ?>

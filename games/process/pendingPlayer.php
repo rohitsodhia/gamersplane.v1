@@ -11,7 +11,7 @@
 		
 		if ($sanityCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo -1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID.'/?approveError=1');
+			else header('Location: /games/'.$gameID.'/?approveError=1');
 		} else {
 			$groupID = $sanityCheck->fetchColumn();
 			if ($pendingAction == 'approve') {
@@ -23,10 +23,10 @@
 			addGameHistory($gameID, ($pendingAction == 'approve'?'playerApproved':'playerRejected'), $userID, 'NOW()', 'user', $playerID);
 			
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID);
+			else header('Location: /games/'.$gameID);
 		}
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/games/'.($gameID?$gameID:''));
+		else header('Location: /games/'.($gameID?$gameID:''));
 	}
 ?>

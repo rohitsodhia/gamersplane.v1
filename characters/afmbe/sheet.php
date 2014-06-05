@@ -1,43 +1,6 @@
-<?
-	$loggedIn = checkLogin();
-	$userID = intval($_SESSION['userID']);
-	$characterID = intval($pathOptions[1]);
-	$noChar = TRUE;
-	$system = 'afmbe';
-	$charInfo = getCharInfo($characterID, $system);
-	if ($charInfo) {
-		if ($viewerStatus = allowCharView($characterID, $userID)) {
-			$noChar = FALSE;
-
-			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
-		}
-	}
-?>
-<? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Character Sheet</h1>
-<? if (!$noChar) { ?>
-		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
-			<div>
-<?		if ($viewerStatus == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
-<?		} else { ?>
-				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
-<?		} ?>
-			</div>
-			<div class="wing ulWing"></div>
-			<div class="wing urWing"></div>
-		</div></div>
-<? } ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
-		
-<? if ($noChar) { ?>
-		<h2 id="noCharFound">No Character Found</h2>
-<? } else { ?>
-		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-
-		<div id="nameDiv" class="tr">
+		<div id="nameDiv" class="tr clearfix">
 			<label>Name:</label>
-			<div><?=$charInfo['name']?></div>
+			<div><?=$this->getName()?></div>
 		</div>
 		
 		<div class="clearfix">
@@ -45,31 +8,31 @@
 				<h2 class="headerbar hbDark">Primary Attributes</h2>
 				<div class="hbdMargined clearfix">
 					<div class="twoCol leftCol">
-						<div class="tr">
+						<div class="tr clearfix">
 							<label>Strength</label>
-							<?=$charInfo['str']?>
+							<?=$this->getStat('str')?>
 						</div>
-						<div class="tr">
+						<div class="tr clearfix">
 							<label>Dexterity</label>
-							<?=$charInfo['dex']?>
+							<?=$this->getStat('dex')?>
 						</div>
-						<div class="tr">
+						<div class="tr clearfix">
 							<label>Constitution</label>
-							<?=$charInfo['con']?>
+							<?=$this->getStat('con')?>
 						</div>
 					</div>
 					<div class="twoCol">
-						<div class="tr">
+						<div class="tr clearfix">
 							<label>Intelligence</label>
-							<?=$charInfo['int']?>
+							<?=$this->getStat('int')?>
 						</div>
-						<div class="tr">
+						<div class="tr clearfix">
 							<label>Perception</label>
-							<?=$charInfo['per']?>
+							<?=$this->getStat('per')?>
 						</div>
-						<div class="tr">
+						<div class="tr clearfix">
 							<label>Willpower</label>
-							<?=$charInfo['wil']?>
+							<?=$this->getStat('wil')?>
 						</div>
 					</div>
 				</div>
@@ -78,21 +41,21 @@
 			<div id="secondaryStatsCol">
 				<h2 class="headerbar hbDark">Secondary Attributes</h2>
 				<div class="hbdMargined clearfix">
-					<div class="tr">
+					<div class="tr clearfix">
 						<label>Life Points</label>
-						<?=$charInfo['lp']?>
+						<?=$this->getStat('lp')?>
 					</div>
-					<div class="tr">
+					<div class="tr clearfix">
 						<label>Endurance Points</label>
-						<?=$charInfo['end']?>
+						<?=$this->getStat('end')?>
 					</div>
-					<div class="tr">
+					<div class="tr clearfix">
 						<label>Speed</label>
-						<?=$charInfo['spd']?>
+						<?=$this->getStat('spd')?>
 					</div>
-					<div class="tr">
+					<div class="tr clearfix">
 						<label>Essence Pool</label>
-						<?=$charInfo['ess']?>
+						<?=$this->getStat('ess')?>
 					</div>
 				</div>
 			</div>
@@ -101,42 +64,40 @@
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Qualities</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['qualities'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getQualities())?></div>
 			</div>
 			
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Drawbacks</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['drawbacks'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getDrawbacks())?></div>
 			</div>
 		</div>
 		
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['skills'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getSkills())?></div>
 			</div>
 			
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Powers</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['powers'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getPowers())?></div>
 			</div>
 		</div>
 		
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Weapons</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['weapons'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
 			</div>
 			
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Posessions</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['items'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getPosessions())?></div>
 			</div>
 		</div>
 		
 		<div id="charInfoDiv" class="clearfix">
-			<h2 class="headerbar hbDark">Character Info/Notes</h2>
-			<div class="hbdMargined"><?=printReady($charInfo['notes'])?></div>
+			<h2 class="headerbar hbDark">Character Notes</h2>
+			<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
 		</div>
-<? } ?>
-<? require_once(FILEROOT.'/footer.php'); ?>

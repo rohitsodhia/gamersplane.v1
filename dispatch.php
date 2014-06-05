@@ -4,18 +4,17 @@
 	error_reporting(E_ALL & ~E_NOTICE);
 //	error_reporting(E_ALL);
 	
-	if ($_SERVER['SERVER_NAME'] == 'gamersplane.local') $reqPath = $_SERVER['REDIRECT_URL'];
-	else $reqPath = $_SERVER['SCRIPT_URL'];
+	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 
 //	echo $reqPath;
 	
 	if (substr($reqPath, -1) == '/') $reqPath = substr($reqPath, 0, -1);
 	$reqPathParts = explode('/', $reqPath);
-	$pathOptions = array_slice(explode('/', $reqPath), sizeof(explode('/', SITEROOT)));
+	$pathOptions = array_slice(explode('/', $reqPath), 1);
 	$pathAction = $pathOptions[0];
 
 	$pathOptions = array_slice($pathOptions, 1);
-	
+
 //	$reqPath .= strlen($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:'';
 	if (!in_array('ajax', $reqPathParts)) {
 		if (($_SESSION['currentURL'] != $reqPath || $_SESSION['lastURL'] == '' || $_SESSION['currentURL'] == '') && !in_array($pathAction, array('login'))) {
@@ -31,14 +30,17 @@
 //	print_r($_SESSION);
 
 	$requireLoc = '';
+	$isAJAX = FALSE;
 	
 	if ($pathAction == 'facebook') header('Location: http://www.facebook.com/pages/Gamers-Plane/245904792107862');
 	else {
 		$moddedPath = $pathAction?$pathAction:'';
 		foreach ($pathOptions as $pathOption) {
+			if ($pathOption == 'ajax') $isAJAX = TRUE;
+
 			$moddedPath .= '/';
 			if (is_numeric($pathOption)) $moddedPath .= '(###)';
-			elseif ($systems->getSystemID($pathOption)) $moddedPath .= '(system)';
+			elseif (!$isAJAX && $systems->getSystemID($pathOption)) $moddedPath .= '(system)';
 			else $moddedPath .= $pathOption;
 		}
 //		echo $moddedPath;

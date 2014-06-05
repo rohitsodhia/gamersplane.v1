@@ -1,124 +1,103 @@
-<?
-	$loggedIn = checkLogin();
-	$userID = intval($_SESSION['userID']);
-	$characterID = intval($pathOptions[1]);
-	$noChar = TRUE;
-	$system = 'gurps';
-	$charInfo = getCharInfo($characterID, $system);
-	if ($charInfo) {
-		if ($viewerStatus = allowCharView($characterID, $userID)) {
-			$noChar = FALSE;
-
-			if ($viewerStatus == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
-		}
-	}
-?>
-<? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Character Sheet</h1>
-<? if (!$noChar) { ?>
-		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
-			<div>
-<?		if ($viewerStatus == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
-<?		} else { ?>
-				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
-<?		} ?>
-			</div>
-			<div class="wing ulWing"></div>
-			<div class="wing urWing"></div>
-		</div></div>
-<? } ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
-		
-<? if ($noChar) { ?>
-		<h2 id="noCharFound">No Character Found</h2>
-<? } else { ?>
-		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
-
-		<div id="nameDiv" class="tr">
+		<div id="nameDiv" class="tr clearfix">
 			<label>Name:</label>
-			<div><?=printReady($charInfo['name'])?></div>
+			<div><?=$this->getName()?></div>
 		</div>
 		
 		<div class="clearfix">
-			<div id="stats">
+			<div id="stats" class="twoCol floatLeft">
 				<div class="statCol">
-					<label class="statRow" for="st">ST</label>
-					<label class="statRow" for="dx">DX</label>
-					<label class="statRow" for="iq">IQ</label>
-					<label class="statRow" for="ht">HT</label>
+					<div class="tr">
+						<label>ST</label>
+						<div><?=$this->getStat('st')?></div>
+					</div>
+					<div class="tr">
+						<label>DX</label>
+						<div><?=$this->getStat('dx')?></div>
+					</div>
+					<div class="tr">
+						<label>IQ</label>
+						<div><?=$this->getStat('iq')?></div>
+					</div>
+					<div class="tr">
+						<label>HT</label>
+						<div><?=$this->getStat('ht')?></div>
+					</div>
 				</div>
 				<div class="statCol">
-					<div class="statRow"><?=$charInfo['st']?></div>
-					<div class="statRow"><?=$charInfo['dx']?></div>
-					<div class="statRow"><?=$charInfo['iq']?></div>
-					<div class="statRow"><?=$charInfo['ht']?></div>
+					<div class="tr">
+						<label>HP</label>
+						<div><?=$this->getStat('hp')?></div>
+					</div>
+					<div class="tr">
+						<label>Will</label>
+						<div><?=$this->getStat('will')?></div>
+					</div>
+					<div class="tr">
+						<label>Per</label>
+						<div><?=$this->getStat('per')?></div>
+					</div>
+					<div class="tr">
+						<label>FP</label>
+						<div><?=$this->getStat('fp')?></div>
+					</div>
 				</div>
-				<div class="statCol">
-					<label class="statRow" for="hp">HP</label>
-					<label class="statRow" for="will">Will</label>
-					<label class="statRow" for="per">Per</label>
-					<label class="statRow" for="fp">FP</label>
-				</div>
-				<div class="statCol">
-					<div class="statRow"><?=$charInfo['hp']?></div>
-					<div class="statRow"><?=$charInfo['will']?></div>
-					<div class="statRow"><?=$charInfo['per']?></div>
-					<div class="statRow"><?=$charInfo['fp']?></div>
-				</div>
-				<div class="statCol">
-					<div class="statRow"><?=$charInfo['hp_current']?></div>
+<!--				<div class="statCol">
+					<div><?=$charInfo['hp_current']?></div>
 					<div class="statRow blank">&nbsp;</div>
 					<div class="statRow blank">&nbsp;</div>
-					<div class="statRow"><?=$charInfo['fp_current']?></div>
-				</div>
+					<div><?=$charInfo['fp_current']?></div>
+				</div>-->
 				<div class="statCol largeCol">
-					<label class="statRow" for="dmg_thr">Damage (Thrown)</label>
-					<label class="statRow" for="dmg_sw">Damage (Swing)</label>
-					<label class="statRow" for="speed">Speed</label>
-					<label class="statRow" for="move">Move</label>
-				</div>
-				<div class="statCol">
-					<div class="statRow"><?=$charInfo['dmg_thr']?></div>
-					<div class="statRow"><?=$charInfo['dmg_sw']?></div>
-					<div class="statRow"><?=$charInfo['speed']?></div>
-					<div class="statRow"><?=$charInfo['move']?></div>
+					<div class="tr">
+						<label>Damage (Thrown)</label>
+						<div><?=$this->getDamage('thrown')?></div>
+					</div>
+					<div class="tr">
+						<label>Damage (Swing)</label>
+						<div><?=$this->getDamage('swing')?></div>
+					</div>
+					<div class="tr">
+						<label>Speed</label>
+						<div><?=$this->getSpeed('speed')?></div>
+					</div>
+					<div class="tr">
+						<label>Move</label>
+						<div><?=$this->getSpeed('move')?></div>
+					</div>
 				</div>
 			</div>
 			
-			<div id="langDiv" class="floatRight">
+			<div id="langDiv" class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Languages</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['languages'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getLanguages())?></div>
 			</div>
 		</div>
 
 		<div class="clearfix">
 			<div class="twoCol floatLeft">
 				<h2 class="headerbar hbDark">Advantages</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['advantages'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getAdvantages())?></div>
 			</div>
 			
 			<div class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Disadvantages</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['disadvantages'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getDisadvantages())?></div>
 			</div>
 		</div>
 		
 		<div class="clearfix">
 			<div class="twoCol floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['skills'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getSkills())?></div>
 			</div>
 			
 			<div class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbdMargined"><?=printReady($charInfo['items'])?></div>
+				<div class="hbdMargined"><?=printReady($this->getItems())?></div>
 			</div>
 		</div>
 		
 		<div id="notesDiv">
 			<h2 class="headerbar hbDark">Notes</h2>
-			<div class="hbdMargined"><?=printReady($charInfo['notes'])?></div>
+			<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
 		</div>
-<? } ?>
-<? require_once(FILEROOT.'/footer.php'); ?>

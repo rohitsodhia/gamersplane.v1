@@ -2,7 +2,7 @@
 	</div>
 </div></div>
 <footer<?=$fixedGameMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
-	<a href="<?=SITEROOT?>/contact">Contact Us</a>
+	<a href="/contact">Contact Us</a>
 </div></footer>
 <? if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
 <? } else { ?>
@@ -11,7 +11,6 @@
 
 <? require_once(FILEROOT.'/javascript/js.php'); ?>
 
-<? if (SITEROOT == '') { ?>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -21,6 +20,5 @@
   ga('create', 'UA-46259019-1', 'gamersplane.com');
   ga('send', 'pageview');
 </script>
-<? } ?>
 </body>
 </html>

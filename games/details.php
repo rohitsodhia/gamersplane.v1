@@ -5,7 +5,7 @@
 	$gameID = intval($pathOptions[0]);
 	
 	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.primaryGM IS NOT NULL isGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
-	if ($gameInfo->rowCount() == 0) { header('Location: '.SITEROOT.'/games/list'); exit; }
+	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 	$gameInfo['created'] = switchTimezone($_SESSION['timezone'], $gameInfo['created']);
 
@@ -31,7 +31,7 @@
 	$playerApprovedChars = $playerApprovedChars->fetchColumn();
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Game Details<?=$gameInfo['isGM']?' <a href="'.SITEROOT.'/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>
+		<h1 class="headerbar">Game Details<?=$gameInfo['isGM']?' <a href="/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>
 		
 <? if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
 		<div class="alertBox_error"><ul>
@@ -55,7 +55,7 @@
 			<div class="tr clearfix">
 				<label>Game Status</label>
 <? if ($isGM) { ?>
-				<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?=SITEROOT.'/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
+				<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?='/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
 <? } else { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?></div>
 <? } ?>
@@ -70,7 +70,7 @@
 			</div>
 			<div class="tr clearfix">
 				<label>Game Master</label>
-				<div><a href="<?=SITEROOT.'/user/'.$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+				<div><a href="<?='/user/'.$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
 			</div>
 			<div class="tr clearfix">
 				<label>Created</label>
@@ -115,7 +115,7 @@
 				$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$userID.' AND systemID = '.$gameInfo['systemID'].' AND ISNULL(gameID)');
 				if ($readyChars->rowCount()) {
 ?>
-					<form method="post" action="<?=SITEROOT?>/games/process/addCharacter" class="hbdMargined">
+					<form method="post" action="/games/process/addCharacter" class="hbdMargined">
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<select name="characterID">
 <?
@@ -143,7 +143,7 @@
 			<div class="rightCol">
 				<div id="applyToGame">
 					<h2 class="headerbar hbDark">Join Game</h2>
-					<form method="post" action="<?=SITEROOT?>/games/process/join" class="alignCenter">
+					<form method="post" action="/games/process/join" class="alignCenter">
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
 					</form>
@@ -171,13 +171,13 @@
 ?>
 					<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
 						<div class="playerInfo clearfix">
-							<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="'.SITEROOT.'/images/gm_icon.png">':''?></div>
+							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="/images/gm_icon.png">':''?></div>
 							<div class="actionLinks">
 <?		if ($isGM && !$playerInfo['primaryGM']) { ?>
-								<a href="<?=SITEROOT.'/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
-								<a href="<?=SITEROOT.'/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
+								<a href="<?='/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
+								<a href="<?='/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
 <?		} elseif ($playerInfo['userID'] == $userID && !$playerInfo['primaryGM']) { ?>
-								<a href="<?=SITEROOT.'/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
+								<a href="<?='/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
 <?		} ?>
 							</div>
 						</div>
@@ -185,15 +185,15 @@
 						<ul class="characters">
 <?			foreach ($characters[$playerInfo['userID']] as $character) { ?>
 							<li class="clearfix">
-								<div class="charLabel"><?=(($isGM || $userID == $playerInfo['userID'])?'<a href="'.SITEROOT.'/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
+								<div class="charLabel"><?=(($isGM || $userID == $playerInfo['userID'])?'<a href="/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
 								<div class="actionLinks">
 <?				if ($isGM && !$character['approved']) { ?>
-									<a href="<?=SITEROOT.'/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
+									<a href="<?='/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
 <?
 				}
 				if ($isGM || $character['userID'] == $userID) {
 ?>
-									<a href="<?=SITEROOT.'/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':'Remove'?> Character</a>
+									<a href="<?='/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':'Remove'?> Character</a>
 <?				} ?>
 								</div>
 							</li>
@@ -213,10 +213,10 @@
 				<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
 <?			foreach ($waitingPlayers as $playerInfo) { ?>
 					<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
-						<div class="player"><a href="<?=SITEROOT.'/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
+						<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
 						<div class="actionLinks">
-							<a href="<?=SITEROOT.'/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
-							<a href="<?=SITEROOT.'/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
+							<a href="<?='/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
+							<a href="<?='/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
 						</div>
 					</li>
 <?			} ?>
@@ -231,7 +231,7 @@
 		<div id="gameFeatures" class="clearfix">
 			<div id="maps" class="floatLeft">
 <?		if ($isGM) { ?>
-				<div class="clearfix hbdTopper"><a id="newMap" href="<?=SITEROOT?>/games/<?=$gameID?>/maps/new" class="fancyButton smallButton">New Map</a></div>
+				<div class="clearfix hbdTopper"><a id="newMap" href="/games/<?=$gameID?>/maps/new" class="fancyButton smallButton">New Map</a></div>
 <?		} ?>
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
 				<div class="hbdMargined">
@@ -251,12 +251,12 @@
 ?>
 					<div class="tr clearfix">
 						<div class="mapVisible<?=$mapInfo['visible']?'':' invisible'?>"></div>
-						<div class="mapLink"><a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
+						<div class="mapLink"><a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
 						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['cols']?></div>
 <?				if ($isGM) { ?>
 			 			<div class="mapActions">
-			 				<a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/edit/" class="iconLink edit">Edit</a>
-			 				<a href="<?=SITEROOT?>/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/delete/" class="iconLink delete">Delete</a>
+			 				<a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/edit/" class="iconLink edit">Edit</a>
+			 				<a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/delete/" class="iconLink delete">Delete</a>
 			 			</div>
 <?				} else { ?>
 <?				} ?>
@@ -269,7 +269,7 @@
 			</div>
 			<div id="decks" class="floatRight">
 <?		if ($isGM) { ?>
-				<div class="clearfix hbdTopper"><a id="newDeck" href="<?=SITEROOT?>/games/<?=$gameID?>/decks/new" class="fancyButton smallButton">New Deck</a></div>
+				<div class="clearfix hbdTopper"><a id="newDeck" href="/games/<?=$gameID?>/decks/new" class="fancyButton smallButton">New Deck</a></div>
 <?		} ?>
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Decks</h2>
 				<div class="hbdMargined">
@@ -302,9 +302,9 @@
 						<div class="deckRemaining"><?=$cardsRemaining?></div>
 <?				if ($isGM) { ?>
 						<div class="deckActions">
-							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/edit/" title="Edit Deck" class="iconLink edit">Edit Deck</a>
-							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/shuffle/" title="Shuffle Deck" class="iconLink shuffle">Shuffle Deck</a>
-							<a href="<?=SITEROOT?>/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/delete/" title="Delete Deck" class="iconLink delete">Delete Deck</a>
+							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/edit/" title="Edit Deck" class="iconLink edit">Edit Deck</a>
+							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/shuffle/" title="Shuffle Deck" class="iconLink shuffle">Shuffle Deck</a>
+							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/delete/" title="Delete Deck" class="iconLink delete">Delete Deck</a>
 						</div>
 <?				} ?>
 					</div>
@@ -317,7 +317,7 @@
 			</div>
 		</div>
 <?
-	} else echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="'.SITEROOT.'/login" class="loginLink">Login</a> or <a href="'.SITEROOT.'/register" class="last">Register</a> to join!</div>'."\n";
+	} else echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="/login" class="loginLink">Login</a> or <a href="/register" class="last">Register</a> to join!</div>'."\n";
 
 ?>
 <? require_once(FILEROOT.'/footer.php'); ?>

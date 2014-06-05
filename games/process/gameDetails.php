@@ -32,8 +32,8 @@
 		if (sizeof($_SESSION['errors'])) {
 			$_SESSION['errorVals'] = $_POST;
 			$_SESSION['errorTime'] = time() + 300;
-			if (isset($_POST['save'])) header('Location: '.SITEROOT.'/games/'.$gameID.'/edit?failed=1');
-			else header('Location: '.SITEROOT.'/games/new?failed=1');
+			if (isset($_POST['save'])) header('Location: /games/'.$gameID.'/edit?failed=1');
+			else header('Location: /games/new?failed=1');
 		} elseif (isset($_POST['save'])) {
 			$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, charsPerPlayer = :charsPerPlayer, description = :description, charGenInfo = :charGenInfo WHERE gameID = :gameID');
 			$updateGame->bindValue(':title', $details['title']);
@@ -50,7 +50,7 @@
 			$updateForums->execute();
 			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'editedGame')");
 			
-			header('Location: '.SITEROOT.'/games/'.$gameID);
+			header('Location: /games/'.$gameID);
 		} else {
 			$details['gmID'] = $userID;
 			$details['created'] = date('Y-m-d H:i:s');
@@ -108,7 +108,7 @@
 			ob_end_clean();
 			mail('Gamers Plane <contact@gamersplane.com>', "New {$systemNames[$system]} Game: {$details['title']}", $email, 'Content-type: text/html;\r\nFrom: Gamers Plane <contact@gamersplane.com>;\r\nBcc: '.substr($recips, 0, -2));
 			
-			header('Location: '.SITEROOT.'/games/my/');
+			header('Location: /games/my/');
 		}
-	} else header('Location: '.SITEROOT.'/games/my/');
+	} else header('Location: /games/my/');
 ?>

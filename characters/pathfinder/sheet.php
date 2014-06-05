@@ -20,7 +20,7 @@
 		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
 			<div>
 <?		if ($viewerStatus == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+				<a id="editCharacter" href="/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
 <?		} else { ?>
 				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
 <?		} ?>
@@ -29,7 +29,7 @@
 			<div class="wing urWing"></div>
 		</div></div>
 <? } ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
+		<div id="charSheetLogo"><img src="/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
@@ -275,7 +275,7 @@
 ?>
 					<div id="feat_<?=$featInfo['featID']?>" class="feat tr clearfix">
 						<span class="feat_name"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
-						<a href="<?=SITEROOT?>/characters/pathfinder/<?=$characterID?>/featNotes/<?=$feat['featID']?>" class="feat_notesLink">Notes</a>
+						<a href="/characters/pathfinder/<?=$characterID?>/featNotes/<?=$feat['featID']?>" class="feat_notesLink">Notes</a>
 					</div>
 <?
 	} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";

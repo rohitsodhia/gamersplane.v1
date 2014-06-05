@@ -17,7 +17,7 @@
 		<div id="formWrapper">
 			<h1 class="headerbar">Login</h1>
 			
-			<form method="post" action="<?=SITEROOT?>/login/process/login" class="hbMargined">
+			<form method="post" action="/login/process/login" class="hbMargined">
 				<div class="tr">
 					<label class="textLabel">Username</label>
 					<div class="textfield"><input id="username" type="text" name="username" maxlength="24" tabindex="3"></div>
@@ -30,6 +30,6 @@
 			</form>
 		</div>
 		
-		<p><a id="register" href="<?=SITEROOT?>/register">Don't have an account? Register for free!</a></a>
-		<p><a id="requestReset" href="<?=SITEROOT?>/login/requestReset">Forgot your password?</a></a>
+		<p><a id="register" href="/register">Don't have an account? Register for free!</a></a>
+		<p><a id="requestReset" href="/login/requestReset">Forgot your password?</a></a>
 <? require_once(FILEROOT.'/footer.php'); ?>

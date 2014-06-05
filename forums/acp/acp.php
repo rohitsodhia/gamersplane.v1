@@ -10,7 +10,7 @@
 	else $section = 'details';
 
 	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	if (!$isAdmin->rowCount()) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!$isAdmin->rowCount()) { header('Location: /forums/'); exit; }
 	$forumInfo = $mysql->query("SELECT forumID, title, forumType, heritage FROM forums WHERE forumID = $forumID");
 	$forumInfo = $forumInfo->fetch();
 	$adminForums = $mysql->query("SELECT forumID, title, heritage, `order`, MAX(adminForum) adminForum FROM (SELECT p.forumID, p.title, p.heritage, p.order, 0 adminForum FROM forumAdmins fa, forums f, forums p WHERE f.heritage LIKE CONCAT(p.heritage, '%') AND fa.forumID = f.forumID AND fa.userID = $userID UNION SELECT c.forumID, c.title, c.heritage, c.order, 1 adminForum FROM forumAdmins fa, forums f, forums c WHERE c.heritage LIKE CONCAT(f.heritage, '%') AND fa.forumID = f.forumID AND fa.userID = $userID) adminForums GROUP BY forumID ORDER BY LENGTH(heritage), `order`");
@@ -24,7 +24,7 @@
 		<h1 class="headerbar">Forum ACP - <?=$forumInfo['title']?></h1>
 		
 		<div id="topLinks">
-			<a href="<?=SITEROOT.'/forums/'.($forumID?$forumID:'')?>">Return to forum</a>
+			<a href="<?='/forums/'.($forumID?$forumID:'')?>">Return to forum</a>
 		</div>
 		
 		<div class="sideWidget left"><ul id="forums">
@@ -36,7 +36,7 @@
 			if ($forum['info']['adminForum']) $classes[] = 'adminLink';
 			if ($forum['info']['forumID'] == $forumID) $classes[] = 'currentForum';
 			echo str_repeat("\t", $tabs)."<li".(sizeof($classes)?' class="'.implode(' ', $classes).'"':'').">\n";
-			if ($forum['info']['adminForum']) echo str_repeat("\t", $tabs + 1)."<a href=\"".SITEROOT."/forums/acp/{$forum['info']['forumID']}\">{$forum['info']['title']}</a>\n";
+			if ($forum['info']['adminForum']) echo str_repeat("\t", $tabs + 1)."<a href=\"/forums/acp/{$forum['info']['forumID']}\">{$forum['info']['title']}</a>\n";
 			else echo str_repeat("\t", $tabs + 1)."<div>{$forum['info']['title']}</div>\n";
 			if (sizeof($forum['children'])) {
 				echo str_repeat("\t", $tabs + 1)."<ul>\n";
@@ -75,7 +75,7 @@
 			</h2>
 			
 <?	if ($forumID != 0) { ?>
-			<form id="details" method="post" action="<?=SITEROOT?>/forums/process/acp/edit" class="acpContent hbdMargined section_details<?=$pathOptions[2] == 'details' || !isset($pathOptions[2])?' current':''?>">
+			<form id="details" method="post" action="/forums/process/acp/edit" class="acpContent hbdMargined section_details<?=$pathOptions[2] == 'details' || !isset($pathOptions[2])?' current':''?>">
 				<div class="tr">
 					<label class="textLabel">Forum title:</label>
 					<input type="text" name="title" maxlength="50" value="<?=printReady($forumInfo['title'])?>"<?=(in_array($forumID, array(1, 2, 3)) || $parentID == 2)?' disabled="disabled"':''?>>
@@ -91,7 +91,7 @@
 			</form>
 <?	} ?>
 			
-			<form id="subforums" method="post" action="<?=SITEROOT?>/forums/process/acp/subforums" class="acpContent hbdMargined section_subforums<?=$forumID == 0 || $pathOptions[2] == 'subforums'?' current':''?>">
+			<form id="subforums" method="post" action="/forums/process/acp/subforums" class="acpContent hbdMargined section_subforums<?=$forumID == 0 || $pathOptions[2] == 'subforums'?' current':''?>">
 				<input type="hidden" name="forumID" value="<?=$forumID?>">
 				<div id="forumList">
 <?
@@ -105,9 +105,9 @@
 					<div class="tr">
 						<div class="buttonDiv"><?=($forumCount > 1)?'<input type="image" name="moveUp_'.$forumInfo['forumID'].'" alt="Up" title="Up" class="sprite upArrow">':'&nbsp;'?></div>
 						<div class="buttonDiv"><?=($forumCount < $numForums && $numForums > 1)?'<input type="image" name="moveDown_'.$forumInfo['forumID'].'" alt="Down" title="Down" class="sprite downArrow">':'&nbsp;'?></div>
-						<div class="buttonDiv"><a href="<?=SITEROOT?>/forums/acp/<?=$forumInfo['forumID']?>" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
-						<div class="buttonDiv"><a href="<?=SITEROOT?>/forums/acp/<?=$forumInfo['forumID']?>/permissions" alt="Permissions" title="Permissions" class="sprite permissions"></a></div>
-						<div class="buttonDiv"><?=(!in_array($forumInfo['forumID'], array(1, 2, 3)) && $forumInfo['parentID'] != 2)?'<a href="'.SITEROOT.'/forums/acp/'.$forumInfo['forumID'].'/deleteForum/" alt="Delete" title="Delete" class="sprite cross"></a>':'&nbsp;'?></div>
+						<div class="buttonDiv"><a href="/forums/acp/<?=$forumInfo['forumID']?>" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
+						<div class="buttonDiv"><a href="/forums/acp/<?=$forumInfo['forumID']?>/permissions" alt="Permissions" title="Permissions" class="sprite permissions"></a></div>
+						<div class="buttonDiv"><?=(!in_array($forumInfo['forumID'], array(1, 2, 3)) && $forumInfo['parentID'] != 2)?'<a href="/forums/acp/'.$forumInfo['forumID'].'/deleteForum/" alt="Delete" title="Delete" class="sprite cross"></a>':'&nbsp;'?></div>
 						<div class="forumNames"> (<?=strtoupper($forumInfo['forumType'])?>) <?=$forumInfo['title']?></div>
 					</div>
 <?
@@ -128,7 +128,7 @@
 			</form>
 
 <?	if ($forumID != 0) { ?>
-			<form id="permissions" method="post" action="<?=SITEROOT?>/forums/process/acp/permissions" class="acpContent hbdMargined section_permissions<?=$section == 'permissions'?' current':''?>">
+			<form id="permissions" method="post" action="/forums/process/acp/permissions" class="acpContent hbdMargined section_permissions<?=$section == 'permissions'?' current':''?>">
 <?
 	if (isset($_GET['edit']) && (($_GET['edit'] == 'general' && !$gameInfo) || (($_GET['edit'] == 'group' || $_GET['edit'] == 'user') && isset($_GET['id']))) || isset($_GET['new']) && in_array($_GET['new'], array('group', 'user'))) {
 		$pType = isset($_GET['edit'])?$_GET['edit']:$_GET['new'];
@@ -150,7 +150,7 @@
 				</div>
 <?			} ?>
 				
-				<form id="newPermission" method="post" action="<?=SITEROOT?>/forums/process/acp/permissions">
+				<form id="newPermission" method="post" action="/forums/process/acp/permissions">
 					<input type="hidden" name="forumID" value="<?=$forumID?>">
 					<input type="hidden" name="type" value="<?=$pType?>">
 <?
@@ -203,7 +203,7 @@
 		permissionSet('group', $permission['name'], $permission, $forumID, $permission['groupID'], $permission['gameGroup']);
 	} } else echo "\t\t\t\t\t<div class=\"tr\">No group level permissions for this forum.</div>\n";
 ?>
-					<div class="tr"><a href="<?=SITEROOT?>/forums/acp/<?=$forumID?>/newPermission/group" class="newPermission">Add Group Permission</a></div>
+					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/group" class="newPermission">Add Group Permission</a></div>
 				</div>
 				
 				<div id="permissions_users">
@@ -215,7 +215,7 @@
 		permissionSet('user', $permission['username'], $permission, $forumID, $permission['userID']);
 	} } else echo "\t\t\t\t\t<div class=\"tr\">No user level permissions for this forum.</div>\n";
 ?>
-					<div class="tr"><a href="<?=SITEROOT?>/forums/acp/<?=$forumID?>/newPermission/user" class="newPermission">Add User Permission</a></div>
+					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/user" class="newPermission">Add User Permission</a></div>
 				</div>
 				<input type="hidden" name="forumID" value="<?=$forumID?>">
 				<div class="tr alignCenter"><button type="submit" name="save" class="fancyButton" value="<?=$updateType?>">Save</button></div>

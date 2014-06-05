@@ -18,7 +18,7 @@
 		<div class="alertBox_error">You left <?=($errors == 1)?'a field':'fields'?> blank! Maybe you just forgot to pick a browser?</div>
 <? } ?>
 		<div id="jsError" class="alertBox_error hideDiv">Something went wrong.<br>Did you fill out all the fields and enter a valid email?</div>
-		<form method="post" action="<?=SITEROOT?>/contact/process/">
+		<form method="post" action="/contact/process/">
 			<p>All fields except "username" are required.</p>
 			<div class="tr">
 				<label>Name:</label>

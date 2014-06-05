@@ -11,7 +11,7 @@
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Feat Notes';
 		if ($character = new $charClass($characterID)) {
-			$charPermissions = $character->checkPermissions();
+			$charPermissions = $character->checkPermissions($userID);
 			if ($charPermissions) {
 				$featInfo = $mysql->query("SELECT fl.name, f.notes FROM ".SYSTEM."_feats f INNER JOIN featsList fl USING (featID) WHERE f.featID = $featID AND f.characterID = $characterID");
 				if ($featInfo->rowCount()) $featInfo = $featInfo->fetch();

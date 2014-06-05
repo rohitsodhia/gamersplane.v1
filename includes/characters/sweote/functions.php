@@ -42,7 +42,7 @@
 							<span class="skill_stat textLabel lrBuffer alignCenter"><?=ucwords($stats[$skillInfo['stat']])?></span>
 							<input type="text" name="skills[<?=$skillInfo['skillID']?>][rank]" value="<?=$skillInfo['rank']?>" class="skill_rank shortNum lrBuffer">
 							<span class="skill_career shortNum lrBuffer alignCenter"><input type="checkbox" name="skills[<?=$skillInfo['skillID']?>][career]" value="<?=$skillInfo['career']?>"></span>
-							<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="<?=SITEROOT?>/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove lrBuffer">
+							<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove lrBuffer">
 						</div>
 <?
 		}
@@ -53,8 +53,8 @@
 ?>
 						<div id="talent_<?=$talentInfo['talentID']?>" class="talent tr clearfix">
 							<span class="talent_name textLabel"><?=mb_convert_case($talentInfo['name'], MB_CASE_TITLE)?></span>
-							<a href="<?=SITEROOT?>/characters/sweote/<?=$characterID?>/editTalentNotes/<?=$talentInfo['talentID']?>" id="talentNotesLink_<?=$talentInfo['talentID']?>" class="talent_notesLink">Notes</a>
-							<input type="image" name="talentRemove_<?=$talentInfo['talentID']?>" src="<?=SITEROOT?>/images/cross.png" value="<?=$talentInfo['talentID']?>" class="talent_remove lrBuffer">
+							<a href="/characters/sweote/<?=$characterID?>/editTalentNotes/<?=$talentInfo['talentID']?>" id="talentNotesLink_<?=$talentInfo['talentID']?>" class="talent_notesLink">Notes</a>
+							<input type="image" name="talentRemove_<?=$talentInfo['talentID']?>" src="/images/cross.png" value="<?=$talentInfo['talentID']?>" class="talent_remove lrBuffer">
 						</div>
 <?
 		}

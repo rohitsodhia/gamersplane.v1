@@ -12,7 +12,7 @@
 		$deckInfo->execute(array(':short' => $type));
 		if ($deckInfo->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo -1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID.'/decks?new=1&invalidDeck=1');
+			else header('Location: /games/'.$gameID.'/decks?new=1&invalidDeck=1');
 		} else {
 			$deckInfo = $deckInfo->fetch();
 			$deck = array();
@@ -36,7 +36,7 @@
 			}
 			
 			if (isset($_POST['modal'])) echo 1;
-			else header('Location: '.SITEROOT.'/games/'.$gameID.'/?success=createDeck');
+			else header('Location: /games/'.$gameID.'/?success=createDeck');
 		}
 	} elseif (isset($_POST['edit']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
@@ -78,6 +78,6 @@
 		echo 1;
 	} else {
 		if (isset($_POST['modal'])) echo 0;
-		else header('Location: '.SITEROOT.'/games/');
+		else header('Location: /games/');
 	}
 ?>

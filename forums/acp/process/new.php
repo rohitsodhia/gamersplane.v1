@@ -14,7 +14,7 @@
 	$heritage = explode('-', $heritage);
 	foreach ($heritage as $key => $hForumID) $heritage[$key] = intval($hForumID);
 	
-	if (!(in_array(0, $adminForums) || array_intersect($adminForums, $heritage))) { header('Location: '.SITEROOT.'/forums/'); exit; }
+	if (!(in_array(0, $adminForums) || array_intersect($adminForums, $heritage))) { header('Location: /forums/'); exit; }
 	
 	if (isset($_POST['addForum'])) {
 		$numRows = $mysql->query('SELECT COUNT(forumID) FROM forums WHERE parentID = '.$forumID);
@@ -24,6 +24,6 @@
 		$mysql->query('UPDATE forums SET heritage = "'.$oHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
 		
-		header('Location: '.SITEROOT.'/forums/acp/'.$forumID);
-	} else header('Location: '.SITEROOT.'/forums/');
+		header('Location: /forums/acp/'.$forumID);
+	} else header('Location: /forums/');
 ?>

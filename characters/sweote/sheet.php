@@ -20,7 +20,7 @@
 		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
 			<div>
 <?		if ($viewerStatus == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+				<a id="editCharacter" href="/characters/<?=$system?>/<?=$characterID?>/edit" class="sprite pencil"></a>
 <?		} else { ?>
 				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
 <?		} ?>
@@ -29,7 +29,7 @@
 			<div class="wing urWing"></div>
 		</div></div>
 <? } ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=$system?>.png"></div>
+		<div id="charSheetLogo"><img src="/images/logos/<?=$system?>.png"></div>
 		
 <? if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
@@ -129,7 +129,7 @@
 						<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
 						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($stats[$skill['stat']])?></span>
 						<span class="skill_rank alignCenter shortNum lrBuffer"><?=$skill['rank']?></span>
-						<span class="skill_career alignCenter shortNum lrBuffer"><?=$skill['career']?'<img src="'.SITEROOT.'/images/check.png">':''?></span>
+						<span class="skill_career alignCenter shortNum lrBuffer"><?=$skill['career']?'<img src="/images/check.png">':''?></span>
 					</div>
 <?	} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n"; ?>
 				</div>
@@ -142,7 +142,7 @@
 	if ($talents->rowCount()) { foreach ($talents as $talent) { ?>
 					<div id="talent_<?=$talent['talentID']?>" class="talent tr clearfix">
 						<span class="talent_name"><?=mb_convert_case($talent['name'], MB_CASE_TITLE)?></span>
-						<a href="<?=SITEROOT?>/characters/sweote/<?=$characterID?>/talentNotes/<?=$talent['talentID']?>" class="talent_notesLink">Notes</a>
+						<a href="/characters/sweote/<?=$characterID?>/talentNotes/<?=$talent['talentID']?>" class="talent_notesLink">Notes</a>
 					</div>
 <?	} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no talents.</p>\n"; ?>
 				</div>

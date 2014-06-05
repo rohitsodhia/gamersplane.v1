@@ -13,7 +13,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Card Dealer</h1>
         
-		<form method="post" action="<?=SITEROOT?>/tools/process/cards" class="cardControls<?=isset($cardCount[0]) && $cardCount[0] == 0?' hideDiv':''?>">
+		<form method="post" action="/tools/process/cards" class="cardControls<?=isset($cardCount[0]) && $cardCount[0] == 0?' hideDiv':''?>">
 			<p class="deckName"><?=$_SESSION['deckName']?></p>
 			<p>Cards Left: <span class="cardsLeft"><?=$cardCount[1]?></span></p>
 			<div>Draw <input type="text" name="numCards" maxlength="2" value="<?=!isset($cardsDrawn)?'':(sizeof($cardsDrawn) > $cardCount[0]?$cardCount[0]:sizeof($cardsDrawn))?>" autocomplete="off" class="numCards"> Cards</div>

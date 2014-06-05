@@ -11,14 +11,14 @@
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Character Sheet';
 		if ($character = new $charClass($characterID)) {
 			$character->load();
-			$charPermissions = $character->checkPermissions();
+			$charPermissions = $character->checkPermissions($userID);
 			if ($charPermissions) {
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 				$addJSFiles[] = 'characters/_sheet.js';
 			}
 		}
-	} else { header('Location: '.SITEROOT.'/404/'); exit; }
+	} else { header('Location: /404/'); exit; }
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>
@@ -26,7 +26,7 @@
 		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
 			<div>
 <?		if ($charPermissions == 'edit') { ?>
-				<a id="editCharacter" href="<?=SITEROOT?>/characters/<?=SYSTEM?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+				<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit" class="sprite pencil"></a>
 <?		} else { ?>
 				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
 <?		} ?>
@@ -35,8 +35,8 @@
 			<div class="wing urWing"></div>
 		</div></div>
 <?	} ?>
-<?	if (file_exists(SITEROOT.'/images/logos/'.SYSTEM.'.png')) { ?>
-		<div id="charSheetLogo"><img src="<?=SITEROOT?>/images/logos/<?=SYSTEM?>.png"></div>
+<?	if (file_exists('/images/logos/'.SYSTEM.'.png')) { ?>
+		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>
 <?	} ?>
 		
 <?	if ($noChar) { ?>

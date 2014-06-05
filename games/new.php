@@ -8,7 +8,7 @@
 		$gameID = intval($pathOptions[0]);
 		$userID = intval($_SESSION['userID']);
 		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.systemID, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$userID);
-		if ($gameDetails->rowCount() == 0) { header('Location: '.SITEROOT.'/403'); exit; }
+		if ($gameDetails->rowCount() == 0) { header('Location: /403'); exit; }
 		else {
 			$gameDetails = $gameDetails->fetch();
 			foreach ($gameDetails as $key => $value) $$key = $value;
@@ -60,7 +60,7 @@
 			</div>
 <? } ?>
 			
-			<form method="post" action="<?=SITEROOT?>/games/process/new/">
+			<form method="post" action="/games/process/new/">
 				<div class="tr">
 					<label>Title</label>
 					<input type="text" name="title" value="<?=$title?>" maxlength="50">

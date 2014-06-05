@@ -434,6 +434,7 @@ div.prettySelect {
 	z-index: 5000;
 	display: inline-block;
 	vertical-align: middle;
+	text-align: left;
 }
 
 div.prettySelect.open {
@@ -609,7 +610,7 @@ div.prettySelect > div {
 .bodyHeader {
 	position: relative;
 	background: url('../images/bodyComponents/background.jpg') 0 0 repeat-x;
-	z-index: 10000;
+	z-index: 5000;
 }
 
 .bodyHeader, .bodyHeader .bodyContainer {
@@ -653,7 +654,7 @@ footer .bodyContainer {
 }
 
 #fixedMenu, #fixedMenu * {
-	z-index: 10000;
+	z-index: 5000;
 }
 
 #stupidIE {
@@ -1602,6 +1603,7 @@ border-bottom-left-radius: 0;}
 
 #fixedMenu button, #fixedMenu button:visited, #fixedMenu button:active, #fixedMenu .button, #fixedMenu .button:visited, #fixedMenu .button:active {
 	font-size: 1.6em;
+	font-weight: normal;
 	color: #FFF;
 	text-decoration: none !important;
 }

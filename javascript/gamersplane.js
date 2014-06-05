@@ -115,7 +115,7 @@ $(function() {
 		
 		$('#fm_roll').click(function (e) {
 			e.stopPropagation();
-			var dice = $('#customDiceRoll input').val();
+			var dice = $('#fm_customDiceRoll input').val();
 			if (dice != '') fm_rollDice(dice);
 			
 			e.preventDefault();
