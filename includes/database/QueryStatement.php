@@ -42,7 +42,7 @@ class QueryStatement extends \PDOStatement {
         }
     }
 
-    public function execute(array $input_parameters = null){
+    public function execute($input_parameters = null){
         try {
             if($input_parameters != null)
                 $this->values = array_merge($input_parameters, $this->values);

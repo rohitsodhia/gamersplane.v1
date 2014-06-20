@@ -55,19 +55,19 @@ label.leftLabel {
 	margin-left: 9px;
 }
 
-.editCharacter .labelTR {
+#page_characterSheet_edit .labelTR {
 	padding-bottom: 0;
 }
 
-.viewCharacter .labelTR {
+#page_characterSheet .labelTR {
 	padding: 0;
 }
 
-.viewCharacter .dataTR {
+#page_characterSheet .dataTR {
 	margin-bottom: 1em;
 }
 
-.viewCharacter .dataTR > div {
+#page_characterSheet .dataTR > div {
 	display: inline-block;
 }
 
@@ -84,7 +84,7 @@ label.leftLabel {
 	margin-left: 10px;
 }
 
-.viewCharacter #stats .col:last-of-type {
+#page_characterSheet #stats .col:last-of-type {
 	margin-left: 20px;
 }
 
@@ -92,7 +92,7 @@ label.leftLabel {
 	width: 80px;
 }
 
-.viewCharacter #stats .stat, .viewCharacter #defense .tr div {
+#page_characterSheet #stats .stat, #page_characterSheet #defense .tr div {
 	padding: 3px 0;
 	border: 1px solid #555;
 }
@@ -107,7 +107,7 @@ label.leftLabel {
 	margin-left: 120px;
 }
 
-.viewCharacter #defense {
+#page_characterSheet #defense {
 	margin-left: 110px;
 }
 
@@ -120,7 +120,7 @@ label.leftLabel {
 	text-align: center;
 }
 
-.editCharacter h2 a {
+#page_characterSheet_edit h2 a {
 	margin-left: 10px;
 	font-size: .6em;
 	font-weight: normal;
@@ -174,11 +174,11 @@ label.leftLabel {
 	display: inline-block;
 }
 
-.editCharacter .talent_name {
+#page_characterSheet_edit .talent_name {
 	width: 245px;
 }
 
-.viewCharacter .talent_name {
+#page_characterSheet .talent_name {
 	width: 295px;
 }
 
@@ -186,7 +186,7 @@ label.leftLabel {
 	font-size: .8em;
 }
 
-.viewCharacter .talent_notes {
+#page_characterSheet .talent_notes {
 	display: none;
 }
 
@@ -206,15 +206,15 @@ label.leftLabel {
 	border-top: none;
 }
 
-.viewCharacter #weapons span {
+#page_characterSheet #weapons span {
 	display: inline-block;
 }
 
-.viewCharacter .weapon .labelTR {
+#page_characterSheet .weapon .labelTR {
 	padding-top: .5em;
 }
 
-.viewCharacter .weapon .labelTR:first-child {
+#page_characterSheet .weapon .labelTR:first-child {
 	padding-top: 0;
 }
 
@@ -228,7 +228,7 @@ label.leftLabel {
 	text-align: left;
 }
 
-.weapon_secondRow label, .viewCharacter .weapon_secondRow span, .editCharacter .weapon_secondRow input {
+.weapon_secondRow label, #page_characterSheet .weapon_secondRow span, #page_characterSheet_edit .weapon_secondRow input {
 	text-align: center;
 	width: 104px;
 }

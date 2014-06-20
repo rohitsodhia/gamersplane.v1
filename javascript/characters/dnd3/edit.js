@@ -15,12 +15,20 @@ $(function() {
 				  'int': parseInt($('#intModifier').text()),
 				  'wis': parseInt($('#wisModifier').text()),
 				  'cha': parseInt($('#chaModifier').text()) }
+	var size = parseInt($('#size').val());
+	var bab = parseInt($('#bab').val());
 						
 	$('#size').blur(function() {
+		oldSize = size;
 		size = parseInt($(this).val());
+		change = size - oldSize;
 		$('.sizeVal').text(showSign(size));
-		updateAC();
-		updateCombatBonuses();
+		$('.addSize').text(function () {
+			newVal = parseInt($(this).text()) + change;
+			console.log(this.id + ':' + newVal);
+			if ($(this).hasClass('showSign')) return showSign(newVal);
+			else return newVal;
+		});
 	});
 	$('.stat').blur(function() {
 		modifier = Math.floor(($(this).val() - 10)/2);

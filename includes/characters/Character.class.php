@@ -9,7 +9,8 @@
 		protected $name;
 		protected $notes;
 
-		protected $mongoIgnore = array('save' => array('mongoIgnore'), 'load' => array('_id', 'system'));
+		protected $linkedTables = array();
+		protected $mongoIgnore = array('save' => array('linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system'));
 		
 		public function __construct($characterID, $userID = NULL) {
 			$this->characterID = intval($characterID);
@@ -106,7 +107,6 @@
 			global $mongo;
 
 			$classVars = get_object_vars($this);
-			var_dump($classVars);
 			foreach ($this->mongoIgnore['save'] as $key) unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
 			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => TRUE));
@@ -128,9 +128,8 @@
 			$userID = intval($_SESSION['userID']);
 
 			$mysql->query('DELETE FROM characters WHERE characterID = '.$this->characterID);
-			$tables = $mysql->query("SHOW TABLES LIKE '".$this::SYSTEM."_%'");
-			while ($table = $tables->fetchColumn()) $mysql->query('DELETE FROM '.$table.' WHERE characterID = '.$this->characterID);
-			$mongo->characters->remove(array('characterID' => (string) $this->characterID));
+			foreach ($this->linkedTables as $table) $mysql->query('DELETE FROM '.$this::SYSTEM.'_'.$table.' WHERE characterID = '.$this->characterID);
+			$mongo->characters->remove(array('characterID' => $this->characterID));
 			
 			addCharacterHistory($this->characterID, 'deleted', $userID, 'NOW()');
 		}

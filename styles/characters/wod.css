@@ -3,12 +3,10 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#nameDiv label {
-	display: block;
-	float: left;
+#name label {
 	width: 150px;
-	text-align: right;
 	margin-right: 10px;
+	text-align: right;
 }
 
 table {
@@ -16,7 +14,7 @@ table {
 	margin: 0 auto;
 }
 
-#attributes input {
+.prettyRadio {
 	margin: 0;
 }
 
@@ -25,8 +23,9 @@ table {
 }
 
 #attributes th {
-	text-align: right;
 	width: 100px;
+	text-align: right;
+	font-weight: bold;;
 }
 
 #attributes td.statName {
@@ -98,7 +97,7 @@ h3 {
 	margin-top: 0;
 }
 
-.viewCharacter h3, #skills p {
+#page_characterSheet h3, #skills p {
 	text-align: center;
 }
 
@@ -115,14 +114,15 @@ h3 {
 #skills label {
 	display: inline-block;
 	width: 122px;
+	font-size: 1em;
 }
 
-.editCharacter #skills .skillRank {
+#page_characterSheet_edit #skills .skillRank {
 	display: inline-block;
 	width: 143px;
 }
 
-.viewCharacter #skills .tr .skillRank {
+#page_characterSheet #skills .tr .skillRank {
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -187,7 +187,7 @@ textarea {
 }
 
 
-.editCharacter #itemsDiv {
+#page_characterSheet_edit #itemsDiv {
 	float: left;
 }
 
@@ -199,7 +199,7 @@ textarea {
 	height: 10em;
 }
 
-.editCharacter #submitDiv {
+#page_characterSheet_edit #submitDiv {
 	text-align: center;
 	margin-top: 1em;
 }

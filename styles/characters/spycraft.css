@@ -4,99 +4,8 @@
 */
 
 
-.cell {
-	display: inline-block;
-}
-
-label {
-	font-size: .8em;
-	display: inline-block;
-}
-
-label.shiftRight {
-	padding-left: 8px;
-}
-
-input[type="text"] {
-	width: 40px;
-	text-align: center;
-}
-
-.shortText, input.shortText {
-	width: 100px;
-}
-
-.medText, input.medText {
-	width: 200px;
-}
-
-.longText, input.longText {
-	width: 350px;
-}
-
-input.shortText, input.medText, input.longText {
-	text-align: left;
-}
-
-.shortNum, input.shortNum {
-	width: 40px;
-}
-
-.medNum, input.medNum {
-	width: 60px;
-}
-
-label.leftLabel {
-	font-size: 1em;
-}
-
-.lrBuffer {
-	margin-right: 10px;
-	margin-left: 10px;
-}
-
-.editCharacter .labelTR {
-	padding-bottom: 0;
-}
-
-.viewCharacter .labelTR {
-	padding: 0;
-}
-
-.viewCharacter .dataTR.gapBelow {
-	margin-bottom: 1em;
-}
-
-.viewCharacter .dataTR > div {
-	display: inline-block;
-}
-
-.editCharacter #label label {
-	float: left;
-	text-align: right;
-	margin-right: 15px;
-	font-weight: bold;
-	font-size: 1em;
-}
-
-.editCharacter #label div {
-	width: 200px;
-	text-align: right;
-	font-size: .8em;
-}
-
-.editCharacter #size {
-	width: 65px;
-	text-align: center;
-}
-
-.editCharacter #classes {
-	width: 350px;
-	text-align: left;
-}
-
-.editCharacter #department {
-	text-align: left;
+#label_department {
+	margin-left: 90px;
 }
 
 #stats, #savingThrows, #hp, #ac {
@@ -108,7 +17,7 @@ label.leftLabel {
 	margin-top: 2em;
 }
 
-.viewCharacter #stats .stat {
+#page_characterSheet #stats .stat {
 	border-right: 1px solid #555;
 	border-left: 1px solid #555;
 }
@@ -133,11 +42,10 @@ label.leftLabel {
 
 #savingThrows span {
 	display: inline-block;
-	width: 40px;
 	text-align: center;
 }
 
-.viewCharacter #savingThrows .dataTR > div {
+#page_characterSheet #savingThrows .dataTR > div {
 	text-align: center;
 }
 
@@ -158,7 +66,7 @@ label.leftLabel {
 	display: inline-block;
 }
 
-#ac label, .viewCharacter #ac .dataTR div {
+#ac label, #page_characterSheet #ac .dataTR div {
 	text-align: center;
 	width: 60px;
 }
@@ -191,7 +99,6 @@ label.leftLabel {
 
 #combatBonuses span {
 	display: inline-block;
-	width: 40px;
 	text-align: center;
 }
 
@@ -300,7 +207,7 @@ textarea {
 	width: 490px;
 }
 
-.viewCharacter #weapons > div {
+#page_characterSheet #weapons > div {
 	width: 455px;
 	margin: 0 auto;
 }
@@ -320,25 +227,25 @@ textarea {
 	border-top: none;
 }
 
-.viewCharacter #weapons span, .viewCharacter #armor span {
+#page_characterSheet #weapons span, #page_characterSheet #armor span {
 	display: inline-block;
 }
 
-.viewCharacter .weapon .lrBuffer {
+#page_characterSheet .weapon .lrBuffer {
 	margin-right: 4px;
 	margin-left: 4px;
 }
 
-.viewCharacter .armor .lrBuffer {
+#page_characterSheet .armor .lrBuffer {
 	margin-right: 2px;
 	margin-left: 2px;
 }
 
-.viewCharacter .weapon .labelTR, .viewCharacter .armor .labelTR {
+#page_characterSheet .weapon .labelTR, #page_characterSheet .armor .labelTR {
 	padding-top: .5em;
 }
 
-.viewCharacter .weapon .labelTR:first-child, .viewCharacter .armor .labelTR:first-child {
+#page_characterSheet .weapon .labelTR:first-child, #page_characterSheet .armor .labelTR:first-child {
 	padding-top: 0;
 }
 
@@ -360,7 +267,7 @@ textarea {
 	width: 420px;
 }
 
-.viewCharacter #armor > div {
+#page_characterSheet #armor > div {
 	width: 375px;
 	margin: 0 auto;
 }
@@ -393,20 +300,4 @@ input.armor_notes, .armor_notes {
 
 #notes textarea {
 	height: 16.2em;
-}
-
-#submitDiv {
-	text-align: center;
-	margin-top: 1em;
-}
-
-/* --------------------------------------------*/
-
-#page_characterSheet_spycraft_editFeatNotes {
-	text-align: center;
-}
-
-#page_characterSheet_spycraft_editFeatNotes textarea {
-	width: 450px;
-	height: 8em;
 }

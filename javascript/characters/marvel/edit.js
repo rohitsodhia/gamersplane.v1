@@ -1,56 +1,55 @@
 $(function() {
-	var characterID = parseInt($('#characterID').val());
+	function equalizeHeights(selector) {
+		maxHeight = 0;
+		$(selector).not('.spacer').each(function () {
+			indivHeight = $(this).css('height');
+			indivHeight = parseInt(indivHeight.substring(0, indivHeight.length - 2));
+			if (indivHeight > maxHeight) maxHeight = indivHeight;
+		}).css('height', maxHeight + 'px');
+	}
 
-	action = $('#actions').on('click', '.remove', function (e) {
-		$set = $(this).closest('.action');
-		$allActions = $('#actions .action');
-		if ($allActions.index($set) == $allActions.length - 1) $set.slideUp(function () { $(this).parent().slideUp(function () { $(this).remove() }); });
-		else $set.slideUp(function () { $(this).parent().animate({ width: 'toggle' }, function () { $(this).remove(); }); });
-
+	$('#actions').on('click', '.remove', function (e) {
 		e.preventDefault();
-	}).find('.action')[0];
-	height = $(action).outerHeight();
-//	width = $(action).outerWidth();
-	$('#actions .actionWrapper').css({ height: height/*, width: width*/ });
-	$('#actionSearch').autocomplete('/characters/ajax/marvel/actionSearch', { characterID: characterID });
+
+		$action = $(this).closest('.actionWrapper');
+		$.post('/characters/ajax/marvel/removeAction/', { characterID: characterID, actionID: $action.attr('id').split('_')[1] }, function (data) {
+			$action.slideUp(function () { $(this).remove(); });
+			equalizeHeights('.action .name');
+		});
+	});
+	equalizeHeights('.action .name');
+	$('#actionSearch').autocomplete('/characters/ajax/marvel/actionSearch/', { characterID: characterID });
 	$('#addAction').click(function (e) {
 		var actionName = $('#actionForm input').val();
-		$.post('/characters/ajax/marvel/addAction', { characterID: characterID, actionName: actionName }, function (data) {
+		$.post('/characters/ajax/marvel/addAction/', { characterID: characterID, actionName: actionName }, function (data) {
 			if (data.length > 0) {
-				$(data).hide();
-				if ($('#actions .actionRow:last-of-type .action').length == 3) $('<div class="actionRow clearfix"></div>').html(data).appendTo('#actions .hbdMargined');
-				else $(data).appendTo('#actions .actionRow:last-of-type');
-				$(data).slideDown();
+				$action = $(data);
+				$action.hide().appendTo('#actions .hbdMargined').slideDown(function () { equalizeHeights('.action .name'); });
 				$('#actionSearch').val('').trigger('blur');
-				$(data).find('.actionWrapper').css({ height: height, width: width });
 			}
 		});
 		
 		e.preventDefault();
 	});
 
-	modifier = $('#modifiers').on('click', '.remove', function (e) {
-		$set = $(this).closest('.modifier');
-		$allModifiers = $('#modifiers .modifier');
-		if ($allModifiers.index($set) == $allModifiers.length - 1) $set.slideUp(function () { $(this).parent().slideUp(function () { $(this).remove() }); });
-		else $set.slideUp(function () { $(this).parent().animate({ width: 'toggle' }, function () { $(this).remove(); }); });
-
+	$('#modifiers').on('click', '.remove', function (e) {
 		e.preventDefault();
-	}).find('.modifier')[0];
-	height = $(modifier).outerHeight();
-//	width = $(modifier).outerWidth();
-	$('#modifiers .modifierWrapper').css({ height: height/*, width: width*/ });
-	$('#modifierSearch').autocomplete('/characters/ajax/marvel/modifierSearch', { characterID: characterID });
+
+		$modifier = $(this).closest('.modifierWrapper');
+		$.post('/characters/ajax/marvel/removeModifier/', { characterID: characterID, modifierID: $modifier.attr('id').split('_')[1] }, function (data) {
+			$modifier.slideUp(function () { $(this).remove(); });
+			equalizeHeights('.modifier .name');
+		});
+	});
+	equalizeHeights('.modifier .name');
+	$('#modifierSearch').autocomplete('/characters/ajax/marvel/modifierSearch/', { characterID: characterID });
 	$('#addModifier').click(function (e) {
 		var modifierName = $('#modifierForm input').val();
-		$.post('/characters/ajax/marvel/addModifier', { characterID: characterID, modifierName: modifierName }, function (data) {
+		$.post('/characters/ajax/marvel/addModifier/', { characterID: characterID, modifierName: modifierName }, function (data) {
 			if (data.length > 0) {
-				$(data).hide();
-				if ($('#modifiers .modifierRow:last-of-type .modifier').length == 3) $('<div class="modifierRow clearfix"></div>').html(data).appendTo('#modifiers .hbdMargined');
-				else $(data).appendTo('#modifiers .modifierRow:last-of-type');
-				$(data).slideDown();
+				$modifier = $(data);
+				$modifier.hide().appendTo('#modifiers .hbdMargined').slideDown(function () { equalizeHeights('.modifier .name'); });
 				$('#modifierSearch').val('').trigger('blur');
-				$(data).find('.modifierWrapper').css({ height: height, width: width });
 			}
 		});
 		
@@ -64,13 +63,9 @@ $(function() {
 		e.preventDefault();
 	});
 	$('#addChallenge').click(function (e) {
-		var challengeName = $('#challengeName').val();
-		var stones = $('#challengeStones').val();
-		$.post('/characters/ajax/marvel/addChallenge', { characterID: characterID, challengeName: challengeName, stones: stones }, function (data) {
-			if (data.length > 0) {
-				$(data).hide().appendTo('#challenges .hbdMargined').slideDown();
-				$('#addChallenge, #challengeStones').val('');
-			}
+		challengeNum = $('.challenge').length + 1;
+		$.post('/characters/ajax/marvel/addChallenge/', { challengeNum: challengeNum }, function (data) {
+			$(data).hide().appendTo('#challenges .hbdMargined').slideDown();
 		});
 		
 		e.preventDefault();

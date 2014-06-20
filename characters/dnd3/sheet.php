@@ -1,10 +1,12 @@
 			<div class="tr labelTR tr-noPadding">
 				<label id="label_name" class="medText">Name</label>
 				<label id="label_race" class="medText">Race</label>
+				<label id="label_size" class="shortNum alignCenter">Size</label>
 			</div>
 			<div class="tr dataTR">
 				<div class="medText"><?=$this->getName()?></div>
 				<div class="medText"><?=$this->getRace()?></div>
+				<div class="shortNum alignCenter"><?=$this->getSize()?></div>
 			</div>
 			
 			<div class="tr labelTR">
@@ -27,17 +29,12 @@
 						<div class="stat"><?=$this->getStat($short)?></div>
 						<span id="<?=$short?>Modifier"><?=$this->getStatMod($short)?></span>
 					</div>
-<?
-		$statBonus[$short] = $bonus;
-	}
-	
-	$charInfo['size'] = showSign($charInfo['size']);
-?>
+<?	} ?>
 				</div>
 				
 				<div id="savingThrows">
 					<div class="tr labelTR">
-						<div class="fillerBlock cell">&nbsp;</div>
+						<div class="fillerBlock">&nbsp;</div>
 						<label class="shortNum lrBuffer">Total</label>
 						<label class="shortNum lrBuffer">Base</label>
 						<label class="statSelect lrBuffer">Ability</label>
@@ -72,7 +69,7 @@
 			<div id="ac">
 				<div class="tr labelTR">
 					<label class="first">Total AC</label>
-					<div class="fillerBlock cell medNum">&nbsp;</div>
+					<div class="fillerBlock medNum">&nbsp;</div>
 					<label>Armor</label>
 					<label>Shield</label>
 					<label>Dex</label>
@@ -98,7 +95,7 @@
 			
 			<div id="combatBonuses" class="clearFix">
 				<div class="tr labelTR">
-					<div class="fillerBlock cell shortText">&nbsp;</div>
+					<div class="fillerBlock shortText">&nbsp;</div>
 					<label class="shortNum">Total</label>
 					<label class="shortNum">Base</label>
 					<label class="statSelect">Ability</label>

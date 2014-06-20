@@ -93,6 +93,8 @@
 		public function save() {
 			$data = $_POST;
 
+			$this->setName($data['name']);
+
 			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
 			foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
 			foreach ($data['speed'] as $type => $value) $this->setSpeed($type, $value);

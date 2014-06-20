@@ -16,6 +16,7 @@
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 				$addJSFiles[] = 'characters/_sheet.js';
+				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
 			}
 		}
 	} else { header('Location: /404/'); exit; }

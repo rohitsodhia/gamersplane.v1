@@ -45,7 +45,8 @@ class Database extends \PDO {
         }
     }
 
-    public function prepare($statement, array $driver_options = array()){
+    public function prepare($statement, $driver_options = NULL){
+        if ($driver_options == NULL) $driver_options = array();
         try {
             return parent::prepare( $statement, $driver_options );
         } catch ( \PDOException $e ) {

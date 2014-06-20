@@ -1523,6 +1523,7 @@ border-bottom-left-radius: 0;}
 
 #mainMenu ul ul li {
 	display: block;
+	padding: 0;
 	border-top: 1px solid #444;
 }
 

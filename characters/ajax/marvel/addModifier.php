@@ -1,23 +1,16 @@
 <?
 	if (checkLogin(0)) {
-		includeSystemInfo('marvel');
-
-		$userID = $_SESSION['userID'];
+		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
-		if (allowCharEdit($characterID, $userID)) {
-			$name = sanitizeString($_POST['modifierName'], 'rem_dup_spaces');
-			$modifierID = $mysql->prepare('SELECT modifierID FROM marvel_modifiersList WHERE name = :name');
-			$modifierID->execute(array(':name' => strtolower($name)));
-			if ($modifierID->rowCount()) $modifierID = $modifierID->fetchColumn();
-			else {
-				$addNewModifier = $mysql->prepare('INSERT INTO marvel_modifiersList (name, userDefined) VALUES (:name, :userID)');
-				$addNewModifier = execute(array(':name' => $name, ':userID' => $userID));
-				$modifierID = $mysql->lastInsertId();
+
+		require_once(FILEROOT.'/includes/packages/marvelCharacter.package.php');
+		if ($character = new marvelCharacter($characterID)) {
+			$character->load();
+			$charPermissions = $character->checkPermissions($userID);
+			if ($charPermissions == 'edit') {
+				$name = sanitizeString($_POST['modifierName'], 'rem_dup_spaces');
+				if (strlen($name)) $character->addModifier($name);
 			}
-			$addModifier = $mysql->query("INSERT INTO marvel_modifiers (characterID, modifierID) VALUES ($characterID, $modifierID)");
-			$numModifiers = intval($_POST['numModifiers']) + 1;
-			$modifierInfo = array('modifierID' => $modifierID, 'name' => $name);
-			if ($addModifier->rowCount()) modifierFormFormat($modifierInfo, $numModifiers);
 		}
 	}
 ?>

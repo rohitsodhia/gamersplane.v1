@@ -1,23 +1,15 @@
 <?
 	if (checkLogin(0)) {
-		includeSystemInfo('spycraft2');
+		require_once(FILEROOT.'/includes/packages/spycraft2Character.package.php');
 		
 		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		if (allowCharEdit($characterID, $userID)) {
-			$name = sanitizeString($_POST['name'], 'rem_dup_spaces');
-			if (strlen($name)) {
-				$focus = $mysql->prepare('SELECT focusID FROM spycraft2_focusesList WHERE searchName = :searchName');
-				$focus->execute(array(':searchName' => sanitizeString($name, 'search_format')));
-				if ($focus->rowCount()) $focusID = $focus->fetchColumn();
-				else {
-					$addNewFocus = $mysql->prepare('INSERT INTO spycraft2_focusesList (name, searchName, userDefined) VALUES (:name, :searchName, :userID)');
-					$addNewFocus->execute(array(':name' => $name, ':searchName' => sanitizeString($name, 'search_format'), ':userID' => $userID));
-					$focusID = $mysql->lastInsertId();
-				}
-				$focusInfo = array('focusID' => $focusID, 'name' => $name);
-				$addFocus = $mysql->query("INSERT INTO spycraft2_focuses (characterID, focusID) VALUES ($characterID, $focusID)");
-				if ($addFocus->rowCount()) focusFormFormat($characterID, $focusInfo);
+		if ($character = new spycraft2Character($characterID)) {
+			$character->load();
+			$charPermissions = $character->checkPermissions($userID);
+			if ($charPermissions == 'edit') {
+				$name = sanitizeString($name, 'rem_dup_spaces');
+				if (strlen($name)) $character->addFocus($_POST['name']);
 			}
 		}
 	}

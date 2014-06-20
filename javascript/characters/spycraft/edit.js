@@ -1,3 +1,4 @@
+var statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 function updateInit() {
 	var total = 0;
 	$('#init input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });

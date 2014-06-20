@@ -1,3 +1,4 @@
+var statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 $(function() {
 	var characterID = parseInt($('#characterID').val());
 	var level = 0;
@@ -91,7 +92,7 @@ $(function() {
 	
 	$('#addAttack').click(function (e) {
 		$.post('/characters/ajax/dnd4/addAttack', { count: $('.attackBonusSet').size() + 1 }, function (data) {
-			$(data).hide().appendTo('#attacks').slideDown();
+			$(data).hide().appendTo('#attacks .hbdMargined').slideDown();
 		});
 		
 		e.preventDefault();
@@ -114,18 +115,6 @@ $(function() {
 		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { total += parseInt($(this).val()); });
 		$(this).parent().find('.skill_total').text(showSign(total));
 	});
-	
-	function removeFeat(e) {
-		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post('/characters/ajax/dnd4/removeFeat', { characterID: characterID, featID: featID }, function (data) {
-			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
-				$(this).remove();
-				if ($('.feat').size() == 0) $('<p id=\"noFeats\">This character currently has no feats/features.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
-			}); }
-		});
-		
-		e.preventDefault();
-	}
 	
 	$('#addFeat').click(function (e) {
 		if ($('#featName').val().length >= 3) { $.post('/characters/ajax/dnd4/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {

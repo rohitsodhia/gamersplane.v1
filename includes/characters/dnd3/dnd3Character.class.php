@@ -16,6 +16,8 @@
 		protected $armor = array();
 		protected $spells = '';
 
+		protected $linkedTables = array('feats', 'skills');
+
 		public function setRace($value) {
 			$this->race = $value;
 		}
@@ -69,7 +71,7 @@
 		}
 
 		public function skillEditFormat($skillInfo = NULL, $statBonus = NULL) {
-			if ($statBonus == NULL) $statBonus = $this->getStatMod($skillInfo['stat']);
+			if ($statBonus == NULL) $statBonus = $this->getStatMod($skillInfo['stat'], false);
 			else $statBonus = 0;
 ?>
 						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">

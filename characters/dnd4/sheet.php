@@ -213,20 +213,20 @@
 			<div class="clearfix">
 				<div id="weapons" class="textDiv floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
-					<div class="hbdMargined"><?=print_ready($this->getWeapons())?></div>
+					<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
 				</div>
 				<div id="armor" class="textDiv floatRight">
 					<h2 class="headerbar hbDark">Armor</h2>
-					<div class="hbdMargined"><?=print_ready($this->getArmor())?></div>
+					<div class="hbdMargined"><?=printReady($this->getArmor())?></div>
 				</div>
 			</div>
 			
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbdMargined"><?=print_ready($this->getItems())?></div>
+				<div class="hbdMargined"><?=printReady($this->getItems())?></div>
 			</div>
 			
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=print_ready($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
 			</div>

@@ -38,7 +38,7 @@
 					</div>
 					<select id="alignment" name="alignment" class="lrBuffer">
 <?	foreach (dnd3_consts::getAlignments() as $alignShort => $alignment) { ?>
-						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
+						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignment?' selected="selected"':''?>><?=$alignment?></option>
 <?	} ?>
 					</select>
 				</div>
@@ -185,9 +185,7 @@
 							<div id="addSkillWrapper">
 								<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
 								<select id="skillStat" name="newSkill[stat]">
-<?
-	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
-?>
+<?	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n"; ?>
 								</select>
 								<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
 							</div>

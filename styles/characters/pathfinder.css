@@ -3,105 +3,30 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-
-.cell {
+.fillerBlock {
 	display: inline-block;
 }
 
-label {
-	font-size: .8em;
-	display: inline-block;
-}
-
-label.shiftRight {
-	padding-left: 8px;
-}
-
-input[type="text"] {
-	width: 40px;
-	text-align: center;
-}
-
-.shortText, input.shortText {
-	width: 100px;
-}
-
-.medText, input.medText {
-	width: 200px;
-}
-
-.longText, input.longText {
-	width: 350px;
-}
-
-input.shortText, input.medText, input.longText {
-	text-align: left;
-}
-
-.shortNum, input.shortNum {
-	width: 40px;
-}
-
-.medNum, input.medNum {
-	width: 60px;
-}
-
-label.leftLabel {
-	font-size: 1em;
-}
-
-.lrBuffer {
-	margin-right: 10px;
-	margin-left: 10px;
-}
-
-.editCharacter .labelTR {
-	padding-bottom: 0;
-}
-
-.viewCharacter .labelTR {
-	padding: 0;
-}
-
-.viewCharacter .dataTR {
-	margin-bottom: 1em;
-}
-
-.viewCharacter .dataTR > div {
-	display: inline-block;
-}
-
-.editCharacter #label label {
-	float: left;
-	text-align: right;
-	margin-right: 15px;
-	font-weight: bold;
-	font-size: 1em;
-}
-
-.editCharacter #label div {
-	width: 200px;
-	text-align: right;
-	font-size: .8em;
-}
-
-.editCharacter #size {
+#page_characterSheet_edit #size {
 	width: 65px;
 	text-align: center;
 }
 
-.editCharacter #label_size {
+#page_characterSheet_edit #label_size {
 	position: relative;
 	left: -3px;
 }
 
-.editCharacter #classes {
-	width: 350px;
-	text-align: left;
+#page_characterSheet_edit #classWrapper {
+	margin-right: 10px;
 }
 
-.editCharacter #levels {
-	width: 75px;
+#page_characterSheet_edit #label_alignment {
+	margin-left: 90px;
+}
+
+#page_characterSheet_edit #ps_alignment {
+	vertical-align: top;
 }
 
 #stats, #savingThrows, #hp {
@@ -109,42 +34,30 @@ label.leftLabel {
 	float: left;
 }
 
-.viewCharacter #stats {
+#page_characterSheet #stats {
 	margin-top: 0;
 }
 
-.viewCharacter #stats .dataTR {
-	margin-bottom: 0;
-}
-
-.viewCharacter #stats .stat {
-	text-align: center;
-}
-
-.editCharacter #stats .stat {
+#page_characterSheet #stats .stat {
 	border-right: 1px solid #555;
 	border-left: 1px solid #555;
 }
 
-#stats span {
+#stats div.stat, #stats span {
 	display: inline-block;
-	width: 30px;
-	text-align: center;
-}
-
-.viewCharacter #stats .stat, .viewCharacter #stats span {
 	width: 40px;
+	text-align: center;
 }
 
 #savingThrows, #hp {
 	margin-left: 50px;
 }
 
-.viewCharacter #savingThrows {
+#page_characterSheet #savingThrows {
 	margin-top: 0;
 }
 
-.viewCharacter #savingThrows .dataTR {
+#page_characterSheet #savingThrows .dataTR {
 	margin-bottom: 0;
 }
 
@@ -156,29 +69,36 @@ label.leftLabel {
 	width: 75px;
 }
 
-.editCharacter #savingThrows span {
+#savingThrows .tr > * {
+	vertical-align: middle;
+}
+
+#page_characterSheet_edit #savingThrows span {
 	display: inline-block;
-	width: 40px;
 	text-align: center;
 }
 
-.viewCharacter #savingThrows .dataTR > div {
+#page_characterSheet #savingThrows .dataTR > div {
 	text-align: center;
 }
 
-.editCharacter #hp label {
+#page_characterSheet_edit #hp {
+	margin-top: 2em;
+}
+
+#page_characterSheet_edit #hp label {
 	margin-right: 10px;
 }
 
-#hp input {
+#page_characterSheet_edit #hp input {
 	margin-right: 20px;
 }
 
-#damageReduction {
+#page_characterSheet_edit #hp input#damageReduction {
 	width: 150px;
 }
 
-.viewCharacter #hp div {
+#page_characterSheet #hp div {
 	padding: 3px 8px;
 	margin: 0 20px 0 10px;
 	border: 1px solid #555;
@@ -188,34 +108,36 @@ label.leftLabel {
 	margin-top: 1.5em;
 }
 
-#ac label, #ac .tr div, #ac_total {
+#ac label, #page_characterSheet #ac .dataTR div {
 	text-align: center;
-	width: 60px !important;
+	width: 58px;
 }
 
-.viewCharacter #ac .dataTR div {
+#page_characterSheet #ac .first {
+	margin-right: 10px;
+}
+
+#page_characterSheet #ac .dataTR div {
 	text-align: center;
 }
 
-.editCharacter #ac .tr div {
+#page_characterSheet_edit #ac .tr div {
 	display: inline-block;
 	width: 50px;
 	text-align: center;
 }
 
-.editCharacter #ac .tr .sizeVal {
+#page_characterSheet_edit #ac #ac_total {
+	width: 58px;
+}
+
+#page_characterSheet_edit #ac .tr .sizeVal {
 	width: 40px;
-	margin: 0 10px;
+	margin: 0 9px;
 	text-align: center;
 }
 
-#ac input {
-	width: 40px;
-	text-align: center;
-	margin: 0 10px;
-}
-
-#ac input.first {
+#page_characterSheet_edit #ac input.first {
 	margin: 0 20px;
 }
 
@@ -224,7 +146,7 @@ label.leftLabel {
 	margin-top: 1.5em;
 }
 
-.viewCharacter #combatBonuses .dataTR div {
+#page_characterSheet #combatBonuses .dataTR div {
 	text-align: center;
 }
 
@@ -238,14 +160,13 @@ label.leftLabel {
 
 #combatBonuses span {
 	display: inline-block;
-	width: 40px;
 	text-align: center;
 }
 
 #combatManuvers {
 	float: left;
 	margin-top: 1.5em;
-	margin-left: 80px;
+	margin-left: 60px;
 }
 
 #combatManuvers #cmd {
@@ -257,14 +178,15 @@ label.leftLabel {
 }
 
 #combatManuvers .labelTR label, #combatManuvers .tr > div {
+	display: inline-block;
 	text-align: center;
 }
 
-.editCharacter .textareaDiv, .viewCharacter .textDiv {
+#page_characterSheet_edit .textareaDiv, #page_characterSheet .textDiv {
 	margin-top: 1em;
 }
 
-.editCharacter h2 a {
+#page_characterSheet_edit h2 a {
 	margin-left: 10px;
 	font-size: .6em;
 	font-weight: normal;
@@ -283,23 +205,22 @@ label.leftLabel {
 	font-size: .85em;
 }
 
-textarea {
-	width: 100%;
-}
-
 #skills {
-	width: 560px;
+	width: 555px;
 }
 
-#addSkillWrapper {
+#addSkillWrapper, #addFeatWrapper {
 	margin: 1em 0;
 	position: relative;
+}
+
+#addSkillWrapper > *, #addFeatWrapper > * {
+	vertical-align: middle;
 }
 
 #addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {
 	top: -1px;
 	margin-left: 5px;
-	vertical-align: middle;
 }
 
 .skill span {
@@ -315,18 +236,18 @@ textarea {
 }
 
 #feats {
-	width: 380px;
+	width: 385px;
 }
 
 #feats span, #feats a {
 	display: inline-block;
 }
 
-.editCharacter .feat_name {
+#page_characterSheet_edit .feat_name {
 	width: 245px;
 }
 
-.viewCharacter .feat_name {
+#page_characterSheet .feat_name {
 	width: 295px;
 }
 
@@ -334,12 +255,16 @@ textarea {
 	font-size: .8em;
 }
 
+#page_characterSheet .feat_notes {
+	display: none;
+}
+
 #weapons {
 	width: 490px;
 }
 
 .weapon, .armor {
-	margin: 0 0 20px;
+	margin: 10px 0 0;
 	padding-top: 10px;
 	border-top: 1px solid #777;
 }
@@ -350,28 +275,29 @@ textarea {
 
 .weapon:first-child, .armor:first-child {
 	margin-top: 0;
+	padding-top: 0;
 	border-top: none;
 }
 
-.viewCharacter #weapons span, .viewCharacter #armor span {
+#page_characterSheet #weapons span, #page_characterSheet #armor span {
 	display: inline-block;
 }
 
-.viewCharacter .weapon .lrBuffer {
-	margin-right: 4px;
-	margin-left: 4px;
+#page_characterSheet .weapon .lrBuffer {
+	margin-right: 5px;
+	margin-left: 0;
 }
 
-.viewCharacter .armor .lrBuffer {
+#page_characterSheet .armor .lrBuffer {
 	margin-right: 2px;
 	margin-left: 2px;
 }
 
-.viewCharacter .weapon .labelTR, .viewCharacter .armor .labelTR {
+#page_characterSheet .weapon .labelTR, #page_characterSheet .armor .labelTR {
 	padding-top: .5em;
 }
 
-.viewCharacter .weapon .labelTR:first-child, .viewCharacter .armor .labelTR:first-child {
+#page_characterSheet .weapon .labelTR:first-child, #page_characterSheet .armor .labelTR:first-child {
 	padding-top: 0;
 }
 
@@ -380,48 +306,41 @@ textarea {
 	text-align: left;
 }
 
-.armor .medText {
-	width: 208px;
-	text-align: left;
-}
-
-.weapon_secondRow label, .viewCharacter .weapon_secondRow span, .editCharacter .weapon_secondRow input {
+.weapon_secondRow label, #page_characterSheet .weapon_secondRow span, #page_characterSheet_edit .weapon_secondRow input {
 	width: 98px;
 }
 
-input.weapon_notes {
+input.weapon_notes, .weapon_notes {
 	width: 469px;
 	text-align: left;
 }
 
-.viewCharacter .weapon_notes {
-	width: 458px;
-}
-
 #armor {
-	width: 420px;
+	width: 440px;
 }
 
-.editCharacter .armor_firstRow label.shortText, .viewCharacter .armor_firstRow .shortText, .editCharacter .armor_firstRow input.shortText {
+#page_characterSheet_edit .armor_firstRow label.shortText, #page_characterSheet .armor_firstRow .shortText, #page_characterSheet_edit .armor_firstRow input.shortText {
 	width: 70px;
 }
 
-.armor_secondRow label, .viewCharacter .armor_secondRow span, .editCharacter .armor_secondRow input {
-	width: 81px;
-}
-
-input.armor_notes {
-	width: 400px;
+.armor .medText {
+	width: 230px;
 	text-align: left;
 }
 
-.viewCharacter .armor_notes {
-	width: 400px;
+.armor_secondRow label, #page_characterSheet .armor_secondRow span, #page_characterSheet_edit .armor_secondRow input {
+	width: 86px;
+}
+
+input.armor_notes, .armor_notes {
+	width: 421px;
+	text-align: left;
 }
 
 #items, #spells {
 	float: left;
 	width: 465px;
+	margin-top: 1em;
 }
 
 #spells {
@@ -431,6 +350,10 @@ input.armor_notes {
 #items textarea, #spells textarea {
 	width: 100%;
 	height: 12.4em;
+}
+
+#notes {
+	margin-top: 2.5em;
 }
 
 #notes textarea {
@@ -452,4 +375,8 @@ input.armor_notes {
 #page_characterSheet_pathfinder_editFeatNotes textarea {
 	width: 450px;
 	height: 8em;
+}
+
+#page_characterSheet_pathfinder_featNotes #notes {
+	margin-top: 0;
 }

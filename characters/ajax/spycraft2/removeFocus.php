@@ -1,14 +1,15 @@
 <?
 	if (checkLogin(0)) {
-		includeSystemInfo('spycraft2');
+		require_once(FILEROOT.'/includes/packages/spycraft2Character.package.php');
 		
 		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
-		if (allowCharEdit($characterID, $userID)) {
-			$focusID = intval($_POST['focusID']);
-			$removeFocus = $mysql->query("DELETE FROM spycraft2_focuses WHERE characterID = $characterID AND focusID = $focusID");
-			if ($removeFocus->rowCount()) echo 1;
-			else echo 0;
-		} else echo 0;
+		if ($character = new spycraft2Character($characterID)) {
+			$character->load();
+			$charPermissions = $character->checkPermissions($userID);
+			if ($charPermissions == 'edit') {
+				$character->removeFocus($_POST['focusID']);
+			}
+		}
 	}
 ?>

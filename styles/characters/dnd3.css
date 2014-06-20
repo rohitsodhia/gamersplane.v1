@@ -3,19 +3,8 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-
-#page_characterSheet_edit #label label {
-	float: left;
-	text-align: right;
-	margin-right: 15px;
-	font-weight: bold;
-	font-size: 1em;
-}
-
-#page_characterSheet_edit #label div {
-	width: 200px;
-	text-align: right;
-	font-size: .8em;
+.fillerBlock {
+	display: inline-block;
 }
 
 #page_characterSheet_edit #size {
