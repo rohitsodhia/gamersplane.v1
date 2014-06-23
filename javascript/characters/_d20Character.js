@@ -1,23 +1,14 @@
-var statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
+var size = 0, level = 0, statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 $(function() {
-	function updateAC() {
-		var total = 10;
-		$('#ac input.acComponents').each(function () {
-			total += ($(this).val() != '')?parseInt($(this).val()):0;
-		});
-		total += parseInt($('#ac .sizeVal').text());
-		$('#ac_total').text(total);
-	}
-
+	size = parseInt($('#size').val());
+	$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
 	statBonus = { 'str': parseInt($('#strModifier').text()),
 				  'con': parseInt($('#conModifier').text()),
 				  'dex': parseInt($('#dexModifier').text()),
 				  'int': parseInt($('#intModifier').text()),
 				  'wis': parseInt($('#wisModifier').text()),
 				  'cha': parseInt($('#chaModifier').text()) }
-	var size = parseInt($('#size').val());
-	var bab = parseInt($('#bab').val());
-						
+	
 	$('#size').blur(function() {
 		oldSize = size;
 		size = parseInt($(this).val());
@@ -30,6 +21,14 @@ $(function() {
 			else return newVal;
 		});
 	});
+	$('#classWrapper').on('blur', '.levelInput', function () {
+		oldLevel = level;
+		level = 0;
+		$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
+		if (isNaN(level)) level = 0;
+
+		if (typeof trigger_levelUpdate == 'function') trigger_levelUpdate(oldLevel);
+	});
 	$('.stat').blur(function() {
 		modifier = Math.floor(($(this).val() - 10)/2);
 		change = modifier - statBonus[this.id];
@@ -39,36 +38,29 @@ $(function() {
 		$('.statBonus_' + this.id).text(modifier);
 		$('.addStat_' + this.id).each(function () { $(this).text(showSign(parseInt($(this).text()) + change)); });
 		
-		if (this.id == 'str') { updateCombatBonuses(); }
-		else if (this.id == 'dex') { updateSaves('ref'); updateCombatBonuses('dex'); }
-		else if (this.id == 'con') { updateSaves('fort'); }
-		else if (this.id == 'wis') { updateSaves('will'); }
-		
 		statBonus[this.id] = parseInt(modifier);
+
+		if (typeof trigger_statUpdate == 'function') trigger_statUpdate(this.id);
+	});
+	$('#bab').blur(function () {
+		$('.bab').text(showSign($(this).val()));
+		$('#ranged_misc').blur();
 	});
 	
-	$('#savingThrows input').blur(function () { updateSaves($(this).data('saveType')); });
-	$('#ac input.acComponents').blur(function () { updateAC(); });
-	$('#combatBonuses input').blur(updateCombatBonuses);
-	$('#bab').blur(function () { $('.bab').text(showSign($(this).val())); });
-	
 	$('#addSkill').click(function (e) {
+		e.preventDefault()
+		
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			$.post('/characters/ajax/addSkill/', { characterID: characterID, system: system, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
+			if ($('#skillStat').val() != '') skillStatBonus = statBonus[$('#skillStat').val()];
+			else skillStatBonus = 0;
+			$.post('/characters/ajax/addSkill/', { characterID: characterID, system: system, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: skillStatBonus }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
 				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');
 			});
 		}
-		
-		e.preventDefault()
 	});
-	$('#skills').on('change', '.skill input', function () {
-		var stat = $(this).parent().find('.skill_total').attr('class').match(/addStat_(\w{3})/)[1];
-		var total = statBonus[stat];
-		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { total += parseInt($(this).val()); });
-		$(this).parent().find('.skill_total').text(showSign(total));
-	});
+	$('#skills').on('blur', '.skill input', sumRow);
 	
 	$('#addFeat').click(function (e) {
 		if ($('#featName').val().length >= 3) {
@@ -79,6 +71,17 @@ $(function() {
 			});
 		}
 		
+		e.preventDefault()
+	});
+	
+	$('#weapons').on('click', '.remove', function (e) {
+		$(this).closest('.weapon').remove();
+
+		e.preventDefault()
+	});
+	$('#armor').on('click', '.remove', function (e) {
+		$(this).closest('.armor').remove();
+
 		e.preventDefault()
 	});
 });

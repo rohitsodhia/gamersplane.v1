@@ -1,5 +1,7 @@
 <?
 	abstract class Character {
+		protected $bodyClasses = array();
+
 		protected $userID ;
 		protected $characterID;
 		protected $label;
@@ -16,6 +18,8 @@
 			$this->characterID = intval($characterID);
 			if ($userID == NULL) $this->userID = intval($_SESSION['userID']);
 			else $this->userID = $userID;
+
+			foreach ($this->bodyClasses as $bodyClass) addBodyClass($bodyClass);
 		}
 
 		public function clearVar($var) {

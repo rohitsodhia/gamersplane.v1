@@ -91,11 +91,11 @@
 </div></header>
 
 <div id="content"><div class="bodyContainer clearfix">
-	<div id="page_<?=PAGE_ID?>"<?=strlen($dispatchInfo['bodyClass'])?" class=\"{$dispatchInfo['bodyClass']}\"":''?>>
+	<div id="page_<?=PAGE_ID?>"<?=strlen($dispatchInfo['bodyClass'])?' class="'.implode(' ', $bodyClasses).'"':''?>>
 		<div id="stupidIE">
 			<p>Hm... seems like you're using IE. Can I suggest a better browser, such as <a href="http://www.mozilla.com/en-US/firefox/" target="_blank">Firefox</a>, <a href="http://www.googlechrome.com/" target="_blank">Chrome</a> or <a href="http://www.opera.com/" target="_blank">Opera</a>? There are other choices too.</p>
 			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
 		</div>
 <? } else { ?>
-<div id="page_<?=PAGE_ID?>" class="clearfix<?=strlen($dispatchInfo['bodyClass'])?" {$dispatchInfo['bodyClass']}":''?>">
+<div id="page_<?=PAGE_ID?>" class="clearfix<?=sizeof($bodyClasses)?' '.implode(' ', $bodyClasses):''?>">
 <? } ?>

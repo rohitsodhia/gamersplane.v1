@@ -1,95 +1,42 @@
-var statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
-$(function() {
-	var characterID = parseInt($('#characterID').val());
-	var level = 0;
-	var oldLevel = 0;
-	$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
-	if (isNaN(level)) level = 0;
-	var statBonus = { 'str': parseInt($('#strModifier').text()),
-					  'con': parseInt($('#conModifier').text()),
-					  'dex': parseInt($('#dexModifier').text()),
-					  'int': parseInt($('#intModifier').text()),
-					  'wis': parseInt($('#wisModifier').text()),
-					  'cha': parseInt($('#chaModifier').text()) }
-	
-	function updateSaves(save) {
-		var total = 0;
-		if (save.substring(0, 1) == 'f') {
-			save = 'fort';
-			total = statBonus['con'] > statBonus['str']?statBonus['con']:statBonus['str'];
-		} else if (save.substring(0, 1) == 'r') {
-			save = 'ref';
-			total = statBonus['dex'] > statBonus['int']?statBonus['dex']:statBonus['int'];
-		} else if (save.substring(0, 1) == 'w') {
-			save = 'will';
-			total = statBonus['wis'] > statBonus['cha']?statBonus['wis']:statBonus['cha'];
-		} else if (save.substring(0, 1) == 'a') save = 'ac';
-		
-		total += Math.floor(level / 2) + 10;
-		$('#' + save +'Row input').each(function () {
-			total += $(this).val().length?parseInt($(this).val()):0;
-		});
-		$('#' + save + 'Total').text(showSign(total));
-	}
+function trigger_levelUpdate(oldLevel) {
+	$('.addHL').each(function () {
+		$(this).text(showSign(parseInt($(this).text()) - Math.floor(oldLevel / 2) + Math.floor(level / 2)));
+	});
+}
 
-	$('#classWrapper').on('blur', '.levelInput', function() {
-		oldLevel = level;
-		level = 0;
-		$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
-		if (isNaN(level)) level = 0;
-		$('.addHL').each(function () {
-			$(this).text(showSign(parseInt($(this).text()) - Math.floor(oldLevel / 2) + Math.floor(level / 2)));
-		});
+function trigger_statUpdate(stat) {
+	if (stat == 'str' || stat == 'con') {
+		if (statBonus['con'] > statBonus['str']) useAbility = 'con';
+		else useAbility = 'str';
+
+		$('#fortTotal').removeClass('addStat_con addStat_str').addClass('addStat_' + useAbility);
+		$('#fortStatBonus').text(showSign(parseInt(statBonus[useAbility])));
+		$('#fortRow input').eq(0).blur();
+	} else if (stat == 'dex' || stat == 'int') {
+		if (statBonus['dex'] > statBonus['int']) useAbility = 'dex';
+		else useAbility = 'int';
+
+		$('#refTotal').removeClass('addStat_dex addStat_int').addClass('addStat_' + useAbility);
+		$('#refStatBonus').text(showSign(parseInt(statBonus[useAbility])));
+		$('#refRow input').eq(0).blur();
+	} else {
+		if (statBonus['wis'] > statBonus['cha']) useAbility = 'wis';
+		else useAbility = 'cha';
+
+		$('#willTotal').removeClass('addStat_wis addStat_cha').addClass('addStat_' + useAbility);
+		$('#willStatBonus').text(showSign(parseInt(statBonus[useAbility])));
+		$('#willRow input').eq(0).blur();
+	}
+}
+
+$(function() {
+	var $hpInput = $('#hpInput'), $bloodiedVal = $('#bloodiedVal'), $surgeVal = $('#surgeVal');
+	$hpInput.blur(function () {
+		var hp = $hpInput.val().length?parseInt($hpInput.val()):0;
+		$bloodiedVal.text(Math.floor(hp / 2));
+		$surgeVal.text(Math.floor(hp / 4));
 	});
-	
-	$('.stat').blur(function() {
-		modifier = Math.floor(($(this).val() - 10)/2);
-		
-		if (this.id == 'dex') $('#init_total').text(showSign(parseInt($('#init_total').text()) - statBonus['dex'] + modifier));
-		
-		oldBonus = statBonus[this.id];
-		statBonus[this.id] = modifier;
-		if ($(this).val() == '') modifier = 0;
-		$('#' + this.id + 'Modifier').text(showSign(modifier));
-		$('.statBonus_' + this.id).text(showSign(modifier));
-		$('#' + this.id + 'ModifierPL').text(showSign(modifier + Math.floor(level / 2)));
-		
-		if (this.id == 'str' || this.id == 'con') {
-			updateSaves('fort');
-			$('#fortStatBonus').text(showSign(parseInt(statBonus['con'] > statBonus['str']?statBonus['con']:statBonus['str'])));
-		} else if (this.id == 'dex' || this.id == 'int') {
-			updateSaves('ref');
-			$('#refStatBonus').text(showSign(parseInt(statBonus['dex'] > statBonus['int']?statBonus['dex']:statBonus['int'])));
-		} else/* if (this.id == 'wis' || this.id == 'cha')*/ {
-			updateSaves('will');
-			$('#willStatBonus').text(showSign(parseInt(statBonus['wis'] > statBonus['cha']?statBonus['wis']:statBonus['cha'])));
-		}
-		
-		$('.addStat_' + this.id).each(function () {
-			$(this).text(showSign(parseInt($(this).text()) + modifier - oldBonus));
-		});
-	});
-	
-	$('#hpInput').blur(function () {
-		var hp = $(this).val().length?parseInt($(this).val()):0;
-		$('#bloodiedVal').text(Math.floor(hp / 2));
-		$('#surgeVal').text(Math.floor(hp / 4));
-	});
-	$('#saves input').blur(function () {  updateSaves($(this).attr('name').substring(6, 7)); });
-	$('#init_misc').blur(function () { $('#init_total').text(showSign(statBonus['dex'] + Math.floor(level / 2) + ($(this).val().length?parseInt($(this).val()):0))); });
-	$('#movement input, #passiveSenses input, #attacks input').blur(function () {
-		var total = 0;
-		$(this).parent().find('input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
-		if ($(this).parent().parent().attr('id') == 'passiveSenses') {
-			total += 10;
-			$(this).parent().find('.total').text(total);
-		} else if ($(this).parent().parent().attr('id') == 'movement') { $(this).parent().find('.total').text(total); }
-		else {
-			if ($(this).parent().parent().attr('class') == 'attackBonusSet') total += Math.floor(level / 2);
-			$(this).parent().find('.total').text(showSign(total));
-		}
-	});
-	
+
 	$('#addAttack').click(function (e) {
 		$.post('/characters/ajax/dnd4/addAttack', { count: $('.attackBonusSet').size() + 1 }, function (data) {
 			$(data).hide().appendTo('#attacks .hbdMargined').slideDown();
@@ -97,37 +44,9 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	
-	$('#addSkill').click(function (e) {
-		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			$.post('/characters/ajax/dnd4/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: parseInt($('#' + $('#skillStat').val() + 'Modifier').text()) }, function (data) {
-				if ($('#noSkills').size()) $('#noSkills').remove();
-				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
-				$('#skillName').val('').trigger('blur');
-			});
-		}
-		
-		e.preventDefault();
-	});
-	$('#skills').on('change', '.skill input', function () {
-		var stat = $(this).parent().find('.skill_total').attr('class').match(/addStat_(\w{3})/)[1];
-		var total = statBonus[stat];
-		$(this).parent().find('.skill_ranks, .skill_misc').each(function () { total += parseInt($(this).val()); });
-		$(this).parent().find('.skill_total').text(showSign(total));
-	});
-	
-	$('#addFeat').click(function (e) {
-		if ($('#featName').val().length >= 3) { $.post('/characters/ajax/dnd4/addFeat', { characterID: characterID, name: $('#featName').val() }, function (data) {
-			if ($('#noFeats').size()) $('#noFeats').remove();
-			$(data).hide().appendTo('#feats .hbdMargined').slideDown();
-			$('#featName').val('').trigger('blur');
-		}); }
-		
-		e.preventDefault();
-	});
+	$('#attacks').on('blur', '.sumRow input', sumRow);
 	
 	$('#powerName').autocomplete('/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID });
-
 	$('#addPower').click(function (e) {
 		var type = $('#powerType').val();
 		if ($('#powerName').val().length >= 3 && $('#powerName').val() != 'Power') {
@@ -153,5 +72,5 @@ $(function() {
 		});
 		
 		e.preventDefault();
-	});
+	});*/
 });

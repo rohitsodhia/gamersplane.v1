@@ -122,6 +122,12 @@
 		return $num;
 	}
 
+	function addBodyClass($class) {
+		global $bodyClasses;
+
+		if (strlen($class)) $bodyClasses[] = $class;
+	}
+
 /* Character Functions */
 	function getCharacterClass($characterID) {
 		global $mysql;
@@ -162,13 +168,6 @@
 	}
 	
 /* Tools Functions */
-	function parseRolls($rawRolls) {
-		$rolls = array();
-		preg_match_all('/\d+d\d+([+-]\d+)?/', $rawRolls, $rolls);
-		if (sizeof($rolls[0])) return $rolls[0];
-		else return FALSE;
-	}
-	
 	function rollDice($roll, $rerollAces = 0) {
 		list($numDice, $diceType) = explode('d', str_replace(' ', '', trim($roll)));
 		$numDice = intval($numDice);
@@ -205,27 +204,6 @@
 		return $diceString;
 	}
 
-	function sweote_rollDice($roll) {
-		$dice = array(
-			'ability' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage'),
-			'proficiency' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_success', 'success_advantage', 'success_advantage', 'success_advantage', 'advantage_advantage', 'advantage_advantage', 'triumph'),
-			'boost' => array(1 => '', '', 'success', 'advantage', 'success_advantage', 'advantage_advantage'),
-			'difficulty' => array(1 => '', 'failure', 'threat', 'threat', 'threat', 'failure_failure', 'failure_threat', 'threat_threat'),
-			'challenge' => array(1 => '', 'failure', 'failure', 'threat', 'threat', 'failure_failure', 'failure_failure', 'failure_threat', 'failure_threat', 'threat_threat', 'threat_threat', 'dispair'),
-			'setback' => array(1 => '', '', 'failure', 'failure', 'threat', 'threat'),
-			'force' => array(1 => 'whiteDot', 'whiteDot', 'whiteDot_whiteDot', 'whiteDot_whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot_blackDot'),
-			);
-		
-		$result = array('result' => $dice[$roll][mt_rand(1, sizeof($dice[$roll]))]);
-		$result['values'] = explode('_', $result['result']);
-
-		return $result;
-	}
-
-	function sweote_displayDice($roll) {
-
-	}
-	
 	function newGlobalDeck($deckType) {
 		global $mysql;
 		$deckCheck = $mysql->prepare("SELECT short, name, deckSize FROM deckTypes WHERE short = :short");

@@ -4,7 +4,6 @@ $(function() {
 	
 	$('#addSkill').click(function (e) {
 		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			console.log({ characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val() });
 			$.post('/characters/ajax/sweote/addSkill', { characterID: characterID, name: $('#skillName').val(), stat: $('#skillStat').val() }, function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
 				$(data).hide().appendTo('#skills .hbdMargined').slideDown().find('input[type="checkbox"]').prettyCheckbox();

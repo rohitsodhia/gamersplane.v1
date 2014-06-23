@@ -1,75 +1,11 @@
 /*
-	Gamers Plane Characters: D&D3/3.5 CSS Stylesheet
+	Gamers Plane Characters: d20 Cthulhu CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
-
-
-.cell {
-	display: inline-block;
-}
-
-label {
-	font-size: .8em;
-	display: inline-block;
-}
-
-label.shiftRight {
-	padding-left: 8px;
-}
-
-input[type="text"] {
-	vertical-align: middle;
-	width: 40px;
-	text-align: center;
-}
-
-.shortText, input.shortText {
-	width: 100px;
-}
-
-.medText, input.medText {
-	width: 200px;
-}
-
-.longText, input.longText {
-	width: 350px;
-}
-
-input.shortText, input.medText, input.longText {
-	text-align: left;
-}
-
-.shortNum, input.shortNum {
-	width: 40px;
-}
-
-.medNum, input.medNum {
-	width: 60px;
-}
-
-label.leftLabel {
-	font-size: 1em;
-}
 
 .lrBuffer {
 	margin-right: 10px;
 	margin-left: 10px;
-}
-
-#page_characterSheet_edit .labelTR {
-	padding-bottom: 0;
-}
-
-#page_characterSheet .labelTR {
-	padding: 0;
-}
-
-#page_characterSheet .dataTR {
-	margin-bottom: 1em;
-}
-
-#page_characterSheet .dataTR > div {
-	display: inline-block;
 }
 
 #classWrapper {
@@ -169,6 +105,7 @@ label.leftLabel {
 #page_characterSheet_edit #ac .tr div {
 	display: inline-block;
 	width: 50px;
+	vertical-align: middle;
 	text-align: center;
 }
 
@@ -254,10 +191,6 @@ label.leftLabel {
 #addSkillWrapper, #addFeatWrapper {
 	margin: 1em 0;
 	position: relative;
-}
-
-#addSkillWrapper > *, #addFeatWrapper > * {
-	vertical-align: middle;
 }
 
 #addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {

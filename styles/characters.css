@@ -220,6 +220,14 @@
 	margin: 1em 0;
 }
 
+.tr > * {
+	vertical-align: middle;
+}
+
+.textLabel {
+	padding: 0;
+}
+
 #page_characterSheet_edit #label_levels {
 	position: relative;
 	left: -2px;
@@ -302,6 +310,10 @@ input.shortText, input.medText, input.longText {
 	width: 100px;
 }
 
+.statSelect > * {
+	vertical-align: middle;
+}
+
 #page_characterSheet .statSelect > * {
 	display: inline-block;
 }
@@ -333,6 +345,10 @@ label.leftLabel {
 
 #page_characterSheet .dataTR > div {
 	display: inline-block;
+}
+
+#addSkillWrapper > *, #addFeatWrapper > * {
+	vertical-align: middle;
 }
 
 #page_featNotes #notes, #page_editFeatNotes #notes {

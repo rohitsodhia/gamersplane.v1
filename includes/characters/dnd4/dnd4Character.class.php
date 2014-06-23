@@ -135,6 +135,8 @@
 		public function attackEditFormat($attackNum, $attackInfo = array()) {
 			$defaults = array('total' => 0, 'stat' => 0, 'class' => 0, 'prof' => 0, 'feat' => 0, 'enh' => 0, 'misc' => 0);
 			foreach ($defaults as $key => $value) if (!isset($attackInfo[$key])) $attackInfo[$key] = $value;
+			$total = $this->getHL();
+			foreach ($attackInfo as $value) $total += intval($value);
 ?>
 							<div class="attackBonusSet">
 								<div class="tr">
@@ -151,9 +153,9 @@
 									<label class="shortNum alignCenter lrBuffer">Enh</label>
 									<label class="shortNum alignCenter lrBuffer">Misc</label>
 								</div>
-								<div class="tr">
-									<span class="shortNum lrBuffer addHL total"><?=showSign($attackInfo['total'])?></span>
-									<span class="shortNum lrBuffer addHL">+<?=floor($attackInfo['charLevel'] / 2)?></span>
+								<div class="tr sumRow">
+									<span class="shortNum lrBuffer addHL total"><?=showSign($total)?></span>
+									<span class="shortNum lrBuffer addHL">+<?=$this->getHL()?></span>
 									<input type="text" name="attacks[<?=$attackNum?>][stat]" value="<?=$attackInfo['stat']?>" class="statInput lrBuffer">
 									<input type="text" name="attacks[<?=$attackNum?>][class]" value="<?=$attackInfo['class']?>" class="statInput lrBuffer">
 									<input type="text" name="attacks[<?=$attackNum?>][prof]" value="<?=$attackInfo['prof']?>" class="statInput lrBuffer">

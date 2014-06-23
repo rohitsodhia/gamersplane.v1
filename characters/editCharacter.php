@@ -16,8 +16,8 @@
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 				$addJSFiles[] = 'characters/_edit.js';
+				if (is_subclass_of($character, 'd20Character')) $addJSFiles[] = 'characters/_d20character.js';
 				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
-
 			}
 		}
 	} else { header('Location: /404/'); exit; }

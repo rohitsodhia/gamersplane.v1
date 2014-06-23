@@ -98,28 +98,6 @@ function setupWings() {
 	$(this).css(bCSS);
 }
 
-function updateSaves(save) {
-	var total = 0;
-	if (save.substring(0, 1) == 'f') { save = 'fort'; total = parseInt($('#conModifier').text()); }
-	else if (save.substring(0, 1) == 'r') { save = 'ref'; total = parseInt($('#dexModifier').text()); }
-	else if (save.substring(0, 1) == 'w') { save = 'will'; total = parseInt($('#wisModifier').text()); }
-	$('#' + save +'Row input').each(function () { total += $(this).val().length?parseInt($(this).val()):0; });
-	$('#' + save + 'Total').text(showSign(total));
-}
-
-function updateCombatBonuses() {
-	var initTotal = parseInt($('#dexModifier').text());
-	var meleeTotal = parseInt($('#strModifier').text()) + parseInt($('#size').val()) + parseInt($('#bab').val()) + parseInt($('#melee_misc').val());
-	var rangedTotal = parseInt($('#dexModifier').text()) + parseInt($('#size').val()) + parseInt($('#bab').val()) + parseInt($('#ranged_misc').val());
-	
-	$('#init input').each(function () { initTotal += $(this).val().length?parseInt($(this).val()):0; });
-	$('#initTotal').text(showSign(initTotal));
-//	$('#melee input').each(function () { meleeTotal += $(this).val().length?parseInt($(this).val()):0; });
-	$('#meleeTotal').text(showSign(meleeTotal));
-//	$('#ranged input').each(function () { rangedTotal += $(this).val().length?parseInt($(this).val()):0; });
-	$('#rangedTotal').text(showSign(rangedTotal));
-}
-
 function fm_rollDice(dice, rerollAces) {
 	rerollAces = typeof rerollAces == 'undefined' ? 0 : rerollAces;
 	$.post('/tools/process/dice', { rollType: 'basic', dice: dice, rerollAces: rerollAces }, function (data) {
@@ -129,4 +107,22 @@ function fm_rollDice(dice, rerollAces) {
 		$(data).addClass('newestRolls').prependTo('#fm_diceRoller .floatRight');
 		$('#fm_diceRoller .newestRolls').slideDown(400);
 	});
+}
+
+function sumRow() {
+	var rowTotal = 0;
+	$parent = $(this).parent();
+	$parent.find('input[type="text"]').each(function () { rowTotal += parseInt($(this).val()); });
+	var $total = $parent.find('.total');
+	var classes = $total.attr('class').split(/\s+/);
+	$.each(classes, function (index, item) {
+		if (item.substring(3, 7) == 'Stat') rowTotal += statBonus[item.split('_')[1]];
+		else if (item.substring(3, 6) == 'Int') rowTotal += parseInt(item.split('_')[1]);
+		else if (item.substring(3, 6) == 'BAB') rowTotal += parseInt($('#bab').val());
+		else if (item.substring(3, 7) == 'Size') rowTotal += size;
+		else if (item.substring(3, 5) == 'HL') rowTotal += Math.floor(level / 2);
+	});
+
+	if ($total.hasClass('noSign')) $total.text(rowTotal);
+	else $total.text(showSign(rowTotal));
 }

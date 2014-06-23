@@ -1,5 +1,7 @@
 var characterID = parseInt($('#characterID').val()), system = $('#system').val();
 $(function () {
+	$('#charDetails').on('blur', '.sumRow input', sumRow);
+
 	if ($('#classWrapper')) {
 		$('#classWrapper a').click(function (e) {
 			e.preventDefault();

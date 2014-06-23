@@ -21,4 +21,5 @@
 	$systems = Systems::getInstance();
 
 	$addJSFiles = array();
+	$bodyClasses = array();
 ?>

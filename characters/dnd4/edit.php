@@ -61,7 +61,7 @@
 							<label id="label_<?=$short?>" class="textLabel shortText lrBuffer leftLabel"><?=$stat?></label>
 							<input type="text" id="<?=$short?>" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="2" class="stat lrBuffer">
 							<div id="<?=$short?>Modifier" class="shortNum cell alignCenter statBonus_<?=$short?>"><?=$this->getStatMod($short)?></div>
-							<div id="<?=$short?>ModifierPL" class="shortNum cell alignCenter addHL"><?=$this->getStatModPHL($short)?></div>
+							<div id="<?=$short?>ModifierPL" class="shortNum cell alignCenter addStat_<?=$short?> addHL"><?=$this->getStatModPHL($short)?></div>
 						</div>
 <?	} ?>
 					</div>
@@ -77,9 +77,9 @@
 							<label class="shortNum lrBuffer">Enh</label>
 							<label class="shortNum lrBuffer">Misc</label>
 						</div>
-						<div id="acRow" class="tr">
+						<div id="acRow" class="tr sumRow">
 							<label class="leftLabel">AC</label>
-							<span id="acTotal" class="shortNum lrBuffer addHL"><?=showSign($this->getSave('ac', 'total'))?></span>
+							<span id="acTotal" class="shortNum lrBuffer total addInt_10 addHL"><?=showSign($this->getSave('ac', 'total'))?></span>
 							<span class="shortNum lrBuffer addHL"><?=showSign(10 + $this->getHL())?></span>
 							<input type="text" name="saves[ac][armor]"  value="<?=$this->getSave('ac', 'armor')?>" class="lrBuffer">
 							<input type="text" name="saves[ac][class]"  value="<?=$this->getSave('ac', 'class')?>" class="lrBuffer">
@@ -94,9 +94,9 @@
 		$useAbility = 0;
 		if ($abilityMods[1] > $abilityMods[0]) $useAbility = 1;
 ?>
-						<div id="<?=$save?>Row" class="tr">
+						<div id="<?=$save?>Row" class="tr sumRow">
 							<label class="leftLabel"><?=$saveFull?></label>
-							<span id="<?=$save?>Total" class="shortNum lrBuffer addHL"><?=showSign($this->getSave($save, 'total'))?></span>
+							<span id="<?=$save?>Total" class="shortNum lrBuffer total addInt_10 addStat_<?=$abilities[$useAbility]?> addHL"><?=showSign($this->getSave($save, 'total'))?></span>
 							<span class="shortNum lrBuffer addHL"><?=showSign(10 + $this->getHL())?></span>
 							<span id="<?=$save?>StatBonus" class="shortNum lrBuffer"><?=showSign($abilityMods[$useAbility])?></span>
 							<input type="text" name="saves[<?=$save?>][class]"  value="<?=$this->getSave($save, 'class')?>" class="lrBuffer">
@@ -115,9 +115,9 @@
 							<label class="shortNum alignCenter lrBuffer">1/2 Lvl</label>
 							<label class="shortNum alignCenter lrBuffer">Misc</label>
 						</div>
-						<div class="tr">
+						<div class="tr sumRow">
 							<label class="shortText alighRight leftLabel">Initiative</label>
-							<div id="init_total" class="shortNum alignCenter lrBuffer addHL"><?=showSign($this->getInitiative('total'))?></div>
+							<div id="init_total" class="shortNum alignCenter lrBuffer total addStat_dex addHL"><?=showSign($this->getInitiative('total'))?></div>
 							<div class="shortNum alignCenter statBonus_dex lrBuffer"><?=$this->getStatMod('dex')?></div>
 							<div class="shortNum alignCenter addHL lrBuffer">+<?=$this->getHL()?></div>
 							<input id="init_misc" type="text" name="initiative[misc]"  value="<?=$this->getInitiative('misc')?>" class="lrBuffer">
@@ -151,9 +151,9 @@
 								<label class="shortNum alignCenter lrBuffer">Item</label>
 								<label class="shortNum alignCenter lrBuffer">Misc</label>
 							</div>
-							<div class="tr">
+							<div class="tr sumRow">
 								<label class="medNum leftLabel">Speed</label>
-								<div class="shortNum alignCenter lrBuffer cell total"><?=$this->getSpeed('total')?></div>
+								<div class="shortNum alignCenter lrBuffer cell total noSign"><?=$this->getSpeed('total')?></div>
 								<input type="text" name="speed[base]"  value="<?=$this->getSpeed('base')?>" class="lrBuffer">
 								<input type="text" name="speed[armor]"  value="<?=$this->getSpeed('armor')?>" class="lrBuffer">
 								<input type="text" name="speed[item]"  value="<?=$this->getSpeed('item')?>" class="lrBuffer">
@@ -173,15 +173,15 @@
 								<div class="fillerBlock cell shortNum">&nbsp;</div>
 								<label class="shortNum alignCenter">Skill</label>
 							</div>
-							<div class="tr">
+							<div class="tr sumRow">
 								<label class="leftLabel">Passive Insight</label>
-								<div class="medNum alignCenter cell total"><?=$this->getPassiveSenses('insight') + 10?></div>
+								<div class="medNum alignCenter cell total noSign addInt_10"><?=$this->getPassiveSenses('insight') + 10?></div>
 								<div class="shortNum alignCenter cell">10 + </div>
 								<input type="text" name="passiveSenses[insight]" value="<?=$this->getPassiveSenses('insight')?>">
 							</div>
-							<div class="tr">
+							<div class="tr sumRow">
 								<label class="leftLabel">Passive Perception</label>
-								<div class="medNum alignCenter cell total"><?=$this->getPassiveSenses('perception') + 10?></div>
+								<div class="medNum alignCenter cell total noSign addInt_10"><?=$this->getPassiveSenses('perception') + 10?></div>
 								<div class="shortNum alignCenter cell">10 + </div>
 								<input type="text" name="passiveSenses[perception]" value="<?=$this->getPassiveSenses('perception')?>">
 							</div>
