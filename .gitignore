@@ -13,3 +13,4 @@ ucp/avatars/
 *.sql
 blog/
 test*.php
+includes/connect_local.php

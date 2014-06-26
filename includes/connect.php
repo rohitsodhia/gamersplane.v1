@@ -2,8 +2,7 @@
 	require_once('database/Database.php');
 	use Database\Database;
 
-	if ($_SERVER['SERVER_NAME'] == 'gamersplane.local') $dbHostname = 'localhost';
-	else $dbHostname = 'mysql.gamersplane.com';
+	$dbHostname = 'localhost';
 	$dbUsername = 'gamersplane';
 	$dbPassword = 'Ep2NXZ0Atv6MThNtsa2h';
 	$dbName     = 'gamersplane';
