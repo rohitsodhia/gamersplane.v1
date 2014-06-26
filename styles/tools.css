@@ -4,13 +4,12 @@
 */
 
 #page_tools #toolsList {
-	width: 487px;
-	margin: 0 auto;
+	text-align: center;
 }
 
 #page_tools #toolsList a {
-	display: block;
-	float: left;
+	display: inline-block;
+	margin: 0 15px;
 	padding: 5px 15px;
 	border: 3px solid #A00;
 	-moz-border-radius: 10px;
@@ -312,4 +311,10 @@
 
 #page_tools_dice #diceSpace .sweote_dice {
 	margin-right: 10px;
+}
+
+/* --------------------------------------------*/
+
+#page_music .sideWidget label {
+	display: inline-block;
 }
