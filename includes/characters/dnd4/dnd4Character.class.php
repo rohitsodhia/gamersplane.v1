@@ -207,8 +207,10 @@
 			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
 			else return;
 			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'ranks' => 0, 'misc' => 0);
-			$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-			if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
+			try {
+				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
+				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
+			} catch (Exception $e) {}
 		}
 
 		public function updateSkill($skillID, $skillInfo) {

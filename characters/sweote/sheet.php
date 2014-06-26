@@ -22,6 +22,7 @@
 			
 			<div class="clearfix">
 				<div id="stats">
+					<div class="col">
 <?
 	$stats = sweote_consts::getStatNames();
 	$count = 0;
@@ -41,6 +42,7 @@
 		$count++;
 	}
 ?>
+					</div>
 				</div>
 				
 				<div id="defense">

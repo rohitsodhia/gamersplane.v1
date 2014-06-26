@@ -62,9 +62,9 @@
 							<label class="shortNum lrBuffer">Misc</label>
 						</div>
 <?	foreach (d20Character_consts::getSaveNames() as $save => $saveFull) { ?>
-						<div id="<?=$save?>Row" class="tr">
+						<div id="<?=$save?>Row" class="tr sumRow">
 							<label class="leftLabel"><?=$saveFull?></label>
-							<span id="<?=$save?>Total" class="shortNum lrBuffer addStat_<?=$this->getSave($save, 'stat')?>"><?=showSign($this->getSave($save, 'total'))?></span>
+							<span id="<?=$save?>Total" class="shortNum lrBuffer total addStat_<?=$this->getSave($save, 'stat')?>"><?=showSign($this->getSave($save, 'total'))?></span>
 							<input type="text" name="saves[<?=$save?>][base]" value="<?=$this->getSave($save, 'base')?>" class="lrBuffer" data-save-type="<?=$save?>">
 							<span class="statSelect lrBuffer">
 								<select name="saves[<?=$save?>][stat]" class="abilitySelect">
@@ -101,13 +101,13 @@
 					<div id="ac">
 						<div class="tr labelTR">
 							<label class="lrBuffer first">Total Def</label>
-							<label class="lrBuffer">Class</label>
-							<label class="lrBuffer">Armor</label>
-							<label class="lrBuffer">Dex</label>
-							<label class="lrBuffer">Misc</label>
+							<label class="shortNum lrBuffer">Class</label>
+							<label class="shortNum lrBuffer">Armor</label>
+							<label class="shortNum lrBuffer">Dex</label>
+							<label class="shortNum lrBuffer">Misc</label>
 						</div>
-						<div class="tr">
-							<span id="ac_total" class="lrBuffer"><?=$this->getAC('total')?></span>
+						<div class="tr sumRow">
+							<span id="ac_total" class="lrBuffer total addInt_10"><?=$this->getAC('total')?></span>
 							<span> = 10 + </span>
 							<input type="text" name="ac[class]" value="<?=$this->getAC('class')?>" class="acComponents lrBuffer">
 							<input type="text" name="ac[armor]" value="<?=$this->getAC('armor')?>" class="acComponents lrBuffer">
@@ -126,9 +126,9 @@
 							<label class="shortNum lrBuffer">Ability</label>
 							<label class="shortNum lrBuffer">Misc</label>
 						</div>
-							<div id="init" class="tr">
+							<div id="init" class="tr sumRow">
 								<label class="leftLabel shortText">Initiative</label>
-								<span id="initTotal" class="shortNum lrBuffer addStat_dex"><?=showSign($this->getInitiative('total'))?></span>
+								<span id="initTotal" class="shortNum lrBuffer total addStat_<?=$this->getInitiative('stat')?>"><?=showSign($this->getInitiative('total'))?></span>
 								<span class="lrBuffer shortNum">&nbsp;</span>
 								<span class="statSelect lrBuffer">
 									<select name="initiative[stat]" class="abilitySelect">
@@ -140,9 +140,9 @@
 								</span>
 								<input type="text" name="initiative[misc]" value="<?=$this->getInitiative('misc')?>" class="lrBuffer">
 							</div>
-							<div id="melee" class="tr">
+							<div id="melee" class="tr sumRow">
 								<label class="leftLabel shortText">Melee</label>
-								<span id="meleeTotal" class="shortNum lrBuffer addStat_str addSize"><?=showSign($this->getAttackBonus('total', 'melee'))?></span>
+								<span id="meleeTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'melee')?>"><?=showSign($this->getAttackBonus('total', 'melee'))?></span>
 								<input id="bab" type="text" name="attackBonus[base]" value="<?=$this->getAttackBonus('base')?>" class="lrBuffer">
 								<span class="statSelect lrBuffer">
 									<select name="attackBonus[stat][melee]" class="abilitySelect">
@@ -154,9 +154,9 @@
 								</span>
 								<input id="melee_misc" type="text" name="attackBonus[misc][melee]" value="<?=$this->getAttackBonus('misc', 'melee')?>" class="lrBuffer">
 							</div>
-							<div id="ranged" class="tr">
+							<div id="ranged" class="tr sumRow">
 								<label class="leftLabel shortText">Ranged</label>
-								<span id="rangedTotal" class="shortNum lrBuffer addStat_dex addSize"><?=showSign($this->getAttackBonus('total', 'ranged'))?></span>
+								<span id="rangedTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'ranged')?>"><?=showSign($this->getAttackBonus('total', 'ranged'))?></span>
 								<span class="shortNum lrBuffer bab"><?=showSign($this->getAttackBonus('base'))?></span>
 								<span class="statSelect lrBuffer">
 									<select name="attackBonus[stat][ranged]" class="abilitySelect">
@@ -190,27 +190,15 @@
 							<label class="shortNum lrBuffer">Stat</label>
 							<label class="shortNum lrBuffer">Misc</label>
 						</div>
-						<div class="tr">
-							<label class="leftLabel shortText">Knowledge</label>
-							<span id="knowledge_total" class="shortNum lrBuffer addLevel addStat_int"><?=showSign($this->getExtraStats('knowledge') + $this->getLevel() + $this->getStatMod('int', false))?></span>
+<?	foreach(array('knowledge' => 'int', 'request' => 'cha', 'gear' => 'wis') as $extraStat => $useStat) { ?>
+						<div class="tr sumRow">
+							<label class="leftLabel shortText"><?=ucwords($extraStat)?></label>
+							<span id="<?=$extraStat?>_total" class="shortNum lrBuffer total addLevel addStat_<?=$useStat?>"><?=showSign($this->getExtraStats($extraStat) + $this->getLevel() + $this->getStatMod($useStat, false))?></span>
 							<span class="shortNum lrBuffer level"><?=showSign($this->getLevel())?></span>
-							<span class="shortNum lrBuffer statBonus_int"><?=$this->getStatMod('int', false)?></span>
-							<input id="knowledge_misc" type="text" name="extraStats[knowledge]" value="<?=$this->getExtraStats('knowledge')?>" class="lrBuffer">
+							<span class="shortNum lrBuffer statBonus_int"><?=$this->getStatMod($useStat)?></span>
+							<input id="<?=$extraStat?>_misc" type="text" name="extraStats[<?=$extraStat?>]" value="<?=$this->getExtraStats($extraStat)?>" class="lrBuffer">
 						</div>
-						<div class="tr">
-							<label class="leftLabel shortText">Request</label>
-							<span id="request_total" class="shortNum lrBuffer addLevel addStat_cha"><?=showSign($this->getExtraStats('request') + $this->getLevel() + $this->getStatMod('cha', false))?></span>
-							<span class="shortNum lrBuffer level"><?=showSign($this->getLevel())?></span>
-							<span class="shortNum lrBuffer statBonus_cha"><?=$this->getStatMod('cha', false)?></span>
-							<input id="request_misc" type="text" name="extraStats[request]" value="<?=$this->getExtraStats('request')?>" class="lrBuffer">
-						</div>
-						<div class="tr">
-							<label class="leftLabel shortText">Gear</label>
-							<span id="gear_total" class="shortNum lrBuffer addLevel addStat_wis"><?=showSign($this->getExtraStats('gear') + $this->getLevel() + $this->getStatMod('wis', false))?></span>
-							<span class="shortNum lrBuffer level"><?=showSign($this->getLevel())?></span>
-							<span class="shortNum lrBuffer statBonus_wis"><?=$this->getStatMod('wis', false)?></span>
-							<input id="gear_misc" type="text" name="extraStats[gear]" value="<?=$this->getExtraStats('gear')?>" class="lrBuffer">
-						</div>
+<?	} ?>
 					</div>
 				</div>
 				
@@ -223,7 +211,7 @@
 <?	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n"; ?>
 							</select>
 							<select id="skillStat_2" name="newSkill[stat_2]">
-								<option value=""></option>
+								<option value="">&nbsp;</option>
 <?	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n"; ?>
 							</select>
 							<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>

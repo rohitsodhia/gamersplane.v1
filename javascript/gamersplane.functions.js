@@ -110,19 +110,24 @@ function fm_rollDice(dice, rerollAces) {
 }
 
 function sumRow() {
-	var rowTotal = 0;
+	var inputTotal = 0;
 	$parent = $(this).parent();
-	$parent.find('input[type="text"]').each(function () { rowTotal += parseInt($(this).val()); });
+	$parent.find('input[type="text"]').not('.dontAdd').each(function () { inputTotal += parseInt($(this).val()); });
 	var $total = $parent.find('.total');
-	var classes = $total.attr('class').split(/\s+/);
-	$.each(classes, function (index, item) {
-		if (item.substring(3, 7) == 'Stat') rowTotal += statBonus[item.split('_')[1]];
-		else if (item.substring(3, 6) == 'Int') rowTotal += parseInt(item.split('_')[1]);
-		else if (item.substring(3, 6) == 'BAB') rowTotal += parseInt($('#bab').val());
-		else if (item.substring(3, 7) == 'Size') rowTotal += size;
-		else if (item.substring(3, 5) == 'HL') rowTotal += Math.floor(level / 2);
-	});
+	$total.each(function () {
+		var $indivTotal = $(this);
+		var classes = $indivTotal.attr('class').split(/\s+/);
+		var finalTotal = inputTotal;
+		$.each(classes, function (index, item) {
+			if (item.substring(3, 7) == 'Stat') finalTotal += statBonus[item.split('_')[1]];
+			else if (item.substring(3, 6) == 'Int') finalTotal += parseInt(item.split('_')[1]);
+			else if (item.substring(3, 6) == 'BAB') finalTotal += parseInt($('#bab').val());
+			else if (item.substring(3, 7) == 'Size') finalTotal += size;
+			else if (item.substring(3, 8) == 'Level') finalTotal += level;
+			else if (item.substring(3, 5) == 'HL') finalTotal += Math.floor(level / 2);
+		});
 
-	if ($total.hasClass('noSign')) $total.text(rowTotal);
-	else $total.text(showSign(rowTotal));
+		if ($indivTotal.hasClass('noSign')) $indivTotal.text(finalTotal);
+		else $indivTotal.text(showSign(finalTotal));
+	});
 }

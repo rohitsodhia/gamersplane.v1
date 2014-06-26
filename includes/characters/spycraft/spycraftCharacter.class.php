@@ -66,8 +66,10 @@
 			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
 			else return;
 			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $post['stat'], 'ranks' => 0, 'misc' => 0);
-			$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-			if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
+			try {
+				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
+				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
+			} catch (Exception $e) {}
 		}
 
 		public function updateSkill($skillID, $skillInfo) {
@@ -87,7 +89,7 @@
 ?>
 						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
 							<span class="skill_name textLabel medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
-							<span class="skill_total textLabel lrBuffer <?=$skillInfo['stat'] != 'n/a'?'addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
+							<span class="skill_total textLabel lrBuffer total <?=$skillInfo['stat'] != 'n/a'?'addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 							<span class="skill_stat textLabel lrBuffer alignCenter shortNum"><?=ucwords($skillInfo['stat'])?></span>
 							<input type="text" name="skills[<?=$skillInfo['skillID']?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 							<input type="text" name="skills[<?=$skillInfo['skillID']?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">

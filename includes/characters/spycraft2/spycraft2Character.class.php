@@ -71,11 +71,11 @@
 		public function addSkill($skillID, $name, $post) {
 			global $mysql;
 
-			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
-			else return;
 			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat_1' => $post['stat_1'], 'stat_2' => $post['stat_2'], 'ranks' => 0, 'misc' => 0, 'error' => '', 'threat' => '');
-			$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-			if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo);
+			try {
+				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat_1, stat_2) VALUES ({$this->characterID}, $skillID, '{$skillInfo['stat_1']}', '{$skillInfo['stat_2']}')");
+				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo);
+			} catch (Exception $e) {}
 		}
 
 		public function updateSkill($skillID, $skillInfo) {
@@ -98,12 +98,12 @@
 ?>
 					<div id="skill_<?=$skillInfo['skillID']?>" class="skill tr clearfix">
 						<span class="skill_name medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
-						<span class="skill_total lrBuffer shortNum"><span class="skill_total_1 addStat_<?=$skillInfo['stat_1']?>"><?=showSign($total_1).'</span>'.($skillInfo['stat_2'] != '' ? "/<span class=\"skill_total_2 addStat_{$skillInfo['stat_2']}\">".showSign($total_2).'</span>' : '')?></span>
+						<span class="skill_total lrBuffer shortNum"><span class="skill_total_1 total addStat_<?=$skillInfo['stat_1']?>"><?=showSign($total_1).'</span>'.($skillInfo['stat_2'] != '' ? "/<span class=\"skill_total_2 total addStat_{$skillInfo['stat_2']}\">".showSign($total_2).'</span>' : '')?></span>
 						<span class="skill_stat lrBuffer alignCenter shortText"><?=ucwords($skillInfo['stat_1']).($skillInfo['stat_2'] != '' ? '/'.ucwords($skillInfo['stat_2']) : '')?></span>
 						<input type="text" name="skills[<?=$skillInfo['skillID']?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 						<input type="text" name="skills[<?=$skillInfo['skillID']?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-						<input type="text" name="skills[<?=$skillInfo['skillID']?>][error]" value="<?=$skillInfo['error']?>" class="skill_error medNum lrBuffer">
-						<input type="text" name="skills[<?=$skillInfo['skillID']?>][threat]" value="<?=$skillInfo['threat']?>" class="skill_threat medNum lrBuffer">
+						<input type="text" name="skills[<?=$skillInfo['skillID']?>][error]" value="<?=$skillInfo['error']?>" class="skill_error medNum lrBuffer dontAdd">
+						<input type="text" name="skills[<?=$skillInfo['skillID']?>][threat]" value="<?=$skillInfo['threat']?>" class="skill_threat medNum lrBuffer dontAdd">
 						<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove">
 					</div>
 <?

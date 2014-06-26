@@ -1,3 +1,18 @@
+function verifySkill() {
+	if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') return true;
+	else return false;
+}
+
+function newSkillObj() {
+	return {
+		characterID: characterID,
+		system: system,
+		name: $('#skillName').val(),
+		stat: $('#skillStat').val(),
+		statBonus: $('#skillStat').val() != ''?statBonus[$('#skillStat').val()]:0
+	}
+}
+
 var size = 0, level = 0, statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 $(function() {
 	size = parseInt($('#size').val());
@@ -50,10 +65,8 @@ $(function() {
 	$('#addSkill').click(function (e) {
 		e.preventDefault()
 		
-		if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') {
-			if ($('#skillStat').val() != '') skillStatBonus = statBonus[$('#skillStat').val()];
-			else skillStatBonus = 0;
-			$.post('/characters/ajax/addSkill/', { characterID: characterID, system: system, name: $('#skillName').val(), stat: $('#skillStat').val(), statBonus: skillStatBonus }, function (data) {
+		if (verifySkill()) {
+			$.post('/characters/ajax/addSkill/', newSkillObj(), function (data) {
 				if ($('#noSkills').size()) $('#noSkills').remove();
 				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
 				$('#skillName').val('').trigger('blur');

@@ -2,8 +2,6 @@
 	class d20cthulhuCharacter extends d20Character {
 		const SYSTEM = 'd20cthulhu';
 
-		protected $bodyClasses = array('d20Character');
-
 		protected $ac = array('armor' => 0, 'dex' => 0, 'misc' => 0);
 		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
 		protected $sanity = array('max' => 0, 'current' => 0);
@@ -30,8 +28,10 @@
 			elseif ($post['stat'] == '') $stat = 'n/a';
 			else return;
 			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'ranks' => 0, 'misc' => 0);
-			$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-			if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
+			try {
+				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
+				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
+			} catch (Exception $e) {}
 		}
 
 		public function updateSkill($skillID, $skillInfo) {

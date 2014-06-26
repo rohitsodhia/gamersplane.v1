@@ -69,20 +69,20 @@
 				
 				<div id="ac">
 					<div class="tr labelTR">
-						<label>Total AC</label>
+						<label class="medNum">Total AC</label>
 						<div class="fillerBlock cell medNum">&nbsp;</div>
-						<label>Class/ Armor</label>
-						<label>Dex</label>
-						<label>Size</label>
-						<label>Misc</label>
+						<label class="shortNum">Class/ Armor</label>
+						<label class="shortNum">Dex</label>
+						<label class="shortNum">Size</label>
+						<label class="shortNum">Misc</label>
 					</div>
 					<div class="tr dataTR">
-						<div class="first"><?=$this->getAC('total')?></div>
-						<div> = 10 + </div>
-						<div><?=showSign($this->getAC('armor'))?></div>
-						<div><?=showSign($this->getAC('dex'))?></div>
-						<div><?=showSign($this->getAC('size'))?></div>
-						<div><?=showSign($this->getAC('misc'))?></div>
+						<div class="medNum"><?=$this->getAC('total')?></div>
+						<div class="medNum"> = 10 + </div>
+						<div class="shortNum"><?=showSign($this->getAC('armor'))?></div>
+						<div class="shortNum"><?=showSign($this->getAC('dex'))?></div>
+						<div class="shortNum"><?=showSign($this->getAC('size'))?></div>
+						<div class="shortNum"><?=showSign($this->getAC('misc'))?></div>
 					</div>
 				</div>
 			</div>

@@ -72,5 +72,5 @@ $(function() {
 		});
 		
 		e.preventDefault();
-	});*/
+	});
 });

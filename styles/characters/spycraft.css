@@ -66,14 +66,7 @@
 	display: inline-block;
 }
 
-#ac label, #page_characterSheet #ac .dataTR div {
-	text-align: center;
-	width: 60px;
-}
-
-#ac span {
-	display: inline-block;
-	width: 60px;
+#page_characterSheet #ac .tr > * {
 	text-align: center;
 }
 
