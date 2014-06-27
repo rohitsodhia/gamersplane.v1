@@ -315,6 +315,17 @@
 
 /* --------------------------------------------*/
 
-#page_music .sideWidget label {
-	display: inline-block;
+#page_music .sideWidget ul {
+	margin: 0.5em 0 1em;
+	list-style: none;
 }
+
+#page_music .sideWidget li {
+	padding: 0.1em 0;
+}
+
+#page_music .sideWidget label {
+	display: inline;
+	cursor: pointer;
+}
+
