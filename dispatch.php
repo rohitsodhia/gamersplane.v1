@@ -2,10 +2,12 @@
 	require('includes/requires.php');
 	
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
-//	error_reporting(E_ALL);
-	
-	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 
+	define('STATE', 'standard');
+//	define('STATE', 'maintainance');
+//	define('STATE', 'moving');
+
+	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 //	echo $reqPath;
 	
 	if (substr($reqPath, -1) == '/') $reqPath = substr($reqPath, 0, -1);
@@ -20,7 +22,7 @@
 		if (($_SESSION['currentURL'] != $reqPath || $_SESSION['lastURL'] == '' || $_SESSION['currentURL'] == '') && !in_array($pathAction, array('login'))) {
 			$_SESSION['lastURL'] = $_SESSION['currentURL'];
 			$_SESSION['currentURL'] = $reqPath;
-		} elseif ($_SESSION['currentURL'] == $reqPath) $sameURL = TRUE;
+		} elseif ($_SESSION['currentURL'] == $reqPath) $sameURL = true;
 	}
 	
 	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php')) include(FILEROOT.'/includes/'.$pathAction.'/_section.php');
@@ -30,13 +32,13 @@
 //	print_r($_SESSION);
 
 	$requireLoc = '';
-	$isAJAX = FALSE;
+	$isAJAX = false;
 	
 	if ($pathAction == 'facebook') header('Location: http://www.facebook.com/pages/Gamers-Plane/245904792107862');
-	else {
+	elseif (STATE == 'standard') {
 		$moddedPath = $pathAction?$pathAction:'';
 		foreach ($pathOptions as $pathOption) {
-			if ($pathOption == 'ajax') $isAJAX = TRUE;
+			if ($pathOption == 'ajax') $isAJAX = true;
 
 			$moddedPath .= '/';
 			if (is_numeric($pathOption)) $moddedPath .= '(###)';
@@ -47,15 +49,25 @@
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute(array($moddedPath.'/'));
 		$dispatchInfo = $dispatchInfo->fetch();
-		if ($dispatchInfo['pageID'] == 'home' && $moddedPath != '') {
-			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404"');
+		if (($dispatchInfo['pageID'] == 'home' && $moddedPath != '') || !file_exists($dispatchInfo['file'])) {
+			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404/"');
 			$dispatchInfo = $dispatchInfo->fetch();
 		}
 		$requireLoc = $dispatchInfo['file'];
 		define('PAGE_ID', $dispatchInfo['pageID']);
-		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?TRUE:FALSE;
+		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?true:false;
 
 		require($requireLoc);
+	} elseif (STATE == 'moving') {
+		$dispatchInfo = array(
+			'url' => '/',
+			'title' => "We're moving",
+			'bodyClass' => null,
+			'modalWidth' => null
+		);
+		$requireLoc = 'moving.php';
+		define('PAGE_ID', 'moving');
+		$fixedGameMenu = false;
 	}
 	
 	$mysql = null;
