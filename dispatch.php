@@ -49,11 +49,10 @@
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute(array($moddedPath.'/'));
 		$dispatchInfo = $dispatchInfo->fetch();
-		if ($dispatchInfo['pageID'] == 'home' && $moddedPath != '') {
-			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404"');
+		if (($dispatchInfo['pageID'] == 'home' && $moddedPath != '') || !file_exists($dispatchInfo['file'])) {
+			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404/"');
 			$dispatchInfo = $dispatchInfo->fetch();
 		}
-		var_dump($dispatchInfo);
 		$requireLoc = $dispatchInfo['file'];
 		define('PAGE_ID', $dispatchInfo['pageID']);
 		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?true:false;
