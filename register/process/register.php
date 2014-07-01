@@ -71,7 +71,7 @@
 				$message .= 'Please do not respond to this email, as it will be ignored';
 				mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
 				
-				wp_create_user($username, $password1, $email);
+//				wp_create_user($username, $password1, $email);
 				
 				header('Location: /register/success/'.$username);
 			} else header('Location: /register?failed=1');
