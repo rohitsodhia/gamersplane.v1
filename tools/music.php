@@ -24,6 +24,6 @@
 			<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 		</div>
 		<div class="mainColumn right">
-			<a id="addMusic" href="/tools/music/add" class="fancyButton smallButton">Add Music</a>
+			<a id="addMusic" href="/tools/music/add/" class="fancyButton smallButton">Add Music</a>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

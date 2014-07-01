@@ -1,4 +1,4 @@
-/*
+-/*
 	Characters CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
@@ -329,3 +329,13 @@
 	cursor: pointer;
 }
 
+/* --------------------------------------------*/
+
+#page_addMusic label {
+	display: inline-block;
+	width: 80px;
+}
+
+#page_addMusic input {
+	width: 350px;
+}
