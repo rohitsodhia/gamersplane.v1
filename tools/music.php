@@ -12,7 +12,7 @@
 	$selectedGenres = array();
 	foreach (Music_consts::getGameTypes() as $type) {
 		$selectedGenre = isset($_GET['filter'], $_GET['genres']) && array_search($type, $_GET['genres']) !== FALSE?TRUE:FALSE;
-		$cleanType = preg_replace('/[^A-za-z]/', ' ', $type);
+		$cleanType = preg_replace('/[^A-za-z]/', '', $type);
 ?>
 					<li><input id="genre_<?=$cleanType?>" type="checkbox" name="genres[<?=$type?>]"> <label for="genre_<?=$cleanType?>"><?=$type?></label>
 <?
@@ -24,6 +24,8 @@
 			<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 		</div>
 		<div class="mainColumn right">
+<?	if ($loggedIn) { ?>
 			<a id="addMusic" href="/tools/music/add/" class="fancyButton smallButton">Add Music</a>
+<?	} ?>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

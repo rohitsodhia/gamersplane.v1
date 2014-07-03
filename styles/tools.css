@@ -1,4 +1,4 @@
--/*
+/*
 	Characters CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
@@ -338,4 +338,22 @@
 
 #page_addMusic input {
 	width: 350px;
+}
+
+#page_addMusic .note {
+	font-size: .8em;
+}
+
+#page_addMusic #genres > div {
+	display: inline-block;
+	width: 32%;
+}
+
+#page_addMusic #genres > div > * {
+	vertical-align: middle;
+}
+
+#page_addMusic #submitDiv {
+	margin-top: 1em;
+	text-align: center;
 }
