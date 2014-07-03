@@ -2,7 +2,7 @@
 	$loggedIn = checkLogin(0);
 	
 	define('SHORTINIT', TRUE);
-	require_once(FILEROOT.'/blog/wp-load.php');
+//	require_once(FILEROOT.'/blog/wp-load.php');
 //	require_once(FILEROOT.'/blog/wp-includes/registration.php');
 	
 	if (isset($_POST['submit'])) {
@@ -71,7 +71,7 @@
 				$message .= 'Please do not respond to this email, as it will be ignored';
 				mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
 				
-				wp_create_user($username, $password1, $email);
+//				wp_create_user($username, $password1, $email);
 				
 				header('Location: /register/success/'.$username);
 			} else header('Location: /register?failed=1');
