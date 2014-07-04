@@ -340,6 +340,12 @@
 	width: 350px;
 }
 
+#page_addMusic .alert {
+	display: none;
+	margin-bottom: .3em;
+	margin-left: 90px;
+}
+
 #page_addMusic .note {
 	font-size: .8em;
 }
