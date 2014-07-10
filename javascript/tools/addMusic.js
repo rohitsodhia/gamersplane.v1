@@ -2,12 +2,15 @@ $(function() {
 	$('form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
 		success: function (data) {
 			if (data != '') {
-				$.each(data, function (index) {
-					$('#' + data[index]).show();
+				data = $.parseJSON(data);
+				$('.alert').filter(function (index) { return !$(this).hasClass('hideDiv'); }).addClass('hideDiv');
+				$.each(data, function (index, value) {
+					$('#' + index).removeClass('hideDiv');
 				});
 				parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
-//				parent.$.colorbox.close();
-//				parent.document.location.reload();
+			} else {
+				
+				parent.$.colorbox.close();
 			}
 		}
 	});

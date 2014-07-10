@@ -329,6 +329,33 @@
 	cursor: pointer;
 }
 
+#page_music .hbAttachedList {
+	margin: 0;
+}
+
+#page_music .hbAttachedList > li:first-child:hover {
+	padding: 7px 7px;
+	border: 1px solid #CCC;
+}
+
+#page_music .hbAttachedList > li > .clearfix > * {
+	display: inline-block;
+}
+
+#page_music .song {
+	width: 270px;
+	padding-right: 15px;
+}
+
+#page_music .genres {
+	padding-left: 15px;
+	border-left: 1px solid #666;
+}
+
+#page_music .notes {
+	margin: 5px 0 0  20px;
+}
+
 /* --------------------------------------------*/
 
 #page_addMusic label {
@@ -336,18 +363,26 @@
 	width: 80px;
 }
 
-#page_addMusic input {
+#page_addMusic input, #page_addMusic textarea {
 	width: 350px;
 }
 
 #page_addMusic .alert {
-	display: none;
 	margin-bottom: .3em;
 	margin-left: 90px;
 }
 
 #page_addMusic .note {
 	font-size: .8em;
+}
+
+#page_addMusic #noGenres {
+	display: inline-block;
+	margin-left: 0;
+}
+
+#page_addMusic #noGenres.hideDiv {
+	display: none;
 }
 
 #page_addMusic #genres > div {
@@ -357,6 +392,14 @@
 
 #page_addMusic #genres > div > * {
 	vertical-align: middle;
+}
+
+#page_addMusic #notesRow > * {
+	vertical-align: top;
+}
+
+#page_addMusic #notesRow label {
+	margin-top: 4px;
 }
 
 #page_addMusic #submitDiv {
