@@ -2,9 +2,11 @@
 	$loggedIn = checkLogin(0);
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
 
-	$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$_SESSION['userID']} AND privilage = 'manageMusic'");
-	if ($checkPrivilage->rowCount()) $manageMusic = true;
-	else $manageMusic = false;
+	if ($loggedIn) {
+		$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$_SESSION['userID']} AND privilage = 'manageMusic'");
+		if ($checkPrivilage->rowCount()) $manageMusic = true;
+		else $manageMusic = false;
+	} else $manageMusic = false;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Music and Clips</h1>
