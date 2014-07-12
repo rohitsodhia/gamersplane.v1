@@ -9,8 +9,7 @@ $(function() {
 				});
 				parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
 			} else {
-				
-				parent.$.colorbox.close();
+				parent.document.location.reload();
 			}
 		}
 	});

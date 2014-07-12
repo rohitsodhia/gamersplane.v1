@@ -2,7 +2,7 @@
 	$loggedIn = checkLogin(0);
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
 
-	$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$userID} AND privilage = 'manageMusic'");
+	$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$_SESSION['userID']} AND privilage = 'manageMusic'");
 	if ($checkPrivilage->rowCount()) $manageMusic = true;
 	else $manageMusic = false;
 ?>
@@ -33,19 +33,24 @@
 			<a id="addMusic" href="/tools/music/add/" class="fancyButton smallButton">Add Music</a>
 <?	} ?>
 <?
-	$result = $mongo->music->find(array('approved' => true));
+	if ($manageMusic) $result = $mongo->music->find()->sort(array('approved' => 1, 'genres' => 1, 'title' => 1));
+	else $result = $mongo->music->find(array('approved' => true))->sort(array('genres' => 1, 'title' => 1));
 	if (sizeof($result)) {
 ?>
 			<ul class="hbAttachedList">
 <?		foreach ($result as $song) { ?>
-				<li>
+				<li<?=!$song['approved']?' class="unapproved"':''?> data-id="<?=$song['_id']?>">
 					<div class="clearfix">
 						<a href="<?=$song['url']?>" target="_blank" class="song"><?=$song['title']?></a
 						><div class="genres"><?=implode(', ', $song['genres'])?></div>
 					</div>
+<?			if (strlen($song['notes'])) { ?>
 					<div class="notes"><?=printReady($song['notes'])?></div>
+<?			} ?>
 <?			if ($manageMusic) { ?>
 					<div class="manageSong">
+						<div><button type="submit" class="toggleApproval"><?=$song['approved']?'Unapprove':'Approve'?></button></div>
+						<div><button type="submit" class="reject">Reject</button></div>
 					</div>
 <?			} ?>
 				</li>
