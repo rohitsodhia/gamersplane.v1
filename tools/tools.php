@@ -14,7 +14,7 @@
 				<p>Deck of Cards</p>
 			</a>
 			<a href="/tools/music/">
-				<img src="/images/tools/fannedCards.png">
+				<img src="/images/tools/note.png">
 				<p>Music</p>
 			</a>
 		</div>
