@@ -31,7 +31,7 @@
 			</div>
 			<div id="genres" class="tr">
 <?
-	foreach (Music_consts::getGameTypes() as $type) {
+	foreach (Music_consts::getGenres() as $type) {
 		$cleanType = preg_replace('/[^A-za-z]/', '', $type);
 ?>
 				<div>
