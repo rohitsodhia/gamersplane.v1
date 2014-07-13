@@ -1,15 +1,15 @@
 <?
 	class Music_consts {
-		private static $gameTypes = array('Horror/Survival', 'Wild West', 'Fantasy', 'Modern', 'Epic', 'Cyberpunk', 'Espionage', 'Sci-fi');
+		private static $genres = array('Horror/Survival', 'Wild West', 'Fantasy', 'Modern', 'Epic', 'Cyberpunk', 'Espionage', 'Sci-fi');
 
-		public static function getGameTypes() {
-			$types = self::$gameTypes;
-			sort($types);
-			return $types;
+		public static function getGenres() {
+			$genres = self::$genres;
+			sort($genres);
+			return $genres;
 		}
 
-		public static function validateGameType($type) {
-			if (in_array($type, self::$gameTypes)) return TRUE;
+		public static function validateGameType($genre) {
+			if (in_array($genre, self::$genres)) return TRUE;
 			else return FALSE;
 		}
 	}

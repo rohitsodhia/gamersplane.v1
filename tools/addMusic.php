@@ -20,6 +20,12 @@
 			</div>
 			<div id="noTitle" class="alert hideDiv">Title is required.</div>
 			<div class="tr">
+				<label>Has lyrics?</label>
+				<input id="hasLyrics" type="radio" name="lyrics" value="yes"> <label for="hasLyrics" class="radioLabel">Yes</label>
+				<input id="noLyrics" type="radio" name="lyrics" value="no"> <label for="noLyrics" class="radioLabel">No</label>
+			</div>
+			<div id="noTitle" class="alert hideDiv">Title is required.</div>
+			<div class="tr">
 				<label>Genres:</label>
 				<div id="noGenres" class="alert hideDiv">At least one genre must be selected.</div>
 			</div>

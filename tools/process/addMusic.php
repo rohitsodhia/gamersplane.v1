@@ -6,6 +6,7 @@
 
 		$url = sanitizeString($_POST['url']);
 		$title = sanitizeString($_POST['title']);
+		$lyrics = $_POST['lyrics'] == 'yes'?true:false;
 		$genres = array();
 		foreach ($_POST['genre'] as $genre => $unnecessary) $genres[] = $genre;
 		$notes = $_POST['notes'];
@@ -30,6 +31,7 @@
 				'username' => $_SESSION['username'],
 				'url' => $url,
 				'title' => $title,
+				'lyrics' => $lyrics,
 				'genres' => $genres,
 				'notes' => $notes,
 				'approved' => false

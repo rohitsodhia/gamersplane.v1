@@ -407,6 +407,10 @@
 	margin-left: 90px;
 }
 
+#page_addMusic .radioLabel {
+	width: auto;
+}
+
 #page_addMusic .note {
 	font-size: .8em;
 }
