@@ -11,6 +11,11 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Music and Clips</h1>
 
+		<div id="info" class="hbMargined">
+			<p>Taking a tabletop game to another level is as simple as setting the mood. Eerie winds blowing through a forest, upbeat tempos when the group catches the boss, light techno as the runners make way way through the tunnels. Add that extra depth that puts players at ease or off tilt.</p>
+			<p>If you're looking for that little edge to bring your game over the top, find it here! If you know a song or audio clip that works perfectly in a game, share it with everyone else. We're currently only accepting YouTube and SoundCloud links. If you have another service you think we should be using, just <a href="/contact/">get in touch</a>.</p>
+		</div>
+
 		<div class="sideWidget left">
 			<h2>Filter</h2>
 			<form method="get">
