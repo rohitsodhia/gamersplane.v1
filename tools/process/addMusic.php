@@ -36,6 +36,8 @@
 				'notes' => $notes,
 				'approved' => false
 			));
+
+			mail('contact@gamersplane.com', 'New Music', "New Music:\n\rusername: {$_SESSION['username']},\n\rurl => $url,\n\rtitle => $title", 'From: noone@gamersplane.com');
 		}
 	}
 ?>
