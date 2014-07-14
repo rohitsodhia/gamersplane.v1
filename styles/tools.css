@@ -355,6 +355,7 @@
 
 #page_music .hbAttachedList > li > .clearfix > * {
 	display: inline-block;
+	vertical-align: middle;
 }
 
 #page_music .song {
