@@ -13,7 +13,7 @@
 
 		if (strlen($url) == 0) $errors['noURL'] = 1;
 		else {
-			preg_match('#http://(?:www\.)?(.*?)\.([\w\.]*)(?:/.*)?#', $url, $matches);
+			preg_match('#https?://(?:www\.)?(.*?)\.([\w\.]*)(?:/.*)?#', $url, $matches);
 			$domain = $matches[1].'.'.$matches[2];
 			if (!in_array($domain, array('youtube.com', 'soundcloud.com'))) $errors['invalidURL'] = 1;
 			else {
