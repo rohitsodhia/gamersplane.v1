@@ -59,7 +59,7 @@
 <?		foreach ($result as $song) { ?>
 				<li<?=!$song['approved']?' class="unapproved"':''?> data-id="<?=$song['_id']?>">
 					<div class="clearfix">
-						<a href="<?=$song['url']?>" target="_blank" class="song"><?=$song['title']?></a
+						<a href="<?=$song['url']?>" target="_blank" class="song"><?=$song['title']?><?=$song['lyrics']?'<img src="/images/tools/quote.png" title="Has Lyrics" alt="Has Lyrics">':''?></a
 						><div class="genres"><?=implode(', ', $song['genres'])?></div>
 					</div>
 <?			if (strlen($song['notes'])) { ?>

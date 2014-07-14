@@ -363,6 +363,11 @@
 	padding-right: 15px;
 }
 
+#page_music .song img {
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
 #page_music .genres {
 	padding-left: 15px;
 	border-left: 1px solid #666;
