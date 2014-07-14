@@ -12,4 +12,10 @@ $(function () {
 			else if (data.length == 0) $song.remove();
 		});
 	});
+	$('ul.hbAttachedList > li > .clearfix').each(function () {
+		var tallest = 0;
+		$(this).children().each(function () {
+			if ($(this).height() > tallest) tallest = $(this).height();
+		}).height(tallest);
+	})
 });
