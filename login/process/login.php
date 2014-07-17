@@ -1,7 +1,7 @@
 <?
 	checkLogin(0);
 	if (isset($_POST['login'])) {
-		$username = sanitizeString($_POST['username'], '+lower');
+		$username = sanitizeString($_POST['username'], 'lower');
 		$password = hash('sha256', SVAR.$_POST['password']);
 		
 /*		$mysql->setTable('loginRecord');
