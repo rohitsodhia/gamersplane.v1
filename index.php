@@ -8,7 +8,7 @@
 		<div class="alertBox_info">
 			<p class="opening">Welcome!</p>
 			<p class="shiftRight">Thank you for joining us at Gamers Plane!</p>
-			<p>I'm sure some people (not you, being so intelligent) are unsure what they're doing here. Maybe a friend pointed them here, or they saw one of my tweets, or the Google Gods are smiling upon Gamers Plane today. You're here because you love Pen &amp; Paper RPGs. Whether you like playing a wizard throwing around destructive magic or a spy throwing around destructive wit or a shadowrunner throwing around destructive escape plans, who needs pretty graphics when you have imagination!</p>
+			<p>I'm sure some people are unsure what they're doing here. Maybe a friend pointed them here, or they saw one of my tweets, or the Google Gods are smiling upon Gamers Plane today. You're here because you love Pen &amp; Paper RPGs. Whether you like playing a wizard throwing around destructive magic or a spy throwing around destructive wit or a shadowrunner throwing around destructive escape plans, who needs pretty graphics when you have imagination!</p>
 			<p>As we're just getting started, the site is a bit sparse, but there's a lot you can do.</p>
 			<ul>
 				<li><a href="/games/new/">Start up a game</a></li>
