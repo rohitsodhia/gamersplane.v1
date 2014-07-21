@@ -1876,12 +1876,16 @@ div.forumIcon.newPosts.sticky {
 	font-weight: normal;
 }
 
-#page_home .alertBox_info span {
+#page_home .alertBox_info .opening {
 	display: inline-block;
-	margin-right: .5em;
+	margin-bottom: .3em;
 	font-family: AgencyFB;
 	font-weight: bold;
 	font-size: 2em;
+}
+
+#page_home .alertBox_info .shiftRight {
+	margin: 0 30px 1.2em;
 }
 
 #page_home #announcements {
