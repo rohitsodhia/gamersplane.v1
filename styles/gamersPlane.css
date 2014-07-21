@@ -1790,7 +1790,7 @@ border-bottom-left-radius: 0;}
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Alert Boxes */
-.alertBox_error, .alertBox_success {
+.alertBox_error, .alertBox_success, .alertBox_info {
 	border: 2px solid;
 	margin: 10px 10px 15px;
 	padding: 15px 15px 15px 50px;
@@ -1799,7 +1799,7 @@ border-bottom-left-radius: 0;}
 	font-weight: bold;
 }
 
-.alertBox_error li, .alertBox_success li {
+.alertBox_error li, .alertBox_success li, .alertBox_info li {
 	margin: .5em 0;
 }
 
@@ -1813,6 +1813,12 @@ border-bottom-left-radius: 0;}
 	border-color: #060;
 	background-image: url('../images/alerts/check.jpg');
 	background-color: #5A5;
+}
+
+.alertBox_info {
+	border-color: #7AF;
+	background-image: url('../images/alerts/info.jpg');
+	background-color: #BDF;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -1862,6 +1868,21 @@ div.forumIcon.newPosts.sticky {
 }
 
 /* --------------------------------------------*/
+
+#page_home .alertBox_info {
+	margin: 0 0 1em;
+	padding: 15px;
+	background: none;
+	font-weight: normal;
+}
+
+#page_home .alertBox_info span {
+	display: inline-block;
+	margin-right: .5em;
+	font-family: AgencyFB;
+	font-weight: bold;
+	font-size: 2em;
+}
 
 #page_home #announcements {
 	float: left;
