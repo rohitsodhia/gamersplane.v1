@@ -293,23 +293,25 @@
 		public function save() {
 			$data = $_POST;
 
-			$this->setName($data['normName']);
-			$this->setSuperName($data['superName']);
-			$this->setHealth($data['health']);
-			$this->setEnergy($data['energy']);
-			$this->setUnusedStones($data['unusedStones']['white'], $data['unusedStones']['red']);
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+			if (!isset($data['create'])) {
+				$this->setName($data['normName']);
+				$this->setSuperName($data['superName']);
+				$this->setHealth($data['health']);
+				$this->setEnergy($data['energy']);
+				$this->setUnusedStones($data['unusedStones']['white'], $data['unusedStones']['red']);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
 
-			if (sizeof($data['actions'])) { foreach ($data['actions'] as $actionID => $actionInfo) {
-				$this->updateAction($actionID, $actionInfo);
-			} }
-			if (sizeof($data['modifiers'])) { foreach ($data['modifiers'] as $modifierID => $modifierInfo) {
-				$this->updateModifier($modifierID, $modifierInfo);
-			} }
-			$this->clearVar('challenges');
-			foreach ($data['challenges'] as $challenge) $this->addChallenge($challenge);
+				if (sizeof($data['actions'])) { foreach ($data['actions'] as $actionID => $actionInfo) {
+					$this->updateAction($actionID, $actionInfo);
+				} }
+				if (sizeof($data['modifiers'])) { foreach ($data['modifiers'] as $modifierID => $modifierInfo) {
+					$this->updateModifier($modifierID, $modifierInfo);
+				} }
+				$this->clearVar('challenges');
+				foreach ($data['challenges'] as $challenge) $this->addChallenge($challenge);
 
-			$this->setNotes($data['notes']);
+				$this->setNotes($data['notes']);
+			}
 
 			parent::save();
 		}

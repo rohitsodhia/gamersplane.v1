@@ -74,15 +74,17 @@
 		public function save() {
 			$data = $_POST;
 
-			$this->setName($data['name']);
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-			$this->setQualities($data['qualities']);
-			$this->setDrawbacks($data['drawbacks']);
-			$this->setSkills($data['skills']);
-			$this->setPowers($data['powers']);
-			$this->setWeapons($data['weapons']);
-			$this->setPosessions($data['posessions']);
-			$this->setNotes($data['notes']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				$this->setQualities($data['qualities']);
+				$this->setDrawbacks($data['drawbacks']);
+				$this->setSkills($data['skills']);
+				$this->setPowers($data['powers']);
+				$this->setWeapons($data['weapons']);
+				$this->setPosessions($data['posessions']);
+				$this->setNotes($data['notes']);
+			}
 
 			parent::save();
 		}

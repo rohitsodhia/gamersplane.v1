@@ -100,18 +100,20 @@
 		public function save() {
 			$data = $_POST;
 
-			$this->setName($data['name']);
-			foreach ($data['stats'] as $stat => $value) {
-				$this->setStat($stat, 'dice', $value['numDice'].'d'.$value['typeDice']);
-				$this->setStat($stat, 'skills', $value['skills']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
+				foreach ($data['stats'] as $stat => $value) {
+					$this->setStat($stat, 'dice', $value['numDice'].'d'.$value['typeDice']);
+					$this->setStat($stat, 'skills', $value['skills']);
+				}
+				$this->setEdgesHindrances($data['edgesHindrances']);
+				$this->setNightmare($data['nightmare']);
+				foreach ($data['wounds'] as $region => $value) $this->setWounds($region, $value);
+				$this->setWind($data['wind']);
+				$this->setWeapons($data['weapons']);
+				$this->setArcane($data['arcane']);
+				$this->setEquipment($data['equipment']);
 			}
-			$this->setEdgesHindrances($data['edgesHindrances']);
-			$this->setNightmare($data['nightmare']);
-			foreach ($data['wounds'] as $region => $value) $this->setWounds($region, $value);
-			$this->setWind($data['wind']);
-			$this->setWeapons($data['weapons']);
-			$this->setArcane($data['arcane']);
-			$this->setEquipment($data['equipment']);
 
 			parent::save();
 		}

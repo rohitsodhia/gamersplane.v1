@@ -3,7 +3,7 @@
 		const SYSTEM = 'custom';
 
 		public function save() {
-			$this->notes = $_POST['charSheet'];
+			if (!isset($_POST['create'])) $this->notes = $_POST['charSheet'];
 
 			parent::save();
 		}

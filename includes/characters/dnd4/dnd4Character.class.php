@@ -418,38 +418,40 @@
 			global $mysql;
 			$data = $_POST;
 
-			$this->setName($data['name']);
-			$this->setRace($data['race']);
-			$this->setAlignment($data['alignment']);
-			foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
-			$this->setClasses($data['classes']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
+				$this->setRace($data['race']);
+				$this->setAlignment($data['alignment']);
+				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
+				$this->setClasses($data['classes']);
 
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-			foreach ($data['saves'] as $save => $values) {
-				foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['saves'] as $save => $values) {
+					foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
+				}
+				$this->setInitiative('misc', $data['initiative']['misc']);
+				$this->setHP('total', $data['hp']);
+
+				$this->setAttackBonus('base', $data['attackBonus']['base']);
+				$this->setAttackBonus('misc', $data['attackBonus']['misc']['melee]'], 'melee');
+				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
+				foreach ($data['speed'] as $key => $value) $this->setSpeed($key, $value);
+				$this->setActionPoints($data['ap']);
+				$this->setPassiveSenses('insight', $data['passiveSenses']['insight']);
+				$this->setPassiveSenses('perception', $data['passiveSenses']['perception']);
+
+				$this->clearVar('attacks');
+				foreach ($data['attacks'] as $attack) $this->addAttack($attack);
+
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
+					$this->updateSkill($skillID, $skillInfo);
+				} }
+
+				$this->setWeapons($data['weapons']);
+				$this->setArmor($data['armor']);
+				$this->setItems($data['items']);
+				$this->setNotes($data['notes']);
 			}
-			$this->setInitiative('misc', $data['initiative']['misc']);
-			$this->setHP('total', $data['hp']);
-
-			$this->setAttackBonus('base', $data['attackBonus']['base']);
-			$this->setAttackBonus('misc', $data['attackBonus']['misc']['melee]'], 'melee');
-			$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
-			foreach ($data['speed'] as $key => $value) $this->setSpeed($key, $value);
-			$this->setActionPoints($data['ap']);
-			$this->setPassiveSenses('insight', $data['passiveSenses']['insight']);
-			$this->setPassiveSenses('perception', $data['passiveSenses']['perception']);
-
-			$this->clearVar('attacks');
-			foreach ($data['attacks'] as $attack) $this->addAttack($attack);
-
-			if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-				$this->updateSkill($skillID, $skillInfo);
-			} }
-
-			$this->setWeapons($data['weapons']);
-			$this->setArmor($data['armor']);
-			$this->setItems($data['items']);
-			$this->setNotes($data['notes']);
 
 			parent::save();
 		}

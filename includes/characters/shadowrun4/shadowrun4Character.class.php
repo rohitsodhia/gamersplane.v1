@@ -114,19 +114,21 @@
 			global $mysql;
 			$data = $_POST;
 
-			$this->setName($data['name']);
-			$this->setMetatype($data['metatype']);
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-			$this->setQualities($data['qualities']);
-			foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
-			$this->setSkills($data['skills']);
-			$this->setSpells($data['spells']);
-			$this->setWeapons($data['weapons']);
-			$this->setArmor($data['armor']);
-			$this->setAugments($data['augments']);
-			$this->setContacts($data['contacts']);
-			$this->setItems($data['items']);
-			$this->setNotes($data['notes']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
+				$this->setMetatype($data['metatype']);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				$this->setQualities($data['qualities']);
+				foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
+				$this->setSkills($data['skills']);
+				$this->setSpells($data['spells']);
+				$this->setWeapons($data['weapons']);
+				$this->setArmor($data['armor']);
+				$this->setAugments($data['augments']);
+				$this->setContacts($data['contacts']);
+				$this->setItems($data['items']);
+				$this->setNotes($data['notes']);
+			}
 
 			parent::save();
 		}

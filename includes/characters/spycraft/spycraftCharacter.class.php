@@ -376,44 +376,46 @@
 			global $mysql;
 			$data = $_POST;
 
-			$this->setName($data['name']);
-			$this->setCodename($data['codename']);
-			foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
-			$this->setClasses($data['classes']);
-			$this->setDepartment($data['department']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
+				$this->setCodename($data['codename']);
+				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
+				$this->setClasses($data['classes']);
+				$this->setDepartment($data['department']);
 
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-			foreach ($data['saves'] as $save => $values) {
-				foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['saves'] as $save => $values) {
+					foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
+				}
+				$this->setHP('vitality', $data['hp']['vitality']);
+				$this->setHP('wounds', $data['hp']['wounds']);
+				$this->setSpeed($data['speed']);
+				foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
+				$this->setInitiative('stat', $data['initiative']['stat']);
+				$this->setInitiative('misc', $data['initiative']['misc']);
+				$this->setAttackBonus('base', $data['attackBonus']['base']);
+				$this->setAttackBonus('stat', $data['attackBonus']['stat']['melee'], 'melee');
+				$this->setAttackBonus('stat', $data['attackBonus']['stat']['ranged'], 'ranged');
+				$this->setAttackBonus('misc', $data['attackBonus']['misc']['melee'], 'melee');
+				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
+				$this->setActionDie('number', $data['actionDie']['number']);
+				$this->setActionDie('type', $data['actionDie']['type']);
+				$this->setExtraStats('inspiration', $data['extraStats']['inspiration']);
+				$this->setExtraStats('education', $data['extraStats']['education']);
+
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
+					$this->updateSkill($skillID, $skillInfo);
+				} }
+
+				$this->clearVar('weapons');
+				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
+
+				$this->clearVar('armor');
+				foreach ($data['armor'] as $armor) $this->addArmor($armor);
+
+				$this->setItems($data['items']);
+				$this->setNotes($data['notes']);
 			}
-			$this->setHP('vitality', $data['hp']['vitality']);
-			$this->setHP('wounds', $data['hp']['wounds']);
-			$this->setSpeed($data['speed']);
-			foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
-			$this->setInitiative('stat', $data['initiative']['stat']);
-			$this->setInitiative('misc', $data['initiative']['misc']);
-			$this->setAttackBonus('base', $data['attackBonus']['base']);
-			$this->setAttackBonus('stat', $data['attackBonus']['stat']['melee'], 'melee');
-			$this->setAttackBonus('stat', $data['attackBonus']['stat']['ranged'], 'ranged');
-			$this->setAttackBonus('misc', $data['attackBonus']['misc']['melee'], 'melee');
-			$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
-			$this->setActionDie('number', $data['actionDie']['number']);
-			$this->setActionDie('type', $data['actionDie']['type']);
-			$this->setExtraStats('inspiration', $data['extraStats']['inspiration']);
-			$this->setExtraStats('education', $data['extraStats']['education']);
-
-			if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-				$this->updateSkill($skillID, $skillInfo);
-			} }
-
-			$this->clearVar('weapons');
-			foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
-
-			$this->clearVar('armor');
-			foreach ($data['armor'] as $armor) $this->addArmor($armor);
-
-			$this->setItems($data['items']);
-			$this->setNotes($data['notes']);
 
 			parent::save();
 		}

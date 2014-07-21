@@ -93,18 +93,20 @@
 		public function save() {
 			$data = $_POST;
 
-			$this->setName($data['name']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
 
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-			foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
-			foreach ($data['speed'] as $type => $value) $this->setSpeed($type, $value);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
+				foreach ($data['speed'] as $type => $value) $this->setSpeed($type, $value);
 
-			$this->languages = $data['languages'];
-			$this->advantages = $data['advantages'];
-			$this->disadvantages = $data['disadvantages'];
-			$this->skills = $data['skills'];
-			$this->items = $data['items'];
-			$this->notes = $data['notes'];
+				$this->languages = $data['languages'];
+				$this->advantages = $data['advantages'];
+				$this->disadvantages = $data['disadvantages'];
+				$this->skills = $data['skills'];
+				$this->items = $data['items'];
+				$this->notes = $data['notes'];
+			}
 
 			parent::save();
 		}

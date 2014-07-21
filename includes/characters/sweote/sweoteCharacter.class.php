@@ -318,28 +318,30 @@
 		public function save() {
 			$data = $_POST;
 
-			$this->setName($data['name']);
-			$this->setSpecies($data['species']);
-			$this->setCareer($data['career']);
-			$this->setSpecialization($data['specialization']);
-			$this->setXP('total', $data['xp']['total']);
-			$this->setXP('spent', $data['xp']['spent']);
+			if (!isset($data['create'])) {
+				$this->setName($data['name']);
+				$this->setSpecies($data['species']);
+				$this->setCareer($data['career']);
+				$this->setSpecialization($data['specialization']);
+				$this->setXP('total', $data['xp']['total']);
+				$this->setXP('spent', $data['xp']['spent']);
 
-			foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-			foreach ($data['defenses'] as $type => $value) $this->setDefense($type, $value);
-			foreach ($data['hp'] as $type => $value) $this->setHP($type, $value);
+				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['defenses'] as $type => $value) $this->setDefense($type, $value);
+				foreach ($data['hp'] as $type => $value) $this->setHP($type, $value);
 
-			if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-				$this->updateSkill($skillID, $skillInfo);
-			} }
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
+					$this->updateSkill($skillID, $skillInfo);
+				} }
 
-			$this->clearVar('weapons');
-			foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
+				$this->clearVar('weapons');
+				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
 
-			$this->setItems($data['items']);
-			$this->setMotivations($data['motivations']);
-			$this->setObligations($data['obligations']);
-			$this->setNotes($data['notes']);
+				$this->setItems($data['items']);
+				$this->setMotivations($data['motivations']);
+				$this->setObligations($data['obligations']);
+				$this->setNotes($data['notes']);
+			}
 
 			parent::save();
 		}
