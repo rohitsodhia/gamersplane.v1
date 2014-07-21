@@ -1,0 +1,75 @@
+"Etc/GMT+12","(GMT-12:00) International Date Line West",0
+"Pacific/Apia","(GMT-11:00) Midway Island, Samoa",0
+"Pacific/Honolulu","(GMT-10:00) Hawaii",0
+"America/Anchorage","(GMT-09:00) Alaska",1
+"America/Los_Angeles","(GMT-08:00) Pacific Time (US & Canada); Tijuana",1
+"America/Phoenix","(GMT-07:00) Arizona",0
+"America/Denver","(GMT-07:00) Mountain Time (US & Canada)",1
+"America/Chihuahua","(GMT-07:00) Chihuahua, La Paz, Mazatlan",1
+"America/Managua","(GMT-06:00) Central America",0
+"America/Regina","(GMT-06:00) Saskatchewan",0
+"America/Mexico_City","(GMT-06:00) Guadalajara, Mexico City, Monterrey",1
+"America/Chicago","(GMT-06:00) Central Time (US & Canada)",1
+"America/Indianapolis","(GMT-05:00) Indiana (East)",0
+"America/Bogota","(GMT-05:00) Bogota, Lima, Quito",0
+"America/New_York","(GMT-05:00) Eastern Time (US & Canada)",1
+"America/Caracas","(GMT-04:00) Caracas, La Paz",0
+"America/Santiago","(GMT-04:00) Santiago",1
+"America/Halifax","(GMT-04:00) Atlantic Time (Canada)",1
+"America/St_Johns","(GMT-03:30) Newfoundland",1
+"America/Buenos_Aires","(GMT-03:00) Buenos Aires, Georgetown",0
+"America/Godthab","(GMT-03:00) Greenland",1
+"America/Sao_Paulo","(GMT-03:00) Brasilia",1
+"America/Noronha","(GMT-02:00) Mid-Atlantic",1
+"Atlantic/Cape_Verde","(GMT-01:00) Cape Verde Is.",0
+"Atlantic/Azores","(GMT-01:00) Azores",1
+"Africa/Casablanca","(GMT) Casablanca, Monrovia",0
+"Europe/London","(GMT) Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London",1
+"Africa/Lagos","(GMT+01:00) West Central Africa",0
+"Europe/Berlin","(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",1
+"Europe/Paris","(GMT+01:00) Brussels, Copenhagen, Madrid, Paris",1
+"Europe/Sarajevo","(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb",1
+"Europe/Belgrade","(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",1
+"Africa/Johannesburg","(GMT+02:00) Harare, Pretoria",0
+"Asia/Jerusalem","(GMT+02:00) Jerusalem",0
+"Europe/Istanbul","(GMT+02:00) Athens, Istanbul, Minsk",1
+"Europe/Helsinki","(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",1
+"Africa/Cairo","(GMT+02:00) Cairo",1
+"Europe/Bucharest","(GMT+02:00) Bucharest",1
+"Africa/Nairobi","(GMT+03:00) Nairobi",0
+"Asia/Riyadh","(GMT+03:00) Kuwait, Riyadh",0
+"Europe/Moscow","(GMT+03:00) Moscow, St. Petersburg, Volgograd",1
+"Asia/Baghdad","(GMT+03:00) Baghdad",1
+"Asia/Tehran","(GMT+03:30) Tehran",1
+"Asia/Muscat","(GMT+04:00) Abu Dhabi, Muscat",0
+"Asia/Tbilisi","(GMT+04:00) Baku, Tbilisi, Yerevan",1
+"Asia/Kabul","(GMT+04:30) Kabul",0
+"Asia/Karachi","(GMT+05:00) Islamabad, Karachi, Tashkent",0
+"Asia/Yekaterinburg","(GMT+05:00) Ekaterinburg",1
+"Asia/Calcutta","(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi",0
+"Asia/Katmandu","(GMT+05:45) Kathmandu",0
+"Asia/Colombo","(GMT+06:00) Sri Jayawardenepura",0
+"Asia/Dhaka","(GMT+06:00) Astana, Dhaka",0
+"Asia/Novosibirsk","(GMT+06:00) Almaty, Novosibirsk",1
+"Asia/Rangoon","(GMT+06:30) Rangoon",0
+"Asia/Bangkok","(GMT+07:00) Bangkok, Hanoi, Jakarta",0
+"Asia/Krasnoyarsk","(GMT+07:00) Krasnoyarsk",1
+"Australia/Perth","(GMT+08:00) Perth",0
+"Asia/Taipei","(GMT+08:00) Taipei",0
+"Asia/Singapore","(GMT+08:00) Kuala Lumpur, Singapore",0
+"Asia/Hong_Kong","(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi",0
+"Asia/Irkutsk","(GMT+08:00) Irkutsk, Ulaan Bataar",1
+"Asia/Tokyo","(GMT+09:00) Osaka, Sapporo, Tokyo",0
+"Asia/Seoul","(GMT+09:00) Seoul",0
+"Asia/Yakutsk","(GMT+09:00) Yakutsk",1
+"Australia/Darwin","(GMT+09:30) Darwin",0
+"Australia/Adelaide","(GMT+09:30) Adelaide",1
+"Pacific/Guam","(GMT+10:00) Guam, Port Moresby",0
+"Australia/Brisbane","(GMT+10:00) Brisbane",0
+"Asia/Vladivostok","(GMT+10:00) Vladivostok",1
+"Australia/Hobart","(GMT+10:00) Hobart",1
+"Australia/Sydney","(GMT+10:00) Canberra, Melbourne, Sydney",1
+"Asia/Magadan","(GMT+11:00) Magadan, Solomon Is., New Caledonia",0
+"Pacific/Fiji","(GMT+12:00) Fiji, Kamchatka, Marshall Is.",0
+"Pacific/Auckland","(GMT+12:00) Auckland, Wellington",1
+"Pacific/Tongatapu","(GMT+13:00) Nuku'alofa",0
