@@ -75,8 +75,11 @@
 	margin-top: 2em;
 }
 
+#page_myCharacters #newChar .tr > * {
+	vertical-align: middle;
+}
+
 #page_myCharacters #newChar label {
-	float: left;
 	width: 120px;
 	text-align: right;
 	margin-right: 15px;
