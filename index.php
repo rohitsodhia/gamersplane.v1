@@ -6,7 +6,7 @@
 	require_once(FILEROOT.'/header.php');
 ?>
 		<div class="alertBox_info">
-			<p><span>Welcome!</span> Thank you for joining us at Gamers Plane! And if you're reading this, your Intelligence score is obviously at least an 8 (in Pathfinder at least)!</p>
+			<p><span>Welcome!</span> Thank you for joining us at Gamers Plane!!</p>
 			<p>I'm sure some people (not you, being so intelligent) are unsure what they're doing here. Maybe a friend pointed them here, or they saw one of my tweets, or the Google Gods are smiling upon Gamers Plane today. You're here because you love Pen &amp; Paper RPGs. Whether you like playing a wizard throwing around destructive magic or a spy throwing around destructive wit or a shadowrunner throwing around destructive escape plans, who needs pretty graphics when you have imagination!</p>
 			<p>As we're just getting started, the site is a bit sparse, but there's a lot you can do.</p>
 			<ul>
