@@ -10,8 +10,7 @@
 		$gameID = intval($_POST['gameID']);
 		$details['title'] = $_POST['title'];
 		$systemInfo = $systems->getSystemInfo(intval($_POST['system']));
-		if ($systemInfo->rowCount()) {
-			$systemInfo = $systemInfo->fetch();
+		if ($systemInfo) {
 			$details['systemID'] = intval($_POST['system']);
 			$details['system'] = $systemInfo['fullName'];
 		} else $details['systemID'] = 0;
