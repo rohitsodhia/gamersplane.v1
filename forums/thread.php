@@ -34,7 +34,7 @@
 
 	$gameID = FALSE;
 	$isGM = FALSE;
-	if ($threadInfo['heritage'][0] == 2) {
+	if ($threadInfo['heritage'][0] == 2 && $forumID != 10) {
 		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
 		$gameID = $gameID->fetchColumn();
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = $userID AND gameID = $gameID");
