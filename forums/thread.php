@@ -7,7 +7,7 @@
 	$threadID = intval($pathOptions[1]);
 	if (!threadID) { header('Location: /forums'); exit; }
 	
-	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.cLastRead lastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = {$userID} WHERE threads.threadID = {$threadID}");
+	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.lastRead lastReadID, newPosts.cLastRead cLastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = {$userID} WHERE threads.threadID = {$threadID}");
 	$threadInfo = $threadInfo->fetch();
 	$threadInfo['heritage'] = explode('-', $threadInfo['heritage']);
 	foreach ($threadInfo['heritage'] as $key => $value) $threadInfo['heritage'][$key] = intval($value);
@@ -16,7 +16,8 @@
 	if ($permissions['read'] == 0) { header('Location: /403'); exit; }
 
 	if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
-		$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID} AND postID <= {$threadInfo['lastReadID']}");
+		$lastReadID = (int) $threadInfo['lastReadID'] > (int) $threadInfo['cLastReadID']?(int) $threadInfo['lastReadID']:(int) $threadInfo['cLastReadID'];
+		$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID} AND postID <= {$lastReadID}");
 		$numPrevPosts = $numPrevPosts->fetchColumn();
 		if ($threadInfo['lastReadID'] != $threadInfo['lastPostID']) $numPrevPosts += 1;
 		$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
