@@ -60,7 +60,7 @@
 			$addForum = $mysql->prepare('INSERT INTO forums (title, parentID, `order`) VALUES (:title, 2, '.$order.')');
 			$addForum->execute(array(':title' => $details['title']));
 			$forumID = $mysql->lastInsertId();
-			$heritage = sql_forumIDPad($forumID).'-'.sql_forumIDPad($forumID);
+			$heritage = sql_forumIDPad(2).'-'.sql_forumIDPad($forumID);
 			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);
 			$details['forumID'] = $forumID;
 			
