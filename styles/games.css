@@ -212,6 +212,7 @@
 
 #page_gameDetails #details .tr > div {
 	float: left;
+	width: 620px;
 }
 
 #page_gameDetails .notice, #page_gameDetails #loggedOutNotice {
