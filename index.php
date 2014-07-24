@@ -131,7 +131,7 @@
 		else $first = FALSE;
 		echo "\t\t\t\t\t<div class=\"post\">\n";
 		echo "\t\t\t\t\t\t<div class=\"forumIcon".($latestPost['newPosts']?' newPosts':'')."\"></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"/forums/thread/{$latestPost['threadID']}\">{$latestPost['title']}</a></div>\n";
+		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"/forums/thread/{$latestPost['threadID']}/?view=NewPost\">{$latestPost['title']}</a></div>\n";
 		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"/user/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
 		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
 		echo "\t\t\t\t\t</div>\n";
