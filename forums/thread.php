@@ -151,7 +151,7 @@
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>
 					<header class="postHeader">
 						<div class="postedOn"><?=date('M j, Y g:i a', $postInfo['datePosted'])?></div>
-						<div class="subject"><?=strlen($postInfo['title'])?printReady($postInfo['title']):'&nbsp'?></div>
+						<div class="subject"><a href="?p=<?=$postInfo['postID']?>"><?=strlen($postInfo['title'])?printReady($postInfo['title']):'&nbsp'?></a></div>
 					</header>
 <?
 			echo "\t\t\t\t\t<div class=\"post\">\n";
