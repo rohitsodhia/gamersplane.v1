@@ -137,6 +137,10 @@
 			$permissions = retrievePermissions($userID, $forumID, 'write, addRolls, addDraws, moderate', TRUE);
 			if (!$permissions['write'] || $locked) { header('Location: /forums/'.$forumID); exit; }
 			
+			if (strlen($title) == 0) {
+				$title = $mysql->query("SELECT p.title FROM posts p INNER JOIN threads_relPosts rp ON p.postID = rp.firstPostID WHERE rp.threadID = {$threadID} LIMIT 1");
+				$title = 'Re: '.$title->fetchColumn();
+			}
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
 			
 			if (sizeof($_SESSION['errors'])) {
