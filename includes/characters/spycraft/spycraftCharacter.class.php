@@ -73,6 +73,8 @@
 		}
 
 		public function updateSkill($skillID, $skillInfo) {
+			global $mysql;
+			
 			$updateSkill = $mysql->prepare("UPDATE spycraft_skills SET ranks = :ranks, misc = :misc, error = :error, threat = :threat WHERE characterID = :characterID AND skillID = :skillID");
 			$updateSkill->bindValue(':ranks', intval($skillInfo['ranks']));
 			$updateSkill->bindValue(':misc', intval($skillInfo['misc']));
@@ -123,6 +125,7 @@
 
 		public function displaySkills() {
 			global $mysql;
+			
 			$skills = $mysql->query('SELECT s.skillID, sl.name, s.stat, s.ranks, s.misc, s.error, s.threat FROM '.$this::SYSTEM.'_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = '.$this->characterID.' ORDER BY sl.name');
 			if ($skills->rowCount()) { foreach ($skills as $skill) {
 ?>

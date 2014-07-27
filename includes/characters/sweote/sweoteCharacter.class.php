@@ -100,6 +100,8 @@
 		}
 
 		public function updateSkill($skillID, $skillInfo) {
+			global $mysql;
+			
 			$updateSkill = $mysql->prepare("UPDATE sweote_skills SET rank = :rank, career = :career WHERE characterID = $characterID AND skillID = :skillID");
 			$updateSkill->bindValue(':rank', intval($skillInfo['rank']));
 			$updateSkill->bindValue(':career', isset($skillInfo['career'])?1:0);
@@ -142,6 +144,7 @@
 
 		public function displaySkills() {
 			global $mysql;
+			
 			$skills = $mysql->query('SELECT s.skillID, sl.name, s.stat, s.rank, s.career FROM '.$this::SYSTEM.'_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = '.$this->characterID.' ORDER BY sl.name');
 			if ($skills->rowCount()) { foreach ($skills as $skill) {
 ?>
