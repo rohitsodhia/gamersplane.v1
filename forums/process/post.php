@@ -181,7 +181,7 @@
 				header('Location: '.$_SESSION['lastURL'].'/?errors=1');
 				exit;
 			} else {
-				$updatePostQuery = 'UPDATE POSTS SET message = :message';
+				$updatePostQuery = 'UPDATE posts SET message = :message';
 				$updates = array('message' => $message);
 				if ($postInfo['firstPostID'] == $postID && strlen($title) != 0) {
 					$updatePostQuery .= ', title = :title';
