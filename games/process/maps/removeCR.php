@@ -4,7 +4,7 @@
 	$userID = intval($_SESSION['userID']);
 	$mapID = intval($pathOptions[3]);
 	$whichCR = $pathOptions[4];
-	$mapInfo = $mysql->query("SELECT maps.rows, maps.columns, maps.bgData FROM maps INNER JOIN gms ON maps.gameID = gms.gameID WHERE gms.userID = $userID AND maps.mapID = $mapID");
+	$mapInfo = $mysql->query("SELECT maps.rows, maps.columns, maps.bgData FROM maps INNER JOIN players ON maps.gameID = players.gameID AND players.isGM = 1 WHERE players.userID = $userID AND maps.mapID = $mapID");
 	if (!$mapInfo->rowCount()) { header('Location: /tools/maps'); exit; }
 	list($rows, $columns, $bgData) = $mapInfo->fetch(PDO::FETCH_NUM);
 	

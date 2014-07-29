@@ -18,7 +18,7 @@
 		$search = implode(' OR ', $search);
 	}
 	
-	$games = $mysql->query("SELECT games.gameID, games.title, systems.fullName system, games.gmID, gmUsers.username, IF(userChars.gameID IS NOT NULL, 1, IF(gms.gameID IS NOT NULL, 1, 0)) inGame FROM games INNER JOIN systems ON games.systemID = systems.systemID INNER JOIN users AS gmUsers ON games.gmID = gmUsers.userID LEFT JOIN characters AS userChars ON userChars.userID = $userID AND games.gameID = userChars.gameID LEFT JOIN gms ON (gms.userID, games.gameID) = ($userID, gms.gameID) WHERE games.gmID != $userID AND games.open = 1".($systems?" AND games.systemID IN ($systems)":'').(isset($search)?" AND ($search)":'')." HAVING inGame = 0 ORDER BY $order");
+	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$userID} AND p.userID IS NULL AND g.open = 1".($systems?" AND games.systemID IN ($systems)":'').(isset($search)?" AND ($search)":'')." ORDER BY $order");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 		echo "\t\t\t<div class=\"tr clearfix\">\n";

@@ -5,7 +5,7 @@
 	$gameID = intval($pathOptions[1]);
 	if ($gameID == 0) { header('Location: /403'); exit; }
 	
-	$gmCheck = $mysql->query("SELECT 1 isGM FROM gms WHERE gameID = $gameID AND userID = $userID UNION SELECT 0 isGM FROM characters WHERE gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = $userID");
 	if (!$gmCheck->rowCount()) { header('Location: /403'); exit; }
 	$isGM = $gmCheck->fetchColumn();
 ?>
