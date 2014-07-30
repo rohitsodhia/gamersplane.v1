@@ -32,7 +32,7 @@
 		else {
 			$userID = intval($_SESSION['userID']);
 			$addNewFeat = $mysql->prepare("INSERT INTO featsList (name, userDefined) VALUES (:name, $userID)");
-			$addNewFeat->bindValue(':name', $name);
+			$addNewFeat->bindValue(':name', $featName);
 			$addNewFeat->execute();
 			return $mysql->lastInsertId();
 		}
