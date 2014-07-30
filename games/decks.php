@@ -4,7 +4,7 @@
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	
-	$gmCheck = $mysql->query("SELECT `primary` FROM gms WHERE gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = $userID AND isGM = 1");
 	if ($gmCheck->rowCount() == 0) { header('Location: /games/list'); exit; }
 //	$gameInfo = $mysql->fetch();
 	

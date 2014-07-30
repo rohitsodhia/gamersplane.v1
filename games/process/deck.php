@@ -3,7 +3,7 @@
 	
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($_POST['gameID']);
-	$gmCheck = $mysql->query("SELECT `primary` FROM gms WHERE gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = $userID AND isGM = 1");
 	$isGM = $gmCheck->rowCount()?TRUE:FALSE;
 	if (isset($_POST['create']) && $isGM) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
@@ -46,7 +46,7 @@
 		header('Location: /games/'.$gameID.'/decks?success=shuffle');
 	} elseif (isset($_POST['submit']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
-		$deckInfo = $mysql->query('SELECT decks.label, decks.type, decks.deck, decks.position FROM decks INNER JOIN games ON decks.gameID = games.gameID INNER JOIN gms ON games.gameID = gms.gameID WHERE decks.deckID = '.$deckID.' AND gms.userID = '.$userID.' LIMIT 1');
+		$deckInfo = $mysql->query("SELECT label, type, deck, position FROM decks deckID = {$deckID} LIMIT 1");
 		if ($deckInfo->rowCount()) {
 			$deckInfo = $deckInfo->fetch();
 			$updateStr = '';
@@ -71,15 +71,13 @@
 			foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
 			
 			addGameHistory($gameID, 'deckEdited', $userID);
-			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckEdited')");
 		}
 		header('Location: /games/'.$gameID.'/decks?success=edit');
 	} elseif (isset($_POST['delete']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
-		$gmCheck = $mysql->query('SELECT decks.label FROM decks INNER JOIN games ON decks.gameID = games.gameID INNER JOIN gms ON games.gameID = gms.gameID WHERE decks.deckID = '.$deckID.' AND gms.userID = '.$userID.' LIMIT 1');
-		if ($gmCheck->rowCount()) $mysql->query("DELETE FROM decks WHERE deckID = $deckID");
-		
+		$mysql->query("DELETE FROM decks WHERE deckID = $deckID");
 		$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckDeleted')");
+		addGameHistory($gameID, 'deckDeleted', $userID);
 		
 		header('Location: /games/'.$gameID.'/decks?success=delete');
 	} else header('Location: /games/');
