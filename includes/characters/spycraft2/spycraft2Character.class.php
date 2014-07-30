@@ -137,8 +137,8 @@
 			
 			$skills = $mysql->query('SELECT s.skillID, sl.name, s.stat_1, s.stat_2, s.ranks, s.misc, s.error, s.threat FROM '.$this::SYSTEM.'_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = '.$this->characterID.' ORDER BY sl.name');
 			if ($skills->rowCount()) { foreach ($skills as $skill) {
-				$total_1 = $this->getStatMod($skillInfo['stat_1']) + $skillInfo['ranks'] + $skillInfo['misc'];
-				$total_2 = $this->getStatMod($skillInfo['stat_2']) + $skillInfo['ranks'] + $skillInfo['misc'];
+				$total_1 = $this->getStatMod($skillInfo['stat_1'], false) + $skillInfo['ranks'] + $skillInfo['misc'];
+				$total_2 = $this->getStatMod($skillInfo['stat_2'], false) + $skillInfo['ranks'] + $skillInfo['misc'];
 ?>
 					<div id="skill_<?=$skillInfo['skillID']?>" class="skill tr clearfix">
 						<span class="skill_name medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
