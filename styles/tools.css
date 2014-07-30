@@ -369,6 +369,7 @@
 }
 
 #page_music .genres {
+	width: 355px;
 	padding-left: 15px;
 	border-left: 1px solid #666;
 }
