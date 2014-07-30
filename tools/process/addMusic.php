@@ -27,7 +27,7 @@
 		if (sizeof($errors)) echo json_encode($errors);
 		else {
 			$mongo->music->insert(array(
-				'userID' => (int) $_SESSION['userID'],
+				'userID' => intval($_SESSION['userID']),
 				'username' => $_SESSION['username'],
 				'url' => $url,
 				'title' => $title,
