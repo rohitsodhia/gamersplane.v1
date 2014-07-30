@@ -3,11 +3,11 @@
 	
 	$userID = intval($_SESSION['userID']);
 	
-	if ($_POST['orderBy'] == 'createdOn_d') $order = 'games.created DESC';
-	elseif ($_POST['orderBy'] == 'createdOn_a') $order = 'games.created';
-	elseif ($_POST['orderBy'] == 'name_a') $order = 'games.title';
-	elseif ($_POST['orderBy'] == 'name_d') $order = 'games.title DESC';
-	elseif ($_POST['orderBy'] == 'system') $order = 'systems.fullName';
+	if ($_POST['orderBy'] == 'createdOn_d') $order = 'g.created DESC';
+	elseif ($_POST['orderBy'] == 'createdOn_a') $order = 'g.created';
+	elseif ($_POST['orderBy'] == 'name_a') $order = 'g.title';
+	elseif ($_POST['orderBy'] == 'name_d') $order = 'g.title DESC';
+	elseif ($_POST['orderBy'] == 'system') $order = 's.fullName';
 	
 	if (sizeof($_POST['filterSystem']) != $_POST['numSystems']) $systems = implode(', ', $_POST['filterSystem']);
 	else $systems = NULL;
