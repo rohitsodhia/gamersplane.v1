@@ -31,8 +31,9 @@
 		if ($featCheck->rowCount()) return $featCheck->fetchColumn();
 		else {
 			$userID = intval($_SESSION['userID']);
-			$addNewFeat = $mysql->prepare("INSERT INTO featsList (name, userDefined) VALUES (:name, $userID)");
+			$addNewFeat = $mysql->prepare("INSERT INTO featsList (name, searchName, userDefined) VALUES (:name, :searchName, $userID)");
 			$addNewFeat->bindValue(':name', $featName);
+			$addNewFeat->bindValue(':searchName', sanitizeString($featName, 'search_format'));
 			$addNewFeat->execute();
 			return $mysql->lastInsertId();
 		}
