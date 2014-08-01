@@ -239,7 +239,7 @@
 	width: 385px;
 }
 
-#feats span, #feats a {
+#feats .feat span, #feats .feat a {
 	display: inline-block;
 }
 
