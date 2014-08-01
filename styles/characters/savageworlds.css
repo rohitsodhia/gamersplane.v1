@@ -1,0 +1,139 @@
+/*
+	Gamers Plane Characters: Deadlands CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+#nameDiv label {
+	display: block;
+	float: left;
+	width: 70px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+#nameDiv input {
+	width: 200px;
+}
+
+.triCol {
+	float: left;
+	width: 306px;
+	margin-right: 16px;
+}
+
+.lastTriCol {
+	margin-right: 0;
+}
+
+#page_characterSheet_edit textarea {
+	width: 100%;
+	height: 6.2em;
+}
+
+.triCol h3 {
+	text-decoration: none;
+}
+
+.statDiv {
+	position: relative;
+	margin-top: .75em;
+	padding-top: .75em;
+}
+
+#page_characterSheet .statDiv {
+	border-top: 1px solid #AAA;
+}
+
+.firstStatDiv {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+#page_characterSheet .firstStatDiv {
+	border-top: none;
+}
+
+#page_characterSheet_edit .statDiv input {
+	width: 30px;
+	text-align: center;
+}
+
+.triCol .skillTitle {
+	margin-top: .75em;
+}
+
+#page_characterSheet_edit #edge_hind {
+	height: 20em;
+}
+
+#page_characterSheet_edit #nightmare {
+	height: 12.4em;
+}
+
+#woundsDiv .indivWoundDiv {
+	margin-bottom: .5em;
+	text-align: center;
+}
+
+#woundsDiv h3 {
+	margin: .5em 0;
+}
+
+#woundsDiv .indivWoundDiv input {
+	width: 60px;
+	text-align: center;
+}
+
+#woundsDiv .subTwoCol {
+	width: 153px;
+	float: left;
+}
+
+#windDiv {
+	margin-top: .5em;
+	text-align: center;
+}
+
+#windDiv h3 {
+	display: inline;
+	margin-right: 10px;
+}
+
+#windDiv input {
+	width: 30px;
+	text-align: center;
+}
+
+.twoCol {
+	float: left;
+	width: 465px;
+	margin-right: 20px;
+}
+
+.lastTwoCol {
+	margin-right: 0;
+}
+
+.leftTitle {
+	text-align: left;
+	margin-top: 1.5em;
+}
+
+#page_characterSheet_edit #weapons, #page_characterSheet_edit #arcane, #page_characterSheet_edit #equipment {
+	height: 10em;
+}
+
+#page_characterSheet_edit #equipment {
+	height: 25.4em;
+}
+
+#page_characterSheet_edit #notes {
+	height: 24.8em;
+	width: 912px;
+}
+
+#page_characterSheet_edit #submitDiv {
+	clear: both;
+	text-align: center;
+	margin-top: 1em;
+}
