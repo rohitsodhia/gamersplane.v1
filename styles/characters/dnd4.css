@@ -199,7 +199,7 @@
 	margin-left: 5px;
 }
 
-#feats span, #feats a {
+#feats .feat span, #feats .feat a {
 	display: inline-block;
 }
 
