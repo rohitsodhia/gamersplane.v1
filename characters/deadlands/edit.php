@@ -1,6 +1,6 @@
 				<div id="nameDiv" class="tr">
 					<label class="textLabel">Name:</label>
-					<div><input type="text" name="name" maxlength="50" value="<?=$charInfo['name']?>"></div>
+					<div><input type="text" name="name" maxlength="50" value="<?=$this->getName()?>"></div>
 				</div>
 				
 				<div class="clearfix">
