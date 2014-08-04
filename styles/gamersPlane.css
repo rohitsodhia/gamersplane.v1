@@ -1338,7 +1338,7 @@ border-bottom-left-radius: 0;}
 	background-position: -17px 0;
 }
 
-.sprite.editWheel, .sprite.permissions, .sprite.cross, .sprite.pencil {
+.sprite.editWheel, .sprite.permissions, .sprite.check, .sprite.cross, .sprite.pencil {
 	width: 20px;
 }
 
@@ -1350,30 +1350,34 @@ border-bottom-left-radius: 0;}
 	background-position: -54px 0;
 }
 
-.sprite.cross {
+.sprite.checkj {
 	background-position: -74px 0;
 }
 
-.sprite.pencil {
+.sprite.cross {
 	background-position: -94px 0;
+}
+
+.sprite.pencil {
+	background-position: -104px 0;
 }
 
 .sprite.tassel, .sprite.tassel.off:hover {
 	width: 14px;
-	background-position: -114px 0;
+	background-position: -134px 0;
 }
 
 .sprite.tassel.off, .sprite.tassel:hover {
-	background-position: -114px -20px;
+	background-position: -134px -20px;
 }
 
 .sprite.book, .sprite.book.off:hover {
 	width: 16px;
-	background-position: -128px 0;
+	background-position: -148px 0;
 }
 
 .sprite.book.off, .sprite.book:hover {
-	background-position: -128px -20px;
+	background-position: -148px -20px;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
