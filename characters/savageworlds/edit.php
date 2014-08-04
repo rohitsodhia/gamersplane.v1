@@ -1,6 +1,6 @@
 				<div id="nameDiv" class="tr">
 					<label class="textLabel">Name:</label>
-					<div><input type="text" name="name" maxlength="50" value="<?=$this->getName()?>"></div>
+					<input type="text" name="name" maxlength="50" value="<?=$this->getName()?>">
 				</div>
 				
 				<div class="clearfix">
@@ -19,7 +19,7 @@
 <?		} ?>
 								</select></div>
 							</div>
-							<div class="skillHeader"><?=$label?> Skills</div>
+							<div class="skillHeader"><?=$label?> Skills <a href="" class="sprite plus"></div></div>
 							<div class="skills">
 							</div>
 						</div>
