@@ -612,7 +612,7 @@ div.prettySelect > div {
 .bodyHeader {
 	position: relative;
 	background: url('../images/bodyComponents/background.jpg') 0 0 repeat-x;
-	z-index: 5000;
+	z-index: 10000;
 }
 
 .bodyHeader, .bodyHeader .bodyContainer {
@@ -656,7 +656,7 @@ footer .bodyContainer {
 }
 
 #fixedMenu, #fixedMenu * {
-	z-index: 5000;
+	z-index: 7500;
 }
 
 #stupidIE {
