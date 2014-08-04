@@ -479,7 +479,7 @@ div.prettySelect > div {
 	position: relative;
 	background: url('../images/dropdown_arrow_red.png') center center no-repeat;
 	width: 15px;
-	line-height: 1.25em;
+	line-height: 1.3em;
 }
 
 .prettySelectOptions {
