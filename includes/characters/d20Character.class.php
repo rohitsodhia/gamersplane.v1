@@ -17,7 +17,7 @@
 		protected $feats = array();
 		protected $items = '';
 
-		protected $mongoIgnore = array('save' => array('mongoIgnore', 'skills', 'feats'), 'load' => array('_id', 'system'));
+		protected $mongoIgnore = array('save' => array('linkedTables', 'mongoIgnore', 'skills', 'feats'), 'load' => array('_id', 'system'));
 
 		public function setClass($class, $level = 1) {
 			$this->classes[$class] = $level;

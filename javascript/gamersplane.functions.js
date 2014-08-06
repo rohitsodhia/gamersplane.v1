@@ -31,6 +31,14 @@ function showSign(val) {
 	else return val;
 }
 
+function setupPlaceholders() {
+	$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
+		if ($(this).val() == $(this).data('placeholder')) $(this).val('').removeClass('default');
+	}).blur(function () {
+		if ($(this).val() == '') $(this).val($(this).data('placeholder')).addClass('default');
+	});
+}
+
 function setupWingContainer() {
 	element = this.nodeName.toLowerCase();
 	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';

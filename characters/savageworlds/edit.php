@@ -10,17 +10,18 @@
 	foreach (savageworlds_consts::getStats() as $abbrev => $label) {
 		$dice = $this->getStats($abbrev);
 ?>
-						<div class="hbdMargined statDiv">
+						<div class="hbdMargined statDiv" data-stat="<?=$abbrev?>">
 							<div class="trait clearfix">
 								<div class="traitName"><?=$label?></div>
-								<div class="diceSelect"><span>d</span> <select name="stats[<?=$abbrev?>]" class="typeDice">
+								<div class="diceSelect"><span>d</span> <select name="stats[<?=$abbrev?>]" class="diceType">
 <?		foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
 									<option><?=$dCount?></option>
 <?		} ?>
 								</select></div>
 							</div>
-							<div class="skillHeader"><?=$label?> Skills <a href="" class="sprite plus"></div></div>
+							<div class="skillHeader"><?=$label?> Skills <a href="" class="addSkill">+</a></div>
 							<div class="skills">
+<?		$this->showSkillsEdit($abbrev); ?>
 							</div>
 						</div>
 <?	} ?>
@@ -32,11 +33,18 @@
 								<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances?></textarea>
 							</div>
 							<div class="twoCol lastTwoCol">
-								<h2 class="headerbar hbDark">Wounds</h2>
-								<div id="fatigueDiv">
-									<div>Fatigue</div>
-									<input type="text" name="wind" maxlength="2" value="<?=$this->getFatigue()?>">
+								<h2 class="headerbar hbDark">Injuries</h2>
+								<div id="injNums" class="hbdMargined">
+									<div>
+										<div>Wounds</div>
+										<input type="text" name="wounds" maxlength="2" value="<?=$this->getWounds()?>">
+									</div>
+									<div>
+										<div>Fatigue</div>
+										<input type="text" name="fatigue" maxlength="2" value="<?=$this->getFatigue()?>">
+									</div>
 								</div>
+								<textarea id="injuries" class="hbdMargined"><?=$this->getInjuries()?></textarea>
 							</div>
 						</div>
 							

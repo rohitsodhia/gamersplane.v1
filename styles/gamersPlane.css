@@ -1322,12 +1322,18 @@ border-bottom-left-radius: 0;}
 .sprite {
 	display: inline-block;
 	height: 20px;
+	width: 20px;
 	padding: 0;
 	background: url('../images/sprites.png') top left no-repeat;
 }
 
 .sprite.downArrow, .sprite.upArrow {
 	width: 17px;
+}
+
+.sprite.small {
+	height: 16px;
+	width: 16px;
 }
 
 .sprite.downArrow {
@@ -1338,10 +1344,6 @@ border-bottom-left-radius: 0;}
 	background-position: -17px 0;
 }
 
-.sprite.editWheel, .sprite.permissions, .sprite.check, .sprite.cross, .sprite.pencil {
-	width: 20px;
-}
-
 .sprite.editWheel {
 	background-position: -34px 0;
 }
@@ -1350,16 +1352,24 @@ border-bottom-left-radius: 0;}
 	background-position: -54px 0;
 }
 
-.sprite.checkj {
+.sprite.check {
 	background-position: -74px 0;
+}
+
+.sprite.check.small {
+	background-position: -74px -40px;
 }
 
 .sprite.cross {
 	background-position: -94px 0;
 }
 
+.sprite.cross.small {
+	background-position: -94px -40px;
+}
+
 .sprite.pencil {
-	background-position: -104px 0;
+	background-position: -114px 0;
 }
 
 .sprite.tassel, .sprite.tassel.off:hover {

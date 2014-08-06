@@ -46,7 +46,7 @@ textarea {
 	background-color: #DDD;
 }
 
-.trait > * {
+.trait > *, .skill > * {
 	display: inline-block;
 	vertical-align: middle;
 }
@@ -65,6 +65,29 @@ textarea {
 	font-variant: small-caps;
 }
 
+.newSkill > * {
+	vertical-align: middle;
+}
+
+.newSkill input {
+	text-align: left;
+	width: 185px;
+}
+
+.newSkill a {
+	margin-left: 8px;
+}
+
+.skill {
+	position: relative;
+}
+
+.skill .remove {
+	position: absolute;
+	top: 5px;
+	left: -20px;
+}
+
 .twoCol {
 	float: left;
 	width: 315px;
@@ -75,14 +98,17 @@ textarea {
 	margin-right: 0;
 }
 
-#fatigueDiv {
-	margin-top: .5em;
+#injNums * {
+	display: inline-block;
+}
+
+#injNums > * {
+	width: 49%;
 	text-align: center;
 }
 
-#windDiv input {
-	width: 30px;
-	text-align: center;
+#injNums input {
+	margin-left: 10px;
 }
 
 .leftTitle {

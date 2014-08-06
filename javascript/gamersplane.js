@@ -25,13 +25,7 @@ $(function() {
 
 	$('.loginLink').colorbox();
 
-	$('.placeholder').each(function () {
-		$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
-			if ($(this).val() == $(this).data('placeholder')) $(this).val('').removeClass('default');
-		}).blur(function () {
-			if ($(this).val() == '') $(this).val($(this).data('placeholder')).addClass('default');
-		});
-	});
+	$('.placeholder').each(setupPlaceholders);
 
 	if ($('body').hasClass('modal')) {
 		$('a').attr('target', '_parent');
