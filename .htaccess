@@ -12,4 +12,5 @@ RewriteCond %{REQUEST_URI} !^/test\d?\.php$
 RewriteCond %{REQUEST_URI} !^/phpinfo\.php$
 RewriteCond %{REQUEST_URI} !^/test/
 RewriteCond %{REQUEST_URI} !^/dbBackup\.php$
+RewriteCond %{REQUEST_URI} !^/oneRunScripts/
 RewriteRule !\.(css|jpg|js|gif|png|ico|eot|woff|ttff|svg)$ dispatch.php
