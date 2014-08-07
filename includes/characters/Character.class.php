@@ -12,7 +12,7 @@
 		protected $notes;
 
 		protected $linkedTables = array();
-		protected $mongoIgnore = array('save' => array('linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system'));
+		protected $mongoIgnore = array('save' => array('bodyClasses', 'linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system'));
 		
 		public function __construct($characterID, $userID = NULL) {
 			$this->characterID = intval($characterID);

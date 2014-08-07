@@ -14,7 +14,7 @@ $(function() {
 			$newSkill = $(this).parent();
 			$skillName = $newSkill.find('input');
 			if ($skillName.val() == $skillName.data('placeholder')) return false;
-			$.post('/characters/ajax/addSkill/', { system: system, characterID: characterID, name: $skillName.val(), stat: $(this).closest('.statDiv').data('stat') }, function (data) {
+			$.post('/characters/ajax/addSkill/', { system: system, characterID: characterID, name: $skillName.val(), trait: $(this).closest('.traitDiv').data('trait') }, function (data) {
 				$(data).insertAfter($newSkill).find('select').prettySelect();
 				$newSkill.remove();
 			});

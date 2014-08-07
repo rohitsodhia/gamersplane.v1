@@ -4,86 +4,69 @@
 			</div>
 			
 			<div class="clearfix">
-				<div class="triCol">
-					<h2 class="headerbar hbDark">Mental</h2>
+				<div class="sidebar left">
+					<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
+					<div id="primaryTraits">
 <?
-	$first = TRUE;
-	foreach (savageworlds_consts::getStats() as $abbrev => $label) {
-		if ($abbrev == 'def') {
-			$first = TRUE;
+	foreach (savageworlds_consts::getTraits() as $abbrev => $label) {
+		$dice = $this->getTraits($abbrev);
 ?>
+						<div class="hbdMargined traitDiv" data-trait="<?=$abbrev?>">
+							<div class="trait clearfix">
+								<div class="traitName"><?=$label?></div>
+								<div class="diceSelect">d<?=$dice?></div>
+							</div>
+							<div class="skillHeader"><?=$label?> Skills</div>
+							<div class="skills">
+<?		$this->displaySkills($abbrev); ?>
+							</div>
+						</div>
+<?	} ?>
+					</div>
+					
+					<div id="derivedTraits">
+<?	foreach (array('Pace', 'Parry', 'Charisma', 'Toughness') as $derivedTrait) { ?>
+						<div class="tr">
+							<label class="traitName"><?=$derivedTrait?></label>
+							<div class="traitValue boxedValue borderBox"><?=$this->getDerivedTraits(strtolower($derivedTrait))?></div>
+						</div>
+<?	} ?>
+					</div>
 				</div>
-				<div class="triCol">
-					<h2 class="headerbar hbDark">Corporeal</h2>
-<?
-		}
-?>
-					<div class="hbdMargined statDiv<?=$first?' firstStatDiv':''?>">
-						<div class="statDice">
-							<?=$this->getStats($abbrev, 'dice')." $label"?>
+				<div class="mainColumn right">
+					<div class="clearfix">
+						<div class="twoCol">
+							<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
+							<div class="hbdMargined"><?=printReady($this->getEdgesHindrances())?></div>
 						</div>
-						<div class="skillTitle"><?=$label?> Skills</div>
-						<?=printReady($this->getStats($abbrev, 'skills'))?>
+						<div class="twoCol lastTwoCol">
+							<h2 class="headerbar hbDark">Injuries</h2>
+							<div id="injNums" class="hbdMargined">
+								<div>
+									<div>Wounds</div>
+									<div class="boxedValue borderBox"><?=$this->getWounds()?></div>
+								</div>
+								<div>
+									<div>Fatigue</div>
+									<div class="boxedValue borderBox"><?=$this->getFatigue()?></div>
+								</div>
+							</div>
+							<div class="hbdMargined"><?=printReady($this->getInjuries())?></div>
+						</div>
 					</div>
-<?
-		if ($first) $first = FALSE;
-	}
-?>
-				</div>
-				<div class="triCol lastTriCol">
-					<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-					<div class="hbdMargined"><?=printReady($this->getEdgesHindrances())?></div>
-					
-					<h2 class="headerbar hbDark">Worst Nightmare</h2>
-					<div class="hbdMargined"><?=printReady($this->getNightmare())?></div>
-					
-					<h2 class="headerbar hbDark">Wounds</h2>
-					<div id="woundsDiv" class="clearfix">
-						<div class="indivWoundDiv">
-							<div>Head</div>
-							<?=$this->getWounds('head')?>
+						
+					<div class="clearfix">
+						<div class="twoCol">
+							<h2 class="headerbar hbDark">Shootin Irons &amp; Such</h2>
+							<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
 						</div>
-						<div class="indivWoundDiv subTwoCol">
-							<div>Left Hand</div>
-							<?=$this->getWounds('leftHand')?>
-						</div>
-						<div class="indivWoundDiv subTwoCol">
-							<div>Right Hand</div>
-							<?=$this->getWounds('rightHand')?>
-						</div>
-						<div class="indivWoundDiv">
-							<div>Guts</div>
-							<?=$this->getWounds('guts')?>
-						</div>
-						<div class="indivWoundDiv subTwoCol">
-							<div>Left Leg</div>
-							<?=$this->getWounds('leftLeg')?>
-						</div>
-						<div class="indivWoundDiv subTwoCol">
-							<div>Right Leg</div>
-							<?=$this->getWounds('rightLeg')?>
+						<div class="twoCol lastTwoCol">
+							<h2 class="headerbar hbDark">Equipment</h2>
+							<div class="hbdMargined"><?=printReady($this->getEquipment())?></div>
 						</div>
 					</div>
 					
-					<div id="windDiv">
-						<div>Wind</div><?=printReady($this->getWind())?>
-					</div>
+					<h2 class="headerbar hbDark">Background/Notes</h2>
+					<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
 				</div>
 			</div>
-			
-			<div class="clearfix">
-				<div class="twoCol">
-					<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
-					<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
-					
-					<h2 class="headerbar hbDark">Arcane Abilities</h2>
-					<div class="hbdMargined"><?=printReady($this->getArcane())?></div>
-				</div>
-				<div class="twoCol lastTwoCol">
-					<h2 class="headerbar hbDark">Equipment</h2>
-					<div class="hbdMargined"><?=printReady($this->getEquipment())?></div>
-				</div>
-			</div>
-			
-			<h2 class="headerbar hbDark">Background/Notes</h2>
-			<div class="hbdMargined"><?=printReady($this->getNotes)?></div>

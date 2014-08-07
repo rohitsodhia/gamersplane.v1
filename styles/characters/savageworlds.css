@@ -16,7 +16,7 @@
 
 textarea {
 	width: 100%;
-	height: 6.2em;
+	height: 7.4em;
 }
 
 .sidebar {
@@ -27,20 +27,16 @@ textarea {
 	width: 645px;
 }
 
-.statDiv {
+.traitDiv {
 	position: relative;
 	margin-bottom: 1.3em;
-}
-
-#page_characterSheet .statDiv {
-	border-top: 1px solid #AAA;
 }
 
 .trait, .skillHeader, .skills > * {
 	padding: 0 8px;
 }
 
-.trait {
+#primaryTraits .trait {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	background-color: #DDD;
@@ -51,7 +47,7 @@ textarea {
 	vertical-align: middle;
 }
 
-.traitName {
+.traitName, .skillName {
 	width: 165px;
 }
 
@@ -98,6 +94,33 @@ textarea {
 	margin-right: 0;
 }
 
+#derivedTraits .tr {
+	display: inline-block;
+	width: 45%;
+	margin: 0 2%;
+}
+
+#derivedTraits .traitName {
+	width: 90px;
+	font-size: 1em;
+}
+
+.boxedValue {
+	display: inline-block;
+	width: 30px;
+	border: 1px solid #000;
+	padding: 3px 5px;
+	text-align: center;
+}
+
+#edge_hind {
+	height: 10em;
+}
+
+#injNums {
+	margin-bottom: .6em;
+}
+
 #injNums * {
 	display: inline-block;
 }
@@ -117,12 +140,6 @@ textarea {
 }
 
 #page_characterSheet_edit #notes {
-	height: 20em;
+	height: 15em;
 	width: 912px;
-}
-
-#page_characterSheet_edit #submitDiv {
-	clear: both;
-	text-align: center;
-	margin-top: 1em;
 }

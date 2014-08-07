@@ -6,31 +6,42 @@
 				<div class="clearfix">
 					<div class="sidebar left">
 						<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
+						<div id="primaryTraits">
 <?
-	foreach (savageworlds_consts::getStats() as $abbrev => $label) {
-		$dice = $this->getStats($abbrev);
+	foreach (savageworlds_consts::getTraits() as $abbrev => $label) {
+		$dice = $this->getTraits($abbrev);
 ?>
-						<div class="hbdMargined statDiv" data-stat="<?=$abbrev?>">
-							<div class="trait clearfix">
-								<div class="traitName"><?=$label?></div>
-								<div class="diceSelect"><span>d</span> <select name="stats[<?=$abbrev?>]" class="diceType">
+							<div class="hbdMargined traitDiv" data-trait="<?=$abbrev?>">
+								<div class="trait clearfix">
+									<div class="traitName"><?=$label?></div>
+									<div class="diceSelect"><span>d</span> <select name="traits[<?=$abbrev?>]" class="diceType">
 <?		foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
-									<option><?=$dCount?></option>
+										<option<?=$dice == $dCount?' selected="selected"':''?>><?=$dCount?></option>
 <?		} ?>
-								</select></div>
-							</div>
-							<div class="skillHeader"><?=$label?> Skills <a href="" class="addSkill">+</a></div>
-							<div class="skills">
+									</select></div>
+								</div>
+								<div class="skillHeader"><?=$label?> Skills <a href="" class="addSkill">+</a></div>
+								<div class="skills">
 <?		$this->showSkillsEdit($abbrev); ?>
+								</div>
 							</div>
-						</div>
 <?	} ?>
+						</div>
+						
+						<div id="derivedTraits">
+<?	foreach (array('Pace', 'Parry', 'Charisma', 'Toughness') as $derivedTrait) { ?>
+							<div class="tr">
+								<label class="traitName"><?=$derivedTrait?></label>
+								<input type="text" name="derivedTraits[<?=strtolower($derivedTrait)?>]" value="<?=$this->getDerivedTraits(strtolower($derivedTrait))?>">
+							</div>
+<?	} ?>
+						</div>
 					</div>
 					<div class="mainColumn right">
 						<div class="clearfix">
 							<div class="twoCol">
 								<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-								<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances?></textarea>
+								<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances()?></textarea>
 							</div>
 							<div class="twoCol lastTwoCol">
 								<h2 class="headerbar hbDark">Injuries</h2>
@@ -44,13 +55,13 @@
 										<input type="text" name="fatigue" maxlength="2" value="<?=$this->getFatigue()?>">
 									</div>
 								</div>
-								<textarea id="injuries" class="hbdMargined"><?=$this->getInjuries()?></textarea>
+								<textarea id="injuries" name="injuries" class="hbdMargined"><?=$this->getInjuries()?></textarea>
 							</div>
 						</div>
 							
 						<div class="clearfix">
 							<div class="twoCol">
-								<h2 class="headerbar hbDark">Shootin Irons & Such</h2>
+								<h2 class="headerbar hbDark">Shootin Irons &amp; Such</h2>
 								<textarea id="weapons" name="weapons" class="hbdMargined"><?=$this->getWeapons()?></textarea>
 							</div>
 							<div class="twoCol lastTwoCol">
