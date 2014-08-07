@@ -14,3 +14,4 @@ ucp/avatars/
 blog/
 test*.php
 includes/connect_local.php
+oneRunScripts/_*
