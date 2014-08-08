@@ -27,7 +27,7 @@
 
 	$characters = array();
 	foreach ($mysql->query('SELECT characterID, userID, label, approved FROM characters WHERE gameID = '.$gameID) as $character) $characters[$character['userID']][] = $character;
-	$playerApprovedChars = $mysql->query('SELECT COUNT(characterID) numChars FROM characters WHERE gameID = '.$gameID.' AND approved = 1');
+	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$userID} AND approved = 1");
 	$playerApprovedChars = $playerApprovedChars->fetchColumn();
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
