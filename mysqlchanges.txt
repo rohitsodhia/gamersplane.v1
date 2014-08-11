@@ -1,1 +1,1 @@
-Add Savage Words to `systems`
+INSERT INTO systems SET shortName = 'hellfrost', fullName = 'Hellfrost', enabled = 1;
