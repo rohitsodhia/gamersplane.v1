@@ -105,7 +105,7 @@
 			include('games/process/newGameEmail.php');
 			$email = ob_get_contents();
 			ob_end_clean();
-			mail('Gamers Plane <contact@gamersplane.com>', "New {$systemNames[$system]} Game: {$details['title']}", $email, 'Content-type: text/html;\r\nFrom: Gamers Plane <contact@gamersplane.com>;\r\nBcc: '.substr($recips, 0, -2));
+			mail('Gamers Plane <contact@gamersplane.com>', "New {$systemNames[$system]} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
 			
 			header('Location: /games/my/');
 		}
