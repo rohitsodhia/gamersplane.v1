@@ -29,17 +29,15 @@ textarea {
 
 .traitDiv {
 	position: relative;
-	margin-bottom: 1.3em;
 }
 
-.trait, .skillHeader, .skills > * {
-	padding: 0 8px;
+#primaryTraits, #skills {
+	margin-bottom: 1em;
 }
 
 #primaryTraits .trait {
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background-color: #DDD;
 }
 
 .trait > *, .skill > * {
@@ -48,7 +46,7 @@ textarea {
 }
 
 .traitName, .skillName {
-	width: 165px;
+	width: 185px;
 }
 
 .diceSelect > * {
@@ -57,7 +55,6 @@ textarea {
 
 .skillHeader {
 	margin: .3em 0;
-	font-size: .85em;
 	font-variant: small-caps;
 }
 
@@ -70,7 +67,7 @@ textarea {
 	width: 185px;
 }
 
-.newSkill a {
+.newSkill > a {
 	margin-left: 8px;
 }
 
@@ -80,8 +77,8 @@ textarea {
 
 .skill .remove {
 	position: absolute;
-	top: 5px;
-	left: -20px;
+	top: 6px;
+	left: -22px;
 }
 
 .twoCol {

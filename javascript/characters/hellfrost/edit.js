@@ -1,8 +1,8 @@
 $(function() {
-	$('a.addSkill').click(function (e) {
+	$('#skills').on('click', 'a.addSkill', function (e) {
 		e.preventDefault();
 
-		$skills = $(this).parent().siblings('.skills');
+		$skills = $('#skills');
 		if ($skills.find('.newSkill').length) return false;
 
 		$('<div class="newSkill"><input type="text" class="placeholder" data-placeholder="Skill Name"><a href="" class="sprite check small"></a><a href="" class="sprite cross small"></a></div>').appendTo($skills).find('input').each(setupPlaceholders).parent().find('.cross').click(function (e) {
@@ -14,14 +14,12 @@ $(function() {
 			$newSkill = $(this).parent();
 			$skillName = $newSkill.find('input');
 			if ($skillName.val() == $skillName.data('placeholder')) return false;
-			$.post('/characters/ajax/addSkill/', { system: system, characterID: characterID, name: $skillName.val(), trait: $(this).closest('.traitDiv').data('trait') }, function (data) {
+			$.post('/characters/ajax/addSkill/', { system: system, characterID: characterID, name: $skillName.val() }, function (data) {
 				$(data).insertAfter($newSkill).find('select').prettySelect();
 				$newSkill.remove();
 			});
 		}).parent().find('input').autocomplete('/characters/ajax/skillSearch/', { search: $(this).val(), characterID: characterID, system: system });
-	});
-
-	$('.skills').on('click', '.cross', function (e) {
+	}).on('click', '.cross', function (e) {
 		e.preventDefault();
 
 		$skillDiv = $(this).closest('.skill');

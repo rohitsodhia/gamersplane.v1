@@ -16,14 +16,15 @@
 								<div class="traitName"><?=$label?></div>
 								<div class="diceSelect">d<?=$dice?></div>
 							</div>
-							<div class="skillHeader"><?=$label?> Skills</div>
-							<div class="skills">
-<?		$this->displaySkills($abbrev); ?>
-							</div>
 						</div>
 <?	} ?>
 					</div>
 					
+					<div id="skills" class="hbdMargined">
+						<div class="skillHeader">Skills</div>
+<?		$this->displaySkills(); ?>
+					</div>
+
 					<div id="derivedTraits">
 <?	foreach (array('Pace', 'Parry', 'Charisma', 'Toughness') as $derivedTrait) { ?>
 						<div class="tr">
@@ -61,10 +62,13 @@
 							<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
 						</div>
 						<div class="twoCol lastTwoCol">
-							<h2 class="headerbar hbDark">Equipment</h2>
-							<div class="hbdMargined"><?=printReady($this->getEquipment())?></div>
+							<h2 class="headerbar hbDark">Spells</h2>
+							<div class="hbdMargined"><?=printReady($this->getSpells())?></div>
 						</div>
 					</div>
+					
+					<h2 class="headerbar hbDark">Equipment</h2>
+					<div class="hbdMargined"><?=printReady($this->getEquipment())?></div>
 					
 					<h2 class="headerbar hbDark">Background/Notes</h2>
 					<div class="hbdMargined"><?=printReady($this->getNotes())?></div>

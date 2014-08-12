@@ -11,7 +11,7 @@
 	foreach (savageworlds_consts::getTraits() as $abbrev => $label) {
 		$dice = $this->getTraits($abbrev);
 ?>
-							<div class="hbdMargined traitDiv" data-trait="<?=$abbrev?>">
+							<div class="hbdMargined traitDiv">
 								<div class="trait clearfix">
 									<div class="traitName"><?=$label?></div>
 									<div class="diceSelect"><span>d</span> <select name="traits[<?=$abbrev?>]" class="diceType">
@@ -20,12 +20,13 @@
 <?		} ?>
 									</select></div>
 								</div>
-								<div class="skillHeader"><?=$label?> Skills <a href="" class="addSkill">+</a></div>
-								<div class="skills">
-<?		$this->showSkillsEdit($abbrev); ?>
-								</div>
 							</div>
 <?	} ?>
+						</div>
+						
+						<div id="skills" class="hbdMargined">
+							<div class="skillHeader">Skills <a href="" class="addSkill">+</a></div>
+<?		$this->showSkillsEdit(); ?>
 						</div>
 						
 						<div id="derivedTraits">
@@ -65,11 +66,14 @@
 								<textarea id="weapons" name="weapons" class="hbdMargined"><?=$this->getWeapons()?></textarea>
 							</div>
 							<div class="twoCol lastTwoCol">
-								<h2 class="headerbar hbDark">Equipment</h2>
-								<textarea id="equipment" name="equipment" class="hbdMargined"><?=$this->getEquipment()?></textarea>
+								<h2 class="headerbar hbDark">Spells</h2>
+								<textarea id="spells" name="spells" class="hbdMargined"><?=$this->getSpells()?></textarea>
 							</div>
 						</div>
 						
+						<h2 class="headerbar hbDark">Equipment</h2>
+						<textarea id="equipment" name="equipment" class="hbdMargined"><?=$this->getEquipment()?></textarea>
+
 						<h2 class="headerbar hbDark">Background/Notes</h2>
 						<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
 					</div>

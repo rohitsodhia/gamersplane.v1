@@ -7,10 +7,9 @@
 		public function addSkill($skillID, $name, $post) {
 			global $mysql;
 
-			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'trait' => $post['trait']);
-			if (!array_key_exists($skillInfo['trait'], $this->traits)) return false;
+			$skillInfo = array('skillID' => $skillID, 'name' => $name);
 			try {
-				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, diceType, trait) VALUES ({$this->characterID}, $skillID, 4, '{$skillInfo['trait']}')");
+				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, diceType) VALUES ({$this->characterID}, $skillID, 4)");
 				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, 'trait');
 			} catch (Exception $e) { var_dump($e); }
 		}
@@ -40,17 +39,17 @@
 <?
 		}
 
-		public function showSkillsEdit($trait) {
+		public function showSkillsEdit() {
 			if ($this->skills == null) {
 				$this->skills = array();
 
 				global $mysql;
 				$system = $this::SYSTEM;
-				$skills = $mysql->query("SELECT s.skillID, sl.name, s.trait, s.diceType FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-				foreach ($skills as $skill) $this->skills[$skill['trait']][] = $skill;
+				$skills = $mysql->query("SELECT s.skillID, sl.name, s.diceType FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
+				foreach ($skills as $skill) $this->skills[] = $skill;
 			}
 
-			if (sizeof($this->skills[$trait])) { foreach ($this->skills[$trait] as $skillInfo) {
+			if (sizeof($this->skills)) { foreach ($this->skills as $skillInfo) {
 				$this->skillEditFormat($skillInfo);
 			} }
 		}
@@ -63,21 +62,20 @@
 			else echo 0;
 		}
 
-		public function displaySkills($trait) {
+		public function displaySkills() {
 			if ($this->skills == null) {
 				$this->skills = array();
 
 				global $mysql;
 				$system = $this::SYSTEM;
-				$skills = $mysql->query("SELECT s.skillID, sl.name, s.trait, s.diceType FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-				foreach ($skills as $skill) $this->skills[$skill['trait']][] = $skill;
+				$skills = $mysql->query("SELECT s.skillID, sl.name, s.diceType FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
+				foreach ($skills as $skill) $this->skills[] = $skill;
 			}
 
-			if ($this->skills[$trait]) { foreach ($this->skills[$trait] as $skill) {
+			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
 								<div id="skill_<?=$skill['skillID']?>" class="skill clearfix">
 									<div class="skillName"><?=$skill['name']?></div>
-									<input type="hidden" name="skills[<?=$skill['skillID']?>][trait]" value="<?=$skill['trait']?>">
 									<div class="diceType">d<?=$skill['diceType']?></div>
 								</div>
 <?
@@ -100,11 +98,10 @@
 				$this->setName($data['name']);
 				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
 				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
-				$updateSkill = $mysql->prepare("UPDATE {$system}_skills SET diceType = :diceType WHERE characterID = {$this->characterID} AND skillID = :skillID AND trait = :trait");
+				$updateSkill = $mysql->prepare("UPDATE {$system}_skills SET diceType = :diceType WHERE characterID = {$this->characterID} AND skillID = :skillID");
 				foreach ($data['skills'] as $skillID => $skillInfo) {
 					$updateSkill->bindValue(':diceType', $skillInfo['diceType']);
 					$updateSkill->bindValue(':skillID', $skillID);
-					$updateSkill->bindValue(':trait', $skillInfo['trait']);
 					$updateSkill->execute();
 				}
 				$this->setEdgesHindrances($data['edge_hind']);
@@ -117,7 +114,7 @@
 				$this->setNotes($data['notes']);
 			}
 
-			parent::save();
+			parent::save(true);
 		}
 	}
 ?>

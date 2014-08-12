@@ -172,12 +172,12 @@
 			return $this->equipment;
 		}
 
-		public function save() {
+		public function save($bypass = false) {
 			global $mysql;
 			$data = $_POST;
 			$system = $this::SYSTEM;
 
-			if (!isset($data['create'])) {
+			if (!isset($data['create']) && !$bypass) {
 				$this->setName($data['name']);
 				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
 				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
