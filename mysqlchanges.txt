@@ -1,7 +1,0 @@
-INSERT INTO systems SET shortName = 'hellfrost', fullName = 'Hellfrost', enabled = 1;
-CREATE TABLE hellfrost_skills (
-	characterID INT NOT NULL,
-	skillID INT NOT NULL,
-	diceType INT NOT NULL,
-	PRIMARY KEY (characterID, skillID)
-) ENGINE = MyISAM;
