@@ -1,48 +1,8 @@
 <?
-	class hellfrostCharacter extends Character {
+	class hellfrostCharacter extends savageworldsCharacter {
 		const SYSTEM = 'hellfrost';
 
-		protected $traits = array('agi' => 4, 'sma' => 4, 'spi' => 4, 'str' => 4, 'vig' => 4
-		);
-		protected $skills = null;
-		protected $derivedTraits = array('pace' => 0, 'parry' => 0, 'charisma' => 0, 'toughness' => 0);
-		protected $edgesHindrances = '';
-		protected $wounds = 0;
-		protected $fatigue = 0;
-		protected $injuries = '';
-		protected $weapons = '';
-		protected $equipment = '';
-//		protected $advances = '';
-
-		protected $linkedTables = array('skills');
-
-		public function __construct($characterID, $userID = NULL) {
-			parent::__construct($characterID, $userID);
-
-			$this->mongoIgnore['save'][] = 'skills';
-		}
-
-		public function setTrait($trait, $value = null) {
-			if (array_key_exists($trait, $this->traits)) $this->traits[$trait] = intval($value);
-			else return FALSE;
-		}
-		
-		public function getTraits($trait = NULL) {
-			if ($trait == NULL) return $this->traits;
-			elseif (array_key_exists($trait, $this->traits)) return $this->traits[$trait];
-			else return FALSE;
-		}
-
-		public function setDerivedTrait($trait, $value = null) {
-			if (array_key_exists($trait, $this->derivedTraits)) $this->derivedTraits[$trait] = intval($value);
-			else return FALSE;
-		}
-		
-		public function getDerivedTraits($trait = NULL) {
-			if ($trait == NULL) return $this->derivedTraits;
-			elseif (array_key_exists($trait, $this->derivedTraits)) return $this->derivedTraits[$trait];
-			else return FALSE;
-		}
+		protected $spells = '';
 
 		public function addSkill($skillID, $name, $post) {
 			global $mysql;
@@ -123,53 +83,12 @@
 <?
 			} }
 		}
-
-		public function setEdgesHindrances($edgesHindrances) {
-			$this->edgesHindrances = $edgesHindrances;
+		public function setSpells($spells) {
+			$this->spells = $spells;
 		}
 
-		public function getEdgesHindrances() {
-			return $this->edgesHindrances;
-		}
-
-		public function setWounds($wounds) {
-			$this->wounds = intval($wounds);
-		}
-
-		public function getWounds() {
-			return $this->wounds;
-		}
-
-		public function setFatigue($fatigue) {
-			$this->fatigue = intval($fatigue);
-		}
-
-		public function getFatigue() {
-			return $this->fatigue;
-		}
-
-		public function setInjuries($injuries) {
-			$this->injuries = $injuries;
-		}
-
-		public function getInjuries() {
-			return $this->injuries;
-		}
-
-		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
-		}
-
-		public function getWeapons() {
-			return $this->weapons;
-		}
-
-		public function setEquipment($equipment) {
-			$this->equipment = $equipment;
-		}
-
-		public function getEquipment() {
-			return $this->equipment;
+		public function getSpells() {
+			return $this->spells;
 		}
 
 		public function save() {
@@ -193,6 +112,7 @@
 				$this->setFatigue($data['fatigue']);
 				$this->setInjuries($data['injuries']);
 				$this->setWeapons($data['weapons']);
+				$this->setSpells($data['spells']);
 				$this->setEquipment($data['equipment']);
 				$this->setNotes($data['notes']);
 			}
