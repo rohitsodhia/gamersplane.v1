@@ -20,10 +20,10 @@
 <script type="text/javascript" src="/register/javascript/register.js"></script>
 <?	} ?>
 <?	if (file_exists(FILEROOT.'/javascript/'.$pathAction.'/_section.js')) { ?>
-<script type="text/javascript" src="<?='/javascript/'.$pathAction?>/_section.js"></script>
+<script type="text/javascript" src="/javascript/<?=$pathAction?>/_section.js"></script>
 <?	} ?>
 <?	if (file_exists(FILEROOT.'/javascript/'.substr($requireLoc, 0, -4).'.js')) { ?>
-<script type="text/javascript" src="<?='/javascript/'.substr($requireLoc, 0, -4)?>.js"></script>
+<script type="text/javascript" src="/javascript/<?=substr($requireLoc, 0, -4)?>.js"></script>
 <?	} ?>
 <?	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
 <script type="text/javascript" src="/javascript/tools/cards.js"></script>
