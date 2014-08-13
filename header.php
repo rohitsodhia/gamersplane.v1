@@ -15,16 +15,17 @@
 		<div id="userMenu_left"></div>
 		<div id="userMenu_right"></div>
 <? if (!$loggedIn) { ?>
-		<a href="/login" class="loginLink first">Login</a>
-		<a href="/register" class="last">Register</a>
+		<a href="/login/" class="loginLink first">Login</a>
+		<a href="/register/" class="last">Register</a>
 <?
 	} else {
 		$header_numMessages = $mysql->query('SELECT COUNT(*) FROM pms WHERE recipientID = '.intval($_SESSION['userID']).' AND viewed = 0');
 		$header_numNewMessages = $header_numMessages->fetchColumn();
 ?>
-		<span id="menuMessage"><a href="/ucp" class="username first"><?=$_SESSION['username']?></a></span>
-		<a href="/pms"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$header_numNewMessages?>)</a>
-		<a href="/logout" class="last">Logout</a>
+		<span id="menuMessage"><a href="/ucp/" class="username first"><?=$_SESSION['username']?></a></span>
+		<a href="/pms/"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$header_numNewMessages?>)</a>
+		<a href="/notifications/"
+		<a href="/logout/" class="last">Logout</a>
 <? } ?>
 	</div>
 	
@@ -37,7 +38,7 @@
 	
 	<div id="mainMenu">
 		<ul id="mainMenu_left">
-			<li><a href="/tools" class="first">Tools</a></li>
+			<li><a href="/tools/" class="first">Tools</a></li>
 <? if ($loggedIn) { ?>
 			<li>
 				<a href="/characters/my/">Characters</a>
@@ -48,10 +49,10 @@
 			$count = 0;
 			foreach ($header_characters as $hCharacter) {
 				if ($count > 5) {
-					echo "					".'<li><a href="/characters/my">All characters</a></li>'."\n";
+					echo "					".'<li><a href="/characters/my/">All characters</a></li>'."\n";
 					break;
 				}
-				echo "					".'<li><a href="/characters/'.$hCharacter['shortName'].'/'.$hCharacter['characterID'].'">'.$hCharacter['label'].'</a></li>'."\n";
+				echo "					".'<li><a href="/characters/'.$hCharacter['shortName'].'/'.$hCharacter['characterID'].'/">'.$hCharacter['label'].'</a></li>'."\n";
 				$count++;
 			}
 			echo "				</ul>\n";
@@ -59,17 +60,17 @@
 ?>
 			</li>
 			<li>
-				<a href="/games">Games</a>
+				<a href="/games/">Games</a>
 <?
 		$header_games = $mysql->query('SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = '.intval($_SESSION['userID']).' AND p.gameID = g.gameID ORDER BY g.title');
 		if ($header_games->rowCount()) {
 			echo "				<ul>\n";
 			$count = 0;
 			foreach ($header_games as $game) {
-				echo "					".'<li><a href="/games/'.$game['gameID'].'">'.$game['title'].($game['isGM']?' <img src="/images/gm_icon.png">':'').'</a></li>'."\n";
+				echo "					".'<li><a href="/games/'.$game['gameID'].'/">'.$game['title'].($game['isGM']?' <img src="/images/gm_icon.png">':'').'</a></li>'."\n";
 				$count++;
 				if ($count == 5) {
-					echo "					".'<li><a href="/games/my">All games</a></li>'."\n";
+					echo "					".'<li><a href="/games/my/">All games</a></li>'."\n";
 					break;
 				}
 			}
@@ -78,12 +79,12 @@
 ?>
 			</li>
 <? } ?>
-			<li><a href="/forums">Forums</a></li>
-			<li><a href="/contact" class="last">Contact Us</a></li>
+			<li><a href="/forums/">Forums</a></li>
+			<li><a href="/contact/" class="last">Contact Us</a></li>
 		</ul>
 <? if ($loggedIn) { ?>
 		<ul id="mainMenu_right">
-			<li><a href="/gamersList" class="first">The Gamers</a></li>
+			<li><a href="/gamersList/" class="first">The Gamers</a></li>
 		</ul>
 <? } ?>
 	</div>
