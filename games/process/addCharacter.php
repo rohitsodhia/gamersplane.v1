@@ -13,7 +13,6 @@
 		elseif ($charGameID == 0) {
 			$mysql->query('UPDATE characters SET gameID = '.$gameID.' WHERE characterID = '.$characterID);
 			addCharacterHistory($characterID, 'appliedToGame', $userID, 'NOW()', $gameID);
-			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, enactedUpon, action) VALUES ($gameID, $userID, NOW(), $characterID, 'charApplied')");
 			addGameHistory($gameID, 'charApplied', $userID, 'NOW()', 'character', $characterID);
 			
 			header('Location: /games/'.$gameID);

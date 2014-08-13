@@ -76,7 +76,6 @@
 	} elseif (isset($_POST['delete']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$mysql->query("DELETE FROM decks WHERE deckID = $deckID");
-		$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'deckDeleted')");
 		addGameHistory($gameID, 'deckDeleted', $userID);
 		
 		header('Location: /games/'.$gameID.'/decks?success=delete');

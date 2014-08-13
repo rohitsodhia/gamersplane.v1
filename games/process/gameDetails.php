@@ -47,7 +47,7 @@
 			$updateForums->bindValue(':title', $details['title']);
 			$updateForums->bindValue(':gameID', $gameID);
 			$updateForums->execute();
-			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'editedGame')");
+			addGameHistory($gameID, 'editedGame');
 			
 			header('Location: /games/'.$gameID);
 		} else {
@@ -94,7 +94,7 @@
 			
 			$mysql->query("INSERT INTO chat_sessions (gameID, locked) VALUES ($gameID, 0)");
 			
-			$mysql->query("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action) VALUES ($gameID, $userID, NOW(), 'newGame')");
+			addGameHistory($gameID, 'newGame');
 			
 //			mail('contact@gamersplane.com', 'New Game', "Game: {$details['title']}\nGM: {$_SESSION['username']}\nSystem: {$system}");
 			
