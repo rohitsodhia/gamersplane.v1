@@ -5,7 +5,7 @@
 		protected $traits = array('agi' => 4, 'sma' => 4, 'spi' => 4, 'str' => 4, 'vig' => 4
 		);
 		protected $skills = null;
-		protected $derivedTraits = array('pace' => 0, 'parry' => 0, 'charisma' => 0, 'toughness' => 0);
+		protected $derivedTraits = array('pace' => 0, 'charisma' => 0, 'parry' => 0, 'toughness' => 0);
 		protected $edgesHindrances = '';
 		protected $wounds = 0;
 		protected $fatigue = 0;
@@ -34,7 +34,8 @@
 		}
 
 		public function setDerivedTrait($trait, $value = null) {
-			if (array_key_exists($trait, $this->derivedTraits)) $this->derivedTraits[$trait] = intval($value);
+			if (array_key_exists($trait, $this->derivedTraits) && ($trait == 'parry' || $trait == 'toughness')) $this->derivedTraits[$trait] = $value;
+			elseif (array_key_exists($trait, $this->derivedTraits)) $this->derivedTraits[$trait] = intval($value);
 			else return FALSE;
 		}
 		

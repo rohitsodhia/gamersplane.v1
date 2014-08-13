@@ -100,6 +100,16 @@ textarea {
 	margin: 0 2%;
 }
 
+#derivedTraits .tr.longer {
+	display: block;
+	width: 100%;
+}
+
+#derivedTraits .tr.longer input {
+	width: 193px;
+	text-align: left;
+}
+
 #derivedTraits .traitName {
 	width: 90px;
 	font-size: 1em;
@@ -111,6 +121,11 @@ textarea {
 	border: 1px solid #000;
 	padding: 3px 5px;
 	text-align: center;
+}
+
+.longer .boxedValue {
+	width: 183px;
+	text-align: left;
 }
 
 #edge_hind {

@@ -26,8 +26,8 @@
 					</div>
 
 					<div id="derivedTraits">
-<?	foreach (array('Pace', 'Parry', 'Charisma', 'Toughness') as $derivedTrait) { ?>
-						<div class="tr">
+<?	foreach (array('Pace', 'Charisma', 'Parry', 'Toughness') as $derivedTrait) { ?>
+						<div class="tr<?=$derivedTrait == 'Parry' || $derivedTrait == 'Toughness'?' longer':''?>">
 							<label class="traitName"><?=$derivedTrait?></label>
 							<div class="traitValue boxedValue borderBox"><?=$this->getDerivedTraits(strtolower($derivedTrait))?></div>
 						</div>

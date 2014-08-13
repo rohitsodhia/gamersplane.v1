@@ -25,8 +25,8 @@
 					</div>
 					
 					<div id="derivedTraits">
-<?	foreach (array('Pace', 'Parry', 'Charisma', 'Toughness') as $derivedTrait) { ?>
-						<div class="tr">
+<?	foreach (array('Pace', 'Charisma', 'Parry', 'Toughness') as $derivedTrait) { ?>
+						<div class="tr<?=$derivedTrait == 'Parry' || $derivedTrait == 'Toughness'?' longer':''?>">
 							<label class="traitName"><?=$derivedTrait?></label>
 							<div class="traitValue boxedValue borderBox"><?=$this->getDerivedTraits(strtolower($derivedTrait))?></div>
 						</div>
@@ -57,7 +57,7 @@
 						
 					<div class="clearfix">
 						<div class="twoCol">
-							<h2 class="headerbar hbDark">Shootin Irons &amp; Such</h2>
+							<h2 class="headerbar hbDark">Weapons</h2>
 							<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
 						</div>
 						<div class="twoCol lastTwoCol">
