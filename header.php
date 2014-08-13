@@ -24,7 +24,6 @@
 ?>
 		<span id="menuMessage"><a href="/ucp/" class="username first"><?=$_SESSION['username']?></a></span>
 		<a href="/pms/"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$header_numNewMessages?>)</a>
-		<a href="/notifications/"
 		<a href="/logout/" class="last">Logout</a>
 <? } ?>
 	</div>
