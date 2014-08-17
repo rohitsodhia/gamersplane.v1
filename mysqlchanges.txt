@@ -1,0 +1,1 @@
+INSERT INTO dispatch SET url = 'notifications/', pageID = 'notifications', file = 'notifications.php', title = 'Notifications';
