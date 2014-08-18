@@ -5,7 +5,7 @@
 		$userID = intval($_SESSION['userID']);
 		$gameID = intval($_POST['gameID']);
 		$characterID = intval($_POST['characterID']);
-		$pendingAction = $_POST['pendingAction'] == 'approve'?'approve':'removed';
+		$pendingAction = $_POST['pendingAction'] == 'approve'?'approve':'remove';
 		
 		$gmCheck = $mysql->query('SELECT isGM FROM players WHERE gameID = '.$gameID.' AND userID = '.$userID);
 		$charCheck = $mysql->query('SELECT c.label, c.userID, u.username, g.title, s.shortName FROM characters c, users u, games g, systems s WHERE c.userID = u.userID AND g.systemID = s.systemID AND c.characterID = '.$characterID.' AND g.gameID = '.$gameID);
