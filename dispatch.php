@@ -58,6 +58,16 @@
 		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?true:false;
 
 		require($requireLoc);
+	} elseif (STATE == 'maintainance') {
+		$dispatchInfo = array(
+			'url' => '/',
+			'title' => "Undergoing Maintaince",
+			'bodyClass' => null,
+			'modalWidth' => null
+		);
+		$requireLoc = 'maintainance.php';
+		define('PAGE_ID', 'maintainance');
+		$fixedGameMenu = false;
 	} elseif (STATE == 'moving') {
 		$dispatchInfo = array(
 			'url' => '/',
