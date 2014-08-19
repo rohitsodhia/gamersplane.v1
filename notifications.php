@@ -26,24 +26,24 @@
 			$systemInfo = $systems->getSystemInfo($cNotification['systemID']);
 ?>
 				<div class="timestamp"><?=date('M j, Y H:i:s', $timestamp)?> - </div>
-<?			if ($action == 'created') { ?>
+<?			if ($action == 'charCreated') { ?>
 				<div class="text">You created a new <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
 <?			} elseif ($action == 'basicEdited') { ?>
 				<div class="text">You edited the basic info for your <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?			} elseif ($action == 'editedChar') { ?>
+<?			} elseif ($action == 'charEdited') { ?>
 				<div class="text"><?=$cNotification['enactedBy'] == $userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> edited <?=$cNotification['cUserID'] == $userID?'your':"<a href=\"/ucp/{$cNotification['cUserID']}/\" class=\"username\">{$cNotification['cUsername']}</a>'s"?> <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?			} elseif ($action == 'deleted') { ?>
+<?			} elseif ($action == 'charDeleted') { ?>
 				<div class="text">You deleted your <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
 <?			} elseif ($action == 'addToLibrary' || $action == 'removeFromLibrary') { ?>
 				<div class="text">You <?=$action == 'addToLibrary'?'added':'removed'?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=$action == 'addToLibrary'?'to':'from'?> the character library</div>
-<?			} elseif ($action == 'favorited' || $action == 'unfavorited') { ?>
+<?			} elseif ($action == 'charFavorited' || $action == 'charUnfavorited') { ?>
 				<div class="text"><?=$cNotification['enactedBy'] == $userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>"?> <?=$action == 'unfavorited'?'un':''?>favorited <?=$cNotification['cUserID'] == $userID?'your':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>'s"?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>)</div>
-<?			} elseif ($action == 'appliedToGame') { ?>
-				<div class="text">You applied <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) to <a href="/ucp/<?=$cNotification['gmID']?>/" class="username"><?=$cNotification['gmUsername']?></a>'s <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
-<?			} elseif ($action == 'characterApproved') { ?>
-				<div class="text">You applied <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) to <a href="/ucp/<?=$cNotification['gmID']?>/" class="username"><?=$cNotification['gmUsername']?></a>'s <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
+<?			} elseif ($action == 'charApplied') { ?>
+				<div class="text">You applied <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) to <a href="/ucp/<?=$cNotification['gmID']?>/" class="username"><?=$cNotification['gmUsername']?></a>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
+<?			} elseif ($action == 'characterApproved' || $action == 'characterRejected' || $action == 'characterRemoved') { ?>
+				<div class="text"><?=$cNotification['enactedBy'] == $userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>"?> <?=substr($action, 9)?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$cNotification['gmID'] == $userID?'your':"<a href=\"/ucp/{$cNotification['gmID']}/\" class=\"username\">{$cNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
 <?
-			}
+			} else $count--;
 			$cNotification = $charHistories->fetch();
 		} else {
 			$action = $gNotification['action'];
@@ -59,10 +59,10 @@
 				<div class="text">You created a new <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
 <?			} elseif ($action == 'editedGame') { ?>
 				<div class="text">You edited your <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?			} elseif ($action == 'appliedToGame') { ?>
+<?			} elseif ($action == 'playerApplied') { ?>
 				<div class="text"><?=$gNotification['enactedBy'] == $userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>"?> applied to <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
 <?
-			}
+			} else $count--;
 			$gNotification = $gameHistories->fetch();
 		}
 ?>
