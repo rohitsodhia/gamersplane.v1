@@ -114,7 +114,7 @@
 			foreach ($this->mongoIgnore['save'] as $key) unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
 			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => TRUE));
-			addCharacterHistory($this->characterID, 'editedChar');
+			addCharacterHistory($this->characterID, 'charEdited');
 		}
 
 		public function load() {
@@ -135,7 +135,7 @@
 			foreach ($this->linkedTables as $table) $mysql->query('DELETE FROM '.$this::SYSTEM.'_'.$table.' WHERE characterID = '.$this->characterID);
 			$mongo->characters->remove(array('characterID' => $this->characterID));
 			
-			addCharacterHistory($this->characterID, 'deleted', $userID, 'NOW()');
+			addCharacterHistory($this->characterID, 'charDeleted', $userID, 'NOW()');
 		}
 	}
 ?>

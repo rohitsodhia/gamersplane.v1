@@ -9,7 +9,7 @@
 			$unfavorited = $mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = $userID AND characterID = $characterID");
 			$state = $unfavorited->rowCount()?'unfavorited':'favorited';
 			if ($state == 'favorited') $mysql->query("INSERT INTO characterLibrary_favorites SET userID = $userID, characterID = $characterID");
-			addCharacterHistory($characterID, ($state == 'favorited'?'favorited':'unfavorited'));
+			addCharacterHistory($characterID, ($state == 'favorited'?'charFavorited':'charUnfavorited'));
 			echo $state;
 		} else echo 'not in library';
 	} else echo 0;

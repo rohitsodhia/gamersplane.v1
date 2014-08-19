@@ -27,7 +27,7 @@
 			$newChar->setLabel($_POST['label']);
 			$newChar->setType($_POST['type']);
 			$newChar->save();
-			addCharacterHistory($characterID, 'created', $userID, 'NOW()', $systemID);
+			addCharacterHistory($characterID, 'charCreated', $userID, 'NOW()', $systemID);
 
 			header('Location: /characters/'.$systemShort.'/'.$characterID.'/edit/new');
 		}
