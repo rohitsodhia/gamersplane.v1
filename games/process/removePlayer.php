@@ -24,8 +24,8 @@
 			$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, gameID, action) SELECT characterID, $userID, NOW(), $gameID, '".(isset($_POST['remove'])?'playerRemovedFromGame':'playerLeftGame')."' FROM characters WHERE gameID = $gameID AND userID = $playerID");
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE gameID = $gameID AND userID = $playerID");
 			$mysql->query("DELETE FROM players WHERE gameID = $gameID AND userID = $playerID");
-			if (isset($_POST['remove'])) addGameHistory($gameID, 'removedPlayer', $userID, 'NOW()', 'user', $playerID);
-			else addGameHistory($gameID, 'leftGame');
+			if (isset($_POST['remove'])) addGameHistory($gameID, 'playerRemoved', $userID, 'NOW()', 'user', $playerID);
+			else addGameHistory($gameID, 'playerLeft');
 			
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) echo 'Removed';

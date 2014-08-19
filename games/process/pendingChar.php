@@ -8,14 +8,18 @@
 		$pendingAction = $_POST['pendingAction'] == 'approve'?'approve':'remove';
 		
 		$gmCheck = $mysql->query('SELECT isGM FROM players WHERE gameID = '.$gameID.' AND userID = '.$userID);
-		$charCheck = $mysql->query('SELECT c.label, c.userID, u.username, g.title, s.shortName FROM characters c, users u, games g, systems s WHERE c.userID = u.userID AND g.systemID = s.systemID AND c.characterID = '.$characterID.' AND g.gameID = '.$gameID);
+		$charCheck = $mysql->query('SELECT c.label, c.userID, u.username, g.title, s.shortName, c.approved FROM characters c, users u, games g, systems s WHERE c.userID = u.userID AND g.systemID = s.systemID AND c.characterID = '.$characterID.' AND g.gameID = '.$gameID);
 		
 		if ($charCheck->rowCount() == 0 && $gmCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo -1;
 			else header('Location: /games/'.$gameID.'/?charError=1');
 		} else {
 			if ($pendingAction == 'approve') $mysql->query('UPDATE characters SET approved = 1 WHERE characterID = '.$characterID);
-			else $mysql->query('UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = '.$characterID);
+			else {
+				$mysql->query('UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = '.$characterID);
+				$charInfo = $charCheck->fetch();
+				if (!$charInfo['approved']) $pendingAction = 'rejecte';
+			}
 			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', $userID);
 			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', 'character', $characterID);
 			

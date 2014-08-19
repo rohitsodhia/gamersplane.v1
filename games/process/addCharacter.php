@@ -12,7 +12,7 @@
 		if (is_int($chargameID)) header('Location: /403');
 		elseif ($charGameID == 0) {
 			$mysql->query('UPDATE characters SET gameID = '.$gameID.' WHERE characterID = '.$characterID);
-			addCharacterHistory($characterID, 'appliedToGame', $userID, 'NOW()', $gameID);
+			addCharacterHistory($characterID, 'charApplied', $userID, 'NOW()', $gameID);
 			addGameHistory($gameID, 'charApplied', $userID, 'NOW()', 'character', $characterID);
 			
 			header('Location: /games/'.$gameID);

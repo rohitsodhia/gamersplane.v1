@@ -193,7 +193,7 @@
 				}
 				if ($isGM || $character['userID'] == $userID) {
 ?>
-									<a href="<?='/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':'Remove'?> Character</a>
+									<a href="<?='/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':(!$character['approved']?'Reject':'Remove')?> Character</a>
 <?				} ?>
 								</div>
 							</li>
