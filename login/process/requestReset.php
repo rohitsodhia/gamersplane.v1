@@ -9,6 +9,8 @@
 		if ($userCheck->rowCount()) {
 			$rndPass = randomAlphaNum(10);
 			$validationStr = md5($email.'r3Qu'.$rndPass);
+			echo $rndPass;
+			echo "http://gamersplane.com/login/resetPass?validate={$validationStr}";exit;
 			$body = "Gamers Plane Password Reset
 
 ---------------------------------------------------

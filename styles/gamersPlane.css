@@ -612,7 +612,7 @@ div.prettySelect > div {
 .bodyHeader {
 	position: relative;
 	background: url('../images/bodyComponents/background.jpg') 0 0 repeat-x;
-	z-index: 10000;
+	z-index: 6000;
 }
 
 .bodyHeader, .bodyHeader .bodyContainer {
@@ -2184,12 +2184,7 @@ div.forumIcon.newPosts.sticky {
 /* --------------------------------------------*/
 
 #page_requestReset form {
-	margin-top: 1em;
-}
-
-#page_requestReset input[type="text"] {
-	position: relative;
-	top: -11px;
+	margin-top: .8em;
 }
 
 /* --------------------------------------------*/

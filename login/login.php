@@ -30,6 +30,6 @@
 			</form>
 		</div>
 		
-		<p><a id="register" href="/register">Don't have an account? Register for free!</a></a>
-		<p><a id="requestReset" href="/login/requestReset">Forgot your password?</a></a>
+		<p><a id="register" href="/register/">Don't have an account? Register for free!</a></p>
+		<p><a id="requestReset" href="/login/requestReset/" class="inFrame">Forgot your password?</a></p>
 <? require_once(FILEROOT.'/footer.php'); ?>

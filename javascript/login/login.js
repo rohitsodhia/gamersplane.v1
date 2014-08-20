@@ -1,6 +1,5 @@
 $(function () {
-//	$('#requestReset').attr('href', $('#requestReset').attr('href') + '?modal=1');
-	$('#register, #requestReset').attr('target', '_parent');
+	$('#requestReset').attr('href', $('#requestReset').attr('href') + '?modal=1');
 
 	$('#username').focus();
 
