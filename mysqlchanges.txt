@@ -1,1 +1,0 @@
-UPDATE dispatch SET modalWidth = 550 WHERE url = 'login/requestReset/';
