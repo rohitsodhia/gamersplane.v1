@@ -123,7 +123,7 @@ $.fn.prettyCheckbox = function () {
 	$(this).each(function () {
 		$(this).wrap('<div class="prettyCheckbox"></div>');
 		if ($(this).is(':checked')) $(this).parent().addClass('checked');
-		if ($(this).data('disabled') == 'disabled') $(this).parent().addClass('disabled');
+		if ($(this).attr('disabled') == 'disabled') $(this).parent().addClass('disabled');
 	}).hide().change(function (e) {
 		$(this).parent().toggleClass('checked');
 	});

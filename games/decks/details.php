@@ -52,7 +52,7 @@
 	foreach ($players as $player) {
 ?>
 				<div class="tr user">
-					<input type="checkbox" name="addUser[<?=$player['userID']?>]"<?=(in_array($player['userID'], $deckPermissions) || $player['primaryGM']?' checked="checked"':'').($player['primaryGM']?' data-disabled="disabled"':'')?>>
+					<input type="checkbox" name="addUser[<?=$player['userID']?>]"<?=(in_array($player['userID'], $deckPermissions) || $player['primaryGM']?' checked="checked"':'').($player['primaryGM']?' disabled="disabled"':'')?>>
 					<label><?=$player['username']?></label>
 				</div>
 <?	} ?>
