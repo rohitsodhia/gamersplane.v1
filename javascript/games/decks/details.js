@@ -1,12 +1,12 @@
 $(function () {
 	$('#checkAll').click(function (e) {
 		e.preventDefault();
-		$('input[type="checkbox"]').not('[disabled=disabled]').prop('checked', true);
+		$('input[type="checkbox"]').filter(function () { return $(this).data('disabled') == 'disabld'?false:true; }).prop('checked', true);
 		$('.prettyCheckbox').not('.disabled').addClass('checked');
 	});
 	$('#uncheckAll').click(function (e) {
 		e.preventDefault();
-		$('input[type="checkbox"]').not('[disabled=disabled]').prop('checked', false);
+		$('input[type="checkbox"]').filter(function () { return $(this).data('disabled') == 'disabld'?false:true; }).prop('checked', false);
 		$('.prettyCheckbox').not('.disabled').removeClass('checked');
 	});
 	$('form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
