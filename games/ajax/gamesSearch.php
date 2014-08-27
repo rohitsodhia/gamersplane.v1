@@ -24,7 +24,7 @@
 		echo "\t\t\t<div class=\"tr clearfix\">\n";
 		echo "\t\t\t\t".'<a href="/games/'.$gameInfo['gameID'].'" class="gameTitle">'.$gameInfo['title']."</a>\n";
 		echo "\t\t\t\t".'<div class="systemType">'.$gameInfo['system']."</div>\n";
-		echo "\t\t\t\t".'<div class="gmLink"><a href="/ucp/'.$gameInfo['gmID'].'" class="username">'.$gameInfo['username'].'</a></div>'."\n";
+		echo "\t\t\t\t".'<div class="gmLink"><a href="/user/'.$gameInfo['gmID'].'" class="username">'.$gameInfo['username'].'</a></div>'."\n";
 		echo "\t\t\t</div>\n";
 	} } else echo "\t\t\t<div id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new\">make one</a>?</div>\n";
 ?>

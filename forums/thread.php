@@ -144,8 +144,8 @@
 			<div class="postBlock post<?=$postSide?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
-					<a href="<?='/ucp/'.$postInfo['userID']?>" class="avatar"><img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png"></a>
-					<p class="posterName"><a href="<?='/ucp/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
+					<a href="<?='/user/'.$postInfo['userID']?>" class="avatar"><img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png"></a>
+					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
 				</div>
 				<div class="postContent">
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>

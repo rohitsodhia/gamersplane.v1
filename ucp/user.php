@@ -14,7 +14,7 @@
 		<div id="leftCol">
 			<img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png" class="avatar">
 			<div id="actions">
-				<a href="/ucp/pms/send/?userID=<?=$profileID?>">Send Private Message</a>
+				<a href="/pms/send/?userID=<?=$profileID?>">Send Private Message</a>
 			</div>
 		</div>
 		<div id="rightCol">
