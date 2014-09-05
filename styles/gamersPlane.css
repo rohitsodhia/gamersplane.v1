@@ -142,7 +142,7 @@ h1 {
 	font-weight: bold;
 	line-height: 1.6em;
 	text-align: center;
-	color: #A00;
+	color: #B00;
 }
 
 h2 {
@@ -363,7 +363,7 @@ a.fancyButton:hover {
 button, button:visited, button:active, a.button, a.button:visited, a.button:active {
 	width: auto;
 	height: auto;
-	color: #A00;
+	color: #B00;
 	background: none;
 	font-family: Neuropol;
 	font-size: 2em;
@@ -1968,12 +1968,12 @@ div.forumIcon.newPosts.sticky {
 	display: block;
 	width: 95px;
 	margin-top: 10px;
-	border: 1px solid #A00;
+	border: 1px solid #B00;
 	background: #CCC;
 	font-family: AgencyFB;
 	line-height: 1.2em;
 	text-align: center;
-	color: #A00;
+	color: #B00;
 }
 
 #page_home .sideWidget .login {
@@ -2087,7 +2087,7 @@ div.forumIcon.newPosts.sticky {
 }
 
 #page_home #availSystems li {
-/*	color: #A00;*/
+/*	color: #B00;*/
 	list-style: url('../images/bullets.png');
 	margin: .25em 0 .25em 10px;
 }
