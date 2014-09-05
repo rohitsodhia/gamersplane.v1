@@ -272,7 +272,7 @@ em {
 /* Links */
 a, a:visited, a:active, .fauxLink {
 	text-decoration: none;
-	color: #A00;
+	color: #B00;
 	outline: none;
 }
 
