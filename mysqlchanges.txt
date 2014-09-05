@@ -1,0 +1,1 @@
+INSERT INTO systems SET shortName = 'dnd5', fullName = 'Dungeons &amp; Dragons 5th', enabled = 1;
