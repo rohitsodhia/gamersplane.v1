@@ -3,18 +3,18 @@
 		const SYSTEM = 'dnd5';
 
 		protected $race = '';
-		protected $size = 0;
+		protected $background = '';
 		protected $alignment = 'tn';
-		protected $saves = array ('fort' => array('base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0),
-								  'ref' => array('base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0),
-								  'will' => array('base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0));
-		protected $ac = array('armor' => 0, 'shield' => 0, 'dex' => 0, 'class' => 0, 'natural' => 0, 'deflection' => 0, 'misc' => 0);
-		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
-		protected $damageReduction = '';
-		protected $initiative = array('stat' => 'dex', 'misc' => 0);
-		protected $weapons = array();
-		protected $armor = array();
-		protected $spells = '';
+		protected $inspiration = 0;
+		protected $profBonus = 0;
+		protected $saveBonuses = array('str' => 0, 'dex' => 0, 'con' => 0, 'int' => 0, 'wis' => 0, 'cha' => 0);
+		protected $ac = 0;
+		protected $initiative = 0;
+		protected $hp = array('total' => 0, 'current' => 0, 'temp' => 0);
+		protected $deathSaves = array('success' => 0, 'failure' => 0);
+		protected $languages = '';
+		protected $spellDC = 0;
+		protected $spellAB = 0;
 
 		protected $linkedTables = array('feats', 'skills');
 
@@ -26,13 +26,12 @@
 			return $this->race;
 		}
 
-		public function setSize($value) {
-			$value = intval($value);
-			$this->size = $value;
+		public function setBackground($value) {
+			$this->background = $value;
 		}
 
-		public function getSize() {
-			return $this->size;
+		public function getBackground() {
+			return $this->background;
 		}
 
 		public function setAlignment($value) {
@@ -43,12 +42,31 @@
 			return dnd5_consts::getAlignments($this->alignment);
 		}
 
-		public function setDamageReduction($value) {
-			$this->damageReduction = $value;
+		public function setInspiration($value) {
+			$this->inspiration = intval($value);
 		}
 
-		public function getDamageReduction() {
-			return $this->damageReduction;
+		public function getInspiration() {
+			return $this->inspiration;
+		}
+
+		public function setProfBonus($value) {
+			$this->profBonus = intval($value);
+		}
+
+		public function getProfBonus() {
+			return $this->profBonus;
+		}
+		
+		public function setSaveBonus($save, $value) {
+			if (array_key_exists($save, $this->saveBonuses)) $this->saveBonuses[$save] = intval($value);
+			else return false;
+		}
+
+		public function getSaveBonus($save = null) {
+			if (array_key_exists($save, $this->saveBonuses)) return $this->saveBonuses[$save];
+			elseif ($save == null) return $this->saveBonuses;
+			else return false;
 		}
 
 		public function addSkill($skillID, $name, $post) {
