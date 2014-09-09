@@ -5,6 +5,12 @@ ErrorDocument 404 errors/404
 Options -Indexes +FollowSymLinks 
 RewriteEngine On
 
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !^(.*)/$
+RewriteRule ^(.*)$ /$1/ [L,R=301]
+
 RewriteCond %{REQUEST_URI} !^/blog
 RewriteCond %{REQUEST_URI} !^/phpthumb
 RewriteCond %{REQUEST_URI} !^/backup
