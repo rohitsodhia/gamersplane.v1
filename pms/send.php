@@ -2,8 +2,8 @@
 	$loggedIn = checkLogin();
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	
-	if ($pathOptions[1] == 'reply') {
-		$pmID = intval($pathOptions[2]);
+	if ($pathOptions[0] == 'reply') {
+		$pmID = intval($pathOptions[1]);
 		
 		$pmCheck = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.message FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE recipientID = '.intval($_SESSION['userID']).' AND pmID = '.$pmID);
 		
@@ -30,7 +30,7 @@
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Send Private Message</h1>
+		<h1 class="headerbar"><?=$pathOptions[0] == 'reply'?'Reply':'Send Private Message'?></h1>
 		
 <?
 	if ($errors) {

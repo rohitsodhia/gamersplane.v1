@@ -17,8 +17,8 @@
 			<a id="newPM" href="/pms/send" class="fancyButton">New PM</a>
 			<div id="controls" class="wingDiv sectionControls" data-ratio=".8">
 				<div class="wingDivContent clearfix">
-					<a href="/pms/"<?=$box == 'inbox'?' class="current"':''?>>Inbox</a>
-					<a href="/pms/outbox"<?=$box == 'outbox'?' class="current"':''?>>Outbox</a>
+					<a href="/pms/" class="borderBox<?=$box == 'inbox'?' current':''?>">Inbox</a>
+					<a href="/pms/outbox" class="borderBox<?=$box == 'outbox'?' current':''?>">Outbox</a>
 				</div>
 				<div class="wing dlWing"></div>
 				<div class="wing drWing"></div>
@@ -41,7 +41,7 @@
 			$pmInfo['datestamp'] = switchTimezone($_SESSION['timezone'], $pmInfo['datestamp'], $_SESSION['dst']);
 ?>
 			<div id="pm_<?=$pmInfo['pmID']?>" class="pm tr<?=$pms->rowCount() == $count?' lastTR':''?><?=$pmInfo['viewed']?'':' new'?>">
-				<div class="delCol"><?=$box == 'outbox' && $pmInfo['viewed']?'':'<a href="/pms/delete/'.$pmInfo['pmID'].'" class="deletePM"><img src="/images/cross.png"></a>'?></div>
+				<div class="delCol"><?=$box == 'outbox' && $pmInfo['viewed']?'':'<a href="/pms/delete/'.$pmInfo['pmID'].'" class="deletePM sprite cross"></a>'?></div>
 				<div class="titleCol"><a href="/pms/view/<?=$pmInfo['pmID']?>"><?=(!$pmInfo['viewed']?'<b>':'').printReady($pmInfo['title']).(!$pmInfo['viewed']?'</b>':'')?></a></div>
 				<div class="fromCol"><a href="<?='/'.$pmInfo['senderID']?>" class="username"><?=$pmInfo['senderName']?></a></div>
 				<div class="whenCol"><?=date('F j, Y<\b\r>g:i a', $pmInfo['datestamp'])?></div>

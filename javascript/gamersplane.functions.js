@@ -92,7 +92,7 @@ function wingMargins(container) {
 	var width = Math.ceil(height * ($container.data('ratio') == undefined?.6:Number($container.data('ratio'))));
 	$container.data('height', height);
 	$container.data('width', width);
-	$content.css('margin', '0 ' + width + 'px').outerHeight($content.outerHeight());
+	$content.css('margin', '0 ' + width + 'px');//.outerHeight($content.outerHeight());
 	$container.children('.wing').each(setupWings);
 }
 
