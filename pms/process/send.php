@@ -3,7 +3,7 @@
 	
 	$userID = intval($_SESSION['userID']);
 
-	if (strstr($_SESSION['lastURL'], '/pms/send')) {
+	if (isset($_POST['send'])) {
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorTime']);
 		
