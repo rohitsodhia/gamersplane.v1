@@ -3,6 +3,8 @@
 	
 	$userID = intval($_SESSION['userID']);
 
+	var_dump($_POST); exit;
+
 	if (isset($_POST['send'])) {
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorTime']);

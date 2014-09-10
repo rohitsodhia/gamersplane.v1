@@ -48,17 +48,14 @@ $(function() {
 	$('#messageTextArea').blur(checkMessage).markItUp(mySettings);
 
 	$('#page_pm_send form').submit(function () {
-		if (validated) return true;
+		if (userValid && titleValid && messageValid) return true;
 		else {
 			$form = $(this);
 			$.when(checkUsername()).done(function (a) {
 				checkTitle();
 				checkMessage();
 
-				if (userValid && titleValid && messageValid) {
-					validated = true;
-					$form.submit();
-				}
+				if (userValid && titleValid && messageValid) return true;
 			});
 
 			return false;
