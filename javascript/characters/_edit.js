@@ -20,8 +20,10 @@ $(function () {
 		$total.removeClass('addStat_' + oldStat).addClass('addStat_' + newStat).html(showSign(parseInt($total.html()) - statBonus[oldStat] + statBonus[newStat]));
 	});
 
-	$('#skillName').autocomplete('/characters/ajax/skillSearch/', { search: $(this).val(), characterID: characterID, system: system });
+	$('.skill_name input').autocomplete('/characters/ajax/skillSearch/', { characterID: characterID, system: system });
 	$('#skills').on('click', '.skill_remove', function (e) {
+		e.preventDefault();
+
 		var skillID = $(this).parent().attr('id').split('_')[1];
 		$.post('/characters/ajax/removeSkill/', { characterID: characterID, system: system, skillID: skillID }, function (data) {
 			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
@@ -29,11 +31,28 @@ $(function () {
 				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
 			}); }
 		});
-		
+	}).on('click', '.edit', function (e) {
 		e.preventDefault();
+
+		$skill_name = $(this).parent().children('.skill_name');
+		$skill_name.find('input').val($skill_name.children('span').text()).trigger('change');
+		$(this).parent().addClass('editing');
+	}).on('keyup', '.skill_name input', function (e) {
+		e.preventDefault();
+		$wrapper = $(this).parent();
+
+		if (e.which == 13) {
+			$wrapper.parent().children('span').text($wrapper.val());
+			$wrapper.closest('.skill').removeClass('editing');
+		} else if (e.which == 27) {
+			$wrapper.val($wrapper.parent().children('span').text());
+			$wrapper.closest('.skill').removeClass('editing');
+		}
 	});
 
-	$('#featName').autocomplete('/characters/ajax/featSearch/', { search: $(this).val(), characterID: characterID, system: system });
+	addCSSRule('.skill_stat', 'width: ' + $('.skill_total').outerWidth(true) + 'px');
+
+	$('#featName').autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system });
 	$('#feats').on('click', '.feat_remove', function (e) {
 		var featID = $(this).parent().attr('id').split('_')[1];
 		$.post('/characters/ajax/removeFeat/', { characterID: characterID, system: system, featID: featID }, function (data) {

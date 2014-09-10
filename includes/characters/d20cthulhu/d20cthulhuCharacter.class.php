@@ -15,61 +15,47 @@
 			else return FALSE;
 		}
 
-		public function getSanity($key = NULL) {
+		public function getSanity($key = null) {
 			if (in_array($key, array_keys($this->sanity))) return $this->sanity[$key];
-			elseif ($key == NULL) return $this->sanity;
+			elseif ($key == null) return $this->sanity;
 			else return FALSE;
 		}
 
-		public function addSkill($skillID, $name, $post) {
-			global $mysql;
-
-			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
-			elseif ($post['stat'] == '') $stat = 'n/a';
-			else return;
-			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'ranks' => 0, 'misc' => 0);
-			try {
-				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
-			} catch (Exception $e) {}
+		public function addSkill($key) {
+			$skillInfo = array('key' => $key, 'name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
+			$this->skillEditFormat($skillInfo, 0);
 		}
 
-		public function updateSkill($skillID, $skillInfo) {
-			global $mysql;
-			
-			$updateSkill = $mysql->prepare("UPDATE ".$this::SYSTEM."_skills SET ranks = :ranks, misc = :misc WHERE characterID = :characterID AND skillID = :skillID");
-			$updateSkill->bindValue(':ranks', intval($skillInfo['ranks']));
-			$updateSkill->bindValue(':misc', intval($skillInfo['misc']));
-			$updateSkill->bindValue(':characterID', $characterID);
-			$updateSkill->bindValue(':skillID', $skillID);
-			$updateSkill->execute();
-		}
-
-		public function skillEditFormat($skillInfo = NULL, $statBonus = NULL) {
-			if ($statBonus == NULL) $statBonus = $this->getStatMod($skillInfo['stat'], false);
-			else $statBonus = 0;
+		public static function skillEditFormat($skillInfo = null) {
+			if ($statBonus == null) {
+				$statBonus = $this->getStatMod($skillInfo['stat'], false);
+				if (!$statBonus) $statBonus = 0;
+			} else $statBonus = 0;
 ?>
 						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
-							<span class="skill_name textLabel medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
+							<a href="" class="edit sprite pencil small"></a>
+							<span class="skill_name textLabel medText">
+								<span><?=$skillInfo['name']?></span>
+								<input type="text" name="skills[<?=$skillID?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder" data-placeholder="Skill Name">
+							</span>
 							<span class="skill_total textLabel shortNum lrBuffer total <?=$skillInfo['stat'] != 'n/a'?'addStat_'.$skillInfo['stat']:''?>"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
-							<span class="skill_stat textLabel lrBuffer alignCenter shortNum"><?=$skillInfo['stat'] == 'n/a'?'N/A':ucwords($skillInfo['stat'])?></span>
+							<span class="skill_stat"><select name="skill[<?=$skillInfo['skillID']?>][stat]">
+								<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
+<?
+	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+?>
+							</select></span>
 							<input type="text" name="skills[<?=$skillInfo['skillID']?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 							<input type="text" name="skills[<?=$skillInfo['skillID']?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-							<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove lrBuffer">
+							<a href="" class="skill_remove sprite cross lrBuffer"></a>
 						</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			global $mysql;
-
-			$skills = $mysql->query("SELECT s.skillID, sl.name, s.stat, s.ranks, s.misc FROM ".$this::SYSTEM."_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-			if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
-				$this->skillEditFormat($skillInfo);
-			} } else { ?>
-						<p id="noSkills">This character currently has no skills.</p>
-<?
-			}
+			if (sizeof($this->skills)) { foreach ($this->skills as $skill) {
+				$this->skillEditFormat($skill);
+			} } else $this->skillEditFormat(array('key' => 1, 'name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0));
 		}
 
 		public function removeSkill($skillID) {

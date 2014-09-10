@@ -31,11 +31,21 @@ function showSign(val) {
 	else return val;
 }
 
+function addCSSRule(selector, rules, index) {
+	if ('insertRule' in jsCSSSheet) jsCSSSheet.insertRule(selector + "{" + rules + "}", index);
+	else if ('addRule' in jsCSSSheet) jsCSSSheet.addRule(selector, rules, index);
+}
+
 function setupPlaceholders() {
-	$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
-		if ($(this).val() == $(this).data('placeholder')) $(this).val('').removeClass('default');
+	var $input = $(this);
+	if ($input.val() == '' || $input.val() == $input.data('placeholder')) $input.addClass('default');
+	$input.val(function () { return $input.data('placeholder') == ''?$input.data('placeholder'):$input.val(); }).focus(function () {
+		if ($input.val() == $input.data('placeholder')) $input.val('').removeClass('default');
 	}).blur(function () {
-		if ($(this).val() == '') $(this).val($(this).data('placeholder')).addClass('default');
+		if ($input.val() == '') $input.val($input.data('placeholder')).addClass('default');
+	}).change(function () {
+		if ($input.val() != $input.data('placeholder')) $input.removeClass('default');
+		else if ($input.val() == $input.data('placeholder')) $input.addClass('default');
 	});
 }
 

@@ -65,13 +65,11 @@ $(function() {
 	$('#addSkill').click(function (e) {
 		e.preventDefault()
 		
-		if (verifySkill()) {
-			$.post('/characters/ajax/addSkill/', newSkillObj(), function (data) {
-				if ($('#noSkills').size()) $('#noSkills').remove();
-				$(data).hide().appendTo('#skills .hbdMargined').slideDown();
-				$('#skillName').val('').trigger('blur');
-			});
-		}
+		$.post('/characters/ajax/addSkill/', newSkillObj(), function (data) {
+			if ($('#noSkills').size()) $('#noSkills').remove();
+			$(data).hide().appendTo('#skills .hbdMargined').slideDown();
+			$('#skillName').val('').trigger('blur');
+		});
 	});
 	$('#skills').on('blur', '.skill input', sumRow);
 	

@@ -351,8 +351,29 @@ label.leftLabel {
 	display: inline-block;
 }
 
-#addSkillWrapper > *, #addFeatWrapper > * {
+#addSkillWrapper > *, #addFeatWrapper > *, .skill > *, .feat > * {
 	vertical-align: middle;
+}
+
+#page_characterSheet_edit .skill, #page_characterSheet_edit .feat {
+	position: relative;
+	padding-left: 24px;
+}
+
+#page_characterSheet_edit .skill .edit, #page_characterSheet_edit .feat .edit {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 3px;
+	margin-top: -9px;
+}
+
+#page_characterSheet_edit .skill:not(.editing):hover .edit, #page_characterSheet_edit .feat:not(.editing):hover .edit, #page_characterSheet_edit .skill.editing .skill_name > div, #page_characterSheet_edit .feat.editing .feat_name > div {
+	display: block;
+}
+
+#page_characterSheet_edit .editing .skill_name > span, #page_characterSheet_edit .editing .feat_name > span, #page_characterSheet_edit .skill_name > div, #page_characterSheet_edit .feat_name > div {
+	display: none;
 }
 
 #page_featNotes #notes, #page_editFeatNotes #notes {

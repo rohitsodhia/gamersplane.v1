@@ -163,18 +163,8 @@
 				
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills</h2>
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
-							<div id="addSkillWrapper">
-								<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
-								<select id="skillStat" name="newSkill[stat]">
-									<option value="">N/A</option>
-<?
-	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
-?>
-								</select>
-								<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
-							</div>
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
 								<label class="shortNum alignCenter lrBuffer">Total</label>
@@ -182,6 +172,8 @@
 								<label class="shortNum alignCenter lrBuffer">Ranks</label>
 								<label class="shortNum alignCenter lrBuffer">Misc</label>
 							</div>
+						</div>
+						<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
 						</div>
 					</div>

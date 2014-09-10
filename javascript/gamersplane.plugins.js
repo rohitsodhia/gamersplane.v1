@@ -12,9 +12,12 @@ $.fn.autocomplete = function (pathOption, sendData) {
 	}
 
 	var $inputBox = $(this), onWrapper = false, searchTimeout;
-	$inputBox.wrap('<div class="autocompleteWrapper"></div>').parent().attr('id', $inputBox.attr('id') + 'Wrapper');
+	$inputBox.attr('autocomplete', 'off');
+	$inputBox.wrap('<div class="autocompleteWrapper"></div>');
+	if ($inputBox.attr('id') && $inputBox.attr('id').length) $inputBox.parent().attr('id', $inputBox.attr('id') + 'Wrapper');
 	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
 	$inputBox.keyup(function () {
+		if ($resultsDiv.parent().css('top') == '-1px') $resultsDiv.parent().css('top', ($inputBox.outerHeight(false) - 1) + 'px');
 		if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
 			$.extend(sendData, { search: $(this).val() });
 			clearTimeout(searchTimeout);
@@ -60,6 +63,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 				$select = $(this).wrap('<div class="prettySelect">');
 				$prettySelect = $select.parent();
 				if ($select.attr('id') && $select.attr('id').length > 0) $prettySelect.attr('id', 'ps_' + $select.attr('id'));
+//				if ($select.attr('class') && $select.attr('class').length > 0) $prettySelect.attr('class', $select.attr('class')).removeClass('prettySelect');
 				$prettySelectCurrent = $('<div class="prettySelectCurrent">');
 				$prettySelectLongest = $('<div class="prettySelectLongest">');
 				$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
