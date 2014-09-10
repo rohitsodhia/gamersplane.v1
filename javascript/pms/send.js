@@ -47,7 +47,7 @@ $(function() {
 	$('#title').blur(checkTitle);
 	$('#messageTextArea').blur(checkMessage).markItUp(mySettings);
 
-	$('#page_pm_send form').submit(function () {
+/*	$('#page_pm_send form').submit(function () {
 		if (userValid && titleValid && messageValid) return true;
 		else {
 			$form = $(this);
@@ -60,5 +60,5 @@ $(function() {
 
 			return false;
 		}
-	});
+	});*/
 });
