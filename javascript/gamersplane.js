@@ -25,7 +25,7 @@ $(function() {
 
 	$('.loginLink').colorbox();
 
-	$('.placeholder').each(setupPlaceholders);
+	$('.placeholder').placeholder();
 
 	if ($('body').hasClass('modal')) {
 		$('a').not('.inFrame').attr('target', '_parent');

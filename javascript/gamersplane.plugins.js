@@ -47,6 +47,8 @@ $.fn.autocomplete = function (pathOption, sendData) {
 
 		e.preventDefault();
 	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
+
+	return $inputBox.parent();
 };
 
 (function ($) {
@@ -171,4 +173,35 @@ $.fn.prettify = function () {
 	$(this).find('select').prettySelect();
 	$(this).find('input[type="checkbox"]').prettyCheckbox();
 	$(this).find('input[type="radio"]').prettyRadio();
-}
+
+	return $(this);
+};
+
+(function ($) {
+	$.placeholder = function () {
+		$eles = $('input.placeholder');
+		$eles.each(setupPlaceholders).trigger('blur');
+
+		return $eles;
+	};
+
+	$.fn.placeholder = function () {
+		$eles = $(this);
+		$eles.each(setupPlaceholders).trigger('blur');
+
+		return $eles;
+	};
+
+	function setupPlaceholders() {
+		var $input = $(this);
+		if ($input.val() == '' || $input.val() == $input.data('placeholder')) $input.addClass('default');
+		$input.val(function () { return $input.data('placeholder') == ''?$input.data('placeholder'):$input.val(); }).focus(function () {
+			if ($input.val() == $input.data('placeholder') || $input.val() == '') $input.val('').removeClass('default');
+		}).blur(function () {
+			if ($input.val() == '') $input.val($input.data('placeholder')).addClass('default');
+		}).change(function () {
+			if ($input.val() != $input.data('placeholder')) $input.removeClass('default');
+			else if ($input.val() == $input.data('placeholder')) $input.addClass('default');
+		});
+	}
+}(jQuery));
