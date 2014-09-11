@@ -166,3 +166,9 @@ toggleRadio = function (e) {
 }
 
 $('body').on('click', '.prettyCheckbox', toggleCheckbox).on('click', 'label', toggleLinkedCheckbox).on('click', '.prettyRadio', toggleRadio);
+
+$.fn.prettify = function () {
+	$(this).find('select').prettySelect();
+	$(this).find('input[type="checkbox"]').prettyCheckbox();
+	$(this).find('input[type="radio"]').prettyRadio();
+}
