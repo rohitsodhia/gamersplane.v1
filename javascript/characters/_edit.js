@@ -52,13 +52,13 @@ $(function () {
 		e.preventDefault();
 
 		$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
-			$(data).appendTo('#skillList').find('.skill_name input').focus();
+			$newSkill = $(data);
+			$newSkill.appendTo('#skillList').prettify().find('.skill_name input').autocomplete('/characters/ajax/skillSearch/', { characterID: characterID, system: system }).find('input').placeholder().focus();
 			nextSkillCount += 1;
 		});
 	});
 	nextSkillCount = $('#skillList .skill').length;
-	if (nextSkillCount == 0) $('#addSkill').trigger('click');
-	else nextSkillCount++;
+	$('.skill').find('.skill_name input').placeholder().autocomplete('/characters/ajax/skillSearch/', { characterID: characterID, system: system });
 
 	addCSSRule('.skill_stat', 'width: ' + $('.skill_total').outerWidth(true) + 'px');
 

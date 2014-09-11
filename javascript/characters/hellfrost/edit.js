@@ -5,7 +5,7 @@ $(function() {
 		$skills = $('#skills');
 		if ($skills.find('.newSkill').length) return false;
 
-		$('<div class="newSkill"><input type="text" class="placeholder" data-placeholder="Skill Name"><a href="" class="sprite check small"></a><a href="" class="sprite cross small"></a></div>').appendTo($skills).find('input').each(setupPlaceholders).parent().find('.cross').click(function (e) {
+		$('<div class="newSkill"><input type="text" class="placeholder" data-placeholder="Skill Name"><a href="" class="sprite check small"></a><a href="" class="sprite cross small"></a></div>').appendTo($skills).find('input').placeholder().parent().find('.cross').click(function (e) {
 			e.preventDefault();
 			$(this).parent().remove();
 		}).parent().find('.check').click(function (e) {

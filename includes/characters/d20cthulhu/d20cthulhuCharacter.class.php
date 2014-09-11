@@ -52,8 +52,7 @@
 		public function showSkillsEdit() {
 			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
 				$this->skillEditFormat($key + 1, $skill);
-			} }
-//			} } else $this->skillEditFormat(1, array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0), 0, true);
+			} } else $this->skillEditFormat(1, array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0), 0, true);
 		}
 
 		public function removeSkill($skillID) {
