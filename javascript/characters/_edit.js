@@ -1,4 +1,4 @@
-var characterID = parseInt($('#characterID').val()), system = $('#system').val();
+var characterID = parseInt($('#characterID').val()), system = $('#system').val(), nextSkillCount = 1;
 $(function () {
 	$('#charDetails').on('blur', '.sumRow input', sumRow);
 
@@ -48,7 +48,17 @@ $(function () {
 			$wrapper.val($wrapper.parent().children('span').text());
 			$wrapper.closest('.skill').removeClass('editing');
 		}
+	}).on('click', '#addSkill', function (e) {
+		e.preventDefault();
+
+		$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
+			$(data).appendTo('#skillList').find('.skill_name input').focus();
+			nextSkillCount += 1;
+		});
 	});
+	nextSkillCount = $('#skillList .skill').length;
+	if (nextSkillCount == 0) $('#addSkill').trigger('click');
+	else nextSkillCount++;
 
 	addCSSRule('.skill_stat', 'width: ' + $('.skill_total').outerWidth(true) + 'px');
 

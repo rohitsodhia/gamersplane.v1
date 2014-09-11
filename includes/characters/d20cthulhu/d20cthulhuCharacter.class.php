@@ -21,41 +21,39 @@
 			else return FALSE;
 		}
 
-		public function addSkill($key) {
-			$skillInfo = array('key' => $key, 'name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
-			$this->skillEditFormat($skillInfo, 0);
+		public function addSkill($key, $editing = false) {
+			$skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
+			d20cthulhuCharacter::skillEditFormat($key, $skillInfo, 0, true);
 		}
 
-		public static function skillEditFormat($skillInfo = null) {
-			if ($statBonus == null) {
-				$statBonus = $this->getStatMod($skillInfo['stat'], false);
-				if (!$statBonus) $statBonus = 0;
-			} else $statBonus = 0;
+		public static function skillEditFormat($key, $skillInfo = null, $statBonus = null, $editing = false) {
+			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a') $statBonus = 0;
 ?>
-						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
+						<div class="skill clearfix<?=$editing?' editing':''?>">
 							<a href="" class="edit sprite pencil small"></a>
 							<span class="skill_name textLabel medText">
 								<span><?=$skillInfo['name']?></span>
-								<input type="text" name="skills[<?=$skillID?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder" data-placeholder="Skill Name">
+								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder" data-placeholder="Skill Name">
 							</span>
 							<span class="skill_total textLabel shortNum lrBuffer total <?=$skillInfo['stat'] != 'n/a'?'addStat_'.$skillInfo['stat']:''?>"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
-							<span class="skill_stat"><select name="skill[<?=$skillInfo['skillID']?>][stat]">
+							<span class="skill_stat"><select name="skill[<?=$key?>][stat]">
 								<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
 <?
 	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
 ?>
 							</select></span>
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
+							<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
+							<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
 							<a href="" class="skill_remove sprite cross lrBuffer"></a>
 						</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $skill) {
-				$this->skillEditFormat($skill);
-			} } else $this->skillEditFormat(array('key' => 1, 'name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0));
+			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
+				$this->skillEditFormat($key + 1, $skill);
+			} }
+//			} } else $this->skillEditFormat(1, array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0), 0, true);
 		}
 
 		public function removeSkill($skillID) {
