@@ -3,6 +3,10 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+/*
+	z-index blocks:
+*/
+
 @font-face {
 	font-family: 'AgencyFB';
 	src: url('fonts/AgencyFB.eot');
@@ -867,13 +871,18 @@ html[xmlns] .clearfix {
 	z-index: 5000;
 }
 
-.autocompleteWrapper input.open {
--webkit-border-bottom-right-radius: 0;
--webkit-border-bottom-left-radius: 0;
--moz-border-radius-bottomright: 0;
--moz-border-radius-bottomleft: 0;
-border-bottom-right-radius: 0;
-border-bottom-left-radius: 0;}
+.autocompleteWrapper.open {
+	z-index: 5001;
+}
+
+.autocompleteWrapper.open input {
+	-webkit-border-bottom-right-radius: 0;
+	-webkit-border-bottom-left-radius: 0;
+	-moz-border-radius-bottomright: 0;
+	-moz-border-radius-bottomleft: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
 
 .autocompleteResultsWrapper {
 	position: absolute;
