@@ -178,7 +178,7 @@
 						</div>
 					</div>
 					<div id="feats" class="floatRight">
-						<h2 class="headerbar hbDark">Feats/Abilities <a id="addSkill" href="">[ Add Feat/Ability ]</a></h2>
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
 						<div id="featList">
 <?	$this->showFeatsEdit(); ?>
 						</div>

@@ -55,7 +55,7 @@
 					<div class="skill tr clearfix">
 						<span class="skill_name medText"><?=$skill['name']?></span>
 						<span class="skill_total addStat_<?=$skill['stat']?> shortNum lrBuffer"><?=showSign($this->getStatMod($skill['stat'], false) + $skill['ranks'] + $skill['misc'])?></span>
-						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
+						<span class="skill_stat alignCenter shortNum lrBuffer"><?=$skill['stat'] == 'n/a'?'N/A':ucwords($skill['stat'])?></span>
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['ranks'])?></span>
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['misc'])?></span>
 					</div>
@@ -93,6 +93,9 @@
 					<div class="feat tr clearfix">
 						<span class="feat_name"><?=$feat['name']?></span>
 						<a href="" class="feat_notesLink">Notes</a>
+<?	if (strlen($feat['notes'])) { ?>
+						<div class="feat_notes"><?=$feat['notes']?></div>
+<?	} ?>
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";

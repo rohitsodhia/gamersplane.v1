@@ -46,7 +46,7 @@ $(function () {
 			$skill_name = $(this).parent().children('.skill_name');
 			$skill_name.find('input').val($skill_name.children('span').text()).trigger('change');
 			$(this).parent().addClass('editing');
-		}).on('keyup', '.skill_name input', function (e) {
+		}).on('keypress', '.skill_name input', function (e) {
 			e.preventDefault();
 			$input = $(this), $wrapper = $input.closest('.skill_name'), $span = $wrapper.children('span');
 
@@ -87,8 +87,7 @@ $(function () {
 			$feat_name = $(this).parent().children('.feat_name');
 			$feat_name.find('input').val($feat_name.children('span').text()).trigger('change');
 			$(this).parent().addClass('editing');
-		}).on('keyup', '.feat_name input', function (e) {
-			e.preventDefault();
+		}).on('keypress', '.feat_name input', function (e) {
 			$input = $(this), $wrapper = $input.closest('.feat_name'), $span = $wrapper.children('span');
 
 			if (e.which == 13 && $input.val() != '') {
@@ -106,12 +105,20 @@ $(function () {
 				$newFeat.appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
 				nextFeatCount += 1;
 			});
+		}).on('click', '.feat_notesLink', function(e) {
+			e.preventDefault();
+
+			$(this).siblings('textarea').slideToggle();
 		});
 
 		nextFeatCount = $('#featList .feat').length + 1;
 		$('.feat').find('.feat_name input').placeholder().autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system });
 		
-		$('#feats').on('click', '.feat_notesLink', function (e) { $(this).colorbox(); });
+		$('#skills, #feats').on('click', '.autocompleteWrapper a', function (e) {
+			hitEnter = $.Event('keypress');
+			hitEnter.which = 13;
+			$(this).closest('.autocompleteWrapper').children('input').trigger(hitEnter);
+		});
 	}
 
 	if ($('#addWeapon').length) { $('#addWeapon').click(function (e) {

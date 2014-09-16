@@ -48,6 +48,9 @@ body.modal {
 p {
   margin: .5em 0;
 }
+input {
+  line-height: 1.4em;
+}
 input,
 textarea {
   padding: 4px 5px;
