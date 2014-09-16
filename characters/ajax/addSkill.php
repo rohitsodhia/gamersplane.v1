@@ -5,7 +5,7 @@
 		if ($systems->getSystemID(SYSTEM)) {
 			require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 			$charClass = SYSTEM.'Character';
-			$charClass::addSkill(intval($_POST['key']));
+			$charClass::skillEditFormat(intval($_POST['key']), null, null, true);
 		}
 	}
 ?>

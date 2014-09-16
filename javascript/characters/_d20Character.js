@@ -1,18 +1,3 @@
-function verifySkill() {
-	if ($('#skillName').val().length >= 3 && $('#skillName').val() != 'Skill Name') return true;
-	else return false;
-}
-
-function newSkillObj() {
-	return {
-		characterID: characterID,
-		system: system,
-		name: $('#skillName').val(),
-		stat: $('#skillStat').val(),
-		statBonus: $('#skillStat').val() != ''?statBonus[$('#skillStat').val()]:0
-	}
-}
-
 var size = 0, level = 0, statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 $(function() {
 	size = parseInt($('#size').val());
@@ -60,20 +45,6 @@ $(function() {
 	$('#bab').blur(function () {
 		$('.bab').text(showSign($(this).val()));
 		$('#ranged_misc').blur();
-	});
-	
-	$('#skills').on('blur', '.skill input', sumRow);
-	
-	$('#addFeat').click(function (e) {
-		if ($('#featName').val().length >= 3) {
-			$.post('/characters/ajax/addFeat/', { characterID: characterID, system: system, name: $('#featName').val() }, function (data) {
-				if ($('#noFeats').size()) $('#noFeats').remove();
-				$(data).hide().appendTo('#feats .hbdMargined').slideDown();
-				$('#featName').val('').trigger('blur');
-			});
-		}
-		
-		e.preventDefault()
 	});
 	
 	$('#weapons').on('click', '.remove', function (e) {

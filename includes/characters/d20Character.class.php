@@ -17,13 +17,6 @@
 		protected $feats = array();
 		protected $items = '';
 
-		public function __construct($characterID, $userID = NULL) {
-			parent::__construct($characterID, $userID);
-
-			$this->mongoIgnore['save'][] = 'skills';
-			$this->mongoIgnore['save'][] = 'feats';
-		}
-
 		public function setClass($class, $level = 1) {
 			$this->classes[$class] = $level;
 		}
