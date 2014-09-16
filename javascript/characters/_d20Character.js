@@ -46,15 +46,4 @@ $(function() {
 		$('.bab').text(showSign($(this).val()));
 		$('#ranged_misc').blur();
 	});
-	
-	$('#weapons').on('click', '.remove', function (e) {
-		$(this).closest('.weapon').remove();
-
-		e.preventDefault()
-	});
-	$('#armor').on('click', '.remove', function (e) {
-		$(this).closest('.armor').remove();
-
-		e.preventDefault()
-	});
 });

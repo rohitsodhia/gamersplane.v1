@@ -74,17 +74,43 @@ $(function () {
 	}
 
 	if ($('#feats').length) {
+		var nextFeatCount = 1;
+
 		$('#feats').on('click', '.feat_remove', function (e) {
-			var featID = $(this).parent().attr('id').split('_')[1];
-			$.post('/characters/ajax/removeFeat/', { characterID: characterID, system: system, featID: featID }, function (data) {
-				if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
-					$(this).remove();
-					if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
-				}); }
+			e.preventDefault();
+
+			$(this).parent().remove();
+			if ($('.feat').size() == 0) $('#addFeat').click();
+		}).on('click', '.edit', function (e) {
+			e.preventDefault();
+
+			$feat_name = $(this).parent().children('.feat_name');
+			$feat_name.find('input').val($feat_name.children('span').text()).trigger('change');
+			$(this).parent().addClass('editing');
+		}).on('keyup', '.feat_name input', function (e) {
+			e.preventDefault();
+			$input = $(this), $wrapper = $input.closest('.feat_name'), $span = $wrapper.children('span');
+
+			if (e.which == 13 && $input.val() != '') {
+				$span.text($input.val());
+				$wrapper.parent().removeClass('editing');
+			} else if (e.which == 27 && $span.text() != '') {
+				$input.val($span.text());
+				$wrapper.parent().removeClass('editing');
+			}
+		}).on('click', '#addFeat', function (e) {
+			e.preventDefault();
+
+			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
+				$newFeat = $(data);
+				$newFeat.appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
+				nextFeatCount += 1;
 			});
-			
-			e.preventDefault()
 		});
+
+		nextFeatCount = $('#featList .feat').length + 1;
+		$('.feat').find('.feat_name input').placeholder().autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system });
+		
 		$('#feats').on('click', '.feat_notesLink', function (e) { $(this).colorbox(); });
 	}
 
