@@ -103,7 +103,7 @@
 			$numVotes[$voteInfo['pollOptionID']] = $voteInfo['numVotes'];
 			$totalVotes += $voteInfo['numVotes'];
 		}
-		$highestVotes = max($numVotes)?max($numVotes):0;
+		$highestVotes = sizeof($numVotes)?max($numVotes):0;
 ?>
 				<ul>
 <?
