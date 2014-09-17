@@ -1,10 +1,10 @@
 create table newItemized(
 itemType varchar(10) not null,
-itemID int not null,
 name varchar(50) not null,
+itemID int not null,
 addedBy int not null,
-systemID int not null,
-primary key (itemType, itemID)) engine = MyISAM;
+systemID int,
+primary key (itemType, name)) engine = MyISAM;
 
 create table acpPermissions(
 userID int not null,
