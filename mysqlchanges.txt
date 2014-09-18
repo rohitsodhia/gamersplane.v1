@@ -11,4 +11,6 @@ create table acpPermissions(
 userID int not null,
 permission varchar(20) not null,
 primary key (userID, permission)) engine = MyISAM;
-    
+
+INSERT INTO dispatch SET url = 'acp/', pageID = 'acp', file = 'acp/index.php', title = 'Site ACP';
+INSERT INTO dispatch SET url = 'acp/autocomplete/', pageID = 'acp_autocomplete', file = 'acp/autocomplete.php', title = 'Site ACP - Manage Autocomplete';
