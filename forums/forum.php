@@ -262,7 +262,7 @@
 			$forumIcon = ($threadInfo['lp_postID'] > $lastReadID && $threadInfo['lp_postID'] > $threadInfo['lastRead']) && $loggedIn?'new':'old';
 ?>
 				<div class="tr">
-					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
+					<div class="td icon"><div class="forumIcon<?=$threadInfo['sticky']?' sticky':''?><?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
 <?
 			if ($forumIcon == 'new') {
