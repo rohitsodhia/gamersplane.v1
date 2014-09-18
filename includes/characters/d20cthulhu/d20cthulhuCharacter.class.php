@@ -64,6 +64,7 @@
 		}
 		
 		public function addSkill($skill) {
+			newItemized('skill', $skill['name'], $this::SYSTEM);
 			$this->skills[] = $skill;
 		}
 
@@ -102,6 +103,7 @@
 		}
 
 		public function addFeat($feat) {
+			newItemized('feat', $feat['name'], $this::SYSTEM);
 			$this->feats[] = $feat;
 		}
 
