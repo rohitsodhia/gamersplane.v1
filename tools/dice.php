@@ -23,7 +23,7 @@
 				<p>Dice should be in the format<br>(number of dice)d(dice type)(modifier)</p>
 				<p>Separate rolls should be separated by commas or on new lines.</p>
 				<p><i>Example: 2d4, 3d6+4</i></p>
-				<form id="basic_customDice" method="post" action="/tools/process/dice">
+				<form id="basic_customDice" method="post" action="/tools/process/dice/">
 					<div class="clearfix">
 						<input type="hidden" name="rollType" value="basic">
 						<textarea id="basic_dice" name="dice"><?=$_POST['dice']?></textarea>
