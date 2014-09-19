@@ -23,13 +23,37 @@
 						<div class="addedBy">Added By</div>
 					</div>
 <?
-	$newItems = $mysql->query('SELECT ni.newItemID, ni.itemType, ni.name, ni.addedBy, u.username FROM newItemized ni INNER JOIN users u ON u.userID = ni.addedBy WHERE name IS NOT NULL ORDER BY ni.itemType, u.username');
+	$newItems = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.name, ua.addedBy, u.username FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy WHERE name IS NOT NULL AND action IS NULL ORDER BY ua.itemType, u.username');
 	foreach ($newItems as $newItem) {
 ?>
-					<div id="newItem_<?=$newItem['newItemID']?>" class="tr newItem">
+					<div id="newItem_<?=$newItem['uItemID']?>" class="tr newItem">
 						<div class="type"><?=ucwords($newItem['itemType'])?></div>
 						<input type="text" value="<?=$newItem['name']?>" class="name">
 						<div class="addedBy"><a href="/ucp/<?=$newItem['addedBy']?>/" class="username"><?=$newItem['username']?></a></div>
+						<div class="actions">
+							<a href="" class="sprite check"></a>
+							<a href="" class="sprite cross"></a>
+						</div>
+					</div>
+<?
+	}
+?>
+				</div>
+				<div id="addToSystem">
+					<h3>Add to System</h3>
+					<div class="tr headerTR">
+						<div class="type">Type</div>
+						<div class="name">Name</div>
+						<div class="addedBy">Added By</div>
+					</div>
+<?
+	$addToSystem = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.itemID, il.name, ua.addedBy, u.username, ua.systemID FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy INNER JOIN (SELECT "feat" type, featID itemID, name FROM featsList UNION SELECT "feat" type, featID itemID, name FROM featsList ) WHERE itemID IS NOT NULL AND action IS NULL ORDER BY ua.itemType, u.username');
+	foreach ($addToSystem as $item) {
+?>
+					<div id="item_<?=$item['uItemID']?>" class="tr item">
+						<div class="type"><?=ucwords($item['itemType'])?></div>
+						<div class="name"><?=$item['name']?></div>
+						<div class="addedBy"><a href="/ucp/<?=$item['addedBy']?>/" class="username"><?=$item['username']?></a></div>
 						<div class="actions">
 							<a href="" class="sprite check"></a>
 							<a href="" class="sprite cross"></a>

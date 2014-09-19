@@ -13,13 +13,13 @@
 			$itemID = $itemCheck->fetchColumn();
 			$inSystem = $mysql->query("SELECT systemID FROM system_{$type}_map WHERE systemID = $systemID AND {$type}ID = $itemID");
 			if ($inSystem->rowCount() == 0) {
-				$addItem = $mysql->prepare("INSERT INTO newItemized (itemType, itemID, addedBy, systemID) VALUES (:itemType, :itemID, {$userID}, {$systemID})");
+				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$userID}, NOW(), {$systemID})");
 				$addItem->bindValue(':itemType', $type);
 				$addItem->bindValue(':itemID', $itemID);
 				$addItem->execute();
 			}
 		} else {
-			$addItem = $mysql->prepare("INSERT INTO newItemized (itemType, name, addedBy, systemID) VALUES (:itemType, :name, {$userID}, {$systemID})");
+			$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$userID}, NOW(), {$systemID})");
 			$addItem->bindValue(':itemType', $type);
 			$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
 			$addItem->execute();

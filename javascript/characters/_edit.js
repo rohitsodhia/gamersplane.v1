@@ -47,7 +47,6 @@ $(function () {
 			$skill_name.find('input').val($skill_name.children('span').text()).trigger('change');
 			$(this).parent().addClass('editing');
 		}).on('keypress', '.skill_name input', function (e) {
-			e.preventDefault();
 			$input = $(this), $wrapper = $input.closest('.skill_name'), $span = $wrapper.children('span');
 
 			if (e.which == 13 && $input.val() != '') {
