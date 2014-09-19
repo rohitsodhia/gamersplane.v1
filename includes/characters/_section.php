@@ -21,7 +21,7 @@
 		} else {
 			$addItem = $mysql->prepare("INSERT INTO newItemized (itemType, name, addedBy, systemID) VALUES (:itemType, :name, {$userID}, {$systemID})");
 			$addItem->bindValue(':itemType', $type);
-			$addItem->bindValue(':name', $name);
+			$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
 			$addItem->execute();
 		}
 

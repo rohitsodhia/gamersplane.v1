@@ -7,6 +7,15 @@ addedBy int not null,
 systemID int not null,
 primary key (newItemID)) engine = MyISAM;
 
+create table rejectedItems(
+rejectedItemID int not null auto_increment,
+itemType varchar(10) not null,
+name varchar(50),
+itemID int,
+systemID int,
+rejectedBy int not null,
+primary key (rejectedItemID)) engine = MyISAM;
+
 create table acpPermissions(
 userID int not null,
 permission varchar(20) not null,
@@ -14,3 +23,4 @@ primary key (userID, permission)) engine = MyISAM;
 
 INSERT INTO dispatch SET url = 'acp/', pageID = 'acp', file = 'acp/index.php', title = 'Site ACP';
 INSERT INTO dispatch SET url = 'acp/autocomplete/', pageID = 'acp_autocomplete', file = 'acp/autocomplete.php', title = 'Site ACP - Manage Autocomplete';
+INSERT INTO dispatch SET url = 'acp/process/newItem/', file = 'acp/process/newItem.php';
