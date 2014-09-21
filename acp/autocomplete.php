@@ -47,7 +47,7 @@
 						<div class="addedBy">Added By</div>
 					</div>
 <?
-	$addToSystem = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.itemID, il.name, ua.addedBy, u.username, ua.systemID FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy INNER JOIN (SELECT "feat" type, featID itemID, name FROM featsList UNION SELECT "feat" type, featID itemID, name FROM featsList ) WHERE itemID IS NOT NULL AND action IS NULL ORDER BY ua.itemType, u.username');
+	$addToSystem = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.itemID, il.name, ua.addedBy, u.username, ua.systemID FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy INNER JOIN (SELECT "skill" type, skillID itemID, name FROM skillsList UNION SELECT "feat" type, featID itemID, name FROM featsList) il ON ua.itemType = il.type AND ua.itemID = il.itemID WHERE ua.itemID IS NOT NULL AND action IS NULL ORDER BY ua.itemType, il.name');
 	foreach ($addToSystem as $item) {
 ?>
 					<div id="item_<?=$item['uItemID']?>" class="tr item">

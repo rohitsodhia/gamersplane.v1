@@ -16,6 +16,20 @@ userID int not null,
 permission varchar(20) not null,
 primary key (userID, permission)) engine = MyISAM;
 
+create table charAutocomplete (
+itemID int not null auto_increment,
+type varchar(10) nt null,
+name varchar(50) not null,
+searchName varchar(50) not null,
+primary key (itemID)) engine = MyISAM;
+
+INSERT INTO charAutocomplete (type, name, searchName) SELECT 'skill', name, searchName FROM skillsList WHERE userDefined IS NULL;
+INSERT INTO charAutocomplete (type, name, searchName) SELECT 'feat', name, searchName FROM featsList WHERE userDefined IS NULL;
+
+RENAME TABLE system_skill_map TO system_charAutocomplete_map;
+ALTER TABLE system_charAutocomplete_map CHANGE COLUMN skillID itemID int(11) NOT NULL AFTER systemID;
+
+
 INSERT INTO dispatch SET url = 'acp/', pageID = 'acp', file = 'acp/index.php', title = 'Site ACP';
 INSERT INTO dispatch SET url = 'acp/autocomplete/', pageID = 'acp_autocomplete', file = 'acp/autocomplete.php', title = 'Site ACP - Manage Autocomplete';
 INSERT INTO dispatch SET url = 'acp/process/newItem/', file = 'acp/process/newItem.php';
