@@ -5,7 +5,7 @@
 		$system = sanitizeString($_POST['system']);
 		
 		if ($systemID = $systems->getSystemID($system)) {
-			$skills = $mysql->prepare("SELECT sl.itemID skillID, sl.name, sacm.itemID IS NOT NULL systemSkill FROM charAutocomplete sl LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = $systemID AND sacm.itemID = sl.itemID WHERE sl.name LIKE ? ORDER BY systemSkill DESC, sl.name LIMIT 5");
+			$skills = $mysql->prepare("SELECT sl.itemID skillID, sl.name, sacm.itemID IS NOT NULL systemSkill FROM charAutocomplete sl LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = $systemID AND sacm.itemID = sl.itemID WHERE sl.type = 'skill' AND sl.name LIKE ? ORDER BY systemSkill DESC, sl.name LIMIT 5");
 			$skills->execute(array("%$search%"));
 			$lastType = NULL;
 			foreach ($skills as $info) {

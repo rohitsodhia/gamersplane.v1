@@ -12,7 +12,6 @@
 	$updateName->execute();
 	$newItemInfo = $mysql->query('SELECT * FROM userAddedItems WHERE uItemID = '.intval($_POST['uItemID']));
 	$newItemInfo = $newItemInfo->fetch();
-	var_dump($newItemInfo);
 
 	if ($_POST['action'] == 'add') {
 		try {
@@ -29,7 +28,6 @@
 			$itemID = $findItem->fetchColumn();
 			$action = 'duplicate';
 		}
-		echo "INSERT INTO userAddedItems SET itemType = '{$newItemInfo['itemType']}', itemID = {$itemID}, addedBy = {$newItemInfo['addedBy']}, addedOn = '{$newItemInfo['addedOn']}', systemID = {$newItemInfo['systemID']}, action = '{$action}', actedBy = {$userID}, actedOn = NOW()";
 		$addSystemRequest = $mysql->query("INSERT INTO userAddedItems SET itemType = '{$newItemInfo['itemType']}', itemID = {$itemID}, addedBy = {$newItemInfo['addedBy']}, addedOn = '{$newItemInfo['addedOn']}', systemID = {$newItemInfo['systemID']}, action = '{$action}', actedBy = {$userID}, actedOn = NOW()");
 		$mysql->query("UPDATE userAddedItems SET systemID = NULL WHERE uItemID = ".intval($_POST['uItemID']));
 	} elseif ($_POST['action'] == 'reject') {

@@ -61,13 +61,13 @@ $(function () {
 
 			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
 				$newSkill = $(data);
-				$newSkill.appendTo('#skillList').prettify().find('.skill_name input').autocomplete('/characters/ajax/skillSearch/', { characterID: characterID, system: system, key: nextSkillCount }).find('input').placeholder().focus();
+				$newSkill.appendTo('#skillList').prettify().find('.skill_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system, key: nextSkillCount }).find('input').placeholder().focus();
 				nextSkillCount += 1;
 			});
 		}).on('blur', '.skill input', sumRow);
 
 		nextSkillCount = $('#skillList .skill').length + 1;
-		$('.skill').find('.skill_name input').placeholder().autocomplete('/characters/ajax/skillSearch/', { characterID: characterID, system: system });
+		$('.skill').find('.skill_name input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 
 		addCSSRule('.skill_stat', 'width: ' + $('.skill_total').outerWidth(true) + 'px; text-align: center;');
 	}
@@ -101,7 +101,7 @@ $(function () {
 
 			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
 				$newFeat = $(data);
-				$newFeat.appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
+				$newFeat.appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
 				nextFeatCount += 1;
 			});
 		}).on('click', '.feat_notesLink', function(e) {
@@ -111,7 +111,7 @@ $(function () {
 		});
 
 		nextFeatCount = $('#featList .feat').length + 1;
-		$('.feat').find('.feat_name input').placeholder().autocomplete('/characters/ajax/featSearch/', { characterID: characterID, system: system });
+		$('.feat').find('.feat_name input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system });
 		
 		$('#skills, #feats').on('click', '.autocompleteWrapper a', function (e) {
 			hitEnter = $.Event('keypress');

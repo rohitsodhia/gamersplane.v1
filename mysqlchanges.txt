@@ -30,6 +30,7 @@ RENAME TABLE system_skill_map TO system_charAutocomplete_map;
 ALTER TABLE system_charAutocomplete_map CHANGE COLUMN skillID itemID int(11) NOT NULL AFTER systemID;
 
 
+INSERT INTO dispatch SET url = 'characters/ajax/autocomplete/', file = 'characters/ajax/autocomplete.php';
 INSERT INTO dispatch SET url = 'acp/', pageID = 'acp', file = 'acp/index.php', title = 'Site ACP';
 INSERT INTO dispatch SET url = 'acp/autocomplete/', pageID = 'acp_autocomplete', file = 'acp/autocomplete.php', title = 'Site ACP - Manage Autocomplete';
 INSERT INTO dispatch SET url = 'acp/process/newItem/', file = 'acp/process/newItem.php';
