@@ -20,14 +20,14 @@ $(function () {
 		totalVal = parseInt($total.html());
 		if (oldStat != 'n/a') {
 			$statMod.removeClass('statBonus_' + oldStat);
-			$total.removeClass('addStat_' + oldStat).html(showSign( - statBonus[oldStat] + statBonus[newStat]));
+			$total.removeClass('addStat_' + oldStat);
 			totalVal -= statBonus[oldStat];
 		}
 		if (newStat != 'n/a') {
 			$statMod.html(showSign(statBonus[newStat])).addClass('statBonus_' + newStat);
 			$total.addClass('addStat_' + newStat);
 			totalVal += statBonus[newStat];
-		}
+		} else $statMod.html('+0');
 		$abilitySelect.data('statHold', newStat);
 		$total.html(showSign(totalVal));
 	});
@@ -61,10 +61,14 @@ $(function () {
 
 			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
 				$newSkill = $(data);
-				$newSkill.appendTo('#skillList').prettify().find('.skill_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system, key: nextSkillCount }).find('input').placeholder().focus();
+				$newSkill.addClass('editing').appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system, key: nextSkillCount }).find('input').placeholder().focus();
 				nextSkillCount += 1;
 			});
 		}).on('blur', '.skill input', sumRow);
+
+		if ($('.skill').length == 1 && $('.skill input').val() == $('.skill input').data('placeholder')) {
+			$('.skill').addClass('editing');
+		}
 
 		nextSkillCount = $('#skillList .skill').length + 1;
 		$('.skill').find('.skill_name input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
@@ -101,7 +105,7 @@ $(function () {
 
 			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
 				$newFeat = $(data);
-				$newFeat.appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
+				$newFeat.addClass('editing').appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
 				nextFeatCount += 1;
 			});
 		}).on('click', '.feat_notesLink', function(e) {
@@ -109,6 +113,8 @@ $(function () {
 
 			$(this).siblings('textarea').slideToggle();
 		});
+
+		if ($('.feat').length == 1 && $('.feat input').val() == $('.feat input').data('placeholder')) $('.feat').addClass('editing');
 
 		nextFeatCount = $('#featList .feat').length + 1;
 		$('.feat').find('.feat_name input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system });

@@ -140,6 +140,52 @@
 			} else return false;
 		}
 
+		public function addSkill($skill) {
+			newItemized('skill', $skill['name'], $this::SYSTEM);
+			$this->skills[] = $skill;
+		}
+
+		public static function featEditFormat($key = null, $featInfo = null) {
+			if ($key == null) $key = 1;
+			if ($featInfo == null) $featInfo = array('name' => '', 'notes' => '');
+?>
+						<div class="feat clearfix">
+							<a href="" class="edit sprite pencil small"></a>
+							<span class="feat_name">
+								<span><?=$featInfo['name']?></span>
+								<input type="text" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>" class="placeholder" data-placeholder="Feat Name">
+							</span>
+							<a href="" class="feat_notesLink">Notes</a>
+							<a href="" class="feat_remove sprite cross"></a>
+							<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>
+						</div>
+<?
+		}
+
+		public function showFeatsEdit() {
+			if (sizeof($this->feats)) { foreach ($this->feats as $key => $feat) {
+				$this->featEditFormat($key + 1, $feat);
+			} } else $this->featEditFormat();
+		}
+
+		public function displayFeats() {
+			if ($this->feats) { foreach ($this->feats as $feat) { ?>
+					<div class="feat tr clearfix">
+						<span class="feat_name"><?=$feat['name']?></span>
+						<a href="" class="feat_notesLink">Notes</a>
+<?	if (strlen($feat['notes'])) { ?>
+						<div class="feat_notes"><?=$feat['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";
+		}
+		
+		public function addFeat($feat) {
+			newItemized('feat', $feat['name'], $this::SYSTEM);
+			$this->feats[] = $feat;
+		}
+
 		public function setAttackBonus($key, $value, $type = null) {
 			if (array_key_exists($key, $this->attackBonus)) {
 				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) {

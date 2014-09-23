@@ -19,11 +19,12 @@
 			else return FALSE;
 		}
 
-		public static function skillEditFormat($key, $skillInfo = null, $statBonus = null, $editing = false) {
-			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a') $statBonus = 0;
+		public static function skillEditFormat($key = null, $skillInfo = null, $statBonus = null) {
+			if ($key == null) $key = 1;
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
+			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
 ?>
-						<div class="skill clearfix sumRow<?=$editing?' editing':''?>">
+						<div class="skill clearfix sumRow">
 							<a href="" class="edit sprite pencil small"></a>
 							<span class="skill_name textLabel medText">
 								<span><?=$skillInfo['name']?></span>
@@ -45,8 +46,8 @@
 
 		public function showSkillsEdit() {
 			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				$this->skillEditFormat($key + 1, $skill);
-			} } else $this->skillEditFormat(1, array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0), 0, true);
+				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat']));
+			} } else $this->skillEditFormat();
 		}
 
 		public function displaySkills() {
@@ -63,50 +64,6 @@
 			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
 		}
 		
-		public function addSkill($skill) {
-			newItemized('skill', $skill['name'], $this::SYSTEM);
-			$this->skills[] = $skill;
-		}
-
-		public static function featEditFormat($key, $featInfo = null, $editing = false) {
-?>
-						<div class="feat clearfix<?=$editing?' editing':''?>">
-							<a href="" class="edit sprite pencil small"></a>
-							<span class="feat_name">
-								<span><?=$featInfo['name']?></span>
-								<input type="text" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>" class="placeholder" data-placeholder="Feat Name">
-							</span>
-							<a href="" class="feat_notesLink">Notes</a>
-							<a href="" class="feat_remove sprite cross"></a>
-							<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>
-						</div>
-<?
-		}
-
-		public function showFeatsEdit() {
-			if (sizeof($this->feats)) { foreach ($this->feats as $key => $feat) {
-				$this->featEditFormat($key + 1, $feat);
-			} } else $this->featEditFormat(1, array('name' => '', 'notes' => ''), true);
-		}
-
-		public function displayFeats() {
-			if ($this->feats) { foreach ($this->feats as $feat) { ?>
-					<div class="feat tr clearfix">
-						<span class="feat_name"><?=$feat['name']?></span>
-						<a href="" class="feat_notesLink">Notes</a>
-<?	if (strlen($feat['notes'])) { ?>
-						<div class="feat_notes"><?=$feat['notes']?></div>
-<?	} ?>
-					</div>
-<?
-			} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";
-		}
-
-		public function addFeat($feat) {
-			newItemized('feat', $feat['name'], $this::SYSTEM);
-			$this->feats[] = $feat;
-		}
-
 		public function addWeapon($weapon) {
 			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) $this->weapons[] = $weapon;
 		}
