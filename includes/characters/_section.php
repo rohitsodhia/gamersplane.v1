@@ -5,13 +5,13 @@
 
 		if ($system == 'custom') return false;
 
-		$itemCheck = $mysql->prepare("SELECT {$type}ID FROM {$type}sList WHERE LOWER(searchName) = :searchName");
+		$itemCheck = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE LOWER(searchName) = :searchName");
 		$itemCheck->bindValue(':searchName', sanitizeString($name, 'search_format'));
 		$itemCheck->execute();
 		$systemID = $systems->getSystemID($system);
 		if ($itemCheck->rowCount()) {
 			$itemID = $itemCheck->fetchColumn();
-			$inSystem = $mysql->query("SELECT systemID FROM system_{$type}_map WHERE systemID = $systemID AND {$type}ID = $itemID");
+			$inSystem = $mysql->query("SELECT systemID FROM system_charAutocomplete_map WHERE systemID = {$systemID} AND itemID = {$itemID}");
 			if ($inSystem->rowCount() == 0) {
 				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$userID}, NOW(), {$systemID})");
 				$addItem->bindValue(':itemType', $type);
