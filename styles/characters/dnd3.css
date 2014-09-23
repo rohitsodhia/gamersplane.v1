@@ -194,60 +194,6 @@
 	font-size: .85em;
 }
 
-#skills {
-	width: 555px;
-}
-
-#addSkillWrapper, #addFeatWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-#addSkillWrapper > *, #addFeatWrapper > * {
-	vertical-align: middle;
-}
-
-#addSkillWrapper .fancyButton, #addFeatWrapper .fancyButton {
-	top: -1px;
-	margin-left: 5px;
-}
-
-.skill span {
-	display: inline-block;
-}
-
-.skill .skill_stat {
-	text-transform: smallcaps;
-}
-
-.skill .skill_total {
-	text-align: center;
-}
-
-#feats {
-	width: 385px;
-}
-
-#feats .feat span, #feats .feat a {
-	display: inline-block;
-}
-
-#page_characterSheet_edit .feat_name {
-	width: 245px;
-}
-
-#page_characterSheet .feat_name {
-	width: 295px;
-}
-
-.feat_notesLink {
-	font-size: .8em;
-}
-
-#page_characterSheet .feat_notes {
-	display: none;
-}
-
 #weapons {
 	width: 490px;
 }
