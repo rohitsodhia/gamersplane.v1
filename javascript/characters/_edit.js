@@ -73,7 +73,7 @@ $(function () {
 		nextSkillCount = $('#skillList .skill').length + 1;
 		$('.skill').find('.skill_name input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 
-		addCSSRule('.skill_stat', 'width: ' + $('.skill_total').outerWidth(true) + 'px; text-align: center;');
+		addCSSRule('.skill_stat', 'width: ' + ($('.skill .skill_stat').eq(0).outerWidth(true)) + 'px; text-align: center;');
 	}
 
 	if ($('#feats').length) {

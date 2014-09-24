@@ -30,7 +30,7 @@
 								<span><?=$skillInfo['name']?></span>
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder dontAdd" data-placeholder="Skill Name">
 							</span>
-							<span id="skillTotal_<?=$key?>" class="skill_total textLabel shortNum lrBuffer total <?=$skillInfo['stat'] != 'n/a'?'addStat_'.$skillInfo['stat']:''?>"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
+							<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total<?=$skillInfo['stat'] != 'n/a'?' addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 								<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
 <?

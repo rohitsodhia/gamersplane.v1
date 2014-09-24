@@ -168,7 +168,7 @@
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
 								<label class="shortNum alignCenter lrBuffer">Total</label>
-								<label class="shortNum alignCenter lrBuffer">Stat</label>
+								<label class="skill_stat alignCenter">Stat</label>
 								<label class="shortNum alignCenter lrBuffer">Ranks</label>
 								<label class="shortNum alignCenter lrBuffer">Misc</label>
 							</div>

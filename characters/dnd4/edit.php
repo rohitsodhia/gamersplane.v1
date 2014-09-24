@@ -198,35 +198,21 @@
 				
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills</h2>
-						<div class="hbdMargined">
-							<div id="addSkillWrapper">
-								<input id="skillName" type="text" name="newSkill[name]" value="Skill Name" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
-								<select id="skillStat" name="newSkill[stat]">
-<?
-	foreach ($stats as $short => $stat) 
-		echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
-?>
-								</select>
-								<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
-							</div>
-							<div class="tr labelTR">
-								<label class="medText">Skill</label>
-								<label class="shortNum alignCenter lrBuffer">Total</label>
-								<label class="shortNum alignCenter lrBuffer">Stat</label>
-								<label class="shortNum alignCenter lrBuffer">Ranks</label>
-								<label class="shortNum alignCenter lrBuffer">Misc</label>
-							</div>
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+						<div class="hbdMargined tr labelTR">
+							<label class="medText">Skill</label>
+							<label class="shortNum alignCenter lrBuffer">Total</label>
+							<label class="skill_stat alignCenter">Stat</label>
+							<label class="shortNum alignCenter lrBuffer">Ranks</label>
+							<label class="shortNum alignCenter lrBuffer">Misc</label>
+						</div>
+						<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
 						</div>
 					</div>
 					<div id="feats" class="floatRight">
-						<h2 class="headerbar hbDark">Feats/Features</h2>
-						<div class="hbdMargined">
-							<div id="addFeatWrapper">
-								<input id="featName" type="text" name="newFeat_name" value="Feat Name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
-								<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+						<div id="featList">
 <?	$this->showFeatsEdit(); ?>
 						</div>
 					</div>

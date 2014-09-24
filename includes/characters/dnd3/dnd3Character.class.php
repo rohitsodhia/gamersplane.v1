@@ -51,8 +51,8 @@
 
 		public static function skillEditFormat($key = null, $skillInfo = null, $statBonus = null) {
 			if ($key == null) $key = 1;
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
-			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
+			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
+			if ($skillInfo['stat'] == null || $statBonus == null) $statBonus = 0;
 ?>
 						<div class="skill clearfix sumRow">
 							<a href="" class="edit sprite pencil small"></a>
@@ -60,7 +60,7 @@
 								<span><?=$skillInfo['name']?></span>
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder dontAdd" data-placeholder="Skill Name">
 							</span>
-							<span id="skillTotal_<?=$key?>" class="skill_total textLabel shortNum lrBuffer total <?='addStat_'.$skillInfo['stat']?>"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
+							<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total <?='addStat_'.$skillInfo['stat']?>"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 <?
 	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
@@ -306,8 +306,14 @@
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['melee'], 'melee');
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
 
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-					$this->updateSkill($skillID, $skillInfo);
+				$this->clearVar('skills');
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
+					if (strlen($skillInfo['name'])) $this->addSkill($skillInfo);
+				} }
+
+				$this->clearVar('feats');
+				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
+					if (strlen($featInfo['name'])) $this->addFeat($featInfo);
 				} }
 
 				$this->clearVar('weapons');
