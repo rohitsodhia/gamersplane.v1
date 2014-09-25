@@ -152,33 +152,24 @@
 	height: 10em;
 }
 
-#page_characterSheet_edit h2 a {
-	margin-left: 10px;
-	font-size: .6em;
-	font-weight: normal;
-	line-height: 1em;
-}
-
-#addPowerWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-#addPowerWrapper > div {
-	vertical-align: middle;
-}
-
-#addPowerWrapper .fancyButton {
-	margin-left: 5px;
+#page_characterSheet_edit #powers > div {
+	margin-right: 24px;
 }
 
 .powerCol {
 	float: left;
-	width: 32.6%;
-	margin-left: 1%;
 }
 
-.powerCol.first {
+#page_characterSheet_edit .powerCol {
+	width: 33.3%;
+}
+
+#page_characterSheet .powerCol {
+	width: 32.3%;
+	margin-left: 1.5%;
+}
+
+#page_characterSheet .powerCol.first {
 	margin-left: 0;
 }
 
@@ -186,17 +177,43 @@
 	text-align: center;
 }
 
-.power span, .power input {
-	display: inline-block;
+#page_characterSheet_edit .powerCol h3 {
+	padding-left: 24px;
 }
 
-.power .power_name {
-	width: 250px;
+#page_characterSheet_edit .power {
+	position: relative;
+	padding-left: 24px;
+}
+
+#page_characterSheet_edit .power .edit {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 3px;
+	margin-top: -8px;
+}
+
+.power > *, .power_name > span {
+	display: inline-block;
 	vertical-align: middle;
 }
 
-.power .power_remove {
-	height: 15px;
+.power_name > span, .power_name input {
+	width: 245px;
+	text-align: left;
+}
+
+#page_characterSheet_edit .power .edit {
+	display: none;
+}
+
+#page_characterSheet_edit .power:not(.editing):hover .edit, #page_characterSheet_edit .power.editing .power_name > div {
+	display: block;
+}
+
+#page_characterSheet_edit .editing .power_name > span, #page_characterSheet_edit .power_name > div {
+	display: none;
 }
 
 #items textarea {

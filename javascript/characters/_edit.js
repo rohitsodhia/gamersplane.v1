@@ -61,7 +61,7 @@ $(function () {
 
 			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
 				$newSkill = $(data);
-				$newSkill.addClass('editing').appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system, key: nextSkillCount }).find('input').placeholder().focus();
+				$newSkill.addClass('editing').appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').placeholder().focus();
 				nextSkillCount += 1;
 			});
 		}).on('blur', '.skill input', sumRow);
@@ -105,7 +105,7 @@ $(function () {
 
 			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
 				$newFeat = $(data);
-				$newFeat.addClass('editing').appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system, key: nextFeatCount }).find('input').placeholder().focus();
+				$newFeat.addClass('editing').appendTo('#featList').find('.feat_name input').autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system }).find('input').placeholder().focus();
 				nextFeatCount += 1;
 			});
 		}).on('click', '.feat_notesLink', function(e) {

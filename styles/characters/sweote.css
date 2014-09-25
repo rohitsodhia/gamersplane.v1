@@ -120,13 +120,6 @@ label.leftLabel {
 	text-align: center;
 }
 
-#page_characterSheet_edit h2 a {
-	margin-left: 10px;
-	font-size: .6em;
-	font-weight: normal;
-	line-height: 1em;
-}
-
 #skills, #talents {
 	margin-top: 1em;
 }

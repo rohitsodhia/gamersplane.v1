@@ -5,7 +5,8 @@
 
 		if ($system == 'custom') return false;
 
-		$itemCheck = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE LOWER(searchName) = :searchName");
+		$itemCheck = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE type = :type AND LOWER(searchName) = :searchName");
+		$itemCheck->bindValue(':type', $type);
 		$itemCheck->bindValue(':searchName', sanitizeString($name, 'search_format'));
 		$itemCheck->execute();
 		$systemID = $systems->getSystemID($system);
@@ -13,10 +14,12 @@
 			$itemID = $itemCheck->fetchColumn();
 			$inSystem = $mysql->query("SELECT systemID FROM system_charAutocomplete_map WHERE systemID = {$systemID} AND itemID = {$itemID}");
 			if ($inSystem->rowCount() == 0) {
-				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$userID}, NOW(), {$systemID})");
-				$addItem->bindValue(':itemType', $type);
-				$addItem->bindValue(':itemID', $itemID);
-				$addItem->execute();
+				try {
+					$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$userID}, NOW(), {$systemID})");
+					$addItem->bindValue(':itemType', $type);
+					$addItem->bindValue(':itemID', $itemID);
+					$addItem->execute();
+				} catch (Exception $e) {}
 			}
 		} else {
 			$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$userID}, NOW(), {$systemID})");

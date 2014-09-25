@@ -16,11 +16,9 @@
 		protected $actionPoints = 0;
 		protected $passiveSenses = array('insight' => 0, 'perception' => 0);
 		protected $attacks = array();
-		protected $powers = array();
+		protected $powers = array('atwill' => array(), 'encounter' => array(), 'daily' => array());
 		protected $weapons = '';
 		protected $armor = '';
-
-		protected $linkedTables = array('powers');
 
 		public function setRace($value) {
 			$this->race = $value;
@@ -234,8 +232,8 @@
 		public function displaySkills() {
 			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
-					<div id="skill_<?=$skill['skillID']?>" class="skill tr clearfix">
-						<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
+					<div class="skill tr clearfix">
+						<span class="skill_name medText"><?=$skill['name']?></span>
 						<span class="skill_total addStat_<?=$skill['stat']?> shortNum lrBuffer"><?=showSign($this->getStatMod($skill['stat'], false) + $skill['ranks'] + $skill['misc'])?></span>
 						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['ranks'])?></span>
@@ -245,50 +243,34 @@
 			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
 		}
 
+		static public function powerEditFormat($type = null, $power = null) {
+?>
+						<div class="power">
+							<a href="" class="edit sprite pencil small"></a>
+							<span class="power_name">
+								<span><?=$power?></span>
+								<input type="text" name="powers[<?=$type?>][]" value="<?=$power?>" class="placeholder" data-placeholder="Power Name">
+							</span>
+							<a href="" class="power_remove sprite cross lrBuffer"></a>
+						</div>
+<?
+		}
+
+		public function showPowersEdit($type) {
+			foreach ($this->powers[$type] as $power) dnd4Character::powerEditFormat($type, $power);
+		}
+
+		public function powerSheetFormat($type) {
+			foreach ($this->powers[$type] as $power) {
+?>
+					<div class="power"><?=$power?></div>
+<?
+			}
+		}
+
 		public function addPower($name, $type) {
-			global $mysql;
-
-			$powerName = sanitizeString($name, 'rem_dup_spaces');
-			if (strlen($powerName) == 0) return FALSE;
-			if (!in_array($type, array('a', 'e', 'd'))) return FALSE;
-			$powerCheck = $mysql->prepare('SELECT powerID FROM dnd4_powersList WHERE LOWER(searchName) = :searchName');
-			$powerCheck->execute(array(':searchName' => sanitizeString($powerName, 'search_format')));
-			if ($powerCheck->rowCount()) $powerID = $powerCheck->fetchColumn();
-			else {
-				$userID = intval($_SESSION['userID']);
-				$addNewPower = $mysql->prepare("INSERT INTO dnd4_powersList (name, searchName, userDefined) VALUES (:name, :searchName, $userID)");
-				$addNewPower->bindValue(':name', $powerName);
-				$addNewPower->execute(array(':name' => $powerName, ':searchName' => sanitizeString($powerName, 'search_format')));
-				$powerID = $mysql->lastInsertId();
-			}
-
-			$addPower = $mysql->query("INSERT INTO dnd4_powers (characterID, powerID, type) VALUES ({$this->characterID}, $powerID, '$type')");
-			if ($addPower->rowCount()) {
-				$powerInfo['powerID'] = $powerID;
-				$powerInfo['name'] = $powerName;
-				$this->powerEditFormat($powerInfo);
-			}
-		}
-
-		public function powerEditFormat($power) {
-			if (is_array($power)) {
-?>
-							<div class="power">
-								<span id="power_<?=$power['powerID']?>" class="power_name"><?=mb_convert_case($power['name'], MB_CASE_TITLE)?></span>
-								<input type="image" name="removePower_<?=$power['powerID']?>" src="/images/cross.png" value="<?=$power['powerID']?>" class="power_remove lrBuffer">
-							</div>
-<?
-			}
-		}
-
-		public function powerSheetFormat($power) {
-			if (is_array($power)) {
-?>
-					<div class="power">
-						<span id="power_<?=$power['powerID']?>" class="power_name"><?=mb_convert_case($power['name'], MB_CASE_TITLE)?></span>
-					</div>
-<?
-			}
+			newItemized('dnd4_power', $name, $this::SYSTEM);
+			$this->powers[$type][] = $name;
 		}
 
 		public function getPowers() {
@@ -299,14 +281,6 @@
 			foreach ($unsortedPowers as $power) $powers[$power['type']][] = array('powerID' => $power['powerID'], 'name' => $power['name']);
 
 			return $powers;
-		}
-
-		public function removePower($powerID) {
-			global $mysql;
-
-			$powerID = intval($_POST['powerID']);
-			$removePower = $mysql->query("DELETE FROM dnd4_powers WHERE characterID = {$this->characterID} AND powerID = $powerID");
-			if ($removePower->rowCount()) echo 1;
 		}
 
 		public function setWeapons($weapons) {
@@ -371,6 +345,13 @@
 				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
 					if (strlen($featInfo['name'])) $this->addFeat($featInfo);
 				} }
+
+				foreach (array('atwill', 'encounter', 'daily') as $type) {
+					$this->powers[$type] = array();
+					if (isset($_POST['powers'][$type])) { foreach ($_POST['powers'][$type] as $power) {
+						if (strlen($power)) $this->addPower($power, $type);
+					} }
+				}
 
 				$this->setWeapons($data['weapons']);
 				$this->setArmor($data['armor']);

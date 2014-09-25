@@ -220,30 +220,18 @@
 				
 				<div id="powers" class="clearfix">
 					<h2 class="headerbar hbDark">Powers</h2>
-					<div class="hbdMargined">
-						<div id="addPowerWrapper">
-							<input id="powerName" type="text" name="newPower[name]" value="Power" class="medText placeholder" autocomplete="off" data-placeholder="Power">
-							<select id="powerType" name="newPower[type]">
-								<option value="a">At-will</option>
-								<option value="e">Encounter</option>
-								<option value="d">Daily</option>
-							</select>
-							<button id="addPower" type="submit" name="newPower_add" class="fancyButton">Add</button>
+					<div class="clearfix">
+						<div id="powers_atwill" class="powerCol first">
+							<h3>At-Will <a href="" data-type="atwill">+</a></h3>
+<?	$this->showPowersEdit('atwill'); ?>
 						</div>
-<?	$powers = $this->getPowers(); ?>
-						<div class="clearfix">
-							<div id="powers_atwill" class="powerCol first">
-								<h3>At-Will</h3>
-<?	foreach ($powers['a'] as $power) $this->powerEditFormat($power); ?>
-							</div>
-							<div id="powers_encounter" class="powerCol">
-								<h3>Encounter</h3>
-<?	foreach ($powers['e'] as $power) $this->powerEditFormat($power); ?>
-							</div>
-							<div id="powers_daily" class="powerCol">
-								<h3>Daily</h3>
-<?	foreach ($powers['d'] as $power) $this->powerEditFormat($power); ?>
-							</div>
+						<div id="powers_encounter" class="powerCol">
+							<h3>Encounter <a href="" data-type="encounter">+</a></h3>
+<?	$this->showPowersEdit('encounter'); ?>
+						</div>
+						<div id="powers_daily" class="powerCol">
+							<h3>Daily <a href="" data-type="daily">+</a></h3>
+<?	$this->showPowersEdit('daily'); ?>
 						</div>
 					</div>
 				</div>

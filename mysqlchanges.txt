@@ -11,10 +11,17 @@ actedBy int,
 actedOn datetime,
 primary key (uItemID)) engine = MyISAM;
 
+ALTER TABLE `userAddedItems` ADD UNIQUE INDEX (`name`) ;
+ALTER TABLE `userAddedItems` ADD UNIQUE INDEX (`itemID`, `systemID`) ;
+
+
 create table acpPermissions(
 userID int not null,
 permission varchar(20) not null,
 primary key (userID, permission)) engine = MyISAM;
+
+INSERT INTO acpPermissions SET userID = 1, permission = 'all';
+
 
 create table charAutocomplete (
 itemID int not null auto_increment,
@@ -26,9 +33,9 @@ primary key (itemID)) engine = MyISAM;
 
 ALTER TABLE `charAutocomplete` ADD UNIQUE INDEX (`type`, `name`) ;
 
-
 INSERT INTO charAutocomplete (type, name, searchName) SELECT 'skill', name, searchName FROM skillsList WHERE userDefined IS NULL;
 INSERT INTO charAutocomplete (type, name, searchName) SELECT 'feat', name, searchName FROM featsList WHERE userDefined IS NULL;
+
 
 RENAME TABLE system_skill_map TO system_charAutocomplete_map;
 ALTER TABLE system_charAutocomplete_map CHANGE COLUMN skillID itemID int(11) NOT NULL AFTER systemID;
