@@ -53,22 +53,6 @@ $(function() {
 		$.post('/characters/ajax/dnd4/addPower/', { type: $(this).data('type') }, function (data) {
 			$(data).appendTo($powerCol).addClass('editing').find('input').autocomplete('/characters/ajax/autocomplete/', { type: 'dnd4_power', characterID: characterID, system: system, systemOnly: true }).find('input').placeholder().focus();
 		})
-	}).on('click', '.edit', function (e) {
-		e.preventDefault();
-
-		$power_name = $(this).parent().children('.power_name');
-		$power_name.find('input').val($power_name.children('span').text()).trigger('change');
-		$(this).parent().addClass('editing');
-	}).on('keypress', '.power_name input', function (e) {
-		$input = $(this), $wrapper = $input.closest('.power_name'), $span = $wrapper.children('span');
-
-		if (e.which == 13 && $input.val() != '') {
-			$span.text($input.val());
-			$wrapper.parent().removeClass('editing');
-		} else if (e.which == 27 && $span.text() != '') {
-			$input.val($span.text());
-			$wrapper.parent().removeClass('editing');
-		}
 	}).on('click', '.power_remove', function (e) {
 		e.preventDefault();
 		$(this).parent().remove();
