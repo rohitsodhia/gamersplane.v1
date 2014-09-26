@@ -37,7 +37,7 @@
 					><div class="systemType"><?=$info['fullName']?></div
 					><div class="links">
 						<a href="/characters/editBasic/<?=$info['characterID']?>/" class="editBasic sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type"></a>
-						<a href="/characters/<?=$info['characterID']?>/edit/" class="editBasic sprite pencil" title="Edit Character" alt="Edit Character"></a>
+						<a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>/edit/" class="editBasic sprite pencil" title="Edit Character" alt="Edit Character"></a>
 						<a href="/characters/process/libraryToggle/<?=$info['characterID']?>/" class="libraryToggle sprite book<?=$info['inLibrary']?'':' off'?>" title="<?=$info['inLibrary']?'Remove from':'Add to'?> Library" alt="<?=$info['inLibrary']?'Remove from':'Add to'?> Library"></a>
 						<a href="/characters/delete/<?=$info['characterID']?>/" class="delete sprite cross" title="Delete Character" alt="Delete Character"></a>
 					</div>
