@@ -199,20 +199,22 @@
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
 						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
-						<div class="hbdMargined tr labelTR">
-							<label class="medText">Skill</label>
-							<label class="shortNum alignCenter lrBuffer">Total</label>
-							<label class="skill_stat alignCenter">Stat</label>
-							<label class="shortNum alignCenter lrBuffer">Ranks</label>
-							<label class="shortNum alignCenter lrBuffer">Misc</label>
-						</div>
-						<div id="skillList">
+						<div class="hbdMargined">
+							<div class="tr labelTR">
+								<label class="medText">Skill</label>
+								<label class="shortNum alignCenter lrBuffer">Total</label>
+								<label class="skill_stat alignCenter">Stat</label>
+								<label class="shortNum alignCenter lrBuffer">Ranks</label>
+								<label class="shortNum alignCenter lrBuffer">Misc</label>
+							</div>
+							<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
+							</div>
 						</div>
 					</div>
 					<div id="feats" class="floatRight">
 						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
-						<div id="featList">
+						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>
 					</div>
@@ -220,7 +222,7 @@
 				
 				<div id="powers" class="clearfix">
 					<h2 class="headerbar hbDark">Powers</h2>
-					<div class="clearfix">
+					<div class="hbdMargined clearfix">
 						<div id="powers_atwill" class="powerCol first">
 							<h3>At-Will <a href="" data-type="atwill">+</a></h3>
 <?	$this->showPowersEdit('atwill'); ?>

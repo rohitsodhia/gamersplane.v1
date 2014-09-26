@@ -205,11 +205,7 @@
 			if ($skillInfo['stat'] == null || $statBonus == null) $statBonus = 0;
 ?>
 						<div class="skill clearfix sumRow">
-							<a href="" class="edit sprite pencil small"></a>
-							<span class="skill_name textLabel medText">
-								<span><?=$skillInfo['name']?></span>
-								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder dontAdd" data-placeholder="Skill Name">
-							</span>
+							<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder dontAdd" data-placeholder="Skill Name">
 							<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer addStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 <?
@@ -234,7 +230,7 @@
 ?>
 					<div class="skill tr clearfix">
 						<span class="skill_name medText"><?=$skill['name']?></span>
-						<span class="skill_total addStat_<?=$skill['stat']?> shortNum lrBuffer"><?=showSign($this->getStatMod($skill['stat'], false) + $skill['ranks'] + $skill['misc'])?></span>
+						<span class="skill_total shortNum lrBuffer"><?=showSign($this->getStatMod($skill['stat'], false) + $skill['ranks'] + $skill['misc'])?></span>
 						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['ranks'])?></span>
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['misc'])?></span>
@@ -245,14 +241,10 @@
 
 		static public function powerEditFormat($type = null, $power = null) {
 ?>
-						<div class="power">
-							<a href="" class="edit sprite pencil small"></a>
-							<span class="power_name">
-								<span><?=$power?></span>
-								<input type="text" name="powers[<?=$type?>][]" value="<?=$power?>" class="placeholder" data-placeholder="Power Name">
-							</span>
-							<a href="" class="power_remove sprite cross lrBuffer"></a>
-						</div>
+							<div class="power tr">
+								<input type="text" name="powers[<?=$type?>][]" value="<?=$power?>" class="power_name placeholder" data-placeholder="Power Name">
+								<a href="" class="power_remove sprite cross lrBuffer"></a>
+							</div>
 <?
 		}
 
