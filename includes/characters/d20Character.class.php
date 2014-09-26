@@ -150,11 +150,7 @@
 			if ($featInfo == null) $featInfo = array('name' => '', 'notes' => '');
 ?>
 							<div class="feat clearfix">
-								<span class="feat_name"><?=$featInfo['name']?></span>
-								<input type="hidden" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>">
-<?			if ($featInfo['name'] == '') { ?>
-								<input type="text" class="featSearch placeholder" data-placeholder="Feat Name">
-<?			} ?>
+								<input type="text" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>" class="feat_name placeholder" data-placeholder="Feat Name">
 								<a href="" class="feat_notesLink">Notes</a>
 								<a href="" class="feat_remove sprite cross"></a>
 								<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>

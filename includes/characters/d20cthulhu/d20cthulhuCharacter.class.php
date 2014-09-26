@@ -25,11 +25,7 @@
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
 ?>
 							<div class="skill clearfix sumRow">
-								<span class="skill_name textLabel medText"><?=$skillInfo['name']?></span>
-								<input type="hidden" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="dontAdd">
-<?			if ($skillInfo['name'] == '') { ?>
-								<input type="text" class="skillSearch medText placeholder dontAdd" data-placeholder="Skill Name">
-<?			} ?>
+								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
 								<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total<?=$skillInfo['stat'] != 'n/a'?' addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 								<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 									<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
