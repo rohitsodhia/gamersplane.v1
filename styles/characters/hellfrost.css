@@ -45,8 +45,9 @@ textarea {
 	vertical-align: middle;
 }
 
-.traitName, .skillName {
+.traitName, #skills .skillName {
 	width: 185px;
+	text-align: left;
 }
 
 .diceSelect > * {

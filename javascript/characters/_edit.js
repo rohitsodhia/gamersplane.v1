@@ -32,7 +32,7 @@ $(function () {
 		$total.html(showSign(totalVal));
 	});
 
-	if ($('#skills').length) {
+	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
 		var nextSkillCount = 1;
 
 		$('#skills').on('click', '.skill_remove', function (e) {

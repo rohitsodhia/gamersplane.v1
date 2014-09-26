@@ -24,7 +24,7 @@
 <?	} ?>
 						</div>
 						
-						<div id="skills" class="hbdMargined">
+						<div id="skills" class="hbdMargined nonDefault">
 							<div class="skillHeader">Skills <a href="" class="addSkill">+</a></div>
 <?		$this->showSkillsEdit(); ?>
 						</div>
