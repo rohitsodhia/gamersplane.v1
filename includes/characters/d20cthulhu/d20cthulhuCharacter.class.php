@@ -24,23 +24,23 @@
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
 ?>
-						<div class="skill clearfix sumRow">
-							<a href="" class="edit sprite pencil small"></a>
-							<span class="skill_name textLabel medText">
-								<span><?=$skillInfo['name']?></span>
-								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder dontAdd" data-placeholder="Skill Name">
-							</span>
-							<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total<?=$skillInfo['stat'] != 'n/a'?' addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
-							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
-								<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
+							<div class="skill clearfix sumRow">
+								<span class="skill_name textLabel medText"><?=$skillInfo['name']?></span>
+								<input type="hidden" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="dontAdd">
+<?			if ($skillInfo['name'] == '') { ?>
+								<input type="text" class="skillSearch medText placeholder dontAdd" data-placeholder="Skill Name">
+<?			} ?>
+								<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total<?=$skillInfo['stat'] != 'n/a'?' addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
+								<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
+									<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
 <?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "								<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
 ?>
-							</select></span>
-							<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
-							<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-							<a href="" class="skill_remove sprite cross lrBuffer"></a>
-						</div>
+								</select></span>
+								<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
+								<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
+								<a href="" class="skill_remove sprite cross lrBuffer"></a>
+							</div>
 <?
 		}
 

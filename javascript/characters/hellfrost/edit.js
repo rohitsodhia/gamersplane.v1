@@ -18,13 +18,10 @@ $(function() {
 				$(data).insertAfter($newSkill).find('select').prettySelect();
 				$newSkill.remove();
 			});
-		}).parent().find('input').autocomplete('/characters/ajax/skillSearch/', { search: $(this).val(), characterID: characterID, system: system });
+		}).parent().find('input').autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 	}).on('click', '.cross', function (e) {
 		e.preventDefault();
 
-		$skillDiv = $(this).closest('.skill');
-		$.post('/characters/ajax/removeSkill/', { characterID: characterID, system: system, skillID: $(this).closest('.skill').attr('id').split('_')[1] }, function (data) {
-			$skillDiv.remove();
-		});
+		$(this).closest('.skill').remove();
 	});
 });

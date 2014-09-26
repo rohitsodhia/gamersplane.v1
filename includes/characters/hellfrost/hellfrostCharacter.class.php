@@ -34,7 +34,7 @@
 											<option<?=$skillInfo['diceType'] == $dCount?' selected="selected"':''?>><?=$dCount?></option>
 <?			} ?>
 										</select></div>
-										<div class="remove"><a href="" class="sprite cross small"></a></div>
+										<a href="" class="sprite cross small remove"></a>
 									</div>
 <?
 		}

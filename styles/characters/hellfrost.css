@@ -53,6 +53,10 @@ textarea {
 	vertical-align: middle;
 }
 
+#skills {
+	width: auto;
+}
+
 .skillHeader {
 	margin: .3em 0;
 	font-variant: small-caps;
@@ -71,13 +75,16 @@ textarea {
 	margin-left: 8px;
 }
 
-.skill {
+#page_characterSheet_edit .skill {
 	position: relative;
+	margin: 0;
+	padding-left: 0;
 }
 
 .skill .remove {
+	display: block;
 	position: absolute;
-	top: 6px;
+	top: 8px;
 	left: -22px;
 }
 

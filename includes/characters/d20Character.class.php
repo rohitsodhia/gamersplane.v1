@@ -149,16 +149,16 @@
 			if ($key == null) $key = 1;
 			if ($featInfo == null) $featInfo = array('name' => '', 'notes' => '');
 ?>
-						<div class="feat clearfix">
-							<a href="" class="edit sprite pencil small"></a>
-							<span class="feat_name">
-								<span><?=$featInfo['name']?></span>
-								<input type="text" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>" class="placeholder" data-placeholder="Feat Name">
-							</span>
-							<a href="" class="feat_notesLink">Notes</a>
-							<a href="" class="feat_remove sprite cross"></a>
-							<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>
-						</div>
+							<div class="feat clearfix">
+								<span class="feat_name"><?=$featInfo['name']?></span>
+								<input type="hidden" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>">
+<?			if ($featInfo['name'] == '') { ?>
+								<input type="text" class="featSearch placeholder" data-placeholder="Feat Name">
+<?			} ?>
+								<a href="" class="feat_notesLink">Notes</a>
+								<a href="" class="feat_remove sprite cross"></a>
+								<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>
+							</div>
 <?
 		}
 
@@ -172,8 +172,8 @@
 			if ($this->feats) { foreach ($this->feats as $feat) { ?>
 					<div class="feat tr clearfix">
 						<span class="feat_name"><?=$feat['name']?></span>
-						<a href="" class="feat_notesLink">Notes</a>
 <?	if (strlen($feat['notes'])) { ?>
+						<a href="" class="feat_notesLink">Notes</a>
 						<div class="feat_notes"><?=$feat['notes']?></div>
 <?	} ?>
 					</div>
