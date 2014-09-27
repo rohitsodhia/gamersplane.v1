@@ -34,24 +34,16 @@
 			</div>
 			
 			<div id="actions" class="clearfix">
-				<h2 class="headerbar hbDark">Actions</h2>
+				<h2 class="headerbar hbDark">Actions <a id="addAction" href="">[ Add Action ]</a></h2>
 				<div class="hbdMargined">
-					<div id="actionForm">
-						<input id="actionSearch" type="text" autocomplete="off" class="placeholder" data-placeholder="Action">
-						<button id="addAction" type="submit" name="addAction" class="fancyButton">Add</button>
-					</div>
 					<p class="note">For costs of less then one white stone, use .3 for 1 red stone and .6 for 2 red stones</p>
 <?	$this->showActionsEdit(); ?>
 				</div>
 			</div>
 			
 			<div id="modifiers" class="clearfix">
-				<h2 class="headerbar hbDark">Modifiers</h2>
+				<h2 class="headerbar hbDark">Modifiers <a href="addModifier" href="">[ Add Modifier ]</a></h2>
 				<div class="hbdMargined">
-					<div id="modifierForm">
-						<input id="modifierSearch" type="text" autocomplete="off" class="placeholder" data-placeholder="Modifier">
-						<button id="addModifier" type="submit" name="addModifier" class="fancyButton">Add</button>
-					</div>
 					<p class="note">For costs of less then one white stone, use .3 for 1 red stone and .6 for 2 red stones</p>
 <?	$this->showModifiersEdit(); ?>
 				</div>
