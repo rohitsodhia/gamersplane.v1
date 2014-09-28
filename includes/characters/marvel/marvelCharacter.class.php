@@ -56,7 +56,7 @@
 			$this->unusedStones = number_format(intval($white) + intval($red) / 3, 1);
 		}
 
-		public function getUnusedStones($color = NULL) {
+		public function getUnusedStones($color = null) {
 			if ($color == 'white') return $this->getWhiteStones($this->unusedStones);
 			elseif ($color == 'red') return $this->getRedStones($this->unusedStones);
 			else return $this->unusedStones;
@@ -69,8 +69,8 @@
 			} else return FALSE;
 		}
 		
-		public function getStat($stat = NULL) {
-			if ($stat == NULL) return $this->stats;
+		public function getStat($stat = null) {
+			if ($stat == null) return $this->stats;
 			elseif (array_key_exists($stat, $this->stats)) return $this->stats[$stat];
 			else return FALSE;
 		}
@@ -93,7 +93,7 @@
 							<input type="text" name="actions[<?=$key?>][cost]" value="<?=$actionInfo['cost']?>" class="cost borderBox">
 							<input type="text" name="actions[<?=$key?>][level]" value="<?=$actionInfo['level']?>" class="level borderBox">
 						</div>
-						<textarea name="actions[<?=$actionInfo['actionID']?>][details]"><?=$actionInfo['details']?></textarea>
+						<textarea name="actions[<?=$key?>][details]"><?=$actionInfo['details']?></textarea>
 						<div class="removeDiv alignRight"><a href="" class="remove">[ Remove ]</a></div>
 					</div>
 <?
@@ -129,47 +129,34 @@
 		}
 
 		static public function modifierEditFormat($key = null, $modifierInfo = null) {
-			if (!is_array($modifierInfo) || sizeof($modifierInfo) == 0) $modifierInfo = array();
-		$defaults = array('cost' => 0, 'level' => 0);
-		foreach ($defaults as $key => $value) if (!isset($modifierInfo[$key])) $modifierInfo[$key] = $value;
+			if ($key == null) $key = 1;
+			if ($modifierInfo == null) $modifierInfo = array('name' => '', 'cost' => 0, 'level' => 0, 'details' => '');
 ?>
-					<div id="modifier_<?=$modifierInfo['modifierID']?>" class="modifier borderBox">
+					<div class="modifier borderBox">
 						<div class="tr labelTR clearfix">
-							<span class="name">&nbsp;</span>
+							<label class="name">Name</label>
 							<label class="cost borderBox">Cost</label>
 							<label class="level borderBox">Level</label>
 						</div>
 						<div class="clearfix">
-							<span class="name"><?=$modifierInfo['name']?></span>
-							<input type="text" name="modifiers[<?=$modifierInfo['modifierID']?>][cost]" value="<?=$modifierInfo['cost']?>" class="cost borderBox">
-							<input type="text" name="modifiers[<?=$modifierInfo['modifierID']?>][level]" value="<?=$modifierInfo['level']?>" class="level borderBox">
+							<span class="name"><input type="text" name="modifiers[<?=$key?>][name]" value="<?=$modifierInfo['name']?>" class="name"></span>
+							<input type="text" name="modifiers[<?=$key?>][cost]" value="<?=$modifierInfo['cost']?>" class="cost borderBox">
+							<input type="text" name="modifiers[<?=$key?>][level]" value="<?=$modifierInfo['level']?>" class="level borderBox">
 						</div>
-						<textarea name="modifiers[<?=$modifierInfo['modifierID']?>][details]"><?=$modifierInfo['details']?></textarea>
+						<textarea name="modifiers[<?=$key?>][details]"><?=$modifierInfo['details']?></textarea>
 						<div class="removeDiv alignRight"><a href="" class="remove">[ Remove ]</a></div>
 					</div>
 <?
 		}
 
 		public function showModifiersEdit() {
-			global $mysql;
-
-			$modifiers = $mysql->query('SELECT pm.modifierID, ml.name, pm.level, pm.offset, pm.cost, pm.details FROM marvel_modifiers pm INNER JOIN marvel_modifiersList ml USING (modifierID) WHERE characterID = '.$this->characterID);
-			if ($modifiers->rowCount()) { foreach ($modifiers as $modifierInfo) {
-				$this->modifierEditFormat($modifierInfo);
+			if (sizeof($this->modifiers)) { foreach ($this->modifiers as $key => $modifierInfo) {
+				$this->modifierEditFormat($key + 1, $modifierInfo);
 			} }
 		}
 
-		public function removeModifier($modifierID) {
-			global $mysql;
-
-			$mysql->query("DELETE FROM marvel_modifiers WHERE characterID = {$this->characterID} AND modifierID = {$modifierID}");
-		}
-
 		public function displayModifiers() {
-			global $mysql;
-
-			$modifiers = $mysql->query('SELECT pm.modifierID, ml.name, pm.level, pm.offset, pm.cost, pm.details FROM marvel_modifiers pm INNER JOIN marvel_modifiersList ml USING (modifierID) WHERE characterID = '.$this->characterID);
-			if ($modifiers->rowCount()) { foreach ($modifiers as $modifier) {
+			if ($this->modifiers) { foreach ($this->modifiers as $modifier) {
 ?>
 				<div class="modifier">
 					<div class="tr labelTR">
@@ -196,19 +183,18 @@
 			}
 		}
 
-		public function showChallengesEdit($min) {
-			$challengeNum = 0;
-			if (!is_array($this->challenges)) $this->challenges = (array) $this->challenges;
-			foreach ($this->challenges as $challengeInfo) $this->challengeEditFormat($challengeNum++, $challengeInfo);
-			if ($challengeNum < $min) while ($challengeNum < $min) $this->challengeEditFormat($challengeNum++);
+		public function showChallengesEdit() {
+			if (sizeof($this->challenges)) { foreach ($this->challenges as $key => $challengeInfo) $this->challengeEditFormat($key + 1, $challengeInfo);
+			} else $this->challengeEditFormat();
 		}
 
-		public function challengeEditFormat($challengeNum, $challengeInfo = NULL) {
-			if (!is_array($challengeInfo) || sizeof($challengeInfo) == 0) $challengeInfo = array();
+		static public function challengeEditFormat($key = null, $challengeInfo = null) {
+			if ($key == null) $key = 1;
+			if ($challengeInfo == null) $challengeInfo = array('name' => '', 'stones' => 0)
 ?>
 					<div class="tr challenge">
-						<input type="text" name="challenges[<?=$challengeNum?>][name]" value="<?=$challengeInfo['name']?>" class="name">
-						<input type="text" name="challenges[<?=$challengeNum?>][stones]" value="<?=$challengeInfo['stones']?>" class="stones">
+						<input type="text" name="challenges[<?=$key?>][name]" value="<?=$challengeInfo['name']?>" class="name">
+						<input type="text" name="challenges[<?=$key?>][stones]" value="<?=$challengeInfo['stones']?>" class="stones">
 						<a href="" class="remove">[ Remove ]</a>
 					</div>
 <?

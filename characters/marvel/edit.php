@@ -42,7 +42,7 @@
 			</div>
 			
 			<div id="modifiers" class="clearfix">
-				<h2 class="headerbar hbDark">Modifiers <a href="addModifier" href="">[ Add Modifier ]</a></h2>
+				<h2 class="headerbar hbDark">Modifiers <a id="addModifier" href="">[ Add Modifier ]</a></h2>
 				<div class="hbdMargined">
 					<p class="note">For costs of less then one white stone, use .3 for 1 red stone and .6 for 2 red stones</p>
 <?	$this->showModifiersEdit(); ?>
@@ -56,7 +56,7 @@
 						<label class="leftLabel name shiftRight borderBox">Name</label>
 						<label class="leftLabel stones">Stones</label>
 					</div>
-<?	$this->showChallengesEdit(1); ?>
+<?	$this->showChallengesEdit(); ?>
 				</div>
 			</div>
 			
