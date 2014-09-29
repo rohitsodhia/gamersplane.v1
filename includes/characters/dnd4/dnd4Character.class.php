@@ -261,8 +261,10 @@
 		}
 
 		public function addPower($name, $type) {
-			newItemized('dnd4_power', $name, $this::SYSTEM);
-			$this->powers[$type][] = $name;
+			if (strlen($power)) {
+				newItemized('dnd4_power', $name, $this::SYSTEM);
+				$this->powers[$type][] = $name;
+			}
 		}
 
 		public function getPowers() {
@@ -330,18 +332,18 @@
 
 				$this->clearVar('skills');
 				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					if (strlen($skillInfo['name'])) $this->addSkill($skillInfo);
+					$this->addSkill($skillInfo);
 				} }
 
 				$this->clearVar('feats');
 				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					if (strlen($featInfo['name'])) $this->addFeat($featInfo);
+					$this->addFeat($featInfo);
 				} }
 
 				foreach (array('atwill', 'encounter', 'daily') as $type) {
 					$this->powers[$type] = array();
-					if (isset($_POST['powers'][$type])) { foreach ($_POST['powers'][$type] as $power) {
-						if (strlen($power)) $this->addPower($power, $type);
+					if (isset($data['powers'][$type])) { foreach ($data['powers'][$type] as $power) {
+						$this->addPower($power, $type);
 					} }
 				}
 

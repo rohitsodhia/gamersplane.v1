@@ -141,8 +141,10 @@
 		}
 
 		public function addSkill($skill) {
-			newItemized('skill', $skill['name'], $this::SYSTEM);
-			$this->skills[] = $skill;
+			if (strlen($skill['name'])) {
+				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->skills[] = $skill;
+			}
 		}
 
 		public static function featEditFormat($key = null, $featInfo = null) {
@@ -178,8 +180,10 @@
 		}
 		
 		public function addFeat($feat) {
-			newItemized('feat', $feat['name'], $this::SYSTEM);
-			$this->feats[] = $feat;
+			if (strlen($feat['name'])) {
+				newItemized('feat', $feat['name'], $this::SYSTEM);
+				$this->feats[] = $feat;
+			}
 		}
 
 		public function setAttackBonus($key, $value, $type = null) {

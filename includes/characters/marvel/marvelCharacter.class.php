@@ -75,7 +75,11 @@
 			else return FALSE;
 		}
 
-		public function addAction($actionName) {
+		public function addAction($action) {
+			if (strlen($action['name'])) {
+//				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->actions[] = $action;
+			}
 		}
 
 		static public function actionEditFormat($key = null, $actionInfo = null) {
@@ -125,7 +129,11 @@
 			}
 		}
 
-		public function addModifier($modifierName) {
+		public function addModifier($modifier) {
+			if (strlen($modifier['name'])) {
+//				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->modifiers[] = $modifier;
+			}
 		}
 
 		static public function modifierEditFormat($key = null, $modifierInfo = null) {
@@ -156,7 +164,7 @@
 		}
 
 		public function displayModifiers() {
-			if ($this->modifiers) { foreach ($this->modifiers as $modifier) {
+			if (sizeof($this->modifiers)) { foreach ($this->modifiers as $modifier) {
 ?>
 				<div class="modifier">
 					<div class="tr labelTR">
@@ -222,12 +230,16 @@
 				$this->setUnusedStones($data['unusedStones']['white'], $data['unusedStones']['red']);
 				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
 
-				if (sizeof($data['actions'])) { foreach ($data['actions'] as $actionID => $actionInfo) {
-					$this->updateAction($actionID, $actionInfo);
+				$this->clearVar('actions');
+				if (sizeof($data['actions'])) { foreach ($data['actions'] as $actionInfo) {
+					$this->addAction($actionInfo);
 				} }
-				if (sizeof($data['modifiers'])) { foreach ($data['modifiers'] as $modifierID => $modifierInfo) {
-					$this->updateModifier($modifierID, $modifierInfo);
+
+				$this->clearVar('modifiers');
+				if (sizeof($data['modifiers'])) { foreach ($data['modifiers'] as $modifierInfo) {
+					$this->addModifier($modifierInfo);
 				} }
+
 				$this->clearVar('challenges');
 				foreach ($data['challenges'] as $challenge) $this->addChallenge($challenge);
 

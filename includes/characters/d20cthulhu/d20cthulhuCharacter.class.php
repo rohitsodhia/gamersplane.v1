@@ -189,12 +189,12 @@
 
 				$this->clearVar('skills');
 				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					if (strlen($skillInfo['name'])) $this->addSkill($skillInfo);
+					$this->addSkill($skillInfo);
 				} }
 
 				$this->clearVar('feats');
 				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					if (strlen($featInfo['name'])) $this->addFeat($featInfo);
+					$this->addFeat($featInfo);
 				} }
 
 				$this->clearVar('weapons');
