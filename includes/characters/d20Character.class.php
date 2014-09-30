@@ -147,8 +147,7 @@
 			}
 		}
 
-		public static function featEditFormat($key = null, $featInfo = null) {
-			if ($key == null) $key = 1;
+		public static function featEditFormat($key = 1, $featInfo = null) {
 			if ($featInfo == null) $featInfo = array('name' => '', 'notes' => '');
 ?>
 							<div class="feat clearfix">

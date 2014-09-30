@@ -15,5 +15,5 @@ $(function() {
 
 		$(this).closest('.skill').remove();
 	});
-	nextSkillCount = $('#skillList .skill').length + 1;
+	nextSkillCount = $('#skills .skill').length + 1;
 });

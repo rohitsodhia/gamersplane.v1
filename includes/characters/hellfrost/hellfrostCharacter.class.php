@@ -53,12 +53,12 @@
 				$this->setName($data['name']);
 				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
 				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
-				$updateSkill = $mysql->prepare("UPDATE {$system}_skills SET diceType = :diceType WHERE characterID = {$this->characterID} AND skillID = :skillID");
-				foreach ($data['skills'] as $skillID => $skillInfo) {
-					$updateSkill->bindValue(':diceType', $skillInfo['diceType']);
-					$updateSkill->bindValue(':skillID', $skillID);
-					$updateSkill->execute();
-				}
+				
+				$this->clearVar('skills');
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
+					$this->addSkill($skillInfo);
+				} }
+
 				$this->setEdgesHindrances($data['edge_hind']);
 				$this->setWounds($data['wounds']);
 				$this->setFatigue($data['fatigue']);

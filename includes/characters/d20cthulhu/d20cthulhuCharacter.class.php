@@ -19,8 +19,7 @@
 			else return FALSE;
 		}
 
-		public static function skillEditFormat($key = null, $skillInfo = null, $statBonus = null) {
-			if ($key == null) $key = 1;
+		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
 ?>
