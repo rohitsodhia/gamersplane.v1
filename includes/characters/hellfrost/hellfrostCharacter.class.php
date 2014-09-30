@@ -36,6 +36,14 @@
 <?
 			} }
 		}
+
+		public function addSkill($skill) {
+			if (strlen($skill['name']) && in_array($skill['diceType'], array(4, 6, 8, 10, 12))) {
+				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->skills[] = array('name' => $skill['name'], 'diceType' => $skill['diceType']);
+			}
+		}
+
 		public function setSpells($spells) {
 			$this->spells = $spells;
 		}
@@ -53,7 +61,7 @@
 				$this->setName($data['name']);
 				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
 				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
-				
+
 				$this->clearVar('skills');
 				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
 					$this->addSkill($skillInfo);
