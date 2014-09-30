@@ -13,8 +13,6 @@
 		protected $armor = array();
 		protected $items = array();
 
-		protected $linkedTables = array('feats', 'skills');
-
 		public function setCodename($value) {
 			$this->codename = $value;
 		}
@@ -60,67 +58,32 @@
 			else return false;
 		}
 
-		public function addSkill($skillID, $name, $post) {
-			global $mysql;
-
-			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
-			else return;
-			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $post['stat'], 'ranks' => 0, 'misc' => 0);
-			try {
-				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
-			} catch (Exception $e) {}
-		}
-
-		public function updateSkill($skillID, $skillInfo) {
-			global $mysql;
-			
-			$updateSkill = $mysql->prepare("UPDATE spycraft_skills SET ranks = :ranks, misc = :misc, error = :error, threat = :threat WHERE characterID = :characterID AND skillID = :skillID");
-			$updateSkill->bindValue(':ranks', intval($skillInfo['ranks']));
-			$updateSkill->bindValue(':misc', intval($skillInfo['misc']));
-			$updateSkill->bindValue(':error', sanitizeString($skillInfo['error']));
-			$updateSkill->bindValue(':threat', sanitizeString($skillInfo['threat']));
-			$updateSkill->bindValue(':characterID', $this->characterID);
-			$updateSkill->bindValue(':skillID', $skillID);
-			$updateSkill->execute();
-		}
-
-		public function skillEditFormat($skillInfo = null, $statBonus = null) {
-			if ($statBonus == null) $statBonus = $this->getStatMod($skillInfo['stat'], false);
-			else $statBonus = 0;
+		public static function skillEditFormat($key = null, $skillInfo = null, $statBonus = null) {
+			if ($key == null) $key = 1;
+			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
+			if ($skillInfo['stat'] == null || $statBonus == null) $statBonus = 0;
 ?>
-						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
-							<span class="skill_name textLabel medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
-							<span class="skill_total textLabel lrBuffer total <?=$skillInfo['stat'] != 'n/a'?'addStat_'.$skillInfo['stat']:''?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
-							<span class="skill_stat textLabel lrBuffer alignCenter shortNum"><?=ucwords($skillInfo['stat'])?></span>
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][error]" value="<?=$skillInfo['error']?>" class="skill_error medNum lrBuffer">
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][threat]" value="<?=$skillInfo['threat']?>" class="skill_threat medNum lrBuffer">
-							<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove lrBuffer">
-						</div>
+							<div class="skill clearfix sumRow">
+								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
+								<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total addStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
+								<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
+<?
+	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "								<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+?>
+								</select></span>
+								<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
+								<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
+								<input type="text" name="skills[<?=$key?>][error]" value="<?=$skillInfo['error']?>" class="skill_error medNum lrBuffer dontAdd">
+								<input type="text" name="skills[<?=$key?>][threat]" value="<?=$skillInfo['threat']?>" class="skill_threat medNum lrBuffer dontAdd">
+								<a href="" class="skill_remove sprite cross lrBuffer"></a>
+							</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			global $mysql;
-
-			$system = $this::SYSTEM;
-			$skills = $mysql->query("SELECT s.skillID, sl.name, s.stat, s.ranks, s.misc, s.error, s.threat FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-			if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
-				$this->skillEditFormat($skillInfo);
-			} } else { ?>
-						<p id="noSkills">This character currently has no skills.</p>
-<?
-			}
-		}
-
-		public function removeSkill($skillID) {
-			global $mysql;
-
-			$removeSkill = $mysql->query("DELETE FROM ".$this::SYSTEM."_skills WHERE characterID = {$this->characterID} AND skillID = $skillID");
-			if ($removeSkill->rowCount()) echo 1;
-			else echo 0;
+			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
+				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat']));
+			} } else $this->skillEditFormat();
 		}
 
 		public function displaySkills() {
@@ -139,58 +102,6 @@
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
-		}
-
-		public function addFeat($featID, $name) {
-			global $mysql;
-
-			$featInfo = array('featID' => $featID, 'name' => $name);
-			$addFeat = $mysql->query("INSERT INTO ".$this::SYSTEM."_feats (characterID, featID) VALUES ({$this->characterID}, $featID)");
-			if ($addFeat->rowCount()) $this->featEditFormat($featInfo);
-		}
-
-		public function featEditFormat($featInfo) {
-?>
-						<div id="feat_<?=$featInfo['featID']?>" class="feat clearfix">
-							<span class="feat_name textLabel"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
-							<a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/editFeatNotes/<?=$featInfo['featID']?>" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
-							<input type="image" name="featRemove_<?=$featInfo['featID']?>" src="/images/cross.png" value="<?=$featInfo['featID']?>" class="feat_remove lrBuffer">
-						</div>
-<?
-		}
-
-		public function showFeatsEdit() {
-			global $mysql;
-
-			$system = $this::SYSTEM;
-			$feats = $mysql->query("SELECT fl.featID, fl.name FROM {$system}_feats f INNER JOIN featsList fl USING (featID) WHERE f.characterID = {$this->characterID} ORDER BY fl.name");
-			if ($feats->rowCount()) { foreach ($feats as $featInfo) {
-				$this->featEditFormat($featInfo);
-			} } else { ?>
-					<p id="noFeats">This character currently has no feats/abilities.</p>
-<?
-			}
-		}
-
-		public function removeFeat($featID) {
-			global $mysql;
-
-			$removeFeat = $mysql->query("DELETE FROM ".$this::SYSTEM."_feats WHERE characterID = {$this->characterID} AND featID = $featID");
-			if ($removeFeat->rowCount()) echo 1;
-			else echo 0;
-		}
-
-		public function displayFeats() {
-			global $mysql;
-
-			$feats = $mysql->query('SELECT f.featID, fl.name, f.notes FROM '.$this::SYSTEM.'_feats f INNER JOIN featsList fl USING (featID) WHERE f.characterID = '.$this->characterID.' ORDER BY fl.name');
-			if ($feats->rowCount()) { foreach ($feats as $feat) { ?>
-					<div id="feat_<?=$feat['featID']?>" class="feat tr clearfix">
-						<span class="feat_name"><?=mb_convert_case($feat['name'], MB_CASE_TITLE)?></span>
-						<a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/featNotes/<?=$feat['featID']?>" class="feat_notesLink">Notes</a>
-					</div>
-<?
-			} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";
 		}
 
 		public function addWeapon($weapon) {
@@ -406,8 +317,14 @@
 				$this->setExtraStats('inspiration', $data['extraStats']['inspiration']);
 				$this->setExtraStats('education', $data['extraStats']['education']);
 
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-					$this->updateSkill($skillID, $skillInfo);
+				$this->clearVar('skills');
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
+					$this->addSkill($skillInfo);
+				} }
+
+				$this->clearVar('feats');
+				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
+					$this->addFeat($featInfo);
 				} }
 
 				$this->clearVar('weapons');
