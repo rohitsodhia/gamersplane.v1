@@ -34,12 +34,12 @@
 					<h2 class="headerbar hbDark">Damage Tracks</h2>
 					<div class="hbdMargined">
 						<div class="damageTrack">
-							<label for="physical">Physical Damage</label>
 							<div><?=$this->getDamage('physical')?></div>
+							<label for="physical">Physical Damage</label>
 						</div>
 						<div class="damageTrack">
-							<label for="stun">Stun Damage</label>
 							<div><?=$this->getDamage('stun')?></div>
+							<label for="stun">Stun Damage</label>
 						</div>
 					</div>
 				</div>
