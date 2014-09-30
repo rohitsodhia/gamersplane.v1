@@ -10,13 +10,13 @@
 
 		public function setSanity($key, $value) {
 			if (in_array($key, array_keys($this->sanity))) $this->sanity[$key] = intval($value);
-			else return FALSE;
+			else return false;
 		}
 
 		public function getSanity($key = null) {
 			if (in_array($key, array_keys($this->sanity))) return $this->sanity[$key];
 			elseif ($key == null) return $this->sanity;
-			else return FALSE;
+			else return false;
 		}
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
