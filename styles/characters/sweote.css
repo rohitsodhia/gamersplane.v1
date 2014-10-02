@@ -175,9 +175,20 @@ label.leftLabel {
 
 .talent textarea, .talent_notes {
 	display: none;
+	margin-top: .5em;
+}
+
+.talent textarea {
 	height: 4.9em;
 	width: 375px;
-	margin-top: .5em;
+}
+
+.talent_notes {
+	padding: 4px;
+	border: 1px solid #888;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 }
 
 #weapons {
