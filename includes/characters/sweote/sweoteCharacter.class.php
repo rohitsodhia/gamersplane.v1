@@ -41,180 +41,133 @@
 			if (in_array($type, array_keys($this->xp))) {
 				$value = intval($value);
 				if ($value >= 0) $this->xp[$type] = $value;
-			} else return FALSE;
+			} else return false;
 		}
 		
-		public function getXP($type = NULL) {
-			if ($type == NULL) return $this->xp;
+		public function getXP($type = null) {
+			if ($type == null) return $this->xp;
 			elseif (in_array($type, array_keys($this->xp))) return $this->xp[$type];
-			else return FALSE;
+			else return false;
 		}
 
 		public function setStat($stat, $value = '') {
 			if (in_array($stat, array_keys($this->stats))) {
 				$value = intval($value);
 				if ($value > 0) $this->stats[$stat] = $value;
-			} else return FALSE;
+			} else return false;
 		}
 		
-		public function getStat($stat = NULL) {
-			if ($stat == NULL) return $this->stats;
+		public function getStat($stat = null) {
+			if ($stat == null) return $this->stats;
 			elseif (in_array($stat, array_keys($this->stats))) return $this->stats[$stat];
-			else return FALSE;
+			else return false;
 		}
 
 		public function setDefense($defense, $value = '') {
 			if (in_array($defense, array_keys($this->defenses))) {
 				$value = intval($value);
 				if ($value >= 0) $this->defenses[$defense] = $value;
-			} else return FALSE;
+			} else return false;
 		}
 		
-		public function getDefense($defense = NULL) {
-			if ($defense == NULL) return $this->defenses;
+		public function getDefense($defense = null) {
+			if ($defense == null) return $this->defenses;
 			elseif (in_array($defense, array_keys($this->defenses))) return $this->defenses[$defense];
-			else return FALSE;
+			else return false;
 		}
 
 		public function setHP($type, $value = '') {
 			if (in_array($type, array_keys($this->hp))) {
 				$value = intval($value);
 				if ($value > 0) $this->hp[$type] = $value;
-			} else return FALSE;
+			} else return false;
 		}
 		
-		public function getHP($type = NULL) {
-			if ($type == NULL) return $this->hp;
+		public function getHP($type = null) {
+			if ($type == null) return $this->hp;
 			elseif (in_array($type, array_keys($this->hp))) return $this->hp[$type];
-			else return FALSE;
+			else return false;
 		}
 
-		public function addSkill($skillID, $name, $post) {
-			global $mysql;
-
-			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($_POST['stat']);
-			else exit;
-			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'rank' => 0);
-			$addSkill = $mysql->query("INSERT INTO sweote_skills (characterID, skillID, stat) VALUES ($characterID, $skillID, '$stat')");
-			if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo);
-		}
-
-		public function updateSkill($skillID, $skillInfo) {
-			global $mysql;
-			
-			$updateSkill = $mysql->prepare("UPDATE sweote_skills SET rank = :rank, career = :career WHERE characterID = $characterID AND skillID = :skillID");
-			$updateSkill->bindValue(':rank', intval($skillInfo['rank']));
-			$updateSkill->bindValue(':career', isset($skillInfo['career'])?1:0);
-			$updateSkill->bindValue(':skillID', $skillID);
-			$updateSkill->execute();
-		}
-
-		public function skillEditFormat($skillInfo = NULL, $statBonus = NULL) {
+		static public function skillEditFormat($key = 1, $skillInfo = null) {
 ?>
-							<div id="skill_<?=$skillInfo['skillID']?>" class="skill tr clearfix">
-								<span class="skill_name textLabel medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
-								<span class="skill_stat textLabel lrBuffer alignCenter"><?=sweote_consts::getStatNames($skillInfo['stat'])?></span>
-								<input type="text" name="skills[<?=$skillInfo['skillID']?>][rank]" value="<?=$skillInfo['rank']?>" class="skill_rank shortNum lrBuffer">
-								<span class="skill_career shortNum lrBuffer alignCenter"><input type="checkbox" name="skills[<?=$skillInfo['skillID']?>][career]" value="<?=$skillInfo['career']?>"></span>
-								<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove lrBuffer">
+							<div id="skill_<?=$key?>" class="skill tr clearfix">
+								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText">
+								<span class="skill_stat"><select name="skills[<?=$key?>][stat]">
+<?	foreach (sweote_consts::getStatNames() as $short => $stat) { ?>
+									<option value="<?=$short?>"><?=$stat?></option>
+<?	} ?>
+								</select></span>
+								<input type="text" name="skills[<?=$key?>][rank]" value="<?=$skillInfo['rank']?>" class="skill_rank shortNum lrBuffer">
+								<span class="skill_career shortNum lrBuffer alignCenter"><input type="checkbox" name="skills[<?=$key?>][career]"<?=$skillInfo['career']?' checked="checked"':''?>></span>
+								<a href="" class="skill_remove sprite cross lrBuffer"></a>
 							</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			global $mysql;
-
-			$system = $this::SYSTEM;
-			$skills = $mysql->query('SELECT ss.skillID, sl.name, ss.stat, ss.rank, ss.career FROM sweote_skills ss INNER JOIN skillsList sl USING (skillID) WHERE ss.characterID = '.$this->characterID.' ORDER BY sl.name');
-			if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
-				$this->skillEditFormat($skillInfo);
-			} } else { ?>
-						<p id="noSkills">This character currently has no skills.</p>
-<?
-			}
-		}
-
-		public function removeSkill($skillID) {
-			global $mysql;
-
-			$removeSkill = $mysql->query("DELETE FROM ".$this::SYSTEM."_skills WHERE characterID = {$this->characterID} AND skillID = $skillID");
-			if ($removeSkill->rowCount()) echo 1;
-			else echo 0;
+			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
+				var_dump($skill);
+				$this->skillEditFormat($key + 1, $skill);
+			} } else $this->skillEditFormat();
 		}
 
 		public function displaySkills() {
-			global $mysql;
-			
-			$skills = $mysql->query('SELECT s.skillID, sl.name, s.stat, s.rank, s.career FROM '.$this::SYSTEM.'_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = '.$this->characterID.' ORDER BY sl.name');
-			if ($skills->rowCount()) { foreach ($skills as $skill) {
+			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
 						<div id="skill_<?=$skill['skillID']?>" class="skill tr clearfix">
 							<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
 							<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
 							<span class="skill_rank alignCenter shortNum lrBuffer"><?=$skill['rank']?></span>
-							<span class="skill_career alignCenter shortNum lrBuffer"><?=$skill['career']?'<img src="/images/check.png">':''?></span>
+							<span class="skill_career alignCenter shortNum lrBuffer"><?=$skill['career']?'<div class="sprite check"></div>':''?></span>
 						</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
 		}
 
-		public function addTalent($name) {
-			global $mysql;
-
-			$talent = $mysql->prepare('SELECT talentID FROM sweote_talentsList WHERE searchName = :searchName');
-			$talent->execute(array(':searchName' => sanitizeString($name, 'search_format')));
-			if ($talent->rowCount()) $talentID = $talent->fetchColumn();
-			else {
-				$addNewTalent = $mysql->prepare('INSERT INTO sweote_talentsList (name, searchName, userDefined) VALUES (:name, :searchName, :userID)');
-				$addNewTalent->execute(array(':name' => $name, ':searchName' => sanitizeString($name, 'search_format'), ':userID' => $userID));
-				$talentID = $mysql->lastInsertId();
+		public function addSkill($skill) {
+			if (strlen($skill['name'])) {
+				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->skills[] = $skill;
 			}
-			$talentInfo = array('talentID' => $talentID, 'name' => $name);
-			$addTalent = $mysql->query("INSERT INTO sweote_talents (characterID, talentID) VALUES ($characterID, $talentID)");
-			if ($addTalent->rowCount()) $this->talentEditFormat($talentInfo);
 		}
 
-		public function talentEditFormat($talentInfo) {
+		public static function talentEditFormat($key = 1, $talentInfo = null) {
+			if ($talentInfo == null) $talentInfo = array('name' => '', 'notes' => '');
 ?>
-						<div id="talent_<?=$talentInfo['talentID']?>" class="talent clearfix">
-							<span class="talent_name textLabel"><?=mb_convert_case($talentInfo['name'], MB_CASE_TITLE)?></span>
-							<a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/editTalentNotes/<?=$talentInfo['talentID']?>" id="talentNotesLink_<?=$talentInfo['talentID']?>" class="talent_notesLink">Notes</a>
-							<input type="image" name="talentRemove_<?=$talentInfo['talentID']?>" src="/images/cross.png" value="<?=$talentInfo['talentID']?>" class="talent_remove lrBuffer">
-						</div>
+							<div class="talent">
+								<input type="text" name="talents[<?=$key?>][name]" value="<?=$talentInfo['name']?>" class="talent_name placeholder" data-placeholder="Talent Name">
+								<a href="" class="talent_notesLink">Notes</a>
+								<a href="" class="talent_remove sprite cross"></a>
+								<textarea name="talents[<?=$key?>][notes]"><?=$talentInfo['notes']?></textarea>
+							</div>
 <?
 		}
 
 		public function showTalentsEdit() {
-			global $mysql;
-
-			$talents = $mysql->query("SELECT tl.talentID, tl.name FROM sweote_talents t INNER JOIN sweote_talentsList tl USING (talentID) WHERE t.characterID = {$this->characterID} ORDER BY tl.name");
-			if ($talents->rowCount()) { foreach ($talents as $talentInfo) {
-				$this->talentEditFormat($talentInfo);
-			} } else { ?>
-					<p id="noTalents">This character currently has no talents.</p>
-<?
-			}
-		}
-
-		public function removeTalent($talentID) {
-			global $mysql;
-
-			$removeTalent = $mysql->query("DELETE FROM sweote_talents WHERE characterID = {$this->characterID} AND talentID = $talentID");
-			if ($removeTalent->rowCount()) echo 1;
-			else echo 0;
+			if (sizeof($this->talents)) { foreach ($this->talents as $key => $talent) {
+				$this->talentEditFormat($key + 1, $talent);
+			} } else $this->talentEditFormat();
 		}
 
 		public function displayTalents() {
-			global $mysql;
-
-			$talents = $mysql->query("SELECT t.talentID, tl.name, t.notes FROM sweote_talents t INNER JOIN sweote_talentsList tl USING (talentID) WHERE t.characterID = {$this->characterID} ORDER BY tl.name");
-			if ($talents->rowCount()) { foreach ($talents as $talent) { ?>
-					<div id="talent_<?=$talent['talentID']?>" class="talent tr clearfix">
-						<span class="talent_name"><?=mb_convert_case($talent['name'], MB_CASE_TITLE)?></span>
-						<a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/talentNotes/<?=$talent['talentID']?>" class="talent_notesLink">Notes</a>
+			if ($this->talents) { foreach ($this->talents as $talent) { ?>
+					<div class="talent tr clearfix">
+						<span class="talent_name"><?=$talent['name']?></span>
+<?	if (strlen($talent['notes'])) { ?>
+						<a href="" class="talent_notesLink">Notes</a>
+						<div class="talent_notes"><?=$talent['notes']?></div>
+<?	} ?>
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noTalents\">This character currently has no talents.</p>\n";
+		}
+		
+		public function addTalent($talent) {
+			if (strlen($talent['name'])) {
+				newItemized('talent', $talent['name'], $this::SYSTEM);
+				$this->talents[] = $talent;
+			}
 		}
 		
 		public function addWeapon($weapon) {
@@ -333,8 +286,14 @@
 				foreach ($data['defenses'] as $type => $value) $this->setDefense($type, $value);
 				foreach ($data['hp'] as $type => $value) $this->setHP($type, $value);
 
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-					$this->updateSkill($skillID, $skillInfo);
+				$this->clearVar('skills');
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
+					$this->addSkill($skillInfo);
+				} }
+
+				$this->clearVar('talents');
+				if (sizeof($data['talents'])) { foreach ($data['talents'] as $talentInfo) {
+					$this->addTalent($talentInfo);
 				} }
 
 				$this->clearVar('weapons');

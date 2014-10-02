@@ -22,10 +22,12 @@
 				} catch (Exception $e) {}
 			}
 		} else {
-			$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$userID}, NOW(), {$systemID})");
-			$addItem->bindValue(':itemType', $type);
-			$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
-			$addItem->execute();
+			try {
+				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$userID}, NOW(), {$systemID})");
+				$addItem->bindValue(':itemType', $type);
+				$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
+				$addItem->execute();
+			} catch (Exception $e) {}
 		}
 
 		return true;

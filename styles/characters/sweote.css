@@ -133,26 +133,11 @@ label.leftLabel {
 }
 
 #skills {
-	width: 520px;
-}
-
-#addSkillWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-#addSkillWrapper .fancyButton, #addTalentWrapper .fancyButton {
-	top: -1px;
-	margin-left: 5px;
-	vertical-align: middle;
+	width: 530px;
 }
 
 .skill_stat {
-	width: 70px;
-}
-
-.skill_career img {
-	height: 13px;
+	width: 90px;
 }
 
 .skill span {
@@ -163,12 +148,21 @@ label.leftLabel {
 	width: 420px;
 }
 
+.talent {
+	padding: 4px 0;
+}
+
+.talent > * {
+	vertical-align: middle;
+}
+
 #talents span, #talents a {
 	display: inline-block;
 }
 
 #page_characterSheet_edit .talent_name {
-	width: 245px;
+	width: 310px;
+	text-align: left;
 }
 
 #page_characterSheet .talent_name {
@@ -179,8 +173,11 @@ label.leftLabel {
 	font-size: .8em;
 }
 
-#page_characterSheet .talent_notes {
+.talent textarea, .talent_notes {
 	display: none;
+	height: 4.9em;
+	width: 375px;
+	margin-top: .5em;
 }
 
 #weapons {
