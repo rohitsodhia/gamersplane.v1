@@ -16,7 +16,7 @@ $(function () {
 		$('#feats').on('click', '.feat_notesLink', function (e) {
 			e.preventDefault();
 
-			if ($(this).siblings('div.feat_notes').length) $(this).siblings('div.feat_notes').toggleSlide();
+			if ($(this).siblings('div.feat_notes').length) $(this).siblings('div.feat_notes').slideToggle();
 		})
 	}
 });
