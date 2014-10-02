@@ -158,7 +158,7 @@
 							<label class="shortNum alignCenter lrBuffer">Size</label>
 						</div>
 						<div class="tr weapon_secondRow">
-							<span class="weapon_crit shortText lrBuffer alignCenter"><?=$weapon['critical']?></span>
+							<span class="weapon_crit shortText lrBuffer alignCenter"><?=$weapon['crit']?></span>
 							<span class="weapon_range shortText lrBuffer alignCenter"><?=$weapon['range']?></span>
 							<span class="weapon_type shortText lrBuffer alignCenter"><?=$weapon['type']?></span>
 							<span class="weapon_size shortText lrBuffer alignCenter"><?=$weapon['size']?></span>
