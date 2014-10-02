@@ -391,14 +391,18 @@ label.leftLabel {
 	text-align: left;
 }
 
-#page_characterSheet_edit .feat textarea {
+#page_characterSheet .feat_name {
+	width: 295px;
+}
+
+.feat textarea, .feat_notes {
+	display: none;
+}
+
+.feat textarea {
 	width: 340px;
 	height: 4.9em;
 	margin-top: .5em;
-}
-
-#page_characterSheet .feat_name {
-	width: 295px;
 }
 
 .feat_notesLink {
@@ -408,10 +412,6 @@ label.leftLabel {
 
 .feat_remove {
 	margin-left: 5px;
-}
-
-.feat textarea {
-	display: none;
 }
 
 #page_featNotes #notes, #page_editFeatNotes #notes {
