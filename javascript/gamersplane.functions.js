@@ -117,10 +117,12 @@ function fm_rollDice(dice, rerollAces) {
 }
 
 function sumRow() {
+	if ($(this).hasClass('dontAdd')) return false;
+
 	var inputTotal = 0;
-	$parent = $(this).parent();
+	console.log($(this));
+	$parent = $(this).closest('.sumRow');
 	$parent.find('input[type="text"]').not('.dontAdd').each(function () { inputTotal += parseInt($(this).val()); });
-	var $total = $parent.find('.total');
 	$total.each(function () {
 		var $indivTotal = $(this);
 		var classes = $indivTotal.attr('class').split(/\s+/);

@@ -203,50 +203,33 @@
 				</div>
 				
 				<div id="skills">
-					<h2 class="headerbar hbDark">Skills</h2>
+					<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
 					<div class="hbdMargined">
-						<div id="addSkillWrapper">
-							<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
-							<select id="skillStat_1" name="newSkill[stat_1]">
-<?	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n"; ?>
-							</select>
-							<select id="skillStat_2" name="newSkill[stat_2]">
-								<option value="">&nbsp;</option>
-<?	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n"; ?>
-							</select>
-							<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
-						</div>
 						<div class="tr labelTR">
 							<label class="medText skill_name">Skill</label>
 							<label class="shortNum alignCenter lrBuffer">Total</label>
-							<label class="shortText alignCenter lrBuffer">Stat(s)</label>
+							<label class="skill_stat alignCenter">Stat(s)</label>
 							<label class="shortNum alignCenter lrBuffer">Ranks</label>
 							<label class="shortNum alignCenter lrBuffer">Misc</label>
 							<label class="medNum alignCenter lrBuffer">Error</label>
 							<label class="medNum alignCenter lrBuffer">Threat</label>
 						</div>
+						<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
+						</div>
 					</div>
 				</div>
 
 				<div class="clearfix">
 					<div id="focuses">
-						<h2 class="headerbar hbDark">Focuses/Fortes</h2>
-						<div class="hbdMargined">
-							<div id="addFocusWrapper">
-								<input id="focusName" type="text" name="newFocus_name" class="medText placeholder" autocomplete="off" data-placeholder="Focus Name">
-								<button id="addFocus" type="submit" name="newFocus_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Focuses/Fortes <a id="addFocus" href="">[ Add Focus ]</a></h2>
+						<div id="focusList" class="hbdMargined">
 <?	$this->showFocusesEdit(); ?>
 						</div>
 					</div>
 					<div id="feats">
-						<h2 class="headerbar hbDark">Feats/Abilities</h2>
-						<div class="hbdMargined">
-							<div id="addFeatWrapper">
-								<input id="featName" type="text" name="newFeat_name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
-								<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addSkill" href="">[ Add Feat/Ability ]</a></h2>
+						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>
 					</div>
