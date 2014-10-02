@@ -1,9 +1,9 @@
 $(function () {
 	$('form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
 		success: function (data) {
-			if (data == '1') {
-				parent.document.location.reload();
-			} else parent.$.colorbox.close();
+			if (data == 'refresh') parent.document.location.reload();
+			else if (data != '0') parent.document.location.href = '/forums/' + data + '/';
+			else parent.$.colorbox.close();
 		}
 	});
 });

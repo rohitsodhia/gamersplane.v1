@@ -11,41 +11,76 @@ $(function () {
 		});
 	}
 
-	$('.abilitySelect').change(function () {
+	$('#content form').on('change', '.abilitySelect', function () {
+		$abilitySelect = $(this);
 		$statMod = $(this).parent().siblings('.abilitySelectMod');
-		$total = $('#' + $statMod.data('totalEle'));
-		oldStat = $statMod.data('statHold');
-		newStat = $(this).val();
-		$statMod.html(showSign(statBonus[newStat])).removeClass('statBonus_' + oldStat).addClass('statBonus_' + newStat).data('statHold', newStat);
-		$total.removeClass('addStat_' + oldStat).addClass('addStat_' + newStat).html(showSign(parseInt($total.html()) - statBonus[oldStat] + statBonus[newStat]));
+		$total = $('#' + $abilitySelect.data('totalEle'));
+		oldStat = $abilitySelect.data('statHold');
+		newStat = $abilitySelect.val();
+		totalVal = parseInt($total.html());
+		if (oldStat != 'n/a') {
+			$statMod.removeClass('statBonus_' + oldStat);
+			$total.removeClass('addStat_' + oldStat);
+			totalVal -= statBonus[oldStat];
+		}
+		if (newStat != 'n/a') {
+			$statMod.html(showSign(statBonus[newStat])).addClass('statBonus_' + newStat);
+			$total.addClass('addStat_' + newStat);
+			totalVal += statBonus[newStat];
+		} else $statMod.html('+0');
+		$abilitySelect.data('statHold', newStat);
+		$total.html(showSign(totalVal));
 	});
 
-	$('#skillName').autocomplete('/characters/ajax/skillSearch/', { search: $(this).val(), characterID: characterID, system: system });
-	$('#skills').on('click', '.skill_remove', function (e) {
-		var skillID = $(this).parent().attr('id').split('_')[1];
-		$.post('/characters/ajax/removeSkill/', { characterID: characterID, system: system, skillID: skillID }, function (data) {
-			if (data == 1) { $('#skill_' + skillID).slideUp(function () {
-				$(this).remove();
-				if ($('.skill').size() == 0) $('<p id=\"noSkills\">This character currently has no skills.</p>').hide().appendTo('#skills .hbdMargined').slideDown();
-			}); }
-		});
-		
-		e.preventDefault();
-	});
+	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
+		var nextSkillCount = 1;
 
-	$('#featName').autocomplete('/characters/ajax/featSearch/', { search: $(this).val(), characterID: characterID, system: system });
-	$('#feats').on('click', '.feat_remove', function (e) {
-		var featID = $(this).parent().attr('id').split('_')[1];
-		$.post('/characters/ajax/removeFeat/', { characterID: characterID, system: system, featID: featID }, function (data) {
-			if (parseInt(data) == 1) { $('#feat_' + featID).slideUp(function () {
-				$(this).remove();
-				if ($('.feat').size() == 0) $('<p id="noFeats">This character currently has no feats/abilities.</p>').hide().appendTo('#feats .hbdMargined').slideDown();
-			}); }
+		$('#skills').on('click', '.skill_remove', function (e) {
+			e.preventDefault();
+
+			$(this).parent().remove();
+			if ($('.skill').length == 0) $('#addSkill').click();
+		}).on('click', '#addSkill', function (e) {
+			e.preventDefault();
+
+			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
+				$newSkill = $(data);
+				$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+				nextSkillCount += 1;
+			});
+		}).on('blur', '.sumRow input', sumRow);
+
+		nextSkillCount = $('#skillList .skill').length + 1;
+		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
+
+		addCSSRule('.skill_stat', 'width: ' + ($('.skill .skill_stat').eq(0).outerWidth(true)) + 'px; text-align: center;');
+	}
+
+	if ($('#feats').length) {
+		var nextFeatCount = 1;
+
+		$('#feats').on('click', '.feat_remove', function (e) {
+			e.preventDefault();
+
+			$(this).parent().remove();
+			if ($('.feat').size() == 0) $('#addFeat').click();
+		}).on('click', '#addFeat', function (e) {
+			e.preventDefault();
+
+			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
+				$newFeat = $(data);
+				$newFeat.appendTo('#featList').find('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system }).find('input').focus();
+				nextFeatCount += 1;
+			});
+		}).on('click', '.feat_notesLink', function(e) {
+			e.preventDefault();
+
+			$(this).siblings('textarea').slideToggle();
 		});
-		
-		e.preventDefault()
-	});
-	$('#feats').on('click', '.feat_notesLink', function (e) { $(this).colorbox(); });
+
+		nextFeatCount = $('#featList .feat').length + 1;
+		$('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system });
+	}
 
 	if ($('#addWeapon').length) { $('#addWeapon').click(function (e) {
 		e.preventDefault();
@@ -63,4 +98,10 @@ $(function () {
 
 		e.preventDefault()
 	});
+
+	$('#submitDiv button').click(function (e) {
+		$('.placeholder').each(function () {
+			if ($(this).val() == $(this).data('placeholder')) $(this).val('');
+		});
+	})
 });

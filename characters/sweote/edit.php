@@ -80,33 +80,22 @@
 				</div>
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills</h2>
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
-							<div id="addSkillWrapper">
-								<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
-								<select id="skillStat" name="newSkill[stat]">
-<?	foreach ($stats as $short => $stat) { ?>
-									<option value="<?=$short?>"><?=$stat?></option>
-<?	} ?>
-								</select>
-								<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
-							</div>
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
-								<label class="skill_stat alignCenter lrBuffer">Stat</label>
+								<label class="skill_stat alignCenter">Stat</label>
 								<label class="shortNum alignCenter lrBuffer">Rank</label>
 								<label class="shortNum alignCenter lrBuffer">Career</label>
 							</div>
+							<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
+							</div>
 						</div>
 					</div>
 					<div id="talents" class="floatRight">
-						<h2 class="headerbar hbDark">Talents</h2>
-						<div class="hbdMargined">
-							<div id="addTalentWrapper">
-								<input id="talentName" type="text" name="newTalent_name" class="medText placeholder" autocomplete="off" data-placeholder="Talent Name">
-								<button id="addTalent" type="submit" name="newTalent_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Talents <a id="addTalent" href="">[ Add Talent ]</a></h2>
+						<div id="talentList" class="hbdMargined">
 <?	$this->showTalentsEdit(); ?>
 						</div>
 					</div>

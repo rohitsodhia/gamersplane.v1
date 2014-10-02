@@ -31,12 +31,9 @@ function showSign(val) {
 	else return val;
 }
 
-function setupPlaceholders() {
-	$(this).val($(this).data('placeholder')).addClass('default').focus(function () {
-		if ($(this).val() == $(this).data('placeholder')) $(this).val('').removeClass('default');
-	}).blur(function () {
-		if ($(this).val() == '') $(this).val($(this).data('placeholder')).addClass('default');
-	});
+function addCSSRule(selector, rules, index) {
+	if ('insertRule' in jsCSSSheet) jsCSSSheet.insertRule(selector + "{" + rules + "}", index);
+	else if ('addRule' in jsCSSSheet) jsCSSSheet.addRule(selector, rules, index);
 }
 
 function setupWingContainer() {
@@ -86,13 +83,15 @@ function wingMargins(container) {
 	else if ($container.hasClass('wingDiv')) baseClass = 'wingDiv';
 	if (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') $content = $container.children('div:not(.wing)');
 	else $content = $container.children('button');
-	$content.height('auto');
 
 	var height = $container.outerHeight()/* + 2*/;
 	var width = Math.ceil(height * ($container.data('ratio') == undefined?.6:Number($container.data('ratio'))));
-	$container.data('height', height);
-	$container.data('width', width);
-	$content.css('margin', '0 ' + width + 'px').outerHeight($content.outerHeight());
+	$container.data('height', height).data('width', width);
+	$content.css('margin', '0 ' + width + 'px');
+	if ($container.hasClass('headerbar') || $container.hasClass('fancyButton')) {
+		$container.css({'height': height + 'px', 'overflow-y': 'hidden'});;
+		$content.outerHeight(height + 1);
+	}
 	$container.children('.wing').each(setupWings);
 }
 
@@ -118,10 +117,12 @@ function fm_rollDice(dice, rerollAces) {
 }
 
 function sumRow() {
+	if ($(this).hasClass('dontAdd')) return false;
+
 	var inputTotal = 0;
-	$parent = $(this).parent();
+	console.log($(this));
+	$parent = $(this).closest('.sumRow');
 	$parent.find('input[type="text"]').not('.dontAdd').each(function () { inputTotal += parseInt($(this).val()); });
-	var $total = $parent.find('.total');
 	$total.each(function () {
 		var $indivTotal = $(this);
 		var classes = $indivTotal.attr('class').split(/\s+/);

@@ -1,6 +1,6 @@
 <?
-	require_once(FILEROOT.'/includes/packages/marvelCharacter.package.php');
-	if ($character = new marvelCharacter($characterID)) {
-		$character->challengeEditFormat($_POST['challengeNum']);
+	if (checkLogin(0)) {
+		require_once(FILEROOT.'/includes/packages/marvelCharacter.package.php');
+		marvelCharacter::challengeEditFormat($_POST['key']);
 	}
 ?>

@@ -194,18 +194,17 @@
 			<div id="powers" class="clearfix">
 				<h2 class="headerbar hbDark">Powers</h2>
 				<div class="hbdMargined">
-<?	$powers = $this->getPowers(); ?>
 					<div id="powers_atwill" class="powerCol first">
 						<h3>At-Will</h3>
-<?	foreach ($powers['a'] as $power) $this->powerSheetFormat($power); ?>
+<?	$this->powerSheetFormat('atwill'); ?>
 				</div>
 				<div id="powers_encounter" class="powerCol">
 					<h3>Encounter</h3>
-<?	foreach ($powers['e'] as $power) $this->powerSheetFormat($power); ?>
+<?	$this->powerSheetFormat('encounter'); ?>
 				</div>
 				<div id="powers_daily" class="powerCol">
 					<h3>Daily</h3>
-<?	foreach ($powers['d'] as $power) $this->powerSheetFormat($power); ?>
+<?	$this->powerSheetFormat('daily'); ?>
 					</div>
 				</div>
 			</div>

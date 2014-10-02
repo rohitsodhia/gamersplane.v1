@@ -57,12 +57,12 @@
 							<span id="<?=$save?>Total" class="shortNum lrBuffer total addStat_<?=$this->getSave($save, 'stat')?>"><?=showSign($this->getSave($save, 'total'))?></span>
 							<input type="text" name="saves[<?=$save?>][base]" value="<?=$this->getSave($save, 'base')?>" class="lrBuffer" data-save-type="<?=$save?>">
 							<span class="statSelect lrBuffer">
-								<select name="saves[<?=$save?>][stat]" class="abilitySelect">
+								<select name="saves[<?=$save?>][stat]" class="abilitySelect" data-stat-hold="<?=$this->getSave($save, 'stat')?>" data-total-ele="<?=$save?>Total">
 <? 	foreach ($stats as $short => $stat) { ?>
 									<option value="<?=$short?>"<?=$this->getSave($save, 'stat') == $short?' selected="selected"':''?>><?=ucwords($short)?></option>
 <?	} ?>
 								</select>
-								<span class="shortNum abilitySelectMod statBonus_<?=$this->getSave($save, 'stat')?>" data-stat-hold="<?=$this->getSave($save, 'stat')?>" data-total-ele="<?=$save?>Total"><?=$this->getStatMod($this->getSave($save, 'stat'))?></span>
+								<span class="shortNum abilitySelectMod statBonus_<?=$this->getSave($save, 'stat')?>"><?=$this->getStatMod($this->getSave($save, 'stat'))?></span>
 							</span>
 							<input type="text" name="saves[<?=$save?>][magic]"  value="<?=$this->getSave($save, 'magic')?>" class="lrBuffer" data-save-type="<?=$save?>">
 							<input type="text" name="saves[<?=$save?>][misc]"  value="<?=$this->getSave($save, 'misc')?>" class="lrBuffer" data-save-type="<?=$save?>">
@@ -122,40 +122,40 @@
 						<span id="initTotal" class="shortNum lrBuffer total addStat_<?=$this->getInitiative('stat')?>"><?=showSign($this->getInitiative('total'))?></span>
 						<span class="shortNum lrBuffer">&nbsp;</span>
 						<span class="statSelect lrBuffer">
-							<select name="initiative[stat]" class="abilitySelect">
+							<select name="initiative[stat]" class="abilitySelect" data-stat-hold="<?=$this->getInitiative('stat')?>" data-total-ele="initTotal">
 <? 	foreach ($stats as $short => $stat) { ?>
 								<option value="<?=$short?>"<?=$this->getInitiative('stat') == $short?' selected="selected"':''?>><?=ucwords($short)?></option>
 <?	} ?>
 							</select>
-							<span class="shortNum abilitySelectMod statBonus_<?=$this->getInitiative('stat')?>" data-stat-hold="<?=$this->getInitiative('stat')?>" data-total-ele="initTotal"><?=$this->getStatMod($this->getInitiative('stat'))?></span>
+							<span class="shortNum abilitySelectMod statBonus_<?=$this->getInitiative('stat')?>"><?=$this->getStatMod($this->getInitiative('stat'))?></span>
 						</span>
 						<input type="text" name="initiative[misc]" value="<?=$this->getInitiative('misc')?>" class="lrBuffer">
 					</div>
 					<div id="melee" class="tr sumRow">
 						<label class="leftLabel shortText">Melee</label>
-						<span id="meleeTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'melee')?>"><?=showSign($this->getAttackBonus('total', 'melee') + $this->getStatMod($this->getAttackBonus('stat', 'melee')))?></span>
+						<span id="meleeTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'melee')?>"><?=showSign($this->getAttackBonus('total', 'melee'))?></span>
 						<input id="bab" type="text" name="attackBonus[base]" value="<?=$this->getAttackBonus('base')?>" class="lrBuffer">
 						<span class="statSelect lrBuffer">
-							<select name="attackBonus[stat][melee]" class="abilitySelect">
+							<select name="attackBonus[stat][melee]" class="abilitySelect" data-stat-hold="<?=$this->getAttackBonus('stat', 'melee')?>" data-total-ele="meleeTotal">
 <? 	foreach ($stats as $short => $stat) { ?>
 								<option value="<?=$short?>"<?=$this->getAttackBonus('stat', 'melee') == $short?' selected="selected"':''?>><?=ucwords($short)?></option>
 <?	} ?>
 							</select>
-							<span class="shortNum abilitySelectMod statBonus_<?=$this->getAttackBonus('stat', 'melee')?>" data-stat-hold="<?=$this->getAttackBonus('stat', 'melee')?>" data-total-ele="meleeTotal"><?=$this->getStatMod($this->getAttackBonus('stat', 'melee'))?></span>
+							<span class="shortNum abilitySelectMod statBonus_<?=$this->getAttackBonus('stat', 'melee')?>"><?=$this->getStatMod($this->getAttackBonus('stat', 'melee'))?></span>
 						</span>
 						<input id="melee_misc" type="text" name="attackBonus[misc][melee]" value="<?=$this->getAttackBonus('misc', 'melee')?>" class="lrBuffer">
 					</div>
 					<div id="ranged" class="tr sumRow">
 						<label class="leftLabel shortText">Ranged</label>
-						<span id="rangedTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'ranged')?> addBAB"><?=showSign($this->getAttackBonus('total', 'ranged') + $this->getStatMod($this->getAttackBonus('stat', 'ranged')))?></span>
+						<span id="rangedTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'ranged')?> addBAB"><?=showSign($this->getAttackBonus('total', 'ranged'))?></span>
 						<span class="shortNum lrBuffer bab"><?=showSign($this->getAttackBonus('base'))?></span>
 						<span class="statSelect lrBuffer">
-							<select name="attackBonus[stat][ranged]" class="abilitySelect">
+							<select name="attackBonus[stat][ranged]" class="abilitySelect" data-stat-hold="<?=$this->getAttackBonus('stat', 'ranged')?>" data-total-ele="rangedTotal">
 <? 	foreach ($stats as $short => $stat) { ?>
 								<option value="<?=$short?>"<?=$this->getAttackBonus('stat', 'ranged') == $short?' selected="selected"':''?>><?=ucwords($short)?></option>
 <?	} ?>
 							</select>
-							<span class="shortNum abilitySelectMod statBonus_<?=$this->getAttackBonus('stat', 'ranged')?>" data-stat-hold="<?=$this->getAttackBonus('stat', 'ranged')?>" data-total-ele="rangedTotal"><?=$this->getStatMod($this->getAttackBonus('stat', 'ranged'))?></span>
+							<span class="shortNum abilitySelectMod statBonus_<?=$this->getAttackBonus('stat', 'ranged')?>"><?=$this->getStatMod($this->getAttackBonus('stat', 'ranged'))?></span>
 						</span>
 						<input id="ranged_misc" type="text" name="attackBonus[misc][ranged]" value="<?=$this->getAttackBonus('misc', 'ranged')?>" class="lrBuffer">
 					</div>
@@ -163,35 +163,23 @@
 				
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills</h2>
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
-							<div id="addSkillWrapper">
-								<input id="skillName" type="text" name="newSkill[name]" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
-								<select id="skillStat" name="newSkill[stat]">
-									<option value="">N/A</option>
-<?
-	foreach ($stats as $short => $stat) echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
-?>
-								</select>
-								<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
-							</div>
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
 								<label class="shortNum alignCenter lrBuffer">Total</label>
-								<label class="shortNum alignCenter lrBuffer">Stat</label>
+								<label class="skill_stat alignCenter">Stat</label>
 								<label class="shortNum alignCenter lrBuffer">Ranks</label>
 								<label class="shortNum alignCenter lrBuffer">Misc</label>
 							</div>
+							<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
+							</div>
 						</div>
 					</div>
 					<div id="feats" class="floatRight">
-						<h2 class="headerbar hbDark">Feats/Abilities</h2>
-						<div class="hbdMargined">
-							<div id="addFeatWrapper">
-								<input id="featName" type="text" name="newFeat_name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
-								<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>
 					</div>

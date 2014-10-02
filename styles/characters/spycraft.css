@@ -164,28 +164,7 @@ textarea {
 }
 
 #skills {
-	width: 680px;
-}
-
-#addSkillWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-.skill span {
-	display: inline-block;
-}
-
-.skill_name {
-	width: 150px;
-}
-
-.skill_stat {
-	font-variant: small-caps;
-}
-
-.skill_total {
-	text-align: center;
+	width: 705px;
 }
 
 #weapons, #armor {

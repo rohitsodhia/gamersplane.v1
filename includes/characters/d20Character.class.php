@@ -17,13 +17,6 @@
 		protected $feats = array();
 		protected $items = '';
 
-		public function __construct($characterID, $userID = NULL) {
-			parent::__construct($characterID, $userID);
-
-			$this->mongoIgnore['save'][] = 'skills';
-			$this->mongoIgnore['save'][] = 'feats';
-		}
-
 		public function setClass($class, $level = 1) {
 			$this->classes[$class] = $level;
 		}
@@ -145,6 +138,51 @@
 				$total += $this->getStatMod($this->initiative['stat'], false);
 				return $total;
 			} else return false;
+		}
+
+		public function addSkill($skill) {
+			if (strlen($skill['name'])) {
+				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->skills[] = $skill;
+			}
+		}
+
+		public static function featEditFormat($key = 1, $featInfo = null) {
+			if ($featInfo == null) $featInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="feat clearfix">
+								<input type="text" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>" class="feat_name placeholder" data-placeholder="Feat Name">
+								<a href="" class="feat_notesLink">Notes</a>
+								<a href="" class="feat_remove sprite cross"></a>
+								<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>
+							</div>
+<?
+		}
+
+		public function showFeatsEdit() {
+			if (sizeof($this->feats)) { foreach ($this->feats as $key => $feat) {
+				$this->featEditFormat($key + 1, $feat);
+			} } else $this->featEditFormat();
+		}
+
+		public function displayFeats() {
+			if ($this->feats) { foreach ($this->feats as $feat) { ?>
+					<div class="feat tr clearfix">
+						<span class="feat_name"><?=$feat['name']?></span>
+<?	if (strlen($feat['notes'])) { ?>
+						<a href="" class="feat_notesLink">Notes</a>
+						<div class="feat_notes"><?=$feat['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";
+		}
+		
+		public function addFeat($feat) {
+			if (strlen($feat['name'])) {
+				newItemized('feat', $feat['name'], $this::SYSTEM);
+				$this->feats[] = $feat;
+			}
 		}
 
 		public function setAttackBonus($key, $value, $type = null) {

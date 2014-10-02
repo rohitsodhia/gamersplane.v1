@@ -1,3 +1,3 @@
 $(function () {
-	setTimeout(function () { window.location = '/ucp/pms'; }, redirectTimeout);
+	setTimeout(function () { window.location = '/pms/'; }, redirectTimeout);
 });

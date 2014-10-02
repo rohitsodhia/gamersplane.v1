@@ -25,10 +25,10 @@ $(function() {
 
 	$('.loginLink').colorbox();
 
-	$('.placeholder').each(setupPlaceholders);
+	$('.placeholder').placeholder();
 
 	if ($('body').hasClass('modal')) {
-		$('a').attr('target', '_parent');
+		$('a').not('.inFrame').attr('target', '_parent');
 		parent.$.colorbox.resize({ 'innerWidth': $('body').data('modalWidth') } );
 		parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
 

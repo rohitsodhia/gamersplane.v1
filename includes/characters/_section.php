@@ -1,41 +1,35 @@
 <?
-	function getSkill($skillName, $system) {
+	function newItemized($type, $name, $system) {
 		global $mysql, $systems;
+		$userID = intval($_SESSION['userID']);
 
-		$skillCheck = $mysql->prepare('SELECT skillID FROM skillsList WHERE LOWER(searchName) = :searchName');
-		$skillCheck->bindValue(':searchName', sanitizeString($skillName, 'search_format'));
-		$skillCheck->execute();
-		if ($skillCheck->rowCount()) $skillID = $skillCheck->fetchColumn();
-		else {
-			$userID = intval($_SESSION['userID']);
-			$addNewSkill = $mysql->prepare("INSERT INTO skillsList (name, searchName, userDefined) VALUES (:name, :searchName, $userID)");
-			$addNewSkill->bindValue(':name', $skillName);
-			$addNewSkill->bindValue(':searchName', sanitizeString($skillName, 'search_format'));
-			$addNewSkill->execute();
-			$skillID = $mysql->lastInsertId();
-		}
+		if ($system == 'custom') return false;
+
+		$itemCheck = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE type = :type AND LOWER(searchName) = :searchName");
+		$itemCheck->bindValue(':type', $type);
+		$itemCheck->bindValue(':searchName', sanitizeString($name, 'search_format'));
+		$itemCheck->execute();
 		$systemID = $systems->getSystemID($system);
-		try {
-			$mysql->query("INSERT INTO system_skill_map SET systemID = $systemID, skillID = $skillID");
-		} catch (Exception $e) { }
-
-		return $skillID;
-	}
-
-	function getFeat($featName) {
-		global $mysql;
-		
-		$featCheck = $mysql->prepare('SELECT featID FROM featsList WHERE LOWER(searchName) = :searchName');
-		$featCheck->bindValue(':searchName', sanitizeString($featName, 'search_format'));
-		$featCheck->execute();
-		if ($featCheck->rowCount()) return $featCheck->fetchColumn();
-		else {
-			$userID = intval($_SESSION['userID']);
-			$addNewFeat = $mysql->prepare("INSERT INTO featsList (name, searchName, userDefined) VALUES (:name, :searchName, $userID)");
-			$addNewFeat->bindValue(':name', $featName);
-			$addNewFeat->bindValue(':searchName', sanitizeString($featName, 'search_format'));
-			$addNewFeat->execute();
-			return $mysql->lastInsertId();
+		if ($itemCheck->rowCount()) {
+			$itemID = $itemCheck->fetchColumn();
+			$inSystem = $mysql->query("SELECT systemID FROM system_charAutocomplete_map WHERE systemID = {$systemID} AND itemID = {$itemID}");
+			if ($inSystem->rowCount() == 0) {
+				try {
+					$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$userID}, NOW(), {$systemID})");
+					$addItem->bindValue(':itemType', $type);
+					$addItem->bindValue(':itemID', $itemID);
+					$addItem->execute();
+				} catch (Exception $e) {}
+			}
+		} else {
+			try {
+				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$userID}, NOW(), {$systemID})");
+				$addItem->bindValue(':itemType', $type);
+				$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
+				$addItem->execute();
+			} catch (Exception $e) {}
 		}
+
+		return true;
 	}
 ?>

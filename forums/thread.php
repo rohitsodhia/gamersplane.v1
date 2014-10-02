@@ -30,7 +30,7 @@
 	$page = $page > 0?$page:1;
 	if ($page > ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE)) $page = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 	$start = ($page - 1) * PAGINATE_PER_PAGE;
-	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, users.username, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
+	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, users.avatarExt, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, users.username, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
 	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = $userID, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
 
 	$gameID = FALSE;
@@ -103,7 +103,7 @@
 			$numVotes[$voteInfo['pollOptionID']] = $voteInfo['numVotes'];
 			$totalVotes += $voteInfo['numVotes'];
 		}
-		$highestVotes = max($numVotes)?max($numVotes):0;
+		$highestVotes = sizeof($numVotes)?max($numVotes):0;
 ?>
 				<ul>
 <?
@@ -144,8 +144,8 @@
 			<div class="postBlock post<?=$postSide?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
-					<a href="<?='/ucp/'.$postInfo['userID']?>" class="avatar"><img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.png")?$postInfo['userID']:'avatar')?>.png"></a>
-					<p class="posterName"><a href="<?='/ucp/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
+					<a href="<?='/user/'.$postInfo['userID']?>" class="avatar"><img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.{$postInfo['avatarExt']}")?$postInfo['userID'].'.'.$postInfo['avatarExt']:'avatar.png')?>"></a>
+					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
 				</div>
 				<div class="postContent">
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>

@@ -91,7 +91,7 @@
 						}
 					}
 ?>
-					<p class="charName"><a href="/characters/<?=$gameInfo['system']?>/sheet/<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
+					<p class="charName"><a href="/characters/<?=$gameInfo['system']?>/<?=$charInfo['characterID']?>/"><?=$charInfo['label']?></a></p>
 <?				} ?>
 				</li>
 			</ul>

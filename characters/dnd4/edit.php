@@ -198,35 +198,23 @@
 				
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills</h2>
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
-							<div id="addSkillWrapper">
-								<input id="skillName" type="text" name="newSkill[name]" value="Skill Name" class="medText placeholder" autocomplete="off" data-placeholder="Skill Name">
-								<select id="skillStat" name="newSkill[stat]">
-<?
-	foreach ($stats as $short => $stat) 
-		echo "								<option value=\"$short\">".ucfirst($short)."</option>\n";
-?>
-								</select>
-								<button id="addSkill" type="submit" name="newSkill_add" class="fancyButton">Add</button>
-							</div>
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
 								<label class="shortNum alignCenter lrBuffer">Total</label>
-								<label class="shortNum alignCenter lrBuffer">Stat</label>
+								<label class="skill_stat alignCenter">Stat</label>
 								<label class="shortNum alignCenter lrBuffer">Ranks</label>
 								<label class="shortNum alignCenter lrBuffer">Misc</label>
 							</div>
+							<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
+							</div>
 						</div>
 					</div>
 					<div id="feats" class="floatRight">
-						<h2 class="headerbar hbDark">Feats/Features</h2>
-						<div class="hbdMargined">
-							<div id="addFeatWrapper">
-								<input id="featName" type="text" name="newFeat_name" value="Feat Name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
-								<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>
 					</div>
@@ -234,30 +222,18 @@
 				
 				<div id="powers" class="clearfix">
 					<h2 class="headerbar hbDark">Powers</h2>
-					<div class="hbdMargined">
-						<div id="addPowerWrapper">
-							<input id="powerName" type="text" name="newPower[name]" value="Power" class="medText placeholder" autocomplete="off" data-placeholder="Power">
-							<select id="powerType" name="newPower[type]">
-								<option value="a">At-will</option>
-								<option value="e">Encounter</option>
-								<option value="d">Daily</option>
-							</select>
-							<button id="addPower" type="submit" name="newPower_add" class="fancyButton">Add</button>
+					<div class="hbdMargined clearfix">
+						<div id="powers_atwill" class="powerCol first">
+							<h3>At-Will <a href="" data-type="atwill">+</a></h3>
+<?	$this->showPowersEdit('atwill'); ?>
 						</div>
-<?	$powers = $this->getPowers(); ?>
-						<div class="clearfix">
-							<div id="powers_atwill" class="powerCol first">
-								<h3>At-Will</h3>
-<?	foreach ($powers['a'] as $power) $this->powerEditFormat($power); ?>
-							</div>
-							<div id="powers_encounter" class="powerCol">
-								<h3>Encounter</h3>
-<?	foreach ($powers['e'] as $power) $this->powerEditFormat($power); ?>
-							</div>
-							<div id="powers_daily" class="powerCol">
-								<h3>Daily</h3>
-<?	foreach ($powers['d'] as $power) $this->powerEditFormat($power); ?>
-							</div>
+						<div id="powers_encounter" class="powerCol">
+							<h3>Encounter <a href="" data-type="encounter">+</a></h3>
+<?	$this->showPowersEdit('encounter'); ?>
+						</div>
+						<div id="powers_daily" class="powerCol">
+							<h3>Daily <a href="" data-type="daily">+</a></h3>
+<?	$this->showPowersEdit('daily'); ?>
 						</div>
 					</div>
 				</div>
