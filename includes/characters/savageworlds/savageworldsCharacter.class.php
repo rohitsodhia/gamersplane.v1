@@ -14,21 +14,13 @@
 		protected $equipment = '';
 //		protected $advances = '';
 
-		protected $linkedTables = array('skills');
-
-		public function __construct($characterID, $userID = NULL) {
-			parent::__construct($characterID, $userID);
-
-			$this->mongoIgnore['save'][] = 'skills';
-		}
-
 		public function setTrait($trait, $value = null) {
 			if (array_key_exists($trait, $this->traits)) $this->traits[$trait] = intval($value);
 			else return FALSE;
 		}
 		
-		public function getTraits($trait = NULL) {
-			if ($trait == NULL) return $this->traits;
+		public function getTraits($trait = null) {
+			if ($trait == null) return $this->traits;
 			elseif (array_key_exists($trait, $this->traits)) return $this->traits[$trait];
 			else return FALSE;
 		}
@@ -39,39 +31,25 @@
 			else return FALSE;
 		}
 		
-		public function getDerivedTraits($trait = NULL) {
-			if ($trait == NULL) return $this->derivedTraits;
+		public function getDerivedTraits($trait = null) {
+			if ($trait == null) return $this->derivedTraits;
 			elseif (array_key_exists($trait, $this->derivedTraits)) return $this->derivedTraits[$trait];
 			else return FALSE;
 		}
 
-		public function addSkill($skillID, $name, $post) {
-			global $mysql;
-
-			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'trait' => $post['trait']);
-			if (!array_key_exists($skillInfo['trait'], $this->traits)) return false;
-			try {
-				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, diceType, trait) VALUES ({$this->characterID}, $skillID, 4, '{$skillInfo['trait']}')");
-				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, 'trait');
-			} catch (Exception $e) { var_dump($e); }
+		public function addSkill($skill) {
+			if (array_key_exists($skill['trait'], savageworlds_consts::getTraits()) && strlen($skill['name']) && in_array($skill['diceType'], array(4, 6, 8, 10, 12))) {
+				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->skills[$skill['trait']][] = array('name' => $skill['name'], 'diceType' => $skill['diceType']);
+			}
 		}
 
-		public function updateSkill($skillID, $skillInfo) {
-			global $mysql;
-
-			$updateSkill = $mysql->prepare("UPDATE ".$this::SYSTEM."_skills SET diceType = :diceType WHERE characterID = :characterID AND skillID = :skillID");
-			$updateSkill->bindValue(':diceType', intval($skillInfo['diceType']));
-			$updateSkill->bindValue(':characterID', $this->characterID);
-			$updateSkill->bindValue(':skillID', $skillID);
-			$updateSkill->execute();
-		}
-
-		public function skillEditFormat($skillInfo = NULL) {
+		public function skillEditFormat($key = 1, $skillInfo = null) {
+			if ($skillInfo == null) $skillInfo = array('trait' => 'trait', 'name' => '', 'diceType' => 4);
 ?>
-									<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
-										<div class="skillName"><?=$skillInfo['name']?></div>
-										<input type="hidden" name="skills[<?=$skillInfo['skillID']?>][trait]" value="<?=$skillInfo['trait']?>">
-										<div class="diceSelect"><span>d</span> <select name="skills[<?=$skillInfo['skillID']?>][diceType]" class="diceType">
+									<div class="skill clearfix">
+										<input type="text" name="skills[<?=$skillInfo['trait']?>][<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
+										<div class="diceSelect"><span>d</span> <select name="skills[<?=$skillInfo['trait']?>][<?=$key?>][diceType]" class="diceType">
 <?			foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
 											<option<?=$skillInfo['diceType'] == $dCount?' selected="selected"':''?>><?=$dCount?></option>
 <?			} ?>
@@ -82,38 +60,12 @@
 		}
 
 		public function showSkillsEdit($trait) {
-			if ($this->skills == null) {
-				$this->skills = array();
-
-				global $mysql;
-				$system = $this::SYSTEM;
-				$skills = $mysql->query("SELECT s.skillID, sl.name, s.trait, s.diceType FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-				foreach ($skills as $skill) $this->skills[$skill['trait']][] = $skill;
-			}
-
-			if (sizeof($this->skills[$trait])) { foreach ($this->skills[$trait] as $skillInfo) {
-				$this->skillEditFormat($skillInfo);
+			if (sizeof($this->skills[$trait])) { foreach ($this->skills[$trait] as $key => $skillInfo) {
+				$this->skillEditFormat($trait, array_merge(array('trait' => $trait), $skillInfo));
 			} }
 		}
 
-		public function removeSkill($skillID) {
-			global $mysql;
-
-			$removeSkill = $mysql->query("DELETE FROM ".$this::SYSTEM."_skills WHERE characterID = {$this->characterID} AND skillID = $skillID");
-			if ($removeSkill->rowCount()) echo 1;
-			else echo 0;
-		}
-
 		public function displaySkills($trait) {
-			if ($this->skills == null) {
-				$this->skills = array();
-
-				global $mysql;
-				$system = $this::SYSTEM;
-				$skills = $mysql->query("SELECT s.skillID, sl.name, s.trait, s.diceType FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-				foreach ($skills as $skill) $this->skills[$skill['trait']][] = $skill;
-			}
-
 			if ($this->skills[$trait]) { foreach ($this->skills[$trait] as $skill) {
 ?>
 								<div id="skill_<?=$skill['skillID']?>" class="skill clearfix">
@@ -182,13 +134,12 @@
 				$this->setName($data['name']);
 				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
 				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
-				$updateSkill = $mysql->prepare("UPDATE {$system}_skills SET diceType = :diceType WHERE characterID = {$this->characterID} AND skillID = :skillID AND trait = :trait");
-				foreach ($data['skills'] as $skillID => $skillInfo) {
-					$updateSkill->bindValue(':diceType', $skillInfo['diceType']);
-					$updateSkill->bindValue(':skillID', $skillID);
-					$updateSkill->bindValue(':trait', $skillInfo['trait']);
-					$updateSkill->execute();
-				}
+
+				$this->clearVar('skills');
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $trait => $skillInfos) {
+					foreach ($skillInfos as $skillInfo) $this->addSkill(array_merge(array('trait' => $trait), $skillInfo));
+				} }
+
 				$this->setEdgesHindrances($data['edge_hind']);
 				$this->setWounds($data['wounds']);
 				$this->setFatigue($data['fatigue']);

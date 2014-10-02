@@ -7,6 +7,8 @@
 		protected $energy = 0;
 		protected $unusedStones = 0;
 		protected $stats = array('int' => 0, 'str' => 0, 'agi' => 0, 'spd' => 0, 'dur' => 0);
+		protected $actions = array();
+		protected $modifiers = array();
 		protected $challenges = array();
 
 		protected $linkedTables = array('actions', 'modifiers');
@@ -54,7 +56,7 @@
 			$this->unusedStones = number_format(intval($white) + intval($red) / 3, 1);
 		}
 
-		public function getUnusedStones($color = NULL) {
+		public function getUnusedStones($color = null) {
 			if ($color == 'white') return $this->getWhiteStones($this->unusedStones);
 			elseif ($color == 'red') return $this->getRedStones($this->unusedStones);
 			else return $this->unusedStones;
@@ -67,84 +69,48 @@
 			} else return FALSE;
 		}
 		
-		public function getStat($stat = NULL) {
-			if ($stat == NULL) return $this->stats;
+		public function getStat($stat = null) {
+			if ($stat == null) return $this->stats;
 			elseif (array_key_exists($stat, $this->stats)) return $this->stats[$stat];
 			else return FALSE;
 		}
 
-		public function addAction($actionName) {
-			global $mysql;
-
-			$actionID = $mysql->prepare('SELECT actionID FROM marvel_actionsList WHERE searchName = :name');
-			$actionID->execute(array(':name' => sanitizeString($actionName, 'search_format')));
-			if ($actionID->rowCount()) $actionID = $actionID->fetchColumn();
-			else {
-				$addNewAction = $mysql->prepare("INSERT INTO marvel_actionsList (name, searchName, userDefined) VALUES (:name, :searchName, {$this->userID})");
-				$addNewAction->bindValue(':name', sanitizeString($actionName, 'rem_dup_spaces'));
-				$addNewAction->bindValue(':searchName', sanitizeString($actionName, 'search_format'));
-				$addNewAction->execute();
-				$actionID = $mysql->lastInsertId();
+		public function addAction($action) {
+			if (strlen($action['name'])) {
+//				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->actions[] = $action;
 			}
-			$addAction = $mysql->query("INSERT INTO marvel_actions (characterID, actionID) VALUES ({$this->characterID}, $actionID)");
-			$actionInfo = array('actionID' => $actionID, 'name' => $actionName);
-			if ($addAction->rowCount()) $this->actionEditFormat($actionInfo);
 		}
 
-		public function updateAction($actionID, $actionInfo) {
-			global $mysql;
-
-			$addAction = $mysql->prepare("UPDATE marvel_actions SET level = :level, details = :details, cost = :cost WHERE characterID = :characterID AND actionID = :actionID");
-			$addAction->bindValue(':characterID', $this->characterID);
-			$addAction->bindValue(':actionID', $actionID);
-			$addAction->bindValue(':level', $actionInfo['level']);
-			$addAction->bindValue(':cost', number_format(floatval($actionInfo['cost']), 1));
-			$addAction->bindValue(':details', sanitizeString($actionInfo['details']));
-			$addAction->execute();
-		}
-
-		public function actionEditFormat($actionInfo) {
-			if (!is_array($actionInfo) || sizeof($actionInfo) == 0) $actionInfo = array();
-			$defaults = array('cost' => 0, 'level' => 0);
-			foreach ($defaults as $key => $value) if (!isset($actionInfo[$key])) $actionInfo[$key] = $value;
+		static public function actionEditFormat($key = null, $actionInfo = null) {
+			if ($key == null) $key = 1;
+			if ($actionInfo == null) $actionInfo = array('name' => '', 'cost' => '', 'level' => '', 'details' => '');
 ?>
-					<div id="action_<?=$actionInfo['actionID']?>" class="action borderBox">
+					<div class="action borderBox">
 						<div class="tr labelTR clearfix">
-							<span class="spacer name">&nbsp;</span>
+							<label class="name borderBox shiftRight">Name</label>
 							<label class="cost borderBox">Cost</label>
 							<label class="level borderBox">Level</label>
 						</div>
-						<div class="clearfix">
-							<span class="name"><?=$actionInfo['name']?></span>
-							<input type="text" name="actions[<?=$actionInfo['actionID']?>][cost]" value="<?=$actionInfo['cost']?>" class="cost borderBox">
-							<input type="text" name="actions[<?=$actionInfo['actionID']?>][level]" value="<?=$actionInfo['level']?>" class="level borderBox">
+						<div class="actionInputs clearfix">
+							<input type="text" name="actions[<?=$key?>][name]" class="name" value="<?=$actionInfo['name']?>">
+							<input type="text" name="actions[<?=$key?>][cost]" value="<?=$actionInfo['cost']?>" class="cost borderBox">
+							<input type="text" name="actions[<?=$key?>][level]" value="<?=$actionInfo['level']?>" class="level borderBox">
 						</div>
-						<textarea name="actions[<?=$actionInfo['actionID']?>][details]"><?=$actionInfo['details']?></textarea>
+						<textarea name="actions[<?=$key?>][details]"><?=$actionInfo['details']?></textarea>
 						<div class="removeDiv alignRight"><a href="" class="remove">[ Remove ]</a></div>
 					</div>
 <?
 		}
 
 		public function showActionsEdit() {
-			global $mysql;
-
-			$actions = $mysql->query('SELECT pa.actionID, al.name, pa.level, pa.offset, pa.cost, pa.details FROM marvel_actions pa INNER JOIN marvel_actionsList al USING (actionID) WHERE characterID = '.$this->characterID);
-			if ($actions->rowCount()) { foreach ($actions as $actionInfo) {
-				$this->actionEditFormat($actionInfo);
-			} }
-		}
-
-		public function removeAction($actionID) {
-			global $mysql;
-
-			$mysql->query("DELETE FROM marvel_actions WHERE characterID = {$this->characterID} AND actionID = {$actionID}");
+			if (sizeof($this->actions)) { foreach ($this->actions as $key => $action) {
+				$this->actionEditFormat($key + 1, $action);
+			} } else $this->actionEditFormat();
 		}
 
 		public function displayActions() {
-			global $mysql;
-
-			$actions = $mysql->query('SELECT pa.actionID, al.name, pa.level, pa.offset, pa.cost, pa.details FROM marvel_actions pa INNER JOIN marvel_actionsList al USING (actionID) WHERE characterID = '.$this->characterID);
-			if ($actions->rowCount()) { foreach ($actions as $action) {
+			foreach ($this->actions as $action) {
 ?>
 				<div class="action">
 					<div class="tr labelTR clearfix">
@@ -160,81 +126,45 @@
 					<div class="details borderBox"><?=$action['details']?></div>
 				</div>
 <?
-			} }
-		}
-
-		public function addModifier($modifierName) {
-			global $mysql;
-
-			$modifierID = $mysql->prepare('SELECT modifierID FROM marvel_modifiersList WHERE searchName = :name');	
-			$modifierID->execute(array(':name' => sanitizeString($modifierName, 'search_format')));
-			if ($modifierID->rowCount()) $modifierID = $modifierID->fetchColumn();
-			else {
-				$addNewModifier = $mysql->prepare("INSERT INTO marvel_modifiersList (name, searchName, userDefined) VALUES (:name, :searchName, {$this->userID})");
-				$addNewModifier->bindValue(':name', sanitizeString($modifierName, 'rem_dup_spaces'));
-				$addNewModifier->bindValue(':searchName', sanitizeString($modifierName, 'search_format'));
-				$addNewModifier->execute();
-				$modifierID = $mysql->lastInsertId();
 			}
-			$addModifier = $mysql->query("INSERT INTO marvel_modifiers (characterID, modifierID) VALUES ({$this->characterID}, $modifierID)");
-			$modifierInfo = array('modifierID' => $modifierID, 'name' => $modifierName);
-			if ($addModifier->rowCount()) $this->modifierEditFormat($modifierInfo);
 		}
 
-		public function updateModifier($modifierID, $modifierInfo) {
-			global $mysql;
-
-			$addModifier = $mysql->prepare("UPDATE marvel_modifiers SET level = :level, details = :details, cost = :cost WHERE characterID = :characterID AND modifierID = :modifierID");
-			$addModifier->bindValue(':characterID', $this->characterID);
-			$addModifier->bindValue(':modifierID', $modifierID);
-			$addModifier->bindValue(':level', $modifierInfo['level']);
-			$addModifier->bindValue(':cost', number_format(floatval($modifierInfo['cost']), 1));
-			$addModifier->bindValue(':details', sanitizeString($modifierInfo['details']));
-			$addModifier->execute();
+		public function addModifier($modifier) {
+			if (strlen($modifier['name'])) {
+//				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->modifiers[] = $modifier;
+			}
 		}
 
-		public function modifierEditFormat($modifierInfo) {
-		if (!is_array($modifierInfo) || sizeof($modifierInfo) == 0) $modifierInfo = array();
-		$defaults = array('cost' => 0, 'level' => 0);
-		foreach ($defaults as $key => $value) if (!isset($modifierInfo[$key])) $modifierInfo[$key] = $value;
+		static public function modifierEditFormat($key = null, $modifierInfo = null) {
+			if ($key == null) $key = 1;
+			if ($modifierInfo == null) $modifierInfo = array('name' => '', 'cost' => 0, 'level' => 0, 'details' => '');
 ?>
-					<div id="modifier_<?=$modifierInfo['modifierID']?>" class="modifier borderBox">
+					<div class="modifier borderBox">
 						<div class="tr labelTR clearfix">
-							<span class="name">&nbsp;</span>
+							<label class="name">Name</label>
 							<label class="cost borderBox">Cost</label>
 							<label class="level borderBox">Level</label>
 						</div>
 						<div class="clearfix">
-							<span class="name"><?=$modifierInfo['name']?></span>
-							<input type="text" name="modifiers[<?=$modifierInfo['modifierID']?>][cost]" value="<?=$modifierInfo['cost']?>" class="cost borderBox">
-							<input type="text" name="modifiers[<?=$modifierInfo['modifierID']?>][level]" value="<?=$modifierInfo['level']?>" class="level borderBox">
+							<span class="name"><input type="text" name="modifiers[<?=$key?>][name]" value="<?=$modifierInfo['name']?>" class="name"></span>
+							<input type="text" name="modifiers[<?=$key?>][cost]" value="<?=$modifierInfo['cost']?>" class="cost borderBox">
+							<input type="text" name="modifiers[<?=$key?>][level]" value="<?=$modifierInfo['level']?>" class="level borderBox">
 						</div>
-						<textarea name="modifiers[<?=$modifierInfo['modifierID']?>][details]"><?=$modifierInfo['details']?></textarea>
+						<textarea name="modifiers[<?=$key?>][details]"><?=$modifierInfo['details']?></textarea>
 						<div class="removeDiv alignRight"><a href="" class="remove">[ Remove ]</a></div>
 					</div>
 <?
 		}
 
 		public function showModifiersEdit() {
-			global $mysql;
-
-			$modifiers = $mysql->query('SELECT pm.modifierID, ml.name, pm.level, pm.offset, pm.cost, pm.details FROM marvel_modifiers pm INNER JOIN marvel_modifiersList ml USING (modifierID) WHERE characterID = '.$this->characterID);
-			if ($modifiers->rowCount()) { foreach ($modifiers as $modifierInfo) {
-				$this->modifierEditFormat($modifierInfo);
+			if (sizeof($this->modifiers)) { foreach ($this->modifiers as $key => $modifierInfo) {
+				$this->modifierEditFormat($key + 1, $modifierInfo);
 			} }
 		}
 
-		public function removeModifier($modifierID) {
-			global $mysql;
-
-			$mysql->query("DELETE FROM marvel_modifiers WHERE characterID = {$this->characterID} AND modifierID = {$modifierID}");
-		}
-
 		public function displayModifiers() {
-			global $mysql;
-
-			$modifiers = $mysql->query('SELECT pm.modifierID, ml.name, pm.level, pm.offset, pm.cost, pm.details FROM marvel_modifiers pm INNER JOIN marvel_modifiersList ml USING (modifierID) WHERE characterID = '.$this->characterID);
-			if ($modifiers->rowCount()) { foreach ($modifiers as $modifier) {
+			if (sizeof($this->modifiers)) { foreach ($this->modifiers as $modifier) {
 ?>
 				<div class="modifier">
 					<div class="tr labelTR">
@@ -261,19 +191,18 @@
 			}
 		}
 
-		public function showChallengesEdit($min) {
-			$challengeNum = 0;
-			if (!is_array($this->challenges)) $this->challenges = (array) $this->challenges;
-			foreach ($this->challenges as $challengeInfo) $this->challengeEditFormat($challengeNum++, $challengeInfo);
-			if ($challengeNum < $min) while ($challengeNum < $min) $this->challengeEditFormat($challengeNum++);
+		public function showChallengesEdit() {
+			if (sizeof($this->challenges)) { foreach ($this->challenges as $key => $challengeInfo) $this->challengeEditFormat($key + 1, $challengeInfo);
+			} else $this->challengeEditFormat();
 		}
 
-		public function challengeEditFormat($challengeNum, $challengeInfo = NULL) {
-			if (!is_array($challengeInfo) || sizeof($challengeInfo) == 0) $challengeInfo = array();
+		static public function challengeEditFormat($key = null, $challengeInfo = null) {
+			if ($key == null) $key = 1;
+			if ($challengeInfo == null) $challengeInfo = array('name' => '', 'stones' => 0)
 ?>
 					<div class="tr challenge">
-						<input type="text" name="challenges[<?=$challengeNum?>][name]" value="<?=$challengeInfo['name']?>" class="name">
-						<input type="text" name="challenges[<?=$challengeNum?>][stones]" value="<?=$challengeInfo['stones']?>" class="stones">
+						<input type="text" name="challenges[<?=$key?>][name]" value="<?=$challengeInfo['name']?>" class="name">
+						<input type="text" name="challenges[<?=$key?>][stones]" value="<?=$challengeInfo['stones']?>" class="stones">
 						<a href="" class="remove">[ Remove ]</a>
 					</div>
 <?
@@ -301,12 +230,16 @@
 				$this->setUnusedStones($data['unusedStones']['white'], $data['unusedStones']['red']);
 				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
 
-				if (sizeof($data['actions'])) { foreach ($data['actions'] as $actionID => $actionInfo) {
-					$this->updateAction($actionID, $actionInfo);
+				$this->clearVar('actions');
+				if (sizeof($data['actions'])) { foreach ($data['actions'] as $actionInfo) {
+					$this->addAction($actionInfo);
 				} }
-				if (sizeof($data['modifiers'])) { foreach ($data['modifiers'] as $modifierID => $modifierInfo) {
-					$this->updateModifier($modifierID, $modifierInfo);
+
+				$this->clearVar('modifiers');
+				if (sizeof($data['modifiers'])) { foreach ($data['modifiers'] as $modifierInfo) {
+					$this->addModifier($modifierInfo);
 				} }
+
 				$this->clearVar('challenges');
 				foreach ($data['challenges'] as $challenge) $this->addChallenge($challenge);
 

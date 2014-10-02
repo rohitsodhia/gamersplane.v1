@@ -5,10 +5,11 @@
 
 
 label {
-	float: left;
+	display: inline-block;
 	width: 150px;
-	text-align: right;
 	margin-right: 10px;
+	text-align: right;
+	font-size: 1em;
 }
 
 #stats {
@@ -20,7 +21,8 @@ label {
 	width: 250px;
 }
 
-#stats input {
+#stats input, #stats .tr div {
+	display: inline-block;
 	width: 40px;
 	text-align: center;
 }
@@ -44,22 +46,27 @@ label {
 	margin-top: 1em;
 }
 
-#damage .damageTrack {
-	float: left;
-	width: 175px;
+.damageTrack {
+	display: inline-block;
+	width: 185px;
+}
+
+.damageTrack > * {
+	vertical-align: middle;
 }
 
 #damage label {
 	width: auto;
 }
 
-#damage input, .viewCharacter .damageTrack div {
-	float: left;
+#damage input, .damageTrack div {
+	display: inline-block;
 	width: 40px;
+	margin-right: 5px;
 	text-align: center;
 }
 
-.twoCol {
+.twoCol, #skills {
 	width: 465px;
 }
 

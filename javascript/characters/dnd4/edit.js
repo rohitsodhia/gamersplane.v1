@@ -46,31 +46,15 @@ $(function() {
 	});
 	$('#attacks').on('blur', '.sumRow input', sumRow);
 	
-	$('#powerName').autocomplete('/characters/ajax/dnd4/powerSearch', { search: $(this).val(), characterID: characterID });
-	$('#addPower').click(function (e) {
-		var type = $('#powerType').val();
-		if ($('#powerName').val().length >= 3 && $('#powerName').val() != 'Power') {
-			$.post('/characters/ajax/dnd4/addPower', { characterID: characterID, name: $('#powerName').val(), type: type }, function (data) {
-				var appendDiv = '';
-				if (type == 'a') appendDiv = 'atwill';
-				else if (type == 'e') appendDiv = 'encounter';
-				else if (type == 'd') appendDiv = 'daily';
-				$(data).hide().appendTo('#powers_' + appendDiv).slideDown();
-				$('#powerName').val('').trigger('blur');
-			});
-		}
-		
+	$('#powers').on('click', 'h3 a', function (e) {
 		e.preventDefault();
-	});
-	$('#powers').on('click', '.power_remove', function (e) {
-		var powerID = $(this).val();
-		var $parent = $(this).parent();
-		$.post('/characters/ajax/dnd4/removePower/', { characterID: characterID, powerID: powerID }, function (data) {
-			if (data == 1) { $parent.slideUp(function () {
-				$(this).remove();
-			}); }
-		});
-		
+
+		$powerCol = $(this).parent().parent();
+		$.post('/characters/ajax/dnd4/addPower/', { type: $(this).data('type') }, function (data) {
+			$(data).appendTo($powerCol).addClass('editing').find('input').autocomplete('/characters/ajax/autocomplete/', { type: 'dnd4_power', characterID: characterID, system: system, systemOnly: true }).find('input').placeholder().focus();
+		})
+	}).on('click', '.power_remove', function (e) {
 		e.preventDefault();
-	});
+		$(this).parent().remove();
+	}).find('.power_name input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'dnd4_power', characterID: characterID, system: system, systemOnly: true });
 });

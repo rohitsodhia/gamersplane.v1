@@ -76,7 +76,7 @@ ul li {
 }
 
 .removeDiv {
-	padding-top: .75em;
+	padding-top: .5em;
 }
 
 h2 a {
@@ -124,19 +124,22 @@ h2 a {
 	padding-top: 0;
 }
 
-.action .labelTR label, .modifier .labelTR label {
+.action label, .modifier label, .action input, .modifier input {
 	width: 40px;
-	margin: 0 2px 0 12px;
+	margin-left: 6px;
 	text-align: center;
+}
+
+.action .labelTR label, .modifier .labelTR label {
 	font-size: .85em;
 	font-variant: small-caps;
 }
 
 .action .name, .modifier .name {
 	display: inline-block;
-	width: 150px;
-	padding-top: 3px;
 	text-align: left;
+	width: 167px;
+	margin-left: 0;
 }
 
 #page_characterSheet .action .name, #page_characterSheet .modifier .name {
@@ -149,13 +152,6 @@ h2 a {
 	display: inline-block;
 	width: 32px;
 	margin: 0 6px;
-	vertical-align: top;
-	text-align: center;
-}
-
-.action input, .modifier input {
-	width: 40px;
-	margin: 0 2px 0 12px;
 	vertical-align: top;
 	text-align: center;
 }

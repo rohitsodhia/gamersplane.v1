@@ -47,8 +47,9 @@ textarea {
 	vertical-align: middle;
 }
 
-.traitName, .skillName {
+.traitName, .skillName, input.skillName {
 	width: 165px;
+	text-align: left;
 }
 
 .diceSelect > * {
@@ -59,19 +60,6 @@ textarea {
 	margin: .3em 0;
 	font-size: .85em;
 	font-variant: small-caps;
-}
-
-.newSkill > * {
-	vertical-align: middle;
-}
-
-.newSkill input {
-	text-align: left;
-	width: 185px;
-}
-
-.newSkill > a {
-	margin-left: 8px;
 }
 
 .skill {

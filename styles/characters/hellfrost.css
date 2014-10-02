@@ -45,12 +45,17 @@ textarea {
 	vertical-align: middle;
 }
 
-.traitName, .skillName {
+.traitName, #skills .skillName {
 	width: 185px;
+	text-align: left;
 }
 
 .diceSelect > * {
 	vertical-align: middle;
+}
+
+#skills {
+	width: auto;
 }
 
 .skillHeader {
@@ -71,13 +76,16 @@ textarea {
 	margin-left: 8px;
 }
 
-.skill {
+#page_characterSheet_edit .skill {
 	position: relative;
+	margin: 0;
+	padding-left: 0;
 }
 
 .skill .remove {
+	display: block;
 	position: absolute;
-	top: 6px;
+	top: 8px;
 	left: -22px;
 }
 

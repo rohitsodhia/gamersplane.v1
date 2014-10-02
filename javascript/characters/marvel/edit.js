@@ -1,32 +1,16 @@
 $(function() {
-	function equalizeHeights(selector) {
-		maxHeight = 0;
-		$(selector).not('.spacer').each(function () {
-			indivHeight = $(this).css('height');
-			indivHeight = parseInt(indivHeight.substring(0, indivHeight.length - 2));
-			if (indivHeight > maxHeight) maxHeight = indivHeight;
-		}).css('height', maxHeight + 'px');
-	}
-
+	var nextActionCount = $('.action').length + 1, nextModifierCount = $('.modifier').length + 1, nextChallengeCount = $('.challenge').length + 1;
 	$('#actions').on('click', '.remove', function (e) {
 		e.preventDefault();
 
-		$action = $(this).closest('.actionWrapper');
-		$.post('/characters/ajax/marvel/removeAction/', { characterID: characterID, actionID: $action.attr('id').split('_')[1] }, function (data) {
-			$action.slideUp(function () { $(this).remove(); });
-			equalizeHeights('.action .name');
-		});
+		$(this).closest('.action').remove();
 	});
-	equalizeHeights('.action .name');
-	$('#actionSearch').autocomplete('/characters/ajax/marvel/actionSearch/', { characterID: characterID });
 	$('#addAction').click(function (e) {
 		var actionName = $('#actionForm input').val();
-		$.post('/characters/ajax/marvel/addAction/', { characterID: characterID, actionName: actionName }, function (data) {
-			if (data.length > 0) {
-				$action = $(data);
-				$action.hide().appendTo('#actions .hbdMargined').slideDown(function () { equalizeHeights('.action .name'); });
-				$('#actionSearch').val('').trigger('blur');
-			}
+		$.post('/characters/ajax/marvel/addAction/', { key: nextActionCount }, function (data) {
+			$action = $(data);
+			$action.hide().appendTo('#actions .hbdMargined').slideDown();
+			nextActionCount += 1;
 		});
 		
 		e.preventDefault();
@@ -35,22 +19,14 @@ $(function() {
 	$('#modifiers').on('click', '.remove', function (e) {
 		e.preventDefault();
 
-		$modifier = $(this).closest('.modifierWrapper');
-		$.post('/characters/ajax/marvel/removeModifier/', { characterID: characterID, modifierID: $modifier.attr('id').split('_')[1] }, function (data) {
-			$modifier.slideUp(function () { $(this).remove(); });
-			equalizeHeights('.modifier .name');
-		});
+		$(this).closest('.modifier').remove();
 	});
-	equalizeHeights('.modifier .name');
-	$('#modifierSearch').autocomplete('/characters/ajax/marvel/modifierSearch/', { characterID: characterID });
 	$('#addModifier').click(function (e) {
 		var modifierName = $('#modifierForm input').val();
-		$.post('/characters/ajax/marvel/addModifier/', { characterID: characterID, modifierName: modifierName }, function (data) {
-			if (data.length > 0) {
-				$modifier = $(data);
-				$modifier.hide().appendTo('#modifiers .hbdMargined').slideDown(function () { equalizeHeights('.modifier .name'); });
-				$('#modifierSearch').val('').trigger('blur');
-			}
+		$.post('/characters/ajax/marvel/addModifier/', { key: nextModifierCount }, function (data) {
+			$modifier = $(data);
+			$modifier.hide().appendTo('#modifiers .hbdMargined').slideDown();
+			nextModifierCount += 1;
 		});
 		
 		e.preventDefault();
@@ -63,9 +39,9 @@ $(function() {
 		e.preventDefault();
 	});
 	$('#addChallenge').click(function (e) {
-		challengeNum = $('.challenge').length + 1;
-		$.post('/characters/ajax/marvel/addChallenge/', { challengeNum: challengeNum }, function (data) {
+		$.post('/characters/ajax/marvel/addChallenge/', { key: nextChallengeCount }, function (data) {
 			$(data).hide().appendTo('#challenges .hbdMargined').slideDown();
+			nextChallengeCount += 1;
 		});
 		
 		e.preventDefault();

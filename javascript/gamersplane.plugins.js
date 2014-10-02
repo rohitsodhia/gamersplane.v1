@@ -2,31 +2,32 @@ $.fn.autocomplete = function (pathOption, sendData) {
 	function search(pathOption, sendData, $resultsDiv) {
 		$.post(pathOption, sendData, function (data) {
 			if (data.length > 0) {
-				$inputBox.addClass('open');
+				$inputBox.parent().addClass('open');
 				$resultsDiv.html(data).slideDown();
 			} else {
-				$inputBox.removeClass('open');
-				$resultsDiv.slideUp();
+				$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
 			}
 		});
 	}
 
 	var $inputBox = $(this), onWrapper = false, searchTimeout;
-	$inputBox.wrap('<div class="autocompleteWrapper"></div>').parent().attr('id', $inputBox.attr('id') + 'Wrapper');
+	if ($inputBox.parent().hasClass('autocompleteWrapper')) return $inputBox.parent();
+	$inputBox.attr('autocomplete', 'off');
+	$inputBox.wrap('<div class="autocompleteWrapper"></div>');
+	if ($inputBox.attr('id') && $inputBox.attr('id').length) $inputBox.parent().attr('id', $inputBox.attr('id') + 'Wrapper');
 	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
 	$inputBox.keyup(function () {
+		if ($resultsDiv.parent().css('top') == '-1px') $resultsDiv.parent().css('top', ($inputBox.outerHeight(false) - 1) + 'px');
 		if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
 			$.extend(sendData, { search: $(this).val() });
 			clearTimeout(searchTimeout);
 			searchTimeout = setTimeout(function () { search(pathOption, sendData, $resultsDiv); }, 500);
 		} else {
-			$inputBox.removeClass('open');
-			$resultsDiv.slideUp();
+			$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
 		}
 	}).blur(function () {
 		if (onWrapper == false) {
-			$inputBox.removeClass('open');
-			$resultsDiv.slideUp();
+			$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
 		}
 	}).focus(function () {
 		if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) {
@@ -38,12 +39,13 @@ $.fn.autocomplete = function (pathOption, sendData) {
 	});
 	
 	$resultsDiv.on('click', 'a', function (e) {
-		$inputBox.removeClass('open');
 		$inputBox.val($(this).text());
-		$resultsDiv.slideUp();
+		$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
 
 		e.preventDefault();
 	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
+
+	return $inputBox.parent();
 };
 
 (function ($) {
@@ -60,6 +62,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 				$select = $(this).wrap('<div class="prettySelect">');
 				$prettySelect = $select.parent();
 				if ($select.attr('id') && $select.attr('id').length > 0) $prettySelect.attr('id', 'ps_' + $select.attr('id'));
+//				if ($select.attr('class') && $select.attr('class').length > 0) $prettySelect.attr('class', $select.attr('class')).removeClass('prettySelect');
 				$prettySelectCurrent = $('<div class="prettySelectCurrent">');
 				$prettySelectLongest = $('<div class="prettySelectLongest">');
 				$prettySelectDropdown = $('<div class="prettySelectDropdown">&nbsp;</div>');
@@ -162,3 +165,40 @@ toggleRadio = function (e) {
 }
 
 $('body').on('click', '.prettyCheckbox', toggleCheckbox).on('click', 'label', toggleLinkedCheckbox).on('click', '.prettyRadio', toggleRadio);
+
+$.fn.prettify = function () {
+	$(this).find('select').prettySelect();
+	$(this).find('input[type="checkbox"]').prettyCheckbox();
+	$(this).find('input[type="radio"]').prettyRadio();
+
+	return $(this);
+};
+
+(function ($) {
+	$.placeholder = function () {
+		$eles = $('input.placeholder');
+		$eles.each(setupPlaceholders).trigger('blur');
+
+		return $eles;
+	};
+
+	$.fn.placeholder = function () {
+		$eles = $(this);
+		$eles.each(setupPlaceholders).trigger('blur');
+
+		return $eles;
+	};
+
+	function setupPlaceholders() {
+		var $input = $(this);
+		if ($input.val() == '' || $input.val() == $input.data('placeholder')) $input.addClass('default');
+		$input.val(function () { return $input.data('placeholder') == ''?$input.data('placeholder'):$input.val(); }).focus(function () {
+			if ($input.val() == $input.data('placeholder') || $input.val() == '') $input.val('').removeClass('default');
+		}).blur(function () {
+			if ($input.val() == '') $input.val($input.data('placeholder')).addClass('default');
+		}).change(function () {
+			if ($input.val() != $input.data('placeholder')) $input.removeClass('default');
+			else if ($input.val() == $input.data('placeholder')) $input.addClass('default');
+		});
+	}
+}(jQuery));

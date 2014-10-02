@@ -134,6 +134,11 @@
 	margin-top: 1em;
 }
 
+#skills .lrBuffer {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 #powers {
 	margin-top: 2em;
 }
@@ -147,96 +152,10 @@
 	height: 10em;
 }
 
-#page_characterSheet_edit h2 a {
-	margin-left: 10px;
-	font-size: .6em;
-	font-weight: normal;
-	line-height: 1em;
-}
-
-#addSkillWrapper > *, #addFeatWrapper > *, #addPowerWrapper > * {
-	vertical-align: middle;
-}
-
-#skills {
-	width: 520px;
-}
-
-#addSkillWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-#addSkillWrapper .fancyButton {
-	margin-left: 5px;
-}
-
-.skill span {
-	display: inline-block;
-}
-
-.skill .skill_stat {
-	text-transform: smallcaps;
-}
-
-.skill .skill_total {
-	text-align: center;
-}
-
-#feats {
-	width: 390px;
-}
-
-#addFeatWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-#addFeatWrapper input {
-}
-
-#addFeatWrapper .fancyButton {
-	margin-left: 5px;
-}
-
-#feats .feat span, #feats .feat a {
-	display: inline-block;
-}
-
-#page_characterSheet_edit .feat_name {
-	width: 260px;
-}
-
-#page_characterSheet .feat_name {
-	width: 350px;
-}
-
-.feat_notesLink {
-	font-size: .8em;
-}
-
-#powers {
-}
-
-#addPowerWrapper {
-	margin: 1em 0;
-	position: relative;
-}
-
-#addPowerWrapper input {
-}
-
-#addPowerWrapper select {
-}
-
-#addPowerWrapper .fancyButton {
-	margin-left: 5px;
-}
-
 .powerCol {
 	float: left;
-	width: 32.6%;
-	margin-left: 1%;
+	width: 32.3%;
+	margin-left: 1.5%;
 }
 
 .powerCol.first {
@@ -247,17 +166,18 @@
 	text-align: center;
 }
 
-.power span, .power input {
-	display: inline-block;
+.power {
+	padding-top: 0;
 }
 
-.power .power_name {
-	width: 250px;
+.power > * {
+	display: inline-block;
 	vertical-align: middle;
 }
 
-.power .power_remove {
-	height: 15px;
+.power .power_name {
+	width: 255px;
+	text-align: left;
 }
 
 #items textarea {
@@ -268,11 +188,6 @@
 #notes textarea {
 	width: 100%;
 	height: 16.2em;
-}
-
-#submitDiv {
-	text-align: center;
-	margin-top: 1em;
 }
 
 /* --------------------------------------------*/
