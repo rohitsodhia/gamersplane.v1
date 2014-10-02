@@ -99,8 +99,7 @@
 			if (strlen($poll['poll']) == 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noPoll'] = 1;
 			if (strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) <= 1) $_SESSION['errors']['noOptions'] = 1;
 			if ($poll['optionsPerUser'] == 0 && strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noOptionsPerUser'] = 1;
-			
-			
+
 			if (sizeof($_SESSION['errors'])) {
 				$_SESSION['errorVals'] = $_POST;
 				$_SESSION['errorTime'] = time() + 300;
