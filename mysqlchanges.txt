@@ -25,7 +25,7 @@ INSERT INTO acpPermissions SET userID = 1, permission = 'all';
 
 create table charAutocomplete (
 itemID int not null auto_increment,
-type varchar(10) nt null,
+type varchar(10) not null,
 name varchar(50) not null,
 searchName varchar(50) not null,
 userDefined int,
