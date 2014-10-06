@@ -14,7 +14,7 @@
 		$threadInfo = $mysql->query("SELECT t.forumID, t.threadID, t.sticky, t.allowRolls, t.allowDraws, f.heritage FROM threads t, posts p, forums f WHERE t.threadID = p.threadID AND f.forumID = t.forumID AND p.postID = $postID");
 		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws, $heritage) = $threadInfo->fetch(PDO::FETCH_NUM);
 		
-		$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.threadID = {$threadID} AND r.postID = p.postID ORDER BY r.rollID");
+		$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.postID = {$postID} AND r.postID = p.postID ORDER BY r.rollID");
 		$temp = array();
 		foreach ($rolls as $rollInfo) {
 			$rollObj = RollFactory::getRoll($rollInfo['type']);
