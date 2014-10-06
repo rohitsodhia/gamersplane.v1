@@ -189,14 +189,3 @@
 	width: 100%;
 	height: 16.2em;
 }
-
-/* --------------------------------------------*/
-
-#page_characterSheet_dnd4_editFeatNotes {
-    text-align: center;
-}
-
-#page_characterSheet_dnd4_editFeatNotes textarea {
-    width: 450px;
-    height: 8em;
-}

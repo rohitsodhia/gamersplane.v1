@@ -7,9 +7,10 @@
 		protected $alignment = 'tn';
 		protected $inspiration = 0;
 		protected $profBonus = 0;
-		protected $saveBonuses = array('str' => 0, 'dex' => 0, 'con' => 0, 'int' => 0, 'wis' => 0, 'cha' => 0);
+		protected $saveProf = array('str'=> false, 'dex'=> false, 'con'=> false, 'int'=> false, 'wis'=> false, 'cha'=> false);
 		protected $ac = 0;
 		protected $initiative = 0;
+		protected $speed = 0;
 		protected $hp = array('total' => 0, 'current' => 0, 'temp' => 0);
 		protected $deathSaves = array('success' => 0, 'failure' => 0);
 		protected $languages = '';
@@ -58,143 +59,75 @@
 			return $this->profBonus;
 		}
 		
-		public function setSaveBonus($save, $value) {
-			if (array_key_exists($save, $this->saveBonuses)) $this->saveBonuses[$save] = intval($value);
+		public function setSaveProf($save, $value) {
+			if (d20Character_consts::getStatNames($save)) $this->saveProf[$save] = $value;
 			else return false;
 		}
 
-		public function getSaveBonus($save = null) {
-			if (array_key_exists($save, $this->saveBonuses)) return $this->saveBonuses[$save];
-			elseif ($save == null) return $this->saveBonuses;
+		public function getSaveProf($save = null) {
+			if (d20Character_consts::getStatNames($save)) return $this->saveProf[$save];
+			elseif ($save == null) return $this->saveProf;
 			else return false;
 		}
 
-		public function addSkill($skillID, $name, $post) {
-			global $mysql;
-
-			if (array_key_exists($post['stat'], $this->stats)) $stat = sanitizeString($post['stat']);
-			else return;
-			$skillInfo = array('skillID' => $skillID, 'name' => $name, 'stat' => $stat, 'ranks' => 0, 'misc' => 0);
-			try {
-				$addSkill = $mysql->query("INSERT INTO ".$this::SYSTEM."_skills (characterID, skillID, stat) VALUES ({$this->characterID}, $skillID, '$stat')");
-				if ($addSkill->rowCount()) $this->skillEditFormat($skillInfo, intval($post['statBonus']));
-			} catch (Exception $e) {}
+		public function setAC($value) {
+			$this->ac = intval($value);
 		}
 
-		public function updateSkill($skillID, $skillInfo) {
-			global $mysql;
-
-			$updateSkill = $mysql->prepare("UPDATE ".$this::SYSTEM."_skills SET ranks = :ranks, misc = :misc WHERE characterID = :characterID AND skillID = :skillID");
-			$updateSkill->bindValue(':ranks', intval($skillInfo['ranks']));
-			$updateSkill->bindValue(':misc', intval($skillInfo['misc']));
-			$updateSkill->bindValue(':characterID', $this->characterID);
-			$updateSkill->bindValue(':skillID', $skillID);
-			$updateSkill->execute();
+		public function getAC($key = null) {
+			return $this->ac;
 		}
 
-		public function skillEditFormat($skillInfo = NULL, $statBonus = NULL) {
-			if ($statBonus == NULL) $statBonus = $this->getStatMod($skillInfo['stat'], false);
-			else $statBonus = 0;
+		public function setInitiative($value) {
+			$this->initiative = intval($value);
+		}
+
+		public function getInitiative($key = null) {
+			return $this->ac;
+		}
+
+		public function setSpeed($value) {
+			$this->speed = intval($value);
+		}
+
+		public function getSpeed($key = null) {
+			return $this->speed;
+		}
+
+		static public function skillEditFormat($key = 1, $skillInfo = null) {
+			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficient' => false);
 ?>
 						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
-							<span class="skill_name textLabel medText"><?=mb_convert_case($skillInfo['name'], MB_CASE_TITLE)?></span>
-							<span class="skill_total textLabel lrBuffer total addStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
-							<span class="skill_stat textLabel lrBuffer alignCenter shortNum"><?=ucwords($skillInfo['stat'])?></span>
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
-							<input type="text" name="skills[<?=$skillInfo['skillID']?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-							<input type="image" name="skill<?=$skillInfo['skillID']?>_remove" src="/images/cross.png" value="<?=$skillInfo['skillID']?>" class="skill_remove lrBuffer">
+							<span class="shortNum alignCenter skill_prof"><input type="checkbox" name="skill[<?=$key?>][proficient]"></span>
+							<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
+							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
+<?
+	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+?>
+							</select></span>
 						</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			global $mysql;
-
-			$system = $this::SYSTEM;
-			$skills = $mysql->query("SELECT s.skillID, sl.name, s.stat, s.ranks, s.misc FROM {$system}_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = {$this->characterID} ORDER BY sl.name");
-			if ($skills->rowCount()) { foreach ($skills as $skillInfo) {
-				$this->skillEditFormat($skillInfo);
-			} } else { ?>
-						<p id="noSkills">This character currently has no skills.</p>
-<?
-			}
-		}
-
-		public function removeSkill($skillID) {
-			global $mysql;
-
-			$removeSkill = $mysql->query("DELETE FROM ".$this::SYSTEM."_skills WHERE characterID = {$this->characterID} AND skillID = $skillID");
-			if ($removeSkill->rowCount()) echo 1;
-			else echo 0;
+			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
+				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
+			} } else $this->skillEditFormat();
 		}
 
 		public function displaySkills() {
-			global $mysql;
-			
-			$skills = $mysql->query('SELECT s.skillID, sl.name, s.stat, s.ranks, s.misc FROM '.$this::SYSTEM.'_skills s INNER JOIN skillsList sl USING (skillID) WHERE s.characterID = '.$this->characterID.' ORDER BY sl.name');
-			if ($skills->rowCount()) { foreach ($skills as $skill) {
+			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
 					<div id="skill_<?=$skill['skillID']?>" class="skill tr clearfix">
 						<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
-						<span class="skill_total addStat_<?=$skill['stat']?> shortNum lrBuffer"><?=showSign($this->getStatMod($skill['stat'], false) + $skill['ranks'] + $skill['misc'])?></span>
-						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
-						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['ranks'])?></span>
-						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['misc'])?></span>
+						<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
+<?
+	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "						<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+?>
+						</select></span>
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
-		}
-
-		public function addFeat($featID, $name) {
-			global $mysql;
-
-			$featInfo = array('featID' => $featID, 'name' => $name);
-			$addFeat = $mysql->query("INSERT INTO ".$this::SYSTEM."_feats (characterID, featID) VALUES ({$this->characterID}, $featID)");
-			if ($addFeat->rowCount()) $this->featEditFormat($featInfo);
-		}
-
-		public function featEditFormat($featInfo) {
-?>
-						<div id="feat_<?=$featInfo['featID']?>" class="feat clearfix">
-							<span class="feat_name textLabel"><?=mb_convert_case($featInfo['name'], MB_CASE_TITLE)?></span>
-							<a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/editFeatNotes/<?=$featInfo['featID']?>" id="featNotesLink_<?=$featInfo['featID']?>" class="feat_notesLink">Notes</a>
-							<input type="image" name="featRemove_<?=$featInfo['featID']?>" src="/images/cross.png" value="<?=$featInfo['featID']?>" class="feat_remove lrBuffer">
-						</div>
-<?
-		}
-
-		public function showFeatsEdit() {
-			global $mysql;
-
-			$system = $this::SYSTEM;
-			$feats = $mysql->query("SELECT fl.featID, fl.name FROM {$system}_feats f INNER JOIN featsList fl USING (featID) WHERE f.characterID = {$this->characterID} ORDER BY fl.name");
-			if ($feats->rowCount()) { foreach ($feats as $featInfo) {
-				$this->featEditFormat($featInfo);
-			} } else { ?>
-					<p id="noFeats">This character currently has no feats/abilities.</p>
-<?
-			}
-		}
-
-		public function removeFeat($featID) {
-			global $mysql;
-
-			$removeFeat = $mysql->query("DELETE FROM ".$this::SYSTEM."_feats WHERE characterID = {$this->characterID} AND featID = $featID");
-			if ($removeFeat->rowCount()) echo 1;
-			else echo 0;
-		}
-
-		public function displayFeats() {
-			global $mysql;
-
-			$feats = $mysql->query('SELECT f.featID, fl.name, f.notes FROM '.$this::SYSTEM.'_feats f INNER JOIN featsList fl USING (featID) WHERE f.characterID = '.$this->characterID.' ORDER BY fl.name');
-			if ($feats->rowCount()) { foreach ($feats as $feat) { ?>
-					<div id="feat_<?=$feat['featID']?>" class="feat tr clearfix">
-						<span class="feat_name"><?=mb_convert_case($feat['name'], MB_CASE_TITLE)?></span>
-						<a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/featNotes/<?=$feat['featID']?>" class="feat_notesLink">Notes</a>
-					</div>
-<?
-			} } else echo "\t\t\t\t\t<p id=\"noFeats\">This character currently has no feats/abilities.</p>\n";
 		}
 
 		public function addWeapon($weapon) {
@@ -222,18 +155,6 @@
 								<input type="text" name="weapons[<?=$weaponNum?>][ab]" value="<?=$weaponInfo['ab']?>" class="weapons_ab shortText lrBuffer">
 								<input type="text" name="weapons[<?=$weaponNum?>][damage]" value="<?=$weaponInfo['damage']?>" class="weapon_damage shortText lrBuffer">
 							</div>
-							<div class="tr labelTR weapon_secondRow">
-								<label class="shortText alignCenter lrBuffer">Critical</label>
-								<label class="shortText alignCenter lrBuffer">Range</label>
-								<label class="shortText alignCenter lrBuffer">Type</label>
-								<label class="shortNum alignCenter lrBuffer">Size</label>
-							</div>
-							<div class="tr weapon_secondRow">
-								<input type="text" name="weapons[<?=$weaponNum?>][crit]" value="<?=$weaponInfo['crit']?>" class="weapon_crit shortText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][range]" value="<?=$weaponInfo['range']?>" class="weapon_range shortText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][type]" value="<?=$weaponInfo['type']?>" class="weapon_type shortText lrBuffer">
-								<input type="text" name="weapons[<?=$weaponNum?>][size]" value="<?=$weaponInfo['size']?>" class="weapon_size shortNum lrBuffer">
-							</div>
 							<div class="tr labelTR">
 								<label class="lrBuffer shiftRight">Notes</label>
 							</div>
@@ -259,18 +180,6 @@
 							<span class="weapons_ab shortText lrBuffer alignCenter"><?=$weapon['ab']?></span>
 							<span class="weapon_damage shortText lrBuffer alignCenter"><?=$weapon['damage']?></span>
 						</div>
-						<div class="tr labelTR weapon_secondRow">
-							<label class="shortText alignCenter lrBuffer">Critical</label>
-							<label class="shortText alignCenter lrBuffer">Range</label>
-							<label class="shortText alignCenter lrBuffer">Type</label>
-							<label class="shortNum alignCenter lrBuffer">Size</label>
-						</div>
-						<div class="tr weapon_secondRow">
-							<span class="weapon_crit shortText lrBuffer alignCenter"><?=$weapon['critical']?></span>
-							<span class="weapon_range shortText lrBuffer alignCenter"><?=$weapon['range']?></span>
-							<span class="weapon_type shortText lrBuffer alignCenter"><?=$weapon['type']?></span>
-							<span class="weapon_size shortText lrBuffer alignCenter"><?=$weapon['size']?></span>
-						</div>
 						<div class="tr labelTR">
 							<label class="lrBuffer">Notes</label>
 						</div>
@@ -286,86 +195,6 @@
 			if (strlen($armor['name']) && strlen($armor['ac'])) $this->armor[] = $armor;
 		}
 
-		public function showArmorEdit($min) {
-			$armorNum = 0;
-			if (!is_array($this->armor)) $this->armor = (array) $this->armor;
-			foreach ($this->armor as $armorInfo) $this->armorEditFormat($armorNum++, $armorInfo);
-			if ($armorNum < $min) while ($armorNum < $min) $this->armorEditFormat($armorNum++);
-		}
-
-		public function armorEditFormat($armorNum, $armorInfo = array()) {
-			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) $armorInfo = array();
-?>
-						<div class="armor<?=$armorNum == 1?' first':''?>">
-							<div class="tr labelTR armor_firstRow">
-								<label class="medText lrBuffer borderBox shiftRight">Name</label>
-								<label class="shortText alignCenter lrBuffer">AC Bonus</label>
-								<label class="shortText alignCenter lrBuffer">Max Dex</label>
-							</div>
-							<div class="tr armor_firstRow">
-								<input type="text" name="armor[<?=$armorNum?>][name]" value="<?=$armorInfo['name']?>" class="armor_name medText lrBuffer">
-								<input type="text" name="armor[<?=$armorNum?>][ac]" value="<?=$armorInfo['ac']?>" class="armor_ac shortText lrBuffer">
-								<input type="text" name="armor[<?=$armorNum?>][maxDex]" value="<?=$armorInfo['maxDex']?>" class="armor_maxDex shortText lrBuffer">
-							</div>
-							<div class="tr labelTR armor_secondRow">
-								<label class="shortText alignCenter lrBuffer">Type</label>
-								<label class="shortText alignCenter lrBuffer">Check Penalty</label>
-								<label class="shortText alignCenter lrBuffer">Spell Failure</label>
-								<label class="shortNum alignCenter lrBuffer">Speed</label>
-							</div>
-							<div class="tr armor_secondRow">
-								<input type="text" name="armor[<?=$armorNum?>][type]" value="<?=$armorInfo['type']?>" class="armor_type shortText lrBuffer">
-								<input type="text" name="armor[<?=$armorNum?>][check]" value="<?=$armorInfo['check']?>" class="armor_check shortText lrBuffer">
-								<input type="text" name="armor[<?=$armorNum?>][spellFailure]" value="<?=$armorInfo['spellFailure']?>" class="armor_spellFailure shortText lrBuffer">
-								<input type="text" name="armor[<?=$armorNum?>][speed]" value="<?=$armorInfo['speed']?>" class="armor_speed shortNum lrBuffer">
-							</div>
-							<div class="tr labelTR">
-								<label class="lrBuffer shiftRight">Notes</label>
-							</div>
-							<div class="tr">
-								<input type="text" name="armor[<?=$armorNum?>][notes]" value="<?=$armorInfo['notes']?>" class="armor_notes lrBuffer">
-							</div>
-							<div class="tr alignRight lrBuffer"><a href="" class="remove">[ Remove ]</a></div>
-						</div>
-<?
-		}
-
-		public function displayArmor() {
-			foreach ($this->armor as $armor) {
-?>
-					<div class="armor">
-						<div class="tr labelTR armor_firstRow">
-							<label class="medText lrBuffer">Name</label>
-							<label class="shortText alignCenter lrBuffer">AC Bonus</label>
-							<label class="shortText alignCenter lrBuffer">Max Dex</label>
-						</div>
-						<div class="tr armor_firstRow">
-							<span class="armor_name medText lrBuffer"><?=$armor['name']?></span>
-							<span class="armors_ac shortText lrBuffer alignCenter"><?=$armor['ac']?></span>
-							<span class="armor_maxDex shortText lrBuffer alignCenter"><?=$armor['maxDex']?></span>
-						</div>
-						<div class="tr labelTR armor_secondRow">
-							<label class="shortText alignCenter lrBuffer">Type</label>
-							<label class="shortText alignCenter lrBuffer">Check Penalty</label>
-							<label class="shortText alignCenter lrBuffer">Spell Failure</label>
-							<label class="shortNum alignCenter lrBuffer">Speed</label>
-						</div>
-						<div class="tr armor_secondRow">
-							<span class="armor_type shortText lrBuffer alignCenter"><?=$armor['type']?></span>
-							<span class="armor_check shortText lrBuffer alignCenter"><?=$armor['check']?></span>
-							<span class="armor_spellFailure shortText lrBuffer alignCenter"><?=$armor['spellFailure']?></span>
-							<span class="armor_speed shortText lrBuffer alignCenter"><?=$armor['speed']?></span>
-						</div>
-						<div class="tr labelTR">
-							<label class="lrBuffer">Notes</label>
-						</div>
-						<div class="tr">
-							<span class="armor_notes lrBuffer"><?=$armor['notes']?></span>
-						</div>
-					</div>
-<?
-			}
-		}
 
 		public function setItems($items) {
 			$this->items = $items;
