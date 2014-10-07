@@ -18,7 +18,7 @@
 			<p>Cards Left: <span class="cardsLeft"><?=$cardCount[1]?></span></p>
 			<div>Draw <input type="text" name="numCards" maxlength="2" value="<?=!isset($cardsDrawn)?'':(sizeof($cardsDrawn) > $cardCount[0]?$cardCount[0]:sizeof($cardsDrawn))?>" autocomplete="off" class="numCards"> Cards</div>
 			<div class="drawCards"><button type="submit" name="drawCards" class="fancyButton">Draw Cards</button></div>
-			<a href="?newDeck=1" class="newDeckLink fancyButton">New Deck</a>
+			<div class="newDeckLink"><a href="?newDeck=1" class="fancyButton">New Deck</a></div>
 		</form>
 		
 		<div id="dispArea">
