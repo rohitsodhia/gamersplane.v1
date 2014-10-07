@@ -14,10 +14,12 @@
 		protected $hp = array('total' => 0, 'current' => 0, 'temp' => 0);
 		protected $deathSaves = array('success' => 0, 'failure' => 0);
 		protected $languages = '';
-		protected $spellDC = 0;
-		protected $spellAB = 0;
+		protected $spells = array();
 
-		protected $linkedTables = array('feats', 'skills');
+		public function __construct($characterID, $userID = null) {
+			unset($this->saves, $this->attackBonus);
+			parent::__construct($characterID, $userID);
+		}
 
 		public function setRace($value) {
 			$this->race = $value;
@@ -83,7 +85,7 @@
 		}
 
 		public function getInitiative($key = null) {
-			return $this->ac;
+			return $this->initiative;
 		}
 
 		public function setSpeed($value) {
@@ -97,7 +99,7 @@
 		static public function skillEditFormat($key = 1, $skillInfo = null) {
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficient' => false);
 ?>
-						<div id="skill_<?=$skillInfo['skillID']?>" class="skill clearfix">
+						<div class="skill clearfix">
 							<span class="shortNum alignCenter skill_prof"><input type="checkbox" name="skill[<?=$key?>][proficient]"></span>
 							<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
@@ -191,10 +193,58 @@
 			}
 		}
 
-		public function addArmor($armor) {
-			if (strlen($armor['name']) && strlen($armor['ac'])) $this->armor[] = $armor;
+		public function setSpellStats($stat, $value = null) {
+			if (is_array($stat)) $this->spellStats = $stat;
+			elseif (in_array($stat, $this->spellStats)) $this->spellStats[$stat] = $value;
 		}
 
+		public function getSpellStats($stat = null) {
+			if ($stat == null) return $this->spellStats;
+			elseif (in_array($stat, $this->spellStats)) return $this->spellStats[$stat];
+		}
+
+		public static function spellEditFormat($key = 1, $spellInfo = null) {
+			if ($spellInfo == null) $spellInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="spell clearfix tr">
+								<input type="text" name="spells[<?=$key?>][name]" value="<?=$spellInfo['name']?>" class="spell_name placeholder" data-placeholder="Spell Name">
+								<span class="spell_stat"><select name="spells[<?=$key?>][stat]">
+<?
+	foreach (array('int', 'wis', 'cha') as $stat) echo "								<option value=\"$stat\"".($skillInfo['stat'] == $stat?' selected="selected"':'').">".ucfirst($stat)."</option>\n";
+?>
+								</select></span>
+								<a href="" class="spell_notesLink">Notes</a>
+								<a href="" class="spell_remove sprite cross"></a>
+								<textarea name="spells[<?=$key?>][notes]"><?=$spellInfo['notes']?></textarea>
+							</div>
+<?
+		}
+
+		public function showSpellsEdit() {
+			if (sizeof($this->spells)) { foreach ($this->spells as $key => $spell) {
+				$this->spellEditFormat($key + 1, $spell);
+			} } else $this->spellEditFormat();
+		}
+
+		public function displaySpells() {
+			if ($this->spells) { foreach ($this->spells as $spell) { ?>
+					<div class="spell tr clearfix">
+						<span class="spell_name"><?=$spell['name']?></span>
+<?	if (strlen($spell['notes'])) { ?>
+						<a href="" class="spell_notesLink">Notes</a>
+						<div class="spell_notes"><?=$spell['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noSpells\">This character currently has no spells/abilities.</p>\n";
+		}
+		
+		public function addSpell($spell) {
+			if (strlen($spell['name'])) {
+				newItemized('spell', $spell['name'], $this::SYSTEM);
+				$this->spells[] = $spell;
+			}
+		}
 
 		public function setItems($items) {
 			$this->items = $items;
@@ -204,14 +254,6 @@
 			return $this->items;
 		}
 
-		public function setSpells($spells) {
-			$this->spells = $spells;
-		}
-
-		public function getSpells() {
-			return $this->spells;
-		}
-
 		public function save() {
 			global $mysql;
 			$data = $_POST;
@@ -219,38 +261,42 @@
 			if (!isset($data['create'])) {
 				$this->setName($data['name']);
 				$this->setRace($data['race']);
-				$this->setSize($data['size']);
+				$this->setBackground($data['background']);
 				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
 				$this->setClasses($data['classes']);
 				$this->setAlignment($data['alignment']);
 
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-				foreach ($data['saves'] as $save => $values) {
-					foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
+				foreach ($data['stats'] as $stat => $value) {
+					$this->setStat($stat, $value);
+					$this->setSaveProf($stat, isset($data['statProf'][$stat])?true:false);
 				}
 				$this->setHP('total', $data['hp']['total']);
-				$this->setDamageReduction($data['damageReduction']);
-				foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
-				$this->setInitiative('stat', $data['initiative']['stat']);
-				$this->setInitiative('misc', $data['initiative']['misc']);
-				$this->setAttackBonus('base', $data['attackBonus']['base']);
-				$this->setAttackBonus('stat', $data['attackBonus']['stat']['melee'], 'melee');
-				$this->setAttackBonus('stat', $data['attackBonus']['stat']['ranged'], 'ranged');
-				$this->setAttackBonus('misc', $data['attackBonus']['misc']['melee'], 'melee');
-				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
+				$this->setHP('temp', $data['hp']['temp']);
+				$this->setAC($$data['ac']);
+				$this->setInitiative($data['initiative']);
+				$this->setSpeed($data['speed']);
 
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillID => $skillInfo) {
-					$this->updateSkill($skillID, $skillInfo);
+				$this->clearVar('skills');
+				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
+					$this->addSkill($skillInfo);
+				} }
+
+				$this->clearVar('feats');
+				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
+					$this->addFeat($featInfo);
 				} }
 
 				$this->clearVar('weapons');
 				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
 
-				$this->clearVar('armor');
-				foreach ($data['armor'] as $armor) $this->addArmor($armor);
+				$this->clearVar('spells');
+				if (sizeof($data['spells'])) { foreach ($data['spells'] as $spellInfo) {
+					$this->addSpell($spellInfo);
+				} }
+
+				var_dump($this); exit;
 
 				$this->setItems($data['items']);
-				$this->setSpells($data['spells']);
 				$this->setNotes($data['notes']);
 			}
 

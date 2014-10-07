@@ -1,1 +1,2 @@
 INSERT INTO systems SET shortName = 'dnd5', fullName = 'Dungeons &amp; Dragons 5th', enabled = 1;
+INSERT INTO dispatch SET url = 'characters/ajax/addItemized/',file='characters/ajax/addItemized.php';

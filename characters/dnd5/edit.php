@@ -56,7 +56,7 @@
 							<label id="label_<?=$short?>" class="textLabel shortText leftLabel"><?=$stat?></label>
 							<input type="text" id="<?=$short?>" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="2" class="stat">
 							<span id="<?=$short?>Modifier"><?=$this->getStatMod($short)?></span>
-							<span class="saveProficient"><input type="checkbox" name="statProf[<?=$short?>"></span>
+							<span class="saveProficient"><input type="checkbox" name="statProf[<?=$short?>]"></span>
 						</div>
 <?	} ?>
 						
@@ -90,16 +90,14 @@
 								<label class="medText">Skill</label>
 								<label class="skill_stat alignCenter">Stat</label>
 							</div>
+							<div id="skillList">
 <?	$this->showSkillsEdit(); ?>
+							</div>
 						</div>
 					</div>
 					<div id="feats">
-						<h2 class="headerbar hbDark">Feats/Abilities</h2>
-						<div class="hbdMargined">
-							<div id="addFeatWrapper">
-								<input id="featName" type="text" name="newFeat_name" class="medText placeholder" autocomplete="off" data-placeholder="Feat Name">
-								<button id="addFeat" type="submit" name="newFeat_add" class="fancyButton">Add</button>
-							</div>
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>
 					</div>
@@ -110,6 +108,12 @@
 						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
 						<div>
 <?	$this->showWeaponsEdit(2); ?>
+						</div>
+					</div>
+					<div id="spells" class="floatRight">
+						<h2 class="headerbar hbDark">Spells <a id="addSpell" href="">[ Add Spell ]</a></h2>
+						<div id="spellList" class="hbdMargined">
+<?	$this->showSpellsEdit(); ?>
 						</div>
 					</div>
 				</div>
