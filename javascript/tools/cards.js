@@ -1,11 +1,11 @@
 $(function() {
-	var $newDeckLink = $('a.newDeckLink'),
+	var $newDeckLink = $('.newDeckLink a'),
 		$newDeck = $('div.newDeck'),
 		$deckName = $('p.deckName'),
 		$cardsLeft = $('span.cardsLeft'),
 		$cardSpaceContent = $('div.cardSpace div'),
 		$cardControls = $('.cardControls'),
-		$drawCards = $('button.drawCards'),
+		$drawCards = $('.drawCards button'),
 		$numCards = $('input.numCards'),
 		numCards = 0,
 		cardPosition = 1;
@@ -40,7 +40,7 @@ $(function() {
 			$.post('/tools/process/cards', { ajax: true, numCards: numCards, size: size }, function (data) {
 				if (data.length > 0) {
 					$cardSpaceContent.css('top', 0).html(data);
-					$arrows.addClass('hideArrow');
+					if ($arrows) $arrows.addClass('hideArrow');
 					cardPosition = 1;
 					$cardsLeft.html(parseInt($cardsLeft.text()) - numCards >= 0 ? parseInt($cardsLeft.text()) - numCards : 0)
 					if ($('#fixedMenu').length && numCards > 5) {
