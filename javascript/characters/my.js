@@ -1,5 +1,7 @@
 $(function () {
-	$('#newCharLink, #newMobLink, .editBasic, .delete').colorbox();
+	$('#cboxWrapper').css('top', '14px');
+
+	$('.editBasic, .delete').colorbox();
 
 	$('.libraryToggle').click(function (e) {
 		e.preventDefault();

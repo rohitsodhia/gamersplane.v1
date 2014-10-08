@@ -18,8 +18,8 @@
 <? } ?>
 		
 		<form method="post" action="/characters/process/editBasic/">
-			<p><label for="label">Label:</label> <input id="label" type="text" name="label" maxlength="50" value="<?=$basicInfo['label']?>"></p>
-			<p><label>Type:</label> <select id="type" name="type">
+			<p><label for="label" class="leftLabel">Label:</label> <input id="label" type="text" name="label" maxlength="50" value="<?=$basicInfo['label']?>" class="medText"></p>
+			<p><label class="leftLabel">Type:</label> <select id="type" name="type">
 <?
 	foreach ($charTypes as $type) echo "\t\t\t\t<option value=\"{$type}\"".($basicInfo['type'] == $type?' selected="selected"':'').">{$type}</option>\n";
 ?>
