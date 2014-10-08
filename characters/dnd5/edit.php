@@ -45,7 +45,16 @@
 				
 				<div class="clearfix">
 					<div id="stats">
-						<div id="abilityScoreLabels" class="tr labelTR">
+						<div class="tr">
+							<label class="longerStatLabel leftLabel">Inspiration</label>
+							<input type="text" name="inspiration" value="<?=$this->getInspiration()?>">
+						</div>
+						<div class="tr">
+							<label class="longerStatLabel leftLabel">Proficiency Bonus</label>
+							<input type="text" name="profBonus" value="<?=$this->getProfBonus()?>">
+						</div>
+
+						<div id="abilityScoreLabels" class="labelTR">
 							<label class="saveProficient">Save Prof?</label>
 						</div>
 <?
@@ -56,7 +65,7 @@
 							<label id="label_<?=$short?>" class="textLabel shortText leftLabel"><?=$stat?></label>
 							<input type="text" id="<?=$short?>" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="2" class="stat">
 							<span id="<?=$short?>Modifier"><?=$this->getStatMod($short)?></span>
-							<span class="saveProficient"><input type="checkbox" name="statProf[<?=$short?>]"></span>
+							<span class="saveProficient"><input type="checkbox" name="statProf[<?=$short?>]"<?=$this->getSaveProf($short)?' checked="checked"':''?>></span>
 						</div>
 <?	} ?>
 						
@@ -118,11 +127,9 @@
 					</div>
 				</div>
 				
-				<div class="clearfix">
-					<div id="items">
-						<h2 class="headerbar hbDark">Items</h2>
-						<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
-					</div>
+				<div id="items" class="clearfix">
+					<h2 class="headerbar hbDark">Items</h2>
+					<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
 				</div>
 
 				<div id="notes">

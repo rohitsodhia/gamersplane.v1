@@ -100,7 +100,7 @@
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficient' => false);
 ?>
 						<div class="skill clearfix">
-							<span class="shortNum alignCenter skill_prof"><input type="checkbox" name="skill[<?=$key?>][proficient]"></span>
+							<span class="shortNum alignCenter skill_prof"><input type="checkbox" name="skills[<?=$key?>][proficient]"<?=$skillInfo['proficient']?' checked="checked"':''?>></span>
 							<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 <?
@@ -121,12 +121,9 @@
 			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
 					<div id="skill_<?=$skill['skillID']?>" class="skill tr clearfix">
+						<span class="shortNum alignCenter skill_prof"><?=$skill['proficient']?'<div class="sprite check"></div>':''?></span>
 						<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
-						<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
-<?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "						<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
-?>
-						</select></span>
+						<span class="skill_stat"><?=showSign($this->getStatMod($skill['stat'], false) + ($skill['proficient']?$this->getProfBonus():0))?> (<?=ucwords($skill['stat'])?>)</span>
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
@@ -169,7 +166,7 @@
 		}
 
 		public function displayWeapons() {
-			foreach ($this->weapons as $weapon) {
+			if (is_array($this->weapons)) { foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
 						<div class="tr labelTR">
@@ -190,7 +187,7 @@
 						</div>
 					</div>
 <?
-			}
+			} }
 		}
 
 		public function setSpellStats($stat, $value = null) {
@@ -230,6 +227,8 @@
 			if ($this->spells) { foreach ($this->spells as $spell) { ?>
 					<div class="spell tr clearfix">
 						<span class="spell_name"><?=$spell['name']?></span>
+						<span class="spell_ab shortNum"><?=showSign($this->getStatMod($spell['stat'], false) + $this->getProfBonus())?></span>
+						<span class="spell_save shortNum"><?=showSign($this->getStatMod($spell['stat'], false) + $this->getProfBonus() + 8)?></span>
 <?	if (strlen($spell['notes'])) { ?>
 						<a href="" class="spell_notesLink">Notes</a>
 						<div class="spell_notes"><?=$spell['notes']?></div>
@@ -266,13 +265,15 @@
 				$this->setClasses($data['classes']);
 				$this->setAlignment($data['alignment']);
 
+				$this->setInspiration($data['inspiration']);
+				$this->setProfBonus($data['profBonus']);
 				foreach ($data['stats'] as $stat => $value) {
 					$this->setStat($stat, $value);
 					$this->setSaveProf($stat, isset($data['statProf'][$stat])?true:false);
 				}
 				$this->setHP('total', $data['hp']['total']);
 				$this->setHP('temp', $data['hp']['temp']);
-				$this->setAC($$data['ac']);
+				$this->setAC($data['ac']);
 				$this->setInitiative($data['initiative']);
 				$this->setSpeed($data['speed']);
 
@@ -293,8 +294,6 @@
 				if (sizeof($data['spells'])) { foreach ($data['spells'] as $spellInfo) {
 					$this->addSpell($spellInfo);
 				} }
-
-				var_dump($this); exit;
 
 				$this->setItems($data['items']);
 				$this->setNotes($data['notes']);

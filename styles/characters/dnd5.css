@@ -34,14 +34,29 @@
 	float: left;
 }
 
+#page_characterSheet #stats > .tr > * {
+	display: inline-block;
+}
+
+.longerStatLabel {
+	width: 130px;
+}
+
 #abilityScoreLabels label {
 	width: 40px;
 	margin-left: 203px;
 	text-align: center;
 }
 
-#page_characterSheet .abilityScore .stat {
+#page_characterSheet #abilityScoreLabels label {
+	margin-left: 195px;
+}
+
+#page_characterSheet .abilityScore .stat, #page_characterSheet .abilityScore .stat_mod {
 	border-right: 1px solid #555;
+}
+
+#page_characterSheet .abilityScore .stat {
 	border-left: 1px solid #555;
 }
 
@@ -68,6 +83,10 @@
 	width: 355px;
 }
 
+#page_characterSheet #skills {
+	width: 360px;
+}
+
 #feats {
 	width: 330px;
 }
@@ -78,6 +97,10 @@
 
 #page_characterSheet_edit .feat_name {
 	width: 210px;
+}
+
+#page_characterSheet .skill_stat {
+	width: 60px;
 }
 
 #weapons, #spells {
@@ -162,10 +185,10 @@ input.weapon_notes, .weapon_notes {
 }
 
 #page_characterSheet .spell_name {
-	width: 295px;
+	width: 280px;
 }
 
-.spell_stat {
+.spell span {
 	display: inline-block;
 }
 
@@ -197,8 +220,6 @@ input.weapon_notes, .weapon_notes {
 }
 
 #items {
-	float: left;
-	width: 465px;
 	margin-top: 1em;
 }
 
