@@ -95,12 +95,12 @@
 			<p>Hm... seems like you're using IE. Can I suggest a better browser, such as <a href="http://www.mozilla.com/en-US/firefox/" target="_blank">Firefox</a>, <a href="http://www.googlechrome.com/" target="_blank">Chrome</a> or <a href="http://www.opera.com/" target="_blank">Opera</a>? There are other choices too.</p>
 			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
 		</div>
+		<div style="background: #FCC; border: 2px solid #F88; padding: 10px; margin-bottom: 10px;">
+			<p><span style="font-weight: bold; font-size: 1.5em;">Warning!</span></p>
+			<p>As you might notice, something's not quite right with Gamers Plane right now. This morning, I noticed my server said an update was available. Never having updated Ubuntu before, I didn't think it would be an issue. Boy was I wrong.</p>
+			<p>After 2-3 hours of work, I managed to get it up, or so I thought. Unfortunately, the server seems reluctant to serve some files, and I have no idea why. I'm trying to get help online, for find someone experienced with Apache to help me out. Unfortunately, no luck so far.</p>
+			<p>As parts of the site work, I've left it up, but a bunch is broken. All the Javascript that makes the site pretty is broken. If you have experience with Apache or know someone who does, please have them get in touch with me on Twitter @GamersPlane or by email at <a href="mailto:contact@gamersplane.com">contact@gamersplane.com</a>. Hopefully I get it fixed soon...</p>
+		</div>
 <? } else { ?>
 <div id="page_<?=PAGE_ID?>" class="clearfix<?=sizeof($bodyClasses)?' '.implode(' ', $bodyClasses):''?>">
 <? } ?>
-<div style="background: #FCC; border: 2px solid #F88; padding: 10px; margin-bottom: 10px;">
-	<p><span style="font-weight: bold; font-size: 1.5em;">Warning!</span></p>
-	<p>As you might notice, something's not quite right with Gamers Plane right now. This morning, I noticed my server said an update was available. Never having updated Ubuntu before, I didn't think it would be an issue. Boy was I wrong.</p>
-	<p>After 2-3 hours of work, I managed to get it up, or so I thought. Unfortunately, the server seems reluctant to serve some files, and I have no idea why. I'm trying to get help online, for find someone experienced with Apache to help me out. Unfortunately, no luck so far.</p>
-	<p>As parts of the site work, I've left it up, but a bunch is broken. All the Javascript that makes the site pretty is broken. If you have experience with Apache or know someone who does, please have them get in touch with me on Twitter @GamersPlane or by email at <a href="mailto:contact@gamersplane.com">contact@gamersplane.com</a>. Hopefully I get it fixed soon...</p>
-</div>
