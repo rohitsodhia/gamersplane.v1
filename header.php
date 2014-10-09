@@ -97,9 +97,7 @@
 		</div>
 		<div style="background: #FCC; border: 2px solid #F88; padding: 10px; margin-bottom: 10px;">
 			<p style="margin-left: 0;"><span style="font-weight: bold; font-size: 1.5em;">Warning!</span></p>
-			<p style="margin-left: 0;">As you might notice, something's not quite right with Gamers Plane right now. This morning, I noticed my server said an update was available. Never having updated Ubuntu before, I didn't think it would be an issue. Boy was I wrong.</p>
-			<p style="margin-left: 0;">After 2-3 hours of work, I managed to get it up, or so I thought. Unfortunately, the server seems reluctant to serve some files, and I have no idea why. I'm trying to get help online, for find someone experienced with Apache to help me out. Unfortunately, no luck so far.</p>
-			<p style="margin-left: 0;">As parts of the site work, I've left it up, but a bunch is broken. All the Javascript that makes the site pretty is broken. If you have experience with Apache or know someone who does, please have them get in touch with me on Twitter @GamersPlane or by email at <a href="mailto:contact@gamersplane.com">contact@gamersplane.com</a>. Hopefully I get it fixed soon...</p>
+			<p style="margin-left: 0;">If you've been on the site the last day, you noticed things were broken. I think I've got it all working again, but please, if you find something not working, post a thread in the bugs section of the forums or contact me. If you have experience with Apache or know someone who does, please have them get in touch with me on Twitter @GamersPlane or by email at <a href="mailto:contact@gamersplane.com">contact@gamersplane.com</a>. I'd love to get help to make sure I actually fixed it.</p>
 		</div>
 <? } else { ?>
 <div id="page_<?=PAGE_ID?>" class="clearfix<?=sizeof($bodyClasses)?' '.implode(' ', $bodyClasses):''?>">
