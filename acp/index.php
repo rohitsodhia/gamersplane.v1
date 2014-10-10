@@ -12,10 +12,9 @@
 
 		<div class="mainColumn right">
 			<h1 class="headerbar">Administrative Control Panel</h1>
-			<div class="hbMargined">
-				<div class="acpOption">
-					<div class="title"><a href="/acp/autocomplete/">Manage Autocomplete</a></div>
-				</div>
+			<ul class="hbMargined">
+				<li><a href="/acp/autocomplete/">Manage Autocomplete</a></li>
+				<li><a href="/acp/faqs/">Manage FAQs</a></li>
 			</div>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

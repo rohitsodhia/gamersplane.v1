@@ -79,13 +79,14 @@
 			</li>
 <? } ?>
 			<li><a href="/forums/">Forums</a></li>
-			<li><a href="/contact/" class="last">Contact Us</a></li>
-		</ul>
 <? if ($loggedIn) { ?>
-		<ul id="mainMenu_right">
-			<li><a href="/gamersList/" class="first">The Gamers</a></li>
-		</ul>
+			<li><a href="/gamersList/">The Gamers</a></li>
 <? } ?>
+		</ul>
+		<ul id="mainMenu_right">
+			<li><a href="/faqs/" class="first">FAQs</a></li>
+			<li><a href="/contact/">Contact Us</a></li>
+		</ul>
 	</div>
 </div></header>
 
