@@ -1,1 +1,0 @@
-INSERT INTO dispatch SET url = 'games/process/toggleForumVisibility/', file = 'games/process/toggleForumVisibility.php';
