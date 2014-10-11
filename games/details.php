@@ -103,7 +103,7 @@
 ?>
 			<div class="tr clearfix">
 				<label>Game Forums are:</label>
-<? if ($isGM) { ?>
+<? if ($gameInfo['primaryGM']) { ?>
 				<div><span><?=$forumStatus == 1?'Public':'Private'?></span> <a id="toggleForumVisibility" href="">[ Make game <?=$forumStatus != 1?'Public':'Private'?> ]</a></div>
 <? } else { ?>
 				<div><?=$forumStatus == 1?'Public':'Private'?></div>
