@@ -55,7 +55,7 @@
 		<div id="details">
 			<div class="tr clearfix">
 				<label>Game Status</label>
-<? if ($isGM) { ?>
+<? if ($gameInfo['primaryGM']) { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?='/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
 <? } else { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?></div>
