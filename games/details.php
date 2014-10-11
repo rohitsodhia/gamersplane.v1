@@ -51,6 +51,7 @@
 		</ul></div>
 <? } ?>
 		
+		<input id="gameID" type="hidden" value="<?=$gameInfo['gameID']?>">
 		<div id="details">
 			<div class="tr clearfix">
 				<label>Game Status</label>
@@ -95,6 +96,18 @@
 			<div class="tr clearfix">
 				<label>Character Generation Info</label>
 				<div><?=$gameInfo['charGenInfo']?printReady($gameInfo['charGenInfo']):'None Provided'?></div>
+			</div>
+<?
+	$forumStatus = $mysql->query('SELECT `read` FROM forums_permissions_general WHERE forumID = '.$gameInfo['forumID']);
+	$forumStatus = $forumStatus->fetchColumn();
+?>
+			<div class="tr clearfix">
+				<label>Game Forums are:</label>
+<? if ($isGM) { ?>
+				<div><span><?=$forumStatus == 1?'Public':'Private'?></span> <a id="toggleForumVisibility" href="">[ Make game <?=$forumStatus != 1?'Public':'Private'?> ]</a></div>
+<? } else { ?>
+				<div><?=$forumStatus == 1?'Public':'Private'?></div>
+<? } ?>
 			</div>
 		</div>
 
