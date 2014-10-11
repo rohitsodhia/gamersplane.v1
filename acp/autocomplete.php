@@ -27,7 +27,7 @@
 	foreach ($newItems as $newItem) {
 ?>
 					<div id="newItem_<?=$newItem['uItemID']?>" class="tr newItem">
-						<div class="type"><?=ucwords($newItem['itemType'])?></div>
+						<div class="type"><?=$newItem['itemType']?></div>
 						<input type="text" value="<?=$newItem['name']?>" class="name">
 						<div class="addedBy"><a href="/ucp/<?=$newItem['addedBy']?>/" class="username"><?=$newItem['username']?></a></div>
 						<div class="actions">
