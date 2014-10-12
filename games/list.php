@@ -45,7 +45,7 @@
 				<li class="clearfix">
 					<a href="/games/<?=$gameInfo['gameID']?>" class="gameTitle"><?=$gameInfo['title']?></a>
 					<div class="systemType"><?=$gameInfo['system']?></div>
-					<div class="gmLink"><a href="/ucp/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
 				</li>
 <?
 	} } else echo "\t\t\t\t<div id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new\">make one</a>?</div>\n";
