@@ -91,6 +91,7 @@
 			
 			$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES('.$userID.', '.$forumID.')');
 			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 1, 1, 1, 1, 1, 1, 1)');
+			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
 			
 			$mysql->query("INSERT INTO chat_sessions (gameID, locked) VALUES ($gameID, 0)");
 			

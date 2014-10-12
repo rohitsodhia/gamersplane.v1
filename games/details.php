@@ -4,7 +4,7 @@
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	
-	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.primaryGM IS NOT NULL isGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
+	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 	$gameInfo['created'] = switchTimezone($_SESSION['timezone'], $gameInfo['created']);
@@ -55,7 +55,7 @@
 		<div id="details">
 			<div class="tr clearfix">
 				<label>Game Status</label>
-<? if ($isGM) { ?>
+<? if ($gameInfo['primaryGM']) { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?='/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
 <? } else { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?></div>
@@ -103,7 +103,7 @@
 ?>
 			<div class="tr clearfix">
 				<label>Game Forums are:</label>
-<? if ($isGM) { ?>
+<? if ($gameInfo['primaryGM']) { ?>
 				<div><span><?=$forumStatus == 1?'Public':'Private'?></span> <a id="toggleForumVisibility" href="">[ Make game <?=$forumStatus != 1?'Public':'Private'?> ]</a></div>
 <? } else { ?>
 				<div><?=$forumStatus == 1?'Public':'Private'?></div>
