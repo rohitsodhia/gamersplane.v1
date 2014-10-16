@@ -1,5 +1,5 @@
 $(function () {
-	if ($('#newItems').length) {
+	if ($('#page_acp_autocomplete').length) {
 		$('#newItems').on('click', '.actions a', function (e) {
 			e.preventDefault();
 
@@ -19,6 +19,25 @@ $(function () {
 			$.post('/acp/process/addToSystem/', postData, function (data) {
 				$itemRow.remove();
 			});
+		});
+	}
+
+	if ($('#page_acp_faqs').length) {
+		$('div.faq a').click(function (e) {
+			e.preventDefault();
+
+			$link = $(this);
+
+			if ($link.hasClass('edit')) $link.closest('.faq').addClass('editing');
+			else if ($link.hasClass('save')) {
+				$faq = $link.closest('.faq');
+				$.post('/acp/process/editFAQ/', { mongoID: $faq.data('questionId'), question: $faq.find('input').val(), answer: $faq.find('textarea').val() }, function (data) {
+
+				});
+			} else if ($link.hasClass('cancel')) $link.closest('.faq').removeClass('editing');
+			else if ($link.hasClass('delete')) {
+
+			}
 		});
 	}
 });

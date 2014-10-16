@@ -7,16 +7,15 @@
 	if (sizeof($acpPermissions) == 0) { header('Location: /'); exit; }
 	elseif (!in_array('faqs', $acpPermissions) && !in_array('all', $acpPermissions)) { header('Location: /acp/'); exit; }
 
-	$updateName = $mysql->prepare('UPDATE userAddedItems SET name = :name WHERE uItemID = '.intval($_POST['uItemID']));
-	$updateName->bindParam(':name', $_POST['name']);
-	$updateName->execute();
-	$newSystemItem = $mysql->query('SELECT * FROM userAddedItems WHERE uItemID = '.intval($_POST['uItemID']));
-	$newSystemItem = $newSystemItem->fetch();
+	$formErrors->clearErrors();	
+	$categories = array('Getting Started' => 'getting-started', 'Tools' => 'tools', 'Games' => 'games');
+	if (!in_array($_POST['category'], $categories)) $formErrors->addError('noCategory');
+	if (!strlen($_POST['question'])) $formErrors->addError('noQuestion');
+	if (!strlen($_POST['answer'])) $formErrors->addError('noAnswer');
 
-	if ($_POST['action'] == 'add') {
-		$addSystemRequest = $mysql->query("INSERT INTO system_charAutocomplete_map SET systemID = {$newSystemItem['systemID']}, itemID = {$newSystemItem['itemID']}");
-		$mysql->query("UPDATE userAddedItems SET action = 'approved', actedBy = {$userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
-	} elseif ($_POST['action'] == 'reject') {
-		$mysql->query("UPDATE userAddedItems SET action = 'rejected', actedBy = {$userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
+	if ($formErrors->errorsExist()) $formErrors->setErrors('addFAQ');
+	elseif (isset($_POST['add'])) {
+		$mongo->faqs->insert(array('category' => $_POST['category'], 'question' => $_POST['question'], 'answer' => $_POST['answer'], 'order' => $mongo->faqs->count(array('category' => $_POST['category'])) + 1));
 	}
+	header('Location: /acp/faqs/'); exit;
 ?>

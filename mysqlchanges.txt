@@ -1,3 +1,4 @@
 INSERT INTO dispatch SET url = 'faqs/', pageID = 'faqs', file = 'faqs/list.php', title = 'FAQs';
 INSERT INTO dispatch SET url = 'acp/faqs/', pageID = 'acp_faqs', file = 'acp/faqs.php', title = 'Site ACP - Manage FAQs';
 INSERT INTO dispatch SET url = 'acp/process/addFAQ/', file = 'acp/process/addFAQ.php';
+INSERT INTO dispatch SET url = 'acp/process/editFAQ/', file = 'acp/process/editFAQ.php';
