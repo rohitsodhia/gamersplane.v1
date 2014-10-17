@@ -8,8 +8,7 @@
 	elseif (!in_array('faqs', $acpPermissions) && !in_array('all', $acpPermissions)) { header('Location: /acp/'); exit; }
 
 	$formErrors->clearErrors();	
-	$categories = array('Getting Started' => 'getting-started', 'Tools' => 'tools', 'Games' => 'games');
-	if (!in_array($_POST['category'], $categories)) $formErrors->addError('noCategory');
+	if (!in_array($_POST['category'], $faqsCategories)) $formErrors->addError('noCategory');
 	if (!strlen($_POST['question'])) $formErrors->addError('noQuestion');
 	if (!strlen($_POST['answer'])) $formErrors->addError('noAnswer');
 

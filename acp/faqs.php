@@ -8,8 +8,6 @@
 	if (sizeof($acpPermissions) == 0) { header('Location: /'); exit; }
 	elseif (!in_array('faqs', $acpPermissions) && !in_array('all', $acpPermissions)) { header('Location: /acp/'); exit; }
 
-	$categories = array('Getting Started' => 'getting-started', 'Tools' => 'tools', 'Games' => 'games');
-
 	require_once(FILEROOT.'/header.php');
 	require_once(FILEROOT.'/acp/acpSidebar.php');
 ?>
@@ -30,7 +28,7 @@
 					<label>Category</label>
 					<select name="category">
 						<option value="">Select One</option>
-<?	foreach ($categories as $category => $slug) { ?>
+<?	foreach ($faqsCategories as $category => $slug) { ?>
 						<option value="<?=$slug?>"><?=$category?></option>
 <?	} ?>
 					</select>
@@ -47,7 +45,7 @@
 	$faqRaws = $mongo->faqs->find()->sort(array('category' => 1, 'order' => 1));
 	$faqs = array();
 	foreach ($faqRaws as $faq) $faqs[$faq['category']][$faq['order']] = $faq;
-	foreach ($categories as $category => $slug) {
+	foreach ($faqsCategories as $category => $slug) {
 ?>
 			<h2 class="headerbar hbDark"><?=$category?></h2>
 <?		if (sizeof($faqs[$slug])) { ?>

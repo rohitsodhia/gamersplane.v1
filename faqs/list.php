@@ -3,13 +3,11 @@
 	$loggedIn = checkLogin(0);
 	$userID = $_SESSION['userID'];
 
-	$categories = array('Getting Started' => 'getting-started', 'Tools' => 'tools', 'Games' => 'games');
-
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">FAQs</h1>
 		<div id="acpMenu" class="sideWidget left"><ul>
-<?	foreach ($categories as $category => $slug) { ?>
+<?	foreach ($faqsCategories as $category => $slug) { ?>
 			<li><a href="#<?=$slug?>"><?=$category?></a></li>
 <?	} ?>
 		</ul></div>
@@ -18,7 +16,7 @@
 	$faqRaws = $mongo->faqs->find()->sort(array('category' => 1, 'order' => 1));
 	$faqs = array();
 	foreach ($faqRaws as $faq) $faqs[$faq['category']][$faq['order']] = $faq;
-	foreach ($categories as $category => $slug) {
+	foreach ($faqsCategories as $category => $slug) {
 ?>
 			<a name="<?=$slug?>"></a>
 			<h2 class="headerbar hbDark"><?=$category?></h2>
