@@ -23,7 +23,7 @@ $(function () {
 	}
 
 	if ($('#page_acp_faqs').length) {
-		$('div.faq a').click(function (e) {
+		$('div.faq').on('click', '.display a, .inputs a', function (e) {
 			e.preventDefault();
 
 			$link = $(this);
@@ -38,6 +38,20 @@ $(function () {
 			else if ($link.hasClass('delete')) {
 
 			}
+		}).on('click', '.controls a', function (e) {
+			e.preventDefault();
+
+			$current = $(this).closest('.faq');
+			if ($(this).hasClass('upArrow')) {
+				$swap = $current.prev();
+				if ($swap.length) $current.insertBefore($swap);
+			} else {
+				$swap = $current.next();
+				if ($swap.length) $current.insertAfter($swap);
+			}
+			$.post('/acp/process/swapFAQ/', { mongoID1: $current.data('questionId'), mongoID2: $swap.data('questionId') }, function () {
+				;
+			});
 		});
 	}
 });

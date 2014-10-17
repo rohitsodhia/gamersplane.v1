@@ -44,7 +44,7 @@
 			</form>
 			<hr>
 <?
-	$faqRaws = $mongo->faqs->find();
+	$faqRaws = $mongo->faqs->find()->sort(array('category' => 1, 'order' => 1));
 	$faqs = array();
 	foreach ($faqRaws as $faq) $faqs[$faq['category']][$faq['order']] = $faq;
 	foreach ($categories as $category => $slug) {
@@ -53,10 +53,13 @@
 <?		if (sizeof($faqs[$slug])) { ?>
 			<div class="faqs hbdMargined">
 <?
-			sort($faqs[$slug]);
 			foreach ($faqs[$slug] as $faq) {
 ?>
 				<div class="faq" data-question-id="<?=(string) $faq['_id']?>">
+					<div class="controls">
+						<a href="" class="sprite upArrow"></a>
+						<a href="" class="sprite downArrow"></a>
+					</div>
 					<div class="display">
 						<div class="question"><?=$faq['question']?></div>
 						<div class="answer"><?=BBCode2Html($faq['answer'])?></div>

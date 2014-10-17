@@ -1,7 +1,41 @@
 <?
+	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	$loggedIn = checkLogin(0);
 	$userID = $_SESSION['userID'];
 
+	$categories = array('Getting Started' => 'getting-started', 'Tools' => 'tools', 'Games' => 'games');
+
 	require_once(FILEROOT.'/header.php');
 ?>
+		<h1 class="headerbar">FAQs</h1>
+		<div id="acpMenu" class="sideWidget left"><ul>
+<?	foreach ($categories as $category => $slug) { ?>
+			<li><a href="#<?=$slug?>"><?=$category?></a></li>
+<?	} ?>
+		</ul></div>
+		<div class="mainColumn right">
+<?
+	$faqRaws = $mongo->faqs->find()->sort(array('category' => 1, 'order' => 1));
+	$faqs = array();
+	foreach ($faqRaws as $faq) $faqs[$faq['category']][$faq['order']] = $faq;
+	foreach ($categories as $category => $slug) {
+?>
+			<a name="<?=$slug?>"></a>
+			<h2 class="headerbar hbDark"><?=$category?></h2>
+<?		if (sizeof($faqs[$slug])) { ?>
+			<div class="faqs hbdMargined">
+<?
+			foreach ($faqs[$slug] as $faq) {
+?>
+				<div class="faq" data-question-id="<?=(string) $faq['_id']?>">
+					<div class="question"><?=$faq['question']?></div>
+					<div class="answer"><?=BBCode2Html($faq['answer'])?></div>
+				</div>
+<?			} ?>
+			</div>
+<?
+		}
+	}
+?>
+		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>
