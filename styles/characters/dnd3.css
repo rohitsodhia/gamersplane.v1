@@ -288,23 +288,3 @@ input.armor_notes, .armor_notes {
 	width: 100%;
 	height: 16.2em;
 }
-
-#submitDiv {
-	text-align: center;
-	margin-top: 1em;
-}
-
-/* --------------------------------------------*/
-
-#page_characterSheet_dnd3_editFeatNotes {
-	text-align: center;
-}
-
-#page_characterSheet_dnd3_editFeatNotes textarea {
-	width: 450px;
-	height: 8em;
-}
-
-#page_characterSheet_dnd3_featNotes #notes {
-	margin-top: 0;
-}

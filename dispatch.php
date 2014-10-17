@@ -80,5 +80,6 @@
 		$fixedGameMenu = false;
 	}
 	
+	$formErrors->clearErrors(true); 
 	$mysql = null;
 ?>

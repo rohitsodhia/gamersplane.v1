@@ -18,6 +18,7 @@
 	The following rules are ordered and tabbed in a way that represents the
 	order/nesting of the generated HTML, so that the structure easier to understand.
 */
+#colorbox{padding-bottom:18px;}
 #cboxOverlay{background: #000;}
 #colorbox{}
 	#cboxContent{background:#FFF; border:3px solid #A00; padding:10px;}
