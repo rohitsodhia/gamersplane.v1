@@ -6,7 +6,7 @@
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">FAQs</h1>
-		<div id="acpMenu" class="sideWidget left"><ul>
+		<div class="sideWidget left"><ul>
 <?	foreach ($faqsCategories as $category => $slug) { ?>
 			<li><a href="#<?=$slug?>"><?=$category?></a></li>
 <?	} ?>
@@ -17,10 +17,9 @@
 	$faqs = array();
 	foreach ($faqRaws as $faq) $faqs[$faq['category']][$faq['order']] = $faq;
 	foreach ($faqsCategories as $category => $slug) {
-?>
+		if (sizeof($faqs[$slug])) { ?>
 			<a name="<?=$slug?>"></a>
 			<h2 class="headerbar hbDark"><?=$category?></h2>
-<?		if (sizeof($faqs[$slug])) { ?>
 			<div class="faqs hbdMargined">
 <?
 			foreach ($faqs[$slug] as $faq) {

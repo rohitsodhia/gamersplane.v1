@@ -14,7 +14,7 @@
 	
 	$permissionTypes = array('read' => 'Read', 'write' => 'Write', 'editPost' => 'Edit Post', 'deletePost' => 'Delete Post', 'createThread' => 'Create Thread', 'deleteThread' => 'Delete Thread', 'addPoll' => 'Add Poll', 'addRolls' => 'Add Rolls', 'addDraws' => 'Add Draws', 'moderate' => 'Moderate');
 
-	$faqsCategories = array('Getting Started' => 'getting-started', 'Tools' => 'tools', 'Games' => 'games');
+	$faqsCategories = array('Getting Started' => 'getting-started', 'Characters' => 'characters', 'Games' => 'games', 'Tools' => 'tools');
 
 	$charTypes = array('PC', 'NPC', 'Mob');
 	
