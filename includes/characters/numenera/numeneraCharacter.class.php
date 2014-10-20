@@ -143,92 +143,160 @@
 			return $this->armor;
 		}
 
-		public function addSkill($skill) {
-			if (array_key_exists($skill['trait'], savageworlds_consts::getTraits()) && strlen($skill['name']) && in_array($skill['diceType'], array(4, 6, 8, 10, 12))) {
-				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[$skill['trait']][] = array('name' => $skill['name'], 'diceType' => $skill['diceType']);
+		public function addAttack($sttack) {
+			if (strlen($sttack['name']) && strlen($sttack['ab']) && strlen($sttack['damage'])) $this->sttacks[] = $sttack;
+		}
+
+		public function showAttacksEdit($min) {
+			$attackNum = 0;
+			if (!is_array($this->attacks)) $this->attacks = (array) $this->attacks;
+			foreach ($this->attacks as $attackInfo) $this->attackEditFormat($attackNum++, $attackInfo);
+			if ($attackNum < $min) while ($attackNum < $min) $this->attackEditFormat($attackNum++);
+		}
+
+		public function attackEditFormat($attackNum, $attackInfo = array()) {
+			if (!is_array($attackInfo) || sizeof($attackInfo) == 0) $attackInfo = array();
+?>
+						<div class="attack">
+							<div class="tr labelTR">
+								<label class="medText lrBuffer shiftRight borderbox">Attack</label>
+								<label class="shortNum lrBuffer shiftRight borderbox">Mod</label>
+								<label class="shortNum lrBuffer shiftRight borderbox">Dmg</label>
+							</div>
+							<div class="tr">
+								<input type="text" name="attacks[<?=$attackNum?>][attack]" value="<?=$attackInfo['attack']?>" class="name medText lrBuffer">
+								<input type="text" name="attacks[<?=$attackNum?>][mod]" value="<?=$attackInfo['mod']?>" class="mod shortNum lrBuffer">
+								<input type="text" name="attacks[<?=$attackNum?>][dmg]" value="<?=$attackInfo['dmg']?>" class="dmg shortNum lrBuffer">
+							</div>
+						</div>
+<?
+		}
+
+		public function displayAttacks() {
+			foreach ($this->attacks as $attack) {
+?>
+<?
 			}
 		}
 
-		public function skillEditFormat($key = 1, $skillInfo = null) {
-			if ($skillInfo == null) $skillInfo = array('trait' => 'trait', 'name' => '', 'diceType' => 4);
+		public function addSkill($skill) {
+			if (strlen($skill['name'])) {
+				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$this->skills[] = $skill;
+			}
+		}
+
+		public static function skillEditFormat($key = null, $skillInfo = null) {
+			if ($key == null) $key = 1;
+			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficiency' => null);
 ?>
-									<div class="skill clearfix">
-										<input type="text" name="skills[<?=$skillInfo['trait']?>][<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
-										<div class="diceSelect"><span>d</span> <select name="skills[<?=$skillInfo['trait']?>][<?=$key?>][diceType]" class="diceType">
-<?			foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
-											<option<?=$skillInfo['diceType'] == $dCount?' selected="selected"':''?>><?=$dCount?></option>
-<?			} ?>
-										</select></div>
-										<div class="remove"><a href="" class="sprite cross small"></a></div>
-									</div>
+							<div class="skill clearfix sumRow">
+								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder" data-placeholder="Skill Name">
+								<div class="skill_prof alignCenter shortNum lrBuffer"><div><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></div><input type="hidden" name="skills[<?=$key?>][prof]"></div>
+								<a href="" class="skill_remove sprite cross lrBuffer"></a>
+							</div>
 <?
 		}
 
-		public function showSkillsEdit($trait) {
-			if (sizeof($this->skills[$trait])) { foreach ($this->skills[$trait] as $key => $skillInfo) {
-				$this->skillEditFormat($trait, array_merge(array('trait' => $trait), $skillInfo));
-			} }
+		public function showSkillsEdit() {
+			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
+				$this->skillEditFormat($key + 1, $skill));
+			} } else $this->skillEditFormat();
 		}
 
-		public function displaySkills($trait) {
-			if ($this->skills[$trait]) { foreach ($this->skills[$trait] as $skill) {
+		public function displaySkills() {
+			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
-								<div id="skill_<?=$skill['skillID']?>" class="skill clearfix">
-									<div class="skillName"><?=$skill['name']?></div>
-									<input type="hidden" name="skills[<?=$skill['skillID']?>][trait]" value="<?=$skill['trait']?>">
-									<div class="diceType">d<?=$skill['diceType']?></div>
-								</div>
+					<div class="skill tr clearfix">
+						<div class="skill_name medText"><?=$skill['name']?></div>
+						<div class="skill_prof alignCenter shortNum lrBuffer"><div></div></div>
+					</div>
 <?
-			} }
+			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
 		}
 
-		public function setEdgesHindrances($edgesHindrances) {
-			$this->edgesHindrances = $edgesHindrances;
+		public function addSpecialAbility($specialAbility) {
+			if (strlen($specialAbility['name'])) {
+				newItemized('specialAbility', $specialAbility['name'], $this::SYSTEM);
+				$this->specialAbilities[] = $specialAbility;
+			}
 		}
 
-		public function getEdgesHindrances() {
-			return $this->edgesHindrances;
+		public static function specialAbilityEditFormat($key = 1, $specialAbilityInfo = null) {
+			if ($specialAbilityInfo == null) $specialAbilityInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="specialAbility clearfix">
+								<input type="text" name="specialAbilities[<?=$key?>][name]" value="<?=$specialAbilityInfo['name']?>" class="specialAbility_name placeholder" data-placeholder="Ability Name">
+								<a href="" class="specialAbility_notesLink">Notes</a>
+								<a href="" class="specialAbility_remove sprite cross"></a>
+								<textarea name="specialAbilities[<?=$key?>][notes]"><?=$specialAbilityInfo['notes']?></textarea>
+							</div>
+<?
 		}
 
-		public function setWounds($wounds) {
-			$this->wounds = intval($wounds);
+		public function showSpecialAbilitiesEdit() {
+			if (sizeof($this->specialAbilities)) { foreach ($this->specialAbilities as $key => $specialAbility) {
+				$this->specialAbilityEditFormat($key + 1, $specialAbility);
+			} } else $this->specialAbilityEditFormat();
 		}
 
-		public function getWounds() {
-			return $this->wounds;
+		public function displaySpecialAbilities() {
+			if ($this->specialAbilities) { foreach ($this->specialAbilities as $specialAbility) { ?>
+					<div class="specialAbility tr clearfix">
+						<span class="specialAbility_name"><?=$specialAbility['name']?></span>
+<?	if (strlen($specialAbility['notes'])) { ?>
+						<a href="" class="specialAbility_notesLink">Notes</a>
+						<div class="specialAbility_notes"><?=$specialAbility['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noSpecialAbilities\">This character currently has no special abilities.</p>\n";
+		}
+		
+		public function addCypher($cypher) {
+			if (strlen($cypher['name'])) {
+				newItemized('cypher', $cypher['name'], $this::SYSTEM);
+				$this->cyphers[] = $cypher;
+			}
 		}
 
-		public function setFatigue($fatigue) {
-			$this->fatigue = intval($fatigue);
+		public static function cypherEditFormat($key = 1, $cypherInfo = null) {
+			if ($cypherInfo == null) $cypherInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="cypher clearfix">
+								<input type="text" name="cyphers[<?=$key?>][name]" value="<?=$cypherInfo['name']?>" class="cypher_name placeholder" data-placeholder="Cypher Name">
+								<a href="" class="cypher_notesLink">Notes</a>
+								<a href="" class="cypher_remove sprite cross"></a>
+								<textarea name="cyphers[<?=$key?>][notes]"><?=$cypherInfo['notes']?></textarea>
+							</div>
+<?
 		}
 
-		public function getFatigue() {
-			return $this->fatigue;
+		public function showCyphersEdit() {
+			if (sizeof($this->cyphers)) { foreach ($this->cyphers as $key => $cypher) {
+				$this->cypherEditFormat($key + 1, $cypher);
+			} } else $this->cypherEditFormat();
 		}
 
-		public function setInjuries($injuries) {
-			$this->injuries = $injuries;
+		public function displayCyphers() {
+			if ($this->cyphers) { foreach ($this->cyphers as $cypher) { ?>
+					<div class="cypher tr clearfix">
+						<span class="cypher_name"><?=$cypher['name']?></span>
+<?	if (strlen($cypher['notes'])) { ?>
+						<a href="" class="cypher_notesLink">Notes</a>
+						<div class="cypher_notes"><?=$cypher['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noCyphers\">This character currently has no cyphers.</p>\n";
+		}
+		
+		public function setPosessions($posessions) {
+			$this->posessions = $posessions;
 		}
 
-		public function getInjuries() {
-			return $this->injuries;
-		}
-
-		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
-		}
-
-		public function getWeapons() {
-			return $this->weapons;
-		}
-
-		public function setEquipment($equipment) {
-			$this->equipment = $equipment;
-		}
-
-		public function getEquipment() {
-			return $this->equipment;
+		public function getPosessions() {
+			return $this->posessions;
 		}
 
 		public function save($bypass = false) {
