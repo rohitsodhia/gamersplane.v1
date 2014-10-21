@@ -103,7 +103,7 @@
 				<h3 class="headerbar">Latest Posts</h3>
 				<div class="widgetBody">
 <?
-	$coreForums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.sql_forumIDPad(1).'-%" OR heritage LIKE "'.sql_forumIDPad(6).'-%" OR heritage LIKE "%-'.sql_forumIDPad(10).'-%"');
+	$coreForums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.sql_forumIDPad(1).'-%" OR heritage LIKE "'.sql_forumIDPad(6).'-%" OR heritage LIKE "%-'.sql_forumIDPad(10).'%"');
 	$forumIDs = array();
 	foreach ($coreForums as $forum) $forumIDs[] = $forum['forumID'];
 	if ($loggedIn) {
