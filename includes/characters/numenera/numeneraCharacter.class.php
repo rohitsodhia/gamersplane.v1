@@ -84,7 +84,6 @@
 
 		public function setStat($stat, $key, $value = null) {
 			$key = explode('.', $key);
-			if (!strlen($key)) return false;
 			$cKey = &$this->stats[$stat];
 			foreach ($key as $iKey) {
 				if (!isset($cKey[$iKey])) return false;
@@ -144,8 +143,8 @@
 			return $this->armor;
 		}
 
-		public function addAttack($sttack) {
-			if (strlen($sttack['name'])) $this->sttacks[] = $sttack;
+		public function addAttack($attack) {
+			if (strlen($attack['name'])) $this->attacks[] = $attack;
 		}
 
 		public function showAttacksEdit($min) {
@@ -159,7 +158,7 @@
 			if (!is_array($attackInfo) || sizeof($attackInfo) == 0) $attackInfo = array();
 ?>
 						<div class="attack tr">
-							<input type="text" name="attacks[<?=$attackNum?>][attack]" value="<?=$attackInfo['attack']?>" class="name medText">
+							<input type="text" name="attacks[<?=$attackNum?>][name]" value="<?=$attackInfo['name']?>" class="name medText">
 							<input type="text" name="attacks[<?=$attackNum?>][mod]" value="<?=$attackInfo['mod']?>" class="mod shortNum lrBuffer">
 							<input type="text" name="attacks[<?=$attackNum?>][dmg]" value="<?=$attackInfo['dmg']?>" class="dmg shortNum">
 							<a href="" class="attack_remove sprite cross lrBuffer"></a>
@@ -168,10 +167,15 @@
 		}
 
 		public function displayAttacks() {
-			foreach ($this->attacks as $attack) {
+			if (sizeof($this->attacks)) { foreach ($this->attacks as $attack) {
 ?>
+							<div class="attack tr">
+								<div class="name medText"><?=$attack['name']?></div>
+								<div class="mod shortNum lrBuffer alignCenter"><?=$attack['mod']?></div>
+								<div class="dmg shortNum alignCenter"><?=$attack['dmg']?></div>
+							</div>
 <?
-			}
+			} } else echo "\t\t\t\t\t\t<p id=\"noAttacks\">This character currently has no attacks.</p>\n";
 		}
 
 		public function addSkill($skill) {
@@ -203,11 +207,11 @@
 			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
 					<div class="skill tr clearfix">
-						<div class="skill_name medText"><?=$skill['name']?></div>
-						<div class="skill_prof alignCenter shortNum lrBuffer"><div></div></div>
+						<div class="skill_name width5"><?=$skill['name']?></div>
+						<div class="skill_prof alignCenter shortNum lrBuffer"><div><?=$skill['prof']?></div></div>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
+			} } else echo "\t\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
 		}
 
 		public function addSpecialAbility($specialAbility) {
@@ -240,7 +244,7 @@
 					<div class="specialAbility tr clearfix">
 						<span class="specialAbility_name"><?=$specialAbility['name']?></span>
 <?	if (strlen($specialAbility['notes'])) { ?>
-						<a href="" class="specialAbility_notesLink">Notes</a>
+						<a href="" class="notes">Notes</a>
 						<div class="specialAbility_notes"><?=$specialAbility['notes']?></div>
 <?	} ?>
 					</div>
@@ -286,11 +290,11 @@
 			} } else echo "\t\t\t\t\t<p id=\"noCyphers\">This character currently has no cyphers.</p>\n";
 		}
 		
-		public function setPosessions($posessions) {
+		public function setPossessions($posessions) {
 			$this->posessions = $posessions;
 		}
 
-		public function getPosessions() {
+		public function getPossessions() {
 			return $this->posessions;
 		}
 
@@ -315,7 +319,7 @@
 				$this->setDamage('impaired', $data['damage']['impaired']);
 				$this->setDamage('debilitated', $data['damage']['debilitated']);
 				$this->setRecovery($data['recovery']);
-				foreach (array('action', 'ten_min', 'hour', 'ten_hours') as $slug) $this->setRecoveryTimes($slug, $data['recoveryTimes'][$slug]);
+				foreach (array('action', 'ten_min', 'hour', 'ten_hours') as $slug) $this->setRecoveryTimes($slug, isset($data['recoveryTimes'][$slug]));
 				$this->setArmor($data['armor']);
 
 				$this->clearVar('attacks');
@@ -334,8 +338,6 @@
 				if (sizeof($data['cyphers'])) 
 					foreach ($data['cyphers'] as $cypherInfo) $this->addCypher($cypherInfo);
 
-				$this->specialAbilities;
-				$this->cypers;
 				$this->setPossessions($data['posessions']);
 				$this->setNotes($data['notes']);
 			}

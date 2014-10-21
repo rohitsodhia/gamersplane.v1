@@ -85,9 +85,9 @@
 							<h2 class="headerbar hbDark">Attacks <a id="addAttack" href="">[ Add Attack ]</a></h2>
 							<div class="hbdMargined">
 								<div class="tr labelTR">
-									<label class="medText">Attack</label>
-									<label class="shortNum alignCenter lrBuffer">Mod</label>
-									<label class="shortNum alignCenter">Dmg</label>
+									<label class="name shiftRight borderBox">Attack</label>
+									<label class="mod shortNum alignCenter lrBuffer">Mod</label>
+									<label class="dmg shortNum alignCenter">Dmg</label>
 								</div>
 								<div id="attackList">
 <?	$this->showAttacksEdit(3); ?>
@@ -128,7 +128,7 @@
 					</div>
 					<div id="posessions" class="floatRight">
 						<h2 class="headerbar hbDark">Posessions</h2>
-						<textarea name="posessions" class="hbdMargined"><?=$this->getPosessions()?></textarea>
+						<textarea name="posessions" class="hbdMargined"><?=$this->getPossessions()?></textarea>
 					</div>
 				</div>
 
