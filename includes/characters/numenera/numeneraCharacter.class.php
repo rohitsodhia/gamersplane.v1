@@ -96,6 +96,7 @@
 		public function getStats($stat = null, $key = null) {
 			if ($stat == null) return $this->stats;
 			elseif ($key != null) {
+				$key = explode('.', $key);
 				$cKey = &$this->stats[$stat];
 				foreach ($key as $iKey) {
 					if (!isset($cKey[$iKey])) return false;
@@ -157,17 +158,11 @@
 		public function attackEditFormat($attackNum, $attackInfo = array()) {
 			if (!is_array($attackInfo) || sizeof($attackInfo) == 0) $attackInfo = array();
 ?>
-						<div class="attack">
-							<div class="tr labelTR">
-								<label class="medText lrBuffer shiftRight borderbox">Attack</label>
-								<label class="shortNum lrBuffer shiftRight borderbox">Mod</label>
-								<label class="shortNum lrBuffer shiftRight borderbox">Dmg</label>
-							</div>
-							<div class="tr">
-								<input type="text" name="attacks[<?=$attackNum?>][attack]" value="<?=$attackInfo['attack']?>" class="name medText lrBuffer">
-								<input type="text" name="attacks[<?=$attackNum?>][mod]" value="<?=$attackInfo['mod']?>" class="mod shortNum lrBuffer">
-								<input type="text" name="attacks[<?=$attackNum?>][dmg]" value="<?=$attackInfo['dmg']?>" class="dmg shortNum lrBuffer">
-							</div>
+						<div class="attack tr">
+							<input type="text" name="attacks[<?=$attackNum?>][attack]" value="<?=$attackInfo['attack']?>" class="name medText">
+							<input type="text" name="attacks[<?=$attackNum?>][mod]" value="<?=$attackInfo['mod']?>" class="mod shortNum lrBuffer">
+							<input type="text" name="attacks[<?=$attackNum?>][dmg]" value="<?=$attackInfo['dmg']?>" class="dmg shortNum">
+							<a href="" class="attack_remove sprite cross lrBuffer"></a>
 						</div>
 <?
 		}
@@ -190,9 +185,9 @@
 			if ($key == null) $key = 1;
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficiency' => null);
 ?>
-							<div class="skill clearfix sumRow">
-								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder" data-placeholder="Skill Name">
-								<div class="skill_prof alignCenter shortNum lrBuffer"><div><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></div><input type="hidden" name="skills[<?=$key?>][prof]"></div>
+							<div class="skill clearfix">
+								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name width5 alignLeft placeholder" data-placeholder="Skill Name">
+								<div class="skill_prof alignCenter shortNum lrBuffer"><div>&nbsp;</div><input type="hidden" name="skills[<?=$key?>][prof]"></div>
 								<a href="" class="skill_remove sprite cross lrBuffer"></a>
 							</div>
 <?
@@ -200,7 +195,7 @@
 
 		public function showSkillsEdit() {
 			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				$this->skillEditFormat($key + 1, $skill));
+				$this->skillEditFormat($key + 1, $skill);
 			} } else $this->skillEditFormat();
 		}
 

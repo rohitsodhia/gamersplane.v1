@@ -5,7 +5,7 @@
 		protected $userID ;
 		protected $characterID;
 		protected $label;
-		protected $type = 'PC';
+		protected $charType = 'PC';
 		protected $inLibrary = FALSE;
 		protected $game = NULL;
 		protected $name;
@@ -37,13 +37,13 @@
 			return $this->label;
 		}
 
-		public function setType($type) {
+		public function setCharType($charType) {
 			global $charTypes;
-			if (in_array($type, $charTypes)) $this->type = $type;
+			if (in_array($charType, $charTypes)) $this->charType = $charType;
 		}
 
-		public function getType() {
-			return $this->type;
+		public function getCharType() {
+			return $this->charType;
 		}
 
 		public function toggleLibrary() {
