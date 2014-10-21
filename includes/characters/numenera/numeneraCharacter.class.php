@@ -145,7 +145,7 @@
 		}
 
 		public function addAttack($sttack) {
-			if (strlen($sttack['name']) && strlen($sttack['ab']) && strlen($sttack['damage'])) $this->sttacks[] = $sttack;
+			if (strlen($sttack['name'])) $this->sttacks[] = $sttack;
 		}
 
 		public function showAttacksEdit($min) {
@@ -301,20 +301,42 @@
 
 			if (!isset($data['create']) && !$bypass) {
 				$this->setName($data['name']);
-				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
-				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
+				$this->setDescriptor($data['descriptor']);
+				$this->setType($data['type']);
+				$this->setFocus($data['focus']);
+				$this->setTier($data['tier']);
+				$this->setEffort($data['effort']);
+				$this->setXP($data['xp']);
+				foreach ($data['stats'] as $stat => $values) {
+					$this->setStat($stat, 'pool.total', $values['pool']['total']);
+					$this->setStat($stat, 'pool.used', $values['pool']['used']);
+					$this->setStat($stat, 'edge', $values['edge']);
+				}
+				$this->setDamage('impaired', $data['damage']['impaired']);
+				$this->setDamage('debilitated', $data['damage']['debilitated']);
+				$this->setRecovery($data['recovery']);
+				foreach (array('action', 'ten_min', 'hour', 'ten_hours') as $slug) $this->setRecoveryTimes($slug, $data['recoveryTimes'][$slug]);
+				$this->setArmor($data['armor']);
+
+				$this->clearVar('attacks');
+				if (sizeof($data['attacks'])) 
+					foreach ($data['attacks'] as $attack) $this->addAttack($attack);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $trait => $skillInfos) {
-					foreach ($skillInfos as $skillInfo) $this->addSkill(array_merge(array('trait' => $trait), $skillInfo));
-				} }
+				if (sizeof($data['skills'])) 
+					foreach ($data['skills'] as $skillInfo) $this->addSkill($skillInfo);
 
-				$this->setEdgesHindrances($data['edge_hind']);
-				$this->setWounds($data['wounds']);
-				$this->setFatigue($data['fatigue']);
-				$this->setInjuries($data['injuries']);
-				$this->setWeapons($data['weapons']);
-				$this->setEquipment($data['equipment']);
+				$this->clearVar('specialAbilities');
+				if (sizeof($data['specialAbilities'])) 
+					foreach ($data['specialAbilities'] as $specialAbilityInfo) $this->addSpecialAbility($specialAbilityInfo);
+
+				$this->clearVar('cyphers');
+				if (sizeof($data['cyphers'])) 
+					foreach ($data['cyphers'] as $cypherInfo) $this->addCypher($cypherInfo);
+
+				$this->specialAbilities;
+				$this->cypers;
+				$this->setPossessions($data['posessions']);
 				$this->setNotes($data['notes']);
 			}
 

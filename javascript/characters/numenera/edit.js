@@ -1,4 +1,5 @@
 $(function() {
+	/* Attacks */
 	$('#attacks').on('click', '.attack_remove', function (e) {
 		e.preventDefault();
 
@@ -15,6 +16,7 @@ $(function() {
 
 	var nextAttackCount = $('#attackList .attack').length + 1;
 
+	/* Skills */
 	$('#skills').on('click', '.skill_remove', function (e) {
 		e.preventDefault();
 
@@ -47,6 +49,7 @@ $(function() {
 	var nextSkillCount = $('#skillList .skill').length + 1;
 	$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system, systemOnly: true });
 
+	/* Special Abilities */
 	$('#specialAbilities').on('click', '.specialAbility_remove', function (e) {
 		e.preventDefault();
 
@@ -57,7 +60,7 @@ $(function() {
 
 		$.post('/characters/ajax/addSpecialAbility/', { system: system, key: nextSpecialAbilityCount }, function (data) {
 			$newSpecialAbility = $(data);
-			$newSpecialAbility.appendTo('#specialAbilityList').find('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system }).find('input').focus();
+			$newSpecialAbility.appendTo('#specialAbilityList').find('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system, systemOnly: true }).find('input').focus();
 			nextSpecialAbilityCount += 1;
 		});
 	}).on('click', '.specialAbility_notesLink', function(e) {
@@ -67,5 +70,5 @@ $(function() {
 	});
 
 	var nextSpecialAbilityCount = $('#specialAbilityList .specialAbility').length + 1;
-	$('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system });
+	$('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system, systemOnly: true });
 });

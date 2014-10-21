@@ -53,7 +53,7 @@
 	margin-left: 30px;
 }
 
-#skills {
+#skills, #specialAbilities {
 	width: 405px;
 	margin-left: 20px;
 }
@@ -75,6 +75,66 @@
 	text-align: center;
 	font-weight: bold;
 	cursor: pointer;
+}
+
+#specialAbilities {
+	margin-top: 1em;
+}
+
+.specialAbility, .cypher {
+	padding: 4px 0;
+}
+
+.specialAbility > *, .cypher > * {
+	vertical-align: middle;
+}
+
+.specialAbility > span, .specialAbility > a, .cypher > span, .cypher > a {
+	display: inline-block;
+}
+
+#page_characterSheet_edit .specialAbility_name, #page_characterSheet_edit .cypher_name {
+	width: 285px;
+	text-align: left;
+}
+
+#page_characterSheet .specialAbility_name, #page_characterSheet .cypher_name {
+	width: 315px;
+}
+
+.specialAbility_notesLink, .cypher_notesLink {
+	margin-left: 5px;
+	font-size: .8em;
+}
+
+.specialAbility textarea, .specialAbility_notes, .cypher textarea, .cypher_notes {
+	display: none;
+	margin-top: .5em;
+}
+
+.specialAbility textarea, .cypher textarea {
+	width: 100%;
+	height: 4.9em;
+}
+
+.specialAbility_notes, .cypher_notes {
+	padding: 4px;
+	border: 1px solid #888;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.specialAbility_remove, .cypher_remove {
+	margin-left: 5px;
+}
+
+#posessions {
+	width: 540px;
+}
+
+#posessions textarea {
+	height: 10em;
 }
 
 #notes textarea {

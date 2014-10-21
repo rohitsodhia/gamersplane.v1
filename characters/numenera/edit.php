@@ -108,16 +108,27 @@
 						</div>
 					</div>
 					<div id="specialAbilities" class="floatLeft nonDefault">
-						<h2 class="headerbar hbDark">Special Abilities <a id="addSpecialAbilities" href="">[ Add Special Abilities ]</a></h2>
+						<h2 class="headerbar hbDark">Special Abilities <a id="addSpecialAbility" href="">[ Add Special Ability ]</a></h2>
 						<div class="hbdMargined">
-							<div class="tr labelTR">
-								<label class="width5 shiftRight borderBox">Special Abilities</label>
-								<label class="shortNum alignCenter lrBuffer">Prof?</label>
-							</div>
 							<div id="specialAbilityList">
-<?	$this->showSpecialAbilitiessEdit(); ?>
+<?	$this->showSpecialAbilitiesEdit(); ?>
 							</div>
 						</div>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div id="cyphers" class="floatLeft">
+						<h2 class="headerbar hbDark">Cyphers <a id="addCypher" href="">[ Add Cypher ]</a></h2>
+						<div class="hbdMargined">
+							<div id="cypherList">
+<?	$this->showCyphersEdit(); ?>
+							</div>
+						</div>
+					</div>
+					<div id="posessions" class="floatRight">
+						<h2 class="headerbar hbDark">Posessions</h2>
+						<textarea name="posessions" class="hbdMargined"><?=$this->getPosessions()?></textarea>
 					</div>
 				</div>
 
