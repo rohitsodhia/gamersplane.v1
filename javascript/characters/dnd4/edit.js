@@ -44,7 +44,6 @@ $(function() {
 		
 		e.preventDefault();
 	});
-	$('#attacks').on('blur', '.sumRow input', sumRow);
 	
 	$('#powers').on('click', 'h3 a', function (e) {
 		e.preventDefault();

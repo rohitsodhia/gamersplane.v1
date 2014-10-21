@@ -48,7 +48,7 @@ $(function () {
 				$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
 				nextSkillCount += 1;
 			});
-		}).on('blur', '.sumRow input', sumRow);
+		});
 
 		nextSkillCount = $('#skillList .skill').length + 1;
 		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
