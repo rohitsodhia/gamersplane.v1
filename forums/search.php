@@ -53,7 +53,7 @@
 					$threadContent .= "\t\t\t\t\t\t</div>\n";
 				}
 				$threadContent .= "						<a href=\"/forums/thread/{$threadInfo['threadID']}\">{$threadInfo['title']}</a><br>
-						<span class=\"threadAuthor\">by <a href=\"/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> on <span>".date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>
+						<span class=\"threadAuthor\">by <a href=\"/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> in <a href=\"/forums/{$threadInfo['forumID']}/\">{$threadInfo['fTitle']}</a> on <span>".date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>
 					</div>
 					<div class=\"td numPosts\">".($threadInfo['numPosts']?$threadInfo['numPosts']:0)."</div>
 					<div class=\"td lastPost\">
