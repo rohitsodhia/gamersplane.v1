@@ -24,9 +24,9 @@
 <?
 			foreach ($faqs[$slug] as $faq) {
 ?>
-				<div class="faq" data-question-id="<?=(string) $faq['_id']?>">
+				<div class="faq">
 					<div class="question"><?=$faq['question']?></div>
-					<div class="answer"><?=BBCode2Html($faq['answer'])?></div>
+					<div class="answer"><?=BBCode2Html(printReady($faq['answer']))?></div>
 				</div>
 <?			} ?>
 			</div>
