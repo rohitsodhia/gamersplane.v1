@@ -6,7 +6,7 @@
 	
 	if (isset($_POST['submit'])) {
 		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/$userID.jpg");
-		if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
+		if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
 			$ext = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
 			if ($ext == 'jpeg') $ext = 'jpg';
 			if (in_array($ext, array('jpg', 'gif', 'png'))) {
