@@ -20,9 +20,9 @@
 		echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($gNotification['enactedOn'])).'<sup>'.date('S', strtotime($gNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($gNotification['enactedOn']))."</h2>\n";
 	}
 
-	$cCount = 1; $gCount = 1;
+	$cRemaining = true; $gRemaining = true;
 	echo "		<div class=\"hbdMargined\">\n";
-	for ($count = 0; $count < $perPage && $cCount <= 20 && $gCount <= 20; $count++) {
+	for ($count = 0; $count < $perPage && $cRemaining && $gRemaining; $count++) {
 		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
 			$action = $cNotification['action'];
 			$timestamp = strtotime($cNotification['enactedOn']);
@@ -56,7 +56,7 @@
 <?
 			} else $count--;
 			$cNotification = $charHistories->fetch();
-			$cCount++;
+			if (!$cNotification) $cRemaining = false;
 		} else {
 			$action = $gNotification['action'];
 			$timestamp = strtotime($gNotification['enactedOn']);
@@ -78,7 +78,7 @@
 <?
 			} else $count--;
 			$gNotification = $gameHistories->fetch();
-			$gCount++;
+			if (!$gNotification) $gRemaining = false;
 		}
 ?>
 			</div>
