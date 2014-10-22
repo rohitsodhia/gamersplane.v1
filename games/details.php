@@ -10,17 +10,17 @@
 	$gameInfo['created'] = switchTimezone($_SESSION['timezone'], $gameInfo['created']);
 
 	$postFrequency = explode('/', $gameInfo['postFrequency']);
-	$isGM = $gameInfo['isGM']?TRUE:FALSE;
+	$isGM = $gameInfo['isGM']?true:false;
 	
 	if (!$isGM) {
 		$userCheck = $mysql->query('SELECT approved FROM players WHERE gameID = '.$gameInfo['gameID'].' AND userID = '.$userID);
 		if ($userCheck->rowCount()) {
-			$inGame = TRUE;
+			$inGame = true;
 			$approved = $userCheck->fetchColumn();
-		} else $inGame = FALSE;
+		} else $inGame = false;
 	} else {
-		$inGame = TRUE;
-		$approved = TRUE;
+		$inGame = true;
+		$approved = true;
 	}
 	
 	$approvedPlayers = $mysql->query("SELECT u.userID, u.username, p.isGM, p.primaryGM FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 1 ORDER BY u.username ASC");
@@ -113,12 +113,12 @@
 
 <?
 	if ($loggedIn) {
-		$hasRightCol = FALSE;
+		$hasRightCol = false;
 ?>
 		<div id="playerDetails" class="clearfix">
 <?
 		if ($inGame && $approved) {
-			$hasRightCol = TRUE;
+			$hasRightCol = true;
 ?>
 			<div class="rightCol">
 				<div id="submitChar">
@@ -150,8 +150,18 @@
 				</div>
 			</div>
 <?
+		} elseif ($inGame && !$approved) {
+			$hasRightCol = true;
+?>
+			<div class="rightCol">
+				<div id="applyToGame">
+					<h2 class="headerbar hbDark">Join Game</h2>
+					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
+				</div>
+			</div>
+<?
 		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {
-			$hasRightCol = TRUE;
+			$hasRightCol = true;
 ?>
 			<div class="rightCol">
 				<div id="applyToGame">
@@ -164,12 +174,12 @@
 			</div>
 <?
 		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() == $gameInfo['numPlayers']) {
-			$hasRightCol = TRUE;
+			$hasRightCol = true;
 ?>
 			<div class="rightCol">
 				<div id="applyToGame">
-					<h2 class="headerbar hbDark">Join Game</h2>
-					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
+					<h2 class="headerbar hbDark">Game Full</h2>
+					<p class="hbdMargined notice">This game is currently full</p>
 				</div>
 			</div>
 <?
