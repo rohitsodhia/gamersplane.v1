@@ -12,11 +12,13 @@ $(function () {
 		});
 	});
 
-	if ($('#feats').length) {
-		$('#feats').on('click', '.feat_notesLink', function (e) {
-			e.preventDefault();
+	function toggleNotes(e) {
+		e.preventDefault();
 
-			if ($(this).siblings('div.feat_notes').length) $(this).siblings('div.feat_notes').slideToggle();
-		})
+		$(this).siblings('.notes').slideToggle();
+	}
+
+	if ($('#feats').length) {
+		$('#feats').on('click', '.feat_notesLink', toggleNotes);
 	}
 });
