@@ -63,7 +63,7 @@
 						<div><a href="" class="edit">[ Edit ]</a> <a href="" class="delete">[ Delete ]</a></div>
 					</div>
 					<div class="inputs">
-						<div class="question"><input type="text" value="<?=$faq['question']?>"></div>
+						<div class="question"><input type="text" value="<?=htmlspecialchars($faq['question'])?>"></div>
 						<div class="answer"><textarea><?=$faq['answer']?></textarea></div>
 						<div class="tr"><a href="" class="save">[ Save ]</a> <a href="" class="cancel">[ Cancel ]</a></div>
 					</div>
