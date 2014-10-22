@@ -3,10 +3,11 @@
 	
 	$userID = intval($_SESSION['userID']);
 	$ext = '';
+	$fileUploaded = false;
 	
 	if (isset($_POST['submit'])) {
 		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/$userID.jpg");
-		if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
+		if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
 			$ext = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
 			if ($ext == 'jpeg') $ext = 'jpg';
 			if (in_array($ext, array('jpg', 'gif', 'png'))) {
@@ -44,6 +45,7 @@
 				elseif ($ext == 'png') imagepng($tempColor, $destination, 0);
 				imagedestroy($tempImg);
 				imagedestroy($tempColor);
+				$fileUploaded = true;
 			}
 		}
 		
@@ -64,10 +66,9 @@
 		$games = sanitizeString($_POST['games']);
 		$newGameMail = $_POST['newGameMail']?1:0;
 		
-		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, avatarExt = :avatarExt, timezone = :timezone, showTZ = :showTZ, gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, stream = :stream, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
-		$updateUser->execute(array(
+		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, ".($fileUploaded?'avatarExt = :avatarExt':'').", timezone = :timezone, showTZ = :showTZ, gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, stream = :stream, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
+		$updates = array(
 			'showAvatars' => $showAvatars,
-			'avatarExt' => $ext,
 			'timezone' => $timezone,
 			'showTZ' => $showTZ,
 			'gender' => $gender,
@@ -81,7 +82,9 @@
 			'games' => $games,
 			'newGameMail' => $newGameMail,
 			'userID' => $userID
-		));
+		);
+		if ($fileUploaded) $updates['avatarExt'] = $ext;
+		$updateUser->execute($updates);
 		
 		header('Location: /ucp/cp/?updated=1');
 	} else header('Location: /user');
