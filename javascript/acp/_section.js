@@ -27,16 +27,18 @@ $(function () {
 			e.preventDefault();
 
 			$link = $(this);
+			$faq = $link.closest('.faq');
 
 			if ($link.hasClass('edit')) $link.closest('.faq').addClass('editing');
 			else if ($link.hasClass('save')) {
-				$faq = $link.closest('.faq');
 				$.post('/acp/process/editFAQ/', { mongoID: $faq.data('questionId'), question: $faq.find('input').val(), answer: $faq.find('textarea').val() }, function (data) {
-
+					$link.closest('.faq').removeClass('editing').find('.display .answer').html(data);
 				});
 			} else if ($link.hasClass('cancel')) $link.closest('.faq').removeClass('editing');
 			else if ($link.hasClass('delete')) {
-
+				$.post('/acp/process/deleteFAQ/', { mongoID: $faq.data('questionId') }, function (data) {
+					$faq.remove();
+				});
 			}
 		}).on('click', '.controls a', function (e) {
 			e.preventDefault();
