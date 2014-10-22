@@ -22,7 +22,7 @@
 
 	$cRemaining = $cNotification?true:false; $gRemaining = $gNotification?true:false;
 	echo "		<div class=\"hbdMargined\">\n";
-	if ($cRemaining || $gRemaining) { for ($count = 0; $count < $perPage && $cRemaining && $gRemaining; $count++) {
+	for ($count = 0; $count < $perPage && ($cRemaining || $gRemaining); $count++) {
 		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
 			$action = $cNotification['action'];
 			$timestamp = strtotime($cNotification['enactedOn']);
@@ -82,6 +82,6 @@
 		}
 ?>
 			</div>
-<?	} } ?>
+<?	} ?>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>
