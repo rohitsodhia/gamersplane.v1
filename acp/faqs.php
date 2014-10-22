@@ -59,7 +59,7 @@
 					</div>
 					<div class="display">
 						<div class="question"><?=$faq['question']?></div>
-						<div class="answer"><?=BBCode2Html($faq['answer'])?></div>
+						<div class="answer"><?=BBCode2Html(printReady($faq['answer']))?></div>
 						<div><a href="" class="edit">[ Edit ]</a> <a href="" class="delete">[ Delete ]</a></div>
 					</div>
 					<div class="inputs">

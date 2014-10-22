@@ -13,6 +13,6 @@
 	if ($_id && strlen($_POST['question']) && strlen($_POST['answer'])) {
 		$mongo->faqs->update(array('_id' => $_id), array('$set' => array('question' => $_POST['question'], 'answer' => $_POST['answer'])));
 		require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-		echo BBCode2Html($_POST['answer']);
+		echo BBCode2Html(printReady($_POST['answer']));
 	}
 ?>
