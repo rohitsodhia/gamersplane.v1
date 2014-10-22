@@ -20,9 +20,9 @@
 		echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($gNotification['enactedOn'])).'<sup>'.date('S', strtotime($gNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($gNotification['enactedOn']))."</h2>\n";
 	}
 
-	$cRemaining = true; $gRemaining = true;
+	$cRemaining = $cNotification?true:false; $gRemaining = $gNotification?true:false;
 	echo "		<div class=\"hbdMargined\">\n";
-	for ($count = 0; $count < $perPage && $cRemaining && $gRemaining; $count++) {
+	if ($cRemaining || $gRemaining) { for ($count = 0; $count < $perPage && $cRemaining && $gRemaining; $count++) {
 		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
 			$action = $cNotification['action'];
 			$timestamp = strtotime($cNotification['enactedOn']);
@@ -82,6 +82,6 @@
 		}
 ?>
 			</div>
-<?	} ?>
+<?	} } ?>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>
