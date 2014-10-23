@@ -24,7 +24,7 @@
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Edit Character Sheet</h1>
-<?	if (file_exists('/images/logos/'.SYSTEM.'.png')) { ?>
+<?	if (file_exists(FILEROOT.'/images/logos/'.SYSTEM.'.png')) { ?>
 		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>
 <?	} ?>
 		
