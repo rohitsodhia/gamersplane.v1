@@ -48,8 +48,8 @@
 					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
 				</li>
 <?
-	} } else echo "\t\t\t\t<div id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new\">make one</a>?</div>\n";
+	} } else echo "\t\t\t\t<li id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new/\">make one</a>?</li>\n";
 ?>
-			</div>
+			</ul>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>
