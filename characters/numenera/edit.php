@@ -53,13 +53,13 @@
 						<div class="clearfix">
 							<div id="damage" class="floatLeft">
 								<div class="alignCenter header">Damage</div>
-								<div class="tr">
-									<label class="leftLabel width3">Impaired</label>
-									<input type="text" name="damage[impaired]" class="width1" value="<?=$this->getDamage('impaired')?>">
+								<div class="tr damage">
+									<input type="checkbox" name="damage[impaired]"<?=$this->getDamage('impaired')?' checked="checked"':''?>>
+									<label class="leftLabel">Impaired</label>
 								</div>
-								<div class="tr">
-									<label class="leftLabel width3">Debilitated</label>
-									<input type="text" name="damage[debilitated]" class="width1" value="<?=$this->getDamage('debilitated')?>">
+								<div class="tr damage">
+									<input type="checkbox" name="damage[debilitated]"<?=$this->getDamage('debilitated')?' checked="checked':''?>>
+									<label class="leftLabel">Debilitated</label>
 								</div>
 								<div id="armor" class="tr">
 									<label class="leftLabel width3">Armor</label>
@@ -75,7 +75,7 @@
 								<div id="recoveryTimes" class="floatLeft">
 <?	foreach (array('action' => 'Action', 'ten_min' => '10 Minutes', 'hour' => 'Hour', 'ten_hours' => '10 Hours') as $slug => $time) { ?>
 									<div class="tr">
-										<input type="checkbox" name="recoveryTimes[<?=$slug?>]"<?=$this->getRecoveryTimes($slug)?' checked="checked"':''?>> <?=$time?>
+										<input type="checkbox" name="recoveryTimes[<?=$slug?>]"<?=$this->getRecoveryTimes($slug)?' checked="checked"':''?>> <label class="leftLabel"><?=$time?></label>
 									</div>
 <?	} ?>
 								</div>

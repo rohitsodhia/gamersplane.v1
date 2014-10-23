@@ -187,11 +187,11 @@
 
 		public static function skillEditFormat($key = null, $skillInfo = null) {
 			if ($key == null) $key = 1;
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficiency' => null);
+			if ($skillInfo == null) $skillInfo = array('name' => '', 'prof' => '');
 ?>
 							<div class="skill clearfix">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name width5 alignLeft placeholder" data-placeholder="Skill Name">
-								<div class="skill_prof alignCenter shortNum lrBuffer"><div>&nbsp;</div><input type="hidden" name="skills[<?=$key?>][prof]"></div>
+								<div class="skill_prof alignCenter shortNum lrBuffer"><div><?=$skillInfo['prof'] != ''?$skillInfo['prof']:'&nbsp;'?></div><input type="hidden" name="skills[<?=$key?>][prof]" value="<?=$skillInfo['prof']?>"></div>
 								<a href="" class="skill_remove sprite cross lrBuffer"></a>
 							</div>
 <?
@@ -316,8 +316,8 @@
 					$this->setStat($stat, 'pool.max', $values['pool']['max']);
 					$this->setStat($stat, 'edge', $values['edge']);
 				}
-				$this->setDamage('impaired', $data['damage']['impaired']);
-				$this->setDamage('debilitated', $data['damage']['debilitated']);
+				$this->setDamage('impaired', isset($data['damage']['impaired']));
+				$this->setDamage('debilitated', isset($data['damage']['debilitated']));
 				$this->setRecovery($data['recovery']);
 				foreach (array('action', 'ten_min', 'hour', 'ten_hours') as $slug) $this->setRecoveryTimes($slug, isset($data['recoveryTimes'][$slug]));
 				$this->setArmor($data['armor']);

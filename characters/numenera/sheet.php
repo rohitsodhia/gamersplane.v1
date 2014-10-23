@@ -53,13 +53,11 @@
 					<div class="clearfix">
 						<div id="damage" class="floatLeft">
 							<div class="alignCenter header">Damage</div>
-							<div class="tr">
-								<label class="leftLabel width3">Impaired</label>
-								<div class="width1"><?=$this->getDamage('impaired')?></div>
+							<div class="tr damage">
+								<div><?=$this->getDamage('impaired')?'<div class="sprite check small"></div>':''?></div> <span>Impaired</span>
 							</div>
-							<div class="tr">
-								<label class="leftLabel width3">Debilitated</label>
-								<div class="width1"><?=$this->getDamage('debilitated')?></div>
+							<div class="tr damage">
+								<div><?=$this->getDamage('debilitated')?'<div class="sprite check small"></div>':''?></div> <span>Debilitated</span>
 							</div>
 							<div id="armor" class="tr">
 								<label class="leftLabel width3">Armor</label>
