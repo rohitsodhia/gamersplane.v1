@@ -35,7 +35,7 @@
 								<div class="shortText spacer"></div>
 								<div class="pool">
 									<label id="poolLabel">Pool</label>
-									<label class="shortNum">Total</label> / <label class="shortNum">Used</label>
+									<label class="shortNum">Current</label> / <label class="shortNum">Max</label>
 								</div>
 								<label class="shortNum lrBuffer alignBottom">Edge</label>
 							</div>
@@ -43,7 +43,7 @@
 							<div class="tr mainStat">
 								<div class="shortText"><?=ucwords($stat)?></div>
 								<div class="pool">
-									<div class="shortNum"><?=$this->getStats($stat, 'pool.total')?></div> / <div class="shortNum"><?=$this->getStats($stat, 'pool.used')?></div>
+									<div class="shortNum"><?=$this->getStats($stat, 'pool.current')?></div> / <div class="shortNum"><?=$this->getStats($stat, 'pool.max')?></div>
 								</div>
 								<div class="shortNum lrBuffer alignCenter"><?=$this->getStats($stat, 'edge')?></div>
 							</div>

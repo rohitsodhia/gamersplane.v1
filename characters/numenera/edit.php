@@ -35,7 +35,7 @@
 									<div class="shortText spacer"></div>
 									<div class="pool">
 										<label id="poolLabel">Pool</label>
-										<label class="shortNum">Total</label> / <label class="shortNum">Used</label>
+										<label class="shortNum">Current</label> / <label class="shortNum">Max</label>
 									</div>
 									<label class="shortNum lrBuffer alignBottom">Edge</label>
 								</div>
@@ -43,7 +43,7 @@
 								<div class="tr mainStat">
 									<div class="shortText"><?=ucwords($stat)?></div>
 									<div class="pool">
-										<input type="text" name="stats[<?=$stat?>][pool][total]" value="<?=$this->getStats($stat, 'pool.total')?>" class="shortNum"> / <input type="text" name="stats[<?=$stat?>][pool][used]" value="<?=$this->getStats($stat, 'pool.used')?>" class="shortNum">
+										<input type="text" name="stats[<?=$stat?>][pool][current]" value="<?=$this->getStats($stat, 'pool.current')?>" class="shortNum"> / <input type="text" name="stats[<?=$stat?>][pool][max]" value="<?=$this->getStats($stat, 'pool.max')?>" class="shortNum">
 									</div>
 									<input type="text" name="stats[<?=$stat?>][edge]" value="<?=$this->getStats($stat, 'edge')?>" class="shortNum lrBuffer">
 								</div>
