@@ -303,7 +303,7 @@
 		<div id="forumLinks">
 			<div id="forumOptions">
 <? if ($loggedIn) { ?>
-				<a href="/forums/process/read/<?=$forumID?>">Mark Forum As Read</a>
+				<a href="/forums/process/read/<?=$forumID?>/">Mark Forum As Read</a>
 <? } ?>
 			</div>
 <? 
