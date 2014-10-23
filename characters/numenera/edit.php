@@ -127,8 +127,8 @@
 						</div>
 					</div>
 					<div id="posessions" class="floatRight">
-						<h2 class="headerbar hbDark">Posessions</h2>
-						<textarea name="posessions" class="hbdMargined"><?=$this->getPossessions()?></textarea>
+						<h2 class="headerbar hbDark">Possessions</h2>
+						<textarea name="possessions" class="hbdMargined"><?=$this->getPossessions()?></textarea>
 					</div>
 				</div>
 

@@ -11,18 +11,18 @@
 		protected $stats = array(
 							'might' => array(
 								'pool' => array(
-									'total' => 0, 
-									'used' => 0), 
+									'current' => 0, 
+									'max' => 0), 
 								'edge' => 0), 
 							'speed' => array(
 								'pool' => array(
-									'total' => 0, 
-									'used' => 0), 
+									'current' => 0, 
+									'max' => 0), 
 								'edge' => 0), 
 							'intellect' => array(
 								'pool' => array(
-									'total' => 0, 
-									'used' => 0), 
+									'current' => 0, 
+									'max' => 0), 
 								'edge' => 0));
 		protected $damage = array('impaired' => 0, 'debilitated' => 0);
 		protected $recovery = 0;
@@ -290,12 +290,12 @@
 			} } else echo "\t\t\t\t\t<p id=\"noCyphers\">This character currently has no cyphers.</p>\n";
 		}
 		
-		public function setPossessions($posessions) {
-			$this->posessions = $posessions;
+		public function setPossessions($possessions) {
+			$this->possessions = $possessions;
 		}
 
 		public function getPossessions() {
-			return $this->posessions;
+			return $this->possessions;
 		}
 
 		public function save($bypass = false) {
@@ -312,8 +312,8 @@
 				$this->setEffort($data['effort']);
 				$this->setXP($data['xp']);
 				foreach ($data['stats'] as $stat => $values) {
-					$this->setStat($stat, 'pool.total', $values['pool']['total']);
-					$this->setStat($stat, 'pool.used', $values['pool']['used']);
+					$this->setStat($stat, 'pool.current', $values['pool']['current']);
+					$this->setStat($stat, 'pool.max', $values['pool']['max']);
 					$this->setStat($stat, 'edge', $values['edge']);
 				}
 				$this->setDamage('impaired', $data['damage']['impaired']);
@@ -338,7 +338,7 @@
 				if (sizeof($data['cyphers'])) 
 					foreach ($data['cyphers'] as $cypherInfo) $this->addCypher($cypherInfo);
 
-				$this->setPossessions($data['posessions']);
+				$this->setPossessions($data['possessions']);
 				$this->setNotes($data['notes']);
 			}
 

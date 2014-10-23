@@ -121,7 +121,7 @@
 					</div>
 				</div>
 				<div id="posessions" class="floatRight">
-					<h2 class="headerbar hbDark">Posessions</h2>
+					<h2 class="headerbar hbDark">Possessions</h2>
 					<div class="hbdMargined"><?=$this->getPossessions()?></div>
 				</div>
 			</div>
