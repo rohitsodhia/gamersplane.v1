@@ -13,7 +13,7 @@
 		
 		if ($userCheck->rowCount()) {
 			$userInfo = $userCheck->fetch();
-			
+
 			if ($userInfo['active'] == 0 || $userInfo['password'] != $password) {
 				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 0)');
 				if (isset($_POST['modal'])) echo '/login/?failed=1';
@@ -35,8 +35,9 @@
 				
 				if (isset($_POST['modal'])) echo 1;
 				else {
-					if (isset($_SESSION['currentURL'])) header('Location: '.$_SESSION['currentURL']);
-					else header('Location: /');
+//					if (isset($_SESSION['currentURL'])) header('Location: '.$_SESSION['currentURL']);
+//					else header('Location: /');
+					header('Location: /');
 				}
 			}
 		} else {
