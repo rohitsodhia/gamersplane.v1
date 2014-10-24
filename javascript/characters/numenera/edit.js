@@ -58,7 +58,7 @@ $(function() {
 	}).on('click', '#addSpecialAbility', function (e) {
 		e.preventDefault();
 
-		$.post('/characters/ajax/addSpecialAbility/', { system: system, key: nextSpecialAbilityCount }, function (data) {
+		$.post('/characters/ajax/addItemized/', { system: system, type: 'specialAbility', key: nextSpecialAbilityCount }, function (data) {
 			$newSpecialAbility = $(data);
 			$newSpecialAbility.appendTo('#specialAbilityList').find('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system, systemOnly: true }).find('input').focus();
 			nextSpecialAbilityCount += 1;
