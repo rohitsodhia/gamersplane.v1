@@ -1,11 +1,2 @@
-INSERT INTO dispatch SET url = 'notifications/', pageID = 'notifications', file = 'notifications.php', title = 'Notifications';
-
-UPDATE gameHistory SET action = 'playerApplied' WHERE action = 'appliedToGame';
-UPDATE gameHistory SET action = 'playerRemoved' WHERE action = 'removedPlayer';
-UPDATE gameHistory SET action = 'playerLeft' WHERE action = 'leftGame';
-UPDATE characterHistory SET action = 'charFavorited' WHERE action = 'favorited';
-UPDATE characterHistory SET action = 'charUnfavorited' WHERE action = 'unfavorited';
-UPDATE characterHistory SET action = 'charCreated' WHERE action = 'created';
-UPDATE characterHistory SET action = 'charEdited' WHERE action = 'editedChar';
-UPDATE characterHistory SET action = 'charApplied' WHERE action = 'appliedToGame';
-UPDATE characterHistory SET action = 'charDeleted' WHERE action = 'deleted';
+ALTER TABLE forums ADD gameID int;
+UPDATE forums c LEFT JOIN forums p ON c.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN games g ON p.forumID = g.forumID SET c.gameID = g.gameID WHERE p.parentID = 2 AND p.forumID != 10;
