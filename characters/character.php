@@ -36,7 +36,7 @@
 			<div class="wing urWing"></div>
 		</div></div>
 <?	} ?>
-<?	if (file_exists('/images/logos/'.SYSTEM.'.png')) { ?>
+<?	if (file_exists(FILEROOT.'/images/logos/'.SYSTEM.'.png')) { ?>
 		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>
 <?	} ?>
 		
