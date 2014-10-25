@@ -8,6 +8,8 @@ $(function () {
 
 		$('span.' + oldOpen + ', div.' + oldOpen + ', form.' + oldOpen).hide();
 		$('span.' + newOpen + ', div.' + newOpen + ', form.' + newOpen).show();
+		$('form.' + newOpen	+ ' .fancyButton').each(function () { wingMargins($('form.' + newOpen + ' .fancyButton')[0]); });
+
 	});
 
 	$('a.sprite.cross, a.newPermission, a.permission_delete').colorbox();

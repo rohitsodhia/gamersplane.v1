@@ -55,20 +55,6 @@
 			$details['created'] = date('Y-m-d H:i:s');
 			$details['start'] = $details['created'];
 
-			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
-			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
-			$addForum = $mysql->prepare('INSERT INTO forums (title, parentID, `order`) VALUES (:title, 2, '.$order.')');
-			$addForum->execute(array(':title' => $details['title']));
-			$forumID = $mysql->lastInsertId();
-			$heritage = sql_forumIDPad(2).'-'.sql_forumIDPad($forumID);
-			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);
-			$details['forumID'] = $forumID;
-			
-			$addForumGroup = $mysql->prepare('INSERT INTO forums_groups (name, ownerID, gameGroup) VALUES (:title, '.$userID.', 1)');
-			$addForumGroup->execute(array('title' => $details['title']));
-			$groupID = $mysql->lastInsertId();
-			$details['groupID'] = $groupID;
-			
 			$system = $details['system'];
 			$addGame = $mysql->prepare('INSERT INTO games (title, systemID, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :systemID, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, :forumID, :groupID)');
 			$addGame->bindParam('title', $details['title']);
@@ -86,6 +72,20 @@
 			$gameID = $mysql->lastInsertId();
 			
 			$mysql->query("INSERT INTO players (gameID, userID, approved, isGM, primaryGM) VALUES ($gameID, $userID, 1, 1, 1)");
+			
+			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
+			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
+			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, `order`, gameID) VALUES (:title, 2, {$order}, {$gameID})");
+			$addForum->execute(array(':title' => $details['title']));
+			$forumID = $mysql->lastInsertId();
+			$heritage = sql_forumIDPad(2).'-'.sql_forumIDPad($forumID);
+			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);
+			$details['forumID'] = $forumID;
+			
+			$addForumGroup = $mysql->prepare('INSERT INTO forums_groups (name, ownerID, gameGroup) VALUES (:title, '.$userID.', 1)');
+			$addForumGroup->execute(array('title' => $details['title']));
+			$groupID = $mysql->lastInsertId();
+			$details['groupID'] = $groupID;
 			
 			$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$userID.')');
 			

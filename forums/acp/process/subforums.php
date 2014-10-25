@@ -41,14 +41,15 @@
 		}
 		$mysql->query("UPDATE forums SET `order` = IF(`order` = $oldPosition, $newPosition, $oldPosition) WHERE `order` IN ($oldPosition, $newPosition) AND parentID = $forumID");
 		
-		header("Location: /forums/acp/{$forumID}/subforums");
+		header("Location: /forums/acp/{$forumID}/subforums/");
 	} elseif ($toDo == 'new') {
 		$pForumID = $forumID;
-		$baseHeritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$pForumID);
-		$baseHeritage = $baseHeritage->fetchColumn();
+		$forumInfo = $mysql->query('SELECT heritage, gameID FROM forums WHERE forumID = '.$pForumID);
+		list($baseHeritage, $gameID) = $forumInfo->fetch(PDO::FETCH_NUM);
+		if (!$gameID) $gameID = 'NULL';
 		$numForums = $mysql->query('SELECT COUNT(forumID) FROM forums WHERE parentID = '.$pForumID);
 		$numForums = $numForums->fetchColumn();
-		$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, `order`) VALUES (:title, $pForumID, :order)");
+		$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, `order`, gameID) VALUES (:title, $pForumID, :order, $gameID)");
 		$addForum->bindValue(':title', sanitizeString($_POST['newForum']));
 		$addForum->bindValue(':order', intval($numForums + 1));
 		$addForum->execute();
@@ -56,6 +57,6 @@
 		$mysql->query('UPDATE forums SET heritage = "'.$baseHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
 		
-		header('Location: /forums/acp/'.$pForumID.'/subforums');
+		header('Location: /forums/acp/'.$pForumID.'/subforums/');
 	} else header('Location: /forums/');
 ?>
