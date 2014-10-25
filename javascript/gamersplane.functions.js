@@ -79,8 +79,10 @@ function wingMargins(container) {
 	element = container.nodeName.toLowerCase();
 	$container = $(container);
 	if ($container.hasClass('headerbar')) baseClass = 'headerbar';
-	else if ($container.hasClass('fancyButton')) baseClass = 'fancyButton';
-	else if ($container.hasClass('wingDiv')) baseClass = 'wingDiv';
+	else if ($container.hasClass('fancyButton')) {
+		baseClass = 'fancyButton';
+		if ($container.children('button').length) $container.height('auto').children('button').height('auto');
+	} else if ($container.hasClass('wingDiv')) baseClass = 'wingDiv';
 	if (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') $content = $container.children('div:not(.wing)');
 	else $content = $container.children('button');
 
