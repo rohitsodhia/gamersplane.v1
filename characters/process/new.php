@@ -12,10 +12,10 @@
 		if ($errors != '?') {
 			header('Location: /characters/my/'.substr($errors, 0, -1));
 		} else {
-			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, type, systemID) VALUES (:userID, :label, :type, :systemID)');
+			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, charType, systemID) VALUES (:userID, :label, :charType, :systemID)');
 			$addCharacter->bindValue(':userID', $userID);
 			$addCharacter->bindValue(':label', $_POST['label']);
-			$addCharacter->bindValue(':type', $_POST['type']);
+			$addCharacter->bindValue(':charType', $_POST['charType']);
 			$addCharacter->bindValue(':systemID', $systemID);
 			$addCharacter->execute();
 			$characterID = $mysql->lastInsertId();
@@ -25,7 +25,7 @@
 			$charClass = $systemShort.'Character';
 			$newChar = new $charClass($characterID);
 			$newChar->setLabel($_POST['label']);
-			$newChar->setType($_POST['type']);
+			$newChar->setType($_POST['charType']);
 			$newChar->save();
 			addCharacterHistory($characterID, 'charCreated', $userID, 'NOW()', $systemID);
 
