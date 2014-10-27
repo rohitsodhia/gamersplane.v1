@@ -29,7 +29,7 @@
 
 		public function __get($var) {
 			if (!in_array($var, $this->hiddenVars) && isset($this->$var)) return $this->$var;
-			elseif (in_array($var, $this->usermeta)) return $this->usermeta[$var];
+			elseif (array_key_exists($var, $this->usermeta)) return $this->usermeta[$var];
 			else return null;
 		}
 
