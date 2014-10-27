@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$charInfo = $mysql->query("SELECT c.label, c.gameID, c.systemID, s.shortName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = $userID AND c.characterID = $characterID");

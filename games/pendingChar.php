@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$gameID = intval($pathOptions[0]);
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[2]);

@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$lockCheck = $mysql->query('SELECT locked FROM chat_sessions WHERE locked = 0 AND gameID = '.$gameID);

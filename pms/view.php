@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin();
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	
 	$pmID = intval($pathOptions[1]);

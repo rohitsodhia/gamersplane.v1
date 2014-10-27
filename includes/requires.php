@@ -13,4 +13,6 @@
 
 	require_once('Mobile_Detect.php');
 	$mobileDetect = new Mobile_Detect();
+
+	require_once('User.class.php');
 ?>

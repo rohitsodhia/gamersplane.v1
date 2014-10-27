@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[1]);
 	if ($gameID == 0) { header('Location: /403'); exit; }

@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin();
 	$box = $pathOptions[0] == 'outbox'?'outbox':'inbox';
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

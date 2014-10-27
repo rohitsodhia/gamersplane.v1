@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$threadID = intval($pathOptions[2]);
 	
 	$type = $pathOptions[1];

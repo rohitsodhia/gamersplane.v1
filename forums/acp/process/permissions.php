@@ -5,7 +5,6 @@
 		return $value * $multipliers[$pType];
 	}
 	
-	$loggedIn = checkLogin();
 	
 	$userID = intval($_SESSION['userID']);
 	$forumID = intval($_POST['forumID']);

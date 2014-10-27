@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	$userID = intval($_SESSION['userID']);
 	$forumID = intval($pathOptions[0]);
 	$forumType = 'c';

@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$userInfo = $mysql->query('SELECT p.approved, g.title FROM players p, games g WHERE p.userID = '.$userID.' AND p.gameID = g.gameID AND g.gameID = '.$gameID);

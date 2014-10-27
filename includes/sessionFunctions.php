@@ -15,7 +15,7 @@
 			$loginHash = sanitizeString($_COOKIE['loginHash']);
 			$userCheck = $mysql->prepare('SELECT userID, username, joinDate, timezone FROM users WHERE MD5(CONCAT("'.SVAR.'", `username`, `joinDate`)) = :loginHash');
 			$userCheck->execute(array(':loginHash' => $loginHash));
-			
+
 			if ($userCheck->rowCount()) {
 				$userInfo = $userCheck->fetch();
 				if (!isset($_SESSION['userID']) && !isset($_SESSION['username'])) $mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 2)');
@@ -34,7 +34,7 @@
 				return TRUE;
 			} else {
 				logout();
-				wp_logout();
+//				wp_logout();
 				if ($redirect) { header('Location: /login?redirect=1'); exit; }
 				
 				return FALSE;

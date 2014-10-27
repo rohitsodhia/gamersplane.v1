@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin(1);
 	$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$_SESSION['userID']} AND privilage = 'manageMusic'");
 	if ($checkPrivilage->rowCount()) {
 		$songID = $_POST['songID'];

@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	if ($pathOptions[0] == 'new') $display = 'new';
 	else $display = 'edit';
 

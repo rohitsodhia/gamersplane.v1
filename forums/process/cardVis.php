@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$drawID = intval($_POST['drawID']);
 	$drawInfo = $mysql->query("SELECT posts.authorID, posts.postID, posts.threadID, deckDraws.reveals FROM posts, deckDraws WHERE posts.postID = deckDraws.postID AND deckDraws.drawID = $drawID");

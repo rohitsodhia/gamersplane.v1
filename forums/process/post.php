@@ -1,7 +1,6 @@
 <?
 	addPackage('tools');
 
-	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 
 	if (isset($_POST['advanced'])) {

@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	$profileID = intval($pathOptions[0]);
 	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$profileID);
 	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }

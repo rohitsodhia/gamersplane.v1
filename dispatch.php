@@ -46,9 +46,11 @@
 			else $moddedPath .= $pathOption;
 		}
 //		echo $moddedPath;
-		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
+		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute(array($moddedPath.'/'));
 		$dispatchInfo = $dispatchInfo->fetch();
+		global $loggedIn;
+		$loggedIn = checkLogin($dispatchInfo['loginReq']);
 		if (($dispatchInfo['pageID'] == 'home' && $moddedPath != '') || !file_exists($dispatchInfo['file'])) {
 			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404/"');
 			$dispatchInfo = $dispatchInfo->fetch();

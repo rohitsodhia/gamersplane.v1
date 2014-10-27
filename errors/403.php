@@ -1,6 +1,5 @@
 <?
 	header($_SERVER['SERVER_PROTOCOL'].' 403 Forbidden');
-	$loggedIn = checkLogin(0);
 	
 	$errorPage = TRUE;
 ?>

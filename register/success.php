@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	$username = $pathOptions[1];
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

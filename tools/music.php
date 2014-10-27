@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
 
 	if ($loggedIn) {

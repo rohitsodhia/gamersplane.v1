@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$mob = $pathOptions[1] == 'mob'?1:0;
 ?>

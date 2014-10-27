@@ -1,7 +1,6 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('tools');
-	$loggedIn = checkLogin();
 
 	$userID = intval($_SESSION['userID']);
 	$noChat = FALSE;

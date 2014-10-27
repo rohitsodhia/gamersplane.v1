@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">GP's Gamers</h1>

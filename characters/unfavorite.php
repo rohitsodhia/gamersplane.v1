@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$charInfo = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND f.userID = $userID AND c.characterID = $characterID AND f.characterID = c.characterID");

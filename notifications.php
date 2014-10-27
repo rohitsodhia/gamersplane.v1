@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
 	$userID = $_SESSION['userID'];
 
 	require_once(FILEROOT.'/header.php');

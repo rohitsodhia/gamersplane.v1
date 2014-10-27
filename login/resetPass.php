@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	$validationStr = preg_match('/^[a-z0-9]*$/i', $_GET['validate'])?$_GET['validate']:FALSE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	
 	if ($_POST['orderBy'] == 'createdOn_d') $order = 'g.created DESC';

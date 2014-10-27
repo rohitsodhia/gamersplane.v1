@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$gameID = intval($pathOptions[1]);
 	$gameInfo = $mysql->query('SELECT title, open FROM games WHERE gameID = '.$gameID.' AND gmID = '.intval($_SESSION['userID']));
 	if ($gameInfo->rowCount() == 0) { header('Location: /403'); }

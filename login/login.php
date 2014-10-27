@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<div class="alertBox_success<?=!isset($_GET['resetSuccess'])?' hideDiv':''?>"><ul>

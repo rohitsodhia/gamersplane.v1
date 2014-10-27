@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$noChar = TRUE;

@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$userID);
 	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }

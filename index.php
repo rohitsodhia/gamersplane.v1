@@ -1,6 +1,5 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-	$loggedIn = checkLogin(0);
 	$userID = $_SESSION['userID'];
 
 	require_once(FILEROOT.'/header.php');

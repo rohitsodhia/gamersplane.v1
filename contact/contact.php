@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	if ($_SESSION['errors']) {
 		if (preg_match('/contact\/.*$/', $_SESSION['lastURL'])) {
 			$errors = sizeof($_SESSION['errors']);

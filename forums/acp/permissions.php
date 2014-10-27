@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$forumID = intval($pathOptions[2]);
 	$redirect = FALSE;

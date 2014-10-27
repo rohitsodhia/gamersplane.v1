@@ -2,14 +2,14 @@
 	if (checkLogin(0)) { header('Location: /'); exit; }
 	
 	$activateHash = $pathOptions[1]; 
-	$userCheck = $mysql->prepare("SELECT userID, username, timezone, joinDate FROM users WHERE MD5(username) = ? AND active = 0");
+	$userCheck = $mysql->prepare("SELECT userID, username, timezone, joinDate FROM users WHERE MD5(username) = ? AND activatedOn IS NULL");
 	$userCheck->execute(array($activateHash));
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 <?
 	if ($activateHash && $userCheck->rowCount()) {
 		$userInfo = $userCheck->fetch();
-		$mysql->query("UPDATE users SET active = 1 WHERE userID = {$userInfo['userID']}");
+		$mysql->query("UPDATE users SET activatedOn = NOW() WHERE userID = {$userInfo['userID']}");
 		$mysql->query("INSERT INTO forums_groupMemberships (userID, groupID) VALUES ({$userInfo['userID']}, 1)");
 
 		$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userInfo['userID'].', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');

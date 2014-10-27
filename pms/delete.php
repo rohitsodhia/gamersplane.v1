@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin();
 	$userID = intval($_SESSION['userID']);
 	
 	$pmID = intval($pathOptions[1]);

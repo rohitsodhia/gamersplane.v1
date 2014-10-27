@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	if (isset($_GET['newDeck'])) newDeck($_GET['newDeck']);
 	if (!isset($_SESSION['deck'])) $_SESSION['deck'] = array();
 	

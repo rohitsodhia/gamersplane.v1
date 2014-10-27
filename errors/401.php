@@ -1,6 +1,5 @@
 <?
 	header($_SERVER['SERVER_PROTOCOL'].' 401 Unauthorized');
-	$loggedIn = checkLogin(0);
 	
 	$errorPage = TRUE;
 ?>

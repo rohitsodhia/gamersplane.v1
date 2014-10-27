@@ -1,2 +1,18 @@
-ALTER TABLE forums ADD gameID int;
-UPDATE forums c LEFT JOIN forums p ON c.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN games g ON p.forumID = g.forumID SET c.gameID = g.gameID WHERE p.parentID = 2 AND p.forumID != 10;
+ALTER TABLE users ADD activatedOn datetime AFTER joinDate;
+ALTER TABLE users ADD salt varchar(20) not null AFTER password;
+UPDATE users SET activatedOn = joinDate WHERE active = 1;
+ALTER TABLE users DROP active;
+
+ALTER TABLE dispatch ADD loginReq bool NOT NULL DEFAULT 1 AFTER title;
+UPDATE dispatch SET loginReq = 0 WHERE url IN ('/', '403/', '404/', 'contact/', 'contact/process/', 'contact/success/', 'forums/', 'forums/rules/', 'forums/search/', 'forums/thread/', 'gamersList/', 'games/(###)/', 'games/list/', 'login/', 'login/process/login/', 'login/process/requestReset/', 'login/process/resetPass/', 'login/requestReset/', 'login/resetPass/', 'register/', 'register/activate/', 'register/ajax/loginSearch/', 'register/process/register/', 'register/success/', 'tools/', 'tools/ajax/decks/', 'tools/ajax/dice/', 'tools/ajax/newDeck/', 'tools/cards/', 'tools/chat/', 'tools/dice/', 'tools/process/cards/', 'tools/process/dice/', 'unauthorized/', 'tools/music/', 'faqs/');
+
+DELETE FROM dispatch WHERE url IN ('tools/ajax/chat/retrieveMessages.php/', 'tools/ajax/chat/retrieveUsers.php/', 'tools/ajax/chat/sendMessage/', 'tools/chat/cron/logChat/');
+
+CREATE TABLE usermeta (
+	metaID int not null auto_increment,
+	userID int not null,
+	metaKey varchar(50) not null,
+	metaValue longtext not null,
+	autoload bool not null,
+	PRIMARY KEY (metaID)
+) ENGINE = MyISAM;

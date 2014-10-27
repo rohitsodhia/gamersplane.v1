@@ -1,6 +1,5 @@
 <?
 	header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
-	$loggedIn = checkLogin(0);
 	
 	$errorPage = TRUE;
 ?>

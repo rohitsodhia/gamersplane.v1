@@ -1,7 +1,6 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('tools');
-	$loggedIn = checkLogin(0);
 	
 	$userID = intval($_SESSION['userID']);
 	$threadID = intval($pathOptions[1]);

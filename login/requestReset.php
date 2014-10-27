@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 <? if (isset($_GET['invalidEmail'])) { ?>

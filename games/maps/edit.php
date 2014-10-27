@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$mapID = intval($pathOptions[2]);
 	$gmCheck = $mysql->query("SELECT maps.gameID FROM maps INNER JOIN players USING (gameID) WHERE players.userID = $userID AND maps.mapID = $mapID");

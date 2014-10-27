@@ -1,5 +1,4 @@
 <?
-	$loggedIn = checkLogin();
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

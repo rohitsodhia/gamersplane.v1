@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$mapID = intval($pathOptions[2]);
 	$modal = $pathOptions[3] == 'modal'?TRUE:FALSE;

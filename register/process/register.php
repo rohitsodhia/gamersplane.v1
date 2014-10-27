@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin(0);
-	
 	define('SHORTINIT', TRUE);
 //	require_once(FILEROOT.'/blog/wp-load.php');
 //	require_once(FILEROOT.'/blog/wp-includes/registration.php');

@@ -1,6 +1,5 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-	$loggedIn = checkLogin(0);
 	$userID = $_SESSION['userID'];
 
 	$acpPermissions = $mysql->query("SELECT permission FROM acpPermissions WHERE userID = $userID");

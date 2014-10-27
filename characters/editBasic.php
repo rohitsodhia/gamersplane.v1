@@ -1,6 +1,4 @@
 <?
-	$loggedIn = checkLogin();
-	
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$basicInfo = $mysql->query('SELECT label, type FROM characters WHERE userID = '.$userID.' AND characterID = '.$characterID);
