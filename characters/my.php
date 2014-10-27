@@ -22,7 +22,7 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
-	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.systemID = s.systemID LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = '.$userID.' ORDER BY s.fullName, c.type, c.label');
+	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.systemID = s.systemID LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = '.$userID.' ORDER BY s.fullName, c.charType, c.label');
 	
 	$noItems = FALSE;
 	if ($characters->rowCount()) {
@@ -31,7 +31,7 @@
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
 					<a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
-					><div class="charType"><?=$info['type']?></div
+					><div class="charType"><?=$info['charType']?></div
 					><div class="systemType"><?=$info['fullName']?></div
 					><div class="links">
 						<a href="/characters/editBasic/<?=$info['characterID']?>/" class="editBasic sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type"></a>
@@ -61,7 +61,7 @@
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
 					<a href="/characters/library/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
 					><a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
-					><div class="charType"><?=$info['type']?></div
+					><div class="charType"><?=$info['charType']?></div
 					><div class="systemType"><?=$info['fullName']?></div
 					><div class="owner"><a href="/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
@@ -92,9 +92,9 @@
 			</div>
 			<div class="tr">
 				<label class="textLabel">Type</label>
-				<select name="type">
+				<select name="charType">
 <?
-	foreach ($charTypes as $type) echo "\t\t\t\t\t<option value=\"{$type}\">{$type}</option>\n";
+	foreach ($charTypes as $charType) echo "\t\t\t\t\t<option value=\"{$charType}\">{$charType}</option>\n";
 ?>
 				</select>
 			</div>
