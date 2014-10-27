@@ -71,4 +71,27 @@ $(function() {
 
 	var nextSpecialAbilityCount = $('#specialAbilityList .specialAbility').length + 1;
 	$('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system, systemOnly: true });
+
+	/* Special Abilities */
+	$('#cyphers').on('click', '.specialAbility_remove', function (e) {
+		e.preventDefault();
+
+		$(this).parent().remove();
+		if ($('.specialAbility').size() == 0) $('#addCypher').click();
+	}).on('click', '#addCypher', function (e) {
+		e.preventDefault();
+
+		$.post('/characters/ajax/addItemized/', { system: system, type: 'specialAbility', key: nextCypherCount }, function (data) {
+			$newCypher = $(data);
+			$newCypher.appendTo('#specialAbilityList').find('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system, systemOnly: true }).find('input').focus();
+			nextCypherCount += 1;
+		});
+	}).on('click', '.specialAbility_notesLink', function(e) {
+		e.preventDefault();
+
+		$(this).siblings('textarea').slideToggle();
+	});
+
+	var nextCypherCount = $('#specialAbilityList .specialAbility').length + 1;
+	$('.specialAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'specialAbility', characterID: characterID, system: system, systemOnly: true });
 });
