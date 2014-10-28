@@ -92,13 +92,6 @@
 		return $string;
 	}
 	
-	function switchTimezone($timezone = 'GMT', $dateTime = '0000-00-00 00:00:00') {
-		if ($dateTime == '0000-00-00 00:00:00') $dateTime = date('Y-m-d H:i:s');
-		$date = new DateTime($dateTime, new DateTimeZone('GMT'));
-		$date->setTimezone(new DateTimeZone($timezone));
-		return strtotime($date->format('Y-m-d H:i:s'));
-	}
-	
 	function showSign($num) {
 		return ($num >= 0?'+':'').$num;
 	}
