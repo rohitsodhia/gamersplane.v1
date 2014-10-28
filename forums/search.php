@@ -34,8 +34,6 @@
 		
 		if ($searchResults->rowCount()) {
 			foreach ($searchResults as $threadInfo) {
-				$threadInfo['fp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['fp_datePosted']);
-				$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
 				$forumIcon = $threadInfo['newPosts']?'new':'old';
 				$threadContent .= '				<div class="tr">
 					<div class="td icon"><div class="forumIcon'.($forumIcon == 'new'?' newPosts':'').'" title="'.($forumIcon == 'new'?'New':'No new').' posts in thread" alt="'.($forumIcon == 'new'?'New':'No new').' posts in thread"></div></div>
@@ -54,11 +52,11 @@
 					$threadContent .= "\t\t\t\t\t\t</div>\n";
 				}
 				$threadContent .= "						<a href=\"/forums/thread/{$threadInfo['threadID']}\">{$threadInfo['title']}</a><br>
-						<span class=\"threadAuthor\">by <a href=\"/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> in <a href=\"/forums/{$threadInfo['forumID']}/\">{$threadInfo['fTitle']}</a> on <span>".date('M j, Y g:i a', $threadInfo['fp_datePosted'])."</span></span>
+						<span class=\"threadAuthor\">by <a href=\"/ucp/{$threadInfo['fp_authorID']}\" class=\"username\">{$threadInfo['fp_username']}</a> in <a href=\"/forums/{$threadInfo['forumID']}/\">{$threadInfo['fTitle']}</a> on <span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($threadInfo['fp_datePosted']))."</span></span>
 					</div>
 					<div class=\"td numPosts\">".($threadInfo['numPosts']?$threadInfo['numPosts']:0)."</div>
 					<div class=\"td lastPost\">
-						<a href=\"/ucp/{$threadInfo['lp_authorID']}\" class=\"username\">{$threadInfo['lp_username']}</a><br><span>".date('M j, Y g:i a', $threadInfo['lp_datePosted'])."</span>
+						<a href=\"/ucp/{$threadInfo['lp_authorID']}\" class=\"username\">{$threadInfo['lp_username']}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($threadInfo['lp_datePosted']))."</span>
 					</div>
 				</div>\n";
 			}

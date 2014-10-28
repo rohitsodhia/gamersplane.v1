@@ -3,7 +3,6 @@
 	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$userID);
 	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }
 	$userInfo = $userCheck->fetch();
-	$userInfo['joinDate'] = switchTimezone($_SESSION['timezone'], $userInfo['joinDate']);
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">User Control Panel</h1>
@@ -122,7 +121,7 @@
 		<form method="post" action="/ucp/process/changeInfo" class="section_security hideDiv">
 			<div class="tr">
 				<label>User Since</label>
-				<div><?=date('F j, Y H:i a', $userInfo['joinDate'])?></div>
+				<div class="convertTZ"><?=date('F j, Y H:i a', strtotime($userInfo['joinDate']))?></div>
 			</div>
 			<div class="tr">
 				<label>Email Address</label>

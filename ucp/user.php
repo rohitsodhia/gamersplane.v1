@@ -3,7 +3,6 @@
 	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$profileID);
 	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }
 	$userInfo = $userCheck->fetch();
-	$userInfo['joinDate'] = switchTimezone($_SESSION['timezone'], $userInfo['joinDate']);
 	
 	$profFields = array('location' => 'Location', 'aim' => 'AIM', 'yahoo' => 'Yahoo!', 'msn' => 'MSN', 'games' => 'Games');
 ?>
@@ -21,7 +20,7 @@
 				<div class="details">
 					<div class="tr">
 						<div class="title">Member Since</div>
-						<div><?=date('F j, Y g:i A', $userInfo['joinDate'])?></div>
+						<div class="convertTZ"><?=date('F j, Y g:i A', strtotime($userInfo['joinDate']))?></div>
 					</div>
 <? if ($userInfo['gender'] != '') { ?>
 					

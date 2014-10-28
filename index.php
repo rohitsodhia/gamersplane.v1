@@ -9,9 +9,8 @@
 <?
 	$posts = $mysql->query('SELECT t.threadID, p.title, u.userID, u.username, p.message, p.datePosted FROM threads t, threads_relPosts rp, posts p, users u WHERE t.threadID = rp.threadID AND t.forumID = 3 AND rp.firstPostID = p.postID AND p.authorID = u.userID ORDER BY datePosted DESC LIMIT 1');
 	$postInfo = $posts->fetch();
-	$postInfo['datePosted'] = switchTimezone($_SESSION['timezone'], $postInfo['datePosted']);
 	echo "\t\t\t\t<h2 class=\"headerbar\"><a href=\"/forums/thread/{$postInfo['threadID']}/\">{$postInfo['title']}</a></h2>\n";
-	echo "\t\t\t\t<h4>".date('F j, Y g:i a', $postInfo['datePosted']).' by <a href="/user/'.$postInfo['userID'].'" class="username">'.$postInfo['username']."</a></h4>\n";
+	echo "\t\t\t\t<h4><span class=\"convertTZ\">".date('F j, Y g:i a', strtotime($postInfo['datePosted'])).'</span> by <a href="/user/'.$postInfo['userID'].'" class="username">'.$postInfo['username']."</a></h4>\n";
 	echo "\t\t\t\t<hr>\n";
 	echo BBCode2Html(filterString(printReady($postInfo['message'])));
 	if ($loggedIn) echo "\t\t\t\t<div class=\"readMore\">To comment to this post or to read what others thought, please <a href=\"/forums/thread/{$postInfo['threadID']}\">click here</a>.</div>\n";
@@ -26,7 +25,6 @@
 		if ($usersGames->rowCount()) {
 			echo "					<div class=\"games\">\n";
 			foreach ($usersGames as $gameInfo) {
-				$gameInfo['started'] = switchTimezone($_SESSION['timezone'], $gameInfo['started']);
 				$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);
 				$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
@@ -66,7 +64,6 @@
 	else $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired = 0 AND g.open = 1 ORDER BY gameID DESC LIMIT 5');
 	$first = TRUE;
 	foreach ($latestGames as $gameInfo) {
-		$gameInfo['started'] = switchTimezone($_SESSION['timezone'], $gameInfo['started']);
 		$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);
 		$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
 		$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
@@ -77,7 +74,7 @@
 		echo "\t\t\t\t\t<p class=\"details\"><u>{$gameInfo['system']}</u> run by <a href=\"/user/{$gameInfo['gmID']}\" class=\"username\">{$gameInfo['username']}</a></p>\n";
 //		if ($slotsLeft == 0) echo "\t\t\t\t<p class=\"details\">No Slots Remaining</p>\n";
 //		else echo "\t\t\t\t<p class=\"details\">{$slotsLeft} Slots Still Open</p>\n";
-//		echo "\t\t\t\t\t<p class=\"details\">Started on ".date('M j, Y g:i a', $gameInfo['started'])."</p>\n";
+//		echo "\t\t\t\t\t<p class=\"details\">Started on <span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($gameInfo['started']))."</span></p>\n";
 		echo "\t\t\t\t</div>\n";
 	}
 ?>
@@ -111,13 +108,12 @@
 
 	$first = TRUE;
 	foreach ($latestPosts as $latestPost) {
-		$latestPost['datePosted'] = switchTimezone($_SESSION['timezone'], $latestPost['datePosted']);
 		if (!$first) echo "\t\t\t\t\t<hr>\n";
 		else $first = FALSE;
 		echo "\t\t\t\t\t<div class=\"post\">\n";
 		echo "\t\t\t\t\t\t<div class=\"forumIcon".($latestPost['newPosts']?' newPosts':'')."\"></div>\n";
 		echo "\t\t\t\t\t\t<div class=\"title\"><a href=\"/forums/thread/{$latestPost['threadID']}/?view=NewPost\">{$latestPost['title']}</a></div>\n";
-		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"/user/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, ".date('M j, Y g:i a', $latestPost['datePosted'])."</div>\n";
+		echo "\t\t\t\t\t\t<div class=\"byLine\">by <a href=\"/user/{$latestPost['userID']}\" class=\"username\">{$latestPost['username']}</a>, <span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($latestPost['datePosted']))."</div>\n";
 		echo "\t\t\t\t\t\t<div class=\"forum\">in <a href=\"/forums/{$latestPost['forumID']}\">{$latestPost['fTitle']}</a></div>\n";
 		echo "\t\t\t\t\t</div>\n";
 	}

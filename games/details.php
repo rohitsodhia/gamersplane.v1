@@ -5,7 +5,6 @@
 	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
-	$gameInfo['created'] = switchTimezone($_SESSION['timezone'], $gameInfo['created']);
 
 	$postFrequency = explode('/', $gameInfo['postFrequency']);
 	$isGM = $gameInfo['isGM']?true:false;
@@ -73,7 +72,7 @@
 			</div>
 			<div class="tr clearfix">
 				<label>Created</label>
-				<div><?=date('F j, Y g:i a', $gameInfo['created'])?></div>
+				<div class="convertTZ"><?=date('F j, Y g:i a', strtotime($gameInfo['created']))?></div>
 			</div>
 			<div class="tr clearfix">
 				<label>Post Frequency</label>
