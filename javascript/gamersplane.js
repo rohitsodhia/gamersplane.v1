@@ -148,6 +148,8 @@ $(function() {
 		}
 	});
 
+	$('.convertTZ').each(function () { $(this).text(convertTZ($(this).text())); });
+
 
 	/* Individual Pages */
 	if (!$('body').hasClass('modal')) var curPage = $('#content > div > div').attr('id').substring(5);
