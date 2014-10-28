@@ -161,7 +161,6 @@
 				if ($firstTable) $firstTable = FALSE;
 				foreach ($info['children'] as $cForumID => $cInfo) {
 					$forumInfo = $forumInfos[$cForumID];
-					$forumInfo['datePosted'] = switchTimezone($_SESSION['timezone'], $forumInfo['datePosted']);
 					$cHeritage = explode('-', $forumInfo['heritage']);
 					foreach ($cHeritage as $key => $hForumID) $cHeritage[$key] = intval($hForumID);
 //					$forumIcon = checkNewPosts_new($cForumID, $readData, $permissionsList, $children[$cForumID])?'new':'old';
@@ -177,7 +176,7 @@
 					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
 					<div class="td lastPost">
 <?
-					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span>".date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
+					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($forumInfo['datePosted']))."</span>\n";
 					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
@@ -207,7 +206,6 @@
 					if ($firstTable) $firstTable = FALSE;
 				}
 				$forumInfo = $forumInfos[$iForumID];
-				$forumInfo['datePosted'] = switchTimezone($_SESSION['timezone'], $forumInfo['datePosted']);
 				$fHeritage = explode('-', $forumInfo['heritage']);
 				foreach ($fHeritage as $key => $hForumID) $fHeritage[$key] = intval($hForumID);
 //				$forumIcon = checkNewPosts_new($iForumID, $readData, $permissionsList, $children[$iForumID])?'new':'old';
@@ -223,7 +221,7 @@
 					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
 					<div class="td lastPost">
 <?
-					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span>".date('M j, Y g:i a', $forumInfo['datePosted'])."</span>\n";
+					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($forumInfo['datePosted']))."</span>\n";
 					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
@@ -253,8 +251,6 @@
 		if ($firstTable) $firstTable = FALSE;
 		
 		if ($threads->rowCount()) { foreach ($threads as $threadInfo) {
-			$threadInfo['fp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['fp_datePosted']);
-			$threadInfo['lp_datePosted'] = switchTimezone($_SESSION['timezone'], $threadInfo['lp_datePosted']);
 //			if (!isset($threadRD[$threadInfo['threadID']]) && $threadInfo['lp_postID'] > $markedRead) $threadRD[$threadInfo['threadID']] = array('forumID' => $forumID, 'lastRead' => 0, 'lastPost' => $threadInfo['lp_postID']);
 //			elseif (isset($threadRD[$threadInfo['threadID']])) $threadRD[$threadInfo['threadID']]['lastPost'] = $threadInfo['lp_postID'];
 			$forumIcon = ($threadInfo['lp_postID'] > $lastReadID && $threadInfo['lp_postID'] > $threadInfo['lastRead']) && $loggedIn?'new':'old';
@@ -284,11 +280,11 @@
 			}
 ?>
 						<a href="/forums/thread/<?=$threadInfo['threadID']?>"><?=$threadInfo['title']?></a><br>
-						<span class="threadAuthor">by <a href="/ucp/<?=$threadInfo['fp_authorID']?>" class="username"><?=$threadInfo['fp_username']?></a> on <span><?=date('M j, Y g:i a', $threadInfo['fp_datePosted'])?></span></span>
+						<span class="threadAuthor">by <a href="/ucp/<?=$threadInfo['fp_authorID']?>" class="username"><?=$threadInfo['fp_username']?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($threadInfo['fp_datePosted']))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$threadInfo['numPosts']?$threadInfo['numPosts']:0?></div>
 					<div class="td lastPost">
-						<a href="/ucp/<?=$threadInfo['lp_authorID']?>" class="username"><?=$threadInfo['lp_username']?></a><br><span><?=date('M j, Y g:i a', $threadInfo['lp_datePosted'])?></span>
+						<a href="/ucp/<?=$threadInfo['lp_authorID']?>" class="username"><?=$threadInfo['lp_username']?></a><br><span class="convertTZ"><?=date('M j, Y g:i a', strtotime($threadInfo['lp_datePosted']))?></span>
 					</div>
 				</div>
 <?

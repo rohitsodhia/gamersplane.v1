@@ -137,8 +137,6 @@
 	
 	if ($posts->rowCount()) {
 		foreach ($posts as $postInfo) {
-			$postInfo['datePosted'] = switchTimezone($_SESSION['timezone'], $postInfo['datePosted']);
-			$postInfo['lastEdit'] = switchTimezone($_SESSION['timezone'], $postInfo['lastEdit']);
 ?>
 			<div class="postBlock post<?=$postSide?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
@@ -149,13 +147,13 @@
 				<div class="postContent">
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>
 					<header class="postHeader">
-						<div class="postedOn"><?=date('M j, Y g:i a', $postInfo['datePosted'])?></div>
+						<div class="postedOn convertTZ"><?=date('M j, Y g:i a', strtotime($postInfo['datePosted']))?></div>
 						<div class="subject"><a href="?p=<?=$postInfo['postID']?>"><?=strlen($postInfo['title'])?printReady($postInfo['title']):'&nbsp'?></a></div>
 					</header>
 <?
 			echo "\t\t\t\t\t<div class=\"post\">\n";
 			echo printReady(BBCode2Html($postInfo['message']))."\n";
-			if ($postInfo['timesEdited']) { echo "\t\t\t\t\t\t".'<div class="editInfoDiv">Last edited '.date('F j, Y g:i a', $postInfo['lastEdit']).', a total of '.$postInfo['timesEdited'].' time'.(($postInfo['timesEdited'] > 1)?'s':'')."</div>\n"; }
+			if ($postInfo['timesEdited']) { echo "\t\t\t\t\t\t".'<div class="editInfoDiv">Last edited <span  class="convertTZ">'.date('F j, Y g:i a', strtotime($postInfo['lastEdit'])).'</span>, a total of '.$postInfo['timesEdited'].' time'.(($postInfo['timesEdited'] > 1)?'s':'')."</div>\n"; }
 			echo "\t\t\t\t\t</div>\n";
 			
 			if (sizeof($rolls[$postInfo['postID']])) {

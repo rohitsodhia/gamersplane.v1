@@ -37,13 +37,12 @@
 		$count = 0;
 		foreach ($pms as $pmInfo) {
 			$count++;
-			$pmInfo['datestamp'] = switchTimezone($_SESSION['timezone'], $pmInfo['datestamp'], $_SESSION['dst']);
 ?>
 			<div id="pm_<?=$pmInfo['pmID']?>" class="pm tr<?=$pms->rowCount() == $count?' lastTR':''?><?=$pmInfo['viewed']?'':' new'?>">
 				<div class="delCol"><?=$box == 'outbox' && $pmInfo['viewed']?'':'<a href="/pms/delete/'.$pmInfo['pmID'].'" class="deletePM sprite cross"></a>'?></div>
 				<div class="titleCol"><a href="/pms/view/<?=$pmInfo['pmID']?>"><?=(!$pmInfo['viewed']?'<b>':'').printReady($pmInfo['title']).(!$pmInfo['viewed']?'</b>':'')?></a></div>
 				<div class="fromCol"><a href="<?='/'.$pmInfo['senderID']?>" class="username"><?=$pmInfo['senderName']?></a></div>
-				<div class="whenCol"><?=date('F j, Y<\b\r>g:i a', $pmInfo['datestamp'])?></div>
+				<div class="whenCol convertTZ"><?=date('F j, Y<\b\r>g:i a', strtotime($pmInfo['datestamp']))?></div>
 			</div>
 <?
 		}
