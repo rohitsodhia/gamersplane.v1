@@ -31,6 +31,14 @@ function showSign(val) {
 	else return val;
 }
 
+function convertTZ(dtString, parseString, displayString) {
+	parseString = typeof parseString !== 'undefined'?parseString:'MMM d, YYYY h:mm A';
+	displayString = typeof displayString !== 'undefined'?displayString:'MMM d, YYYY h:mm A';
+
+	utcDT = moment.utc(dtString, parseString);
+	return utcDT.local().format(displayString);
+}
+
 function addCSSRule(selector, rules, index) {
 	if ('insertRule' in jsCSSSheet) jsCSSSheet.insertRule(selector + "{" + rules + "}", index);
 	else if ('addRule' in jsCSSSheet) jsCSSSheet.addRule(selector, rules, index);
