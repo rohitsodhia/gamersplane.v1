@@ -244,15 +244,15 @@
 					<div class="specialAbility tr clearfix">
 						<span class="specialAbility_name"><?=$specialAbility['name']?></span>
 <?	if (strlen($specialAbility['notes'])) { ?>
-						<a href="" class="notes">Notes</a>
-						<div class="specialAbility_notes"><?=$specialAbility['notes']?></div>
+						<a href="" class="specialAbility_notesLink">Notes</a>
+						<div class="notes"><?=$specialAbility['notes']?></div>
 <?	} ?>
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noSpecialAbilities\">This character currently has no special abilities.</p>\n";
 		}
 		
-		public function addCypher($cypher) {
+		public function addCypher($cyphers) {
 			if (strlen($cypher['name'])) {
 				newItemized('cypher', $cypher['name'], $this::SYSTEM);
 				$this->cyphers[] = $cypher;
@@ -283,7 +283,7 @@
 						<span class="cypher_name"><?=$cypher['name']?></span>
 <?	if (strlen($cypher['notes'])) { ?>
 						<a href="" class="cypher_notesLink">Notes</a>
-						<div class="cypher_notes"><?=$cypher['notes']?></div>
+						<div class="notes"><?=$cypher['notes']?></div>
 <?	} ?>
 					</div>
 <?

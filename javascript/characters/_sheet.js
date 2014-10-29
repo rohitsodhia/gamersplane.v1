@@ -1,3 +1,9 @@
+function toggleNotes(e) {
+	e.preventDefault();
+
+	$(this).siblings('.notes').slideToggle();
+}
+
 $(function () {
 	$('.favoriteChar').click(function (e) {
 		e.preventDefault();
@@ -11,12 +17,6 @@ $(function () {
 			}
 		});
 	});
-
-	function toggleNotes(e) {
-		e.preventDefault();
-
-		$(this).siblings('.notes').slideToggle();
-	}
 
 	if ($('#feats').length) {
 		$('#feats').on('click', '.feat_notesLink', toggleNotes);
