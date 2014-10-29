@@ -7,7 +7,7 @@ $(function () {
 		success: function (data) {
 			if (data == 'updated') {
 				parent.$('#char_' + $('#characterID').val() + ' .label').text($('#label').val());
-				parent.$('#char_' + $('#characterID').val() + ' .charType').text($('#type option[value=' + $('#type').val() + ']').text());
+				parent.$('#char_' + $('#characterID').val() + ' .charType').text($('#charType option[value=' + $('#charType').val() + ']').text());
 				parent.$.colorbox.close();
 			}
 		}

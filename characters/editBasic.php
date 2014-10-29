@@ -1,7 +1,7 @@
 <?
 	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
-	$basicInfo = $mysql->query('SELECT label, type FROM characters WHERE userID = '.$userID.' AND characterID = '.$characterID);
+	$basicInfo = $mysql->query('SELECT label, charType FROM characters WHERE userID = '.$userID.' AND characterID = '.$characterID);
 	if ($basicInfo->rowCount() == 0) { header('Location: /403'); }
 	$basicInfo = $basicInfo->fetch();
 
@@ -17,9 +17,9 @@
 		
 		<form method="post" action="/characters/process/editBasic/">
 			<p><label for="label" class="leftLabel">Label:</label> <input id="label" type="text" name="label" maxlength="50" value="<?=$basicInfo['label']?>" class="medText"></p>
-			<p><label class="leftLabel">Type:</label> <select id="type" name="type">
+			<p><label class="leftLabel">Type:</label> <select id="type" name="charType">
 <?
-	foreach ($charTypes as $type) echo "\t\t\t\t<option value=\"{$type}\"".($basicInfo['type'] == $type?' selected="selected"':'').">{$type}</option>\n";
+	foreach ($charTypes as $charType) echo "\t\t\t\t<option value=\"{$charType}\"".($basicInfo['charType'] == $charType?' selected="selected"':'').">{$charType}</option>\n";
 ?>
 				</select></p>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
