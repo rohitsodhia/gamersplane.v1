@@ -16,5 +16,5 @@ CREATE TABLE usermeta (
 	autoload bool not null,
 	PRIMARY KEY (metaID)
 ) ENGINE = MyISAM;
-ALTER TABLE usermeta ADD UNIQUE INDEX (userID, metaKey) ;
+ALTER TABLE usermeta ADD UNIQUE INDEX (userID, metaKey);
 
