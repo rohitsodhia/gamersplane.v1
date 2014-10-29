@@ -6,6 +6,7 @@
 		protected $errorChecked = false;
 
 		private function __construct() {
+			if (isset($_SESSION['errors']['error']) < time()) $this->clearErrors();
 		}
 
 		public static function getInstance() {
@@ -32,7 +33,7 @@
 		}
 
 		public function clearErrors($check = false) {
-			if (($check && !$this->errorChecked) || !$check) unset($_SESSION['errors']);
+			if ((($check && !$this->errorChecked) || !$check) && isset($_SESSION['errors'])) unset($_SESSION['errors']);
 		}
 
 		public function getErrors($for) {

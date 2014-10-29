@@ -14,29 +14,28 @@
 		$email = sanitizeString($_POST['email']);
 		$hear = sanitizeString($_POST['hear']);
 		
-		if (strlen($username) < 4) $_SESSION['errors']['userShort'] = 1;
-		elseif (strlen($username) > 24) $_SESSION['errors']['userLong'] = 1;
+		if (strlen($username) < 4) $formErrors->addError('userShort');
+		elseif (strlen($username) > 24) $formErrors->addError('userLong');
 		else {
-			if (!preg_match('/^\w[\w\.]*$/i', $username) || $username != filterString($username)) $_SESSION['errors']['userInvalid'] = 1;
+			if (!preg_match('/^\w[\w\.]*$/i', $username) || $username != filterString($username)) $formErrors->addError('userInvalid');
 			$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = ?');
 			$userCheck->execute(array(strtolower($username)));
-			if ($userCheck->rowCount()) $_SESSION['errors']['userTaken'] = 1;
+			if ($userCheck->rowCount()) $formErrors->addError('userTaken');
 		}
 		
-		if (strlen($password1) == 0) $_SESSION['errors']['passBlank'] = 1;
+		if (strlen($password1) == 0) $formErrors->addError('passBlank');
 		else {
-			if (strlen($password1) < 6) $_SESSION['errors']['passShort'] = 1;
-			elseif (strlen($password1) > 32) $_SESSION['errors']['passLong'] = 1;
-			elseif ($password1 != $password2) $_SESSION['errors']['passMismatch'] = 1;
+			if (strlen($password1) < 6) $formErrors->addError('passShort');
+			elseif (strlen($password1) > 32) $formErrors->addError('passLong');
+			elseif ($password1 != $password2) $formErrors->addError('passMismatch');
 		}
 		
-		if (strlen($email) == 0) $_SESSION['errors']['emailBlank'] = 1;
+		if (strlen($email) == 0) $formErrors->addError('emailBlank');
 		else {
-			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $_SESSION['errors']['emailInvalid'] = 1;
-//			if (!preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[_a-z0-9-]+(\.[_a-z0-9-]+)*(\.[a-z]{2,3})$/', strtolower($email))) $_SESSION['errors']['emailInvalid'] = 1;
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $formErrors->addError('emailInvalid');
 			$emailCheck = $mysql->prepare('SELECT userID from users WHERE LOWER(email) = ?');
 			$emailCheck->execute(array(strtolower($email)));
-			if ($emailCheck->rowCount()) $_SESSION['errors']['emailTaken'] = 1;
+			if ($emailCheck->rowCount()) $formErrors->addError('emailTaken');
 		}
 		
 		require_once(FILEROOT.'/register/recaptcha/recaptchalib.php');
@@ -46,26 +45,21 @@
 										$_POST['recaptcha_challenge_field'],
 										$_POST['recaptcha_response_field']);
 		
-		if (!$resp->is_valid) $_SESSION['errors']['captchaFailed'] = 1;
+		if (!$resp->is_valid) $formErrors->addError('captchaFailed');
 		
-		if (sizeof($_SESSION['errors'])) {
-			$_SESSION['errorVals']['username'] = $_POST['username'];
-			$_SESSION['errorVals']['email'] = $_POST['email'];
-			$_SESSION['errorTime'] = time() + 300;
-			header('Location: /register?failed=1');
+		if ($formErrors->errorsExist()) {
+			$formErrors->setErrors('registration');
+			header('Location: /register/?failed=1');
 		} else {
-			$addUser = $mysql->prepare('INSERT INTO users SET username = :username, password = :password, email = :email, joinDate = :joinDate, referrence = :referrence');
-			$addUser->bindValue(':username', $username);
-			$addUser->bindValue(':password', hash('sha256', SVAR.$password1));
-			$addUser->bindValue(':email', $email);
-			$addUser->bindValue(':joinDate', date('Y-m-d H:i:s'));
-			$addUser->bindValue(':referrence', $hear);
-			$addUser->execute();
-			if ($addUser->rowCount()) {
+			$newUser = new User();
+			$userID = $newUser->newUser($username, $password1, $email);
+			if ($userID) {
+				$newUser->updateUsermeta('reference', $hear);
+
 				$message = "Thank you for registering for Gamers Plane!\n\n";
 				$message .= "Please click on the following link to activate your account:\n";
 				$message .= '<a href="http://gamersplane.com/register/activate/'.md5($username)."\">Activate account</a>\n";
-				$message .= 'Or copy and paste this URL into your browser: http://gamersplane.com/register/activate/'.md5($username)."\n\n";
+				$message .= 'Or copy and paste this URL into your browser: http://gamersplane.com/register/activate/'.md5($username)."/\n\n";
 				$message .= 'Please do not respond to this email, as it will be ignored';
 				mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
 
@@ -73,8 +67,8 @@
 				
 //				wp_create_user($username, $password1, $email);
 				
-				header('Location: /register/success/'.$username);
-			} else header('Location: /register?failed=1');
+				header("Location: /register/success/{$username}");
+			} else header('Location: /register/?failed=1');
 		}
 	} else header('Location: /register/');
 ?>

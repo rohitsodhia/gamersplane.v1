@@ -13,7 +13,7 @@
 		if (isset($_COOKIE['loginHash'])) {
 			global $mysql;
 			$loginHash = sanitizeString($_COOKIE['loginHash']);
-			$userCheck = $mysql->prepare('SELECT userID, username, joinDate, timezone FROM users WHERE MD5(CONCAT("'.SVAR.'", `username`, `joinDate`)) = :loginHash');
+			$userCheck = $mysql->prepare('SELECT userID, username, joinDate, timezone FROM users WHERE MD5(CONCAT("'.PVAR.'", `username`, `joinDate`)) = :loginHash');
 			$userCheck->execute(array(':loginHash' => $loginHash));
 
 			if ($userCheck->rowCount()) {
@@ -23,7 +23,7 @@
 				$_SESSION['username'] = $userInfo['username'];
 				$_SESSION['timezone'] = $userInfo['timezone'];
 				setcookie('loginHash', '', time() - 30, COOKIE_ROOT);
-				setcookie('loginHash', md5(SVAR.$userInfo['username'].$userInfo['joinDate']), time() + (60 * 60 * 24 * 7), COOKIE_ROOT);
+				setcookie('loginHash', md5(PVAR.$userInfo['username'].$userInfo['joinDate']), time() + (60 * 60 * 24 * 7), COOKIE_ROOT);
 				
 //				wp_set_current_user($userInfo['userID']);
 //				wp_set_auth_cookie($userInfo['userID']);

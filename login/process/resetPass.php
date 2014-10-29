@@ -18,7 +18,7 @@
 		if ($userCheck->rowCount() && sizeof($errors) == 0) {
 			$userInfo = $userCheck->fetch();
 			if (md5($userInfo['email'].'r3Qu'.$key) == $_POST['validationStr']) {
-				$mysql->query('UPDATE users SET password = "'.hash('sha256', SVAR.$pass1).'" WHERE userID = '.$userInfo['userID']);
+				$mysql->query('UPDATE users SET password = "'.hash('sha256', PVAR.$pass1).'" WHERE userID = '.$userInfo['userID']);
 				if ($_POST['ajaxForm']) echo 'success';
 				else header('Location: /login/?resetSuccess=1');
 			} else {

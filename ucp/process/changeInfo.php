@@ -10,9 +10,9 @@
 		$password1 = $_POST['password1'];
 		$password2 = $_POST['password2'];
 		if (strlen($oldPass) && strlen($password1) && strlen($password2) && $password1 == $password2) {
-			$oldPass = hash('sha256', SVAR.$oldPass);
-			$password1 = hash('sha256', SVAR.$password1);
-			$password2 = hash('sha256', SVAR.$password2);
+			$oldPass = hash('sha256', PVAR.$oldPass);
+			$password1 = hash('sha256', PVAR.$password1);
+			$password2 = hash('sha256', PVAR.$password2);
 			$userCheck = $mysql->query('SELECT userID FROM users WHERE userID = '.$userID.' AND password = "'.$oldPass.'"');
 			if ($userCheck->rowCount()) $updates = 'password = "'.$password1.'"';
 			else $errors .= 'wrongPass=1&';

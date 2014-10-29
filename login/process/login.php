@@ -2,7 +2,7 @@
 	checkLogin(0);
 	if (isset($_POST['login'])) {
 		$username = sanitizeString($_POST['username'], 'lower');
-		$password = hash('sha256', SVAR.$_POST['password']);
+		$password = hash('sha256', PVAR.$_POST['password']);
 		
 /*		$mysql->setTable('loginRecord');
 		$mysql->setInserts(array('username' => $username, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')));
@@ -27,7 +27,7 @@
 				$_SESSION['username'] = $userInfo['username'];
 				$_SESSION['timezone'] = $userInfo['timezone'];
 				
-				setcookie('loginHash', md5(SVAR.$userInfo['username'].$userInfo['joinDate']), time() + (60 * 60 * 24 * 7), COOKIE_ROOT);
+				setcookie('loginHash', md5(PVAR.$userInfo['username'].$userInfo['joinDate']), time() + (60 * 60 * 24 * 7), COOKIE_ROOT);
 				
 //				wp_set_current_user($userInfo['userID']);
 //				wp_set_auth_cookie($userInfo['userID']);
