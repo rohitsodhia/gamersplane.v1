@@ -2,7 +2,6 @@
 	checkLogin();
 	
 	if (isset($_POST['create'])) {
-		$userID = intval($_SESSION['userID']);
 		$systemID = intval($_POST['system']);
 		$errors = '?';
 		$systemShort = $systems->getShortName($systemID);
@@ -13,7 +12,7 @@
 			header('Location: /characters/my/'.substr($errors, 0, -1));
 		} else {
 			$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, charType, systemID) VALUES (:userID, :label, :charType, :systemID)');
-			$addCharacter->bindValue(':userID', $userID);
+			$addCharacter->bindValue(':userID', $currentUser->userID);
 			$addCharacter->bindValue(':label', $_POST['label']);
 			$addCharacter->bindValue(':charType', $_POST['charType']);
 			$addCharacter->bindValue(':systemID', $systemID);
@@ -27,7 +26,7 @@
 			$newChar->setLabel($_POST['label']);
 			$newChar->setType($_POST['charType']);
 			$newChar->save();
-			addCharacterHistory($characterID, 'charCreated', $userID, 'NOW()', $systemID);
+			addCharacterHistory($characterID, 'charCreated', $currentUser->userID, 'NOW()', $systemID);
 
 			header('Location: /characters/'.$systemShort.'/'.$characterID.'/edit/new');
 		}

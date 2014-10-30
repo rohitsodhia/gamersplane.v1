@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$forumID = intval($_POST['forumID']);
 	$pType = in_array($_POST['pType'], array('group', 'user'))?$_POST['pType']:NULL;
 	$typeID = intval($_POST['typeID']);

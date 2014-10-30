@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$forumID = intval($pathOptions[1]);
 	$redirect = FALSE;
 	$pType = in_array($pathOptions[3], array('group', 'user'))?$pathOptions[3]:NULL;

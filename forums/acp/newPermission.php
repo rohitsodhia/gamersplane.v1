@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$forumID = intval($pathOptions[1]);
 	$redirect = FALSE;
 
@@ -21,7 +20,7 @@
 <?
 	if ($gameForum && $permissionType == 'user') $validOpts = $mysql->query("SELECT u.userID optID, u.username title FROM users u INNER JOIN players p ON u.userID = p.userID and p.approved = 1 LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE p.gameID = {$gameID} AND per.forumID IS NULL");
 	elseif ($gameForum && $permissionType == 'user') $validOpts = $mysql->query("SELECT u.userID optID, u.username title FROM users u LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE per.forumID IS NULL");
-	elseif ($permissionType == 'group') $validOpts = $mysql->query("SELECT fg.groupID optID, fg.name title FROM forums_groups fg LEFT JOIN forums_permissions_groups per ON fg.groupID = per.groupID AND per.forumID = {$forumID} WHERE fg.ownerID = {$userID}");
+	elseif ($permissionType == 'group') $validOpts = $mysql->query("SELECT fg.groupID optID, fg.name title FROM forums_groups fg LEFT JOIN forums_permissions_groups per ON fg.groupID = per.groupID AND per.forumID = {$forumID} WHERE fg.ownerID = {$currentUser->userID}");
 
 	if ((!$gameForum && $permissionType == 'user') || $validOpts->rowCount()) {
 ?>

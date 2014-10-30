@@ -1,7 +1,5 @@
 <?
-	$userID = $_SESSION['userID'];
-
-	$acpPermissions = $mysql->query('SELECT permission FROM acpPermissions WHERE userID = '.$userID);
+	$acpPermissions = $mysql->query("SELECT permission FROM acpPermissions WHERE userID = {$currentUser->userID}");
 	if ($acpPermissions->rowCount() == 0) { header('Location: /'); exit; }
 	else $acpPermissions = $acpPermissions->fetchAll(PDO::FETCH_COLUMN);
 

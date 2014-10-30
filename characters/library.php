@@ -1,6 +1,3 @@
-<?
-	$userID = intval($_SESSION['userID']);
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<div class="sideWidget left">
 			<h2>Filter</h2>
@@ -42,7 +39,7 @@
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'games.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 'systems.fullName ASC';*/
 	$orderBy = 's.fullName ASC';
-	$characters = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN systems s ON c.systemID = s.systemID INNER JOIN users u ON c.userID = u.userID LEFT JOIN players p ON c.gameID = p.gameID AND p.userID = $userID WHERE".(sizeof($selectedSystems)?' c.systemID IN ('.implode(', ', $selectedSystems).') AND':'')." c.userID != $userID AND p.userID IS NULL ORDER BY $orderBy");
+	$characters = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN systems s ON c.systemID = s.systemID INNER JOIN users u ON c.userID = u.userID LEFT JOIN players p ON c.gameID = p.gameID AND p.userID = {$currentUser->userID} WHERE".(sizeof($selectedSystems)?' c.systemID IN ('.implode(', ', $selectedSystems).') AND':'')." c.userID != {$currentUser->userID} AND p.userID IS NULL ORDER BY $orderBy");
 	
 	if ($characters->rowCount()) { foreach ($characters as $info) {
 ?>

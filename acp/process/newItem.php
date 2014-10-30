@@ -1,7 +1,5 @@
 <?
-	$userID = $_SESSION['userID'];
-
-	$acpPermissions = $mysql->query("SELECT permission FROM acpPermissions WHERE userID = $userID");
+	$acpPermissions = $mysql->query("SELECT permission FROM acpPermissions WHERE userID = {$currentUser->userID}");
 	$acpPermissions = $acpPermissions->fetchAll(PDO::FETCH_COLUMN);
 	if (sizeof($acpPermissions) == 0) { header('Location: /'); exit; }
 	elseif (!in_array('autocomplete', $acpPermissions) && !in_array('all', $acpPermissions)) { header('Location: /acp/'); exit; }
@@ -28,8 +26,8 @@
 			$action = 'duplicate';
 		}
 		$addSystemRequest = $mysql->query("INSERT INTO userAddedItems SET itemType = '{$newItemInfo['itemType']}', itemID = {$itemID}, addedBy = {$newItemInfo['addedBy']}, addedOn = '{$newItemInfo['addedOn']}', systemID = {$newItemInfo['systemID']}");
-		$mysql->query("UPDATE userAddedItems SET itemID = {$itemID}, systemID = NULL, action = '{$action}', actedBy = {$userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
+		$mysql->query("UPDATE userAddedItems SET itemID = {$itemID}, systemID = NULL, action = '{$action}', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
 	} elseif ($_POST['action'] == 'reject') {
-		$mysql->query("UPDATE userAddedItems SET action = 'rejected', actedBy = {$userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
+		$mysql->query("UPDATE userAddedItems SET action = 'rejected', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
 	}
 ?>

@@ -2,11 +2,10 @@
 	if (checkLogin(0)) {
 		require_once(FILEROOT.'/includes/packages/spycraft2Character.package.php');
 		
-		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
 		if ($character = new spycraft2Character($characterID)) {
 			$character->load();
-			$charPermissions = $character->checkPermissions($userID);
+			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
 				$character->removeFocus($_POST['focusID']);
 			}

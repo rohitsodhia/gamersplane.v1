@@ -1,8 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$talentID = intval($pathOptions[3]);
-	if (allowCharEdit($characterID, $userID)) {
+	if (allowCharEdit($characterID, $currentUser->userID)) {
 		$talentInfo = $mysql->query("SELECT tl.name, ct.notes FROM sweote_talents ct INNER JOIN sweote_talentsList tl USING (talentID) WHERE ct.talentID = $talentID AND ct.characterID = $characterID");
 		if ($talentInfo->rowCount()) $talentInfo = $talentInfo->fetch();
 	} else $noChar = TRUE;

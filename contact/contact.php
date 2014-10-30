@@ -27,9 +27,9 @@
 				<div class="inputField">
 <?
 	if ($loggedIn) {
-		echo "\t\t\t\t\t".$_SESSION['username']."\n";
+		echo "\t\t\t\t\t{$currentUser->username}\n";
 ?>
-					<input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+					<input type="hidden" name="username" value="<?=$currentUser->username?>">
 <? } else { ?>
 					<input type="text" name="username" maxlength="50" value="<?=$username?>">
 <? } ?>

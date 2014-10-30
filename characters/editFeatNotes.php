@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$featID = intval($pathOptions[3]);
 	$noChar = TRUE;
@@ -10,7 +9,7 @@
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Edit Feat Notes';
 		if ($character = new $charClass($characterID)) {
-			$charPermissions = $character->checkPermissions($userID);
+			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
 				$featInfo = $mysql->query("SELECT fl.name, f.notes FROM ".SYSTEM."_feats f INNER JOIN featsList fl USING (featID) WHERE f.featID = $featID AND f.characterID = $characterID");
 				if ($featInfo->rowCount()) $featInfo = $featInfo->fetch();

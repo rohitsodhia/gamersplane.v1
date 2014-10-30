@@ -2,11 +2,10 @@
 	checkLogin(0);
 	
 	if (isset($_POST['save'])) {
-		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
 		$label = sanitizeString($_POST['label']);
 		$charType = intval($_POST['charType']);
-		$labelCheck = $mysql->query("SELECT label, charType FROM characters WHERE userID = $userID AND characterID = $characterID");
+		$labelCheck = $mysql->query("SELECT label, charType FROM characters WHERE userID = {$currentUser->userID} AND characterID = $characterID");
 		
 		if ($labelCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo 0;
@@ -17,7 +16,7 @@
 		} else {
 			$updateLabel = $mysql->prepare("UPDATE characters SET label = :label, charType = {$charType} WHERE characterID = $characterID");
 			$updateLabel->execute(array(':label' => $label));
-			addCharacterHistory($characterID, 'basicEdited', $userID);
+			addCharacterHistory($characterID, 'basicEdited', $currentUser->userID);
 			if (isset($_POST['modal'])) echo 'updated';
 			else header('Location: /characters/my?label=1');
 		}

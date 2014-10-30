@@ -1,6 +1,3 @@
-<?
-	$userID = intval($_SESSION['userID']);
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">My Characters</h1>
 		
@@ -22,7 +19,7 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
-	$characters = $mysql->query('SELECT c.*, s.shortName, s.fullName, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.systemID = s.systemID LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = '.$userID.' ORDER BY s.fullName, c.charType, c.label');
+	$characters = $mysql->query("SELECT c.*, s.shortName, s.fullName, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.systemID = s.systemID LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = {$currentUser->userID} ORDER BY s.fullName, c.charType, c.label");
 	
 	$noItems = FALSE;
 	if ($characters->rowCount()) {
@@ -52,7 +49,7 @@
 			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
 <?
-	$libraryItems = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND f.userID = $userID AND f.characterID = c.characterID");
+	$libraryItems = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND f.userID = {$currentUser->userID} AND f.characterID = c.characterID");
 	$noItems = FALSE;
 	if ($libraryItems->rowCount()) {
 		echo "\t\t\t<ul id=\"libraryChars\" class=\"hbdMargined hbAttachedList\">\n";

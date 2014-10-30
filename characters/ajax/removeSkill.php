@@ -1,6 +1,5 @@
 <?
 	if (checkLogin(0)) {
-		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
 		define('SYSTEM', $_POST['system']);
 		if ($systems->getSystemID(SYSTEM)) {
@@ -8,7 +7,7 @@
 			$charClass = SYSTEM.'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->load();
-				$charPermissions = $character->checkPermissions($userID);
+				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$skillID = intval($_POST['skillID']);
 					$character->removeSkill($skillID);

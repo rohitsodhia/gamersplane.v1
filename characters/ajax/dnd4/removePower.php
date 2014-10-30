@@ -1,12 +1,11 @@
 <?
-	if (checkLogin(0)) {
+	if ($loggedIn) {
 		require_once(FILEROOT.'/includes/packages/dnd4Character.package.php');
 
-		$userID = $_SESSION['userID'];
 		$characterID = intval($_POST['characterID']);
 		if ($character = new dnd4Character($characterID)) {
 			$character->load();
-			$charPermissions = $character->checkPermissions($userID);
+			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
 				$character->removePower($_POST['powerID']);
 			}

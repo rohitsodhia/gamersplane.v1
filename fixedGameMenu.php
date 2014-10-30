@@ -1,12 +1,11 @@
 
 <?
 	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) {
-		$userID = intval($_SESSION['userID']);
 ?>
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?
 		if ($gameID) {
-			$gameInfo = $mysql->query("SELECT g.gameID, s.shortName system, g.forumID, p.isGM FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = $userID WHERE g.gameID = {$gameID}");
+			$gameInfo = $mysql->query("SELECT g.gameID, s.shortName system, g.forumID, p.isGM FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} WHERE g.gameID = {$gameID}");
 			$gameInfo = $gameInfo->fetch();
 ?>
 	<ul class="rightCol">
@@ -71,7 +70,7 @@
 <?		} ?>
 <?
 		if ($gameID) {
-			$characters = $mysql->query("SELECT c.characterID, c.label, c.approved, u.userID, u.username FROM characters c, users u WHERE".($gameInfo['isGM']?'':" c.userID = $userID AND")." c.gameID = $gameID AND u.userID = c.userID ORDER BY c.approved DESC, u.username ASC, c.label ASC");
+			$characters = $mysql->query("SELECT c.characterID, c.label, c.approved, u.userID, u.username FROM characters c, users u WHERE".($gameInfo['isGM']?'':" c.userID = {$currentUser->userID} AND")." c.gameID = $gameID AND u.userID = c.userID ORDER BY c.approved DESC, u.username ASC, c.label ASC");
 			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">

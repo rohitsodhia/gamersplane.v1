@@ -1,8 +1,5 @@
 <?
-	checkLogin(0);
-
 	if (isset($_POST['delete'])) {
-		$userID = intval($_SESSION['userID']);
 		$characterID = intval($_POST['characterID']);
 		define('SYSTEM', getCharacterClass($characterID));
 		if (SYSTEM) {

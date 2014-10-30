@@ -1,9 +1,6 @@
 <?
-	checkLogin(0);
-	
-	$userID = intval($_SESSION['userID']);
 	$characterID = intval($_POST['characterID']);
-	$charAllowed = $mysql->query("SELECT userID FROM characters WHERE characterID = $characterID AND userID = $userID");
+	$charAllowed = $mysql->query("SELECT userID FROM characters WHERE characterID = $characterID AND userID = {$currentUser->userID}");
 	if ($charAllowed->rowCount()) {
 		$currentState = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = $characterID");
 		$currentState = $currentState->fetchColumn();

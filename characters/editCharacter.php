@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$characterID = intval($pathOptions[1]);
 	$noChar = TRUE;
 
@@ -10,7 +9,7 @@
 		$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';
 		if ($character = new $charClass($characterID)) {
 			$character->load();
-			$charPermissions = $character->checkPermissions($userID);
+			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
 				$noChar = FALSE;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
