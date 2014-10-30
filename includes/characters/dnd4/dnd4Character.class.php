@@ -267,16 +267,6 @@
 			}
 		}
 
-		public function getPowers() {
-			global $mysql;
-
-			$unsortedPowers = $mysql->query("SELECT cp.powerID, pl.name, cp.type FROM dnd4_powers cp INNER JOIN dnd4_powersList pl USING (powerID) WHERE cp.characterID = {$this->characterID}");
-			$powers = array('a' => array(), 'e' => array(), 'd' => array());
-			foreach ($unsortedPowers as $power) $powers[$power['type']][] = array('powerID' => $power['powerID'], 'name' => $power['name']);
-
-			return $powers;
-		}
-
 		public function setWeapons($weapons) {
 			$this->weapons = $weapons;
 		}

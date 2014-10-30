@@ -1,6 +1,5 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-	$userID = $_SESSION['userID'];
 
 	require_once(FILEROOT.'/header.php');
 ?>
@@ -19,7 +18,7 @@
 			<div class="sideWidget">
 <?
 	if ($loggedIn) {
-		$usersGames = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID INNER JOIN users u ON g.gmID = u.userID INNER JOIN players p ON g.gameID = p.gameID AND p.userID = $userID LEFT JOIN (SELECT gameID, COUNT(*) - 1 playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID ORDER BY gameID DESC LIMIT 3");
+		$usersGames = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID INNER JOIN users u ON g.gmID = u.userID INNER JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN (SELECT gameID, COUNT(*) - 1 playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID ORDER BY gameID DESC LIMIT 3");
 		echo "				<div class=\"loggedIn".($usersGames->rowCount()?'':' noGames')."\">\n";
 		echo "					<h2>Your Games</h2>\n";
 		if ($usersGames->rowCount()) {
@@ -60,7 +59,7 @@
 				<h3 class="headerbar">Latest Games</h3>
 				<div class="widgetBody">
 <?
-	if ($loggedIn) $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = '.$userID.' WHERE g.retired = 0 AND c.characterID IS NULL AND g.open = 1 ORDER BY gameID DESC LIMIT 5');
+	if ($loggedIn) $latestGames = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = {$currentUser->userID} WHERE g.retired = 0 AND c.characterID IS NULL AND g.open = 1 ORDER BY gameID DESC LIMIT 5");
 	else $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired = 0 AND g.open = 1 ORDER BY gameID DESC LIMIT 5');
 	$first = TRUE;
 	foreach ($latestGames as $gameInfo) {
@@ -89,7 +88,7 @@
 	$forumIDs = array();
 	foreach ($coreForums as $forum) $forumIDs[] = $forum['forumID'];
 	if ($loggedIn) {
-		$gameForums = $mysql->query('SELECT g.forumID FROM players p, games g WHERE p.userID = '.$userID.' AND p.approved = 1 AND p.gameID = g.gameID');
+		$gameForums = $mysql->query("SELECT g.forumID FROM players p, games g WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND p.gameID = g.gameID");
 		if ($gameForums->rowCount()) {
 			$gameSForums = $mysql->prepare('SELECT forumID FROM forums WHERE heritage LIKE CONCAT("'.sql_forumIDPad(2).'-", LPAD(:forumID, '.HERITAGE_PAD.', 0), "%")');
 			$gameForumIDs = array();
@@ -98,13 +97,13 @@
 				$gameSForums->execute();
 				foreach ($gameSForums as $gameSForum) $gameForumIDs[] = $gameSForum['forumID'];
 			}
-			$permissions = retrievePermissions($userID, $gameForumIDs, 'read');
+			$permissions = retrievePermissions($currentUser->userID, $gameForumIDs, 'read');
 			foreach ($permissions as $pForumID => $permission) {
 				if ($permission['read']) $forumIDs[] = $pForumID;
 			}
 		}
 	}
-	$latestPosts = $mysql->query('SELECT t.threadID, p.title, u.userID, u.username, p.datePosted, f.forumID, f.title fTitle, IF(np.newPosts IS NULL, 0, 1) newPosts FROM threads t INNER JOIN threads_relPosts rp ON t.threadID = rp.threadID INNER JOIN posts p ON rp.lastPostID = p.postID LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = '.($loggedIn?$userID:'NULL').' LEFT JOIN forums f ON t.forumID = f.forumID LEFT JOIN forums_readData_newPosts np ON t.threadID = np.threadID AND np.userID = '.($loggedIn?$userID:'NULL').' WHERE t.forumID IN ('.implode(', ', $forumIDs).') ORDER BY rp.lastPostID DESC LIMIT 3');
+	$latestPosts = $mysql->query('SELECT t.threadID, p.title, u.userID, u.username, p.datePosted, f.forumID, f.title fTitle, IF(np.newPosts IS NULL, 0, 1) newPosts FROM threads t INNER JOIN threads_relPosts rp ON t.threadID = rp.threadID INNER JOIN posts p ON rp.lastPostID = p.postID LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = '.($loggedIn?$currentUser->userID:'NULL').' LEFT JOIN forums f ON t.forumID = f.forumID LEFT JOIN forums_readData_newPosts np ON t.threadID = np.threadID AND np.userID = '.($loggedIn?$currentUser->userID:'NULL').' WHERE t.forumID IN ('.implode(', ', $forumIDs).') ORDER BY rp.lastPostID DESC LIMIT 3');
 
 	$first = TRUE;
 	foreach ($latestPosts as $latestPost) {

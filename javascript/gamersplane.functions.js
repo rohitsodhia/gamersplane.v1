@@ -32,12 +32,10 @@ function showSign(val) {
 }
 
 function convertTZ(dtString, parseString, displayString) {
-	console.log(dtString);
 	parseString = typeof parseString !== 'undefined'?parseString:'MMM D, YYYY h:mm a';
 	displayString = typeof displayString !== 'undefined'?displayString:'MMM D, YYYY h:mm a';
 
 	utcDT = moment.utc(dtString, parseString);
-	console.log(utcDT);
 	return utcDT.local().format(displayString);
 }
 

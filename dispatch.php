@@ -30,6 +30,7 @@
 //	echo $pathAction;
 //	print_r($pathOptions);
 //	print_r($_SESSION);
+//	var_dump($_COOKIE);
 
 	$requireLoc = '';
 	$isAJAX = false;
@@ -49,9 +50,8 @@
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute(array($moddedPath.'/'));
 		$dispatchInfo = $dispatchInfo->fetch();
-		global $loggedIn, $currentUser;
+		global $loggedIn;
 		$loggedIn = checkLogin($dispatchInfo['loginReq']);
-		if ($loggedIn) $currentUser = new User($_SESSION['userID']);
 		if (($dispatchInfo['pageID'] == 'home' && $moddedPath != '') || !file_exists($dispatchInfo['file'])) {
 			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404/"');
 			$dispatchInfo = $dispatchInfo->fetch();

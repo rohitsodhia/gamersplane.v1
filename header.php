@@ -19,10 +19,10 @@
 		<a href="/register/" class="last">Register</a>
 <?
 		} else {
-		$header_numMessages = $mysql->query('SELECT COUNT(*) FROM pms WHERE recipientID = '.intval($_SESSION['userID']).' AND viewed = 0');
-		$header_numNewMessages = $header_numMessages->fetchColumn();
+			$header_numMessages = $mysql->query('SELECT COUNT(*) FROM pms WHERE recipientID = '.$currentUser->userID.' AND viewed = 0');
+			$header_numNewMessages = $header_numMessages->fetchColumn();
 ?>
-		<span id="menuMessage"><a href="/ucp/" class="username first"><?=$_SESSION['username']?></a></span>
+		<span id="menuMessage"><a href="/ucp/" class="username first"><?=$currentUser->username?></a></span>
 		<a href="/pms/"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$header_numNewMessages?>)</a>
 		<a href="/notifications/"><img src="/images/bodyComponents/exclamation.jpg" title="Notifications" alt="Notifications"></a>
 		<a href="/logout/" class="last">Logout</a>
@@ -43,7 +43,7 @@
 			<li>
 				<a href="/characters/my/">Characters</a>
 <?
-			$header_characters = $mysql->query('SELECT c.characterID, c.label, s.shortName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.intval($_SESSION['userID']).' ORDER BY c.label');
+			$header_characters = $mysql->query('SELECT c.characterID, c.label, s.shortName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.intval($currentUser->userID).' ORDER BY c.label');
 			if ($header_characters->rowCount()) {
 				echo "				<ul>\n";
 				$count = 0;
@@ -62,7 +62,7 @@
 			<li>
 				<a href="/games/">Games</a>
 <?
-			$header_games = $mysql->query('SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = '.intval($_SESSION['userID']).' AND p.gameID = g.gameID ORDER BY g.title');
+			$header_games = $mysql->query('SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = '.intval($currentUser->userID).' AND p.gameID = g.gameID ORDER BY g.title');
 			if ($header_games->rowCount()) {
 				echo "				<ul>\n";
 				$count = 0;

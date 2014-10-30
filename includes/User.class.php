@@ -40,7 +40,7 @@
 			$this->salt = randomAlphaNum(20);
 			$addUser = $mysql->prepare('INSERT INTO users SET username = :username, password = :password, salt = :salt, email = :email, joinDate = :joinDate');
 			$addUser->bindValue(':username', $username);
-			$addUser->bindValue(':password', hash('sha256', PVAR.$password1));
+			$addUser->bindValue(':password', hash('sha256', PVAR.$password1.$this->salt));
 			$addUser->bindValue(':salt', $this->salt);
 			$addUser->bindValue(':email', $email);
 			$addUser->bindValue(':joinDate', date('Y-m-d H:i:s'));
@@ -68,7 +68,7 @@
 
 		public function generateLoginCookie() {
 			setcookie('loginHash', '', time() - 30, '/');
-			setcookie('loginHash', $this->username.'|'.$this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/');
+			setcookie('loginHash', $this->username.'|'.$this->getLoginHash(), time() + LOGIN_COOKIE_LENGTH, '/');
 		}
 
 		public function getUsermeta($metaKey) {

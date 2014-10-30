@@ -16,7 +16,7 @@
 		<div id="formWrapper">
 			<h1 class="headerbar">Login</h1>
 			
-			<form method="post" action="/login/process/login" class="hbMargined">
+			<form method="post" action="/login/process/login/" class="hbMargined">
 				<div class="tr">
 					<label class="textLabel">Username</label>
 					<div class="textfield"><input id="username" type="text" name="username" maxlength="24" tabindex="3"></div>
