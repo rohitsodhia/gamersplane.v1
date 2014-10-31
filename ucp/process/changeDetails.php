@@ -45,38 +45,24 @@
 				$fileUploaded = true;
 			}
 		}
-		
-		$showAvatars = isset($_POST['showAvatars'])?1:0;
+
+		$usermeta = array();
+		if ($ext == '') $ext = null;
+		$currentUser->updateUsermeta('ext', $ext, 1);
+
+		$currentUser->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
 		if ($_POST['gender'] == 'n') $gender = '';
 		else $gender = $_POST['gender'] == 'm'?'m':'f';
+		$currentUser->updateUsermeta('gender', $gender);
 		$birthday = intval($_POST['year']).'-'.intval($_POST['month']).'-'.intval($_POST['day']);
-		$showAge = isset($_POST['showAge'])?1:0;
-		$location = sanitizeString($_POST['location']);
-		$aim = sanitizeString($_POST['aim']);
-		$gmail = sanitizeString($_POST['gmail']);
-		$twitter = sanitizeString($_POST['twitter']);
-		$stream = sanitizeString($_POST['stream']);
-		$games = sanitizeString($_POST['games']);
-		$newGameMail = $_POST['newGameMail']?1:0;
-		
-		$updateUser = $mysql->prepare("UPDATE users SET showAvatars = :showAvatars, ".($fileUploaded?'avatarExt = :avatarExt, ':'')."gender = :gender, birthday = :birthday, showAge = :showAge, location= :location, aim = :aim, gmail = :gmail, twitter = :twitter, stream = :stream, games = :games, newGameMail = :newGameMail  WHERE userID = :userID");
-		$updates = array(
-			'showAvatars' => $showAvatars,
-			'gender' => $gender,
-			'birthday' => $birthday,
-			'showAge' => $showAge,
-			'location'=> $location,
-			'aim' => $aim,
-			'gmail' => $gmail,
-			'twitter' => $twitter,
-			'stream' => $stream,
-			'games' => $games,
-			'newGameMail' => $newGameMail,
-			'userID' => $currentUser->userID
-		);
-		if ($fileUploaded) $updates['avatarExt'] = $ext;
-		$updateUser->execute($updates);
-		
+		if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) $currentUser->updateUsermeta('birthday', $birthday);
+		$currentUser->updateUsermeta('showAge', isset($_POST['showAge'])?1:0);
+		$currentUser->updateUsermeta('location', sanitizeString($_POST['location']));
+		$currentUser->updateUsermeta('twitter', sanitizeString($_POST['twitter']));
+		$currentUser->updateUsermeta('stream', sanitizeString($_POST['stream']));
+		$currentUser->updateUsermeta('games', sanitizeString($_POST['games']));
+		$currentUser->updateUsermeta('newGameMail', intval($_POST['newGameMail'])?1:0);
+
 		header('Location: /ucp/cp/?updated=1');
 	} else header('Location: /user');
 ?>

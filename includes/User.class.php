@@ -83,10 +83,20 @@
 			return $this->usermeta[$metaKey];
 		}
 
-		public function updateUsermeta($metaKey, $metaValue) {
+		public function getAllUsermeta() {
 			global $mysql;
 
-			$addUpdateMetaKey = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue ON DUPLICATE KEY UPDATE metaValue = :metaValue");
+			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID}");
+			foreach ($metaValues as $metas) $this->usermeta[$metas['metaKey']] = $metas['metaValue'];
+
+			return true;
+		}
+
+		public function updateUsermeta($metaKey, $metaValue, $autoload = 0) {
+			global $mysql;
+
+			if ($autoload != 1) $autoload = 0;
+			$addUpdateMetaKey = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue, autoload = {$autoload}");
 			$addUpdateMetaKey->bindValue(':metaKey', $metaKey);
 			$addUpdateMetaKey->bindValue(':metaValue', $metaValue);
 			$addUpdateMetaKey->execute();
