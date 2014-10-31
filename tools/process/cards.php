@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-	
 	if ($_POST['numCards']) {
 		$cardsLeft = 0;
 		for ($count = 1; $count <= sizeof($_SESSION['deck']); $count++) if ($_SESSION['deck'][$count] == 1) $cardsLeft += 1;

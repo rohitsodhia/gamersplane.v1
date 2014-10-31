@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-	
 	if (isset($_POST['submit'])) {
 		$email = sanitizeString($_POST['email'], '+lower');
 		

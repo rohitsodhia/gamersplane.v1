@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-	
 	if (isset($_POST['submit'])) {
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorVals']);

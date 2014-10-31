@@ -1,6 +1,4 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['save'])) {
 		$characterID = intval($_POST['characterID']);
 		define('SYSTEM', $_POST['system']);

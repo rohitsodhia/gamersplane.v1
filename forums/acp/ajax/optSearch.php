@@ -1,5 +1,5 @@
 <?
-	if (checkLogin(0)) {
+	if ($loggedIn) {
 		$search = sanitizeString($_POST['search'], 'search_format');
 		$permissionType = $_POST['permissionType'];
 		$forumID = intval($_POST['forumID']);

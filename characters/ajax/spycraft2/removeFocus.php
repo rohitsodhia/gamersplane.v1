@@ -1,5 +1,5 @@
 <?
-	if (checkLogin(0)) {
+	if ($loggedIn) {
 		require_once(FILEROOT.'/includes/packages/spycraft2Character.package.php');
 		
 		$characterID = intval($_POST['characterID']);

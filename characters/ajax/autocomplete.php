@@ -1,5 +1,5 @@
 <?
-	if (checkLogin(0)) {
+	if ($loggedIn) {
 		$type = sanitizeString($_POST['type']);
 		$search = sanitizeString($_POST['search'], 'search_format');
 		$characterID = intval($_POST['characterID']);

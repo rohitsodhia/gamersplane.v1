@@ -1,5 +1,5 @@
 <?
-	if (checkLogin(0)) {
+	if ($loggedIn) {
 		$characterID = intval($_POST['characterID']);
 		define('SYSTEM', $_POST['system']);
 		if ($systems->getSystemID(SYSTEM)) {

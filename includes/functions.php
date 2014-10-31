@@ -133,7 +133,7 @@
 
 	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
 		global $currentuser, $mysql;
-		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = $currentUser->userID;
+		if ($enactedBy == 0 && $loggedIn) $enactedBy = $currentUser->userID;
 
 		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return false;
 		if ($enactedOn == '') $enactedOn = 'NOW()';
@@ -147,7 +147,7 @@
 	
 	function addGameHistory($gameID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $affectedType = NULL, $affectedID = NULL) {
 		global $currentUser, $mysql;
-		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = $currentUser->userID;
+		if ($enactedBy == 0 && $loggedIn) $enactedBy = $currentUser->userID;
 
 		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return false;
 		if ($enactedOn == '') $enactedOn = 'NOW()';

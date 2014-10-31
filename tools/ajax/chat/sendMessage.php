@@ -4,7 +4,7 @@
 	
 	$message = sanitizeString($_POST['message']);
 	$gameID = intval($_POST['gameID']);
-	if (checkLogin(0) && gameID && strlen($message) > 0) {
+	if ($loggedIn && gameID && strlen($message) > 0) {
 		$postedOn = date('Y-m-d H:i:s');
 		
 		if (substr($message, 0, 6) == '/roll ') {

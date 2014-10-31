@@ -1,6 +1,4 @@
 <?
-	checkLogin();
-	
 	$iconID = intval($_POST['iconID']);
 	
 	$iconInfo = $mysql->query("SELECT label, name, color FROM maps_icons WHERE iconID = $iconID");

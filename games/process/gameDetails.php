@@ -1,6 +1,4 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['create']) || isset($_POST['save'])) {
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorVals']);

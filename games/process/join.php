@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-	
 	if (isset($_POST['apply'])) {
 		$gameID = intval($_POST['gameID']);
 		

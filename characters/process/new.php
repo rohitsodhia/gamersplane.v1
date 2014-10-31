@@ -1,6 +1,4 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['create'])) {
 		$systemID = intval($_POST['system']);
 		$errors = '?';

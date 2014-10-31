@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-	
 	if (isset($_POST['save'])) {
 		$characterID = intval($_POST['characterID']);
 		$label = sanitizeString($_POST['label']);

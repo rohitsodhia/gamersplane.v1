@@ -1,6 +1,4 @@
 <?
-	checkLogin();
-	
 	$mapID = intval($_POST['mapID']);
 	$bgData = $_POST['bgData'];
 

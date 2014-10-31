@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-
 	if (isset($_POST['submit'])) {
 		$errors = array();
 		$username = sanitizeString($_POST['username'], '+lower');

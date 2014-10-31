@@ -1,6 +1,4 @@
 <?
-	checkLogin(0);
-	
 	if (isset($_POST['submitCharacter'])) {
 		$gameID = intval($_POST['gameID']);
 		$characterID = intval($_POST['characterID']);

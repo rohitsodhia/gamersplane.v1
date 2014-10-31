@@ -1,5 +1,4 @@
 <?
-	checkLogin(0);
 	if (isset($_POST['login'])) {
 		$username = sanitizeString($_POST['username'], 'lower');
 		$password = $_POST['password'];

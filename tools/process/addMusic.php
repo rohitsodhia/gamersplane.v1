@@ -1,6 +1,4 @@
 <?
-	checkLogin(1);
-	
 	if (isset($_POST['submit'])) {
 		$errors = array();
 
