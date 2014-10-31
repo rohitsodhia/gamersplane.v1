@@ -1,6 +1,3 @@
-<?
-	$userID = intval($_SESSION['userID']);
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1>Forum Rules</h1>
 		

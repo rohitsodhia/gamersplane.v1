@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$threadID = intval($_POST['threadID']);
 	
 	if (isset($_POST['add'])) {
@@ -7,7 +6,7 @@
 		list($forumID, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
 		$heritage = explode('-', $heritage);
 		foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
-		$adminCheck = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, 2, {$heritage[1]})");
+		$adminCheck = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID IN (0, 2, {$heritage[1]})");
 		if (!$adminCheck->rowCount() || !in_array(2, $heritage)) { header('Location: /forums'); exit; }
 		
 		$destinationID = $_POST['destinationID'];

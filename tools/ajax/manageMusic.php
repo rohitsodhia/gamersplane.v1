@@ -1,5 +1,5 @@
 <?
-	$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$_SESSION['userID']} AND privilage = 'manageMusic'");
+	$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage = 'manageMusic'");
 	if ($checkPrivilage->rowCount()) {
 		$songID = $_POST['songID'];
 		$action = $_POST['action'];

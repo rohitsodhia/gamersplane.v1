@@ -30,13 +30,13 @@
 	
 	function camelcase($strings) {
 		if (!is_array($strings)) $strings = explode(' ', $strings);
-		$first = TRUE;
+		$first = true;
 		$finalString = '';
 		
 		foreach ($strings as $indivString) {
 			$indivString = strtolower($indivString);
 			
-			if ($first) $first = FALSE;
+			if ($first) $first = false;
 			else $indivString[0] = strtoupper($indivString[0]);
 			
 			$finalString .= $indivString;
@@ -128,14 +128,14 @@
 		$system = $mysql->query('SELECT s.shortName FROM systems s INNER JOIN characters c USING (systemID) WHERE c.characterID = '.$characterID);
 
 		if ($system->rowCount()) return $system->fetchColumn();
-		else return FALSE;
+		else return false;
 	}
 
 	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
-		global $mysql;
-		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
+		global $currentuser, $mysql;
+		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = $currentUser->userID;
 
-		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return FALSE;
+		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return false;
 		if ($enactedOn == '') $enactedOn = 'NOW()';
 
 		$addCharHistory = $mysql->prepare("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action, additionalInfo) VALUES ($characterID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :additionalInfo)");
@@ -146,10 +146,10 @@
 	}
 	
 	function addGameHistory($gameID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $affectedType = NULL, $affectedID = NULL) {
-		global $mysql;
-		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = intval($_SESSION['userID']);
+		global $currentUser, $mysql;
+		if ($enactedBy == 0 && checkLogin(0)) $enactedBy = $currentUser->userID;
 
-		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return FALSE;
+		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return false;
 		if ($enactedOn == '') $enactedOn = 'NOW()';
 
 		$addGameHistory = $mysql->prepare("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, affectedType, affectedID) VALUES ($gameID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :affectedType, :affectedID)");
@@ -183,7 +183,7 @@
 			}
 			
 			return array('result' => $totalRoll, 'indivRolls' => $indivRolls, 'numDice' => $numDice, 'diceType' => $diceType, 'modifier' => $modifier);
-		} else return FALSE;
+		} else return false;
 	}
 
 	function displayIndivDice($dice) {
@@ -208,13 +208,13 @@
 			$_SESSION['deck'] = array_fill(1, $deckInfo['deckSize'], 1);
 			
 			return array($deckShort, $deckInfo['name'], $deckInfo['deckSize']);
-		} else return FALSE;
+		} else return false;
 	}
 	
 	function clearGlobalDeck($deckType) {
 		unset($_SESSION['deckShort'], $_SESSION['deckName'], $_SESSION['deck']);
 		
-		return TRUE;
+		return true;
 	}
 	
 	function cardText($card, $deck) {
@@ -339,7 +339,7 @@
 			$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
 			foreach ($adminIn as $indivAdmin) $adminForums[] = $indivAdmin['forumID'];
 			$getPermissionsFor = array();
-			$superFAdmin = array_search(0, $adminForums) !== FALSE?TRUE:FALSE;
+			$superFAdmin = array_search(0, $adminForums) !== false?true:false;
 			foreach ($forumIDs as $forumID) {
 				if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = $aTemplate;
 				else $getPermissionsFor[] = $forumID;

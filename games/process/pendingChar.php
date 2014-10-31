@@ -1,13 +1,10 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['pendingAction'])) {
-		$userID = intval($_SESSION['userID']);
 		$gameID = intval($_POST['gameID']);
 		$characterID = intval($_POST['characterID']);
 		$pendingAction = $_POST['pendingAction'] == 'approve'?'approve':'remove';
 		
-		$gmCheck = $mysql->query('SELECT isGM FROM players WHERE gameID = '.$gameID.' AND userID = '.$userID);
+		$gmCheck = $mysql->query('SELECT isGM FROM players WHERE gameID = '.$gameID.' AND userID = '.$currentUser->userID);
 		$charCheck = $mysql->query('SELECT c.label, c.userID, u.username, g.title, s.shortName, c.approved FROM characters c, users u, games g, systems s WHERE c.userID = u.userID AND g.systemID = s.systemID AND c.characterID = '.$characterID.' AND g.gameID = '.$gameID);
 		
 		if ($charCheck->rowCount() == 0 && $gmCheck->rowCount() == 0) {
@@ -20,8 +17,8 @@
 				$charInfo = $charCheck->fetch();
 				if (!$charInfo['approved']) $pendingAction = 'rejecte';
 			}
-			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', $userID);
-			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $userID, 'NOW()', 'character', $characterID);
+			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $currentUser->userID, 'NOW()', $currentUser->userID);
+			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $currentUser->userID, 'NOW()', 'character', $characterID);
 			
 			if (isset($_POST['modal'])) echo 1;
 			else header('Location: /games/'.$gameID);

@@ -1,7 +1,6 @@
 <?
 	function newItemized($type, $name, $system) {
-		global $mysql, $systems;
-		$userID = intval($_SESSION['userID']);
+		global $currentUser, $mysql, $systems;
 
 		if ($system == 'custom') return false;
 
@@ -15,7 +14,7 @@
 			$inSystem = $mysql->query("SELECT systemID FROM system_charAutocomplete_map WHERE systemID = {$systemID} AND itemID = {$itemID}");
 			if ($inSystem->rowCount() == 0) {
 				try {
-					$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$userID}, NOW(), {$systemID})");
+					$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, systemID) VALUES (:itemType, :itemID, {$currentUser->userID}, NOW(), {$systemID})");
 					$addItem->bindValue(':itemType', $type);
 					$addItem->bindValue(':itemID', $itemID);
 					$addItem->execute();
@@ -23,7 +22,7 @@
 			}
 		} else {
 			try {
-				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$userID}, NOW(), {$systemID})");
+				$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, systemID) VALUES (:itemType, :name, {$currentUser->userID}, NOW(), {$systemID})");
 				$addItem->bindValue(':itemType', $type);
 				$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
 				$addItem->execute();

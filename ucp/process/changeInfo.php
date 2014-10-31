@@ -1,8 +1,4 @@
 <?
-	checkLogin();
-	
-	$userID = intval($_SESSION['userID']);
-	
 	if (isset($_POST['submit'])) {
 		$errors = '?';
 		$updates = '';
@@ -13,7 +9,7 @@
 			$oldPass = hash('sha256', PVAR.$oldPass);
 			$password1 = hash('sha256', PVAR.$password1);
 			$password2 = hash('sha256', PVAR.$password2);
-			$userCheck = $mysql->query('SELECT userID FROM users WHERE userID = '.$userID.' AND password = "'.$oldPass.'"');
+			$userCheck = $mysql->query('SELECT userID FROM users WHERE userID = '.$currentUser->userID.' AND password = "'.$oldPass.'"');
 			if ($userCheck->rowCount()) $updates = 'password = "'.$password1.'"';
 			else $errors .= 'wrongPass=1&';
 		} elseif ($password1 != $password2) $errors .= 'passMismatch=1&';
@@ -24,7 +20,7 @@
 			unset($_SESSION['errors']);
 			unset($_SESSION['errorTime']);
 			
-			$mysql->query('UPDATE users SET '.$updates.' WHERE userID = '.$userID);
+			$mysql->query('UPDATE users SET '.$updates.' WHERE userID = '.$currentUser->userID);
 			$_SESSION['timezone'] = $timezone;
 			
 			header('Location: /ucp/cp/?updated=1');

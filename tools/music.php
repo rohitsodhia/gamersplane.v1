@@ -2,7 +2,7 @@
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
 
 	if ($loggedIn) {
-		$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$_SESSION['userID']} AND privilage = 'manageMusic'");
+		$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage = 'manageMusic'");
 		if ($checkPrivilage->rowCount()) $manageMusic = true;
 		else $manageMusic = false;
 	} else $manageMusic = false;

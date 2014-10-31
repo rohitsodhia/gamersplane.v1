@@ -1,7 +1,6 @@
 <?
 	checkLogin();
 	
-	$userID = intval($_SESSION['userID']);
 	$iconID = intval($_POST['iconID']);
 	$location = preg_match('/^[0-9]{1,2}_[0-9]{1,2}$/', $_POST['location'])?$_POST['location']:'';
 	$icon = new Icon($iconID);

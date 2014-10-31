@@ -2,7 +2,6 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('tools');
 
-	$userID = intval($_SESSION['userID']);
 	$noChat = FALSE;
 
 	$firstPost = FALSE;
@@ -42,8 +41,8 @@
 			}
 		}
 		
-		$permissions = retrievePermissions($userID, $postInfo['forumID'], 'write, moderate, addPoll, addRolls, addDraws', TRUE);
-		if ($postInfo['authorID'] != $userID/* && $postInfo->rowCount() > 0*/) {
+		$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'write, moderate, addPoll, addRolls, addDraws', TRUE);
+		if ($postInfo['authorID'] != $currentUser->userID/* && $postInfo->rowCount() > 0*/) {
 			if ($permissions['moderate'] != 1) $noChat = TRUE;
 		} elseif (($postInfo['locked'] && !$permissions['moderate'])) $noChat = TRUE;
 		else {
@@ -56,7 +55,7 @@
 		$heritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$forumID);
 		$heritage = $heritage->fetchColumn();
 		$gameForum = (intval(substr($heritage, 0, 3)) == 2)?TRUE:FALSE;
-		$permissions = retrievePermissions($userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', TRUE);
+		$permissions = retrievePermissions($currentUser->userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', TRUE);
 		if ($permissions['createThread'] != 1) $noChat = TRUE;
 	} elseif ($pathOptions[0] == 'post') {
 		$threadID = intval($pathOptions[1]);
@@ -67,7 +66,7 @@
 			unset($_SESSION['message']);
 		}
 		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws']) = $threadInfo->fetch(PDO::FETCH_NUM);
-		$permissions = retrievePermissions($userID, $forumID, 'write, moderate, addRolls, addDraws', TRUE);
+		$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, moderate, addRolls, addDraws', TRUE);
 		if ($permissions['write'] != 1 && !$locked) { $noChat = TRUE; break; }
 		
 		$quoteID = intval($_GET['quote']);
@@ -107,16 +106,16 @@
 		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($heritage[1]));
 		$gameID = $gameID->fetchColumn();
 		
-		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = $userID");
+		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = {$currentUser->userID}");
 		if ($gmCheck->rowCount()) $isGM = TRUE;
 	}
 
 	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?TRUE:FALSE;
 	$drawsAllowed = false;
 	if ($permissions['addDraws']) {
-		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = $userID");
+		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = {$currentUser->userID}");
 		if ($gmCheck->rowCount()) $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games WHERE games.forumID = '.$forumID.' AND games.gameID = decks.gameID GROUP BY decks.deckID');
-		else $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = '.$forumID.' AND decks.gameID = characters.gameID AND characters.userID = '.$userID.' AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = '.$userID.' GROUP BY decks.deckID');
+		else $deckInfos = $mysql->query("SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = {$forumID} AND decks.gameID = characters.gameID AND characters.userID = {$currentUser->userID} AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = {$currentUser->userID} GROUP BY decks.deckID");
 		if ($deckInfos->rowCount()) $drawsAllowed = TRUE;
 	}
 ?>
@@ -263,7 +262,7 @@
 				$showAll = FALSE;
 				$first = TRUE;
 				foreach ($rolls as $roll) {
-					$showAll = $isGM || $userID == $postInfo['userID']?TRUE:FALSE;
+					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?TRUE:FALSE;
 					$hidden = FALSE;
 ?>
 						<div class="rollInfo">

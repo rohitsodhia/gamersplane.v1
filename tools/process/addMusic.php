@@ -27,8 +27,8 @@
 		if (sizeof($errors)) echo json_encode($errors);
 		else {
 			$mongo->music->insert(array(
-				'userID' => intval($_SESSION['userID']),
-				'username' => $_SESSION['username'],
+				'userID' => $currentUser->userID,
+				'username' => $currentUser->username,
 				'url' => $url,
 				'title' => $title,
 				'lyrics' => $lyrics,
@@ -37,7 +37,7 @@
 				'approved' => false
 			));
 
-			mail('contact@gamersplane.com', 'New Music', "New Music:\n\rusername: {$_SESSION['username']},\n\rurl => $url,\n\rtitle => $title", 'From: noone@gamersplane.com');
+			mail('contact@gamersplane.com', 'New Music', "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title", 'From: noone@gamersplane.com');
 		}
 	}
 ?>

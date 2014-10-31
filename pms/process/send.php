@@ -1,8 +1,4 @@
 <?
-	checkLogin();
-	
-	$userID = intval($_SESSION['userID']);
-
 	if (isset($_POST['send'])) {
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorTime']);
@@ -43,7 +39,7 @@
 			
 			$sendMessage = $mysql->prepare('INSERT INTO pms SET recipientID = :recipientID, senderID = :senderID, title = :title, message = :message, datestamp = :datestamp, replyTo = :replyTo');
 			$sendMessage->bindValue(':recipientID', $recipientID);
-			$sendMessage->bindValue(':senderID', $userID);
+			$sendMessage->bindValue(':senderID', $currentUser->userID);
 			$sendMessage->bindValue(':title', $title);
 			$sendMessage->bindValue(':message', $message);
 			$sendMessage->bindValue(':datestamp', date('Y-m-d H:i:s'));

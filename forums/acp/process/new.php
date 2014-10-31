@@ -1,8 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$forumID = intval($_POST['forumID']);
 	
-	$adminForums = $mysql->query('SELECT forumID FROM forumAdmins WHERE userID = '.$userID);
+	$adminForums = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID}");
 	$temp = array();
 	foreach ($adminForums as $aForumID) $temp[] = $aForumID['forumID'];
 	$adminForums = $temp;

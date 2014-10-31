@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$lockCheck = $mysql->query('SELECT locked FROM chat_sessions WHERE locked = 0 AND gameID = '.$gameID);
 	$validChat = $gameID && $lockCheck->rowCount()?TRUE:FALSE;
@@ -14,7 +13,7 @@
 		
 <?
 	if ($validChat) {
-		$mysql->query("INSERT INTO chat_users (userID, gameID, lastActive) VALUES ($userID, $gameID, '".date('Y-m-d H:i:s')."')");
+		$mysql->query("INSERT INTO chat_users (userID, gameID, lastActive) VALUES ({$currentUser->userID}, $gameID, '".date('Y-m-d H:i:s')."')");
 		$chatID = $mysql->query('SELECT MAX(chatID) AS maxID FROM chat_messages WHERE gameID = '.$gameID);
 		$chatID = $chatID->fetchColumn();
 		$_SESSION['chatLastPull'] = $chatID?$chatID:0;

@@ -1,9 +1,8 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[1]);
 	if ($gameID == 0) { header('Location: /403'); exit; }
 	
-	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID}");
 	if (!$gmCheck->rowCount()) { header('Location: /403'); exit; }
 	$isGM = $gmCheck->fetchColumn();
 ?>

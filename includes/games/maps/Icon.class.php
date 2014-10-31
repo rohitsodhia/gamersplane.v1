@@ -45,12 +45,14 @@
 		}
 
 		public function saveIcon() {
+			global $currentUser;
+			
 			if (!isset($this->mapID) || !isset($this->label) || (strlen($this->label) != 1 && strlen($this->label) != 2) || !isset($this->name) || strlen($this->name) == 0 || !isset($this->color) || strlen($this->color) == 0) return FALSE;
 			if (isset($this->iconID) && $this->iconID != 0) {
 				$addIcon = $this->mysql->prepare("UPDATE maps_icons SET label = :label, name = :name, color = :color WHERE iconID = {$this->iconID}");
 				$addIcon->execute(array(':label' => $this->label, ':name' => $this->name, ':color' => $this->color));
 				$this->addHistory('edited');
-				return $this->displayHistory(array('label' => $this->label, 'name' => $this->name, 'enactedBy' => intval($_SESSION['userID']), 'username' => $_SESSION['username'], 'action' => 'edited'));
+				return $this->displayHistory(array('label' => $this->label, 'name' => $this->name, 'enactedBy' => $currentUser->userID, 'username' => $currentUser->username, 'action' => 'edited'));
 			} else {
 				$addIcon = $this->mysql->prepare("INSERT INTO maps_icons (mapID, label, name, color) VALUES ({$this->mapID}, :label, :name, :color)");
 				$addIcon->execute(array(':label' => $this->label, ':name' => $this->name, ':color' => $this->color));
@@ -60,7 +62,9 @@
 		}
 
 		public function saveLocation($location) {
-			$histInfo = array('label' => $this->label, 'name' => $this->name, 'enactedBy' => intval($_SESSION['userID']), 'enactedOn' => '', 'username' => $_SESSION['username'], 'action' => 'moved', 'origin' => $this->location, 'destination' => '');
+			global $currentUser;
+
+			$histInfo = array('label' => $this->label, 'name' => $this->name, 'enactedBy' => $currentUser->userID, 'enactedOn' => '', 'username' => $currentUser->username, 'action' => 'moved', 'origin' => $this->location, 'destination' => '');
 			$location = preg_match('/^[0-9]{1,2}_[0-9]{1,2}$/', $_POST['location'])?$_POST['location']:'';
 			$updateLocation = $this->mysql->prepare("UPDATE maps_icons SET location = :location WHERE iconID = {$this->iconID}");
 			$updateLocation->execute(array(':location' => $location));
@@ -118,10 +122,11 @@ RTNSTR;
 		}
 
 		private function addHistory($action, /*$enactedOn = 'NOW()', */$origin = NULL, $destination = NULL) {
-			$userID = intval($_SESSION['userID']);
+			global $currentUser;
+
 //			$enactedOn = $enactedOn == 'NOW()'?'NOW()':"'$enactedOn'"
 			if (!isset($this->iconID) || intval($this->iconID) == 0) return FALSE;
-			$addHistory = $this->mysql->prepare("INSERT INTO maps_iconHistory (iconID, mapID, enactedBy, enactedOn, action, origin, destination) VALUES ({$this->iconID}, {$this->mapID}, $userID, NOW(), :action, :origin, :destination)");
+			$addHistory = $this->mysql->prepare("INSERT INTO maps_iconHistory (iconID, mapID, enactedBy, enactedOn, action, origin, destination) VALUES ({$this->iconID}, {$this->mapID}, {$currentUser->userID}, NOW(), :action, :origin, :destination)");
 			$addHistory->execute(array(':action' => $action, ':origin' => $origin, ':destination' => $destination));
 
 			return $this->mysql->lastInsertId();

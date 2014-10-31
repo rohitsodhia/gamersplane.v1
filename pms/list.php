@@ -31,7 +31,7 @@
 				<div class="whenCol">When</div>
 			</div>
 <?
-	$pms = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.datestamp, pms.viewed FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE '.($box == 'outbox'?'senderID':'recipientID').' = '.intval($_SESSION['userID']).' ORDER BY datestamp DESC');
+	$pms = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.datestamp, pms.viewed FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE '.($box == 'outbox'?'senderID':'recipientID').' = '.$currentUser->userID.' ORDER BY datestamp DESC');
 	
 	if ($pms->rowCount()) {
 		$count = 0;

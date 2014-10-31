@@ -1,8 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p, maps m WHERE p.isGM = 1 AND p.gameID = $gameID AND m.gameID = p.gameID AND m.mapID = $mapID AND p.userID = $userID");
+	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p, maps m WHERE p.isGM = 1 AND p.gameID = $gameID AND m.gameID = p.gameID AND m.mapID = $mapID AND p.userID = {$currentUser->userID}");
 	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

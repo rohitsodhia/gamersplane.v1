@@ -1,10 +1,7 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['addCR'])) {
-		$userID = intval($_SESSION['userID']);
 		$mapID = intval($_POST['mapID']);
-		$mapCheck = $mysql->query("SELECT m.gameID, m.rows, m.cols FROM maps m, players p WHERE m.gameID = p.gameID AND p.userID = $userID AND m.mapID = $mapID AND p.isGM = 1");
+		$mapCheck = $mysql->query("SELECT m.gameID, m.rows, m.cols FROM maps m, players p WHERE m.gameID = p.gameID AND p.userID = {$currentUser->userID} AND m.mapID = $mapID AND p.isGM = 1");
 		if (!$mapCheck->rowCount()) { header('Location: /tools/maps'); exit; }
 		list($gameID, $rows, $columns) = $mapCheck->fetch(PDO::FETCH_NUM);
 		

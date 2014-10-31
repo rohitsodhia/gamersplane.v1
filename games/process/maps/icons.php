@@ -1,7 +1,4 @@
 <?
-	checkLogin();
-	
-	$userID = intval($_SESSION['userID']);
 	$mapID = intval($_POST['mapID']);
 	$iconID = intval($_POST['iconID']);
 	$color = preg_match('/[0-9A-F]{6}/', $_POST['color'])?$_POST['color']:'FFFFFF';

@@ -4,8 +4,7 @@
 
 	if ($display == 'edit') {
 		$gameID = intval($pathOptions[0]);
-		$userID = intval($_SESSION['userID']);
-		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.systemID, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$userID);
+		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.systemID, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$currentUser->userID);
 		if ($gameDetails->rowCount() == 0) { header('Location: /403'); exit; }
 		else {
 			$gameDetails = $gameDetails->fetch();

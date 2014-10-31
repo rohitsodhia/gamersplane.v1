@@ -1,6 +1,6 @@
 <?
 	$gameID = intval($pathOptions[1]);
-	$gameInfo = $mysql->query('SELECT title, open FROM games WHERE gameID = '.$gameID.' AND gmID = '.intval($_SESSION['userID']));
+	$gameInfo = $mysql->query('SELECT title, open FROM games WHERE gameID = '.$gameID.' AND gmID = '.$currentUser->userID);
 	if ($gameInfo->rowCount() == 0) { header('Location: /403'); }
 	$gameInfo = $gameInfo->fetch();
 ?>

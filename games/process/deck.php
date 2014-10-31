@@ -1,9 +1,6 @@
 <?
-	checkLogin(1);
-	
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($_POST['gameID']);
-	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = $userID AND isGM = 1");
+	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} AND isGM = 1");
 	$isGM = $gmCheck->rowCount()?TRUE:FALSE;
 	if (isset($_POST['create']) && $isGM) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
@@ -23,11 +20,11 @@
 		$deckPermissionsQ = $mysql->prepare('INSERT INTO deckPermissions SET deckID = :deckID, userID = :userID)');
 		$deckPermissionsQ->bindValue(':deckID', $deckID);
 		$deckPermissionsQ->bindParam(':userID', $dUserID);
-		$dUserID = $userID;
+		$dUserID = $currentUser->userID;
 		$deckPermissionsQ->execute();
 		foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
 		
-		addGameHistory($gameID, 'deckCreated', $userID);
+		addGameHistory($gameID, 'deckCreated', $currentUser->userID);
 		
 		header('Location: /games/'.$gameID.'/decks?success=create');
 	} elseif (isset($_POST['shuffle']) && $isGM) {
@@ -41,7 +38,7 @@
 		$updateDeck = $mysql->prepare("UPDATE decks SET position = 1, deck = :deck, lastShuffle = :lastShuffle WHERE deckID = $deckID");
 		$updateDeck->execute(array(':deck' => $deck, ':lastShuffle' => gmdate('Y-m-d H:i:s')));
 		
-		addGameHistory($gameID, 'deckShuffled', $userID);
+		addGameHistory($gameID, 'deckShuffled', $currentUser->userID);
 			
 		header('Location: /games/'.$gameID.'/decks?success=shuffle');
 	} elseif (isset($_POST['submit']) && $isGM) {
@@ -66,17 +63,17 @@
 			$deckPermissionsQ = $mysql->prepare('INSERT INTO deckPermissions SET deckID = :deckID, userID = :userID)');
 			$deckPermissionsQ->bindValue(':deckID', $deckID);
 			$deckPermissionsQ->bindParam(':userID', $dUserID);
-			$dUserID = $userID;
+			$dUserID = $currentUser->userID;
 			$deckPermissionsQ->execute();
 			foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
 			
-			addGameHistory($gameID, 'deckEdited', $userID);
+			addGameHistory($gameID, 'deckEdited', $currentUser->userID);
 		}
 		header('Location: /games/'.$gameID.'/decks?success=edit');
 	} elseif (isset($_POST['delete']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$mysql->query("DELETE FROM decks WHERE deckID = $deckID");
-		addGameHistory($gameID, 'deckDeleted', $userID);
+		addGameHistory($gameID, 'deckDeleted', $currentUser->userID);
 		
 		header('Location: /games/'.$gameID.'/decks?success=delete');
 	} else header('Location: /games/');

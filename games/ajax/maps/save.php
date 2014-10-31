@@ -1,11 +1,10 @@
 <?
 	checkLogin();
 	
-	$userID = intval($_SESSION['userID']);
 	$mapID = intval($_POST['mapID']);
 	$bgData = $_POST['bgData'];
 
-	$gmCheck = $mysql->query("SELECT p.userID FROM maps m, players p WHERE m.gameID = p.gameID AND p.userID = $userID AND m.mapID = $mapID and p.isGM = 1");
+	$gmCheck = $mysql->query("SELECT p.userID FROM maps m, players p WHERE m.gameID = p.gameID AND p.userID = {$currentUser->userID} AND m.mapID = $mapID and p.isGM = 1");
 	if (!$gmCheck->rowCount()) echo 0;
 	else {
 		$mysql->query("DELETE FROM mapData WHERE mapID = $mapID");

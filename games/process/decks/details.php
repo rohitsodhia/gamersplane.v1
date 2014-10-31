@@ -1,9 +1,6 @@
 <?
-	checkLogin(1);
-	
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($_POST['gameID']);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
 	$isGM = $gmCheck->rowCount()?TRUE:FALSE;
 	if (isset($_POST['create']) && $isGM) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
@@ -24,7 +21,7 @@
 			$addDeck->execute(array(':deckLabel' => $deckLabel));
 			$deckID = $mysql->lastInsertId();
 
-			addGameHistory($gameID, 'deckCreated', $userID, 'NOW()', 'deck', $deckID);
+			addGameHistory($gameID, 'deckCreated', $currentUser->userID, 'NOW()', 'deck', $deckID);
 
 			if (isset($_POST['addUser']) && sizeof($_POST['addUser'])) {
 				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = $deckID, userID = :userID");
@@ -40,7 +37,7 @@
 		}
 	} elseif (isset($_POST['edit']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
-		$deckInfo = $mysql->query("SELECT d.label, d.type, d.deck, d.position FROM decks d INNER JOIN games g ON d.gameID = g.gameID INNER JOIN players p ON g.gameID = p.gameID AND p.isGM = 1 WHERE d.deckID = $deckID AND p.userID = $userID LIMIT 1");
+		$deckInfo = $mysql->query("SELECT d.label, d.type, d.deck, d.position FROM decks d INNER JOIN games g ON d.gameID = g.gameID INNER JOIN players p ON g.gameID = p.gameID AND p.isGM = 1 WHERE d.deckID = $deckID AND p.userID = {$currentUser->userID} LIMIT 1");
 		if ($deckInfo->rowCount()) {
 			$deckInfo = $deckInfo->fetch();
 			$type = $_POST['deckType'];
@@ -63,7 +60,7 @@
 			$updateDeck = $mysql->prepare("UPDATE decks SET label = :deckLabel, type = '$type', deck = '$deck', position = $position WHERE deckID = $deckID");
 			$updateDeck->execute(array(':deckLabel' => sanitizeString($_POST['deckLabel'])));
 
-			addGameHistory($gameID, 'deckUpdated', $userID, 'NOW()', 'deck', $deckID);
+			addGameHistory($gameID, 'deckUpdated', $currentUser->userID, 'NOW()', 'deck', $deckID);
 			
 			$mysql->query('DELETE FROM deckPermissions WHERE deckID = '.$deckID);
 			if (isset($_POST['addUser']) && sizeof($_POST['addUser'])) {

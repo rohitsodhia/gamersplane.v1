@@ -1,13 +1,12 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$postID = intval($pathOptions[1]);
 	
 	$postInfo = $mysql->query("SELECT posts.authorID, threads.forumID, threads.threadID, relPosts.firstPostID FROM posts, threads, threads_relPosts relPosts WHERE posts.postID = $postID AND posts.threadID = threads.threadID AND threads.threadID = relPosts.threadID");
 	$postInfo = $postInfo->fetch();
-	$permissions = retrievePermissions($userID, $postInfo['forumID'], 'deletePost, deleteThread, moderate', TRUE);
+	$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'deletePost, deleteThread, moderate', TRUE);
 	$deleteType = ($postInfo['firstPostID'] == $postID)?'thread':'post';
 	
-	if ($postInfo['authorID'] != $userID && !$permissions['moderate'] || $postInfo['authorID'] == $userID && $postInfo['firstPostID'] != $postID && !$permissions['deletePost'] || $postInfo['authorID'] != $userID && $postInfo['firstPostID'] == $postID && !$permissions['deleteThread']) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
+	if ($postInfo['authorID'] != $currentUser->userID && !$permissions['moderate'] || $postInfo['authorID'] == $currentUser->userID && $postInfo['firstPostID'] != $postID && !$permissions['deletePost'] || $postInfo['authorID'] != $currentUser->userID && $postInfo['firstPostID'] == $postID && !$permissions['deleteThread']) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Delete <?=ucwords($deleteType)?></h1>

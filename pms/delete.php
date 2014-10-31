@@ -1,9 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
-	
 	$pmID = intval($pathOptions[1]);
 	
-	$recipientCheck = $mysql->query('SELECT recipientID, senderID FROM pms WHERE (recipientID = '.$userID.' OR senderID = '.$userID.') AND pmID = '.$pmID);
+	$recipientCheck = $mysql->query('SELECT recipientID, senderID FROM pms WHERE (recipientID = '.$currentUser->userID.' OR senderID = '.$currentUser->userID.') AND pmID = '.$pmID);
 	$recipientID = $recipientCheck->fetchColumn();
 
 	if (!$recipientID) { header('Location: /403'); exit; }

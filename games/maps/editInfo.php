@@ -1,8 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
 	if (!$gmCheck->rowCount()) { header('Location: /games'); exit; }
 
 	$mapInfo = $mysql->query("SELECT info FROM maps WHERE gameID = $gameID AND mapID = $mapID");

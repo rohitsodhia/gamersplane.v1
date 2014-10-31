@@ -1,9 +1,8 @@
 <?
 	$gameID = intval($pathOptions[0]);
-	$userID = intval($_SESSION['userID']);
 	$playerID = intval($pathOptions[2]);
 	$pendingAction = $pathOptions[1] == 'approvePlayer'?'approve':'reject';
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
 	if ($gmCheck->rowCount() == 0) { header('Location: /403'); exit; }
 	
 	$playerInfo = $mysql->query('SELECT u.username, g.title FROM users u, games g WHERE g.gameID = '.$gameID.' AND u.userID = '.$playerID);

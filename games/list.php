@@ -1,6 +1,3 @@
-<?
-	$userID = intval($_SESSION['userID']);
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<div class="sideWidget left">
 			<h2>Filter</h2>
@@ -36,7 +33,7 @@
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_a') $orderBy = 'g.title ASC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'g.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 's.fullName ASC';
-	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$userID} AND p.userID IS NULL AND g.open = 1".(isset($_GET['filter'])?' AND games.systemID IN ('.implode(', ', $_GET['filterSystem']).')':'')." ORDER BY $orderBy");
+	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.open = 1".(isset($_GET['filter'])?' AND games.systemID IN ('.implode(', ', $_GET['filterSystem']).')':'')." ORDER BY $orderBy");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>

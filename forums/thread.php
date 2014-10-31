@@ -2,15 +2,14 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('tools');
 	
-	$userID = intval($_SESSION['userID']);
 	$threadID = intval($pathOptions[1]);
 	if (!threadID) { header('Location: /forums'); exit; }
 	
-	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.lastRead lastReadID, newPosts.cLastRead cLastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = {$userID} WHERE threads.threadID = {$threadID}");
+	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.lastRead lastReadID, newPosts.cLastRead cLastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = {$currentUser->userID} WHERE threads.threadID = {$threadID}");
 	$threadInfo = $threadInfo->fetch();
 	$threadInfo['heritage'] = explode('-', $threadInfo['heritage']);
 	foreach ($threadInfo['heritage'] as $key => $value) $threadInfo['heritage'][$key] = intval($value);
-	$permissions = retrievePermissions($userID, $threadInfo['forumID'], array('read', 'write', 'editPost', 'deletePost', 'deleteThread', 'moderate'), TRUE);
+	$permissions = retrievePermissions($currentUser->userID, $threadInfo['forumID'], array('read', 'write', 'editPost', 'deletePost', 'deleteThread', 'moderate'), TRUE);
 	
 	if ($permissions['read'] == 0) { header('Location: /403'); exit; }
 
@@ -30,14 +29,14 @@
 	if ($page > ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE)) $page = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 	$start = ($page - 1) * PAGINATE_PER_PAGE;
 	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, users.avatarExt, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, users.username, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
-	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = $userID, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
+	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = {$currentUser->userID}, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
 
 	$gameID = FALSE;
 	$isGM = FALSE;
 	if ($threadInfo['heritage'][0] == 2 && $threadInfo['forumID'] != 10) {
 		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
 		$gameID = $gameID->fetchColumn();
-		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = $userID AND gameID = $gameID");
+		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = $gameID");
 		if ($gmCheck->rowCount()) $isGM = TRUE;
 	}
 
@@ -89,7 +88,7 @@
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($pollInfo['poll'])?></p>
 <? 
-		$castVotes = $mysql->query("SELECT pv.pollOptionID FROM forums_pollVotes pv, forums_pollOptions po WHERE po.threadID = $threadID AND po.pollOptionID = pv.pollOptionID AND pv.userID = $userID");
+		$castVotes = $mysql->query("SELECT pv.pollOptionID FROM forums_pollVotes pv, forums_pollOptions po WHERE po.threadID = $threadID AND po.pollOptionID = pv.pollOptionID AND pv.userID = {$currentUser->userID}");
 		$temp = array();
 		foreach ($castVotes as $voteInfo) $temp[] = $voteInfo['pollOptionID'];
 		$castVotes = $temp;
@@ -129,7 +128,7 @@
 	
 	$postCount = 1;
 	if ($loggedIn) {
-		$forumOptions = $mysql->query("SELECT showAvatars, postSide FROM users WHERE userID = $userID");
+		$forumOptions = $mysql->query("SELECT showAvatars, postSide FROM users WHERE userID = {$currentUser->userID}");
 		$forumOptions = $forumOptions->fetch();
 	} else $forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
 	if ($forumOptions['postSide'] == 'r' || $forumOptions['postSide'] == 'c') $postSide = 'Right';
@@ -165,7 +164,7 @@
 				$hidden = FALSE;
 				$showAll = FALSE;
 				foreach ($rolls[$postInfo['postID']] as $roll) {
-					$showAll = $isGM || $userID == $postInfo['userID']?TRUE:FALSE;
+					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?TRUE:FALSE;
 					$hidden = FALSE;
 ?>
 						<div class="rollInfo">
@@ -196,7 +195,7 @@
 <?
 				foreach ($draws[$postInfo['postID']] as $draw) {
 					echo "\t\t\t\t\t<div>".printReady($draw['reason'])."</div>\n";
-					if ($postInfo['userID'] == $userID) {
+					if ($postInfo['userID'] == $currentUser->userID) {
 						echo "\t\t\t\t\t<form method=\"post\" action=\"/forums/process/cardVis\">\n";
 						echo "\t\t\t\t\t\t<input type=\"hidden\" name=\"drawID\" value=\"{$draw['drawID']}\">\n";
 						$cardsDrawn = explode('~', $draw['cardsDrawn']);
@@ -226,7 +225,7 @@
 				<div class="postActions">
 <?
 			if ($permissions['write']) echo "						<a href=\"/forums/post/{$threadID}?quote={$postInfo['postID']}\">Quote</a>\n";
-			if (($postInfo['userID'] == $userID && !$threadInfo['locked']) || $permissions['moderate']) {
+			if (($postInfo['userID'] == $currentUser->userID && !$threadInfo['locked']) || $permissions['moderate']) {
 				if ($permissions['moderate'] || $permissions['editPost']) echo "					<a href=\"/forums/editPost/{$postInfo['postID']}\">Edit</a>\n";
 				if ($permissions['moderate'] || $permissions['deletePost'] && $postInfo['postID'] != $threadInfo['firstPostID'] || $permissions['deleteThread'] && $postInfo['postID'] == $threadInfo['firstPostID']) echo "					<a href=\"/forums/delete/{$postInfo['postID']}\" class=\"deletePost\">Delete</a>\n";
 			}
@@ -277,7 +276,7 @@
 <?	} ?>
 		</div>
 	
-<?	if ($permissions['write'] && $userID != 0 && !$threadInfo['locked']) { ?>
+<?	if ($permissions['write'] && $currentUser->userID != 0 && !$threadInfo['locked']) { ?>
 		<form method="post" action="/forums/process/post">
 			<h2 class="headerbar hbDark">Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">

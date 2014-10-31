@@ -4,7 +4,7 @@
 	
 	$gameID = intval($_POST['gameID']);
 	
-	$mysql->query('UPDATE chat_users SET lastActive = "'.date('Y-m-d H:i:s').'" WHERE userID = '.intval($_SESSION['userID']).' AND gameID = '.$gameID);
+	$mysql->query('UPDATE chat_users SET lastActive = "'.date('Y-m-d H:i:s').'" WHERE userID = '.$currentUser->userID.' AND gameID = '.$gameID);
 	$users = $mysql->query('SELECT users.userID, users.username FROM chat_users, users WHERE chat_users.userID = users.userID AND chat_users.lastActive >= NOW() - INTERVAL 5 SECOND AND gameID = '.$gameID);
 	echo '<users>';
 	if ($users->getResult()) { foreach ($users as $userInfo) {

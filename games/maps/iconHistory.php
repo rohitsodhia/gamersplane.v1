@@ -1,9 +1,8 @@
 <?
 	if ($_POST['validate'] != 'M3FnvL763xjm8HJfZ6kn') { header('Location: /'); exit; }
 	
-	$userID = intval($_SESSION['userID']);
 	$mapID = intval($_POST['mapID']);
-	$gmCheck = $mysql->query("SELECT players.isGM FROM maps INNER JOIN players ON players.gameID = maps.gameID AND players.isGM = 1 WHERE players.userID = $userID AND maps.mapID = $mapID");
+	$gmCheck = $mysql->query("SELECT players.isGM FROM maps INNER JOIN players ON players.gameID = maps.gameID AND players.isGM = 1 WHERE players.userID = {$currentUser->userID} AND maps.mapID = $mapID");
 	$isGM = $gmCheck->rowCount()?TRUE:FALSE;
 	$iconHistory = $mysql->query("SELECT ic.iconID, icons.label, icons.name, ic.mapID, ic.enactedBy, users.username, ic.enactedOn, ic.action, ic.origin, ic.destination FROM maps_iconHistory ic, maps_icons icons, users WHERE ic.iconID = icons.iconID AND ic.enactedBy = users.userID ".($isGM?'':"AND ic.action = 'moved' ")."AND ic.mapID = $mapID ORDER BY ic.actionID");
 ?>

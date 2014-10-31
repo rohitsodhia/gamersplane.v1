@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$forumID = intval($pathOptions[0]);
 	$forumType = 'c';
 	$heritage = array();
@@ -17,23 +16,23 @@
 	
 	// If not root, get current permissions
 	if ($forumID != 0) {
-		$permissions = retrievePermissions($userID, $forumID, array('read', 'moderate', 'createThread'));
+		$permissions = retrievePermissions($currentUser->userID, $forumID, array('read', 'moderate', 'createThread'));
 		if ($permissions[$forumID]['read'] == 0) { header('Location: /forums'); exit; }
 	}
 	
 	// Get lastRead for current forum; if none, create
-	if ($userID) {
-		$cLastRead = $mysql->query("SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = $forumID AND userID = $userID");
+	if ($currentUser->userID) {
+		$cLastRead = $mysql->query("SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = $forumID AND userID = $currentUser->userID");
 		if ($cLastRead->rowCount()) $lastReadID = $cLastRead->fetchColumn();
 		else {
 			$lastReadID = $mysql->query('SELECT MAX(postID) FROM posts');
 			$lastReadID = $lastReadID->fetchColumn();
-			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($userID, $forumID, $lastReadID)");
+			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($currentUser->userID, $forumID, $lastReadID)");
 		}
 	}
 	
 	// Check if admin of current forum
-	$forumAdmin = $mysql->query('SELECT forumID FROM forumAdmins WHERE userID = '.$userID.' AND forumID IN (0'.(($forumID != 0)?', '.implode(', ', $heritage):'').')');
+	$forumAdmin = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID IN (0".(($forumID != 0)?', '.implode(', ', $heritage):'').')');
 	$forumAdmin = $forumAdmin->rowCount()?TRUE:FALSE;
 	
 	// Get children
@@ -62,7 +61,7 @@
 		}
 		if ($forumID != 0 && $forumType == 'f') $forumIDs[] = $forumID;
 
- 		$permissions = retrievePermissions($userID, $forumIDs, array('read', 'moderate', 'createThread'));
+ 		$permissions = retrievePermissions($currentUser->userID, $forumIDs, array('read', 'moderate', 'createThread'));
 		foreach ($forumStructure as $iForumID => $forumInfo) {
 			if ($forumInfo['type'] == 'c') {
 				foreach ($forumInfo['children'] as $cForumID => $cInfo) if (!$permissions[$cForumID]['read']) unset($forumStructure[$iForumID]['children'][$cForumID], $forumIDs[array_search($cForumID, $forumIDs)]);
@@ -76,7 +75,7 @@
 		foreach (array_merge($forumIDs, $categoryIDs) as $lForumID) $queryWhere .= 'forums.heritage LIKE "%'.sql_forumIDPad($lForumID).'%" OR ';
 		$forumInfos = array();
 		$indivLatestPosts = array();
-		$rForumInfos = $mysql->query('SELECT forums.forumID, forums.title, forums.description, forums.heritage, threadCount.numThreads, numPosts.numPosts, latestPosts.postID lpPostID, latestPosts.datePosted, latestPosts.authorID, latestPosts.username, IF(newPosts.forumID IS NOT NULL AND threadCount.numThreads, IFNULL(newPosts.newPosts,1), 0) newPosts FROM forums LEFT JOIN (SELECT forumID, COUNT(threadID) numThreads FROM threads GROUP BY forumID) AS threadCount ON threadCount.forumID = forums.forumID LEFT JOIN (SELECT threads.forumID, COUNT(*) numPosts FROM posts, threads WHERE posts.threadID = threads.threadID GROUP BY threads.forumID) numPosts ON forums.forumID = numPosts.forumID LEFT JOIN (SELECT lastPost.forumID, lastPost.postID, lastPost.authorID, users.username, lastPost.datePosted FROM (SELECT forumID, postID, authorID, datePosted FROM (SELECT postID, forumID, authorID, datePosted FROM posts, threads WHERE posts.threadID = threads.threadID ORDER BY posts.datePosted DESC) lastPost GROUP BY forumID) lastPost, users WHERE users.userID = lastPost.authorID) AS latestPosts ON forums.forumID = latestPosts.forumID LEFT JOIN (SELECT forumID, newPosts FROM forums_readData_newPosts WHERE userID = '.$userID.' GROUP BY forumID) newPosts ON forums.forumID = newPosts.forumID WHERE '.substr($queryWhere, 0, -4).' AND forums.forumID != '.$forumID.' ORDER BY forums.heritage');
+		$rForumInfos = $mysql->query("SELECT forums.forumID, forums.title, forums.description, forums.heritage, threadCount.numThreads, numPosts.numPosts, latestPosts.postID lpPostID, latestPosts.datePosted, latestPosts.authorID, latestPosts.username, IF(newPosts.forumID IS NOT NULL AND threadCount.numThreads, IFNULL(newPosts.newPosts,1), 0) newPosts FROM forums LEFT JOIN (SELECT forumID, COUNT(threadID) numThreads FROM threads GROUP BY forumID) AS threadCount ON threadCount.forumID = forums.forumID LEFT JOIN (SELECT threads.forumID, COUNT(*) numPosts FROM posts, threads WHERE posts.threadID = threads.threadID GROUP BY threads.forumID) numPosts ON forums.forumID = numPosts.forumID LEFT JOIN (SELECT lastPost.forumID, lastPost.postID, lastPost.authorID, users.username, lastPost.datePosted FROM (SELECT forumID, postID, authorID, datePosted FROM (SELECT postID, forumID, authorID, datePosted FROM posts, threads WHERE posts.threadID = threads.threadID ORDER BY posts.datePosted DESC) lastPost GROUP BY forumID) lastPost, users WHERE users.userID = lastPost.authorID) AS latestPosts ON forums.forumID = latestPosts.forumID LEFT JOIN (SELECT forumID, newPosts FROM forums_readData_newPosts WHERE userID = {$currentUser->userID} GROUP BY forumID) newPosts ON forums.forumID = newPosts.forumID WHERE ".substr($queryWhere, 0, -4).' AND forums.forumID != '.$forumID.' ORDER BY forums.heritage');
 		foreach ($rForumInfos as $forumInfo) {
 			$indivLatestPosts[$forumInfo['forumID']] = $forumInfo['lpPostID'];
 			$forumInfos[$forumInfo['forumID']] = $forumInfo;
@@ -92,7 +91,7 @@
 	if ($forumID != 0 && $forumType != 'c') {
 		$numThreads = $mysql->query('SELECT COUNT(*) FROM threads WHERE forumID = '.$forumID);
 		$numThreads = $numThreads->fetchColumn();
-		$threads = $mysql->query('SELECT threads.threadID, threads.locked, threads.sticky, first.title, first.postID fp_postID, first.datePosted fp_datePosted, first.authorID fp_authorID, tAuthor.username fp_username, last.postID lp_postID, last.datePosted lp_datePosted, last.authorID lp_authorID, lAuthor.username lp_username, postCount.numPosts, IFNULL(rd.lastRead, 0) lastRead FROM threads INNER JOIN threads_relPosts relPosts ON relPosts.threadID = threads.threadID INNER JOIN posts first ON relPosts.firstPostID = first.postID INNER JOIN posts last ON relPosts.lastPostID = last.postID INNER JOIN users tAuthor ON first.authorID = tAuthor.userID INNER JOIN users lAuthor ON last.authorID = lAuthor.userID LEFT JOIN (SELECT threadID, COUNT(*) AS numPosts FROM posts GROUP BY threadID) postCount ON threads.threadID = postCount.threadID LEFT JOIN forums_readData_threads rd ON threads.threadID = rd.threadID AND rd.userID = '.$userID.' WHERE threads.forumID = '.$forumID.' ORDER BY threads.sticky DESC, last.datePosted DESC');
+		$threads = $mysql->query("SELECT threads.threadID, threads.locked, threads.sticky, first.title, first.postID fp_postID, first.datePosted fp_datePosted, first.authorID fp_authorID, tAuthor.username fp_username, last.postID lp_postID, last.datePosted lp_datePosted, last.authorID lp_authorID, lAuthor.username lp_username, postCount.numPosts, IFNULL(rd.lastRead, 0) lastRead FROM threads INNER JOIN threads_relPosts relPosts ON relPosts.threadID = threads.threadID INNER JOIN posts first ON relPosts.firstPostID = first.postID INNER JOIN posts last ON relPosts.lastPostID = last.postID INNER JOIN users tAuthor ON first.authorID = tAuthor.userID INNER JOIN users lAuthor ON last.authorID = lAuthor.userID LEFT JOIN (SELECT threadID, COUNT(*) AS numPosts FROM posts GROUP BY threadID) postCount ON threads.threadID = postCount.threadID LEFT JOIN forums_readData_threads rd ON threads.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE threads.forumID = {$forumID} ORDER BY threads.sticky DESC, last.datePosted DESC");
 	}
 	
 	$gameID = FALSE;

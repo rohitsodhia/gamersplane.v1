@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$forumID = intval($_POST['forumID']);
 	
 	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");

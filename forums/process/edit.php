@@ -1,5 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$postID = intval($_POST['postID']);
 	
 	if (isset($_POST['post'])) {
@@ -9,9 +8,9 @@
 		$postInfo = $mysql->query('SELECT posts.threadID, forums.forumID, posts.title, posts.message, posts.authorID, posts.datePosted, posts.lastEdit, posts.timesEdited, threads.locked FROM posts, threads, forums WHERE posts.postID = '.$postID.' && posts.threadID = threads.threadID && threads.forumID = forums.forumID');
 		$postInfo = $postInfo->fetch();
 		
-		$permissions = retrievePermissions($userID, $postInfo['forumID'], 'moderate', TRUE);
+		$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'moderate', TRUE);
 						
-		if ($postInfo && ($permissions['moderate'] || $userID = $postInfo['authorID']) && !$postInfo['locked']) {
+		if ($postInfo && ($permissions['moderate'] || $currentUser->userID = $postInfo['authorID']) && !$postInfo['locked']) {
 			unset($_SESSION['errors']);
 			unset($_SESSION['errorTime']);
 			

@@ -1,13 +1,10 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['pendingAction'])) {
-		$userID = intval($_SESSION['userID']);
 		$gameID = intval($_POST['gameID']);
 		$playerID = intval($_POST['playerID']);
 		$pendingAction = $_POST['pendingAction'] == 'approve'?'approve':'reject';
 		
-		$sanityCheck = $mysql->query("SELECT g.groupID FROM players p, players gm, games g WHERE p.userID = $playerID AND p.gameID = $gameID AND g.gameID = $gameID AND gm.gameID = $gameID AND gm.userID = $userID AND gm.isGM = 1");
+		$sanityCheck = $mysql->query("SELECT g.groupID FROM players p, players gm, games g WHERE p.userID = $playerID AND p.gameID = $gameID AND g.gameID = $gameID AND gm.gameID = $gameID AND gm.userID = {$currentUser->userID} AND gm.isGM = 1");
 		
 		if ($sanityCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo -1;
@@ -20,7 +17,7 @@
 			} else {
 				$mysql->query("DELETE FROM players WHERE userID = $playerID AND gameID = $gameID");
 			}
-			addGameHistory($gameID, ($pendingAction == 'approve'?'playerApproved':'playerRejected'), $userID, 'NOW()', 'user', $playerID);
+			addGameHistory($gameID, ($pendingAction == 'approve'?'playerApproved':'playerRejected'), $currentUser->userID, 'NOW()', 'user', $playerID);
 			
 			if (isset($_POST['modal'])) echo 1;
 			else header('Location: /games/'.$gameID);

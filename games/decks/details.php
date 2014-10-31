@@ -1,7 +1,6 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
 	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
 
 	$action = $pathOptions[3];

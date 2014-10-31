@@ -20,7 +20,7 @@
 		<h1>New <?=$details['system']?> Game</h1>
 		<div style="text-align: center"><img src="http://gamersplane.com/images/logos/<?=$details['systemShort']?>.jpg" style="max-width: 200px;"></div>
 		<p>A new <?=$details['system']?> game has been started on Gamers Plane!</p>
-		<p><a href="http://gamersplane.com/ucp/<?=$userID?>" class="username"><?=$_SESSION['username']?></a> has started up a game for <?=$details['numPlayers']?> players called "<?=$details['title']?>". Check out the <a href="http://gamersplane.com/games/<?=$gameID?>">game's details</a> and submit a character before the slots fill!</p>
+		<p><a href="http://gamersplane.com/ucp/<?=$currentUser->userID?>/" class="username"><?=$currentUser->username?></a> has started up a game for <?=$details['numPlayers']?> players called "<?=$details['title']?>". Check out the <a href="http://gamersplane.com/games/<?=$gameID?>">game's details</a> and submit a character before the slots fill!</p>
 		<p style="text-align: right;">- The Gamers Plane Team</p>
 		<div style="font-size: .8em; margin-top: 2em;">If you'd like to stop recieving emails about new games, please head to your <a href="http://gamersplane.com/ucp/cp">user control panel</a> and change the option labeled as "Recieve new game emails?" to "No".</div>
 	</div>

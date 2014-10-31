@@ -1,7 +1,6 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$mapID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT maps.gameID FROM maps INNER JOIN players USING (gameID) WHERE players.userID = $userID AND maps.mapID = $mapID");
+	$gmCheck = $mysql->query("SELECT maps.gameID FROM maps INNER JOIN players USING (gameID) WHERE players.userID = {$currentUser->userID} AND maps.mapID = $mapID");
 	if (!$gmCheck->rowCount()) { header('Location: /403'); exit; }
 	$gameInfo = $gmCheck->fetch();
 	$mapInfo = $mysql->query('SELECT gameID, name, columns, rows FROM maps WHERE mapID = '.$mapID);

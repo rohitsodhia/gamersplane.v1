@@ -1,6 +1,4 @@
 <?
-	$userID = intval($_SESSION['userID']);
-	
 	if ($_POST['orderBy'] == 'createdOn_d') $order = 'g.created DESC';
 	elseif ($_POST['orderBy'] == 'createdOn_a') $order = 'g.created';
 	elseif ($_POST['orderBy'] == 'name_a') $order = 'g.title';
@@ -16,7 +14,7 @@
 		$search = implode(' OR ', $search);
 	}
 	
-	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$userID} AND p.userID IS NULL AND g.open = 1".($systems?" AND g.systemID IN ($systems)":'').(isset($search)?" AND ($search)":'')." ORDER BY $order");
+	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.open = 1".($systems?" AND g.systemID IN ($systems)":'').(isset($search)?" AND ($search)":'')." ORDER BY $order");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>

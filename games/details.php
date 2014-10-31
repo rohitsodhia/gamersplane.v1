@@ -1,8 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	
-	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = $userID) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
+	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 
@@ -10,7 +9,7 @@
 	$isGM = $gameInfo['isGM']?true:false;
 	
 	if (!$isGM) {
-		$userCheck = $mysql->query('SELECT approved FROM players WHERE gameID = '.$gameInfo['gameID'].' AND userID = '.$userID);
+		$userCheck = $mysql->query('SELECT approved FROM players WHERE gameID = '.$gameInfo['gameID'].' AND userID = '.$currentUser->userID);
 		if ($userCheck->rowCount()) {
 			$inGame = true;
 			$approved = $userCheck->fetchColumn();
@@ -24,7 +23,7 @@
 
 	$characters = array();
 	foreach ($mysql->query('SELECT characterID, userID, label, approved FROM characters WHERE gameID = '.$gameID) as $character) $characters[$character['userID']][] = $character;
-	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$userID} AND approved = 1");
+	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = 1");
 	$playerApprovedChars = $playerApprovedChars->fetchColumn();
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
@@ -122,7 +121,7 @@
 					<h2 class="headerbar hbDark">Submit a Character</h2>
 <?
 			if ($playerApprovedChars < $gameInfo['charsPerPlayer']) {
-				$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$userID.' AND systemID = '.$gameInfo['systemID'].' AND ISNULL(gameID)');
+				$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$currentUser->userID.' AND systemID = '.$gameInfo['systemID'].' AND ISNULL(gameID)');
 				if ($readyChars->rowCount()) {
 ?>
 					<form method="post" action="/games/process/addCharacter" class="hbdMargined">
@@ -196,7 +195,7 @@
 <?		if ($isGM && !$playerInfo['primaryGM']) { ?>
 								<a href="<?='/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
 								<a href="<?='/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
-<?		} elseif ($playerInfo['userID'] == $userID && !$playerInfo['primaryGM']) { ?>
+<?		} elseif ($playerInfo['userID'] == $currentUser->userID && !$playerInfo['primaryGM']) { ?>
 								<a href="<?='/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
 <?		} ?>
 							</div>
@@ -205,15 +204,15 @@
 						<ul class="characters">
 <?			foreach ($characters[$playerInfo['userID']] as $character) { ?>
 							<li class="clearfix">
-								<div class="charLabel"><?=(($isGM || $userID == $playerInfo['userID'])?'<a href="/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
+								<div class="charLabel"><?=(($isGM || $currentUser->userID == $playerInfo['userID'])?'<a href="/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $currentUser->userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
 								<div class="actionLinks">
 <?				if ($isGM && !$character['approved']) { ?>
 									<a href="<?='/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
 <?
 				}
-				if ($isGM || $character['userID'] == $userID) {
+				if ($isGM || $character['userID'] == $currentUser->userID) {
 ?>
-									<a href="<?='/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $userID?'Withdraw':(!$character['approved']?'Reject':'Remove')?> Character</a>
+									<a href="<?='/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $currentUser->userID?'Withdraw':(!$character['approved']?'Reject':'Remove')?> Character</a>
 <?				} ?>
 								</div>
 							</li>

@@ -1,10 +1,7 @@
 <?
-	checkLogin();
-	
 	if (isset($_POST['submit'])) {
-		$userID = intval($_SESSION['userID']);
 		$gameID = intval($_POST['gameID']);
-		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
+		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
 		if (!$gmCheck->rowCount()) {
 			if (isset($_POST['modal'])) echo -1;
 			else header('Location: /games/'.$gameID);

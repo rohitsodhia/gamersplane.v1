@@ -1,11 +1,10 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$mapID = intval($pathOptions[2]);
 	$modal = $pathOptions[3] == 'modal'?TRUE:FALSE;
-	$gmCheck = $mysql->query("SELECT players.isGM FROM maps INNER JOIN players ON maps.gameID = players.gameID AND players.isGM = 1 WHERE gms.userID = $userID AND maps.mapID = $mapID");
+	$gmCheck = $mysql->query("SELECT players.isGM FROM maps INNER JOIN players ON maps.gameID = players.gameID AND players.isGM = 1 WHERE gms.userID = {$currentUser->userID} AND maps.mapID = $mapID");
 	if (!$gmCheck->rowCount()) {
 		$isGM = FALSE;
-		$playerCheck = $mysql->query("SELECT characters.userID FROM characters INNER JOIN maps USING (gameID) WHERE characters.userID = $userID AND maps.mapID = $mapID");
+		$playerCheck = $mysql->query("SELECT characters.userID FROM characters INNER JOIN maps USING (gameID) WHERE characters.userID = {$currentUser->userID} AND maps.mapID = $mapID");
 		if (!$playerCheck->rowCount()) { header('Location: /403'); exit; }
 	} else $isGM = TRUE;
 	$mapInfo = $mysql->query('SELECT maps.gameID, maps.name, maps.columns, maps.rows, maps.bgData, maps.details, games.title, games.system FROM maps, games WHERE maps.gameID = games.gameID AND maps.mapID = '.$mapID);

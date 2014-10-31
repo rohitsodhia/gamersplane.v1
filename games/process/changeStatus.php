@@ -3,8 +3,7 @@
 	
 	if (isset($_POST['close']) || isset($_POST['open'])) {
 		$gameID = intval($_POST['gameID']);
-		$gmID = intval($_SESSION['userID']);
-		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = $gameID AND gmID = $gmID");
+		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = $gameID AND gmID = {$currentUser->userID}");
 		
 		if ($gmCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo 0;

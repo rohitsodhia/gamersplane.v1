@@ -2,7 +2,7 @@
 	header('Content-Type: text/xml');
 	echo "<?xml version=\"1.0\" ?>\n\n";
 	if (sizeof($_POST) > 0) {
-		$userInfo = $mysql->query('SELECT userID, username, email FROM users WHERE LOWER(username) = "'.strtolower(sanitizeString($_POST['username'])).'" AND userID != '.intval($_SESSION['userID']));
+		$userInfo = $mysql->query('SELECT userID, username, email FROM users WHERE LOWER(username) = "'.strtolower(sanitizeString($currentUser->username)).'" AND userID != '.$currentUser->userID));
 		
 		echo "<users>\n";
 		foreach ($userInfo as $info) {

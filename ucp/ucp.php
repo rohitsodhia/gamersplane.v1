@@ -1,6 +1,5 @@
 <?
-	$userID = intval($_SESSION['userID']);
-	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$userID);
+	$userCheck = $mysql->query('SELECT * FROM users WHERE userID = '.$currentUser->userID);
 	if ($userCheck->rowCount() == 0) { header('Location: /404'); exit; }
 	$userInfo = $userCheck->fetch();
 ?>
@@ -30,9 +29,9 @@
 		<form id="changeOptions" method="post" action="/ucp/process/changeDetails" enctype="multipart/form-data" class="section_profile">
 			<div class="tr">
 				<label class="textLabel">Avatar</label>
-<? if (file_exists(FILEROOT."/ucp/avatars/$userID.{$userInfo['avatarExt']}")) { ?>
+<? if (file_exists(FILEROOT."/ucp/avatars/{$currentUser->userID}.{$userInfo['avatarExt']}")) { ?>
 				<div id="avatar">
-					<img src="/ucp/avatars/<?=$userID.'.'.$userInfo['avatarExt']?>">
+					<img src="/ucp/avatars/<?=$currentUser->userID.'.'.$userInfo['avatarExt']?>">
 					<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
 				</div>
 <? } ?>

@@ -3,7 +3,6 @@
 	
 	if (isset($_POST['apply'])) {
 		$gameID = intval($_POST['gameID']);
-		$userID = intval($_SESSION['userID']);
 		
 		$numPlayers = $mysql->query("SELECT numPlayers FROM games WHERE gameID = $gameID");
 		$numPlayers = $numPlayers->fetchColumn();
@@ -11,7 +10,7 @@
 		$numApprovedPlayers = $numApprovedPlayers->rowCount() - 1;
 		
 		if ($numApprovedPlayers < $numPlayers) {
-			$mysql->query("INSERT INTO players (gameID, userID) VALUES ($gameID, $userID)");
+			$mysql->query("INSERT INTO players (gameID, userID) VALUES ($gameID, {$currentUser->userID})");
 			addGameHistory($gameID, 'playerApplied');
 		}
 		header('Location: /games/'.$gameID);

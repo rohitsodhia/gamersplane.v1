@@ -1,9 +1,6 @@
 <?
-	checkLogin();
-	
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($_POST['gameID']);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = $userID");
+	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
 	if (isset($_POST['create']) && $gmCheck->rowCount()) {
 		$addMap = $mysql->prepare("INSERT INTO maps SET gameID = $gameID, name = :name, rows = :rows, columns = :columns, visible = :visible");
 		$addMap->bindValue(':name', sanitizeString($_POST['name']));

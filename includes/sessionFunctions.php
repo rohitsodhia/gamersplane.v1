@@ -4,9 +4,6 @@
 		
 //		putenv('TZ=GMT');
 		date_default_timezone_set('GMT');
-		
-		if (!isset($_COOKIE['loginHash']) && (isset($_SESSION['userID']) || isset($_SESSION['username']))) logout();
-		if (!isset($_SESSION['timezone'])) $_SESSION['timezone'] = 'GMT';
 	}
 	
 	function checkLogin($redirect = 1) {

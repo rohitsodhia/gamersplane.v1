@@ -6,7 +6,6 @@
 		unset($_SESSION['errorVals']);
 		unset($_SESSION['errorTime']);
 		
-		$userID = intval($_SESSION['userID']);
 		$gameID = intval($_POST['gameID']);
 		$details['title'] = $_POST['title'];
 		$systemInfo = $systems->getSystemInfo(intval($_POST['system']));
@@ -51,7 +50,7 @@
 			
 			header('Location: /games/'.$gameID);
 		} else {
-			$details['gmID'] = $userID;
+			$details['gmID'] = $currentUser->userID;
 			$details['created'] = date('Y-m-d H:i:s');
 			$details['start'] = $details['created'];
 
@@ -71,7 +70,7 @@
 			$addGame->execute();
 			$gameID = $mysql->lastInsertId();
 			
-			$mysql->query("INSERT INTO players (gameID, userID, approved, isGM, primaryGM) VALUES ($gameID, $userID, 1, 1, 1)");
+			$mysql->query("INSERT INTO players (gameID, userID, approved, isGM, primaryGM) VALUES ($gameID, {$currentUser->userID}, 1, 1, 1)");
 			
 			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
 			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
@@ -82,14 +81,14 @@
 			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);
 			$details['forumID'] = $forumID;
 			
-			$addForumGroup = $mysql->prepare('INSERT INTO forums_groups (name, ownerID, gameGroup) VALUES (:title, '.$userID.', 1)');
+			$addForumGroup = $mysql->prepare('INSERT INTO forums_groups (name, ownerID, gameGroup) VALUES (:title, '.$currentUser->userID.', 1)');
 			$addForumGroup->execute(array('title' => $details['title']));
 			$groupID = $mysql->lastInsertId();
 			$details['groupID'] = $groupID;
 			
-			$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$userID.')');
+			$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$currentUser->userID.')');
 			
-			$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES('.$userID.', '.$forumID.')');
+			$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES('.$currentUser->userID.', '.$forumID.')');
 			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 1, 1, 1, 1, 1, 1, 1)');
 			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
 			

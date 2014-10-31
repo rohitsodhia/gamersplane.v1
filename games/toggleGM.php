@@ -1,8 +1,7 @@
 <?
-	$userID = intval($_SESSION['userID']);
 	$gameID = intval($pathOptions[0]);
 	$playerID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = $gameID AND userID = $userID and isGM = 1");
+	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} and isGM = 1");
 	$playerCheck = $mysql->query("SELECT u.userID, u.username, p.isGM FROM users u, players p WHERE u.userID = p.userID AND p.gameID = $gameID AND p.userID = $playerID AND p.approved = 1");
 	if ($gmCheck->rowCount() == 0 || $playerCheck->rowCount() == 0) { header('Location: /games/'.$gameID); exit; }
 
