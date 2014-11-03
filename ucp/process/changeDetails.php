@@ -1,13 +1,13 @@
 <?
-	$ext = '';
+	$avatarExt = '';
 	$fileUploaded = false;
 	
 	if (isset($_POST['submit'])) {
 		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/{$currentUser->userID}.jpg");
 		if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
-			$ext = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
-			if ($ext == 'jpeg') $ext = 'jpg';
-			if (in_array($ext, array('jpg', 'gif', 'png'))) {
+			$avatarExt = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
+			if ($avatarExt == 'jpeg') $avatarExt = 'jpg';
+			if (in_array($avatarExt, array('jpg', 'gif', 'png'))) {
 				$maxWidth = 150;
 				$maxHeight = 150;
 				
@@ -35,11 +35,11 @@
 				imagesavealpha($tempColor,true);
 				imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
 				
-				$destination = FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.'.$ext;
+				$destination = FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.'.$avatarExt;
 				foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
-				if ($ext == 'jpg') imagejpeg($tempColor, $destination, 100);
-				elseif ($ext == 'gif') imagegif($tempColor, $destination);
-				elseif ($ext == 'png') imagepng($tempColor, $destination, 0);
+				if ($avatarExt == 'jpg') imagejpeg($tempColor, $destination, 100);
+				elseif ($avatarExt == 'gif') imagegif($tempColor, $destination);
+				elseif ($avatarExt == 'png') imagepng($tempColor, $destination, 0);
 				imagedestroy($tempImg);
 				imagedestroy($tempColor);
 				$fileUploaded = true;
@@ -47,14 +47,14 @@
 		}
 
 		$usermeta = array();
-		if ($ext == '') $ext = null;
-		$currentUser->updateUsermeta('ext', $ext, 1);
+		if ($avatarExt == '') $avatarExt = null;
+		$currentUser->updateUsermeta('avatarExt', $avatarExt, 1);
 
 		$currentUser->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
 		if ($_POST['gender'] == 'n') $gender = '';
 		else $gender = $_POST['gender'] == 'm'?'m':'f';
 		$currentUser->updateUsermeta('gender', $gender);
-		$birthday = intval($_POST['year']).'-'.intval($_POST['month']).'-'.intval($_POST['day']);
+		$birthday = intval($_POST['year']).'-'.(intval($_POST['month']) <= 9?'0':'').intval($_POST['month']).'-'.(intval($_POST['day']) <= 9?'0':'').intval($_POST['day']);
 		if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) $currentUser->updateUsermeta('birthday', $birthday);
 		$currentUser->updateUsermeta('showAge', isset($_POST['showAge'])?1:0);
 		$currentUser->updateUsermeta('location', sanitizeString($_POST['location']));

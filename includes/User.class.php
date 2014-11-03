@@ -95,15 +95,25 @@
 		public function updateUsermeta($metaKey, $metaValue, $autoload = 0) {
 			global $mysql;
 
-			if ($autoload != 1) $autoload = 0;
-			$addUpdateMetaKey = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue, autoload = {$autoload}");
-			$addUpdateMetaKey->bindValue(':metaKey', $metaKey);
-			$addUpdateMetaKey->bindValue(':metaValue', $metaValue);
-			$addUpdateMetaKey->execute();
+			if ($metaValue != null && $metaValue != '') {
+				if ($autoload != 1) $autoload = 0;
+				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue, autoload = {$autoload}");
+				$updateUsermeta->bindValue(':metaKey', $metaKey);
+				$updateUsermeta->bindValue(':metaValue', $metaValue);
+				$updateUsermeta->execute();
 
-			$this->usermeta[$metaKey] = $metaValue;
+				$this->usermeta[$metaKey] = $metaValue;
+			} else $this->deleteUsermeta($metaKey);
 
 			return true;
+		}
+
+		public function deleteUsermeta($metaKey) {
+			global $mysql;
+
+			$deleteUsermeta = $mysql->prepare("DELETE FROM usermeta WHERE userID = {$this->userID} AND metaKey = :metaKey");
+			$deleteUsermeta->bindValue(':metaKey', $metaKey);
+			$deleteUsermeta->execute();
 		}
 	}
 ?>
