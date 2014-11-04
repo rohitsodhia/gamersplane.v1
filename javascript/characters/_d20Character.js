@@ -16,7 +16,6 @@ $(function() {
 		$('.sizeVal').text(showSign(size));
 		$('.addSize').text(function () {
 			newVal = parseInt($(this).text()) + change;
-			console.log(this.id + ':' + newVal);
 			if ($(this).hasClass('showSign')) return showSign(newVal);
 			else return newVal;
 		});

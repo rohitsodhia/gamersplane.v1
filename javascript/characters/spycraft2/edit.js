@@ -21,6 +21,5 @@ $(function() {
 	});
 
 	nextFocusCount = $('#focusList .focus').length + 1;
-	console.log(nextFocusCount);
 	$('.focus_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'focus', characterID: characterID, system: system });
 });

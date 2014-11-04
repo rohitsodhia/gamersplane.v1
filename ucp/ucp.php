@@ -25,18 +25,18 @@
 			<span class="section_forumOptions hideDiv">Forum Options</span>
 		</h2>
 		<form id="changeOptions" method="post" action="/ucp/process/changeDetails" enctype="multipart/form-data" class="section_profile">
-			<div class="tr">
-				<label class="textLabel">Avatar</label>
-<? if (file_exists(FILEROOT."/ucp/avatars/{$currentUser->userID}.{$currentUser->avatarExt}")) { ?>
-				<div id="avatar">
-					<img src="/ucp/avatars/<?=$currentUser->userID.'.'.$currentUser->avatarExt?>">
-					<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
-				</div>
-<? } ?>
+			<div id="avatar" class="tr">
+				<label>Avatar</label>
 				<div>
+<? if (file_exists(FILEROOT."/ucp/avatars/{$currentUser->userID}.{$currentUser->avatarExt}")) { ?>
+					<div id="avatarDisp">
+						<img src="/ucp/avatars/<?=$currentUser->userID.'.'.$currentUser->avatarExt?>">
+						<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
+					</div>
+<? } ?>
 					<input type="file" name="avatar">
+					<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images will be shrunk for GP use.</div>
 				</div>
-				<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images will be shrunk for GP use.</div>
 			</div>
 <!--			<div class="tr">
 				<label>Show Avatars?</label>
@@ -52,11 +52,11 @@
 <?
 	$bdayParts = explode('-', $currentUser->birthday);
 ?>
-					Month <select name="month">
+					<span>Month</span> <select name="month">
 <? for ($count = 1; $count <= 12; $count++) echo "						<option".(intval($bdayParts[1]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
-					</select> Day <select name="day">
+					</select> <span>Day</span> <select name="day">
 <? for ($count = 1; $count <= 31; $count++) echo "						<option".(intval($bdayParts[2]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
-					</select> Year <select name="year">
+					</select> <span>Year</span> <select name="year">
 <? for ($count = date('Y') - 5; $count >= date('Y') - 100; $count--) echo "						<option".(intval($bdayParts[0]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select>
 				</div>
@@ -67,26 +67,26 @@
 				<div class="explanation">Only your age will be shown, not your full birthday.</div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Location</label>
+				<label>Location</label>
 				<div><input type="text" name="location" value="<?=printReady($currentUser->location)?>"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Twitter</label>
+				<label>Twitter</label>
 				<div><input type="text" name="twitter" value="<?=printReady($currentUser->twitter)?>"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Game Stream (Twitch, etc.)</label>
+				<label>Game Stream (Twitch, etc.)</label>
 				<div><input type="text" name="stream" value="<?=printReady($currentUser->stream)?>"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">What games are you into?</label>
+				<label>What games are you into?</label>
 				<div><input id="games" type="text" name="games" value="<?=printReady($currentUser->games)?>"></div>
 			</div>
 			<div class="tr">
 				<label>Recieve new game emails?</label>
 				<div><input type="radio" name="newGameMail" value="1"<?=$currentUser->newGameMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="newGameMail" value="0"<?=$currentUser->newGameMail == 0?' checked="checked"':''?>> No</div>
 			</div>
-			<div class="tr">
+			<div class="tr submitDiv">
 				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>
@@ -98,25 +98,25 @@
 			</div>
 			<div class="tr">
 				<label>Email Address</label>
-				<div><?=$currentUser->email?></div>
+				<div><input type="text" name="email" value="<?=$currentUser->email?>"></div>
 			</div>
 <!--			<div class="tr">
-				<label class="textLabel">Change Email Address</label>
+				<label>Change Email Address</label>
 				<div><input type="text" name="email" maxlength="100"></div>
 			</div>-->
 			<div class="tr">
-				<label class="textLabel">Old Password</label>
+				<label>Old Password</label>
 				<div><input type="password" name="oldPass" maxlength="16"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Change Password</label>
+				<label>Change Password</label>
 				<div><input type="password" name="password1" maxlength="16"></div>
 			</div>
 			<div class="tr">
-				<label class="textLabel">Confirm Password</label>
+				<label>Confirm Password</label>
 				<div><input type="password" name="password2" maxlength="16"></div>
 			</div>
-			<div class="tr">
+			<div class="tr submitDiv">
 				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>
@@ -128,7 +128,7 @@
 				<div><input type="radio" name="postSide" value="l"<?=$currentUser->postSide == 'l'?' checked="checked"':''?>> Left</div>
 				<div><input type="radio" name="postSide" value="c"<?=$currentUser->postSide == 'c'?' checked="checked"':''?>> Conversation</div>
 			</div>
-			<div class="tr">
+			<div class="tr submitDiv">
 				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>

@@ -96,7 +96,6 @@ function wingMargins(container) {
 
 	var height = $container.outerHeight()/* + 2*/;
 	var width = Math.ceil(height * ($container.data('ratio') == undefined?.6:Number($container.data('ratio'))));
-	console.log(height);
 	$container.data('height', height).data('width', width);
 	$content.css('margin', '0 ' + width + 'px');
 	if ($container.hasClass('headerbar') || $container.hasClass('fancyButton') || $container.attr('id') != 'controls') {
@@ -131,7 +130,6 @@ function sumRow() {
 	if ($(this).hasClass('dontAdd')) return false;
 
 	var inputTotal = 0;
-	console.log($(this));
 	$parent = $(this).closest('.sumRow');
 	$parent.find('input[type="text"]').not('.dontAdd').each(function () { inputTotal += parseInt($(this).val()); });
 	$total.each(function () {

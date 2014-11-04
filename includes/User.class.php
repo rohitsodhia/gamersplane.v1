@@ -51,6 +51,10 @@
 			else return false;
 		}
 
+		public function activated() {
+			return $this->activatedOn == null?false:true;
+		}
+
 		public function validate($password) {
 			if ($this->userID !== null) {
 				if (hash('sha256', PVAR.$password.$this->salt) == $this->password) return true;
@@ -58,12 +62,18 @@
 			} else return false;
 		}
 
-		public function activated() {
-			return $this->activatedOn == null?false:true;
+		public function updatePassword($password) {
+			global $mysql;
+			
+			$this->salt = randomAlphaNum(20);
+			$addUser = $mysql->prepare('UPDATE users SET password = :password, salt = :salt');
+			$addUser->bindValue(':password', hash('sha256', PVAR.$password1.$this->salt));
+			$addUser->bindValue(':salt', $this->salt);
+			$addUser->execute();
 		}
 
 		public function getLoginHash() {
-			return substr(hash('sha256', PVAR.$this->email.$this->joinDate), 0, 32);
+			return substr(hash('sha256', PVAR.$this->email.$this->joinDate), 7, 32);
 		}
 
 		public function generateLoginCookie() {
