@@ -17,7 +17,6 @@
 			$currentUser = new User($userID);
 
 			if (!$currentUser->activated() || !$currentUser->validate($password)) {
-				exit;
 				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 0)');
 				if (isset($_POST['modal'])) echo '/login/?failed=1';
 				else header('Location: /login/?failed=1');
