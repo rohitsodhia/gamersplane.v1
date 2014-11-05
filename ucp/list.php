@@ -10,17 +10,18 @@
 	$usersPerPage = 25;
 	
 	$page = intval($_GET['page']) > 0?intval($_GET['page']):1;
-	$usersOnPage = $mysql->query('SELECT userID, username, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate, avatarExt FROM users ORDER BY online DESC, username LIMIT '.(($page - 1) * $usersPerPage).', '.$usersPerPage);
+	$usersOnPage = $mysql->query('SELECT userID, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users ORDER BY online DESC, username LIMIT '.(($page - 1) * $usersPerPage).', '.$usersPerPage);
 	$count = 0;
 	foreach ($usersOnPage as $userInfo) {
+		$user = new User($userInfo['userID']);
 		$count++;
 ?>
 			<li<?=$count % 5 == 0?' class="last"':''?>>
 				<div class="onlineIndicator <?=$userInfo['online']?'online':'offline'?>"></div>
 				<a href="<?='/user/'.$userInfo['userID']?>" class="avatar">
-					<img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$userInfo['userID']}.png")?$userInfo['userID']:'avatar')?>.png">
+					<img src="<?=$user->getAvatar()?>">
 				</a>
-				<p><a href="<?='/user/'.$userInfo['userID']?>"><?=$userInfo['username']?></a></p>
+				<p><a href="<?='/user/'.$userInfo['userID']?>"><?=$user->username?></a></p>
 			</li>
 <? } ?>
 		</ul>

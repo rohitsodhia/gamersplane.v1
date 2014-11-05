@@ -125,5 +125,10 @@
 			$deleteUsermeta->bindValue(':metaKey', $metaKey);
 			$deleteUsermeta->execute();
 		}
+
+		public function getAvatar($exists = false) {
+			if (file_exists(FILEROOT."/ucp/avatars/{$this->userID}.{$this->avatarExt}")) return $exists?true:"/ucp/avatars/{$this->userID}.{$this->avatarExt}";
+			else return $exists?false:'/ucp/avatars/avatar.png';
+		}
 	}
 ?>

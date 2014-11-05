@@ -9,7 +9,7 @@
 	$threadInfo = $threadInfo->fetch();
 	$threadInfo['heritage'] = explode('-', $threadInfo['heritage']);
 	foreach ($threadInfo['heritage'] as $key => $value) $threadInfo['heritage'][$key] = intval($value);
-	$permissions = retrievePermissions($currentUser->userID, $threadInfo['forumID'], array('read', 'write', 'editPost', 'deletePost', 'deleteThread', 'moderate'), TRUE);
+	$permissions = retrievePermissions($currentUser->userID, $threadInfo['forumID'], array('read', 'write', 'editPost', 'deletePost', 'deleteThread', 'moderate'), true);
 	
 	if ($permissions['read'] == 0) { header('Location: /403'); exit; }
 
@@ -28,16 +28,16 @@
 	$page = $page > 0?$page:1;
 	if ($page > ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE)) $page = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 	$start = ($page - 1) * PAGINATE_PER_PAGE;
-	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, users.avatarExt, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, users.username, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
+	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
 	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = {$currentUser->userID}, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
 
-	$gameID = FALSE;
-	$isGM = FALSE;
+	$gameID = false;
+	$isGM = false;
 	if ($threadInfo['heritage'][0] == 2 && $threadInfo['forumID'] != 10) {
 		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
 		$gameID = $gameID->fetchColumn();
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = $gameID");
-		if ($gmCheck->rowCount()) $isGM = TRUE;
+		if ($gmCheck->rowCount()) $isGM = true;
 	}
 
 	$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.threadID = {$threadID} AND r.postID = p.postID ORDER BY r.rollID");
@@ -55,7 +55,7 @@
 	$draws = $temp;
 	
 	$pollInfo = $mysql->query("SELECT poll, optionsPerUser, allowRevoting FROM forums_polls WHERE threadID = {$threadID}");
-	$pollInfo = $pollInfo->rowCount()?$pollInfo->fetch():FALSE;
+	$pollInfo = $pollInfo->rowCount()?$pollInfo->fetch():false;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$threadInfo['title']?></h1>
@@ -127,21 +127,25 @@
 	}
 	
 	$postCount = 1;
+	$forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
 	if ($loggedIn) {
-		$forumOptions = $mysql->query("SELECT showAvatars, postSide FROM users WHERE userID = {$currentUser->userID}");
-		$forumOptions = $forumOptions->fetch();
-	} else $forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
+		$forumOptionsQ = $mysql->query("SELECT metaKey, metaValue FROM users WHERE userID = {$currentUser->userID} AND metaKey IN ('showAvatars', 'postSide')");
+		foreach ($forumOptions as $forumOption) $forumOptions[$forumOption['metaKey']] = $forumOption['metaValue'];
+	}
 	if ($forumOptions['postSide'] == 'r' || $forumOptions['postSide'] == 'c') $postSide = 'Right';
 	else $postSide = 'Left';
 	
+	$users = array();
 	if ($posts->rowCount()) {
 		foreach ($posts as $postInfo) {
+			if (!isset($users[$postInfo['userID']])) $users[$postInfo['userID']] = new User($postInfo['userID']);
+			$postAuthor = $users[$postInfo['userID']];
 ?>
 			<div class="postBlock post<?=$postSide?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
-					<a href="<?='/user/'.$postInfo['userID']?>" class="avatar"><img src="<?='/ucp/avatars/'.(file_exists(FILEROOT."/ucp/avatars/{$postInfo['userID']}.{$postInfo['avatarExt']}")?$postInfo['userID'].'.'.$postInfo['avatarExt']:'avatar.png')?>"></a>
-					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postInfo['username']?></a></p>
+					<a href="<?='/user/'.$postInfo['userID']?>" class="avatar"><img src="<?=$postAuthor->getAvatar()?>"></a>
+					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postAuthor->username?></a></p>
 				</div>
 				<div class="postContent">
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>
@@ -161,21 +165,21 @@
 						<h4>Rolls</h4>
 <?
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
-				$hidden = FALSE;
-				$showAll = FALSE;
+				$hidden = false;
+				$showAll = false;
 				foreach ($rolls[$postInfo['postID']] as $roll) {
-					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?TRUE:FALSE;
-					$hidden = FALSE;
+					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?true:false;
+					$hidden = false;
 ?>
 						<div class="rollInfo">
 <?
 					$roll->showHTML($showAll);
 /*					echo $showAll && $roll['visibility'] > 0?'<span class="hidden">'.$visText[$roll['visibility']].'</span> ':'';
 					if ($roll['visibility'] <= 2) echo $roll['reason'];
-					elseif ($showAll) { echo '<span class="hidden">'.$roll['reason']; $hidden = TRUE; }
+					elseif ($showAll) { echo '<span class="hidden">'.$roll['reason']; $hidden = true; }
 					else echo 'Secret Roll';
 					if ($roll['visibility'] <= 1) echo " - ({$roll['roll']}".($roll['ra']?', RA':'').')';
-					elseif ($showAll) { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = TRUE; }
+					elseif ($showAll) { echo ($hidden?'':'<span class="hidden">')." - ({$roll['roll']}".($roll['ra']?', RA':'').')'; $hidden = true; }
 					echo $hidden?'</span>':'';
 					echo "</div>\n";
 					if ($roll['visibility'] == 0) echo "\t\t\t\t\t\t<div class=\"indent\">".displayIndivDice($roll['indivRolls'])." = {$roll['result']}</div>\n";

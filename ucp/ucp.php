@@ -1,15 +1,15 @@
 <?
 	$currentUser->getAllUsermeta();
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">User Control Panel</h1>
 		
-<? if ($_GET['updated']) { ?>
+<?	if ($_GET['updated']) { ?>
 		<div class="alertBox_success">
 			Account successfully updated!
 		</div>
 		
-<? } ?>
+<?	} ?>
 		<div class="clearfix"><div id="controls" class="wingDiv hbDark floatLeft" data-ratio=".8">
 			<div>
 				<a href="" class="section_profile current">Profile</a>
@@ -28,12 +28,12 @@
 			<div id="avatar" class="tr">
 				<label>Avatar</label>
 				<div>
-<? if (file_exists(FILEROOT."/ucp/avatars/{$currentUser->userID}.{$currentUser->avatarExt}")) { ?>
 					<div id="avatarDisp">
-						<img src="/ucp/avatars/<?=$currentUser->userID.'.'.$currentUser->avatarExt?>">
+						<img src="<?=$this->getAvatar()?>">
+<?	if ($this->getAvatar(true)) { ?>
 						<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
+<?	} ?>
 					</div>
-<? } ?>
 					<input type="file" name="avatar">
 					<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images will be shrunk for GP use.</div>
 				</div>
@@ -53,11 +53,11 @@
 	$bdayParts = explode('-', $currentUser->birthday);
 ?>
 					<span>Month</span> <select name="month">
-<? for ($count = 1; $count <= 12; $count++) echo "						<option".(intval($bdayParts[1]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
+<?	for ($count = 1; $count <= 12; $count++) echo "						<option".(intval($bdayParts[1]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select> <span>Day</span> <select name="day">
-<? for ($count = 1; $count <= 31; $count++) echo "						<option".(intval($bdayParts[2]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
+<?	for ($count = 1; $count <= 31; $count++) echo "						<option".(intval($bdayParts[2]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select> <span>Year</span> <select name="year">
-<? for ($count = date('Y') - 5; $count >= date('Y') - 100; $count--) echo "						<option".(intval($bdayParts[0]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
+<?	for ($count = date('Y') - 5; $count >= date('Y') - 100; $count--) echo "						<option".(intval($bdayParts[0]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
 					</select>
 				</div>
 			</div>
@@ -132,4 +132,4 @@
 				<button type="submit" name="submit" class="fancyButton">Save</button>
 			</div>
 		</form>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>
