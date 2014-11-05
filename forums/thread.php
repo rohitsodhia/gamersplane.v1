@@ -130,7 +130,7 @@
 	$forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
 	if ($loggedIn) {
 		$forumOptionsQ = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$currentUser->userID} AND metaKey IN ('showAvatars', 'postSide')");
-		foreach ($forumOptions as $forumOption) $forumOptions[$forumOption['metaKey']] = $forumOption['metaValue'];
+		foreach ($forumOptionsQ as $forumOption) $forumOptions[$forumOption['metaKey']] = $forumOption['metaValue'];
 	}
 	if ($forumOptions['postSide'] == 'r' || $forumOptions['postSide'] == 'c') $postSide = 'Right';
 	else $postSide = 'Left';
