@@ -6,11 +6,11 @@
 		<div id="toolsList">
 			<a href="/tools/dice/">
 				<img src="/images/tools/dice.png">
-				<p>Dice Roller</p>
+				<p>Dice</p>
 			</a>
 			<a href="/tools/cards/">
 				<img src="/images/tools/fannedCards.png">
-				<p>Deck of Cards</p>
+				<p>Cards</p>
 			</a>
 			<a href="/tools/music/">
 				<img src="/images/tools/note.png">

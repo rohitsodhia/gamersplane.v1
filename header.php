@@ -38,7 +38,14 @@
 	
 	<div id="mainMenu">
 		<ul id="mainMenu_left">
-			<li><a href="/tools/" class="first">Tools</a></li>
+			<li>
+				<a href="/tools/" class="first">Tools</a>
+				<ul>
+					<li><a href="/tools/dice/">Dice</a></li>
+					<li><a href="/tools/cards/">Cards</a></li>
+					<li><a href="/tools/music/">Music</a></li>
+				</ul>
+			</li>
 <?		if ($loggedIn) { ?>
 			<li>
 				<a href="/characters/my/">Characters</a>
