@@ -1,15 +1,15 @@
-<? if (!MODAL) { ?>
+<?	if (!MODAL) { ?>
 	</div>
 </div></div>
 <footer<?=$fixedGameMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
 	<a href="/contact">Contact Us</a>
 </div></footer>
-<? if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
-<? } else { ?>
+<?		if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
+<?	} else { ?>
 </div>
-<? } ?>
+<?	} ?>
 
-<? require_once(FILEROOT.'/javascript/js.php'); ?>
+<?	require_once(FILEROOT.'/javascript/js.php'); ?>
 
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
