@@ -104,6 +104,11 @@
 			<p>Hm... seems like you're using IE. Can I suggest a better browser, such as <a href="http://www.mozilla.com/en-US/firefox/" target="_blank">Firefox</a>, <a href="http://www.googlechrome.com/" target="_blank">Chrome</a> or <a href="http://www.opera.com/" target="_blank">Opera</a>? There are other choices too.</p>
 			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
 		</div>
+<?		if (!$loggedIn) { ?>
+		<div class="alertBox_info">
+			To upgrade security, I've had to reset everyone's password. You can check the <a href="/forums/3/">Announcements</a> forum for more details, but to log in again, please click login at the top right, and click <u>Forgot your Password?</u>. Follow the steps and you'll be good to go!
+		</div>
+<?		} ?>
 <?	} else { ?>
 <div id="page_<?=PAGE_ID?>" class="clearfix<?=sizeof($bodyClasses)?' '.implode(' ', $bodyClasses):''?>">
 <?	} ?>
