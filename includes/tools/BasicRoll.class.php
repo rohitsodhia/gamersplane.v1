@@ -1,12 +1,11 @@
 <?
 	class BasicRoll extends Roll {
-		protected $rerollAces = FALSE;
+		protected $rerollAces = false;
 
 		function __construct() { }
 
 		function newRoll($diceString, $options = array()) {
-			$cleanDiceStrings = array();
-			if (isset($options['rerollAces']) && $options['rerollAces']) $this->rerollAces = TRUE;
+			if (isset($options['rerollAces']) && $options['rerollAces']) $this->rerollAces = true;
 			$this->parseRolls($diceString);
 		}
 
@@ -25,8 +24,8 @@
 					$this->dice[$roll[2]] = new BasicDie($roll[2]);
 				}
 
-				return TRUE;
-			} else return FALSE;
+				return true;
+			} else return false;
 		}
 
 		function roll() {
@@ -63,7 +62,7 @@
 		function forumSave($postID) {
 			global $mysql;
 
-			if (sizeof($this->rolls) == 0) return FALSE;
+			if (sizeof($this->rolls) == 0) return false;
 
 			$rolls = $results = $indivRolls = array();
 			foreach ($this->rolls as $roll) {
@@ -84,13 +83,13 @@
 		function getResults() {
 		}
 
-		function showHTML($showAll = FALSE) {
+		function showHTML($showAll = false) {
 			if (sizeof($this->rolls)) {
-				$hidden = FALSE;
+				$hidden = false;
 
 				echo '<div class="roll">';
 				$rollStrings = $rollValues = array();
-				$multipleRolls = sizeof($this->rolls) > 1?TRUE:FALSE;
+				$multipleRolls = sizeof($this->rolls) > 1?true:false;
 				foreach ($this->rolls as $count => $roll) {
 					$rollStrings[] = $roll['string'];
 					$rollValues[$count] = '<p class="rollResults">'.($this->visibility != 0 && $showAll?'<span class="hidden">':'').($multipleRolls?"{$roll['string']} - ":'').'( ';
@@ -109,11 +108,11 @@
 				echo '<p class="rollString">';
 				echo ($showAll && $this->visibility > 0)?'<span class="hidden">'.$this->visText[$this->visibility].'</span> ':'';
 				if ($this->visibility <= 2) echo $this->reason;
-				elseif ($showAll) { echo '<span class="hidden">'.($this->reason != ''?"{$this->reason}":''); $hidden = TRUE; }
+				elseif ($showAll) { echo '<span class="hidden">'.($this->reason != ''?"{$this->reason}":''); $hidden = true; }
 				else echo 'Secret Roll';
 				if ($this->visibility > 1 && $showAll && !$hidden) {
 					echo '<span class="hidden">';
-					$hidden = TRUE;
+					$hidden = true;
 				}
 				if ($this->visibility <= 1 || $showAll) {
 					if (strlen($this->reason)) echo ' - (';

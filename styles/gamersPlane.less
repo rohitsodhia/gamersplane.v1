@@ -1046,6 +1046,33 @@ html[xmlns] .clearfix {
 	background-position: -75px -100px;
 }
 
+.fate_dice, .fate_dice div {
+	height: 30px;
+	width: 30px;
+}
+
+.fate_dice {
+	display: inline-block;
+	padding: 5px;
+	border: 1px solid #999;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.fate_dice.positive div, .fate_dice.negative div {
+	background-image: url('../images/tools/dice/fate/fate.png');
+	background-repeat: no-repeat;
+}
+
+.fate_dice.positive div {
+	background-position: top center;
+}
+
+.fate_dice.negative div {
+	background-position: bottom center;
+}
+
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Cards */

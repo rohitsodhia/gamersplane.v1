@@ -9,6 +9,7 @@
 					<select class="prettySelect">
 						<option value="basic">Basic Dice</option>
 						<option value="sweote">Star Wars: Edge of the Empire</option>
+						<option value="fate">Fate Dice</option>
 					</select>
 				</div>
 				<div class="wing dlWing"></div>
@@ -17,6 +18,7 @@
 			<h2 class="headerbar hbDark hb_hasButton">
 				<span class="dice_basic">Basic Dice</span>
 				<span class="dice_sweote hideDiv">Star Wars: Edge of the Empire</span>
+				<span class="dice_fate hideDiv">Fate Dice</span>
 			</h2>
 			<div class="dice_basic">
 				<p>Dice should be in the format<br>(number of dice)d(dice type)(modifier)</p>
@@ -88,6 +90,13 @@
 						<div class="sweote_dice force"><div></div></div>
 						<span>Force</span>
 					</a>
+				</div>
+			</div>
+			<div class="dice_fate hideDiv hbdMargined">
+				<div class="clearfix">
+					<label for="fate_count">Number of dice: </label>
+					<input id="fate_count" type="text" value="4">
+					<button id="fate_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
 				</div>
 			</div>
 		</div>

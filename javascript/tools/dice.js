@@ -60,4 +60,15 @@ $(function() {
 
 		$sweote_dicePool.html('');
 	});
+
+	$('#fate_roll').click(function (e) {
+		var diceCount = parseInt($('#fate_count').val());
+		if (diceCount <= 0) diceCount = 1;
+		if (diceCount > 50) diceCount = 50;
+		$.post('/tools/process/dice/', { rollType: 'fate', dice: diceCount }, function (data) {
+			$('.newestRolls').removeClass('newestRolls');
+			$(data).addClass('newestRolls').prependTo($diceSpace);
+			$('.newestRolls').slideDown(400);
+		});
+	});
 });
