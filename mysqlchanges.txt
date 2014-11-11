@@ -1,0 +1,1 @@
+INSERT INTO dispatch SET URL = 'characters/avatar/', pageID = 'charAvatar', file = 'characters/avatar.php', title = 'Character Avatar', modalWidth = 500;
