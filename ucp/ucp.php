@@ -29,8 +29,8 @@
 				<label>Avatar</label>
 				<div>
 					<div id="avatarDisp">
-						<img src="<?=$this->getAvatar()?>">
-<?	if ($this->getAvatar(true)) { ?>
+						<img src="<?=$currentUser->getAvatar()?>">
+<?	if ($currentUser->getAvatar(true)) { ?>
 						<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
 <?	} ?>
 					</div>
