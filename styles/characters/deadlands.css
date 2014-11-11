@@ -4,8 +4,7 @@
 */
 
 #nameDiv label {
-	display: block;
-	float: left;
+	display: inline-block;
 	width: 70px;
 	text-align: right;
 	margin-right: 10px;
