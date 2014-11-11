@@ -1,6 +1,5 @@
 <?
 	class FateRoll extends Roll {
-		protected $numDice = 0;
 		protected $die;
 		private $sMap = array(-1 => 'negative', 'blank', 'positive');
 
@@ -11,11 +10,11 @@
 		function newRoll($numDice) {
 			$numDice = intval($numDice);
 			if ($numDice <= 0) return false;
-			else $this->numDice = $numDice;
+			else $this->roll = $numDice;
 		}
 
 		function roll() {
-			for ($count = 0; $count < $this->numDice; $count++) $this->rolls[] = $this->die->roll() - 2;
+			for ($count = 0; $count < $this->roll; $count++) $this->rolls[] = $this->die->roll() - 2;
 		}
 
 		function forumLoad($rollData) {
@@ -24,7 +23,7 @@
 			$this->newRoll($rollData['roll']);
 			$rollData['indivRolls'] = unserialize($rollData['indivRolls']);
 			foreach ($rollData['indivRolls'] as $key => $roll) {
-				$this->rolls[$key]['result'] = $this->resultsMap[$roll];
+				$this->rolls[$key] = $roll;
 			}
 			$rollData['results'] = unserialize($rollData['results']);
 			$count = 0;
@@ -37,21 +36,10 @@
 		function forumSave($postID) {
 			global $mysql;
 
-			$rolls = $indivRolls = $totals = array();
-			foreach ($this->rolls as $roll) {
-				$rolls[] = $roll['die'];
-				$indivRolls[] = array_search($roll['result'], $this->resultsMap);
-			}
-			$count = 0;
-			foreach ($this->totals as $total) {
-				$totals[$count++] = $total;
-			}
-
-			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'sweote', reason = :reason, roll = :roll, indivRolls = :indivRolls, results = :results, visibility = :visibility");
+			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'fate', reason = :reason, roll = :roll, indivRolls = :indivRolls, visibility = :visibility");
 			$addRoll->bindValue(':reason', $this->reason);
-			$addRoll->bindValue(':roll', implode(',', array_map(function ($value) { return $value[0]; }, $rolls)));
-			$addRoll->bindValue(':indivRolls', serialize($indivRolls));
-			$addRoll->bindValue(':results', serialize($totals));
+			$addRoll->bindValue(':roll', $this->roll);
+			$addRoll->bindValue(':indivRolls', serialize($this->rolls));
 			$addRoll->bindValue(':visibility', $this->visibility);
 			$addRoll->execute();
 		}

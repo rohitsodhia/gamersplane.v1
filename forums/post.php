@@ -287,6 +287,7 @@
 						<select>
 							<option value="basic">Basic</option>
 							<option value="sweote">SWEOTE</option>
+							<option value="fate">Fate</option>
 						</select>
 						<button type="submit" class="fancyButton">Add</button>
 					</div>

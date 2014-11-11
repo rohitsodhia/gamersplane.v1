@@ -27,7 +27,7 @@ $(function() {
 	$('#addRoll button').click(function (e) {
 		e.preventDefault();
 
-		$.post('/forums/ajax/addRoll', { count: rollCount, type: $addRoll_type.val() }, function (data) {
+		$.post('/forums/ajax/addRoll/', { count: rollCount, type: $addRoll_type.val() }, function (data) {
 			$newRow = $(data);
 			$newRow.find('input[type="checkbox"]').prettyCheckbox();
 			$newRow.find('select').prettySelect();
@@ -36,7 +36,7 @@ $(function() {
 		})
 	});
 
-	$('#newRolls').on('click', '.close', function (e) {
+	$('#newRolls').on('click', '.cross', function (e) {
 		e.preventDefault();
 
 		$(this).parent().remove();

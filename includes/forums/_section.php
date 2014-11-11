@@ -1,10 +1,33 @@
 <?
 	function rollTR($count, $type = 'basic', $data = array()) {
 		echo "						<div class=\"rollWrapper\">\n";
-		echo "							<button class=\"close\"><img src=\"/images/cross.png\"></button>\n";
-		if ($type == 'sweote') {
+		echo "							<button class=\"sprite cross small\"></button>\n";
+		if ($type == 'basic') {
 ?>
-							<div class="table newRoll sweoteRoll">
+							<div class="newRoll basicRoll">
+								<div class="headers">
+									<div class="reason">Reason</div>
+									<div class="roll">Roll</div>
+									<div class="visibility">Visibility</div>
+									<div class="reroll">Reroll Aces</div>
+								</div>
+								<div>
+									<input type="hidden" name="rolls[<?=$count?>][type]" value="basic">
+									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data['reason'])?" value=\"{$data['reason']}\"":NULL?> class="borderBox"></div>
+									<div class="roll"><input type="text" name="rolls[<?=$count?>][roll]" maxlength="50"<?=isset($data['roll'])?" value=\"{$data['roll']}\"":NULL?> class="borderBox"></div>
+									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
+										<option value="0"<?=isset($data['visibility']) && $data['visibility'] == 0?' selected="selected"':NULL?>>Hide Nothing</option>
+										<option value="1"<?=isset($data['visibility']) && $data['visibility'] == 1?' selected="selected"':NULL?>>Hide Roll/Result</option>
+										<option value="2"<?=isset($data['visibility']) && $data['visibility'] == 2?' selected="selected"':NULL?>>Hide Dice &amp; Roll</option>
+										<option value="3"<?=isset($data['visibility']) && $data['visibility'] == 3?' selected="selected"':NULL?>>Hide Everything</option>
+									</select></div>
+									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][options][rerollAces]"<?=isset($data['options']['rerollAces'])?' checked="checked"':NULL?>></div>
+								</div>
+							</div>
+<?
+		} elseif ($type == 'sweote') {
+?>
+							<div class="newRoll sweoteRoll">
 								<div class="headers">
 									<div class="reason">Reason</div>
 									<div class="roll">Roll</div>
@@ -52,26 +75,26 @@
 								</div>
 							</div>
 <?
-		} else {
+		} elseif ($type == 'fate') {
 ?>
-							<div class="table newRoll basicRoll">
+							<div class="newRoll fateRoll">
 								<div class="headers">
 									<div class="reason">Reason</div>
-									<div class="roll">Roll</div>
+									<div class="roll"># of Dice</div>
 									<div class="visibility">Visibility</div>
-									<div class="reroll">Reroll Aces</div>
 								</div>
 								<div>
-									<input type="hidden" name="rolls[<?=$count?>][type]" value="basic">
+									<input type="hidden" name="rolls[<?=$count?>][type]" value="fate">
 									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data['reason'])?" value=\"{$data['reason']}\"":NULL?> class="borderBox"></div>
-									<div class="roll"><input type="text" name="rolls[<?=$count?>][roll]" maxlength="50"<?=isset($data['roll'])?" value=\"{$data['roll']}\"":NULL?> class="borderBox"></div>
+									<div class="roll">
+										<input type="text" name="rolls[<?=$count?>][roll]" value="<?=isset($data['roll'])?$data['roll']:4?>">
+									</div>
 									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
 										<option value="0"<?=isset($data['visibility']) && $data['visibility'] == 0?' selected="selected"':NULL?>>Hide Nothing</option>
 										<option value="1"<?=isset($data['visibility']) && $data['visibility'] == 1?' selected="selected"':NULL?>>Hide Roll/Result</option>
 										<option value="2"<?=isset($data['visibility']) && $data['visibility'] == 2?' selected="selected"':NULL?>>Hide Dice &amp; Roll</option>
 										<option value="3"<?=isset($data['visibility']) && $data['visibility'] == 3?' selected="selected"':NULL?>>Hide Everything</option>
 									</select></div>
-									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][options][rerollAces]"<?=isset($data['options']['rerollAces'])?' checked="checked"':NULL?>></div>
 								</div>
 							</div>
 <?
