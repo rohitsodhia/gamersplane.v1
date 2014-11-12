@@ -34,6 +34,7 @@
 			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">
 			
 			<div id="charDetails">
+				<div id="charAvatar"><a href="/characters/avatar/<?=SYSTEM?>/<?=$characterID?>/">Change Avatar</a> (Avatar Set: <div class="sprite <?=getAvatar($characterID)?'check green':'cross'?> small"></div>)</div>
 <?		$character->showEdit(); ?>
 			</div>
 			

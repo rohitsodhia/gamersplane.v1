@@ -224,6 +224,14 @@
 	margin: 1em 0;
 }
 
+#page_characterSheet_edit #charAvatar {
+	text-align: right;
+}
+
+#page_characterSheet_edit #charAvatar div {
+	vertical-align: middle;
+}
+
 .tr > * {
 	vertical-align: middle;
 }
@@ -424,4 +432,31 @@ label.leftLabel {
 
 .feat_remove {
 	margin-left: 5px;
+}
+
+/* --------------------------------------------*/
+
+#page_charAvatar {
+	#avatar {
+		display: block;
+		margin: 0 auto;
+		border: 1px solid #666;
+
+		&.noAvatar {
+			height: 150px;
+			width: 150px;
+		}
+
+		p {
+			margin: 0;
+			line-height: 150px;
+			text-align: center;
+			font-size: 1.2em;
+			font-weight: bold;
+		}
+	}
+
+	#delete > * {
+		vertical-align: middle;
+	}
 }

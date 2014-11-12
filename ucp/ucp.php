@@ -24,7 +24,7 @@
 			<span class="section_security hideDiv">Security</span>
 			<span class="section_forumOptions hideDiv">Forum Options</span>
 		</h2>
-		<form id="changeOptions" method="post" action="/ucp/process/changeDetails" enctype="multipart/form-data" class="section_profile">
+		<form id="changeOptions" method="post" action="/ucp/process/changeDetails/" enctype="multipart/form-data" class="section_profile">
 			<div id="avatar" class="tr">
 				<label>Avatar</label>
 				<div>
