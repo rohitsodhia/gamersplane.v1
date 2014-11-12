@@ -46,9 +46,9 @@
 					imagesavealpha($tempColor,true);
 					imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
 					
-					$destination = FILEROOT."/characters/avatars/{$characterID}.png";
+					$destination = FILEROOT."/characters/avatars/{$characterID}.jpg";
 					if (file_exists($destination)) unlink($destination);
-					imagepng($tempColor, $destination, 0);
+					imagejpeg($tempColor, $destination, 100);
 					imagedestroy($tempImg);
 					imagedestroy($tempColor);
 					$fileUploaded = true;
