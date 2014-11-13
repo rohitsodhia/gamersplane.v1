@@ -145,6 +145,7 @@
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
 					<a href="<?='/user/'.$postInfo['userID']?>" class="avatar"><img src="<?=$postAuthor->getAvatar()?>"></a>
+<?	if ($)
 					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postAuthor->username?></a></p>
 				</div>
 				<div class="postContent">

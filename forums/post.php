@@ -26,7 +26,7 @@
 		foreach ($draws as $drawInfo) $temp[$drawInfo['deckID']] = $drawInfo;
 		$draws = $temp;
 		
-		$postInfo = $mysql->query('SELECT threads.forumID, posts.postID, posts.title postTitle, posts.authorID, posts.message, first.title threadTitle, first.postID fpPostID, threads.locked, threads.allowRolls, threads.allowDraws FROM posts, posts first, threads, threads_relPosts relPosts WHERE posts.postID = '.$postID.' AND posts.threadID = threads.threadID AND threads.threadID = relPosts.threadID and relPosts.firstPostID = first.postID');
+		$postInfo = $mysql->query("SELECT t.forumID, p.postID, p.title postTitle, p.authorID, p.postAs, p.message, first.title threadTitle, first.postID fpPostID, t.locked, t.allowRolls, t.allowDraws FROM posts p, posts first, threads t, threads_relPosts relPosts WHERE p.postID = {$postID} AND p.threadID = t.threadID AND t.threadID = relPosts.threadID and relPosts.firstPostID = first.postID");
 		$postInfo = $postInfo->fetch();
 		
 		if ($postInfo['fpPostID'] == $postID) {
@@ -175,9 +175,9 @@
 					<div class="tr">
 						<label>Post As:</label>
 						<div><select name="postAs">
-							<option value="p">Player</option>
+							<option value="p"<?=$postInfo['postAs'] == null?' selected="selected"':''?>>Player</option>
 <?		foreach ($characters as $character) { ?>
-							<option value="<?=$character->getCharacterID()?>"><?=$character->getName()?></option>
+							<option value="<?=$character->getCharacterID()?>"<?=$postInfo['postAs'] == $character->getCharacterID()?' selected="selected"':''?>><?=$character->getName()?></option>
 <?		} ?>
 						</select></div>
 					</div>

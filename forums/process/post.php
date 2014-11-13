@@ -11,6 +11,7 @@
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 		$title = sanitizeString($_POST['title']);
 		$message = sanitizeString($_POST['message']);
+		$postAs = isset($_POST['postAs']) && intval($_POST['postAs'])?intval($_POST['postAs']):null;
 
 		if (preg_match_all('/\[note="?(\w[\w +;,]+)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
@@ -106,7 +107,7 @@
 				$mysql->query("INSERT INTO threads SET forumID = $forumID, sticky = $sticky, allowRolls = $allowRolls, allowDraws = $allowDraws");
 				$threadID = $mysql->lastInsertId();
 				
-				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted");
+				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($postAs?$postAs:'NULL'));
 				$addPost->bindValue(':title', $title);
 				$addPost->bindValue(':message', $message);
 				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
@@ -146,7 +147,7 @@
 				exit;
 			} else {
 				$datePosted = date('Y-m-d H:i:s');
-				$addPost = $mysql->prepare("INSERT INTO posts (threadID, title, authorID, message, datePosted) VALUES ($threadID, :title, {$currentUser->userID}, :message, :datePosted)");
+				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($postAs?$postAs:'NULL'));
 				$addPost->bindValue(':title', $title);
 				$addPost->bindValue(':message', $message);
 				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
