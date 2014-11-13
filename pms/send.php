@@ -4,7 +4,7 @@
 	if ($pathOptions[0] == 'reply') {
 		$pmID = intval($pathOptions[1]);
 		
-		$pmCheck = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.message FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE recipientID = '.intval($_SESSION['userID']).' AND pmID = '.$pmID);
+		$pmCheck = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.message FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE recipientID = '.$currentUser->userID.' AND pmID = '.$pmID);
 		
 		if (!$pmCheck->rowCount()) { header('Location: /pms/'); exit; }
 		
