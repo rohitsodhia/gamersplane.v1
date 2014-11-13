@@ -43,6 +43,9 @@
 				imagedestroy($tempImg);
 				imagedestroy($tempColor);
 				$fileUploaded = true;
+			} elseif ($avatarExt == 'svg') {
+				foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
+				move_uploaded_file($_FILES['avatar']['tmp_name'], FILEROOT."/ucp/avatars/{$currentUser->userID}.svg");
 			}
 		}
 

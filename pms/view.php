@@ -13,8 +13,8 @@
 		<h1 class="headerbar">Private Message</h1>
 		
 		<div id="buttonsDiv">
-			<a href="/pms/reply/<?=$pmID?>" class="fancyButton">Reply</a>
-			<a href="/pms/delete/<?=$pmID?>" class="fancyButton deletePM">Delete</a>
+			<a href="/pms/reply/<?=$pmID?>/" class="fancyButton">Reply</a>
+			<a href="/pms/delete/<?=$pmID?>/" class="fancyButton deletePM">Delete</a>
 		</div>
 		
 		<div class="tr">
@@ -23,7 +23,7 @@
 		</div>
 		<div class="tr">
 			<div class="leftCol">From</div>
-			<div class="rightCol"><a href="<?='/'.$pmInfo['senderID']?>" class="username"><?=$pmInfo['senderName']?></a></div>
+			<div class="rightCol"><a href="/user/<?=$pmInfo['senderID']?>/" class="username"><?=$pmInfo['senderName']?></a></div>
 		</div>
 		<div class="tr">
 			<div class="leftCol">When</div>

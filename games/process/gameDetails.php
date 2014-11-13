@@ -53,7 +53,7 @@
 			$details['start'] = $details['created'];
 
 			$system = $details['system'];
-			$addGame = $mysql->prepare('INSERT INTO games (title, systemID, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :systemID, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, :forumID, :groupID)');
+			$addGame = $mysql->prepare('INSERT INTO games (title, systemID, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :systemID, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, -1, -1)');
 			$addGame->bindParam('title', $details['title']);
 			$addGame->bindParam('systemID', $details['systemID']);
 			$addGame->bindParam('gmID', $details['gmID']);
@@ -63,8 +63,6 @@
 			$addGame->bindParam('numPlayers', $details['numPlayers']);
 			$addGame->bindParam('description', $details['description']);
 			$addGame->bindParam('charGenInfo', $details['charGenInfo']);
-			$addGame->bindParam('forumID', $details['forumID']);
-			$addGame->bindParam('groupID', $details['groupID']);
 			$addGame->execute();
 			$gameID = $mysql->lastInsertId();
 			
@@ -89,8 +87,6 @@
 			$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES('.$currentUser->userID.', '.$forumID.')');
 			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 1, 1, 1, 1, 1, 1, 1)');
 			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
-			
-			$mysql->query("INSERT INTO chat_sessions (gameID, locked) VALUES ($gameID, 0)");
 			
 			addGameHistory($gameID, 'newGame');
 			
