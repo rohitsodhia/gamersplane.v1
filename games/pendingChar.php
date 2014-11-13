@@ -12,11 +12,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($pendingAction)?> Character</h1>
 		
-		<div class="hbMargined">
-			<p>Are you sure you want to <?=$pendingAction?> <a href="/pms/send?userID=<?=$playerID?>" class="username"><?=$playerName?></a>'s character "<a href="/characters/<?=$shortName?>/<?=$characterID?>"><?=$label?></a>" <?=$pendingAction == 'approve'?'to':'from'?> "<a href="<?='/games/'.$gameID?>"><?=$title?></a>"?</p>
-<?
-?>
-		</div>
+		<p class="hbMargined">Are you sure you want to <?=$pendingAction?> <a href="/pms/send?userID=<?=$playerID?>" class="username"><?=$playerName?></a>'s character "<a href="/characters/<?=$shortName?>/<?=$characterID?>"><?=$label?></a>" <?=$pendingAction == 'approve'?'to':'from'?> "<a href="<?='/games/'.$gameID?>"><?=$title?></a>"?</p>
 		
 		<form method="post" action="/games/process/pendingChar/" class="alignCenter">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">

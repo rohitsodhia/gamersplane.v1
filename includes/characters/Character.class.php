@@ -16,7 +16,7 @@
 		
 		public function __construct($characterID, $userID = null) {
 			global $currentUser;
-			
+
 			$this->characterID = intval($characterID);
 			if ($userID == null) $this->userID = $currentUser->userID;
 			else $this->userID = $userID;
@@ -29,6 +29,10 @@
 				if (is_array($this->$var)) $this->$var = array();
 				else $this->$var = null;
 			}
+		}
+
+		public function getCharacterID() {
+			return $this->characterID;
 		}
 
 		public function setLabel($label) {
@@ -107,6 +111,18 @@
 
 		public function getNotes() {
 			return $this->notes;
+		}
+
+		public function getForumTop($postAuthor) {
+?>
+					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/" class="username"><?=$this->name?></a></p>
+					<p class="posterName"><a href="/user/<?=$postAuthor->userID?>/" class="username"><?=$postAuthor->username?></a></p>
+<?
+		}
+
+		public function getAvatar() {
+			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.png")) return "/characters/avatars/{$this->characterID}.png";
+			else return false;
 		}
 
 		public function save() {

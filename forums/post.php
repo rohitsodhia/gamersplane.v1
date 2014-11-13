@@ -2,10 +2,10 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('tools');
 
-	$noChat = FALSE;
+	$noChat = false;
 
-	$firstPost = FALSE;
-	$editPost = $pathOptions[0] == 'editPost'?TRUE:FALSE;
+	$firstPost = false;
+	$editPost = $pathOptions[0] == 'editPost'?true:false;
 
 	if ($editPost) {
 		$postID = intval($pathOptions[1]);
@@ -30,7 +30,7 @@
 		$postInfo = $postInfo->fetch();
 		
 		if ($postInfo['fpPostID'] == $postID) {
-			$firstPost = TRUE;
+			$firstPost = true;
 			$pollInfo = $mysql->query("SELECT * FROM forums_polls WHERE threadID = $threadID");
 			if ($pollInfo->rowCount()) {
 				$postInfo += $pollInfo->fetch();
@@ -41,33 +41,33 @@
 			}
 		}
 		
-		$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'write, moderate, addPoll, addRolls, addDraws', TRUE);
+		$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'write, moderate, addPoll, addRolls, addDraws', true);
 		if ($postInfo['authorID'] != $currentUser->userID/* && $postInfo->rowCount() > 0*/) {
-			if ($permissions['moderate'] != 1) $noChat = TRUE;
-		} elseif (($postInfo['locked'] && !$permissions['moderate'])) $noChat = TRUE;
+			if ($permissions['moderate'] != 1) $noChat = true;
+		} elseif (($postInfo['locked'] && !$permissions['moderate'])) $noChat = true;
 		else {
-			if (!$permissions['write']) $noChat = TRUE;
+			if (!$permissions['write']) $noChat = true;
 		}
 	} elseif ($pathOptions[0] == 'newThread') {
-		$firstPost = TRUE;
+		$firstPost = true;
 		
 		$forumID = intval($pathOptions[1]);
 		$heritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$forumID);
 		$heritage = $heritage->fetchColumn();
-		$gameForum = (intval(substr($heritage, 0, 3)) == 2)?TRUE:FALSE;
-		$permissions = retrievePermissions($currentUser->userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', TRUE);
-		if ($permissions['createThread'] != 1) $noChat = TRUE;
+		$gameForum = (intval(substr($heritage, 0, 3)) == 2)?true:false;
+		$permissions = retrievePermissions($currentUser->userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', true);
+		if ($permissions['createThread'] != 1) $noChat = true;
 	} elseif ($pathOptions[0] == 'post') {
 		$threadID = intval($pathOptions[1]);
 		$threadInfo = $mysql->query("SELECT threads.forumID, first.title, threads.locked, threads.allowRolls, threads.allowDraws, forums.heritage FROM threads, forums, threads_relPosts relPosts, posts first WHERE threads.threadID = $threadID AND forums.forumID = threads.forumID AND threads.threadID = relPosts.threadID AND relPosts.firstPostID = first.postID LIMIT 1");
-		if ($threadInfo->rowCount() == 0) { $noChat = TRUE; break; }
+		if ($threadInfo->rowCount() == 0) { $noChat = true; break; }
 		if (isset($_SESSION['message'])) {
 			$postInfo['message'] = $_SESSION['message'];
 			unset($_SESSION['message']);
 		}
 		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws']) = $threadInfo->fetch(PDO::FETCH_NUM);
-		$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, moderate, addRolls, addDraws', TRUE);
-		if ($permissions['write'] != 1 && !$locked) { $noChat = TRUE; break; }
+		$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, moderate, addRolls, addDraws', true);
+		if ($permissions['write'] != 1 && !$locked) { $noChat = true; break; }
 		
 		$quoteID = intval($_GET['quote']);
 		if ($quoteID) {
@@ -75,7 +75,7 @@
 			$quoteInfo = $quoteInfo->fetch();
 			$postInfo['message'] = '[quote="'.$quoteInfo['username'].'"]'.$quoteInfo['message'].'[/quote]';
 		}
-	} else $noChat = TRUE;
+	} else $noChat = true;
 	
 	if ($noChat) { header('Location: /forums/'); exit; }
 	
@@ -100,23 +100,35 @@
 
 	$heritage = explode('-', $heritage);
 	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
-	$gameID = FALSE;
-	$isGM = FALSE;
+	$gameID = false;
+	$isGM = false;
 	if ($heritage[0] == 2) {
-		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($heritage[1]));
-		$gameID = $gameID->fetchColumn();
+		$gameID = $mysql->query('SELECT gameID, systemID FROM games WHERE forumID = '.intval($heritage[1]));
+		list($gameID, $systemID) = $gameID->fetch(PDO::FETCH_NUM);
 		
-		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = {$currentUser->userID}");
-		if ($gmCheck->rowCount()) $isGM = TRUE;
+		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID}");
+		if ($gmCheck->rowCount()) $isGM = true;
+
+		$system = $systems->getShortName($systemID);
+		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
+		$charClass = $system.'Character';
+		$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
+		$characters = array();
+		while ($characterID = $characterIDs->fetchColumn()) {
+			if ($character = new $charClass($characterID)) {
+				$character->load();
+				if (strlen($character->getName())) $characters[$characterID] = $character;
+			}
+		}
 	}
 
-	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?TRUE:FALSE;
+	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?true:false;
 	$drawsAllowed = false;
 	if ($permissions['addDraws']) {
 		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = {$currentUser->userID}");
 		if ($gmCheck->rowCount()) $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games WHERE games.forumID = '.$forumID.' AND games.gameID = decks.gameID GROUP BY decks.deckID');
 		else $deckInfos = $mysql->query("SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = {$forumID} AND decks.gameID = characters.gameID AND characters.userID = {$currentUser->userID} AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = {$currentUser->userID} GROUP BY decks.deckID");
-		if ($deckInfos->rowCount()) $drawsAllowed = TRUE;
+		if ($deckInfos->rowCount()) $drawsAllowed = true;
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
@@ -154,10 +166,23 @@
 	elseif (isset($postInfo['threadTitle'])) $title = (substr($postInfo['threadTitle'], 0, 4) != 'Re: '?'Re: ':'').$postInfo['threadTitle'];
 ?>
 			<div id="basicPostInfo" class="hbMargined">
-				<div class="table"><div>
-					<label class="textLabel" for="title">Title:</label>
-					<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=$title?>" class="titleInput"></div>
-				</div></div>
+				<div class="table">
+					<div>
+						<label for="title">Title:</label>
+						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=$title?>" class="titleInput"></div>
+					</div>
+<?	if ($gameID && sizeof($characters)) { ?>
+					<div class="tr">
+						<label>Post As:</label>
+						<div><select name="postAs">
+							<option value="p">Player</option>
+<?		foreach ($characters as $character) { ?>
+							<option value="<?=$character->getCharacterID()?>"><?=$character->getName()?></option>
+<?		} ?>
+						</select></div>
+					</div>
+<?	} ?>
+				</div>
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady($postInfo['message'], array('stripslashes'))?></textarea>
 			</div>
 			
@@ -258,12 +283,12 @@
 						<h3>Posted Rolls</h3>
 <?
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
-				$hidden = FALSE;
-				$showAll = FALSE;
-				$first = TRUE;
+				$hidden = false;
+				$showAll = false;
+				$first = true;
 				foreach ($rolls as $roll) {
-					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?TRUE:FALSE;
-					$hidden = FALSE;
+					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?true:false;
+					$hidden = false;
 ?>
 						<div class="rollInfo">
 							<select name="nVisibility[<?=$roll->getRollID()?>]" tabindex="<?=tabOrder();?>">
@@ -312,7 +337,7 @@
 					<p>Please remember, any cards you draw will be only visible to you until you reveal them. Reveal them by clicking them. An eye icon indicates they're visible, while an eye with a red slash through them indiates a hidden card.</p>
 					<table id="decksTable">
 <?
-			$firstDeck = TRUE;
+			$firstDeck = true;
 			foreach ($deckInfos as $deckInfo) {
 				if ($draws[$deckInfo['deckID']]) {
 					$draw = $draws[$deckInfo['deckID']];
@@ -333,7 +358,7 @@
 						</tr>
 <?
 				}
-				if ($firstDeck) $firstDeck = FALSE;
+				if ($firstDeck) $firstDeck = false;
 			}
 ?>
 					</table>

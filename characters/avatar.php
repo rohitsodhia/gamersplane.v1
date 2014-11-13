@@ -20,14 +20,14 @@
 <?	if (!$charPermissions) { ?>
 			<p>Seems like you're trying to change a character that isn't yours!</p>
 <?	} ?>
-<?	if (getAvatar($characterID)) { ?>
-			<img id="avatar" src="<?=getAvatar($characterID)?>">
+<?	if ($character->getAvatar()) { ?>
+			<img id="avatar" src="<?=$character->getAvatar()?>">
 <?	} else { ?>
-			<div id="avatar"<?=getAvatar($characterID)?'':' class="noAvatar"'?>>
+			<div id="avatar"<?=$character->getAvatar()?'':' class="noAvatar"'?>>
 				<p>No Avatar</p>
 			</div>
 <?	} ?>
-<?	if (getAvatar($characterID)) { ?>
+<?	if ($character->getAvatar()) { ?>
 			<p id="delete" class="alignCenter"><input id="deleteAvatar" type="checkbox" name="delete"> <label for="deleteAvatar">Delete avatar<label></p>
 <?	} ?>
 			<p class="alignCenter"><input type="file" name="avatar"></p>

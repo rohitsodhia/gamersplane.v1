@@ -25,11 +25,6 @@
 			foreach ($rollData['indivRolls'] as $key => $roll) {
 				$this->rolls[$key] = $roll;
 			}
-			$rollData['results'] = unserialize($rollData['results']);
-			$count = 0;
-			foreach ($this->totals as $symbol => $total) {
-				$this->totals[$symbol] = $rollData['results'][$count++];
-			}
 			$this->setVisibility($rollData['visibility']);
 		}
 

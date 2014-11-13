@@ -14,13 +14,13 @@
 			if (in_array($stat, array_keys($this->stats))) {
 				$value = intval($value);
 				if ($value > 0) $this->stats[$stat] = $value;
-			} else return FALSE;
+			} else return false;
 		}
 		
-		public function getStat($stat = NULL) {
-			if ($stat == NULL) return $this->stats;
+		public function getStat($stat = null) {
+			if ($stat == null) return $this->stats;
 			elseif (in_array($stat, array_keys($this->stats))) return $this->stats[$stat];
-			else return FALSE;
+			else return false;
 		}
 
 		public function setQualities($qualities) {

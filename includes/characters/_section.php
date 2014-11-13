@@ -1,9 +1,4 @@
 <?
-	function getAvatar($characterID) {
-		if (file_exists(FILEROOT."/characters/avatars/{$characterID}.png")) return "/characters/avatars/{$characterID}.png";
-		else return false;
-	}
-
 	function newItemized($type, $name, $system) {
 		global $currentUser, $mysql, $systems;
 

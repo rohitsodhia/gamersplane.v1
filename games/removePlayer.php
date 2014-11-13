@@ -10,7 +10,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Remove Player from Game</h1>
 		
-		<p>Are you sure you want to remove <a href="/user/<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> from "<a href="<?='/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
+		<p class="hbMargined">Are you sure you want to remove <a href="/user/<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> from "<a href="<?='/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
 		
 		<form method="post" action="/games/process/removePlayer/" class="alignCenter">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
