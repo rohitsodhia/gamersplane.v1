@@ -28,16 +28,21 @@
 	$page = $page > 0?$page:1;
 	if ($page > ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE)) $page = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
 	$start = ($page - 1) * PAGINATE_PER_PAGE;
-	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, posts.message, posts.datePosted, posts.lastEdit, posts.timesEdited, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
+	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, posts.message, posts.postAs, posts.datePosted, posts.lastEdit, posts.timesEdited, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
 	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = {$currentUser->userID}, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
 
 	$gameID = false;
 	$isGM = false;
 	if ($threadInfo['heritage'][0] == 2 && $threadInfo['forumID'] != 10) {
-		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
-		$gameID = $gameID->fetchColumn();
+		$gameID = $mysql->query('SELECT gameID, systemID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
+		list($gameID, $systemID) = $gameID->fetch(PDO::FETCH_NUM);
+
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = $gameID");
 		if ($gmCheck->rowCount()) $isGM = true;
+
+		$system = $systems->getShortName($systemID);
+		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
+		$charClass = $system.'Character';
 	}
 
 	$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.threadID = {$threadID} AND r.postID = p.postID ORDER BY r.rollID");
@@ -140,13 +145,26 @@
 		foreach ($posts as $postInfo) {
 			if (!isset($users[$postInfo['userID']])) $users[$postInfo['userID']] = new User($postInfo['userID']);
 			$postAuthor = $users[$postInfo['userID']];
+			if ($postInfo['postAs'] && $character = new $charClass($postInfo['postAs'])) $postAsChar = true;
+			else $postAsChar = false;
 ?>
-			<div class="postBlock post<?=$postSide?> clearfix">
+			<div class="postBlock post<?=$postSide?><?=$postAsChar?' postAsChar':''?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
-					<a href="<?='/user/'.$postInfo['userID']?>" class="avatar"><img src="<?=$postAuthor->getAvatar()?>"></a>
-<?	if ($)
+					<div class="avatar"><div>
+<?	if ($postAsChar && $character->getAvatar()) { ?>
+						<a href="/character/<?=$character::SYSTEM?>/<?=$character->getCharacterID()?>/"><img src="<?=$character->getAvatar()?>"></a>
+<?	} ?>
+						<a href="/user/<?=$postInfo['userID']?>/" class="userAvatar"><img src="<?=$postAuthor->getAvatar()?>"></a>
+					</div></div>
+<?
+	if ($postAsChar) {
+		$character->load();
+		$character->getForumTop($postAuthor);
+	} else {
+?>
 					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postAuthor->username?></a></p>
+<?	} ?>
 				</div>
 				<div class="postContent">
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>

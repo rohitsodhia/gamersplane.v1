@@ -65,7 +65,7 @@
 			$postInfo['message'] = $_SESSION['message'];
 			unset($_SESSION['message']);
 		}
-		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws']) = $threadInfo->fetch(PDO::FETCH_NUM);
+		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws'], $heritage) = $threadInfo->fetch(PDO::FETCH_NUM);
 		$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, moderate, addRolls, addDraws', true);
 		if ($permissions['write'] != 1 && !$locked) { $noChat = true; break; }
 		
@@ -102,7 +102,7 @@
 	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
 	$gameID = false;
 	$isGM = false;
-	if ($heritage[0] == 2) {
+	if ($heritage[0] == 2 && $forumID != 10) {
 		$gameID = $mysql->query('SELECT gameID, systemID FROM games WHERE forumID = '.intval($heritage[1]));
 		list($gameID, $systemID) = $gameID->fetch(PDO::FETCH_NUM);
 		
@@ -169,7 +169,7 @@
 				<div class="table">
 					<div>
 						<label for="title">Title:</label>
-						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=$title?>" class="titleInput"></div>
+						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
 					</div>
 <?	if ($gameID && sizeof($characters)) { ?>
 					<div class="tr">

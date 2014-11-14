@@ -12,40 +12,43 @@
 				$maxHeight = 150;
 				
 				list($imgWidth, $imgHeight, $imgType) = getimagesize($_FILES['avatar']['tmp_name']);
-				if (image_type_to_mime_type($imgType) == 'image/jpeg' || image_type_to_mime_type($imgType) == 'image/pjpeg') $tempImg = imagecreatefromjpeg($_FILES['avatar']['tmp_name']);
-				elseif (image_type_to_mime_type($imgType) == 'image/gif') $tempImg = imagecreatefromgif($_FILES['avatar']['tmp_name']);
-				elseif (image_type_to_mime_type($imgType) == 'image/png') $tempImg = imagecreatefrompng($_FILES['avatar']['tmp_name']);
-				
-				$xRatio = $maxWidth / $imgWidth;
-				$yRatio = $maxHeight / $imgHeight;
-				
-				if ($imgWidth <= $maxWidth && $imgHeight <= $maxHeight) {
-					$finalWidth = $imgWidth;
-					$finalHeight = $imgHeight;
-				} elseif (($xRatio * $imgHeight) < $maxHeight) {
-					$finalWidth = $maxWidth;
-					$finalHeight = ceil($xRatio * $imgHeight);
-				} else {
-					$finalWidth = ceil($yRatio * $imgWidth);
-					$finalHeight = $maxHeight;
+				if ($imgWidth >= 150 && $imgHeight >= 150) {
+					if (image_type_to_mime_type($imgType) == 'image/jpeg' || image_type_to_mime_type($imgType) == 'image/pjpeg') $tempImg = imagecreatefromjpeg($_FILES['avatar']['tmp_name']);
+					elseif (image_type_to_mime_type($imgType) == 'image/gif') $tempImg = imagecreatefromgif($_FILES['avatar']['tmp_name']);
+					elseif (image_type_to_mime_type($imgType) == 'image/png') $tempImg = imagecreatefrompng($_FILES['avatar']['tmp_name']);
+					
+					$xRatio = $maxWidth / $imgWidth;
+					$yRatio = $maxHeight / $imgHeight;
+					
+					if ($imgWidth <= $maxWidth && $imgHeight <= $maxHeight) {
+						$finalWidth = $imgWidth;
+						$finalHeight = $imgHeight;
+					} elseif (($xRatio * $imgHeight) < $maxHeight) {
+						$finalWidth = $maxWidth;
+						$finalHeight = ceil($xRatio * $imgHeight);
+					} else {
+						$finalWidth = ceil($yRatio * $imgWidth);
+						$finalHeight = $maxHeight;
+					}
+					
+					$tempColor = imagecreatetruecolor($finalWidth, $finalHeight);
+					imagealphablending($tempColor, false);
+					imagesavealpha($tempColor,true);
+					imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
+					
+					$destination = FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.'.$avatarExt;
+					foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
+					if ($avatarExt == 'jpg') imagejpeg($tempColor, $destination, 100);
+					elseif ($avatarExt == 'gif') imagegif($tempColor, $destination);
+					elseif ($avatarExt == 'png') imagepng($tempColor, $destination, 0);
+					imagedestroy($tempImg);
+					imagedestroy($tempColor);
+					$fileUploaded = true;
 				}
-				
-				$tempColor = imagecreatetruecolor($finalWidth, $finalHeight);
-				imagealphablending($tempColor, false);
-				imagesavealpha($tempColor,true);
-				imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
-				
-				$destination = FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.'.$avatarExt;
-				foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
-				if ($avatarExt == 'jpg') imagejpeg($tempColor, $destination, 100);
-				elseif ($avatarExt == 'gif') imagegif($tempColor, $destination);
-				elseif ($avatarExt == 'png') imagepng($tempColor, $destination, 0);
-				imagedestroy($tempImg);
-				imagedestroy($tempColor);
-				$fileUploaded = true;
 			} elseif ($avatarExt == 'svg') {
 				foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
 				move_uploaded_file($_FILES['avatar']['tmp_name'], FILEROOT."/ucp/avatars/{$currentUser->userID}.svg");
+				$fileUploaded = true;
 			}
 		}
 

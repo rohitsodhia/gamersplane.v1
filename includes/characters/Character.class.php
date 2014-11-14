@@ -115,13 +115,13 @@
 
 		public function getForumTop($postAuthor) {
 ?>
-					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/" class="username"><?=$this->name?></a></p>
+					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/"><?=$this->name?></a></p>
 					<p class="posterName"><a href="/user/<?=$postAuthor->userID?>/" class="username"><?=$postAuthor->username?></a></p>
 <?
 		}
 
 		public function getAvatar() {
-			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.png")) return "/characters/avatars/{$this->characterID}.png";
+			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg")) return "/characters/avatars/{$this->characterID}.jpg?".time();
 			else return false;
 		}
 

@@ -14,7 +14,7 @@
 		}
 
 		if ($charPermissions) {
-			if ($_POST['delete']) unlink(FILEROOT."/characters/avatars/{$characterID}.png");
+			if ($_POST['delete']) unlink(FILEROOT."/characters/avatars/{$characterID}.jpg");
 			if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
 				$avatarExt = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
 				if ($avatarExt == 'jpeg') $avatarExt = 'jpg';
@@ -55,7 +55,7 @@
 				}
 			}
 			if (isset($_POST['modal']) && $fileUploaded) echo 2;
-			if (isset($_POST['modal'])) echo 1;
+			else if (isset($_POST['modal'])) echo 1;
 			else header("Location: /characters/avatar/".SYSTEM."/{$characterID}/?modal=1");
 			exit;
 		}

@@ -9,7 +9,7 @@
 		header('Location: '.$_SESSION['lastURL'].'?preview=1');
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
-		$title = sanitizeString($_POST['title']);
+		$title = sanitizeString(html_entity_decode($_POST['title']));
 		$message = sanitizeString($_POST['message']);
 		$postAs = isset($_POST['postAs']) && intval($_POST['postAs'])?intval($_POST['postAs']):null;
 
