@@ -148,7 +148,7 @@
 			if ($postInfo['postAs'] && $character = new $charClass($postInfo['postAs'])) $postAsChar = true;
 			else $postAsChar = false;
 ?>
-			<div class="postBlock post<?=$postSide?><?=$postAsChar?' postAsChar':''?> clearfix">
+			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>
 				<div class="posterDetails">
 					<div class="avatar"><div>
