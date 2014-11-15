@@ -61,7 +61,7 @@
 
 		public function showSkillsEdit($trait) {
 			if (sizeof($this->skills[$trait])) { foreach ($this->skills[$trait] as $key => $skillInfo) {
-				$this->skillEditFormat($trait, array_merge(array('trait' => $trait), $skillInfo));
+				$this->skillEditFormat($key, array_merge(array('trait' => $trait), $skillInfo));
 			} }
 		}
 
