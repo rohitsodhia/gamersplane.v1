@@ -1,6 +1,6 @@
 <?
 	$characterID = intval($pathOptions[1]);
-	$noChar = TRUE;
+	$noChar = true;
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->getSystemID(SYSTEM)) {
@@ -11,8 +11,7 @@
 			$character->load();
 			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
-				$noChar = FALSE;
-				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+				$noChar = false;
 				$addJSFiles[] = 'characters/_edit.js';
 				if (is_subclass_of($character, 'd20Character')) $addJSFiles[] = 'characters/_d20Character.js';
 				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
