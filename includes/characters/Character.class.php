@@ -113,9 +113,13 @@
 			return $this->notes;
 		}
 
-		public function getForumTop($postAuthor) {
+		public function getForumTop($postAuthor, $isGM) {
+			if ($isGM || $this->checkPermissions($postAuthor->userID) == 'edit') {
 ?>
 					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/"><?=$this->name?></a></p>
+<?			} else { ?>
+					<p class="charName"><?=$this->name?></p>
+<?			} ?>
 					<p class="posterName"><a href="/user/<?=$postAuthor->userID?>/" class="username"><?=$postAuthor->username?></a></p>
 <?
 		}
