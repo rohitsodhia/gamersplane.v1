@@ -114,7 +114,9 @@
 		}
 
 		public function getForumTop($postAuthor) {
-			if ($this->checkPermissions($postAuthor->userID) == 'edit') {
+			global $currentUser;
+			
+			if ($this->checkPermissions($currentUser->userID) == 'edit') {
 ?>
 					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/"><?=$this->name?></a></p>
 <?			} else { ?>
