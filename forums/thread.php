@@ -160,7 +160,7 @@
 <?
 	if ($postAsChar) {
 		$character->load();
-		$character->getForumTop($postAuthor, $isGM);
+		$character->getForumTop($postAuthor);
 	} else {
 ?>
 					<p class="posterName"><a href="<?='/user/'.$postInfo['userID']?>" class="username"><?=$postAuthor->username?></a></p>
