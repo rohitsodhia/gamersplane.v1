@@ -81,6 +81,8 @@
 			$addForumGroup->execute(array('title' => $details['title']));
 			$groupID = $mysql->lastInsertId();
 			$details['groupID'] = $groupID;
+
+			$mysql->query("UPDATE games SET forumID = {$forumID}, groupID = {$groupID} WHERE gameID = {$gameID}");
 			
 			$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$currentUser->userID.')');
 			
@@ -89,8 +91,6 @@
 			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
 			
 			addGameHistory($gameID, 'newGame');
-			
-//			mail('contact@gamersplane.com', 'New Game', "Game: {$details['title']}\nGM: {$_SESSION['username']}\nSystem: {$system}");
 			
 			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.systemID = {$details['systemID']}");
 			$recips = '';
