@@ -1,11 +1,11 @@
 <?
 	class savageworlds_consts {
-		private static $traits = array('agi' => 'Agility', 'sma' => 'Smarts', 'spi' => 'Spirit', 'str' => 'Strength', 'vig' => 'Vigor'); 
+		private static $ladder = array(-2 => 'Terrible', 'Poor', 'Mediocre', 'Average', 'Fair', 'Good', 'Great', 'Superb', 'Fantastic', 'Epic', 'Legendary'); 
 
-		public static function getTraits($stat = NULL) {
-			if ($stat == NULL) return self::$traits;
-			elseif (array_key_exists($stat, self::$traits)) return self::$traits[$stat];
-			else return FALSE;
+		public static function getLadder($rating = null) {
+			if ($rating == null) return self::$ladder;
+			elseif (array_key_exists($rating, self::$ladder)) return self::$ladder[$rating];
+			else return false;
 		}
 	}
 ?>
