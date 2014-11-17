@@ -73,20 +73,20 @@
 		}
 
 		public function addSkill($skill) {
-			if (array_key_exists($skill['trait'], savageworlds_consts::getTraits()) && strlen($skill['name']) && in_array($skill['diceType'], array(4, 6, 8, 10, 12))) {
+			if (strlen($skill['name'])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[$skill['trait']][] = array('name' => $skill['name'], 'diceType' => $skill['diceType']);
+				$this->skills[] = array('name' => $skill['name'], 'rating' => intval($skill['rating']));
 			}
 		}
 
 		public function skillEditFormat($key = 1, $skillInfo = null) {
-			if ($skillInfo == null) $skillInfo = array('trait' => 'trait', 'name' => '', 'diceType' => 4);
+			if ($skillInfo == null) $skillInfo = array('name' => '', 'rating' => 0);
 ?>
 									<div class="skill clearfix">
-										<input type="text" name="skills[<?=$skillInfo['trait']?>][<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
-										<div class="diceSelect"><span>d</span> <select name="skills[<?=$skillInfo['trait']?>][<?=$key?>][diceType]" class="diceType">
-<?			foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
-											<option<?=$skillInfo['diceType'] == $dCount?' selected="selected"':''?>><?=$dCount?></option>
+										<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
+										<div class="rating"><select name="skills[<?=$key?>][rating]">
+<?			for ($count = -2; $count <= 8; $count++) { ?>
+											<option<?=$skillInfo['rating'] == $count?' selected="selected"':''?>><?=showSign($count)?></option>
 <?			} ?>
 										</select></div>
 										<div class="remove"><a href="" class="sprite cross small"></a></div>
@@ -94,30 +94,28 @@
 <?
 		}
 
-		public function showSkillsEdit($trait) {
-			if (sizeof($this->skills[$trait])) { foreach ($this->skills[$trait] as $key => $skillInfo) {
-				$this->skillEditFormat($trait, array_merge(array('trait' => $trait), $skillInfo));
+		public function showSkillsEdit() {
+			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skillInfo) {
+				$this->skillEditFormat($key, array_merge(array('trait' => $trait), $skillInfo));
 			} }
 		}
 
-		public function displaySkills($trait) {
-			if ($this->skills[$trait]) { foreach ($this->skills[$trait] as $skill) {
+		public function displaySkills() {
+			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
-								<div id="skill_<?=$skill['skillID']?>" class="skill clearfix">
-									<div class="skillName"><?=$skill['name']?></div>
-									<input type="hidden" name="skills[<?=$skill['skillID']?>][trait]" value="<?=$skill['trait']?>">
+								<div class="skill clearfix"><?=$skill['name']?> (<span class="rating"><?=showSign($skill['name'])?></span>)</div>
 									<div class="diceType">d<?=$skill['diceType']?></div>
 								</div>
 <?
 			} }
 		}
 
-		public function setEdgesHindrances($edgesHindrances) {
-			$this->edgesHindrances = $edgesHindrances;
+		public function setExtras($extras) {
+			$this->extras = $extras;
 		}
 
-		public function getEdgesHindrances() {
-			return $this->edgesHindrances;
+		public function getExtras() {
+			return $this->extras;
 		}
 
 		public function setFatigue($fatigue) {
