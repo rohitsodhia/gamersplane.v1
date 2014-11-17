@@ -8,7 +8,7 @@
 
 	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
 	if (!$isAdmin->rowCount()) { header('Location: /forums/'); exit; }
-	$forumInfo = $mysql->query("SELECT forumID, title, forumType, heritage FROM forums WHERE forumID = $forumID");
+	$forumInfo = $mysql->query("SELECT forumID, title, description, forumType, heritage FROM forums WHERE forumID = $forumID");
 	$forumInfo = $forumInfo->fetch();
 	$adminForums = $mysql->query("SELECT forumID, title, heritage, `order`, MAX(adminForum) adminForum FROM (SELECT p.forumID, p.title, p.heritage, p.order, 0 adminForum FROM forumAdmins fa, forums f, forums p WHERE f.heritage LIKE CONCAT(p.heritage, '%') AND fa.forumID = f.forumID AND fa.userID = {$currentUser->userID} UNION SELECT c.forumID, c.title, c.heritage, c.order, 1 adminForum FROM forumAdmins fa, forums f, forums c WHERE c.heritage LIKE CONCAT(f.heritage, '%') AND fa.forumID = f.forumID AND fa.userID = {$currentUser->userID}) adminForums GROUP BY forumID ORDER BY LENGTH(heritage), `order`");
 	$forums = buildForumStructure($adminForums->fetchAll());
@@ -80,7 +80,7 @@
 <?		if ($forumInfo['forumType'] == 'f') { ?>
 				<div class="tr">
 					<label class="textLabel">Forum description:</label>
-					<textarea name="description"><?=printReady($curForumInfo['description'])?></textarea>
+					<textarea name="description"><?=printReady($forumInfo['description'])?></textarea>
 				</div>
 <?		} ?>
 				<input type="hidden" name="forumID" value="<?=$forumID?>">
