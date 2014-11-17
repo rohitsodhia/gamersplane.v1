@@ -20,8 +20,8 @@
 		if ($permissions[$forumID]['read'] == 0) { header('Location: /forums'); exit; }
 	}
 	
-	// Get lastRead for current forum; if none, create
 	if ($currentUser->userID) {
+		// Get lastRead for current forum; if none, create
 		$cLastRead = $mysql->query("SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = $forumID AND userID = $currentUser->userID");
 		if ($cLastRead->rowCount()) $lastReadID = $cLastRead->fetchColumn();
 		else {
@@ -29,11 +29,13 @@
 			$lastReadID = $lastReadID->fetchColumn();
 			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($currentUser->userID, $forumID, $lastReadID)");
 		}
+
+		// Check if admin of current forum
+		$forumAdmin = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID IN (0".(($forumID != 0)?', '.implode(', ', $heritage):'').')');
+		$forumAdmin = $forumAdmin->rowCount()?TRUE:FALSE;
+	} else {
+		$forumAdmin = false;
 	}
-	
-	// Check if admin of current forum
-	$forumAdmin = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID IN (0".(($forumID != 0)?', '.implode(', ', $heritage):'').')');
-	$forumAdmin = $forumAdmin->rowCount()?TRUE:FALSE;
 	
 	// Get children
 	$forumStructure = array();
