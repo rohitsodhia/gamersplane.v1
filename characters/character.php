@@ -1,6 +1,6 @@
 <?
 	$characterID = intval($pathOptions[1]);
-	$noChar = TRUE;
+	$noChar = true;
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->getSystemID(SYSTEM)) {
@@ -11,7 +11,7 @@
 			$character->load();
 			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions) {
-				$noChar = FALSE;
+				$noChar = false;
 				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 				$addJSFiles[] = 'characters/_sheet.js';
 				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
