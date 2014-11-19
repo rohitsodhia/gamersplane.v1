@@ -118,12 +118,12 @@
 			return $this->extras;
 		}
 
-		public function setFatigue($fatigue) {
-			$this->fatigue = intval($fatigue);
+		public function setStunts($stunts) {
+			$this->stunts = $stunts;
 		}
 
-		public function getFatigue() {
-			return $this->fatigue;
+		public function getStunts() {
+			return $this->stunts;
 		}
 
 		public function setInjuries($injuries) {
@@ -134,20 +134,18 @@
 			return $this->injuries;
 		}
 
-		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
+		public function setStress($type, $key, $value) {
+			if (in_array($type, array('physical', 'mental')) && in_array($key, array('total', 'current')) && intval($value) >= 0)
+				$this->stress[$type][$key] = intval($value);
+			else return false;
 		}
 
-		public function getWeapons() {
-			return $this->weapons;
-		}
-
-		public function setEquipment($equipment) {
-			$this->equipment = $equipment;
-		}
-
-		public function getEquipment() {
-			return $this->equipment;
+		public function getStress($type = null, $key = null) {
+			if ($type == null) return $this->stress;
+			elseif (in_array($type, array('physical', 'mental'))) {
+				if ($key == null) return $this->stress[$type];
+				elseif (in_array($key, array('total', 'current'))) return $this->stress[$type][$key];
+			} else return false;
 		}
 
 		public function save($bypass = false) {
