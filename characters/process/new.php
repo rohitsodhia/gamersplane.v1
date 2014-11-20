@@ -22,11 +22,11 @@
 			$charClass = $systemShort.'Character';
 			$newChar = new $charClass($characterID);
 			$newChar->setLabel($_POST['label']);
-			$newChar->setType($_POST['charType']);
+			$newChar->setCharType($_POST['charType']);
 			$newChar->save();
 			addCharacterHistory($characterID, 'charCreated', $currentUser->userID, 'NOW()', $systemID);
 
-			header('Location: /characters/'.$systemShort.'/'.$characterID.'/edit/new');
+			header('Location: /characters/'.$systemShort.'/'.$characterID.'/edit/new/');
 		}
 	} else {
 		header('Location: /403');
