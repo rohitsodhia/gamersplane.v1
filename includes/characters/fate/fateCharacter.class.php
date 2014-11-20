@@ -1,5 +1,5 @@
 <?
-	class savageworldsCharacter extends Character {
+	class fateCharacter extends Character {
 		const SYSTEM = 'fate';
 
 		protected $fatePoints = 3;
@@ -10,7 +10,7 @@
 		protected $skills = array();
 		protected $extras = '';
 		protected $stunts = array();
-		protected $stress = array('physical' = array('total' => 2, 'current' => 0), 'mental' = array('total' => 2, 'current' => 0));
+		protected $stress = array('physical' => array('total' => 2, 'current' => 0), 'mental' => array('total' => 2, 'current' => 0));
 		protected $consequences = array();
 
 		public function setFatePoints($fatePoints) {
@@ -46,22 +46,22 @@
 		}
 
 		public function addAspect($aspect) {
-			if (strlen($aspect) $this->aspects[] = $aspect;
+			if (strlen($aspect)) $this->aspects[] = $aspect;
 		}
 
 		public function aspectEditFormat($key = 1, $aspect = null) {
 ?>
-									<div class="aspect clearfix">
-										<input type="text" name="aspects[<?=$key?>]" value="<?=$aspect?>" class="aspectName placeholder" data-placeholder="Aspect Name">
-										<div class="remove"><a href="" class="sprite cross small"></a></div>
-									</div>
+								<div class="aspect tr clearfix">
+									<input type="text" name="aspects[<?=$key?>]" value="<?=$aspect?>" class="aspectName placeholder width5 alignLeft" data-placeholder="Aspect Name">
+									<a href="" class="remove sprite cross"></a>
+								</div>
 <?
 		}
 
 		public function showAspectsEdit() {
 			if (sizeof($this->aspects)) { foreach ($this->aspects as $key => $aspect) {
 				$this->aspectEditFormat($key, $aspect);
-			} }
+			} } else $this->aspectEditFormat();
 		}
 
 		public function displayAspects() {
@@ -82,22 +82,22 @@
 		public function skillEditFormat($key = 1, $skillInfo = null) {
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'rating' => 0);
 ?>
-									<div class="skill clearfix">
-										<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
-										<div class="rating"><select name="skills[<?=$key?>][rating]">
+									<div class="skill tr clearfix">
+										<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder width4" data-placeholder="Skill Name">
+										<span class="rating"><select name="skills[<?=$key?>][rating]">
 <?			for ($count = -2; $count <= 8; $count++) { ?>
 											<option<?=$skillInfo['rating'] == $count?' selected="selected"':''?>><?=showSign($count)?></option>
 <?			} ?>
-										</select></div>
-										<div class="remove"><a href="" class="sprite cross small"></a></div>
+										</select></span>
+										<a href="" class="remove sprite cross"></a>
 									</div>
 <?
 		}
 
 		public function showSkillsEdit() {
 			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skillInfo) {
-				$this->skillEditFormat($key, array_merge(array('trait' => $trait), $skillInfo));
-			} }
+				$this->skillEditFormat($key, $skillInfo);
+			} } else $this->skillEditFormat();
 		}
 
 		public function displaySkills() {
@@ -148,6 +148,14 @@
 			} else return false;
 		}
 
+		public function setConsequences($consequences) {
+			$this->consequences = $consequences;
+		}
+
+		public function getConsequences($level = null) {
+			return $this->consequences;
+		}
+
 		public function save($bypass = false) {
 			global $mysql;
 			$data = $_POST;
@@ -155,20 +163,30 @@
 
 			if (!isset($data['create']) && !$bypass) {
 				$this->setName($data['name']);
-				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
-				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
+				$this->setFatePoints($data['fatePoints']);
+				$this->setRefresh($data['refresh']);
+
+				$this->setHighConcept($data['highConcept']);
+				$this->setTrouble($data['trouble']);
+
+				$this->clearVar('aspects');
+				if (sizeof($data['aspects'])) {
+					foreach ($data['aspects'] as $aspect) $this->addAspect($aspect);
+				}
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $trait => $skillInfos) {
-					foreach ($skillInfos as $skillInfo) $this->addSkill(array_merge(array('trait' => $trait), $skillInfo));
-				} }
+				if (sizeof($data['skills'])) {
+					foreach ($data['skills'] as $skill) $this->addSkill($skill);
+				}
 
-				$this->setEdgesHindrances($data['edge_hind']);
-				$this->setWounds($data['wounds']);
-				$this->setFatigue($data['fatigue']);
-				$this->setInjuries($data['injuries']);
-				$this->setWeapons($data['weapons']);
-				$this->setEquipment($data['equipment']);
+				$this->setExtras($data['extras']);
+				$this->setStunts($data['stunts']);
+
+				$this->setStress('physical', 'total', $data['stress']['physical']['total']);
+				$this->setStress('physical', 'current', $data['stress']['physical']['current']);
+				$this->setStress('mental', 'total', $data['stress']['mental']['total']);
+				$this->setStress('mental', 'current', $data['stress']['mental']['current']);
+
 				$this->setNotes($data['notes']);
 			}
 

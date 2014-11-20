@@ -37,7 +37,7 @@ $(function () {
 	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
 		var nextSkillCount = 1;
 
-		$('#skills').on('click', '.skill_remove', function (e) {
+		$('#skills').on('click', '.skill_remove, .remove', function (e) {
 			e.preventDefault();
 
 			$(this).parent().remove();
