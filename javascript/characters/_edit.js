@@ -1,4 +1,5 @@
 var characterID = parseInt($('#characterID').val()), system = $('#system').val();
+var addItemizedFunctions = {}, itemizedCount = new Array();
 $(function () {
 	$('#charAvatar a').colorbox();
 
@@ -33,6 +34,29 @@ $(function () {
 		$abilitySelect.data('statHold', newStat);
 		$total.html(showSign(totalVal));
 	});
+
+/*	if ($('.itemizedList').length) { $('.itemizedList').each(function () {
+		$list = $(this);
+
+		$list.on('click', '.remove', function (e) {
+			e.preventDefault();
+
+			$(this).parent().remove();
+			if ($('.item').length == 0) $list.find('.addItem').click();
+		}).on('click', 'a.addItem', function (e) {
+			e.preventDefault();
+			var nextCount = 1;
+
+			$.post('/characters/ajax/addItemized/', { system: system, 'type': $(list).data('type'), key: nextCount }, function (data) {
+				$newItem = $(data);
+				$newItem.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+				nextCount += 1;
+			});
+		});
+
+		nextCount = $list.find('.item').length + 1;
+		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
+	});*/
 
 	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
 		var nextSkillCount = 1;
@@ -105,5 +129,5 @@ $(function () {
 		$('.placeholder').each(function () {
 			if ($(this).val() == $(this).data('placeholder')) $(this).val('');
 		});
-	})
+	});
 });

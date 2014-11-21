@@ -51,7 +51,7 @@
 
 		public function aspectEditFormat($key = 1, $aspect = null) {
 ?>
-								<div class="aspect tr clearfix">
+								<div class="aspect item tr clearfix">
 									<input type="text" name="aspects[<?=$key?>]" value="<?=$aspect?>" class="aspectName placeholder width5 alignLeft" data-placeholder="Aspect Name">
 									<a href="" class="remove sprite cross"></a>
 								</div>

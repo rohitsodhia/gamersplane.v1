@@ -34,7 +34,28 @@
 					</div>
 					<div class="sidebar">
 						<div id="stress">
-							<h2 class="headerbar hbDark">Stress</div>
+							<h2 class="headerbar hbDark">Stress</h2>
+							<div id="physicalStress" class="hbdMargined">
+								<h3><span>Physical Stress</span> <a href="" class="add">[ + ]</a><a href="" class="remove">[ - ]</a></h3>
+								<div class="track">
+									<input type="hidden" name="stress[physical][total]" value="<?=$this->getStress('physical', 'total')?>">
+<?	for ($count = 0; $count <= $this->getStress('physical', 'total'); $count++) { ?>
+									<div class="stressBox">
+										<input type="radio" name="stress[physical][current]" value="<?=$count?>"<? if ($this->getStress('physical', 'current') == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
+									</div>
+<?	} ?>
+								</div>
+							</div>
+							<div id="mentalStress" class="hbdMargined">
+								<h3><span>Mental Stress</span> <a href="" class="add">[ + ]</a><a href="" class="remove">[ - ]</a></h3>
+								<div class="track">
+<?	for ($count = 0; $count <= $this->getStress('mental', 'total'); $count++) { ?>
+									<div class="stressBox">
+										<input type="radio" name="stress[mental][current]" value="<?=$count?>"<? if ($this->getStress('mental', 'current') == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
+									</div>
+<?	} ?>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
