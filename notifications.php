@@ -69,7 +69,9 @@
 <?			} elseif ($action == 'editedGame') { ?>
 				<div class="text">You edited your <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
 <?			} elseif ($action == 'playerApplied') { ?>
-				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>"?> applied to <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
+				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$gNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> applied to <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
+<?			} elseif ($action == 'playerApplied' || $action == 'playerRejected') { ?>
+				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$gNotification['enactedBy']}/\" class=\"username\">{$gNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 9))?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$gNotification['characterID']?>/"><?=$gNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$gNotification['gmID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$gNotification['gmID']}/\" class=\"username\">{$gNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
 <?
 			} else $count--;
 			$gNotification = $gameHistories->fetch();
