@@ -63,6 +63,7 @@
 			}
 			$systemInfo = $systems->getSystemInfo($gNotification['systemID']);
 ?>
+			<div class="notification tr">
 				<div class="timestamp"><?=date('M j, Y H:i:s', $timestamp)?> - </div>
 <?			if ($action == 'newGame') { ?>
 				<div class="text">You created a new <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
