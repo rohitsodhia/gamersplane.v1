@@ -20,15 +20,14 @@ $(function() {
 	$('.skillName').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });*/
 
 	itemizationFunctions['aspects'] = {
-		newItem = function ($list) {
-		console.log($list);
-//		$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+		newItem: function ($newItem) {
+			$newItem.appendTo('#aspectList').find('input').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'aspect', characterID: characterID, system: system }).find('input').focus();
 		},
 		init: function ($list) {
 			
 		}
 	}
-
+	setupItemized($('#aspects'));
 
 	$('#stress h3 a').click(function (e) {
 		e.preventDefault();

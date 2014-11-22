@@ -11,9 +11,9 @@
 
 				<div class="clearfix">
 					<div class="mainColumn">
-						<div id="aspects">
-							<h2 class="headerbar hbDark">Aspects <a id="addAspect" href="">[ Add Aspect ]</a></h2>
-							<div class="hbdMargined">
+						<div id="aspects" class="itemizedList" data-type="aspect">
+							<h2 class="headerbar hbDark">Aspects <a id="addAspect" href="" class="addItem">[ Add Aspect ]</a></h2>
+							<div id="aspectList" class="hbdMargined">
 								<div class="aspect withLabel tr clearfix">
 									<div><label for="highConcept" class="shiftRight">High Aspect</label></div>
 									<input id="highConcept" type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="width5">

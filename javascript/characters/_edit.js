@@ -1,5 +1,27 @@
 var characterID = parseInt($('#characterID').val()), system = $('#system').val();
 var itemizationFunctions = new Array(), itemizedCount = new Array();
+
+function setupItemized($list) {
+	$list.on('click', '.remove', function (e) {
+		e.preventDefault();
+
+		$(this).parent().remove();
+		if ($('.item').length == 0) $list.find('.addItem').click();
+	}).on('click', 'a.addItem', function (e) {
+		e.preventDefault();
+		var nextCount = 1;
+
+		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: nextCount }, function (data) {
+			$newItem = $(data);
+			itemizationFunctions[$list.attr('id')]['newItem']($newItem);
+			nextCount += 1;
+		});
+	});
+
+	nextCount = $list.find('.item').length + 1;
+	itemizationFunctions[$list.attr('id')]['init']($list);
+}
+
 $(function () {
 	$('#charAvatar a').colorbox();
 
@@ -34,29 +56,6 @@ $(function () {
 		$abilitySelect.data('statHold', newStat);
 		$total.html(showSign(totalVal));
 	});
-
-	if ($('.itemizedList').length) { $('.itemizedList').each(function () {
-		$list = $(this);
-
-		$list.on('click', '.remove', function (e) {
-			e.preventDefault();
-
-			$(this).parent().remove();
-			if ($('.item').length == 0) $list.find('.addItem').click();
-		}).on('click', 'a.addItem', function (e) {
-			e.preventDefault();
-			var nextCount = 1;
-
-			$.post('/characters/ajax/addItemized/', { system: system, 'type': $(list).data('type'), key: nextCount }, function (data) {
-				$newItem = $(data);
-				itemizationFunctions[$list.attr('id')]['newItem']($newItem);
-				nextCount += 1;
-			});
-		});
-
-		nextCount = $list.find('.item').length + 1;
-		itemizationFunctions[$list.attr('id')][init]($list);
-	}); }
 
 	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
 		var nextSkillCount = 1;
