@@ -20,6 +20,7 @@
 	for ($count = 0; $count < $perPage && ($cRemaining || $gRemaining); $count++) {
 		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
 			$action = $cNotification['action'];
+			var_dump($action);
 			$timestamp = strtotime($cNotification['enactedOn']);
 			if (date('Ymd', $timestamp) != $lastDate) {
 				$lastDate = date('Ymd', $timestamp);
@@ -47,13 +48,14 @@
 <?			} elseif ($action == 'charApplied') { ?>
 				<div class="text">You applied <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) to <a href="/ucp/<?=$cNotification['gmID']?>/" class="username"><?=$cNotification['gmUsername']?></a>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
 <?			} elseif ($action == 'characterApproved' || $action == 'characterRejected' || $action == 'characterRemoved') { ?>
-				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>"?> <?=substr($action, 9)?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$cNotification['gmID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$cNotification['gmID']}/\" class=\"username\">{$cNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
+				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>"?> <?=strtolower(substr($action, 9))?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$cNotification['gmID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$cNotification['gmID']}/\" class=\"username\">{$cNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
 <?
 			} else $count--;
 			$cNotification = $charHistories->fetch();
 			if (!$cNotification) $cRemaining = false;
 		} else {
 			$action = $gNotification['action'];
+			var_dump($action);
 			$timestamp = strtotime($gNotification['enactedOn']);
 			if (date('Ymd', $timestamp) != $lastDate) {
 				$lastDate = date('Ymd', $timestamp);
