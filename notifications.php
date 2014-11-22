@@ -19,8 +19,8 @@
 	echo "		<div class=\"hbdMargined\">\n";
 	for ($count = 0; $count < $perPage && ($cRemaining || $gRemaining); $count++) {
 		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
+			var_dump($cNotification);
 			$action = $cNotification['action'];
-			var_dump($action);
 			$timestamp = strtotime($cNotification['enactedOn']);
 			if (date('Ymd', $timestamp) != $lastDate) {
 				$lastDate = date('Ymd', $timestamp);
@@ -55,7 +55,6 @@
 			if (!$cNotification) $cRemaining = false;
 		} else {
 			$action = $gNotification['action'];
-			var_dump($action);
 			$timestamp = strtotime($gNotification['enactedOn']);
 			if (date('Ymd', $timestamp) != $lastDate) {
 				$lastDate = date('Ymd', $timestamp);
