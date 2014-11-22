@@ -19,6 +19,17 @@ $(function() {
 	nextSkillCount = $('.skill').length + 1;
 	$('.skillName').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });*/
 
+	itemizationFunctions['aspects'] = {
+		newItem = function ($list) {
+		console.log($list);
+//		$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+		},
+		init: function ($list) {
+			
+		}
+	}
+
+
 	$('#stress h3 a').click(function (e) {
 		e.preventDefault();
 		$track = $(this).parent().siblings('.track');
@@ -35,6 +46,4 @@ $(function() {
 		}
 		$track.find('input[type="hidden"]').val(numBoxes - 1);
 	});
-
-	console.log(addItemizedFunctions);
 });

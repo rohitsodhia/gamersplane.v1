@@ -13,7 +13,7 @@
 		$message = sanitizeString($_POST['message']);
 		$postAs = isset($_POST['postAs']) && intval($_POST['postAs'])?intval($_POST['postAs']):null;
 
-		if (preg_match_all('/\[note="?(\w[\w +;,]+)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
+		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
 			foreach ($matches as $match) {
 				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) $allUsers[] = $eachUser;

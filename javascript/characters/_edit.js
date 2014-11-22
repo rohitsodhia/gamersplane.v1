@@ -1,5 +1,5 @@
 var characterID = parseInt($('#characterID').val()), system = $('#system').val();
-var addItemizedFunctions = {}, itemizedCount = new Array();
+var itemizationFunctions = new Array(), itemizedCount = new Array();
 $(function () {
 	$('#charAvatar a').colorbox();
 
@@ -35,7 +35,7 @@ $(function () {
 		$total.html(showSign(totalVal));
 	});
 
-/*	if ($('.itemizedList').length) { $('.itemizedList').each(function () {
+	if ($('.itemizedList').length) { $('.itemizedList').each(function () {
 		$list = $(this);
 
 		$list.on('click', '.remove', function (e) {
@@ -49,14 +49,14 @@ $(function () {
 
 			$.post('/characters/ajax/addItemized/', { system: system, 'type': $(list).data('type'), key: nextCount }, function (data) {
 				$newItem = $(data);
-				$newItem.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+				itemizationFunctions[$list.attr('id')]['newItem']($newItem);
 				nextCount += 1;
 			});
 		});
 
 		nextCount = $list.find('.item').length + 1;
-		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
-	});*/
+		itemizationFunctions[$list.attr('id')][init]($list);
+	}); }
 
 	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
 		var nextSkillCount = 1;
