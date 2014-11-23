@@ -9,7 +9,6 @@ function setupItemized($list) {
 		if ($('.item').length == 0) $list.find('.addItem').click();
 	}).on('click', 'a.addItem', function (e) {
 		e.preventDefault();
-		var nextCount = 1;
 
 		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: nextCount }, function (data) {
 			$newItem = $(data);
@@ -18,7 +17,7 @@ function setupItemized($list) {
 		});
 	});
 
-	nextCount = $list.find('.item').length + 1;
+	var nextCount = $list.find('.item').length + 1;
 	itemizationFunctions[$list.attr('id')]['init']($list);
 }
 

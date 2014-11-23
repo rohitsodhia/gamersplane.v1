@@ -9,9 +9,9 @@
 		protected $aspects = array();
 		protected $skills = array();
 		protected $extras = '';
-		protected $stunts = array();
+		protected $stunts = '';
 		protected $stress = array('physical' => array('total' => 2, 'current' => 0), 'mental' => array('total' => 2, 'current' => 0));
-		protected $consequences = array();
+		protected $consequences;
 
 		public function setFatePoints($fatePoints) {
 			$this->fatePoints = intval($fatePoints);
@@ -135,7 +135,7 @@
 		}
 
 		public function setStress($type, $key, $value) {
-			if (in_array($type, array('physical', 'mental')) && in_array($key, array('total', 'current')) && intval($value) >= 0)
+			if (in_array($type, array('physical', 'mental')) && (($key == 'total' && intval($value) >= 2) || ($key == 'current' && intval($value) >= 0)))
 				$this->stress[$type][$key] = intval($value);
 			else return false;
 		}
@@ -162,6 +162,7 @@
 			$system = $this::SYSTEM;
 
 			if (!isset($data['create']) && !$bypass) {
+				var_dump($data); exit;
 				$this->setName($data['name']);
 				$this->setFatePoints($data['fatePoints']);
 				$this->setRefresh($data['refresh']);
@@ -186,6 +187,8 @@
 				$this->setStress('physical', 'current', $data['stress']['physical']['current']);
 				$this->setStress('mental', 'total', $data['stress']['mental']['total']);
 				$this->setStress('mental', 'current', $data['stress']['mental']['current']);
+
+				$this->setConsequences($data['consequences']);
 
 				$this->setNotes($data['notes']);
 			}
