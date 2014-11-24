@@ -103,9 +103,7 @@
 		public function displaySkills() {
 			if ($this->skills) { foreach ($this->skills as $skill) {
 ?>
-								<div class="skill clearfix"><?=$skill['name']?> (<span class="rating"><?=showSign($skill['name'])?></span>)</div>
-									<div class="diceType">d<?=$skill['diceType']?></div>
-								</div>
+								<div class="skill clearfix"><?=$skill['name']?> (<span class="rating"><?=showSign($skill['rating'])?></span>)</div>
 <?
 			} }
 		}
@@ -162,7 +160,6 @@
 			$system = $this::SYSTEM;
 
 			if (!isset($data['create']) && !$bypass) {
-				var_dump($data); exit;
 				$this->setName($data['name']);
 				$this->setFatePoints($data['fatePoints']);
 				$this->setRefresh($data['refresh']);
