@@ -39,6 +39,21 @@ $(function() {
 	}
 	setupItemized($('#skills'));
 
+	itemizationFunctions['stunts'] = {
+		newItem: function ($newItem) {
+			$newItem.appendTo('#stuntsList').find('.name').placeholder().focus();
+		},
+		init: function ($list) {
+			$list.find('.name').placeholder();
+		}
+	}
+	setupItemized($('#stunts'));
+	$('#stunts').on('click', '.notesLink', function(e) {
+		e.preventDefault();
+
+		$(this).siblings('textarea').slideToggle();
+	});
+
 	$('#stress h3 a').click(function (e) {
 		e.preventDefault();
 		$track = $(this).parent().siblings('.track');

@@ -40,33 +40,30 @@
 						</div>
 						<div id="stunts">
 							<h2 class="headerbar hbDark">Stunts</h2>
-							<div><?=$this->getStunts()?></div>
+							<div class="hbdMargined">
+<?	$this->displayStunts(); ?>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="sidebar">
 					<div id="stress">
 						<h2 class="headerbar hbDark">Stress</h2>
-						<div id="physicalStress" class="hbdMargined">
-							<h3><span>Physical Stress</span></h3>
+<?
+	$stresses = $this->getStress();
+	foreach ($stresses as $stressType => $stress) {
+?>
+						<div id="<?=$stressType?>Stress" class="hbdMargined">
+							<h3><span><?=ucwords($stressType)?> Stress</span></h3>
 							<div class="track">
-<?	for ($count = 1; $count <= $this->getStress('physical', 'total'); $count++) { ?>
+<?		for ($count = 1; $count <= $stress['total']; $count++) { ?>
 								<div class="stressBox">
-									<div class="prettyCheckbox<? if ($this->getStress('physical', 'current') == $count) echo ' checked'?>"></div> <span><?=$count?></span>
+									<div class="prettyCheckbox<? if ($stress['current'] == $count) echo ' checked'?>"></div> <span><?=$count?></span>
 								</div>
-<?	} ?>
+<?		} ?>
 							</div>
 						</div>
-						<div id="mentalStress" class="hbdMargined">
-							<h3><span>Mental Stress</span></h3>
-							<div class="track">
-<?	for ($count = 1; $count <= $this->getStress('mental', 'total'); $count++) { ?>
-								<div class="stressBox">
-									<div class="prettyCheckbox<? if ($this->getStress('mental', 'current') == $count) echo ' checked'?>"></div> <span><?=$count?></span>
-								</div>
 <?	} ?>
-							</div>
-						</div>
 					</div>
 					<div id="consequences">
 						<h2 class="headerbar hbDark">Consequences</h2>

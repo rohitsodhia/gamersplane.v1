@@ -38,37 +38,33 @@
 								<h2 class="headerbar hbDark">Extras</h2>
 								<textarea name="extras" class="hbdMargined"><?=$this->getExtras()?></textarea>
 							</div>
-							<div id="stunts">
-								<h2 class="headerbar hbDark">Stunts</h2>
-								<textarea name="stunts" class="hbdMargined"><?=$this->getStunts()?></textarea>
+							<div id="stunts" data-type="stunt">
+								<h2 class="headerbar hbDark">Stunts <a href="" class="addItem">[ Add Stunt ]</a></h2>
+								<div id="stuntsList" class="hbdMargined">
+<?	$this->showStuntsEdit(); ?>
+								</div>
 							</div>
 						</div>
 					</div>
 					<div class="sidebar">
 						<div id="stress">
 							<h2 class="headerbar hbDark">Stress</h2>
-							<div id="physicalStress" class="hbdMargined">
-								<h3><span>Physical Stress</span> <a href="" class="add">[ + ]</a><a href="" class="remove">[ - ]</a></h3>
+<?
+	$stresses = $this->getStress();
+	foreach ($stresses as $stressType => $stress) {
+?>
+							<div id="<?=$stressType?>Stress" class="hbdMargined">
+								<h3><span><?=ucwords($stressType)?> Stress</span> <a href="" class="add">[ + ]</a><a href="" class="remove">[ - ]</a></h3>
 								<div class="track">
-									<input type="hidden" name="stress[physical][total]" value="<?=$this->getStress('physical', 'total')?>">
-<?	for ($count = 0; $count <= $this->getStress('physical', 'total'); $count++) { ?>
+									<input type="hidden" name="stress[<?=$stressType?>][total]" value="<?=$stress['total']?>">
+<?		for ($count = 0; $count <= $stress['total']; $count++) { ?>
 									<div class="stressBox">
-										<input type="radio" name="stress[physical][current]" value="<?=$count?>"<? if ($this->getStress('physical', 'current') == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
+										<input type="radio" name="stress[<?=$stressType?>][current]" value="<?=$count?>"<? if ($stress['current'] == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
 									</div>
-<?	} ?>
+<?		} ?>
 								</div>
 							</div>
-							<div id="mentalStress" class="hbdMargined">
-								<h3><span>Mental Stress</span> <a href="" class="add">[ + ]</a><a href="" class="remove">[ - ]</a></h3>
-								<div class="track">
-									<input type="hidden" name="stress[mental][total]" value="<?=$this->getStress('mental', 'total')?>">
-<?	for ($count = 0; $count <= $this->getStress('mental', 'total'); $count++) { ?>
-									<div class="stressBox">
-										<input type="radio" name="stress[mental][current]" value="<?=$count?>"<? if ($this->getStress('mental', 'current') == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
-									</div>
 <?	} ?>
-								</div>
-							</div>
 						</div>
 						<div id="consequences">
 							<h2 class="headerbar hbDark">Consequences</h2>

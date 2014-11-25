@@ -46,8 +46,48 @@ textarea {
 }
 
 #extras, #stunts {
-	display: inline-block;
-	width: 49.6%;
+	float: left;
+	width: 50%;
+}
+
+#stunts {
+	input, a {
+		vertical-align: middle;
+	}
+}
+
+#page_characterSheet_edit #stunts .name {
+	width: 215px;
+	text-align: left;
+}
+
+#page_characterSheet #stunts .name {
+	width: 245px;
+}
+
+#stunts {
+	.notesLink {
+		margin-left: 5px;
+		font-size: .8em;
+	}
+
+	.stunt textarea, .stunt .notes {
+		display: none;
+		margin-top: .5em;
+	}
+
+	.stunt textarea {
+		width: 100%;
+		height: 4.9em;
+	}
+
+	.stunt .notes {
+		padding: 4px;
+		border: 1px solid #888;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
 }
 
 .sidebar {
@@ -82,6 +122,10 @@ textarea {
 	.stressBox > * {
 		display: inline-block;
 		vertical-align: middle;
+	}
+
+	.prettyCheckbox {
+		cursor: auto;
 	}
 }
 

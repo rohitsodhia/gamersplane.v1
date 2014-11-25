@@ -1,17 +1,8 @@
 <?
-	class fateCharacter extends Character {
-		const SYSTEM = 'fate';
+	class dresdenCharacter extends fateCharacter {
+		const SYSTEM = 'dresden';
 
-		protected $fatePoints = 3;
-		protected $refresh = 0;
-		protected $highConcept = '';
-		protected $trouble = '';
-		protected $aspects = array();
-		protected $skills = array();
-		protected $extras = '';
-		protected $stunts = array();
-		protected $stress = array('physical' => array('total' => 2, 'current' => 0), 'mental' => array('total' => 2, 'current' => 0));
-		protected $consequences;
+		protected $stress = array('physical' => 0, 'mental' => 0, 'social' => 0);
 
 		public function setFatePoints($fatePoints) {
 			$this->fatePoints = intval($fatePoints);
@@ -116,42 +107,12 @@
 			return $this->extras;
 		}
 
-		public static function stuntEditFormat($key = 1, $stuntInfo = null) {
-			if ($stuntInfo == null) $stuntInfo = array('name' => '', 'notes' => '');
-?>
-									<div class="stunt tr clearfix">
-										<input type="text" name="stunts[<?=$key?>][name]" value="<?=$stuntInfo['name']?>" class="name placeholder" data-placeholder="Stunt Name">
-										<a href="" class="notesLink">Notes</a>
-										<a href="" class="remove sprite cross"></a>
-										<textarea name="stunts[<?=$key?>][notes]"><?=$stuntInfo['notes']?></textarea>
-									</div>
-<?
+		public function setStunts($stunts) {
+			$this->stunts = $stunts;
 		}
 
-		public function showStuntsEdit() {
-			if (sizeof($this->stunts)) { foreach ($this->stunts as $key => $stunt) {
-				$this->stuntEditFormat($key + 1, $stunt);
-			} } else $this->stuntEditFormat();
-		}
-
-		public function displayStunts() {
-			if ($this->stunts) { foreach ($this->stunts as $stunt) { ?>
-					<div class="stunt tr clearfix">
-						<span class="name"><?=$stunt['name']?></span>
-<?	if (strlen($stunt['notes'])) { ?>
-						<a href="" class="notesLink">Notes</a>
-						<div class="notes"><?=$stunt['notes']?></div>
-<?	} ?>
-					</div>
-<?
-			} } else echo "\t\t\t\t\t<p id=\"noStunts\">This character currently has no stunts/abilities.</p>\n";
-		}
-		
-		public function addStunt($stunt) {
-			if (strlen($stunt['name'])) {
-				newItemized('stunt', $stunt['name'], $this::SYSTEM);
-				$this->stunts[] = $stunt;
-			}
+		public function getStunts() {
+			return $this->stunts;
 		}
 
 		public function setInjuries($injuries) {
@@ -208,10 +169,7 @@
 				}
 
 				$this->setExtras($data['extras']);
-				$this->clearVar('stunts');
-				if (sizeof($data['stunts'])) { foreach ($data['stunts'] as $stuntInfo) {
-					$this->addStunt($stuntInfo);
-				} }
+				$this->setStunts($data['stunts']);
 
 				$this->setStress('physical', 'total', $data['stress']['physical']['total']);
 				$this->setStress('physical', 'current', $data['stress']['physical']['current']);
