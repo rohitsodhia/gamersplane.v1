@@ -2,6 +2,7 @@
 	class dresdenCharacter extends fateCharacter {
 		const SYSTEM = 'dresden';
 
+		protected $fatePoints = array('current' => 3, 'refresh' => 0);
 		protected $stress = array('physical' => 0, 'mental' => 0, 'social' => 0);
 
 		public function setFatePoints($fatePoints) {

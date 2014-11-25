@@ -2,8 +2,7 @@
 	class fateCharacter extends Character {
 		const SYSTEM = 'fate';
 
-		protected $fatePoints = 3;
-		protected $refresh = 0;
+		protected $fatePoints = array('current' => 3, 'refresh' => 0);
 		protected $highConcept = '';
 		protected $trouble = '';
 		protected $aspects = array();
@@ -13,20 +12,15 @@
 		protected $stress = array('physical' => array('total' => 2, 'current' => 0), 'mental' => array('total' => 2, 'current' => 0));
 		protected $consequences;
 
-		public function setFatePoints($fatePoints) {
-			$this->fatePoints = intval($fatePoints);
+		public function setFatePoints($key, $value) {
+			if (array_key_exists($key, $this->fatePoints)) $this->fatePoints[$key] = intval($value);
+			else return false;
 		}
 
-		public function getFatePoints() {
-			return $this->fatePoints;
-		}
-
-		public function setRefresh($refresh) {
-			$this->refresh = intval($refresh);
-		}
-
-		public function getRefresh() {
-			return $this->refresh;
+		public function getFatePoints($key = null) {
+			if ($key == null) return $this->fatePoints;
+			elseif (array_key_exists($key, $this->fatePoints)) return $this->fatePoints[$key];
+			else return false;
 		}
 
 		public function setHighConcept($highConcept) {
