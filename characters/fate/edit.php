@@ -4,9 +4,9 @@
 				</div>
 				<div id="fpStats" class="tr">
 					<label for="fatePoints" class="textLabel">Fate Points:</label>
-					<input id="fatePoints" type="text" name="fatePoints" maxlength="2" value="<?=$this->getFatePoints()?>">
+					<input id="fatePoints" type="text" name="fatePoints[current]" maxlength="2" value="<?=$this->getFatePoints('current')?>">
 					<label for="refresh" class="textLabel">Refresh:</label>
-					<input id="refresh" type="text" name="refresh" maxlength="2" value="<?=$this->getRefresh()?>">
+					<input id="refresh" type="text" name="fatePoints[refresh]" maxlength="2" value="<?=$this->getFatePoints('refresh')?>">
 				</div>
 
 				<div class="clearfix">

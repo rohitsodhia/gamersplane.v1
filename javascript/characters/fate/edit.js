@@ -31,10 +31,10 @@ $(function() {
 
 	itemizationFunctions['skills'] = {
 		newItem: function ($newItem) {
-			$newItem.appendTo('#skillList').prettify().find('.skillName').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+			$newItem.appendTo('#skillList').prettify().find('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
 		},
 		init: function ($list) {
-			$list.find('.skillName').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
+			$list.find('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 		}
 	}
 	setupItemized($('#skills'));

@@ -77,7 +77,7 @@
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'rating' => 0);
 ?>
 									<div class="skill tr clearfix">
-										<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder width4" data-placeholder="Skill Name">
+										<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="name placeholder width4" data-placeholder="Skill Name">
 										<span class="rating"><select name="skills[<?=$key?>][rating]">
 <?			for ($count = -2; $count <= 8; $count++) { ?>
 											<option<?=$skillInfo['rating'] == $count?' selected="selected"':''?>><?=showSign($count)?></option>
@@ -185,8 +185,8 @@
 
 			if (!isset($data['create']) && !$bypass) {
 				$this->setName($data['name']);
-				$this->setFatePoints($data['fatePoints']);
-				$this->setRefresh($data['refresh']);
+				$this->setFatePoints('current', $data['fatePoints']['current']);
+				$this->setFatePoints('refresh', $data['fatePoints']['refresh']);
 
 				$this->setHighConcept($data['highConcept']);
 				$this->setTrouble($data['trouble']);
