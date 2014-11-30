@@ -1,11 +1,11 @@
 			<div id="nameDiv" class="tr">
-				<label for="name" class="textLabel">Name</label>
+				<label for="name" class="textLabel">Name:</label>
 				<div><?=$this->getName()?></div>
 			</div>
 			<div id="fpStats" class="tr">
-				<label for="fatePoints" class="textLabel">Fate Points</label>
+				<label for="fatePoints" class="textLabel">Fate Points:</label>
 				<div><?=$this->getFatePoints('current')?></div>
-				<label for="refresh" class="textLabel">Refresh</label>
+				<label for="refresh" class="textLabel">Refresh:</label>
 				<div><?=$this->getFatePoints('refresh')?></div>
 			</div>
 

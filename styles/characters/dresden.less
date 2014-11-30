@@ -1,5 +1,5 @@
 /*
-	Gamers Plane Characters: Deadlands CSS Stylesheet
+	Gamers Plane Characters: Dresden CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
@@ -19,43 +19,26 @@ textarea {
 	}
 }
 
-#coreAspects_labels {
-	padding-top: 0;
-}
-
-#coreAspects_labels, #coreAspects {
-	& > * {
-		margin-right: 10px;
-	}
-}
-
 .remove {
 	display: inline-block;
 	margin-left: 5px;
 }
 
-#aspects {
-	width: 330px;
-
-	input {
-		text-align: left;
-	}
+#leftCol {
+	width: 560px;
 }
 
-#aspects, #skills {
-	float: left;
+#rightCol {
+	width: 380px;
 }
 
-.aspect {
+#aspects input {
+	text-align: left;
+	width: 480px;
 }
 
-#skills {
-	width: 340px;
-}
-
-#extras, #stunts {
-	float: left;
-	width: 50%;
+.withLabel {
+	padding-top: 0;
 }
 
 #stunts {
@@ -65,12 +48,12 @@ textarea {
 }
 
 #page_characterSheet_edit #stunts .name {
-	width: 215px;
+	width: 395px;
 	text-align: left;
 }
 
 #page_characterSheet #stunts .name {
-	width: 245px;
+	width: 425px;
 }
 
 #stunts {
@@ -98,28 +81,39 @@ textarea {
 	}
 }
 
-.sidebar {
-	width: 265px;
+#skills {
+	width: auto;
+
+	h4 {
+		font-family: "AgencyFB";
+		font-size: 1.4em;
+		line-height: 1.2em;
+		margin-bottom: .35em;
+	}
+
+	.name {
+		width: 245px;
+	}
+}
+
+#skillPoints {
+	margin-bottom: .4em;
+
+	input {
+		margin-left: 5px;
+		margin-right: 10px;
+	}
 }
 
 #stress {
-	h3 > * {
-		display: inline-block;
-		vertical-align: middle;
-	}
-
-	h3 a {
-		font-size: .6em;
-	}
-
 	.track > * {
 		display: inline-block;
 		vertical-align: middle;
 	}
-}
 
-#mentalStress {
-	margin-top: 1em;
+	.stress {
+		margin-top: 1em;
+	}
 }
 
 #page_characterSheet {
