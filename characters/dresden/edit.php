@@ -1,13 +1,13 @@
 				<div id="nameDiv" class="tr">
-					<label for="name" class="textLabel">Name:</label>
+					<label for="name" class="textLabel">Name</label>
 					<input id="name" type="text" name="name" maxlength="50" value="<?=$this->getName()?>" class="width5">
 				</div>
 				<div id="fpStats" class="tr">
-					<label for="powerLevel" class="textLabel">Power Level:</label>
+					<label for="powerLevel" class="textLabel">Power Level</label>
 					<input id="powerLevel" type="text" name="powerLevel" maxlength="2" value="<?=$this->getPowerLevel()?>">
-					<label for="fatePoints" class="textLabel">Fate Points:</label>
+					<label for="fatePoints" class="textLabel">Fate Points</label>
 					<input id="fatePoints" type="text" name="fatePoints[current]" maxlength="2" value="<?=$this->getFatePoints('current')?>">
-					<label for="refresh" class="textLabel">Refresh:</label>
+					<label for="refresh" class="textLabel">Refresh</label>
 					<input id="refresh" type="text" name="fatePoints[refresh]" maxlength="2" value="<?=$this->getFatePoints('refresh')?>">
 					<label for="adjustedRefresh" class="textLabel">Adjusted Refresh:</label>
 					<input id="adjustedRefresh" type="text" name="fatePoints[adjustedRefresh]" maxlength="2" value="<?=$this->getFatePoints('adjustedRefresh')?>">

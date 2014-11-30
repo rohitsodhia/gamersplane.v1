@@ -2,6 +2,8 @@
 	class dresdenCharacter extends fateCharacter {
 		const SYSTEM = 'dresden';
 
+		protected $template = '';
+		protected $musts = '';
 		protected $fatePoints = array('current' => 3, 'refresh' => 0, 'adjustedRefresh' => 0);
 		protected $powerLevel = 0;
 		protected $skillCap = 0;
