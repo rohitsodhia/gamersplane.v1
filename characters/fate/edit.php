@@ -1,12 +1,20 @@
 				<div id="nameDiv" class="tr">
-					<label for="name" class="textLabel">Name:</label>
+					<label for="name" class="textLabel">Name</label>
 					<input id="name" type="text" name="name" maxlength="50" value="<?=$this->getName()?>" class="width5">
 				</div>
 				<div id="fpStats" class="tr">
-					<label for="fatePoints" class="textLabel">Fate Points:</label>
+					<label for="fatePoints" class="textLabel">Fate Points</label>
 					<input id="fatePoints" type="text" name="fatePoints[current]" maxlength="2" value="<?=$this->getFatePoints('current')?>">
-					<label for="refresh" class="textLabel">Refresh:</label>
+					<label for="refresh" class="textLabel">Refresh</label>
 					<input id="refresh" type="text" name="fatePoints[refresh]" maxlength="2" value="<?=$this->getFatePoints('refresh')?>">
+				</div>
+				<div id="coreAspects_labels" class="tr labelTR">
+					<label for="highConcept" class="shiftRight width5 borderBox">High Aspect</label>
+					<label for="trouble" class="shiftRight width5 borderBox">Trouble</label>
+				</div>
+				<div id="coreAspects" class="tr">
+					<input id="highConcept" type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="width5">
+					<input id="trouble" type="text" name="trouble" value="<?=$this->getTrouble()?>" class="width5">
 				</div>
 
 				<div class="clearfix">
@@ -15,14 +23,6 @@
 							<div id="aspects" class="itemizedList" data-type="aspect">
 								<h2 class="headerbar hbDark">Aspects <a id="addAspect" href="" class="addItem">[ Add Aspect ]</a></h2>
 								<div id="aspectList" class="hbdMargined">
-									<div class="aspect withLabel tr clearfix">
-										<div><label for="highConcept" class="shiftRight">High Aspect</label></div>
-										<input id="highConcept" type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="width5">
-									</div>
-									<div class="aspect withLabel tr clearfix">
-										<div><label for="trouble" class="shiftRight">Trouble</label></div>
-										<input id="trouble" type="text" name="trouble" value="<?=$this->getTrouble()?>" class="width5">
-									</div>
 <?	$this->showAspectsEdit(); ?>
 								</div>
 							</div>

@@ -10,15 +10,23 @@ textarea {
 
 #nameDiv, #fpStats {
 	label {
-		width: 70px;
 		margin-right: 10px;
 		font-size: 1em;
-		text-align: right;
+	}
+
+	input {
+		margin-right: 10px;
 	}
 }
 
-#fpStats label[for="fatePoints"] {
-	width: 110px;
+#coreAspects_labels {
+	padding-top: 0;
+}
+
+#coreAspects_labels, #coreAspects {
+	& > * {
+		margin-right: 10px;
+	}
 }
 
 .remove {
@@ -36,10 +44,6 @@ textarea {
 
 #aspects, #skills {
 	float: left;
-}
-
-.withLabel {
-	padding-top: 0;
 }
 
 .aspect {
