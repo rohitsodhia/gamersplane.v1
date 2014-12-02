@@ -3,12 +3,20 @@
 		const SYSTEM = 'dresden';
 
 		protected $template = '';
-		protected $musts = '';
 		protected $fatePoints = array('current' => 3, 'refresh' => 0, 'adjustedRefresh' => 0);
 		protected $powerLevel = 0;
+		protected $phases = array();
 		protected $skillCap = 0;
 		protected $skillPoints = array('spent' => 0, 'available' => 0);
 		protected $stress = array('physical' => 0, 'mental' => 0, 'social' => 0);
+
+		public function setTemplate($template) {
+			$this->template = $template;
+		}
+
+		public function getTemplate() {
+			return $this->template;
+		}
 
 		public function setPowerLevel($powerLevel) {
 			$this->powerLevel = intval($powerLevel);
@@ -16,6 +24,23 @@
 
 		public function getPowerLevel() {
 			return $this->powerLevel;
+		}
+
+		public function setPhase($phase, $key, $value) {
+			$phase = intval($phase);
+			if ($phase >= 1 && $phase <= 5 && in_array($key, array('aspect', 'events'))) $this->phases[$phase][$key] = $value;
+		}
+
+		public function getPhase($phase = null, $key = null) {
+			if ($phase == null) return $this->phases;
+			else {
+				$phase = intval($phase);
+				if ($phase < 1 || $phase > 5) return false;
+
+				if ($key == null) return $this->phases[$phase];
+				elseif (in_array($key, array('aspect', 'events'))) return $this->phases[$phase][$key];
+				else return false;
+			}
 		}
 
 		public function setSkillCap($skillCap) {
@@ -53,6 +78,7 @@
 		public function displayStunts() {
 			if ($this->stunts) { foreach ($this->stunts as $stunt) { ?>
 					<div class="stunt tr clearfix">
+						<span class="cost"><?=$stunt['cost']?></span>
 						<span class="name"><?=$stunt['name']?></span>
 <?	if (strlen($stunt['notes'])) { ?>
 						<a href="" class="notesLink">Notes</a>
@@ -71,6 +97,18 @@
 			}
 		}
 
+		public function setStress($type, $value) {
+			if (in_array($type, array('physical', 'mental', 'social')) && intval($value) >= 0)
+				$this->stress[$type] = intval($value);
+			else return false;
+		}
+
+		public function getStress($type = null) {
+			if ($type == null) return $this->stress;
+			elseif (in_array($type, array('physical', 'mental', 'social'))) return $this->stress[$type];
+			else return false;
+		}
+
 		public function save($bypass = false) {
 			global $mysql;
 			$data = $_POST;
@@ -78,13 +116,18 @@
 
 			if (!isset($data['create']) && !$bypass) {
 				$this->setName($data['name']);
+				$this->setTemplate($data['template']);
 				$this->setPowerLevel($data['powerLevel']);
 				$this->setFatePoints('current', $data['fatePoints']['current']);
 				$this->setFatePoints('refresh', $data['fatePoints']['refresh']);
 				$this->setFatePoints('adjustedRefresh', $data['fatePoints']['adjustedRefresh']);
-
 				$this->setHighConcept($data['highConcept']);
 				$this->setTrouble($data['trouble']);
+
+				for ($count = 1; $count <= 5; $count++) {
+					$this->setPhase($count, 'aspect', $data['phases'][$count]['aspect']);
+					$this->setPhase($count, 'events', $data['phases'][$count]['events']);
+				}
 
 				$this->clearVar('aspects');
 				if (sizeof($data['aspects'])) {
@@ -105,17 +148,14 @@
 					foreach ($data['skills'] as $skill) $this->addSkill($skill);
 				}
 
-				$this->setStress('physical', 'total', $data['stress']['physical']['total']);
-				$this->setStress('physical', 'current', $data['stress']['physical']['current']);
-				$this->setStress('mental', 'total', $data['stress']['mental']['total']);
-				$this->setStress('mental', 'current', $data['stress']['mental']['current']);
+				foreach (array('physical', 'mental', 'social') as $stressType) $this->setStress($stressType, $data['stress'][$stressType]);
 
 				$this->setConsequences($data['consequences']);
 
 				$this->setNotes($data['notes']);
 			}
 
-			parent::save();
+			parent::save(true);
 		}
 	}
 ?>
