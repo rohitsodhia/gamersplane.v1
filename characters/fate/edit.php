@@ -8,14 +8,6 @@
 					<label for="refresh" class="textLabel">Refresh</label>
 					<input id="refresh" type="text" name="fatePoints[refresh]" maxlength="2" value="<?=$this->getFatePoints('refresh')?>">
 				</div>
-				<div id="coreAspects_labels" class="tr labelTR">
-					<label for="highConcept" class="shiftRight width5 borderBox">High Aspect</label>
-					<label for="trouble" class="shiftRight width5 borderBox">Trouble</label>
-				</div>
-				<div id="coreAspects" class="tr">
-					<input id="highConcept" type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="width5">
-					<input id="trouble" type="text" name="trouble" value="<?=$this->getTrouble()?>" class="width5">
-				</div>
 
 				<div class="clearfix">
 					<div class="mainColumn">

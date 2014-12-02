@@ -8,13 +8,26 @@ textarea {
 	height: 7.4em;
 }
 
-#nameDiv, #fpStats {
+#basicInfo, #fpStats {
 	label {
-		margin-right: 10px;
 		font-size: 1em;
 	}
 
-	input {
+	label, input, div {
+		margin-right: 10px;
+	}
+}
+
+#basicInfo input, #coreAspects input {
+	text-align: left;
+}
+
+#coreAspects_labels, #page_characterSheet #coreAspects {
+	padding-top: 0;
+}
+
+#coreAspects_labels, #coreAspects {
+	& > * {
 		margin-right: 10px;
 	}
 }
@@ -28,13 +41,37 @@ textarea {
 	width: 560px;
 }
 
+.phase {
+	margin-top: .7em;
+
+	input {
+		width: 100%;
+	}
+
+	textarea {
+		margin-top: .5em;
+	}
+}
+
+#page_characterSheet .phase {
+	padding: 5px 8px;
+	border: 1px solid #000;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+
+	.aspect {
+		margin-bottom: .4em;
+	}
+}
+
 #rightCol {
 	width: 380px;
 }
 
 #aspects input {
 	text-align: left;
-	width: 480px;
+	width: 300px;
 }
 
 .withLabel {
@@ -45,15 +82,20 @@ textarea {
 	input, a {
 		vertical-align: middle;
 	}
+
+	span.cost {
+		text-align: center;
+		width: 30px;
+	}
 }
 
 #page_characterSheet_edit #stunts .name {
-	width: 395px;
+	width: 215px;
 	text-align: left;
 }
 
 #page_characterSheet #stunts .name {
-	width: 425px;
+	width: 245px;
 }
 
 #stunts {
@@ -94,25 +136,32 @@ textarea {
 	.name {
 		width: 245px;
 	}
+
+	span.rating {
+		vertical-align: top;
+	}
 }
 
 #skillPoints {
 	margin-bottom: .4em;
 
-	input {
+	input, div {
 		margin-left: 5px;
 		margin-right: 10px;
+	}
+
+	div {
+		display: inline-block;
 	}
 }
 
 #stress {
-	.track > * {
-		display: inline-block;
-		vertical-align: middle;
+	.stress {
+		margin-top: .6em;
 	}
 
-	.stress {
-		margin-top: 1em;
+	label {
+		width: 110px;
 	}
 }
 

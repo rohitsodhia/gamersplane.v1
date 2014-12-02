@@ -1,6 +1,8 @@
-				<div id="nameDiv" class="tr">
+				<div id="basicInfo" class="tr">
 					<label for="name" class="textLabel">Name</label>
 					<input id="name" type="text" name="name" maxlength="50" value="<?=$this->getName()?>" class="width5">
+					<label for="template" class="textLabel">Template</label>
+					<input id="template" type="text" name="template" maxlength="50" value="<?=$this->getTemplate()?>" class="width5">
 				</div>
 				<div id="fpStats" class="tr">
 					<label for="powerLevel" class="textLabel">Power Level</label>
@@ -9,23 +11,43 @@
 					<input id="fatePoints" type="text" name="fatePoints[current]" maxlength="2" value="<?=$this->getFatePoints('current')?>">
 					<label for="refresh" class="textLabel">Refresh</label>
 					<input id="refresh" type="text" name="fatePoints[refresh]" maxlength="2" value="<?=$this->getFatePoints('refresh')?>">
-					<label for="adjustedRefresh" class="textLabel">Adjusted Refresh:</label>
+					<label for="adjustedRefresh" class="textLabel">Adjusted Refresh</label>
 					<input id="adjustedRefresh" type="text" name="fatePoints[adjustedRefresh]" maxlength="2" value="<?=$this->getFatePoints('adjustedRefresh')?>">
+				</div>
+				<div id="coreAspects_labels" class="tr labelTR">
+					<label for="highConcept" class="shiftRight width5 borderBox">High Aspect</label>
+					<label for="trouble" class="shiftRight width5 borderBox">Trouble</label>
+				</div>
+				<div id="coreAspects" class="tr">
+					<input id="highConcept" type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="width5">
+					<input id="trouble" type="text" name="trouble" value="<?=$this->getTrouble()?>" class="width5">
 				</div>
 
 				<div class="clearfix">
-					<div id="leftCol" class="floatLeft">
+					<div id="leftCol" class="floatLeft"><div id="phases">
+						<h2 class="headerbar hbDark">Phases</h2>
+<?
+	$numWords = array(1 => 'One', 'Two', 'Three', 'Four', 'Five');
+	$phases = array(
+		1 => 'Background: Where did you come from?',
+		'Rising Conflict: What shaped you?',
+		'The Story: What was your first adventure?',
+		'Guest Star: Whose path have you crossed?',
+		"Guest Star Redux: Who else's path have you crossed?"
+	);
+	foreach ($phases as $phase => $phaseText) {
+?>
+						<div class="phase hbMargined">
+							<h3>Phase <?=$numWords[$phase]?> - <?=$phaseText?></h3>
+							<div><input type="text" name="phases[<?=$phase?>][aspect]" value="<?=$this->getPhase($phase, 'aspect')?>" data-placeholder="Phase Aspect" class="placeholder" autocomplete="off"></div>
+							<textarea name="phases[<?=$phase?>][events]"><?=$this->getPhase($phase, 'events')?></textarea>
+						</div>
+<?	} ?>
+					</div></div>
+					<div id="rightCol" class="floatRight">
 						<div id="aspects" class="itemizedList" data-type="aspect">
-							<h2 class="headerbar hbDark">Aspects <a id="addAspect" href="" class="addItem">[ Add Aspect ]</a></h2>
+							<h2 class="headerbar hbDark">Other Aspects <a id="addAspect" href="" class="addItem">[ Add Aspect ]</a></h2>
 							<div id="aspectList" class="hbdMargined">
-								<div class="aspect withLabel tr clearfix">
-									<div><label for="highConcept" class="shiftRight">High Aspect</label></div>
-									<input id="highConcept" type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="width5">
-								</div>
-								<div class="aspect withLabel tr clearfix">
-									<div><label for="trouble" class="shiftRight">Trouble</label></div>
-									<input id="trouble" type="text" name="trouble" value="<?=$this->getTrouble()?>" class="width5">
-								</div>
 <?	$this->showAspectsEdit(); ?>
 							</div>
 						</div>
@@ -35,8 +57,6 @@
 <?	$this->showStuntsEdit(); ?>
 							</div>
 						</div>
-					</div>
-					<div id="rightCol" class="floatRight">
 						<div id="skills" class="nonDefault" data-type="skill">
 							<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 							<div class="hbdMargined">
@@ -61,15 +81,12 @@
 	foreach ($stresses as $stressType => $stress) {
 ?>
 							<div id="<?=$stressType?>Stress" class="hbdMargined stress">
-								<h3><?=ucwords($stressType)?> Stress</h3>
-								<div class="track">
-									<input type="hidden" name="stress[<?=$stressType?>][total]" value="<?=$stress['total']?>">
+								<label class="leftLabel"><?=ucwords($stressType)?> Stress</label>
+								<select name="stress[<?=$stressType?>]">
 <?		for ($count = 0; $count <= 8; $count++) { ?>
-									<div class="stressBox">
-										<input type="radio" name="stress[<?=$stressType?>][current]" value="<?=$count?>"<? if ($stress == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
-									</div>
+									<option<?=$this->getStress($stressType) == $count?' selected="selected"':''?>><?=$count?></option>
 <?		} ?>
-								</div>
+								</select>
 							</div>
 <?	} ?>
 						</div>
