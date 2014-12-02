@@ -157,11 +157,35 @@ textarea {
 
 #stress {
 	.stress {
-		margin-top: .6em;
+		margin-top: .8em;
 	}
 
-	label {
-		width: 110px;
+	.type, .track {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.type {
+		width: 155px;
+	}
+
+	.type > * {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.type a {
+		font-size: .85em;
+	}
+
+	.labels > * {
+		font-size: 1em;
+	}
+
+	.labels > *, .checkboxes > * {
+		float: left;
+		text-align: center;
+		width: 21px;
 	}
 }
 
@@ -170,9 +194,14 @@ textarea {
 		display: inline-block;
 	}
 
-	.stressBox > * {
-		display: inline-block;
-		vertical-align: middle;
+	#stress {
+		.type {
+			width: 105px;
+		}
+
+		.labels > *, .checkboxes > * {
+			width: 21px;
+		}
 	}
 
 	.prettyCheckbox {

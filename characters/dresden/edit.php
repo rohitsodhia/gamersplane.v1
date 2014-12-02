@@ -6,7 +6,7 @@
 				</div>
 				<div id="fpStats" class="tr">
 					<label for="powerLevel" class="textLabel">Power Level</label>
-					<input id="powerLevel" type="text" name="powerLevel" maxlength="2" value="<?=$this->getPowerLevel()?>">
+					<input id="powerLevel" type="text" name="powerLevel" maxlength="2" value="<?=$this->getPowerLevel()?>" class="width4 alignLeft">
 					<label for="fatePoints" class="textLabel">Fate Points</label>
 					<input id="fatePoints" type="text" name="fatePoints[current]" maxlength="2" value="<?=$this->getFatePoints('current')?>">
 					<label for="refresh" class="textLabel">Refresh</label>
@@ -80,13 +80,21 @@
 	$stresses = $this->getStress();
 	foreach ($stresses as $stressType => $stress) {
 ?>
-							<div id="<?=$stressType?>Stress" class="hbdMargined stress">
-								<label class="leftLabel"><?=ucwords($stressType)?> Stress</label>
-								<select name="stress[<?=$stressType?>]">
-<?		for ($count = 0; $count <= 8; $count++) { ?>
-									<option<?=$this->getStress($stressType) == $count?' selected="selected"':''?>><?=$count?></option>
+							<div id="<?=$stressType?>Stress" class="stress hbdMargined" data-type="<?=$stressType?>">
+								<div class="type"><span><?=ucwords($stressType)?> Stress</span> <a href="" class="add">[+]</a><a href="" class="remove">[-]</a></div>
+								<input type="hidden" name="stressCap[<?=$stressType?>]" value="<?=sizeof($stress)?>">
+								<div class="track">
+									<div class="labels clearfix">
+<?		for ($count = 1; $count <= sizeof($stress); $count++) { ?>
+										<label for="stress_<?=$stressType?>_<?=$count?>"><?=$count?></label>
 <?		} ?>
-								</select>
+									</div>
+									<div class="checkboxes clearfix">
+<?		for ($count = 1; $count <= sizeof($stress); $count++) { ?>
+										<div><input id="stress_<?=$stressType?>_<?=$count?>" type="checkbox" name="stresses[<?=$stressType?>][<?=$count?>]"<?=$stress[$count]?' checked="checked"':''?>></div>
+<?		} ?>
+									</div>
+								</div>
 							</div>
 <?	} ?>
 						</div>

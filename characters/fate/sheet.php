@@ -55,11 +55,14 @@
 ?>
 						<div id="<?=$stressType?>Stress" class="hbdMargined">
 							<h3><span><?=ucwords($stressType)?> Stress</span></h3>
-							<div class="track">
-<?		for ($count = 1; $count <= $stress['total']; $count++) { ?>
-								<div class="stressBox">
-									<div class="prettyCheckbox<? if ($stress['current'] == $count) echo ' checked'?>"></div> <span><?=$count?></span>
-								</div>
+							<div class="labels clearfix">
+<?		foreach ($stress as $key => $value) { ?>
+								<label><?=$key?></label>
+<?		} ?>
+							</div>
+							<div class="track clearfix">
+<?		foreach ($stress as $key => $value) { ?>
+								<div><div class="prettyCheckbox<? if ($value == 1) echo ' checked'?>"></div></div>
 <?		} ?>
 							</div>
 						</div>

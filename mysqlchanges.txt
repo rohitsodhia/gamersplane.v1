@@ -1,1 +1,0 @@
-INSERT INTO systems SET shortName = 'dresden', fullName = 'Dresden Files RPG', enabled = 1;

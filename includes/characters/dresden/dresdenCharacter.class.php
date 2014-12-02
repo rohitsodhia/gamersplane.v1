@@ -4,11 +4,12 @@
 
 		protected $template = '';
 		protected $fatePoints = array('current' => 3, 'refresh' => 0, 'adjustedRefresh' => 0);
-		protected $powerLevel = 0;
+		protected $powerLevel = '';
 		protected $phases = array();
 		protected $skillCap = 0;
 		protected $skillPoints = array('spent' => 0, 'available' => 0);
-		protected $stress = array('physical' => 0, 'mental' => 0, 'social' => 0);
+		protected $maxStress = 8;
+		protected $stresses = array('physical' => array(1 => 0, 0), 'mental' => array(1 => 0, 0), 'social' => array(1 => 0, 0));
 
 		public function setTemplate($template) {
 			$this->template = $template;
@@ -19,7 +20,7 @@
 		}
 
 		public function setPowerLevel($powerLevel) {
-			$this->powerLevel = intval($powerLevel);
+			$this->powerLevel = $powerLevel;
 		}
 
 		public function getPowerLevel() {
@@ -97,18 +98,6 @@
 			}
 		}
 
-		public function setStress($type, $value) {
-			if (in_array($type, array('physical', 'mental', 'social')) && intval($value) >= 0)
-				$this->stress[$type] = intval($value);
-			else return false;
-		}
-
-		public function getStress($type = null) {
-			if ($type == null) return $this->stress;
-			elseif (in_array($type, array('physical', 'mental', 'social'))) return $this->stress[$type];
-			else return false;
-		}
-
 		public function save($bypass = false) {
 			global $mysql;
 			$data = $_POST;
@@ -148,7 +137,11 @@
 					foreach ($data['skills'] as $skill) $this->addSkill($skill);
 				}
 
-				foreach (array('physical', 'mental', 'social') as $stressType) $this->setStress($stressType, $data['stress'][$stressType]);
+				foreach ($this->stresses as $type => $stress) {
+					$this->setStressBoxes($type, $data['stressCap'][$type]);
+					for ($count = 0; $count <= $data['stressCap'][$type]; $count++) 
+						if (isset($data['stresses'][$type][$count])) $this->setStress($type, $count, 1);
+				}
 
 				$this->setConsequences($data['consequences']);
 

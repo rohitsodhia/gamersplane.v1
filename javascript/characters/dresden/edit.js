@@ -33,4 +33,25 @@ $(function() {
 		}
 	}
 	setupItemized($('#skills'));
+
+	$('#stress .type a').click(function (e) {
+		e.preventDefault();
+		$labels = $(this).parent().siblings('.track').children('.labels');
+		$checkboxes = $labels.siblings('.checkboxes');
+		numBoxes = $labels.find('label').length;
+		stressType = $labels.parent().data('type');
+		if ($(this).hasClass('add')) {
+			if (numBoxes == 8) return false;
+			numBoxes++;
+			$stressBox = $('<div><input id="stress_' + stressType + '_' + numBoxes + '" type="checkbox" name="stresses[' + stressType + '][' + numBoxes + ']"></div>');
+			$labels.append('<label for="stress_' + stressType + '_' + numBoxes + '">' + numBoxes + '</label>')
+			$stressBox.appendTo($checkboxes).find('input[type="checkbox"]').prettyCheckbox();
+		} else {
+			if (numBoxes == 1) return false;
+			numBoxes--
+			$labels.children('label').last().remove();
+			$checkboxes.children('div').last().remove();
+		}
+		$checkboxes.parent().siblings('input[type="hidden"]').val(numBoxes);
+	});
 });

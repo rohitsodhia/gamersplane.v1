@@ -6,7 +6,7 @@
 			</div>
 			<div id="fpStats" class="tr">
 				<label class="textLabel">Power Level</label>
-				<div><?=$this->getPowerLevel()?></div>
+				<div class="width4"><?=$this->getPowerLevel()?></div>
 				<label class="textLabel">Fate Points</label>
 				<div><?=$this->getFatePoints('current')?></div>
 				<label class="textLabel">Refresh</label>
@@ -79,9 +79,20 @@
 	$stresses = $this->getStress();
 	foreach ($stresses as $stressType => $stress) {
 ?>
-							<div id="<?=$stressType?>Stress" class="tr">
-								<label class="leftLabel"><?=ucwords($stressType)?> Stress</label>
-								<div><?=$this->getStress($stressType)?></div>
+							<div id="<?=$stressType?>Stress" class="stress hbdMargined">
+								<div class="type"><?=ucwords($stressType)?> Stress</div>
+								<div class="track">
+									<div class="labels clearfix">
+<?		foreach ($stress as $key => $value) { ?>
+										<label><?=$key?></label>
+<?		} ?>
+									</div>
+									<div class="checkboxes clearfix">
+<?		foreach ($stress as $key => $value) { ?>
+										<div><div class="prettyCheckbox<? if ($value == 1) echo ' checked'?>"></div></div>
+<?		} ?>
+									</div>
+								</div>
 							</div>
 <?	} ?>
 						</div>

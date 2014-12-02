@@ -9,7 +9,8 @@
 		protected $skills = array();
 		protected $extras = '';
 		protected $stunts = array();
-		protected $stress = array('physical' => array('total' => 2, 'current' => 0), 'mental' => array('total' => 2, 'current' => 0));
+		protected $maxStress = 4;
+		protected $stresses = array('physical' => array(1 => 0, 0), 'mental' => array(1 => 0, 0));
 		protected $consequences;
 
 		public function setFatePoints($key, $value) {
@@ -156,17 +157,24 @@
 			return $this->injuries;
 		}
 
-		public function setStress($type, $key, $value) {
-			if (in_array($type, array('physical', 'mental')) && (($key == 'total' && intval($value) >= 2) || ($key == 'current' && intval($value) >= 0)))
-				$this->stress[$type][$key] = intval($value);
+		public function setStressBoxes($type, $numBoxes = 2) {
+			$numBoxes = intval($numBoxes);
+			if (in_array($type, array_keys($this->stresses)) && $numBoxes > 2 && $numBoxes <= $this->maxStress) {
+				$this->stresses[$type] = array();
+				for ($count = 1; $count <= $numBoxes; $count++) $this->stresses[$type][$count] = 0;
+			}
+		}
+
+		public function setStress($type, $key, $value = 0) {
+			if (in_array($type, array_keys($this->stresses)) && array_key_exists($key, $this->stresses[$type]) && (in_array($value, array(0, 1)))) $this->stresses[$type][$key] = $value;
 			else return false;
 		}
 
 		public function getStress($type = null, $key = null) {
-			if ($type == null) return $this->stress;
-			elseif (in_array($type, array('physical', 'mental'))) {
-				if ($key == null) return $this->stress[$type];
-				elseif (in_array($key, array('total', 'current'))) return $this->stress[$type][$key];
+			if ($type == null) return $this->stresses;
+			elseif (in_array($type, array_keys($this->stresses))) {
+				if ($key == null) return $this->stresses[$type];
+				elseif (in_array($key, in_array($key, $this->stresses[$type]))) return $this->stresses[$type][$key];
 			} else return false;
 		}
 
@@ -207,10 +215,11 @@
 					$this->addStunt($stuntInfo);
 				} }
 
-				$this->setStress('physical', 'total', $data['stress']['physical']['total']);
-				$this->setStress('physical', 'current', $data['stress']['physical']['current']);
-				$this->setStress('mental', 'total', $data['stress']['mental']['total']);
-				$this->setStress('mental', 'current', $data['stress']['mental']['current']);
+				foreach ($this->stresses as $type => $stress) {
+					$this->setStressBoxes($type, $data['stressCap'][$type]);
+					for ($count = 0; $count <= $data['stressCap'][$type]; $count++) 
+						if (isset($data['stresses'][$type][$count])) $this->setStress($type, $count, 1);
+				}
 
 				$this->setConsequences($data['consequences']);
 

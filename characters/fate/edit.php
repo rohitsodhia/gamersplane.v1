@@ -45,14 +45,17 @@
 	$stresses = $this->getStress();
 	foreach ($stresses as $stressType => $stress) {
 ?>
-							<div id="<?=$stressType?>Stress" class="hbdMargined">
+							<div id="<?=$stressType?>Stress" class="hbdMargined" data-type="<?=$stressType?>">
 								<h3><span><?=ucwords($stressType)?> Stress</span> <a href="" class="add">[ + ]</a><a href="" class="remove">[ - ]</a></h3>
-								<div class="track">
-									<input type="hidden" name="stress[<?=$stressType?>][total]" value="<?=$stress['total']?>">
-<?		for ($count = 0; $count <= $stress['total']; $count++) { ?>
-									<div class="stressBox">
-										<input type="radio" name="stress[<?=$stressType?>][current]" value="<?=$count?>"<? if ($stress['current'] == $count) echo ' checked="checked"'?>> <span><?=$count?></span>
-									</div>
+								<input type="hidden" name="stressCap[<?=$stressType?>]" value="<?=sizeof($stress)?>">
+								<div class="labels clearfix">
+<?		for ($count = 1; $count <= sizeof($stress); $count++) { ?>
+									<label for="stress_<?=$stressType?>_<?=$count?>"><?=$count?></label>
+<?		} ?>
+								</div>
+								<div class="track clearfix">
+<?		for ($count = 1; $count <= sizeof($stress); $count++) { ?>
+									<div><input id="stress_<?=$stressType?>_<?=$count?>" type="checkbox" name="stresses[<?=$stressType?>][<?=$count?>]"<?=$stress[$count]?' checked="checked"':''?>></div>
 <?		} ?>
 								</div>
 							</div>
