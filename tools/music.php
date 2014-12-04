@@ -1,11 +1,5 @@
 <?
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
-
-	if ($loggedIn) {
-		$checkPrivilage = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage = 'manageMusic'");
-		if ($checkPrivilage->rowCount()) $manageMusic = true;
-		else $manageMusic = false;
-	} else $manageMusic = false;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Music and Clips</h1>
@@ -50,8 +44,7 @@
 		if (isset($_GET['filter'], $_GET['lyrics']['has'])) $filter['lyrics'] = true;
 		elseif (isset($_GET['filter'], $_GET['lyrics']['none'])) $filter['lyrics'] = false;
 	}
-	if ($manageMusic) $result = $mongo->music->find($filter)->sort(array('approved' => 1, 'genres' => 1, 'title' => 1));
-	else $result = $mongo->music->find(array_merge($filter, array('approved' => true)))->sort(array('genres' => 1, 'title' => 1));
+	$result = $mongo->music->find(array_merge($filter, array('approved' => true)))->sort(array('genres' => 1, 'title' => 1));
 	if (sizeof($result)) {
 ?>
 			<ul class="hbAttachedList">

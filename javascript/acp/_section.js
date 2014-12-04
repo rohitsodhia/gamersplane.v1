@@ -56,4 +56,34 @@ $(function () {
 			});
 		});
 	}
+
+	if ($('#page_acp_music').length) {
+		$editForm = $('#editMusicMaster');
+		$('.manageSong a').click(function (e) {
+			e.preventDefault();
+
+			var $link = $(this), action = $link.text().toLowerCase();
+			if (action == 'delete') $link.hide().siblings('.confirmDelete').show();
+			else if (action == 'deny') $link.parent().hide().siblings('.delete').show();
+			else if (action == 'edit') {
+				$link.closest('.songDetails').after($editForm.clone(true).removeAttr('id'));
+			} else {
+				if (action == 'confirm') action = 'delete';
+				$.post('/acp/process/manageMusic/', { modal: true, mongoID: $link.closest('li').data('id'), action: action }, function (data) {
+					if (data == 'Approve' || data == 'Unapprove') $link.text(data).closest('li').toggleClass('unapproved');
+					else if (data == 'deleted') $link.closest('li').remove();
+				});
+			}
+		});
+		$('form').submit(function (e) {
+			e.preventDefault();
+
+			
+
+			$.post('/acp/process/manageMusic/', { modal: true, mongoID: $link.closest('li').data('id'), action: 'edit' }, function (data) {
+				if (data == 'Approve' || data == 'Unapprove') $link.text(data).closest('li').toggleClass('unapproved');
+				else if (data == 'deleted') $link.closest('li').remove();
+			});
+		})
+	}
 });

@@ -845,30 +845,31 @@ input[type="text"].placeholder {
 	margin-right: 0;
 }
 
-.hbAttachedList {
+.hbAttachedList, .prettyList {
+	margin-left: 0;
 	list-style: none;
-}
 
-.hbAttachedList li {
-	padding: 8px 8px;
-}
+	li {
+		padding: 8px 8px;
+	}
 
-.hbAttachedList > li:hover {
-	padding: 7px 7px;
-	border: 1px solid #CCC;
-	background: #EEE;
+	& > li:hover {
+		padding: 7px 7px;
+		border: 1px solid #CCC;
+		background: #EEE;
+	}
+
+	&.noHover > li:hover, &.noHover > li:first-child:hover {
+		padding: inherit;
+		border: none;
+		background: none;
+	}
 }
 
 .hbAttachedList > li:first-child:hover {
 	padding: 8px 7px 7px;
 	border-top: 0;
 	background: #EEE;
-}
-
-.hbAttachedList.noHover > li:hover, .hbAttachedList.noHover > li:first-child:hover {
-	padding: inherit;
-	border: none;
-	background: none;
 }
 
 /* ----------------------------------------------------------------------------------------------*/

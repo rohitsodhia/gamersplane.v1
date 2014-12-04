@@ -1,5 +1,10 @@
 		<div id="acpMenu" class="sideWidget left"><ul>
-<?	if (in_array('autocomplete', $acpPermissions) || in_array('all', $acpPermissions)) { ?>
+<?	if (in_array('music', $acpPermissions) || in_array('all', $acpPermissions)) { ?>
+			<li><a href="/acp/music/">Manage Music</a></li>
+<?
+	}
+	if (in_array('autocomplete', $acpPermissions) || in_array('all', $acpPermissions)) {
+?>
 			<li><a href="/acp/autocomplete/">Manage Autocomplete</a></li>
 <?
 	}

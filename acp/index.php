@@ -10,6 +10,7 @@
 		<div class="mainColumn right">
 			<h1 class="headerbar">Administrative Control Panel</h1>
 			<ul class="hbMargined">
+				<li><a href="/acp/music/">Manage Music</a></li>
 				<li><a href="/acp/autocomplete/">Manage Autocomplete</a></li>
 				<li><a href="/acp/faqs/">Manage FAQs</a></li>
 			</div>

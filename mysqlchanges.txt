@@ -1,0 +1,2 @@
+INSERT INTO dispatch SET url = 'acp/music/', pageID = 'acp_music', file = 'acp/music.php', title = 'Site ACP - Manage Music';
+INSERT INTO dispatch SET url = 'acp/process/manageMusic/', file = 'acp/process/manageMusic.php';
