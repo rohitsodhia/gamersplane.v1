@@ -143,9 +143,54 @@
 }
 
 #page_acp_music {
-	#editMusicMaster {
+	.mainColumn > #editMusicMaster {
 		visibility: hidden;
 		position: absolute;
+	}
+
+	form {
+		margin-top: .5em;
+		padding: 3px 8px;
+		border: 1px solid #666;
+		-webkit-border-radius: 6px;
+		-moz-border-radius: 6px;
+		border-radius: 6px;
+		background: #EEE;
+
+		.pRow > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		label {
+			width: 80px;
+		}
+
+		input[type="text"] {
+			width: 350px;
+		}
+
+		#genres > div > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		#genres > div {
+			width: 150px;
+		}
+
+		#genres label {
+			width: auto;
+		}
+
+		#notesRow > * {
+			vertical-align: top;
+		}
+
+		textarea {
+			width: 350px;
+			height: 6.1em;
+		}
 	}
 
 	.unapproved {

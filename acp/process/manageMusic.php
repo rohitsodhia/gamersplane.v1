@@ -18,6 +18,9 @@
 			else header('Location: /acp/music/');
 		}
 	} elseif ($action == 'edit') {
-
+		$data = $_POST;
+		$data['genres'] = array_keys($data['genre']);
+		unset($data['mongoID'], $data['action'], $data['genre'], $data['modal'], $data['add']);
+		$mongo->music->update(array('_id' => $_id), array('$set' => $data));
 	}
 ?>

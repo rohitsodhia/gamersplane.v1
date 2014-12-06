@@ -58,15 +58,47 @@ $(function () {
 	}
 
 	if ($('#page_acp_music').length) {
-		$editForm = $('#editMusicMaster');
+		var $mainColumn = $('.mainColumn'), $editForm = $('#editMusicMaster');
+		$editForm.ajaxForm({
+			beforeSubmit: function (arr, $form) {
+				var error = false;
+				$form.find('input[type="text"]').each(function () {
+					if ($(this).val().length == 0) error = true;
+				});
+				if (error) return false;
+				error = true;
+				$form.find('input[type="checkbox"]').each(function () {
+					if ($(this).val() != 0 && $(this).attr('name').length) error = false;
+				});
+				if (error) return false;
+			},
+			success: function (data) {
+				document.location.reload();
+			}
+		});
 		$('.manageSong a').click(function (e) {
 			e.preventDefault();
 
-			var $link = $(this), action = $link.text().toLowerCase();
+			var $link = $(this), action = $link.text().toLowerCase(), $li = $link.closest('li');
 			if (action == 'delete') $link.hide().siblings('.confirmDelete').show();
 			else if (action == 'deny') $link.parent().hide().siblings('.delete').show();
 			else if (action == 'edit') {
-				$link.closest('.songDetails').after($editForm.clone(true).removeAttr('id'));
+				$link.closest('.songDetails').after($editForm);
+				$editForm.find('#mongoID').val($li.data('id'));
+				$editForm.find('#url').val($li.find('.song').attr('href'));
+				$editForm.find('#title').val($li.find('.song').text());
+				$editForm.find('input[type=radio]').prop('checked', false);
+				if ($li.find('.song img').length) $editForm.find('#hasLyrics').prop('checked', true);
+				else $editForm.find('#noLyrics').prop('checked', true);
+				$editForm.find('.prettyRadio').each(syncRadio);
+				genres = $li.find('.genres').text().split(',');
+				for (i in genres) genres[i] = genres[i].trim();
+				$editForm.find('#genres label').each(function () {
+					if ($.inArray($(this).text(), genres) != -1) $(this).siblings('.prettyCheckbox').find('input').prop('checked', true);
+					else $(this).siblings('.prettyCheckbox').find('input').prop('checked', false);
+				});
+				$editForm.find('.prettyCheckbox').each(syncRadio);
+				$editForm.find('textarea').val($li.find('.notes').html());
 			} else {
 				if (action == 'confirm') action = 'delete';
 				$.post('/acp/process/manageMusic/', { modal: true, mongoID: $link.closest('li').data('id'), action: action }, function (data) {
@@ -75,15 +107,5 @@ $(function () {
 				});
 			}
 		});
-		$('form').submit(function (e) {
-			e.preventDefault();
-
-			
-
-			$.post('/acp/process/manageMusic/', { modal: true, mongoID: $link.closest('li').data('id'), action: 'edit' }, function (data) {
-				if (data == 'Approve' || data == 'Unapprove') $link.text(data).closest('li').toggleClass('unapproved');
-				else if (data == 'deleted') $link.closest('li').remove();
-			});
-		})
 	}
 });
