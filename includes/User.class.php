@@ -128,6 +128,8 @@
 		}
 
 		public function setMetaAutoload($metaKey, $autoload = 0) {
+			global $mysql;
+			
 			if ($autoload != 1) $autoload = 0;
 			$updateAutoload = $mysql->prepare("UPDATE usermeta SET autoload = {$autoload} WHERE userID = {$this->userID} AND metaKey = :metaKey");
 			$updateAutoload->bindValue(':metaKey', $metaKey);
