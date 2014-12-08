@@ -1,5 +1,9 @@
 <?
-	$currentUser->getAllUsermeta();
+	if (isset($pathOptions[0]) && intval($pathOptions[0]) && $currentUser->checkACP('users')) {
+		$user = new User(intval($pathOptions[0]));
+		if (!$user->userID) { header('Location: /ucp/'); exit; }
+	} else $user = $currentUser;
+	$user->getAllUsermeta();
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">User Control Panel</h1>
@@ -29,8 +33,8 @@
 				<label>Avatar</label>
 				<div>
 					<div id="avatarDisp">
-						<img src="<?=$currentUser->getAvatar()?>">
-<?	if ($currentUser->getAvatar(true)) { ?>
+						<img src="<?=$user->getAvatar()?>">
+<?	if ($user->getAvatar(true)) { ?>
 						<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
 <?	} ?>
 					</div>
@@ -40,17 +44,17 @@
 			</div>
 <!--			<div class="tr">
 				<label>Show Avatars?</label>
-				<div><input type="checkbox" name="showAvatars"<?=$currentUser->showAvatars == 1?' checked="checked"':''?>></div>
+				<div><input type="checkbox" name="showAvatars"<?=$user->showAvatars == 1?' checked="checked"':''?>></div>
 			</div>-->
 			<div class="tr">
 				<label>Gender</label>
-				<div><input type="radio" name="gender" value="m"<?=$currentUser->gender == 'm'?' checked="checked"':''?>> Male <input type="radio" name="gender" value="f"<?=$currentUser->gender == 'f'?' checked="checked"':''?>> Female <input type="radio" name="gender" value="n"<?=$currentUser->gender == ''?' checked="checked"':''?>> Don't display</div>
+				<div><input type="radio" name="gender" value="m"<?=$user->gender == 'm'?' checked="checked"':''?>> Male <input type="radio" name="gender" value="f"<?=$user->gender == 'f'?' checked="checked"':''?>> Female <input type="radio" name="gender" value="n"<?=$user->gender == ''?' checked="checked"':''?>> Don't display</div>
 			</div>
 			<div class="tr">
 				<label>Birthday</label>
 				<div>
 <?
-	$bdayParts = explode('-', $currentUser->birthday);
+	$bdayParts = explode('-', $user->birthday);
 ?>
 					<span>Month</span> <select name="month">
 <?	for ($count = 1; $count <= 12; $count++) echo "						<option".(intval($bdayParts[1]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
@@ -63,28 +67,28 @@
 			</div>
 			<div class="tr">
 				<label>Show Age?</label>
-				<div><input type="checkbox" name="showAge"<?=$currentUser->showAge == 1?' checked="checked"':''?>></div>
+				<div><input type="checkbox" name="showAge"<?=$user->showAge == 1?' checked="checked"':''?>></div>
 				<div class="explanation">Only your age will be shown, not your full birthday.</div>
 			</div>
 			<div class="tr">
 				<label>Location</label>
-				<div><input type="text" name="location" value="<?=printReady($currentUser->location)?>"></div>
+				<div><input type="text" name="location" value="<?=printReady($user->location)?>"></div>
 			</div>
 			<div class="tr">
 				<label>Twitter</label>
-				<div><input type="text" name="twitter" value="<?=printReady($currentUser->twitter)?>"></div>
+				<div><input type="text" name="twitter" value="<?=printReady($user->twitter)?>"></div>
 			</div>
 			<div class="tr">
 				<label>Game Stream (Twitch, etc.)</label>
-				<div><input type="text" name="stream" value="<?=printReady($currentUser->stream)?>"></div>
+				<div><input type="text" name="stream" value="<?=printReady($user->stream)?>"></div>
 			</div>
 			<div class="tr">
 				<label>What games are you into?</label>
-				<div><input id="games" type="text" name="games" value="<?=printReady($currentUser->games)?>"></div>
+				<div><input id="games" type="text" name="games" value="<?=printReady($user->games)?>"></div>
 			</div>
 			<div class="tr">
 				<label>Recieve new game emails?</label>
-				<div><input type="radio" name="newGameMail" value="1"<?=$currentUser->newGameMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="newGameMail" value="0"<?=$currentUser->newGameMail == 0?' checked="checked"':''?>> No</div>
+				<div><input type="radio" name="newGameMail" value="1"<?=$user->newGameMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="newGameMail" value="0"<?=$user->newGameMail == 0?' checked="checked"':''?>> No</div>
 			</div>
 			<div class="tr submitDiv">
 				<button type="submit" name="submit" class="fancyButton">Save</button>
@@ -94,11 +98,11 @@
 		<form method="post" action="/ucp/process/changeInfo" class="section_security hideDiv">
 			<div class="tr">
 				<label>User Since</label>
-				<div class="convertTZ"><?=date('F j, Y H:i a', strtotime($currentUser->joinDate))?></div>
+				<div class="convertTZ"><?=date('F j, Y H:i a', strtotime($user->joinDate))?></div>
 			</div>
 			<div class="tr">
 				<label>Email Address</label>
-				<div><input type="text" name="email" value="<?=$currentUser->email?>"></div>
+				<div><input type="text" name="email" value="<?=$user->email?>"></div>
 			</div>
 <!--			<div class="tr">
 				<label>Change Email Address</label>
@@ -124,9 +128,9 @@
 		<form id="changeOptions" method="post" action="/ucp/process/changeForumOptions" class="section_forumOptions hideDiv">
 			<div id="postSide" class="tr">
 				<label>Post Side</label>
-				<div><input type="radio" name="postSide" value="r"<?=$currentUser->postSide == 'r'?' checked="checked"':''?>> Right</div>
-				<div><input type="radio" name="postSide" value="l"<?=$currentUser->postSide == 'l'?' checked="checked"':''?>> Left</div>
-				<div><input type="radio" name="postSide" value="c"<?=$currentUser->postSide == 'c'?' checked="checked"':''?>> Conversation</div>
+				<div><input type="radio" name="postSide" value="r"<?=$user->postSide == 'r'?' checked="checked"':''?>> Right</div>
+				<div><input type="radio" name="postSide" value="l"<?=$user->postSide == 'l'?' checked="checked"':''?>> Left</div>
+				<div><input type="radio" name="postSide" value="c"<?=$user->postSide == 'c'?' checked="checked"':''?>> Conversation</div>
 			</div>
 			<div class="tr submitDiv">
 				<button type="submit" name="submit" class="fancyButton">Save</button>

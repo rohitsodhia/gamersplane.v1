@@ -8,7 +8,12 @@
 		<div class="mainColumn right">
 			<h1 class="headerbar">Administrative Control Panel</h1>
 			<ul class="hbMargined">
-<?	if ($currentUser->checkACP('music', false)) { ?>
+<?	if ($currentUser->checkACP('users', false)) { ?>
+				<li><a href="/acp/users/">Manage Users</a></li>
+<?
+	}
+	if ($currentUser->checkACP('music', false)) {
+?>
 				<li><a href="/acp/music/">Manage Music</a></li>
 <?
 	}

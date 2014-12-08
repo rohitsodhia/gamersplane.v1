@@ -24,12 +24,13 @@
 			if ($userInfo->rowCount()) {
 				$userInfo = $userInfo->fetch();
 				foreach ($userInfo as $key => $value) $this->$key = $value;
-			}
-			$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
-			foreach ($usermeta as $eMeta) {
-				if ($eMeta['metaKey'] == 'acpPermissions') $this->acpPermissions = unserialize($eMeta['metaValue']);
-				else $this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
-			}
+
+				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
+				foreach ($usermeta as $eMeta) {
+					if ($eMeta['metaKey'] == 'acpPermissions') $this->acpPermissions = unserialize($eMeta['metaValue']);
+					else $this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+				}
+			} else return false;
 		}
 
 		public function __get($var) {
@@ -102,7 +103,7 @@
 		public function getAllUsermeta() {
 			global $mysql;
 
-			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} WHERE autoload = 0");
+			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 0");
 			foreach ($metaValues as $metas) {
 				if (is_string($metas['metaKey']) && strlen($metas['metaKey']) > 4 && substr($metas['metaKey'], 0, 2) == 'a:') $metas['metaKey'] = unserialize($metas['metaKey']);
 				$this->usermeta[$metas['metaKey']] = $metas['metaValue'];
