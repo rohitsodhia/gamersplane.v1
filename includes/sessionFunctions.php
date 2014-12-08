@@ -7,6 +7,9 @@
 	}
 	
 	function checkLogin($redirect = 1) {
+		global $currentUser;
+		if (!isset($currentUser)) $currentUser = new User();
+		
 		if (isset($_COOKIE['loginHash'])) {
 			global $mysql;
 
@@ -16,7 +19,6 @@
 
 			if ($userCheck->rowCount()) {
 				$userID = $userCheck->fetchColumn();
-				global $currentUser;
 				$currentUser = new User($userID);
 				if ($currentUser->getLoginHash() == $loginHash) {
 					$currentUser->generateLoginCookie();
