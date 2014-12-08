@@ -1,14 +1,14 @@
 		<div id="acpMenu" class="sideWidget left"><ul>
-<?	if (in_array('music', $acpPermissions) || in_array('all', $acpPermissions)) { ?>
+<?	if ($currentUser->checkACP('music', false)) { ?>
 			<li><a href="/acp/music/">Manage Music</a></li>
 <?
 	}
-	if (in_array('autocomplete', $acpPermissions) || in_array('all', $acpPermissions)) {
+	if ($currentUser->checkACP('autocomplete', false)) {
 ?>
 			<li><a href="/acp/autocomplete/">Manage Autocomplete</a></li>
 <?
 	}
-	if (in_array('faqs', $acpPermissions) || in_array('all', $acpPermissions)) {
+	if ($currentUser->checkACP('faqs', false)) {
 ?>
 			<li><a href="/acp/faqs/">Manage FAQs</a></li>
 <?	} ?>

@@ -1,8 +1,5 @@
 <?
-	$acpPermissions = $mysql->query("SELECT permission FROM acpPermissions WHERE userID = {$currentUser->userID}");
-	$acpPermissions = $acpPermissions->fetchAll(PDO::FETCH_COLUMN);
-	if (sizeof($acpPermissions) == 0) { header('Location: /'); exit; }
-	elseif (!in_array('autocomplete', $acpPermissions) && !in_array('all', $acpPermissions)) { header('Location: /acp/'); exit; }
+	$currentUser->checkACP('autocomplete');
 
 	$updateName = $mysql->prepare('UPDATE userAddedItems SET name = :name WHERE uItemID = '.intval($_POST['uItemID']));
 	$updateName->bindParam(':name', $_POST['name']);

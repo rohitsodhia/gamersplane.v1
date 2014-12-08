@@ -1,7 +1,7 @@
 <?
 	$currentUser->getAllUsermeta();
+	require_once(FILEROOT.'/header.php');
 ?>
-<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">User Control Panel</h1>
 		
 <?	if ($_GET['updated']) { ?>

@@ -1,0 +1,1 @@
+ALTER TABLE `usermeta` ADD INDEX (`autoload`) ;

@@ -1,10 +1,7 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 
-	$acpPermissions = $mysql->query("SELECT permission FROM acpPermissions WHERE userID = {$currentUser->userID}");
-	$acpPermissions = $acpPermissions->fetchAll(PDO::FETCH_COLUMN);
-	if (sizeof($acpPermissions) == 0) { header('Location: /'); exit; }
-	elseif (!in_array('faqs', $acpPermissions) && !in_array('all', $acpPermissions)) { header('Location: /acp/'); exit; }
+	$currentUser->checkACP('faqs');
 
 	require_once(FILEROOT.'/header.php');
 	require_once(FILEROOT.'/acp/acpSidebar.php');

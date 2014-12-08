@@ -9,6 +9,7 @@
 		protected $activatedOn;
 		protected $timezone;
 		protected $usermeta = array();
+		protected $acpPermissions = null;
 
 		protected $hiddenVars = array('password', 'salt');
 
@@ -25,7 +26,10 @@
 				foreach ($userInfo as $key => $value) $this->$key = $value;
 			}
 			$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
-			foreach ($usermeta as $eMeta) $this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+			foreach ($usermeta as $eMeta) {
+				if ($eMeta['metaKey'] == 'acpPermissions') $this->acpPermissions = unserialize($eMeta['metaValue']);
+				else $this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+			}
 		}
 
 		public function __get($var) {
@@ -89,6 +93,7 @@
 			$metaValue->execute();
 
 			$this->usermeta[$metaKey] = $metaValue->rowCount()?$metaValue->fetchColumn():null;
+			if (is_string($this->usermeta[$metaKey]) && strlen($this->usermeta[$metaKey]) > 4 && substr($this->usermeta[$metaKey], 0, 2) == 'a:') $this->usermeta[$metaKey] = unserialize($this->usermeta[$metaKey]);
 
 			return $this->usermeta[$metaKey];
 		}
@@ -96,8 +101,11 @@
 		public function getAllUsermeta() {
 			global $mysql;
 
-			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID}");
-			foreach ($metaValues as $metas) $this->usermeta[$metas['metaKey']] = $metas['metaValue'];
+			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} WHERE autoload = 0");
+			foreach ($metaValues as $metas) {
+				if (is_string($metas['metaKey']) && strlen($metas['metaKey']) > 4 && substr($metas['metaKey'], 0, 2) == 'a:') $metas['metaKey'] = unserialize($metas['metaKey']);
+				$this->usermeta[$metas['metaKey']] = $metas['metaValue'];
+			}
 
 			return true;
 		}
@@ -109,6 +117,7 @@
 				if ($autoload != 1) $autoload = 0;
 				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue, autoload = {$autoload}");
 				$updateUsermeta->bindValue(':metaKey', $metaKey);
+				if (is_array($metaValue)) $metaValue = serialize($metaValue);
 				$updateUsermeta->bindValue(':metaValue', $metaValue);
 				$updateUsermeta->execute();
 
@@ -129,6 +138,16 @@
 		public function getAvatar($exists = false) {
 			if (file_exists(FILEROOT."/ucp/avatars/{$this->userID}.{$this->avatarExt}")) return $exists?true:"/ucp/avatars/{$this->userID}.{$this->avatarExt}";
 			else return $exists?false:'/ucp/avatars/avatar.png';
+		}
+
+		public function checkACP($role = null, $redirect = true) {
+			if ($role == null && sizeof($this->acpPermissions)) return true;
+			elseif (strlen($role)) {
+				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)))) return false;
+				elseif ($this->acpPermissions == null) { header('Location: /'); exit; }
+				elseif (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)) { header('Location: /acp/'); exit; }
+				else return true;
+			}
 		}
 	}
 ?>
