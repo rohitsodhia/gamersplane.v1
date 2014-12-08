@@ -110,12 +110,11 @@
 			return true;
 		}
 
-		public function updateUsermeta($metaKey, $metaValue, $autoload = 0) {
+		public function updateUsermeta($metaKey, $metaValue) {
 			global $mysql;
 
 			if ($metaValue != null && $metaValue != '') {
-				if ($autoload != 1) $autoload = 0;
-				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue, autoload = {$autoload}");
+				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue ON DUPLICATE KEY UPDATE metaValue = :metaValue");
 				$updateUsermeta->bindValue(':metaKey', $metaKey);
 				if (is_array($metaValue)) $metaValue = serialize($metaValue);
 				$updateUsermeta->bindValue(':metaValue', $metaValue);
@@ -125,6 +124,13 @@
 			} else $this->deleteUsermeta($metaKey);
 
 			return true;
+		}
+
+		public function setMetaAutoload($metaKey, $autoload = 0) {
+			if ($autoload != 1) $autoload = 0;
+			$updateAutoload = $mysql->prepare("UPDATE usermeta SET autoload = {$autoload} WHERE userID = {$this->userID} AND metaKey = :metaKey");
+			$updateAutoload->bindValue(':metaKey', $metaKey);
+			$updateAutoload->execute();
 		}
 
 		public function deleteUsermeta($metaKey) {

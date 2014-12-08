@@ -54,7 +54,8 @@
 
 		$usermeta = array();
 		if ($avatarExt == '') $avatarExt = null;
-		$currentUser->updateUsermeta('avatarExt', $avatarExt, 1);
+		$currentUser->updateUsermeta('avatarExt', $avatarExt);
+		$currentUser->setMetaAutoload('avatarExt', 1);
 
 		$currentUser->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
 		if ($_POST['gender'] == 'n') $gender = '';

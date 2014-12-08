@@ -11,9 +11,12 @@
 		$mysql->query("UPDATE users SET activatedOn = NOW() WHERE userID = {$userID}");
 		$mysql->query("INSERT INTO forums_groupMemberships (userID, groupID) VALUES ({$userID}, 1)");
 		$currentUser->updateUsermeta('enableFilter', 1);
+		$currentUser->setMetaAutoload('enableFilter', 1);
 		$currentUser->updateUsermeta('showAvatars', 1);
+		$currentUser->setMetaAutoload('showAvatars', 1);
 		$currentUser->updateUsermeta('newGameMail', 1);
 		$currentUser->updateUsermeta('postSide', 'r');
+		$currentUser->setMetaAutoload('postSide', 1);
 
 		$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');
 	
