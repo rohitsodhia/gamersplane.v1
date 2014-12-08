@@ -107,7 +107,6 @@
 
 		public function showSkillsEdit() {
 			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				var_dump($skill);
 				$this->skillEditFormat($key + 1, $skill);
 			} } else $this->skillEditFormat();
 		}
