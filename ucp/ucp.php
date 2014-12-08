@@ -29,6 +29,9 @@
 			<span class="section_forumOptions hideDiv">Forum Options</span>
 		</h2>
 		<form id="changeOptions" method="post" action="/ucp/process/changeDetails/" enctype="multipart/form-data" class="section_profile">
+<?	if ($user->userID != $currentUser->userID) { ?>
+			<input type="hidden" name="userID" value="<?=$user->userID?>">
+<?	} ?>
 			<div id="avatar" class="tr">
 				<label>Avatar</label>
 				<div>

@@ -3,7 +3,12 @@
 	$fileUploaded = false;
 	
 	if (isset($_POST['submit'])) {
-		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/{$currentUser->userID}.jpg");
+		if (isset($_POST['userID']) && intval($_POST['userID']) && $currentUser->checkACP('users')) {
+			$user = new User(intval($_POST['userID']));
+			if (!$user->userID) { header('Location: /ucp/'); exit; }
+		} else $user = $currentUser;
+		
+		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/{$user->userID}.jpg");
 		if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
 			$avatarExt = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
 			if ($avatarExt == 'jpeg') $avatarExt = 'jpg';
@@ -36,8 +41,8 @@
 					imagesavealpha($tempColor,true);
 					imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
 					
-					$destination = FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.'.$avatarExt;
-					foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
+					$destination = FILEROOT.'/ucp/avatars/'.$user->userID.'.'.$avatarExt;
+					foreach (glob(FILEROOT.'/ucp/avatars/'.$user->userID.'.*') as $oldFile) unlink($oldFile);
 					if ($avatarExt == 'jpg') imagejpeg($tempColor, $destination, 100);
 					elseif ($avatarExt == 'gif') imagegif($tempColor, $destination);
 					elseif ($avatarExt == 'png') imagepng($tempColor, $destination, 0);
@@ -46,29 +51,29 @@
 					$fileUploaded = true;
 				}
 			} elseif ($avatarExt == 'svg') {
-				foreach (glob(FILEROOT.'/ucp/avatars/'.$currentUser->userID.'.*') as $oldFile) unlink($oldFile);
-				move_uploaded_file($_FILES['avatar']['tmp_name'], FILEROOT."/ucp/avatars/{$currentUser->userID}.svg");
+				foreach (glob(FILEROOT.'/ucp/avatars/'.$user->userID.'.*') as $oldFile) unlink($oldFile);
+				move_uploaded_file($_FILES['avatar']['tmp_name'], FILEROOT."/ucp/avatars/{$user->userID}.svg");
 				$fileUploaded = true;
 			}
 		}
 
 		$usermeta = array();
 		if ($avatarExt == '') $avatarExt = null;
-		$currentUser->updateUsermeta('avatarExt', $avatarExt);
-		$currentUser->setMetaAutoload('avatarExt', 1);
+		$user->updateUsermeta('avatarExt', $avatarExt);
+		$user->setMetaAutoload('avatarExt', 1);
 
-		$currentUser->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
+		$user->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
 		if ($_POST['gender'] == 'n') $gender = '';
 		else $gender = $_POST['gender'] == 'm'?'m':'f';
-		$currentUser->updateUsermeta('gender', $gender);
+		$user->updateUsermeta('gender', $gender);
 		$birthday = intval($_POST['year']).'-'.(intval($_POST['month']) <= 9?'0':'').intval($_POST['month']).'-'.(intval($_POST['day']) <= 9?'0':'').intval($_POST['day']);
-		if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) $currentUser->updateUsermeta('birthday', $birthday);
-		$currentUser->updateUsermeta('showAge', isset($_POST['showAge'])?1:0);
-		$currentUser->updateUsermeta('location', sanitizeString($_POST['location']));
-		$currentUser->updateUsermeta('twitter', sanitizeString($_POST['twitter']));
-		$currentUser->updateUsermeta('stream', sanitizeString($_POST['stream']));
-		$currentUser->updateUsermeta('games', sanitizeString($_POST['games']));
-		$currentUser->updateUsermeta('newGameMail', intval($_POST['newGameMail'])?1:0);
+		if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) $user->updateUsermeta('birthday', $birthday);
+		$user->updateUsermeta('showAge', isset($_POST['showAge'])?1:0);
+		$user->updateUsermeta('location', sanitizeString($_POST['location']));
+		$user->updateUsermeta('twitter', sanitizeString($_POST['twitter']));
+		$user->updateUsermeta('stream', sanitizeString($_POST['stream']));
+		$user->updateUsermeta('games', sanitizeString($_POST['games']));
+		$user->updateUsermeta('newGameMail', intval($_POST['newGameMail'])?1:0);
 
 		header('Location: /ucp/cp/?updated=1');
 	} else header('Location: /user');
