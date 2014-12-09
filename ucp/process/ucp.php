@@ -7,7 +7,7 @@
 			$user = new User(intval($_POST['userID']));
 			if (!$user->userID) { header('Location: /ucp/'); exit; }
 		} else $user = $currentUser;
-		
+
 		if ($_POST['deleteAvatar']) unlink(FILEROOT."/ucp/avatars/{$user->userID}.jpg");
 		if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
 			$avatarExt = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
@@ -75,6 +75,22 @@
 		$user->updateUsermeta('games', sanitizeString($_POST['games']));
 		$user->updateUsermeta('newGameMail', intval($_POST['newGameMail'])?1:0);
 
-		header('Location: /ucp/cp/?updated=1');
+		$errors = '?';
+		$oldPass = $_POST['oldPass'];
+		$password1 = $_POST['password1'];
+		$password2 = $_POST['password2'];
+		if (strlen($password1) && strlen($password2)) {
+			if (!$user->validate($oldPass) || $user->userID != $currentUser->userID) $errors .= 'wrongPass=1&';
+			if ($password1 == $password2) $errors .= 'passMismatch=1&';
+
+			if (strlen($errors) > 1) header('Location: /ucp/cp'.$errors);
+			else $user->updatePassword($password1);
+		}
+
+		if (in_array($_POST['postSide'], array('l', 'r', 'c'))) $postSide = $_POST['postSide'];
+		else $postSide = 'l';
+		$user->updateUsermeta('postSide', $postSide);
+
+		header('Location: /ucp/'.($user->userID != $currentUser->userID?$user->userID.'/':'').($errors == '?'?'?updated=1':$errors));
 	} else header('Location: /user');
 ?>

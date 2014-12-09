@@ -2,7 +2,12 @@
 	</div>
 </div></div>
 <footer<?=$fixedGameMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
-	<a href="/contact">Contact Us</a>
+	<a href="/contact/">Contact Us</a>
+<?		if ($currentUser->checkACP()) { ?>
+	<div class="floatRight">
+		<a href="/acp/">ACP</a>
+	</div>
+<?		} ?>
 </div></footer>
 <?		if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
 <?	} else { ?>
