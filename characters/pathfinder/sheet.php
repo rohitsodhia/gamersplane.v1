@@ -1,12 +1,12 @@
 			<div class="tr labelTR tr-noPadding">
 				<label id="label_name" class="medText">Name</label>
 				<label id="label_race" class="medText">Race</label>
-				<label id="label_size" class="medText">Size</label>
+				<label id="label_size" class="medText">Size Modifier</label>
 			</div>
 			<div class="tr dataTR">
 				<div class="medText"><?=$this->getName()?></div>
 				<div class="medText"><?=$this->getRace()?></div>
-				<div class="medText"><?=$this->getSize()?></div>
+				<div id="size" class="medText"><?=$this->getSize(true)?></div>
 			</div>
 			
 			<div class="tr labelTR">
