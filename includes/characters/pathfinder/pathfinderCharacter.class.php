@@ -29,8 +29,10 @@
 			$this->size = $value;
 		}
 
-		public function getSize() {
-			return $this->size;
+		public function getSize($showSign = false) {
+			$size = $this->size;
+			if ($showSign) $size = showSign($size);
+			return $size;
 		}
 
 		public function setAlignment($value) {
@@ -39,6 +41,13 @@
 
 		public function getAlignment() {
 			return pathfinder_consts::getAlignments($this->alignment);
+		}
+
+		public function getAC($key = null) {
+			if ($key == null) return array_merge(array('total' => array_sum($this->ac) + 10 + $this->size), $this->ac);
+			elseif (array_key_exists($key, $this->ac)) return $this->ac[$key];
+			elseif ($key == 'total') return array_sum($this->ac) + 10 + $this->size;
+			else return false;
 		}
 
 		public function setDamageReduction($value) {
