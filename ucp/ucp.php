@@ -8,6 +8,15 @@
 ?>
 		<h1 class="headerbar">User Control Panel<?=$user->userID != $currentUser->userID?' - '.$user->username:''?></h1>
 		
+<?	if ($formErrors->getErrors('addFAQ')) { ?>
+			<div class="alertBox_error"><ul>
+<?
+		if ($formErrors->checkError('noCategory')) echo "				<li>No category selected.</li>\n";
+		if ($formErrors->checkError('noQuestion')) echo "				<li>No question asked.</li>\n";
+		if ($formErrors->checkError('noAnswer')) echo "				<li>No answer given.</li>\n";
+?>
+			</ul></div>
+<?	} ?>
 <?	if ($_GET['updated']) { ?>
 		<div class="alertBox_success">
 			Account successfully updated!
@@ -125,7 +134,7 @@
 					<div><input id="password1" type="password" name="password1" maxlength="32"></div>
 				</div>
 				<div class="explanation">Password must be between 6-32 characters</div>
-				<div id="passShort" class="<?=$_GET['']?'hideDiv':''?> error">Password too short</div>
+				<div id="passShort" class="<?=$formErrors->checkError('passShort')?'':'hideDiv'?> error">Password too short</div>
 				<div id="passLong" class="hideDiv error">Password too long</div>
 				<div class="tr">
 					<label for="password2">Confirm Password</label>

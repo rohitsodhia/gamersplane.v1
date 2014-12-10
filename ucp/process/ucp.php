@@ -80,10 +80,11 @@
 		$password1 = $_POST['password1'];
 		$password2 = $_POST['password2'];
 		if (strlen($password1) && strlen($password2) ) {
-			if (!$user->validate($oldPass) || $user->userID != $currentUser->userID) $errors .= 'wrongPass=1&';
-			if ($password1 != $password2) $errors .= 'passMismatch=1&';
+			if (!$user->validate($oldPass) || $user->userID != $currentUser->userID) $formErrors->addError('wrongPass');
+			if (strlen($password1) < 6) $formErrors->addError('passShort');
+			if (strlen($password1) < 32) $formErrors->addError('passLong');
+			if ($password1 != $password2) $formErrors->addError('passMismatch');
 
-			if (strlen($errors) > 1) header('Location: /ucp/cp'.$errors);
 			else $user->updatePassword($password1);
 		}
 
