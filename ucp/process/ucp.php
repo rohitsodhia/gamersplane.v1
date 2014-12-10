@@ -79,9 +79,9 @@
 		$oldPass = $_POST['oldPass'];
 		$password1 = $_POST['password1'];
 		$password2 = $_POST['password2'];
-		if (strlen($password1) && strlen($password2)) {
+		if (strlen($password1) && strlen($password2) ) {
 			if (!$user->validate($oldPass) || $user->userID != $currentUser->userID) $errors .= 'wrongPass=1&';
-			if ($password1 == $password2) $errors .= 'passMismatch=1&';
+			if ($password1 != $password2) $errors .= 'passMismatch=1&';
 
 			if (strlen($errors) > 1) header('Location: /ucp/cp'.$errors);
 			else $user->updatePassword($password1);

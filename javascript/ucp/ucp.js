@@ -1,14 +1,15 @@
 $(function () {
-	$('#controls a').click(function (e) {
-		e.preventDefault();
+	$('#password1').blur(function () {
+		passLength = $(this).val().length;
+		if (passLength == 0) return true;
 
-		oldOpen = $('#controls .current').removeClass('current').attr('class');
-		newOpen = $(this).attr('class');
-		$(this).addClass('current');
-
-		$('span.' + oldOpen + ', form.' + oldOpen).hide();
-		$('span.' + newOpen + ', form.' + newOpen).show();
-		wingMargins($('form.' + newOpen + ' .fancyButton')[0]);
-		$('form.' + newOpen + ' .wing').each(setupWings);
-	})
+		if (passLength < 6) $('#passShort').show();
+		else $('#passShort').hide();
+		if (passLength > 32) $('#passLong').show();
+		else $('#passLong').hide();
+	});
+	$('#password2').blur(function () {
+		if ($('#password1').val() != $('#password2').val()) $('#passMismatch').show();
+		else $('#passMismatch').hide();
+	});
 });

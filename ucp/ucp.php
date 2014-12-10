@@ -121,14 +121,17 @@
 				</div>
 <?	} ?>
 				<div class="tr">
-					<label>Change Password</label>
-					<div><input type="password" name="password1" maxlength="32"></div>
+					<label for="password1">Change Password</label>
+					<div><input id="password1" type="password" name="password1" maxlength="32"></div>
 				</div>
 				<div class="explanation">Password must be between 6-32 characters</div>
+				<div id="passShort" class="<?=$_GET['']?'hideDiv':''?> error">Password too short</div>
+				<div id="passLong" class="hideDiv error">Password too long</div>
 				<div class="tr">
-					<label>Confirm Password</label>
-					<div><input type="password" name="password2" maxlength="32"></div>
+					<label for="password2">Confirm Password</label>
+					<div><input id="password2" type="password" name="password2" maxlength="32"></div>
 				</div>
+				<div id="passMismatch" class="hideDiv error">Passwords don't match</div>
 				<div class="tr submitDiv">
 					<button type="submit" name="submit" class="fancyButton">Save</button>
 				</div>
