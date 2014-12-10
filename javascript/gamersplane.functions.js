@@ -131,8 +131,8 @@ function sumRow() {
 
 	var inputTotal = 0;
 	$parent = $(this).closest('.sumRow');
-	$parent.find('input[type="text"]').not('.dontAdd').each(function () { inputTotal += parseInt($(this).val()); });
-	$total.each(function () {
+	$parent.find('input[type="text"]').not('.dontAdd').each(function () { console.log(parseInt($(this).val())); inputTotal += parseInt($(this).val()); });
+	$parent.find('.total').each(function () {
 		var $indivTotal = $(this);
 		var classes = $indivTotal.attr('class').split(/\s+/);
 		var finalTotal = inputTotal;

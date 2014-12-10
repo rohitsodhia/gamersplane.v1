@@ -58,6 +58,24 @@
 			return $this->damageReduction;
 		}
 
+		public function getAttackBonus($key = null, $type = null) {
+			if ($key == null) return $this->attackBonus;
+			elseif ($key == 'total' && $type != null) {
+				$total = 0;
+				foreach ($this->attackBonus as $value) {
+					if (is_array($value) && is_numeric($value[$type])) $total += $value[$type];
+					elseif (is_numeric($value[$type])) $total += $value;
+				}
+				$total += $this->getStatMod($this->attackBonus['stat'][$type], false);
+				$total += $this->size;
+				return $total;
+			} elseif (array_key_exists($key, $this->attackBonus)) {
+				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) return $this->attackBonus[$key][$type];
+				elseif (!is_array($this->attackBonus[$key])) return $this->attackBonus[$key];
+				else return false;
+			} else return false;
+		}
+
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
