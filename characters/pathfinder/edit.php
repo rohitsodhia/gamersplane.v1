@@ -149,7 +149,7 @@
 						</div>
 						<div id="melee" class="tr sumRow">
 							<label class="leftLabel shortText">Melee</label>
-							<span id="meleeTotal" class="shortNum lrBuffer total addStat_<?=$this->getAttackBonus('stat', 'melee')?> addSize"><?=showSign($this->getAttackBonus('total', 'melee'))?></span>
+							<span id="meleeTotal" class="shortNum lrBuffer total add_BAB addStat_<?=$this->getAttackBonus('stat', 'melee')?> addSize"><?=showSign($this->getAttackBonus('total', 'melee'))?></span>
 							<input id="bab" type="text" name="attackBonus[base]" value="<?=$this->getAttackBonus('base')?>" class="lrBuffer">
 							<span class="statSelect lrBuffer">
 								<select name="attackBonus[stat][melee]" class="abilitySelect">
