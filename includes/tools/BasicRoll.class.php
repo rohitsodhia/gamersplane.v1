@@ -10,7 +10,7 @@
 		}
 
 		function parseRolls($diceString) {
-			preg_match_all('/(\d*)d(\d+)([+-]\d+)?/', $diceString, $rolls, PREG_SET_ORDER);
+			preg_match_all('/(\d*)[dD](\d+)([+-]\d+)?/', $diceString, $rolls, PREG_SET_ORDER);
 			if (sizeof($rolls)) {
 				foreach ($rolls as $roll) {
 					if ($roll[1] == '') {
