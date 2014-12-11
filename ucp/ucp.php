@@ -7,6 +7,9 @@
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">User Control Panel<?=$user->userID != $currentUser->userID?' - '.$user->username:''?></h1>
+<?	if ($user->userID != $currentUser->userID) { ?>
+		<div id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
+<?	} ?>
 		
 <?	if ($formErrors->getErrors('addFAQ')) { ?>
 			<div class="alertBox_error"><ul>
@@ -128,6 +131,7 @@
 					<label>Old Password</label>
 					<div><input type="password" name="oldPass" maxlength="16"></div>
 				</div>
+				<div id="wrongPass" class="<?=$formErrors->checkError('wrongPass')?'':'hideDiv'?> error">Your old password is wrong</div>
 <?	} ?>
 				<div class="tr">
 					<label for="password1">Change Password</label>

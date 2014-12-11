@@ -108,4 +108,14 @@ $(function () {
 			}
 		});
 	}
+
+	if ($('#page_acp_users').length) {
+		$('#controls a').click(function (e) {
+			e.preventDefault();
+
+			$.post('/acp/ajax/listUsers/', { show: this.id.substring(9, this.id.length) }, function (data) {
+				$('div.mainColumn ul').html(data);
+			});
+		});
+	}
 });

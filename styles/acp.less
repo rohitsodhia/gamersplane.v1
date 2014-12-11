@@ -149,7 +149,7 @@
 }
 
 #page_acp_music {
-	.mainColumn > #editMusicMaster {
+	.mainColumn > .attachForm {
 		visibility: hidden;
 		position: absolute;
 	}
@@ -235,16 +235,24 @@
 }
 
 #page_acp_users {
+	#controls {
+		margin: 0 8px 1em;
+
+		a {
+			margin-right: 10px;
+		}
+	}
+
 	.mainColumn li {
-		& > * {
+		.info > * {
 			display: inline-block;
 		}
 
-		& > a {
+		.info > a {
 			width: 250px;
 		}
 
-		a {
+		.info a {
 			margin-right: 10px;
 		}
 	}

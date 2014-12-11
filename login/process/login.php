@@ -7,7 +7,7 @@
 		$mysql->setInserts(array('username' => $username, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')));
 		$mysql->stdQuery('insert');
 */		
-		$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = ?');
+		$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = ? AND suspended = 0');
 		$userCheck->execute(array($username));
 		
 		if ($userCheck->rowCount()) {
@@ -17,13 +17,13 @@
 			$currentUser = new User($userID);
 
 			if (!$currentUser->activated() || !$currentUser->validate($password)) {
-				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 0)');
+//				$mysql->query('SELECT userID FROM loginRecords WHERE userID = '.$userID.' AND attemptStamp > SUBTIME(NOW(), "12:00:00")');
+//				if ($mysql->numRows > 5) { header('Location: /login?spammed=1'); exit; }
+				addLoginRecord($currentUser->userID, 0);
 				if (isset($_POST['modal'])) echo '/login/?failed=1';
 				else header('Location: /login/?failed=1');
 			} else {
-				$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');
-//				$mysql->query('SELECT userID FROM loginRecords WHERE userID = '.$userID.' AND attemptStamp > SUBTIME(NOW(), "12:00:00")');
-//				if ($mysql->numRows > 5) { header('Location: /login?spammed=1'); exit; }
+				addLoginRecord($currentUser->userID, 1);
 
 				$currentUser->generateLoginCookie();			
 				
