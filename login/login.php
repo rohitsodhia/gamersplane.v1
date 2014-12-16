@@ -1,6 +1,11 @@
 <?
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
+<?	if ($_GET['passWipe']) { ?>
+		<div class="alertBox_info">
+			To upgrade security, I've had to reset everyone's password. You can check the <a href="/forums/3/">Announcements</a> forum for more details, but to log in again, please click login at the top right, and click <u>Forgot your Password?</u>. Follow the steps and you'll be good to go!
+		</div>
+<?	} ?>
 		<div class="alertBox_success<?=!isset($_GET['resetSuccess'])?' hideDiv':''?>"><ul>
 			<li>Password changed!</li>
 		</ul></div>

@@ -20,8 +20,13 @@
 //				$mysql->query('SELECT userID FROM loginRecords WHERE userID = '.$userID.' AND attemptStamp > SUBTIME(NOW(), "12:00:00")');
 //				if ($mysql->numRows > 5) { header('Location: /login?spammed=1'); exit; }
 				addLoginRecord($currentUser->userID, 0);
-				if (isset($_POST['modal'])) echo '/login/?failed=1';
-				else header('Location: /login/?failed=1');
+				if (strlen($currentUser->password)) {
+					if (isset($_POST['modal'])) echo '/login/?passWipe=1';
+					else header('Location: /login/?failed=1');
+				} else {
+					if (isset($_POST['modal'])) echo '/login/?failed=1';
+					else header('Location: /login/?failed=1');
+				}
 			} else {
 				addLoginRecord($currentUser->userID, 1);
 
