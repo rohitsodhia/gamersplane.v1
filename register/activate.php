@@ -18,6 +18,8 @@
 		$currentUser->updateUsermeta('postSide', 'r');
 		$currentUser->setMetaAutoload('postSide', 1);
 
+		addUserHistory($userID, 'activated');
+
 		$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');
 	
 		$currentUser->generateLoginCookie();

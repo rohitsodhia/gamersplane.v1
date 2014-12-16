@@ -270,7 +270,7 @@ em {
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Links */
-a, a:visited, a:active, .fauxLink {
+a, a:visited, a:active, .fauxLink, button.normal, button.normal:visited, button.normal:active {
 	text-decoration: none;
 	color: #B00;
 	outline: none;
@@ -374,6 +374,12 @@ button, button:visited, button:active, a.button, a.button:visited, a.button:acti
 button:hover, a.button:hover {
 /*	color: #06D;*/
 	text-shadow: 0 0 10px rgba(255, 0, 0, 1);
+}
+
+button.normal, button.normal:visited, button.normal:active {
+	font-family: inherit;;
+	font-size: 1em;
+	line-height: 1em;	
 }
 
 .fancyButton {

@@ -64,6 +64,8 @@
 				mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
 
 				mail('contact@gamersplane.com', 'New User', 'New User: '.$username, 'From: noone@gamersplane.com');
+
+				addUserHistory($userID, 'registered');
 				
 //				wp_create_user($username, $password1, $email);
 				

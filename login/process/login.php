@@ -7,7 +7,7 @@
 		$mysql->setInserts(array('username' => $username, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')));
 		$mysql->stdQuery('insert');
 */		
-		$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = ? AND suspended = 0');
+		$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = ? AND (suspendedUntil IS NULL OR suspendedUntil < NOW()) AND banned = 0');
 		$userCheck->execute(array($username));
 		
 		if ($userCheck->rowCount()) {
@@ -25,8 +25,8 @@
 			} else {
 				addLoginRecord($currentUser->userID, 1);
 
-				$currentUser->generateLoginCookie();			
-				
+				$currentUser->generateLoginCookie();
+
 //				wp_set_current_user($userID);
 //				wp_set_auth_cookie($userID);
 //				do_action('wp_login', $userID);

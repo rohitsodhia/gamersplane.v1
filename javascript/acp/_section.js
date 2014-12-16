@@ -1,4 +1,6 @@
 $(function () {
+	var $mainColumn = $('.mainColumn');
+
 	if ($('#page_acp_autocomplete').length) {
 		$('#newItems').on('click', '.actions a', function (e) {
 			e.preventDefault();
@@ -58,7 +60,7 @@ $(function () {
 	}
 
 	if ($('#page_acp_music').length) {
-		var $mainColumn = $('.mainColumn'), $editForm = $('#editMusicMaster');
+		var $editForm = $('#editMusicMaster');
 		$editForm.ajaxForm({
 			beforeSubmit: function (arr, $form) {
 				var error = false;
@@ -110,12 +112,46 @@ $(function () {
 	}
 
 	if ($('#page_acp_users').length) {
+		var currentTab = 'active';
 		$('#controls a').click(function (e) {
 			e.preventDefault();
 
-			$.post('/acp/ajax/listUsers/', { show: this.id.substring(9, this.id.length) }, function (data) {
+			currentTab = this.id.substring(9, this.id.length);
+			$.post('/acp/ajax/listUsers/', { show: currentTab }, function (data) {
 				$('div.mainColumn ul').html(data);
 			});
+		});
+
+		$suspendDate = $('#suspendDate');
+		$suspendDate.ajaxForm({
+			beforeSubmit: function (arr, $form) {
+				var error = false;
+				$form.find('input[type="text"]').each(function () {
+					if ((this.name == 'hour' && ($(this).val() < 0 || $(this).val() > 23)) || (this.name == 'minutes' && ($(this).val() < 0 || $(this).val() > 60))) error = true;
+				});
+
+				if (error) return false;
+			},
+			success: function (data) {
+				if (data == 'suspended' && currentTab == 'active') {
+					$li = $suspendDate.closest('li');
+					$suspendDate.appendTo($mainColumn);
+					$li.remove();
+				}
+//				document.location.reload();
+			}
+		});
+		$('ul.prettyList').on('click', 'a.suspend', function (e) {
+			e.preventDefault();
+
+			$li = $(this).closest('li');
+
+			if ($(this).text() == 'Suspend' && $li.find('form').length == 0) {
+				$li.append($suspendDate);
+				$suspendDate.find('#userID').val($li.data('id'));
+			} else if ($(this).text() == 'Suspend' && $li.find('form').length == 1) {
+				$suspendDate.appendTo($mainColumn);
+			}
 		});
 	}
 });

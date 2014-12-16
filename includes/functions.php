@@ -148,7 +148,7 @@
 			global $mysql;
 
 			list($username, $loginHash) = explode('|', sanitizeString($_COOKIE['loginHash']));
-			$userCheck = $mysql->prepare('SELECT userID FROM users WHERE username = :username AND suspended = 0');
+			$userCheck = $mysql->prepare('SELECT userID FROM users WHERE username = :username AND suspendedUntil IS NULL AND banned = 0');
 			$userCheck->execute(array(':username' => $username));
 
 			if ($userCheck->rowCount()) {
@@ -185,6 +185,20 @@
 
 		setcookie('loginHash', '', time() - 30, '/');
 //		session_destroy();
+	}
+
+	function addUserHistory($userID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
+		global $currentuser, $mysql;
+		if ($enactedBy == 0 && $loggedIn) $enactedBy = $currentUser->userID;
+
+		if (!intval($userID) || !strlen($action)) return false;
+		if ($enactedOn == '') $enactedOn = 'NOW()';
+
+		$addUserHistory = $mysql->prepare("INSERT INTO userHistory (userID, enactedBy, enactedOn, action, additionalInfo) VALUES ($userID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :additionalInfo)");
+		if ($enactedOn != 'NOW()') $addUserHistory->bindvalue(':enactedOn', $enactedOn);
+		$addUserHistory->bindvalue(':action', $action);
+		$addUserHistory->bindvalue(':additionalInfo', $additionalInfo);
+		$addUserHistory->execute();
 	}
 
 /* Character Functions */

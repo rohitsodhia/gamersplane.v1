@@ -2,7 +2,6 @@
 	require_once('connect.php');
 	require_once('variables.php');
 //	require_once('classes.php');
-	require_once('sessionFunctions.php');
 	require_once('functions.php');
 	require_once('rhocode.php');
 	

@@ -1,5 +1,18 @@
 INSERT INTO dispatch SET url = 'acp/users/', pageID = 'acp_users', file = 'acp/users.php', title = 'Site ACP - Users';
-DELETE FROM dispatch WHERE url LIKE 'ucp/p%';
 INSERT INTO dispatch SET url = 'ucp/process/ucp/', file = 'ucp/process/ucp.php';
-ALTER TABLE users ADD suspended bool NOT NULL, ADD banned bool NOT NULL;
+ALTER TABLE users ADD suspendedUntil datetime, ADD banned bool NOT NULL;
 INSERT INTO dispatch SET url = 'acp/ajax/listUsers/', file = 'acp/ajax/listUsers.php';
+INSERT INTO dispatch SET url = 'acp/process/users/', file = 'acp/process/users.php';
+
+CREATE TABLE `userHistory` (
+  `actionID` int(11) NOT NULL AUTO_INCREMENT,
+  `userID` int(11) NOT NULL,
+  `enactedBy` int(11) NOT NULL,
+  `enactedOn` datetime NOT NULL,
+  `action` varchar(30) NOT NULL,
+  `additionalInfo` varchar(50),
+  PRIMARY KEY (`actionID`)
+) ENGINE=MyISAM;
+
+ALTER TABLE `characterHistory` MODIFY COLUMN `additionalInfo` varchar(50) NULL AFTER `action`;
+UPDATE characterHistory SET additionalInfo = NULL WHERE additionalInfo = '';

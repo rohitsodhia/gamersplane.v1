@@ -27,6 +27,11 @@
 	}
 }
 
+.mainColumn > .attachForm {
+	visibility: hidden;
+	position: absolute;
+}
+
 #page_acp_autocomplete {
 	#newItems, #addToSystem {
 		.tr {
@@ -149,11 +154,6 @@
 }
 
 #page_acp_music {
-	.mainColumn > .attachForm {
-		visibility: hidden;
-		position: absolute;
-	}
-
 	form {
 		margin-top: .5em;
 		padding: 3px 8px;
@@ -243,7 +243,23 @@
 		}
 	}
 
+	#suspendDate {
+		input {
+			width: 30px;
+			text-align: right;
+		}
+	}
+
 	.mainColumn li {
+		form {
+			margin-top: .5em;
+			margin-left: 250px;
+		}
+
+		form > * {
+			vertical-align: middle;
+		}
+
 		.info > * {
 			display: inline-block;
 		}
