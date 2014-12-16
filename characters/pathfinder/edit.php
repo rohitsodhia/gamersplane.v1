@@ -187,13 +187,15 @@
 								<label class="shortNum">Base</label>
 								<label class="shortNum">Str</label>
 								<label class="shortNum">Size</label>
+								<label class="shortNum">Misc</label>
 							</div>
-							<div class="tr">
+							<div class="tr sumRow">
 								<label class="leftLabel medNum">CMB</label>
-								<div class="shortNum cell addStat_str subSize addBAB"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) + $this->getSize())?></div>
+								<div class="shortNum cell total addStat_str subSize addBAB"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) - $this->getSize())?></div>
 								<div class="shortNum cell bab"><?=$this->getAttackBonus('base')?></div>
 								<div class="shortNum cell statBonus_str"><?=$this->getStatMod('str')?></div>
 								<div class="shortNum cell nSizeVal"><?=showSign(0 - $this->getSize())?></div>
+								<input type="text" name="cmb[misc]" value="<?=$this->getCMB('misc')?>">
 							</div>
 						</div>
 						
@@ -205,14 +207,16 @@
 								<label class="shortNum">Str</label>
 								<label class="shortNum">Dex</label>
 								<label class="shortNum">Size</label>
+								<label class="shortNum">Misc</label>
 							</div>
-							<div class="tr">
+							<div class="tr sumRow">
 								<label class="leftLabel medNum">CMD</label>
-								<div class="shortNum cell addStat_str addStat_dex subSize addBAB"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) + $this->getStatMod('dex', false) + $this->getSize() + 10)?></div>
+								<div class="shortNum cell total addStat_str addStat_dex subSize addBAB addInt_10"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) + $this->getStatMod('dex', false) - $this->getSize() + 10)?></div>
 								<div class="shortNum cell bab"><?=$this->getAttackBonus('base')?></div>
 								<div class="shortNum cell statBonus_str"><?=$this->getStatMod('str')?></div>
 								<div class="shortNum cell statBonus_dex"><?=$this->getStatMod('dex')?></div>
 								<div class="shortNum cell nSizeVal"><?=showSign(0 - $this->getSize())?></div>
+								<input type="text" name="cmd[misc]" value="<?=$this->getCMD('misc')?>">
 								<div class="shortNum cell">+ 10</div>
 							</div>
 						</div>

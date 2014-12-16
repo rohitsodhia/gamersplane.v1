@@ -131,7 +131,7 @@ function sumRow() {
 
 	var inputTotal = 0;
 	$parent = $(this).closest('.sumRow');
-	$parent.find('input[type="text"]').not('.dontAdd').each(function () { console.log(parseInt($(this).val())); inputTotal += parseInt($(this).val()); });
+	$parent.find('input[type="text"]').not('.dontAdd').each(function () { inputTotal += parseInt($(this).val()); });
 	$parent.find('.total').each(function () {
 		var $indivTotal = $(this);
 		var classes = $indivTotal.attr('class').split(/\s+/);
@@ -140,7 +140,8 @@ function sumRow() {
 			if (item.substring(3, 7) == 'Stat') finalTotal += statBonus[item.split('_')[1]];
 			else if (item.substring(3, 6) == 'Int') finalTotal += parseInt(item.split('_')[1]);
 			else if (item.substring(3, 6) == 'BAB') finalTotal += parseInt($('#bab').val());
-			else if (item.substring(3, 7) == 'Size') finalTotal += size;
+			else if (item.substring(0, 7) == 'addSize') finalTotal += size;
+			else if (item.substring(0, 7) == 'subSize') finalTotal -= size;
 			else if (item.substring(3, 8) == 'Level') finalTotal += level;
 			else if (item.substring(3, 5) == 'HL') finalTotal += Math.floor(level / 2);
 		});

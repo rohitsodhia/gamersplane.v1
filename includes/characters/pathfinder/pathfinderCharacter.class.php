@@ -12,6 +12,8 @@
 		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
 		protected $damageReduction = '';
 		protected $initiative = array('stat' => 'dex', 'misc' => 0);
+		protected $cmb = array('misc' => 0);
+		protected $cmd = array('misc' => 0);
 		protected $weapons = array();
 		protected $armor = array();
 		protected $spells = '';
@@ -74,6 +76,28 @@
 				elseif (!is_array($this->attackBonus[$key])) return $this->attackBonus[$key];
 				else return false;
 			} else return false;
+		}
+
+		public function setCMB($key, $value) {
+			if (array_key_exists($key, $this->cmb)) $this->cmb[$key] = intval($value);
+			else return false;
+		}
+
+		public function getCMB($key = null) {
+			if (array_key_exists($key, $this->cmb)) return $this->cmb[$key];
+			elseif ($key == null) return $this->cmb;
+			else return false;
+		}
+
+		public function setCMD($key, $value) {
+			if (array_key_exists($key, $this->cmd)) $this->cmd[$key] = intval($value);
+			else return false;
+		}
+
+		public function getCMD($key = null) {
+			if (array_key_exists($key, $this->cmd)) return $this->cmd[$key];
+			elseif ($key == null) return $this->cmd;
+			else return false;
 		}
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
