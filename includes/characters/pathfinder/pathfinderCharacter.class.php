@@ -63,7 +63,7 @@
 		public function getAttackBonus($key = null, $type = null) {
 			if ($key == null) return $this->attackBonus;
 			elseif ($key == 'total' && $type != null) {
-				$total = 0;
+				$total = $this->attackBonus['base'];
 				foreach ($this->attackBonus as $value) {
 					if (is_array($value) && is_numeric($value[$type])) $total += $value[$type];
 					elseif (is_numeric($value[$type])) $total += $value;

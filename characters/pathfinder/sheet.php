@@ -152,7 +152,7 @@
 						</div>
 						<div class="tr">
 							<label class="leftLabel medNum">CMB</label>
-							<div class="shortNum"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) + $this->getSize())?></div>
+							<div class="shortNum"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) - $this->getSize())?></div>
 							<div class="shortNum"><?=showSign($this->getAttackBonus('base'))?></div>
 							<div class="shortNum"><?=$this->getStatMod('str')?></div>
 							<div class="shortNum"><?=showSign(0 - $this->getSize())?></div>
@@ -170,7 +170,7 @@
 						</div>
 						<div class="tr">
 							<label class="leftLabel medNum">CMD</label>
-							<div class="shortNum"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) + $this->getStatMod('dex', false) + $this->getSize() + 10)?></div>
+							<div class="shortNum"><?=showSign($this->getAttackBonus('base') + $this->getStatMod('str', false) + $this->getStatMod('dex', false) - $this->getSize() + 10)?></div>
 							<div class="shortNum"><?=showSign($this->getAttackBonus('base'))?></div>
 							<div class="shortNum"><?=$this->getStatMod('str')?></div>
 							<div class="shortNum"><?=$this->getStatMod('dex')?></div>
