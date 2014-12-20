@@ -20,63 +20,67 @@
 	for ($count = 0; $count < $perPage && ($cRemaining || $gRemaining); $count++) {
 		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
 			$action = $cNotification['action'];
-			$timestamp = strtotime($cNotification['enactedOn']);
-			if (date('Ymd', $timestamp) != $lastDate) {
-				$lastDate = date('Ymd', $timestamp);
-				echo "		</div>\n";
-				echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($cNotification['enactedOn'])).'<sup>'.date('S', strtotime($cNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($cNotification['enactedOn']))."</h2>\n";
-				echo "		<div class=\"hbdMargined\">\n";
-			}
-			$systemInfo = $systems->getSystemInfo($cNotification['systemID']);
+			if (in_array($action, array('charCreated', 'basicEdited', 'charEdited', 'charDeleted', 'addToLibrary', 'removeFromLibrary', 'charFavorited', 'charUnfavorited', 'charApplied', 'characterApproved', 'characterRejected', 'characterRemoved'))) {
+				$timestamp = strtotime($cNotification['enactedOn']);
+				if (date('Ymd', $timestamp) != $lastDate) {
+					$lastDate = date('Ymd', $timestamp);
+					echo "		</div>\n";
+					echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($cNotification['enactedOn'])).'<sup>'.date('S', strtotime($cNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($cNotification['enactedOn']))."</h2>\n";
+					echo "		<div class=\"hbdMargined\">\n";
+				}
+				$systemInfo = $systems->getSystemInfo($cNotification['systemID']);
 ?>
 			<div class="notification tr">
 				<div class="timestamp"><?=date('g:i A', $timestamp)?></div>
 				<div class="dash">-</div>
-<?			if ($action == 'charCreated') { ?>
+<?				if ($action == 'charCreated') { ?>
 				<div class="text">You created a new <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?			} elseif ($action == 'basicEdited') { ?>
+<?				} elseif ($action == 'basicEdited') { ?>
 				<div class="text">You edited the basic info for your <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?			} elseif ($action == 'charEdited') { ?>
+<?				} elseif ($action == 'charEdited') { ?>
 				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> edited <?=$cNotification['cUserID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$cNotification['cUserID']}/\" class=\"username\">{$cNotification['cUsername']}</a>'s"?> <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?			} elseif ($action == 'charDeleted') { ?>
+<?				} elseif ($action == 'charDeleted') { ?>
 				<div class="text">You deleted your <span class="system"><?=$systemInfo['fullName']?></span> character: <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?			} elseif ($action == 'addToLibrary' || $action == 'removeFromLibrary') { ?>
+<?				} elseif ($action == 'addToLibrary' || $action == 'removeFromLibrary') { ?>
 				<div class="text">You <?=$action == 'addToLibrary'?'added':'removed'?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=$action == 'addToLibrary'?'to':'from'?> the character library</div>
-<?			} elseif ($action == 'charFavorited' || $action == 'charUnfavorited') { ?>
+<?				} elseif ($action == 'charFavorited' || $action == 'charUnfavorited') { ?>
 				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> <?=$action == 'unfavorited'?'un':''?>favorited <?=$cNotification['cUserID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>'s"?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>)</div>
-<?			} elseif ($action == 'charApplied') { ?>
+<?				} elseif ($action == 'charApplied') { ?>
 				<div class="text">You applied <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) to <a href="/ucp/<?=$cNotification['gmID']?>/" class="username"><?=$cNotification['gmUsername']?></a>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
-<?			} elseif ($action == 'characterApproved' || $action == 'characterRejected' || $action == 'characterRemoved') { ?>
+<?				} elseif ($action == 'characterApproved' || $action == 'characterRejected' || $action == 'characterRemoved') { ?>
 				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 9))?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$cNotification['gmID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$cNotification['gmID']}/\" class=\"username\">{$cNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
 <?
+				}
 			} else $count--;
 			$cNotification = $charHistories->fetch();
 			if (!$cNotification) $cRemaining = false;
 		} else {
 			$action = $gNotification['action'];
-			$timestamp = strtotime($gNotification['enactedOn']);
-			if (date('Ymd', $timestamp) != $lastDate) {
-				$lastDate = date('Ymd', $timestamp);
-				echo "		</div>\n";
-				echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($gNotification['enactedOn'])).'<sup>'.date('S', strtotime($gNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($gNotification['enactedOn']))."</h2>\n";
-				echo "		<div class=\"hbdMargined\">\n";
-			}
-			$systemInfo = $systems->getSystemInfo($gNotification['systemID']);
+			if (in_array($action, array('newGame', 'editedGame', 'playerApplied', 'playerApproved', 'playerRejected', 'gmAdded', 'gmRemoved'))) {
+				$timestamp = strtotime($gNotification['enactedOn']);
+				if (date('Ymd', $timestamp) != $lastDate) {
+					$lastDate = date('Ymd', $timestamp);
+					echo "		</div>\n";
+					echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($gNotification['enactedOn'])).'<sup>'.date('S', strtotime($gNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($gNotification['enactedOn']))."</h2>\n";
+					echo "		<div class=\"hbdMargined\">\n";
+				}
+				$systemInfo = $systems->getSystemInfo($gNotification['systemID']);
 ?>
 			<div class="notification tr">
 				<div class="timestamp"><?=date('g:i A', $timestamp)?></div>
 				<div class="dash">-</div>
-<?			if ($action == 'newGame') { ?>
+<?				if ($action == 'newGame') { ?>
 				<div class="text">You created a new <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?			} elseif ($action == 'editedGame') { ?>
+<?				} elseif ($action == 'editedGame') { ?>
 				<div class="text">You edited your <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?			} elseif ($action == 'playerApplied') { ?>
+<?				} elseif ($action == 'playerApplied') { ?>
 				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$gNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> applied to <span class="system"><?=$systemInfo['fullName']?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?			} elseif ($action == 'playerApproved' || $action == 'playerRejected') { ?>
+<?				} elseif ($action == 'playerApproved' || $action == 'playerRejected') { ?>
 				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$gNotification['enactedBy']}/\" class=\"username\">{$gNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 6))?> <?=$gNotification['aUserID'] == $currentUser->userID?'you':"<a href=\"/ucp/{$gNotification['aUserID']}/\" class=\"username\">{$gNotification['aUsername']}</a>"?> <?=substr($action, 6) == 'Approved'?'to':'from'?> <?=$gNotification['enactedBy'] == $currentUser->userID?'your':"<a href=\"/ucp/{$gNotification['enactedOn']}/\" class=\"username\">{$gNotification['username']}</a>'s"?> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?			} elseif ($action == 'gmAdded' || $action == 'gmRemoved') { ?>
+<?				} elseif ($action == 'gmAdded' || $action == 'gmRemoved') { ?>
 				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$gNotification['enactedBy']}/\" class=\"username\">{$gNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 2))?> <?=$gNotification['aUserID'] == $currentUser->userID?'you':"<a href=\"/ucp/{$gNotification['aUserID']}/\" class=\"username\">{$gNotification['aUsername']}</a>"?> as a GM <?=substr($action, 2) == 'Added'?'to':'from'?> <?=$gNotification['enactedBy'] == $currentUser->userID?'your':"<a href=\"/ucp/{$gNotification['enactedOn']}/\" class=\"username\">{$gNotification['username']}</a>'s"?> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
 <?
+				}
 			} else $count--;
 			$gNotification = $gameHistories->fetch();
 			if (!$gNotification) $gRemaining = false;
