@@ -25,6 +25,11 @@
 	if ($currentUser->checkACP('faqs', false)) {
 ?>
 				<li><a href="/acp/faqs/">Manage FAQs</a></li>
+<?
+	}
+	if ($currentUser->checkACP('links', false)) {
+?>
+				<li><a href="/acp/links/">Manage Links</a></li>
 <?	} ?>
 			</div>
 		</div>

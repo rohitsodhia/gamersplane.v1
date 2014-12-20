@@ -120,7 +120,7 @@
 				</div>
 			</div>
 
-			<div id="availSystems" class="homeWidget">
+			<div id="affiliates" class="homeWidget">
 				<h3 class="headerbar">Available Systems</h3>
 				<p>Gamers Plane has a number of systems built into our site, including:</p>
 				<ul>
