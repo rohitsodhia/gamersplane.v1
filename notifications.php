@@ -51,6 +51,7 @@
 				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 9))?> <a href="/characters/<?=$systemInfo['shortName']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systemInfo['fullName']?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$cNotification['gmID'] == $currentUser->userID?'your':"<a href=\"/ucp/{$cNotification['gmID']}/\" class=\"username\">{$cNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
 <?
 				}
+				echo "			</div>\n";
 			} else $count--;
 			$cNotification = $charHistories->fetch();
 			if (!$cNotification) $cRemaining = false;
@@ -81,12 +82,12 @@
 				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/ucp/{$gNotification['enactedBy']}/\" class=\"username\">{$gNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 2))?> <?=$gNotification['aUserID'] == $currentUser->userID?'you':"<a href=\"/ucp/{$gNotification['aUserID']}/\" class=\"username\">{$gNotification['aUsername']}</a>"?> as a GM <?=substr($action, 2) == 'Added'?'to':'from'?> <?=$gNotification['enactedBy'] == $currentUser->userID?'your':"<a href=\"/ucp/{$gNotification['enactedOn']}/\" class=\"username\">{$gNotification['username']}</a>'s"?> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
 <?
 				}
+				echo "			</div>\n";
 			} else $count--;
 			$gNotification = $gameHistories->fetch();
 			if (!$gNotification) $gRemaining = false;
 		}
+	}
 ?>
-			</div>
-<?	} ?>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>
