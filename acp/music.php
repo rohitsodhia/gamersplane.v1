@@ -9,7 +9,7 @@
 
 		<div class="mainColumn right">
 			<h1 class="headerbar">Manage Music</h1>
-			<form id="editMusicMaster" method="post" action="/acp/process/manageMusic/" class=".attachForm">
+			<form id="editMusicMaster" method="post" action="/acp/process/manageMusic/" class="attachForm">
 				<input type="hidden" name="action" value="edit">
 				<input id="mongoID" type="hidden" name="mongoID" value="">
 				<div class="pRow">
