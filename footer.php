@@ -1,7 +1,7 @@
 <?	if (!MODAL) { ?>
 	</div>
 </div></div>
-<footer<?=$fixedGameMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
+<footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?>"><div class="bodyContainer">
 	<a href="/contact/">Contact Us</a>
 <?		if ($currentUser->checkACP()) { ?>
 	<div class="floatRight">
