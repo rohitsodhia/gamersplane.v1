@@ -154,4 +154,8 @@ $(function () {
 			}
 		});
 	}
+
+	if ($('#page_acp_links').length) {
+		
+	}
 });
