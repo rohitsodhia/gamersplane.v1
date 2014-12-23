@@ -120,11 +120,11 @@
 				</div>
 				<div id="posessions" class="floatRight">
 					<h2 class="headerbar hbDark">Possessions</h2>
-					<div class="hbdMargined"><?=$this->getPossessions()?></div>
+					<div class="hbdMargined"><?=printReady($this->getPossessions())?></div>
 				</div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=$this->getNotes()?></div>
+				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
 			</div>
