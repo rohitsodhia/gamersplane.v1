@@ -1,2 +1,0 @@
-INSERT INTO dispatch SET url = 'acp/links/', pageID = 'acp_links', file = 'acp/links.php', title = 'Site ACP - Links';
-INSERT INTO dispatch SET url = 'acp/process/manageLink/', file = 'acp/process/manageLink.php';
