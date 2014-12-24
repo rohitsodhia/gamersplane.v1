@@ -121,16 +121,17 @@
 			</div>
 
 			<div id="affiliates" class="homeWidget">
-				<h3 class="headerbar">Available Systems</h3>
-				<p>Gamers Plane has a number of systems built into our site, including:</p>
-				<ul>
+				<h3 class="headerbar">Affiliates</h3>
 <?
-	$randSystems = $systems->getRandomSystems(5);
-	foreach ($randSystems as $info) echo "\t\t\t\t\t<li>{$info['fullName']}</li>\n";
+	$rand = $mongo->execute('Math.random()');
+	$rand = $rand['retval'];
+	$affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$gte' => $rand)));
+	if ($affiliate == null) $affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$lte' => $rand)));
 ?>
-				</ul>
-				<p>And many more availabe and coming!</p>
-<?=$loggedIn?"				<p>If you have a system you want added, <a href=\"/forums/thread/2\">let us know</a>!</p>\n":''?>
+				<div class="widgetBody">
+					<img src="/images/links/<?=$affiliate['_id']?>.<?=$affiliate['image']?>">
+					<p><a href="<?=$affiliate['url']?>" target="_blank"><?=$affiliate['title']?></a></p>
+				</div>
 			</div>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

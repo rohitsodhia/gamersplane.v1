@@ -1,5 +1,5 @@
 $(function () {
-	var $mainColumn = $('.mainColumn');
+	var $mainColumn = $('div.mainColumn');
 
 	if ($('#page_acp_autocomplete').length) {
 		$('#newItems').on('click', '.actions a', function (e) {
@@ -156,6 +156,74 @@ $(function () {
 	}
 
 	if ($('#page_acp_links').length) {
-		
+		$('li > form').ajaxForm({
+			beforeSubmit: function (arr, $form) {
+				var error = false;
+				$form.find('input[type="text"]').each(function () {
+					if ($(this).val().length == 0) error = true;
+				});
+				if (error) return false;
+			},
+			success: function (data, status, xhr, $form) {
+				if (data['status'] == 'updated' || data['status'] == 'imageDeleted') {
+					mongoID = $form.find('input[name="mongoID"]').val();
+					$form.find('.action_edit').show();
+					$form.find('.confirmEdit').hide();
+					$form.find('.level .display').text($form.find('option[value="' + $form.find('select').val() + '"]').text());
+					if (data['status'] == 'imageDeleted') {
+						$form.find('img').attr('src', '/images/spacer.gif');
+						$form.find('.preview button').hide();
+					} else if (data['image']) {
+						$form.find('img').attr('src', '/images/links/' + mongoID + '.' + data['image'] + '?u=' + new Date().getTime());
+					}
+
+					$form.removeClass('editing').find('input').prop('disabled', true);
+				} else if (data['status'] == 'deleted') {
+					$form.parent().remove();
+				}
+			}
+		});
+
+		var origVals = {};
+		$mainColumn.on('click', 'button.action_edit', function (e) {
+			e.preventDefault();
+
+			$form = $(this).closest('form');
+			mongoID = $form.find('input[name="mongoID"]').val();
+			origVals[mongoID] = {};
+			$form.find('input[type="text"]').each(function () {
+				origVals[mongoID][$(this).attr('name')] = $(this).val();
+			});
+			origVals[mongoID]['level'] = $form.find('select').val();
+
+			$(this).siblings('.confirmEdit').show();
+			$(this).hide();
+
+			$(this).closest('form').addClass('editing').find('input').prop('disabled', false);
+		}).on('click', 'button.action_edit_cancel', function (e) {
+			e.preventDefault();
+
+			$form = $(this).closest('form');
+			mongoID = $form.find('input[name="mongoID"]').val();
+			$form.find('input[type="text"]').each(function () {
+				$(this).val(origVals[mongoID][$(this).attr('name')]);
+			});
+			$form.find('select').val(origVals[mongoID]['level']).change();
+
+			$(this).parent().siblings('button').show();
+			$(this).parent().hide();
+
+			$form.removeClass('editing').find('input').prop('disabled', true);
+		}).on('click', 'button.action_delete', function (e) {
+			e.preventDefault();
+
+			$(this).siblings('.confirmDelete').show();
+			$(this).hide();
+		}).on('click', 'button.action_delete_cancel', function (e) {
+			e.preventDefault();
+
+			$(this).parent().siblings('button').show();
+			$(this).parent().hide();
+		});
 	}
 });

@@ -285,7 +285,7 @@
 		margin-left: 80px;
 	}
 
-	.mainColumn ul {
+	.mainColumn > ul {
 		list-style: none;
 		padding-top: 1em;
 		border-top: 1px solid #333;
@@ -297,8 +297,16 @@
 	}
 
 	.preview {
+		position: relative;
 		border: 1px solid #000;
 		background: #FFF;
+	}
+
+	.preview button {
+		display: none;
+		position: absolute;
+		bottom: -8px;
+		right: -8px;
 	}
 
 	.link, .link input {
@@ -307,5 +315,34 @@
 
 	.url, .image {
 		margin-top: .5em;
+	}
+
+	input[disabled] {
+		padding: 0;
+		border: none;
+		color: #000;
+		background: none;
+
+		&[type="file"] {
+			display: none;
+		}
+	}
+
+	.prettySelect {
+		visibility: hidden;
+	}
+
+	.editing {
+		.preview button {
+			display: block;
+		}
+
+		.display {
+			display: none;
+		}
+
+		.prettySelect {
+			visibility: visible;
+		}
 	}
 }
