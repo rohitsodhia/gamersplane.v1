@@ -1,11 +1,19 @@
 <?	if (!MODAL) { ?>
 	</div>
 </div></div>
-<footer<?=$fixedGameMenu?' class="withFixedMenu"':''?>><div class="bodyContainer">
+<footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?>"><div class="bodyContainer">
 	<a href="/contact/">Contact Us</a>
 <?		if ($currentUser->checkACP()) { ?>
 	<div class="floatRight">
-		<a href="/acp/">ACP</a>
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="hosted_button_id" value="6VHQ2BP4AS7L6">
+			<input type="image" src="/images/support_us.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+		</form>
+		<div>
+			<a href="/acp/">ACP</a>
+		</div>
 	</div>
 <?		} ?>
 </div></footer>

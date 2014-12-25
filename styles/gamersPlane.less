@@ -291,7 +291,7 @@ a.username:hover {
 
 footer a, footer a:visited, footer a:active {
 	color: #FFF;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redWing {
@@ -645,12 +645,21 @@ div.prettySelect > div {
 	padding: 10px 0;
 }
 
+footer {
+	margin-bottom: 10px;
+}
+
 footer.withFixedMenu {
-	margin-bottom: 40px;
+	margin-bottom: 50px;
 }
 
 footer .bodyContainer {
 	padding: 10px 0;
+}
+
+footer .floatRight > div {
+	margin-right: 20px;
+	text-align: right;
 }
 
 #fixedMenu {
@@ -1363,11 +1372,13 @@ input[type="text"].placeholder {
 /* Sprites */
 
 .sprite {
-	display: inline-block;
-	height: 20px;
-	width: 20px;
-	padding: 0;
-	background: url('../images/sprites.png') top left no-repeat;
+	&, &:visited, &:active {
+		display: inline-block;
+		height: 20px;
+		width: 20px;
+		padding: 0;
+		background: url('../images/sprites.png') top left no-repeat;
+	}
 }
 
 .sprite.downArrow, .sprite.upArrow {
@@ -1380,51 +1391,75 @@ input[type="text"].placeholder {
 }
 
 .sprite.downArrow {
-	background-position: 0 0;
+	&, &:visited, &:active {
+		background-position: 0 0;
+	}
 }
 
 .sprite.upArrow {
-	background-position: -17px 0;
+	&, &:visited, &:active {
+		background-position: -17px 0;
+	}
 }
 
 .sprite.editWheel {
-	background-position: -34px 0;
+	&, &:visited, &:active {
+		background-position: -34px 0;
+	}
 }
 
 .sprite.permissions {
-	background-position: -54px 0;
+	&, &:visited, &:active {
+		background-position: -54px 0;
+	}
 }
 
 .sprite.check {
-	background-position: -74px 0;
+	&, &:visited, &:active {
+		background-position: -74px 0;
+	}
 }
 
 .sprite.check.small {
-	background-position: -74px -40px;
+	&, &:visited, &:active {
+		background-position: -74px -40px;
+	}
 }
 
 .sprite.check.green {
-	background-position: -94px 0;
+	&, &:visited, &:active {
+		background-position: -94px 0;
+	}
 }
 
 .sprite.check.green.small {
-	background-position: -94px -40px;
+	&, &:visited, &:active {
+		background-position: -94px -40px;
+	}
 }
 
 .sprite.cross {
-	background-position: -114px 0;
+	&, &:visited, &:active {
+		background-position: -114px 0;
+	}
 }
 
 .sprite.cross.small {
-	background-position: -114px -40px;
+	&, &:visited, &:active {
+		background-position: -114px -40px;
+	}
 }
 
 .sprite.pencil {
-	background-position: -134px 0;
+	&, &:visited, &:active {
+		background-position: -134px 0;
+	}
 }
 
 .sprite.pencil.small {
-	background-position: -134px -40px;
+	&, &:visited, &:active {
+		background-position: -134px -40px;
+	}
 }
 
 .sprite.tassel, .sprite.tassel.off:hover {
@@ -2000,139 +2035,158 @@ div.forumIcon.newPosts.sticky {
 	color: #C00;
 }
 
-#page_home .sideWidget .loggedOut {
-	font-family: OstrichSans;
-	font-size: 2em;
-	line-height: 1.2em;
-	text-align: center;
-}
+#page_home {
+	.sideWidget .loggedOut {
+		font-family: OstrichSans;
+		font-size: 2em;
+		line-height: 1.2em;
+		text-align: center;
+	}
 
-#page_home .sideWidget .loggedOut a, #page_home .sideWidget .noGames a {
-	display: block;
-	width: 95px;
-	margin-top: 10px;
-	border: 1px solid #B00;
-	background: #CCC;
-	font-family: AgencyFB;
-	line-height: 1.2em;
-	text-align: center;
-	color: #B00;
-}
+	.sideWidget .loggedOut a, .sideWidget .noGames a {
+		display: block;
+		width: 95px;
+		margin-top: 10px;
+		border: 1px solid #B00;
+		background: #CCC;
+		font-family: AgencyFB;
+		line-height: 1.2em;
+		text-align: center;
+		color: #B00;
+	}
 
-#page_home .sideWidget .login {
-	float: left;
-	margin-left: 10px;
-}
+	.sideWidget .login {
+		float: left;
+		margin-left: 10px;
+	}
 
-#page_home .sideWidget .register {
-	float: right;
-	margin-right: 10px;
-}
+	.sideWidget .register {
+		float: right;
+		margin-right: 10px;
+	}
 
-#page_home .sideWidget .loggedIn h2, .sideWidget h2 {
-	margin-bottom: .1em;
-	font-family: "AgencyFB";
-	font-size: 2em;
-	text-align: center;
-}
+	.sideWidget .loggedIn h2, .sideWidget h2 {
+		margin-bottom: .1em;
+		font-family: "AgencyFB";
+		font-size: 2em;
+		text-align: center;
+	}
 
-#page_home .sideWidget .gameInfo {
-	border-top-color: #555;
-}
+	.sideWidget .gameInfo {
+		border-top-color: #555;
+	}
 
-#page_home .sideWidget .noGames {
-	padding-bottom: .5em;
-}
+	.sideWidget .noGames {
+		padding-bottom: .5em;
+	}
 
-#page_home .sideWidget .noGames p {
-	margin: 0;
-	padding: .5em 0;
-	text-align: center;
-}
+	.sideWidget .noGames p {
+		margin: 0;
+		padding: .5em 0;
+		text-align: center;
+	}
 
-#page_home .sideWidget .noGameLink {
-	text-align: center;
-}
+	.sideWidget .noGameLink {
+		text-align: center;
+	}
 
-#page_home .sideWidget .noGames a {
-	width: 125px;
-	margin: .3em auto 0;
-	font-size: 2em;
-	line-height: 1.2em;
-}
+	.sideWidget .noGames a {
+		width: 125px;
+		margin: .3em auto 0;
+		font-size: 2em;
+		line-height: 1.2em;
+	}
 
-#page_home .homeWidget {
-	float: left;
-	width: 310px;
-	margin-left: 10px;
-}
+	.homeWidget {
+		float: left;
+		width: 310px;
+		margin-left: 10px;
+	}
 
-#page_home .homeWidget:first-child {
-	margin-left: 0;
-}
+	.homeWidget:first-child {
+		margin-left: 0;
+	}
 
-#page_home .widgetBody {
-	margin: 0 15px;
-}
+	.widgetBody {
+		margin: 0 15px;
+	}
 
-#page_home .homeWidget h3 {
-	margin-bottom: 0;
-}
+	.homeWidget h3 {
+		margin-bottom: 0;
+	}
 
-#page_home .homeWidget hr {
-	margin: .2em 0;
-}
+	.homeWidget hr {
+		margin: .2em 0;
+	}
 
-#page_home .gameInfo, #page_home .post {
-	padding: .7em 0;
-}
+	.gameInfo, .post {
+		padding: .7em 0;
+	}
 
-#page_home .gameInfo .title {
-	font-size: 1.1em;
-	margin-bottom: .25em;
-}
+	.gameInfo .title {
+		font-size: 1.1em;
+		margin-bottom: .25em;
+	}
 
-#page_home .gameInfo p {
-	margin: 0;
-	text-align: left;
-}
+	.gameInfo p {
+		margin: 0;
+		text-align: left;
+	}
 
-#page_home .sideWidget .details, #page_home #latestGames .details {
-	padding-left: 20px;
-}
+	#affiliates {
+		.widgetBody {
+			margin-top: 1em;
+			text-align: center;
+		}
 
-#page_home .post {
-	position: relative;
-}
+		img {
+			max-width: 150px;
+			max-height: 150px;
+		}
 
-#page_home .forumIcon {
-	position: absolute;
-	top: 8px;
-	left: 0;
-}
+		a {
+			font-size: 1.5em;
+			line-height: 1.2em;
+		}
+	}
 
-#page_home .post .title, #page_home .post .byLine, #page_home .post .forum {
-	margin-left: 40px;
-}
+	.sideWidget .details, #latestGames .details {
+		padding-left: 20px;
+	}
 
-#page_home .post .title {
-	font-size: 1.1em;
-	margin-top: .3em;
-	margin-bottom: .2em;
-}
+	.post {
+		position: relative;
+	}
 
-#page_home .post .byLine, #page_home .post .forum {
-	font-size: .85em;
-}
+	.forumIcon {
+		position: absolute;
+		top: 8px;
+		left: 0;
+	}
 
-#page_home #availSystems p:first-child {
-	margin-top: 0;
-}
+	.post .title, .post .byLine, .post .forum {
+		margin-left: 40px;
+	}
 
-#page_home #availSystems li {
-/*	color: #B00;*/
-	list-style: url('../images/bullets.png');
-	margin: .25em 0 .25em 10px;
+	.post .title {
+		font-size: 1.1em;
+		margin-top: .3em;
+		margin-bottom: .2em;
+	}
+
+	.post .byLine, .post .forum {
+		font-size: .85em;
+	}
+
+	#availSystems p:first-child {
+		margin-top: 0;
+	}
+
+	#availSystems li {
+	/*	color: #B00;*/
+		list-style: url('../images/bullets.png');
+		margin: .25em 0 .25em 10px;
+	}
 }
 
 /* --------------------------------------------*/
