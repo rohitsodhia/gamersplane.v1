@@ -14,6 +14,26 @@
 		protected $hp = array('total' => 0, 'current' => 0, 'temp' => 0);
 		protected $deathSaves = array('success' => 0, 'failure' => 0);
 		protected $languages = '';
+		protected $skills = array(
+			array('name' => 'Acrobatics', 'stat' => 'dex'),
+			array('name' => 'Animal Handling', 'stat' => 'wis'),
+			array('name' => 'Arcana', 'stat' => 'int'),
+			array('name' => 'Athletics', 'stat' => 'Str'),
+			array('name' => 'Deception', 'stat' => 'char'),
+			array('name' => 'History', 'stat' => 'int'),
+			array('name' => 'Insight', 'stat' => 'wis'),
+			array('name' => 'Intimidation', 'stat' => 'cha'),
+			array('name' => 'Investigation', 'stat' => 'int'),
+			array('name' => 'Medicine', 'stat' => 'wis'),
+			array('name' => 'Nature', 'stat' => 'int'),
+			array('name' => 'Perception', 'stat' => 'wis'),
+			array('name' => 'Performance', 'stat' => 'cha'),
+			array('name' => 'Persuasion', 'stat' => 'cha'),
+			array('name' => 'Religion', 'stat' => 'int'),
+			array('name' => 'Slight of Hand', 'stat' => 'dex'),
+			array('name' => 'Stealth', 'stat' => 'dex'),
+			array('name' => 'Survival', 'stat' => 'wis'),
+		);
 		protected $spells = array();
 
 		public function __construct($characterID, $userID = null) {
@@ -281,6 +301,9 @@
 				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
 					$this->addSkill($skillInfo);
 				} }
+
+				var_dump($this->skills);
+				exit;
 
 				$this->clearVar('feats');
 				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {

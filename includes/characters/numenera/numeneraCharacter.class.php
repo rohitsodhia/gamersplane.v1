@@ -252,7 +252,7 @@
 			} } else echo "\t\t\t\t\t<p id=\"noSpecialAbilities\">This character currently has no special abilities.</p>\n";
 		}
 		
-		public function addCypher($cyphers) {
+		public function addCypher($cypher) {
 			if (strlen($cypher['name'])) {
 				newItemized('cypher', $cypher['name'], $this::SYSTEM);
 				$this->cyphers[] = $cypher;
