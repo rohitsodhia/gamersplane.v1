@@ -1,1 +1,6 @@
-ALTER TABLE `forums` ADD UNIQUE INDEX (`heritage`) ;
+ALTER TABLE `forums` ADD UNIQUE INDEX (`heritage`), ADD threadCount int NOT NULL;
+UPDATE forums f LEFT JOIN (SELECT forumID, COUNT(*) threadCount FROM threads GROUP BY forumID) t ON f.forumID = t.forumID SET f.threadCount = IFNULL(t.threadCount, 0);
+
+ALTER TABLE threads ADD firstPostID int NOT NULL, ADD lastPostID int NOT NULL, ADD postCount int NOT NULL;
+UPDATE threads t LEFT JOIN (SELECT threadID, COUNT(*) postCount FROM posts GROUP BY threadID) p ON t.threadID = p.threadID SET t.postCount = IFNULL(p.postCount, 0);
+UPDATE threads t LEFT JOIN (select `posts`.`threadID` AS `threadID`,min(`posts`.`postID`) AS `firstPostID`,max(`posts`.`postID`) AS `lastPostID` from `posts` group by `posts`.`threadID`) p ON t.threadID = p.threadID SET t.firstPostID = p.firstPostID, t.lastPostID = p.lastPostID;

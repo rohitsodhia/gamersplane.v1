@@ -1,5 +1,8 @@
 <?
+	include(FILEROOT.'/includes/forums/Forum.class.php')
+
 	$forumID = intval($pathOptions[0]);
+	$forum = new Forum($forumID);
 	$forumType = 'c';
 	$heritage = array();
 	

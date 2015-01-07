@@ -383,13 +383,13 @@
 		return $family;
 	}
 	
-	function retrievePermissions($userID, $forumIDs, $types, $returnSDA = 0) {
+	function retrievePermissions($userID, $forumIDs, $types = null, $returnSDA = 0) {
 		global $mysql;
 		$userID = intval($userID);
 		if (!is_array($forumIDs)) $forumIDs = array($forumIDs);
 		$queryColumn = array('permissions' => '', 'general' => '', 'group' => '');
 		$allTypes = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
-		if ($types == '') $types = $allTypes;
+		if ($types == null) $types = $allTypes;
 		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);
 
 		foreach ($types as $type) {
