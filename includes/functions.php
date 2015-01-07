@@ -174,14 +174,16 @@
 		return false;
 	}
 
-	function logout() {
-		session_unset();
-//		unset($_COOKIE[session_name()]);
+	function logout($resetSession = false) {
+		if ($resetSession) {
+			session_unset();
+//			unset($_COOKIE[session_name()]);
 		
-		session_regenerate_id(TRUE);
-		session_destroy();
-		setcookie(session_name(), '', time() - 30, '/');
-		$_SESSION = array();
+			session_regenerate_id(TRUE);
+			session_destroy();
+			setcookie(session_name(), '', time() - 30, '/');
+			$_SESSION = array();
+		}
 
 		setcookie('loginHash', '', time() - 30, '/');
 //		session_destroy();
