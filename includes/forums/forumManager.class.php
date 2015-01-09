@@ -1,5 +1,5 @@
 <?
-	class forumManager {
+	class ForumManager {
 		protected $forums = array();
 	}
 ?>
