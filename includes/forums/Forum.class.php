@@ -13,8 +13,6 @@
 		protected $threads = array();
 		
 		public function __construct($loadData = null) {
-			global $currentUser;
-
 			if (is_array($loadData)) {
 				foreach (get_object_vars($this) as $key => $value) {
 					if (!isset($loadData[$key])) throw new Exception('Missing data');
@@ -22,13 +20,9 @@
 				}
 				$this->heritage = explode('-', $this->heritage);
 				array_walk($this->heritage, function ($value, $key) { return intval($value); });
-			} elseif (is_int($loadData)) {
-				$forumInfos = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount FROM forums f INNER JOIN forums p ON p.forumID = {$loadData} AND f.heritage LIKE CONCAT(p.heritage, '%')".($loadData == 0 || $loadData == 2?' WHERE heritage NOT LIKE LPAD(2, '.HERITAGE_PAD.', 0) OR forumID = 10':'')." ORDER BY LENGTH(f.heritage)");
-				$forumInfos = $forumInfos->fetchAll();
-				if ($loadData == 0 || $loadData == 2) {
-					$gameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount FROM forums f LEFT JOIN games g ON f.gameID = g.gameID AND g.public = 1 LEFT JOIN players p ON f.gameID = p.gameID AND p.userID = {$currentUser->userID} WHERE g.gameID IS NOT NULL OR p.gameID IS NOT NULL")
-				}
 			}
+
+			var_dump($this);
 		}
 
 		public function __set($key, $value) {
