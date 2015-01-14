@@ -8,7 +8,7 @@
 				<div class="wingDivContent">
 					<select class="prettySelect">
 						<option value="basic">Basic Dice</option>
-						<option value="sweote">Star Wars: Edge of the Empire</option>
+<!--						<option value="sweote">Star Wars: Edge of the Empire</option>-->
 						<option value="fate">Fate Dice</option>
 					</select>
 				</div>
