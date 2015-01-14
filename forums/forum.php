@@ -1,27 +1,11 @@
 <?
+	include(FILEROOT.'/includes/forums/ManagerForum.class.php')
 	include(FILEROOT.'/includes/forums/Forum.class.php')
 
 	$forumID = intval($pathOptions[0]);
-	$forum = new Forum($forumID);
-	$forumType = 'c';
-	$heritage = array();
+	$forumManager = new ForumManager($forumID);
 	
-	// Get current title and type
-	if ($forumID != 0) {
-		$forumInfo = $mysql->query('SELECT title, forumType, heritage FROM forums WHERE forumID = '.$forumID);
-		list($forumTitle, $forumType, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
-		$heritage = explode('-', $heritage);
-		foreach ($heritage as $key => $hForumID) {
-			$hForumID = intval($hForumID);
-			$heritage[$key] = $hForumID;
-		}
-	}
-	
-	// If not root, get current permissions
-	if ($forumID != 0) {
-		$permissions = retrievePermissions($currentUser->userID, $forumID, array('read', 'moderate', 'createThread'));
-		if ($permissions[$forumID]['read'] == 0) { header('Location: /forums'); exit; }
-	}
+	if ($forumManager->currentForum->displayCheck()) { header('Location: /forums'); exit; }
 	
 	if ($currentUser->userID) {
 		// Get lastRead for current forum; if none, create

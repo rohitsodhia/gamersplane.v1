@@ -1,4 +1,6 @@
 ALTER TABLE `forums` ADD UNIQUE INDEX (`heritage`), ADD threadCount int NOT NULL;
+ALTER TABLE `forums` MODIFY COLUMN `description` text CHARACTER NULL AFTER `title`;
+UPDATE forums SET description = NULL WHERE description = '';
 UPDATE forums f LEFT JOIN (SELECT forumID, COUNT(*) threadCount FROM threads GROUP BY forumID) t ON f.forumID = t.forumID SET f.threadCount = IFNULL(t.threadCount, 0);
 
 ALTER TABLE threads ADD firstPostID int NOT NULL, ADD lastPostID int NOT NULL, ADD postCount int NOT NULL;
