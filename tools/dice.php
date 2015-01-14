@@ -17,7 +17,7 @@
 			</div></div>
 			<h2 class="headerbar hbDark hb_hasButton">
 				<span class="dice_basic">Basic Dice</span>
-				<span class="dice_sweote hideDiv">Star Wars: Edge of the Empire</span>
+<!--				<span class="dice_sweote hideDiv">Star Wars: Edge of the Empire</span>-->
 				<span class="dice_fate hideDiv">Fate Dice</span>
 			</h2>
 			<div class="dice_basic">
@@ -48,7 +48,7 @@
 					</div>
 				</form>
 			</div>
-			<div class="dice_sweote hideDiv">
+<!--			<div class="dice_sweote hideDiv">
 				<div class="clearfix">
 					<div class="dicePool"></div>
 					<button id="sweote_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
@@ -91,7 +91,7 @@
 						<span>Force</span>
 					</a>
 				</div>
-			</div>
+			</div>-->
 			<div class="dice_fate hideDiv hbdMargined">
 				<div class="clearfix">
 					<label for="fate_count">Number of dice: </label>
