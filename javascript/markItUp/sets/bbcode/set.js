@@ -16,6 +16,7 @@ mySettings = {
 		{name:'Italic', key:'I', openWith:'[i]', closeWith:'[/i]'},
 		{name:'Underline', key:'U', openWith:'[u]', closeWith:'[/u]'},
 		{name:'Strikethrough', openWith:'[s]', closeWith:'[/s]'},
+		{name:'Line break', openWith:'\n[linebreak]\n'},
 		{name:'Color', openWith:'[color="[![Text color]!]]"', closeWith:'[/color]',
 		dropMenu :[
 			{name:'Red', openWith:'[color="red"]', closeWith:'[/color]' },
