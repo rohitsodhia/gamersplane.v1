@@ -44,10 +44,11 @@
 				$adminForums = array();
 				$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
 				$forumAdmins = $adminIn->fetchAll(PDO::FETCH_COLUMN);
+				array_walk($forumAdmins, function (&$value, $key) { $value = intval($value); });
 				$getPermissionsFor = array();
-				$superFAdmin = array_search(0, $adminForums) !== false?true:false;
+				$superFAdmin = array_search(0, $forumAdmins) !== false?true:false;
 				foreach ($forumIDs as $forumID) {
-					if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = $aTemplate;
+					if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = array_merge($aTemplate, array('admin' => 1));
 					else $getPermissionsFor[] = $forumID;
 				}
 				foreach ($getPermissionsFor as $forumID) 
@@ -78,17 +79,17 @@
 						}
 					}
 				}
-				global $loggedIn;
-				foreach ($forumIDs as $forumID) {
-					foreach ($types as $type) {
-						if ($permissions[$forumID][$type] < 1 || (!$loggedIn && $type != 'read')) $permissions[$forumID][$type] = 0;
-						else $permissions[$forumID][$type] = 1;
-					}
+			}
+			global $loggedIn;
+			foreach ($forumIDs as $forumID) {
+				foreach ($permissions[$forumID] as $type => $value) {
+					if ($value < 1 || (!$loggedIn && $type != 'read')) $permissions[$forumID][$type] = false;
+					else $permissions[$forumID][$type] = true;
 				}
+				if (!isset($permissions[$forumID]['admin']) || $permissions[$forumID]['admin'] != true) $permissions[$forumID]['admin'] = false;
 			}
 			
-			if (sizeof($forumIDs) == 1 && $returnSDA) return $permissions[$forumIDs[0]];
-			else return $permissions;
+			return $permissions;
 		}
 	}
 ?>
