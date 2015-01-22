@@ -39,6 +39,9 @@
 			if (property_exists($this, $key)) return $this->$key;
 		}
 
-		public function newPosts($)
+		public function newPosts($markedRead) {
+			if ($this->lastPost->postID > $this->lastRead && $this->lastPost->postID > $markedRead) return true;
+			else return false;
+		}
 	}
 ?>

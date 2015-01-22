@@ -60,6 +60,7 @@
 
 	if ($forumID && $forumManager->getForumProperty($forumID, 'forumType') == 'f') {
 		$forumManager->getThreads();
+		$forumManager->displayThreads();
 	}
 ?>
 <?

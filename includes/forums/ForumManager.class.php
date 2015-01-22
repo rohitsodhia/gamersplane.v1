@@ -64,6 +64,8 @@
 		}
 
 		public function displayForum() {
+			if (sizeof($this->forums[$this->currentForum]->children) == 0) return false;
+
 			$tableOpen = false;
 			$lastType = 'f';
 			foreach ($this->forums[$this->currentForum]->children as $childID) {
@@ -104,7 +106,7 @@
 				<div class="tr<?=$this->newPosts($forumID)?'':' noPosts'?>">
 					<div class="td icon"><div class="forumIcon<?=$this->newPosts($forumID)?' newPosts':''?>" title="<?=$this->newPosts($forumID)?'New':'No new'?> posts in forum" alt="<?=$this->newPosts($forumID)?'New':'No new'?> posts in forum"></div></div>
 					<div class="td name">
-						<a href="/forums/<?=$forum->forumID?>"><?=printReady($forum->title)?></a>
+						<a href="/forums/<?=$forum->forumID?>/"><?=printReady($forum->title)?></a>
 <?=($forum->description != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forum->description)."</div>\n":''?>
 					</div>
 					<div class="td numThreads"><?=$this->getTotalThreadCount($forumID)?></div>
@@ -112,7 +114,7 @@
 					<div class="td lastPost">
 <?
 			$lastPost = $this->getLastPost($forumID);
-			if ($lastPost) echo "\t\t\t\t\t\t<a href=\"/ucp/{$lastPost->authorID}\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($lastPost->datePosted))."</span>\n";
+			if ($lastPost) echo "\t\t\t\t\t\t<a href=\"/ucp/{$lastPost->authorID}/\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($lastPost->datePosted))."</span>\n";
 			else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
@@ -175,10 +177,55 @@
 
 		public function displayThreads() {
 			$forum = $this->forums[$this->currentForum];
+			if (!$forum->permissions['read']) return false;
 
-			foreach ($forum->threads as $thread) {
-				
-			}
+?>
+		<div class="tableDiv threadTable">
+<?			if ($forum->permissions['createThread']) { ?>
+			<div id="newThread" class="clearfix"><a href="/forums/newThread/<?=$forum->forumID?>/" class="fancyButton">New Thread</a></div>
+<? 			} ?>
+			<div class="tr headerTR headerbar hbDark">
+				<div class="td icon">&nbsp;</div>
+				<div class="td threadInfo">Thread</div>
+				<div class="td numPosts"># of Posts</div>
+				<div class="td lastPost">Last Post</div>
+			</div>
+			<div class="sudoTable forumList hbdMargined">
+<?			if (sizeof($forum->threads)) { foreach ($forum->threads as $thread) { ?>
+				<div class="tr">
+					<div class="td icon"><div class="forumIcon<?=$thread->sticky?' sticky':''?><?=$thread->newPosts($forum->markedRead)?' newPosts':''?>" title="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread"></div></div>
+					<div class="td threadInfo">
+<?				if ($thread->newPosts($forum->markedRead)) { ?>
+						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+<?
+				}
+				if ($thread->numPosts > PAGINATE_PER_PAGE) {
+?>
+						<div class="paginateDiv">
+<?
+					$url = '/forums/thread/'.$thread->threadID.'/';
+					$numPages = ceil($thread->numPosts / PAGINATE_PER_PAGE);
+					if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
+					else {
+						echo "\t\t\t\t\t\t\t<a href=\"$url?page=1\">1</a>\n";
+						echo "\t\t\t\t\t\t\t<div>...</div>\n";
+						for ($count = ($numPages - 2); $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
+					}
+					echo "\t\t\t\t\t\t</div>\n";
+				}
+?>
+						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a><br>
+						<span class="threadAuthor">by <a href="/ucp/<?=$thread->authorID?>/" class="username"><?=$thread->authorUsername?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->datePosted))?></span></span>
+					</div>
+					<div class="td numPosts"><?=$thread->postCount?></div>
+					<div class="td lastPost">
+						<a href="/ucp/<?=$thread->lastPost->authorID?>" class="username"><?=$thread->lastPost->username?></a><br><span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->lastPost->datePosted))?></span>
+					</div>
+				</div>
+<?
+			} } else echo "\t\t\t\t<div class=\"tr noThreads\">No threads yet</div>\n";
+		echo "			</div>
+		</div>\n";
 		}
 	}
 ?>
