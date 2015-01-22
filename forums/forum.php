@@ -1,13 +1,15 @@
 <?
-	include(FILEROOT.'/includes/forums/ManagerForum.class.php')
-	include(FILEROOT.'/includes/forums/Forum.class.php')
+	include(FILEROOT.'/includes/forums/ForumManager.class.php');
+	include(FILEROOT.'/includes/forums/ForumPermissions.class.php');
+	include(FILEROOT.'/includes/forums/Forum.class.php');
+	include(FILEROOT.'/includes/forums/Thread.class.php');
 
 	$forumID = intval($pathOptions[0]);
 	$forumManager = new ForumManager($forumID);
+
+	if (!$forumManager->displayCheck()) { header('Location: /forums'); exit; }
 	
-	if ($forumManager->currentForum->displayCheck()) { header('Location: /forums'); exit; }
-	
-	if ($currentUser->userID) {
+/*	if ($currentUser->userID) {
 		// Get lastRead for current forum; if none, create
 		$cLastRead = $mysql->query("SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = $forumID AND userID = $currentUser->userID");
 		if ($cLastRead->rowCount()) $lastReadID = $cLastRead->fetchColumn();
@@ -22,94 +24,29 @@
 		$forumAdmin = $forumAdmin->rowCount()?TRUE:FALSE;
 	} else {
 		$forumAdmin = false;
-	}
+	}*/
 	
-	// Get children
-	$forumStructure = array();
-	$forumInfos = $mysql->query("SELECT forumID, forumType FROM forums WHERE parentID = $forumID ORDER BY `order`");
-	if ($forumInfos->rowCount()) {
-		$forumIDs = array();
-		$categoryIDs = array();
-		foreach ($forumInfos as $forumInfo) {
-			if ($forumInfo['forumType'] == 'c') {
-				$categoryIDs[] = $forumInfo['forumID'];
-				$forumStructure[$forumInfo['forumID']] = array('type' => 'c', 'children' => array());
-			} else {
-				$forumIDs[] = $forumInfo['forumID'];
-				$forumStructure[$forumInfo['forumID']] = array('type' => 'f');
-			}
-		}
-
-		if (sizeof($categoryIDs) > 0) {
-			$forumInfos = $mysql->query('SELECT forumID, parentID FROM forums WHERE parentID IN ('.implode(', ', $categoryIDs).') ORDER BY `order`');
-			foreach ($forumInfos as $forumInfo) {
-				$forumIDs[] = $forumInfo['forumID'];
-				$forumStructure[$forumInfo['parentID']]['children'][$forumInfo['forumID']] = array('type' => 'f');
-//				if (!isset($forumRD[$forumInfo['forumID']])) $forumRD[$forumInfo['forumID']] = 0;
-			}
-		}
-		if ($forumID != 0 && $forumType == 'f') $forumIDs[] = $forumID;
-
- 		$permissions = retrievePermissions($currentUser->userID, $forumIDs, array('read', 'moderate', 'createThread'));
-		foreach ($forumStructure as $iForumID => $forumInfo) {
-			if ($forumInfo['type'] == 'c') {
-				foreach ($forumInfo['children'] as $cForumID => $cInfo) if (!$permissions[$cForumID]['read']) unset($forumStructure[$iForumID]['children'][$cForumID], $forumIDs[array_search($cForumID, $forumIDs)]);
-				if (!sizeof($forumStructure[$iForumID]['children'])) unset($forumStructure[$iForumID], $categoryIDs[array_search($iForumID, $categoryIDs)]);
-			} elseif (!$permissions[$iForumID]['read']) unset($forumStructure[$iForumID], $forumIDs[array_search($iForumID, $forumIDs)]);
-		}
-
-//		if ($forumType == 'c' && (!sizeof($forumIDs) && !sizeof($categoryIDs))) { header('Location: /403'); exit; }
-		
-		$queryWhere = '';
-		foreach (array_merge($forumIDs, $categoryIDs) as $lForumID) $queryWhere .= 'forums.heritage LIKE "%'.sql_forumIDPad($lForumID).'%" OR ';
-		$forumInfos = array();
-		$indivLatestPosts = array();
-		$rForumInfos = $mysql->query("SELECT forums.forumID, forums.title, forums.description, forums.heritage, threadCount.numThreads, numPosts.numPosts, latestPosts.postID lpPostID, latestPosts.datePosted, latestPosts.authorID, latestPosts.username, IF(newPosts.forumID IS NOT NULL AND threadCount.numThreads, IFNULL(newPosts.newPosts,1), 0) newPosts FROM forums LEFT JOIN (SELECT forumID, COUNT(threadID) numThreads FROM threads GROUP BY forumID) AS threadCount ON threadCount.forumID = forums.forumID LEFT JOIN (SELECT threads.forumID, COUNT(*) numPosts FROM posts, threads WHERE posts.threadID = threads.threadID GROUP BY threads.forumID) numPosts ON forums.forumID = numPosts.forumID LEFT JOIN (SELECT lastPost.forumID, lastPost.postID, lastPost.authorID, users.username, lastPost.datePosted FROM (SELECT forumID, postID, authorID, datePosted FROM (SELECT postID, forumID, authorID, datePosted FROM posts, threads WHERE posts.threadID = threads.threadID ORDER BY posts.datePosted DESC) lastPost GROUP BY forumID) lastPost, users WHERE users.userID = lastPost.authorID) AS latestPosts ON forums.forumID = latestPosts.forumID LEFT JOIN (SELECT forumID, newPosts FROM forums_readData_newPosts WHERE userID = ".($currentUser->userID?$currentUser->userID:0)." GROUP BY forumID) newPosts ON forums.forumID = newPosts.forumID WHERE ".substr($queryWhere, 0, -4).' AND forums.forumID != '.$forumID.' ORDER BY forums.heritage');
-		foreach ($rForumInfos as $forumInfo) {
-			$indivLatestPosts[$forumInfo['forumID']] = $forumInfo['lpPostID'];
-			$forumInfos[$forumInfo['forumID']] = $forumInfo;
-		}
-		
-/*		$children = array();
-		$hcInfos = $mysql->query('SELECT p.forumID pID, c.forumID cID FROM forums p LEFT JOIN forums c ON c.heritage LIKE CONCAT(p.heritage, "-%") WHERE p.forumID IN ('.implode(', ', array_merge($forumIDs, $categoryIDs)).')');
-		foreach ($hcInfos as $hcInfo) {
-			$children[$hcInfo['pID']][] = $hcInfo['cID'];
-		}*/
-	}
-	
-	if ($forumID != 0 && $forumType != 'c') {
-		$numThreads = $mysql->query('SELECT COUNT(*) FROM threads WHERE forumID = '.$forumID);
-		$numThreads = $numThreads->fetchColumn();
-		$threads = $mysql->query("SELECT threads.threadID, threads.locked, threads.sticky, first.title, first.postID fp_postID, first.datePosted fp_datePosted, first.authorID fp_authorID, tAuthor.username fp_username, last.postID lp_postID, last.datePosted lp_datePosted, last.authorID lp_authorID, lAuthor.username lp_username, postCount.numPosts, IFNULL(rd.lastRead, 0) lastRead FROM threads INNER JOIN threads_relPosts relPosts ON relPosts.threadID = threads.threadID INNER JOIN posts first ON relPosts.firstPostID = first.postID INNER JOIN posts last ON relPosts.lastPostID = last.postID INNER JOIN users tAuthor ON first.authorID = tAuthor.userID INNER JOIN users lAuthor ON last.authorID = lAuthor.userID LEFT JOIN (SELECT threadID, COUNT(*) AS numPosts FROM posts GROUP BY threadID) postCount ON threads.threadID = postCount.threadID LEFT JOIN forums_readData_threads rd ON threads.threadID = rd.threadID AND rd.userID = ".($currentUser->userID?$currentUser->userID:0)." WHERE threads.forumID = {$forumID} ORDER BY threads.sticky DESC, last.datePosted DESC");
-	}
-	
-	$gameID = FALSE;
-	$isGM = FALSE;
-	if ($heritage[0] == 2) {
-		$gameInfo = $mysql->query("SELECT gameID FROM games WHERE forumID = ".intval($heritage[1]));
-		$gameID = $gameInfo->fetchColumn();
-		$fixedGameMenu = TRUE;
-	}
+	if ($forumManager->getForumProperty($forumID, 'gameID')) {
+		$gameID = $forumManager->getForumProperty($forumID, 'gameID');
+		$fixedGameMenu = true;
+	} else $gameID = false;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumTitle/*.($forumInfo['gameID']?' (Game)':'')*/:'s'?></h1>
+		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumManager->getForumProperty($forumID, 'title'):'s'?></h1>
 		
 		<div id="topLinks" class="clearfix hbMargined">
 			<div class="floatRight alignRight">
 				<div><? if ($forumID == 0) echo '<a href="/forums/search?search=latestPosts">Latest Posts</a>'; ?></div>
-				<div><? if ($forumAdmin) echo '<a href="/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
+				<div><? if ($forumManager->getForumProperty($forumID, 'permissions[admin]')) echo '<a href="/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
 			</div>
 			<div class="floatLeft alignLeft">
 				<div id="breadcrumbs">
-<? if ($forumID != 0) { ?>
-					<a href="/forums">Index</a><?=$forumID != 0?' > ':''?>
 <?
-		$breadcrumbs = $mysql->query('SELECT forumID, title FROM forums WHERE forumID IN ('.implode(',', $heritage).')');
-		$breadcrumbForums = array();
-		foreach ($breadcrumbs as $forumInfo) $breadcrumbForums[$forumInfo['forumID']] = printReady($forumInfo['title']);
-		$fCounter = 1;
+	if ($forumID != 0) {
+		$heritage = $forumManager->getForumProperty($forumID, 'heritage');
+		$fCounter = 0;
 		foreach ($heritage as $hForumID) {
-			echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">{$breadcrumbForums[$hForumID]}</a>".($fCounter != sizeof($heritage)?' > ':'')."\n";
+			echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">".printReady($forumManager->getForumProperty($hForumID, 'title'))."</a>".($fCounter != sizeof($heritage) - 1?' > ':'')."\n";
 			$fCounter++;
 		}
 	} else echo "\t\t\t\t\t&nbsp;\n";
@@ -119,110 +56,14 @@
 			</div>
 		</div>
 <?
-	$forumIcon = '';
-	
-	if (sizeof($forumStructure)) {
-		$curCat = '';
-		$tableOpen = FALSE;
-		foreach ($forumStructure as $iForumID => $info) {
-			if ($info['type'] == 'c' && sizeof($info['children'])) {
-				if ($tableOpen) {
-					$tableOpen = FALSE;
-					echo "\t\t\t</div>\n\t\t</div>\n";
-				}
-?>
-		<div class="tableDiv">
-			<div class="clearfix"><h2 class="wingDiv redWing">
-				<div><?=($forumID == 0)?$forumInfos[$iForumID]['title']:'Subforums'?></div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
-			</h2></div>
-			<div class="tr headerTR headerbar hbDark">
-				<div class="td icon">&nbsp;</div>
-				<div class="td name">Forum</div>
-				<div class="td numThreads"># of Threads</div>
-				<div class="td numPosts"># of Posts</div>
-				<div class="td lastPost">Last Post</div>
-			</div>
-			<div class="sudoTable forumList hbdMargined">
-<?
-				if ($firstTable) $firstTable = FALSE;
-				foreach ($info['children'] as $cForumID => $cInfo) {
-					$forumInfo = $forumInfos[$cForumID];
-					$cHeritage = explode('-', $forumInfo['heritage']);
-					foreach ($cHeritage as $key => $hForumID) $cHeritage[$key] = intval($hForumID);
-//					$forumIcon = checkNewPosts_new($cForumID, $readData, $permissionsList, $children[$cForumID])?'new':'old';
-					$forumIcon = $forumInfo['newPosts']?'new':'old';
-?>
-				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
-					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
-					<div class="td name">
-						<a href="/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
-<?=($forumInfo['description'] != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forumInfo['description'])."</div>\n":''?>
-					</div>
-					<div class="td numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></div>
-					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
-					<div class="td lastPost">
-<?
-					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($forumInfo['datePosted']))."</span>\n";
-					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
-?>
-					</div>
-				</div>
-<?
-				}
-				echo "\t\t\t</div>\n\t\t</div>\n";
-			} elseif ($info['type'] == 'f') {
-				if (!$tableOpen) {
-					$tableOpen = TRUE;
-?>
-		<div class="tableDiv">
-			<div class="clearfix"><h2 class="wingDiv redWing">
-				<div><?=($forumID == 0)?$forumInfos[$iForumID]['title']:'Subforums'?></div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
-			</h2></div>
-			<div class="tr headerTR headerbar hbDark">
-				<div class="td icon">&nbsp;</div>
-				<div class="td name">Forum</div>
-				<div class="td numThreads"># of Threads</div>
-				<div class="td numPosts"># of Posts</div>
-				<div class="td lastPost">Last Post</div>
-			</div>
-			<div class="sudoTable forumList hbdMargined">
-<?
-					if ($firstTable) $firstTable = FALSE;
-				}
-				$forumInfo = $forumInfos[$iForumID];
-				$fHeritage = explode('-', $forumInfo['heritage']);
-				foreach ($fHeritage as $key => $hForumID) $fHeritage[$key] = intval($hForumID);
-//				$forumIcon = checkNewPosts_new($iForumID, $readData, $permissionsList, $children[$iForumID])?'new':'old';
-				$forumIcon = $forumInfo['newPosts']?'new':'old';
-?>
-				<div class="tr<?=$forumInfo['numPosts']?'':' noPosts'?>">
-					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in forum"></div></div>
-					<div class="td name">
-						<a href="/forums/<?=$forumInfo['forumID']?>"><?=printReady($forumInfo['title'])?></a>
-<?=($forumInfo['description'] != '')?"\t\t\t\t\t\t<div class=\"description\">".printReady($forumInfo['description'])."</div>\n":''?>
-					</div>
-					<div class="td numThreads"><?=$forumInfo['numThreads']?$forumInfo['numThreads']:0?></div>
-					<div class="td numPosts"><?=$forumInfo['numPosts']?$forumInfo['numPosts']:0?></div>
-					<div class="td lastPost">
-<?
-					if ($forumInfo['username']) echo "\t\t\t\t\t\t<a href=\"/ucp/{$forumInfo['authorID']}\" class=\"username\">{$forumInfo['username']}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($forumInfo['datePosted']))."</span>\n";
-					else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
-?>
-					</div>
-				</div>
-<?
-			}
-		}
+	$forumManager->displayForum();
+
+	if ($forumID && $forumManager->getForumProperty($forumID, 'forumType') == 'f') {
+		$forumManager->getThreads();
 	}
-	if ($tableOpen) echo "\t\t\t</div>\n\t\t</div>\n";
 ?>
-		
 <?
-	if ($forumID != 0 && $forumType != 'c') {
+/*	if ($forumID != 0 && $forumType != 'c') {
 ?>
 		<div class="tableDiv threadTable<?=$firstTable?' firstTableDiv':''?>">
 <?		if ($permissions[$forumID]['createThread']) { ?>
@@ -306,7 +147,7 @@
 		if ($currentPage < $numPages) echo "\t\t\t\t<a href=\"?page=".($currentPage + 1)."\">&gt;</a>\n";
 		if (($currentPage + $spread) < $numPages) echo "\t\t\t\t<a href=\"?page=$numPages\">Last &gt;&gt;</a>\n";
 		echo "\t\t\t</div>\n";
-	}
+	}*/
  ?>
 			<br class="clear">
 		</div>

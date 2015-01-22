@@ -9,9 +9,9 @@
 		protected $locked = false;
 		protected $allowRolls = false;
 		protected $allowDraws = false;
-		protected $lastPost = array();
-		protected $postCount;
+		protected $postCount = 0;
 
+		protected $lastPost = null;
 		protected $lastRead;
 
 		protected $posts = array();
@@ -20,15 +20,14 @@
 			if (is_array($loadData)) {
 				if (!isset($loadData['threadID'], $loadData['title'])) throw new Exception('Need more thread info');
 				foreach ($loadData as $key => $value) 
-					if (isset($this->$key)) $this->$key = $loadData[$key];
-				if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) 
-					$this->lastPost = array(
-						'postID' => $loadData['lp_postID'],
-						'authorID' => $loadData['lp_authorID'],
-						'username' => $loadData['lp_username'],
-						'datePosted' => $loadData['lp_datePosted']
-					);
-				
+					if (property_exists($this, $key)) $this->$key = $loadData[$key];
+				if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) {
+					$this->lastPost = new stdClass();
+					$this->lastPost->postID = $loadData['lp_postID'];
+					$this->lastPost->authorID = $loadData['lp_authorID'];
+					$this->lastPost->username = $loadData['lp_username'];
+					$this->lastPost->datePosted = $loadData['lp_datePosted'];
+				}
 			}
 		}
 
@@ -37,7 +36,9 @@
 		}
 
 		public function __get($key) {
-			if (isset($this->$key)) return $this->$key;
+			if (property_exists($this, $key)) return $this->$key;
 		}
+
+		public function newPosts($)
 	}
 ?>
