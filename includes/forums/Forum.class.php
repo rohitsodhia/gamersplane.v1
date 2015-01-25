@@ -24,7 +24,7 @@
 			$this->forumID = (int) $forumID;
 			foreach (get_object_vars($this) as $key => $value) {
 				if (in_array($key, array('children', 'threads', 'lastPost', 'admin'))) continue;
-				if (!isset($forumData[$key]) && $forumData[$key] != null) throw new Exception('Missing data for '.$this->forumID.': '.$key);
+				if (!array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 				$this->__set($key, $forumData[$key]);
 			}
 			$this->heritage = explode('-', $this->heritage);

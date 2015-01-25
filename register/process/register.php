@@ -53,6 +53,9 @@
 		} else {
 			$newUser = new User();
 			$userID = $newUser->newUser($username, $password1, $email);
+			$newestPost = $mysql->query('SELECT MAX(postID) FROM posts');
+			$newestPost = $newestPost->fetchColumn();
+			$mysql->query("INSERT INTO forums_readData_forums SET userID = {$userID}, forumID = 0, markedRead = {$newestPost}");
 			if ($userID) {
 				$newUser->updateUsermeta('reference', $hear);
 

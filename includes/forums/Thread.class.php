@@ -1,6 +1,7 @@
 <?
 	class Thread {
 		protected $threadID;
+		protected $forumID;
 		protected $title;
 		protected $authorID;
 		protected $authorUsername;

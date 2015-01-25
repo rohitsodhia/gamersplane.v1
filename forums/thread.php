@@ -1,9 +1,14 @@
 <?
+	require_once(FILEROOT.'/includes/forums/ForumManager.class.php');
+	require_once(FILEROOT.'/includes/forums/ForumPermissions.class.php');
+	require_once(FILEROOT.'/includes/forums/Forum.class.php');
+	require_once(FILEROOT.'/includes/forums/Thread.class.php');
+
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('tools');
 	
 	$threadID = intval($pathOptions[1]);
-	if (!threadID) { header('Location: /forums'); exit; }
+	if (!$threadID) { header('Location: /forums'); exit; }
 	
 	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.lastRead lastReadID, newPosts.cLastRead cLastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = ".($currentUser?$currentUser->userID:'NULL')." WHERE threads.threadID = {$threadID}");
 	$threadInfo = $threadInfo->fetch();

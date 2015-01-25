@@ -1,8 +1,8 @@
 <?
-	include(FILEROOT.'/includes/forums/ForumManager.class.php');
-	include(FILEROOT.'/includes/forums/ForumPermissions.class.php');
-	include(FILEROOT.'/includes/forums/Forum.class.php');
-	include(FILEROOT.'/includes/forums/Thread.class.php');
+	require_once(FILEROOT.'/includes/forums/ForumManager.class.php');
+	require_once(FILEROOT.'/includes/forums/ForumPermissions.class.php');
+	require_once(FILEROOT.'/includes/forums/Forum.class.php');
+	require_once(FILEROOT.'/includes/forums/Thread.class.php');
 
 	$forumID = intval($pathOptions[0]);
 	$forumManager = new ForumManager($forumID);
@@ -40,18 +40,7 @@
 				<div><? if ($forumManager->getForumProperty($forumID, 'permissions[admin]')) echo '<a href="/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
 			</div>
 			<div class="floatLeft alignLeft">
-				<div id="breadcrumbs">
-<?
-	if ($forumID != 0) {
-		$heritage = $forumManager->getForumProperty($forumID, 'heritage');
-		$fCounter = 0;
-		foreach ($heritage as $hForumID) {
-			echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">".printReady($forumManager->getForumProperty($hForumID, 'title'))."</a>".($fCounter != sizeof($heritage) - 1?' > ':'')."\n";
-			$fCounter++;
-		}
-	} else echo "\t\t\t\t\t&nbsp;\n";
-?>
-				</div>
+<?	$forumManager->displayBreadcrumbs(); ?>
 				<div>Be sure to read and follow the <a href="/forums/rules">guidelines for our forums</a>.</div>
 			</div>
 		</div>
