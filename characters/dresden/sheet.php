@@ -40,7 +40,7 @@
 					<div class="phase hbMargined">
 						<h3>Phase <?=$numWords[$phase]?> - <?=$phaseText?></h3>
 						<div class="aspect"><?=$this->getPhase($phase, 'aspect')?></div>
-						<div class="events"><?=$this->getPhase($phase, 'events')?></div>
+						<div class="events"><?=printReady($this->getPhase($phase, 'events'))?></div>
 					</div>
 <?	} ?>
 				</div></div>
@@ -99,10 +99,10 @@
 					</div>
 					<div id="consequences">
 						<h2 class="headerbar hbDark">Consequences</h2>
-						<div class="hbdMargined"><?=$this->getConsequences()?></div>
+						<div class="hbdMargined"><?=printReady($this->getConsequences())?></div>
 					</div>
 				</div>
 			</div>
 			
 			<h2 class="headerbar hbDark">Background/Notes</h2>
-			<div class="hbdMargined"><?=$this->getNotes()?></div>
+			<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
