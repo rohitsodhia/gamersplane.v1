@@ -10,13 +10,8 @@
 	$threadID = intval($pathOptions[1]);
 	if (!$threadID) { header('Location: /forums'); exit; }
 	
-	$threadInfo = $mysql->query("SELECT threads.forumID, threads.threadID, threads.locked, threads.sticky, posts.title, relPosts.firstPostID, relPosts.lastPostID, numPosts.numPosts, forums.heritage, newPosts.lastRead lastReadID, newPosts.cLastRead cLastReadID FROM threads INNER JOIN forums ON threads.forumID = forums.forumID INNER JOIN threads_relPosts relPosts ON threads.threadID = relPosts.threadID INNER JOIN posts ON relPosts.firstPostID = posts.postID INNER JOIN (SELECT threadID, COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID}) numPosts ON threads.threadID = numPosts.threadID LEFT JOIN forums_readData_newPosts newPosts ON threads.threadID = newPosts.threadID AND newPosts.userID = ".($currentUser?$currentUser->userID:'NULL')." WHERE threads.threadID = {$threadID}");
-	$threadInfo = $threadInfo->fetch();
-	$threadInfo['heritage'] = explode('-', $threadInfo['heritage']);
-	foreach ($threadInfo['heritage'] as $key => $value) $threadInfo['heritage'][$key] = intval($value);
-	$permissions = retrievePermissions($currentUser->userID, $threadInfo['forumID'], array('read', 'write', 'editPost', 'deletePost', 'deleteThread', 'moderate'), true);
-	
-	if ($permissions['read'] == 0) { header('Location: /403'); exit; }
+	$threadManager = new ThreadManager($threadID);
+	if ($threadManager->getPermissions('read') == false) { header('Location: /403'); exit; }
 
 	if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
 		$lastReadID = (int) $threadInfo['lastReadID'] > (int) $threadInfo['cLastReadID']?(int) $threadInfo['lastReadID']:(int) $threadInfo['cLastReadID'];
@@ -24,45 +19,27 @@
 		$numPrevPosts = $numPrevPosts->fetchColumn();
 		if ($threadInfo['lastReadID'] != $threadInfo['lastPostID']) $numPrevPosts += 1;
 		$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
-	} elseif (isset($_GET['p'])) {
-		$post = intval($_GET['p']);
+	} elseif (isset($_GET['post'])) {
+		$post = intval($_GET['post']);
 		$numPrevPosts = $mysql->query('SELECT COUNT(postID) FROM posts WHERE threadID = '.$threadID.' AND postID <= '.$post);
 		$numPrevPosts = $numPrevPosts->fetchColumn();
 		$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
 	} else $page = intval($_GET['page']);
-	$page = $page > 0?$page:1;
-	if ($page > ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE)) $page = ceil($threadInfo['numPosts'] / PAGINATE_PER_PAGE);
-	$start = ($page - 1) * PAGINATE_PER_PAGE;
-	$posts = $mysql->query("SELECT posts.postID, posts.title, users.userID, posts.message, posts.postAs, posts.datePosted, posts.lastEdit, posts.timesEdited, rolls.numRolls, draws.numDraws FROM posts LEFT JOIN users ON posts.authorID = users.userID LEFT JOIN (SELECT COUNT(rollID) AS numRolls, postID FROM rolls GROUP BY postID) AS rolls ON posts.postID = rolls.postID LEFT JOIN (SELECT COUNT(drawID) AS numDraws, postID FROM deckDraws GROUP BY postID) AS draws ON posts.postID = draws.postID WHERE posts.threadID = {$threadID} ORDER BY postID LIMIT {$start}, ".PAGINATE_PER_PAGE);
-	if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = $threadID, userID = {$currentUser->userID}, lastRead = {$threadInfo['lastPostID']} ON DUPLICATE KEY UPDATE lastRead = {$threadInfo['lastPostID']}");
+	$threadManager->getPosts($page);
 
 	$gameID = false;
 	$isGM = false;
-	if ($threadInfo['heritage'][0] == 2 && $threadInfo['forumID'] != 10) {
-		$gameID = $mysql->query('SELECT gameID, systemID FROM games WHERE forumID = '.intval($threadInfo['heritage'][1]));
-		list($gameID, $systemID) = $gameID->fetch(PDO::FETCH_NUM);
+	if ($threadManager->getForumProperty('gameID')) {
+		$systemID = $mysql->query('SELECT systemID FROM games WHERE gameID = '.$threadManager->getForumProperty('gameID'));
+		$systemID = $systemID->fetchColumn();
 
-		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = $gameID");
+		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".threadManager->getForumProperty('gameID'));
 		if ($gmCheck->rowCount()) $isGM = true;
 
 		$system = $systems->getShortName($systemID);
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = $system.'Character';
 	}
-
-	$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.threadID = {$threadID} AND r.postID = p.postID ORDER BY r.rollID");
-	$temp = array();
-	foreach ($rolls as $rollInfo) {
-		$rollObj = RollFactory::getRoll($rollInfo['type']);
-		$rollObj->forumLoad($rollInfo);
-		$temp[$rollInfo['postID']][] = $rollObj;
-	}
-	$rolls = $temp;
-	
-	$draws = $mysql->query("SELECT posts.postID, deckDraws.drawID, deckDraws.type, deckDraws.cardsDrawn, deckDraws.reveals, deckDraws.reason FROM posts, deckDraws WHERE posts.threadID = {$threadID} AND deckDraws.postID = posts.postID");
-	$temp = array();
-	foreach ($draws as $drawInfo) $temp[$drawInfo['postID']][] = $drawInfo;
-	$draws = $temp;
 	
 	$pollInfo = $mysql->query("SELECT poll, optionsPerUser, allowRevoting FROM forums_polls WHERE threadID = {$threadID}");
 	$pollInfo = $pollInfo->rowCount()?$pollInfo->fetch():false;
@@ -146,12 +123,17 @@
 	else $postSide = 'Left';
 	
 	$users = array();
+	$characters = array();
 	if ($posts->rowCount()) {
 		foreach ($posts as $postInfo) {
 			if (!isset($users[$postInfo['userID']])) $users[$postInfo['userID']] = new User($postInfo['userID']);
 			$postAuthor = $users[$postInfo['userID']];
-			if ($postInfo['postAs'] && $character = new $charClass($postInfo['postAs'])) $postAsChar = true;
-			else $postAsChar = false;
+			if ($postInfo['postAs']) {
+				if (isset($characters[$postInfo['postAs']]) || $characters[$postInfo['postAs']] = new $charClass($postInfo['postAs'])) {
+					$postAsChar = true;
+					$character = $characters[$postInfo['postAs']];
+				} else $postAsChar = false;
+			} else $postAsChar = false;
 ?>
 			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
 				<a name="p<?=$postInfo['postID']?>"></a>

@@ -54,8 +54,8 @@
 					<label>Avatar</label>
 					<div>
 						<div id="avatarDisp">
-							<img src="<?=$user->getAvatar()?>">
-<?	if ($user->getAvatar(true)) { ?>
+							<img src="<?=User::getAvatar($user->userID, $user->avatarExt)?>">
+<?	if (User::getAvatar($user->userID, $user->avatarExt, true)) { ?>
 							<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
 <?	} ?>
 						</div>

@@ -8,7 +8,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$user->username?></h1>
 		<div id="leftCol">
-			<img src="<?=$user->getAvatar()?>" class="avatar">
+			<img src="<?=User::getAvatar($user->userID, $user->avatarExt)?>" class="avatar">
 			<div id="actions">
 				<a href="/pms/send/?userID=<?=$user->userID?>">Send Private Message</a>
 			</div>

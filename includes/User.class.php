@@ -145,8 +145,8 @@
 			$deleteUsermeta->execute();
 		}
 
-		public function getAvatar($exists = false) {
-			if (file_exists(FILEROOT."/ucp/avatars/{$this->userID}.{$this->avatarExt}")) return $exists?true:"/ucp/avatars/{$this->userID}.{$this->avatarExt}";
+		static function getAvatar($userID, $ext = 'jpg', $exists = false) {
+			if (file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}")) return $exists?true:"/ucp/avatars/{$userID}.{$ext}";
 			else return $exists?false:'/ucp/avatars/avatar.png';
 		}
 
