@@ -12,10 +12,12 @@
 		protected $allowDraws = false;
 		protected $postCount = 0;
 
+		protected $firstPostID = 0;
 		protected $lastPost = null;
-		protected $lastRead;
+		protected $lastRead = 0;
 
 		protected $posts = array();
+		protected $poll = null;
 		
 		public function __construct($loadData = null) {
 			if (is_array($loadData)) {
@@ -46,6 +48,8 @@
 		}
 
 		public function getPosts($page = 1) {
+			if (sizeof($this->posts)) return $this->posts;
+
 			global $loggedIn, $currentUser, $mysql;
 
 			$page = intval($page) > 0?intval($page):1;
@@ -62,6 +66,32 @@
 			$draws = $mysql->query("SELECT postID, drawID, type, cardsDrawn, reveals, reason FROM deckDraws WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY drawID");
 			foreach ($draws as $drawInfo) 
 				$this->posts[$drawInfo['postID']]->addDraw($drawInfo);
+
+			return $this->posts;
+		}
+
+		public function getPoll() {
+			if ($this->poll) return true;
+			try {
+				$this->poll = new ForumPoll($this->threadID);
+				return true;
+			} catch (Exception $e) { return false; }
+		}
+
+		public function getPollProperty($key) {
+			return $this->poll->$key;
+		}
+
+		public function getVotesCast() {
+			return $this->poll->getVotesCast();
+		}
+
+		public function getVoteTotal() {
+			return $this->poll->getVoteTotal();
+		}
+
+		public function getVoteMax() {
+			return $this->poll->getVoteMax();
 		}
 	}
 ?>

@@ -8,33 +8,84 @@
 			global $mysql, $currentUser;
 
 			$this->threadID = intval($threadID);
-			$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
+			$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
 			$this->thread = $thread->fetch();
 			$this->thread = new Thread($this->thread);
 
-			$this->forumManager = new ForumManager($this->thread->forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS);
+			$this->forumManager = new ForumManager($this->thread->forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS|ForumManager::PER_WRITE);
 		}
 
 		public function __get($key) {
 			if (property_exists($this, $key)) return $this->$key;
 		}
 
-		public function getThreadProperty($forumID, $property) {
-			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) return $this->thread[$forumID]->{$matches[1]}[$matches[2]];
-			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) return $this->thread[$forumID]->$matches[1]->$matches[2];
-			else return $this->thread[$forumID]->$property;
+		public function getThreadProperty($property) {
+			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) return $this->thread->{$matches[1]}[$matches[2]];
+			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) return $this->thread->$matches[1]->$matches[2];
+			else return $this->thread->$property;
 		}
 
-		public function getPosts($page = 1) {
-			$this->thread->getPosts($page);
+		public function getForumProperty($key) {
+			return $this->forumManager->getForumProperty($this->thread->forumID, $key);
 		}
 
 		public function getPermissions($permission = null) {
 			return $this->forumManager->getForumProperty($this->thread->forumID, 'permissions'.($permission != null?"[{$permission}]":''));
 		}
 
-		public function getForumProperty($key) {
-			return $this->forumManager->getForumProperty($this->thread->forumID, $key);
+		public function getThreadLastRead() {
+			if ($this->getForumProperty('markedRead') > $this->getThreadProperty('lastRead')) 
+				return $this->getForumProperty('markedRead');
+			else 
+				return $this->getThreadProperty('lastRead');
+		}
+
+		public function getPosts($page = 1) {
+			return $this->thread->getPosts($page);
+		}
+
+		public function getPoll() {
+			return $this->thread->getPoll();
+		}
+
+		public function getPollProperty($key) {
+			return $this->thread->getPollProperty($key);
+		}
+
+		public function getVotesCast() {
+			return $this->thread->getVotesCast();
+		}
+
+		public function getVoteTotal() {
+			return $this->thread->getVoteTotal();
+		}
+
+		public function getVoteMax() {
+			return $this->thread->getVoteMax();
+		}
+
+		public function displayPagination($page) {
+			$page = intval($page) > 0?intval($page):1;
+			if ($page > ceil($this->postCount / PAGINATE_PER_PAGE)) $page = ceil($this->postCount / PAGINATE_PER_PAGE);
+
+			if ($this->thread->postCount > PAGINATE_PER_PAGE) {
+				$spread = 2;
+				echo "\t\t\t<div class=\"paginateDiv\">";
+				$numPages = ceil($this->thread->postCount / PAGINATE_PER_PAGE);
+				$firstPage = $page - $spread;
+				if ($firstPage < 1) $firstPage = 1;
+				$lastPage = $page + $spread;
+				if ($lastPage > $numPages) $lastPage = $numPages;
+				echo "\t\t\t\t<div class=\"currentPage\">{$page} of {$numPages}</div>\n";
+				if (($page - $spread) > 1) echo "\t\t\t\t<a href=\"?page=1\">&lt;&lt; First</a>\n";
+				if ($page > 1) echo "\t\t\t\t<a href=\"?page=".($page - 1)."\">&lt;</a>\n";
+				for ($count = $firstPage; $count <= $lastPage; $count++) echo "\t\t\t\t<a href=\"?page=$count\"".(($count == $page)?' class="page"':'').">$count</a>\n";
+				
+				if ($page < $numPages) echo "\t\t\t\t<a href=\"?page=".($page + 1)."\">&gt;</a>\n";
+				if (($page + $spread) < $numPages) echo "\t\t\t\t<a href=\"?page={$numPages}\">Last &gt;&gt;</a>\n";
+				echo "\t\t\t</div>\n";
+				echo "\t\t\t<br class=\"clear\">\n";
+			}
 		}
 	}
 ?>
