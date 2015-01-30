@@ -7,7 +7,6 @@
 
 		const NO_CHILDREN = 1;
 		const NO_NEWPOSTS = 2;
-		const PER_WRITE = 4;
 
 		public function __construct($forumID, $options = 0) {
 			global $mysql, $currentUser;
@@ -21,9 +20,7 @@
 				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN players p ON f.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
 				foreach ($userGameForums as $forum) $this->forumsData[$forum['forumID']] = $forum;
 			}
-			$perToGet = array('read', 'moderate', 'createThread');
-			if ($options&$this::PER_WRITE == $this::PER_WRITE) $perToGet = array_merge($perToGet, array('write'));
-			$permissions = ForumPermissions::getPermissions($currentUser->userID, array_keys($this->forumsData), $perToGet, $this->forumsData);
+			$permissions = ForumPermissions::getPermissions($currentUser->userID, array_keys($this->forumsData), null, $this->forumsData);
 			foreach ($permissions as $pForumID => $permission)
 				$this->forumsData[$pForumID]['permissions'] = $permission;
 			if ($options&$this::NO_NEWPOSTS == $this::NO_NEWPOSTS) 

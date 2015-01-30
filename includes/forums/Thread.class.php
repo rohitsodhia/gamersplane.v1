@@ -20,17 +20,17 @@
 		protected $poll = null;
 		
 		public function __construct($loadData = null) {
-			if (is_array($loadData)) {
-				if (!isset($loadData['threadID'], $loadData['title'])) throw new Exception('Need more thread info');
-				foreach ($loadData as $key => $value) 
-					if (property_exists($this, $key)) $this->$key = $loadData[$key];
-				if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) {
-					$this->lastPost = new stdClass();
-					$this->lastPost->postID = $loadData['lp_postID'];
-					$this->lastPost->authorID = $loadData['lp_authorID'];
-					$this->lastPost->username = $loadData['lp_username'];
-					$this->lastPost->datePosted = $loadData['lp_datePosted'];
-				}
+			if ($loadData == null) return true;
+
+			if (!isset($loadData['threadID'], $loadData['title'])) throw new Exception('Need more thread info');
+			foreach ($loadData as $key => $value) 
+				if (property_exists($this, $key)) $this->$key = $loadData[$key];
+			if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) {
+				$this->lastPost = new stdClass();
+				$this->lastPost->postID = $loadData['lp_postID'];
+				$this->lastPost->authorID = $loadData['lp_authorID'];
+				$this->lastPost->username = $loadData['lp_username'];
+				$this->lastPost->datePosted = $loadData['lp_datePosted'];
 			}
 		}
 

@@ -1,8 +1,5 @@
 <?
-	require_once(FILEROOT.'/includes/forums/ForumManager.class.php');
-	require_once(FILEROOT.'/includes/forums/ForumPermissions.class.php');
-	require_once(FILEROOT.'/includes/forums/Forum.class.php');
-	require_once(FILEROOT.'/includes/forums/Thread.class.php');
+	addPackage('forum');
 
 	$forumID = intval($pathOptions[0]);
 	$forumManager = new ForumManager($forumID);

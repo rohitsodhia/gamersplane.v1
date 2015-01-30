@@ -3,10 +3,10 @@
 
 	if (isset($_POST['advanced'])) {
 		$_SESSION['message'] = $_POST['message'];
-		header('Location: /forums/post/'.intval($_POST['threadID']));
+		header('Location: /forums/post/'.intval($_POST['threadID']).'/');
 	} elseif (isset($_POST['preview'])) {
 		$_SESSION['previewVars'] = $_POST;
-		header('Location: '.$_SESSION['lastURL'].'?preview=1');
+		header("Location: {$_SESSION['lastURL']}?preview=1");
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 		$title = sanitizeString(html_entity_decode($_POST['title']));

@@ -2,12 +2,14 @@
 	class ForumPoll {
 		protected $threadID;
 		protected $question;
-		protected $optionsPerUser;
+		protected $optionsPerUser = 1;
 		protected $pollLength;
 		protected $allowRevoting;
 		protected $options;
 
-		public function __construct($threadID) {
+		public function __construct($threadID = null) {
+			if ($threadID == null) return true;
+
 			global $mysql, $currentUser;
 
 			$this->threadID = (int) $threadID;

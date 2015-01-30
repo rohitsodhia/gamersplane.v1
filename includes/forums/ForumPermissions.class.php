@@ -88,7 +88,7 @@
 				}
 				if (!isset($permissions[$forumID]['admin']) || $permissions[$forumID]['admin'] != true) $permissions[$forumID]['admin'] = false;
 			}
-			
+
 			return $permissions;
 		}
 	}

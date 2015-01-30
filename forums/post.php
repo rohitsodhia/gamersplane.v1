@@ -1,9 +1,8 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-	addPackage('tools');
+	addPackage('forum');
 
 	$noChat = false;
-
 	$firstPost = false;
 	$editPost = $pathOptions[0] == 'editPost'?true:false;
 
@@ -43,10 +42,10 @@
 		
 		$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'write, moderate, addPoll, addRolls, addDraws', true);
 		if ($postInfo['authorID'] != $currentUser->userID/* && $postInfo->rowCount() > 0*/) {
-			if ($permissions['moderate'] != 1) $noChat = true;
-		} elseif (($postInfo['locked'] && !$permissions['moderate'])) $noChat = true;
+			if ($threadManager->getPermissions('moderate') != 1) $noChat = true;
+		} elseif (($postInfo['locked'] && !$threadManager->getPermissions('moderate'))) $noChat = true;
 		else {
-			if (!$permissions['write']) $noChat = true;
+			if (!$threadManager->getPermissions('write')) $noChat = true;
 		}
 	} elseif ($pathOptions[0] == 'newThread') {
 		$firstPost = true;
@@ -56,31 +55,35 @@
 		$heritage = $heritage->fetchColumn();
 		$gameForum = (intval(substr($heritage, 0, 3)) == 2)?true:false;
 		$permissions = retrievePermissions($currentUser->userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', true);
-		if ($permissions['createThread'] != 1) $noChat = true;
+		if ($threadManager->getPermissions('createThread') != 1) $noChat = true;
 	} elseif ($pathOptions[0] == 'post') {
 		$threadID = intval($pathOptions[1]);
-		$threadInfo = $mysql->query("SELECT threads.forumID, first.title, threads.locked, threads.allowRolls, threads.allowDraws, forums.heritage FROM threads, forums, threads_relPosts relPosts, posts first WHERE threads.threadID = $threadID AND forums.forumID = threads.forumID AND threads.threadID = relPosts.threadID AND relPosts.firstPostID = first.postID LIMIT 1");
-		if ($threadInfo->rowCount() == 0) { $noChat = true; break; }
-		if (isset($_SESSION['message'])) {
-			$postInfo['message'] = $_SESSION['message'];
-			unset($_SESSION['message']);
-		}
-		list($forumID, $postInfo['threadTitle'], $locked, $allowRolls, $postInfo['allowDraws'], $heritage) = $threadInfo->fetch(PDO::FETCH_NUM);
-		$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, moderate, addRolls, addDraws', true);
-		if ($permissions['write'] != 1 && !$locked) { $noChat = true; break; }
-		
-		$quoteID = intval($_GET['quote']);
-		if ($quoteID) {
-			$quoteInfo = $mysql->query("SELECT users.username, posts.message FROM users, posts WHERE posts.postID = {$quoteID} AND posts.authorID = users.userID");
-			$quoteInfo = $quoteInfo->fetch();
-			$postInfo['message'] = '[quote="'.$quoteInfo['username'].'"]'.$quoteInfo['message'].'[/quote]';
-		}
+		try {
+			$threadManager = new ThreadManager($threadID);
+			$post = new Post();
+
+			if ($threadManager->getThreadProperty('locked') || !$threadManager->getPermissions('write')) 
+				$noChat = true;
+			else {
+				if (isset($_SESSION['message'])) {
+					$post->message = $_SESSION['message'];
+					unset($_SESSION['message']);
+				} elseif (isset($_GET['quote'])) {
+					$quoteID = intval($_GET['quote']);
+					if ($quoteID) {
+						$quoteInfo = $mysql->query("SELECT u.username, p.message FROM users u, posts p WHERE p.postID = {$quoteID} AND p.authorID = u.userID");
+						$quoteInfo = $quoteInfo->fetch();
+						$post->message = '[quote="'.$quoteInfo['username'].'"]'.$quoteInfo['message'].'[/quote]';
+					}
+				}
+			}
+		} catch (Exception $e) { $noChat = true; }
 	} else $noChat = true;
 	
 	if ($noChat) { header('Location: /forums/'); exit; }
 	
 	if ($_SESSION['errors']) {
-		if ($_SESSION['lastURL'] == '/forums/process/post') {
+		if ($_SESSION['lastURL'] == '/forums/process/post/') {
 			$errors = $_SESSION['errors'];
 			if (isset($postInfo)) $postInfo = $_SESSION['errorVals'] + $postInfo;
 			else $postInfo = $_SESSION['errorVals'];
@@ -98,15 +101,14 @@
 		$postInfo['postTitle'] = $postInfo['title'];
 	}
 
-	$heritage = explode('-', $heritage);
-	foreach ($heritage as $key => $value) $heritage[$key] = intval($value);
 	$gameID = false;
 	$isGM = false;
-	if ($heritage[0] == 2 && $forumID != 10) {
-		$gameID = $mysql->query('SELECT gameID, systemID FROM games WHERE forumID = '.intval($heritage[1]));
-		list($gameID, $systemID) = $gameID->fetch(PDO::FETCH_NUM);
+	if ($threadManager->getForumProperty('gameID')) {
+		$gameID = $threadManager->getForumProperty('gameID');
+		$systemID = $mysql->query("SELECT systemID FROM games WHERE gameID = {$gameID}");
+		$systemID = $systemID->fetchColumn();
 		
-		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID}");
+		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
 		if ($gmCheck->rowCount()) $isGM = true;
 
 		$system = $systems->getShortName($systemID);
@@ -122,17 +124,20 @@
 		}
 	}
 
-	$rollsAllowed = ($permissions['addRolls'] && $allowRolls || $permissions['moderate'])?true:false;
+	$rollsAllowed = ($threadManager->getPermissions('addRolls') && $threadManager->getThreadProperty('allowRolls') || $threadManager->getPermissions('moderate'))?true:false;
 	$drawsAllowed = false;
-	if ($permissions['addDraws']) {
-		$gmCheck = $mysql->query("SELECT players.isGM FROM players INNER JOIN games USING (gameID) WHERE players.userID = {$currentUser->userID}");
-		if ($gmCheck->rowCount()) $deckInfos = $mysql->query('SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games WHERE games.forumID = '.$forumID.' AND games.gameID = decks.gameID GROUP BY decks.deckID');
-		else $deckInfos = $mysql->query("SELECT decks.deckID, decks.label, decks.type, decks.deck, decks.position FROM decks, games, characters, deckPermissions WHERE games.forumID = {$forumID} AND decks.gameID = characters.gameID AND characters.userID = {$currentUser->userID} AND decks.deckID = deckPermissions.deckID AND deckPermissions.userID = {$currentUser->userID} GROUP BY decks.deckID");
-		if ($deckInfos->rowCount()) $drawsAllowed = true;
+	if ($gameID && $threadManager->getPermissions('addDraws')) {
+		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = 1");
+		if ($gmCheck->rowCount()) 
+			$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
+		else 
+			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, d.deck, d.position FROM decks d INNER JOIN deckPermissions p ON d.deckID = p.deckID AND p.useID = {$currentUser->userID} WHERE d.gameID = {$gameID}");
+		if ($decks->rowCount()) $drawsAllowed = true;
 	}
+
+	require_once(FILEROOT.'/header.php');
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
-<? if ($_GET['errors'] && $errors) { ?>
+<?	if ($_GET['errors'] && $errors) { ?>
 		<div class="alertBox_error"><ul>
 <?
 	if ($errors['overdrawn']) echo "			<li>Incorrect number of cards drawn.</li>\n";
@@ -145,25 +150,27 @@
 	if ($errors['badRoll']) echo "			<li>One or more of your roll entries are malformed. Please make sure they are in the right format.</li>\n";
 ?>
 		</ul></div>
-<? } ?>
-		<h1 class="headerbar"><?=($postInfo['postID'] || $pathOptions[0] == 'post')?($editPost?'Edit post':'Post a reply').' - '.printReady($postInfo['threadTitle']):'New Thread'?></h1>
+<?	} ?>
+		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post')?($editPost?'Edit post':'Post a reply').' - '.printReady($threadManager->getThreadProperty('title')):'New Thread'?></h1>
 		
-<? if ($_GET['preview'] && sizeof($_SESSION['previewVars']) && strlen($postInfo['message']) > 0) { ?>
+<?	if ($_GET['preview'] && sizeof($_SESSION['previewVars']) && strlen($post->message) > 0) { ?>
 		<h2>Preview:</h2>
 		<div id="preview">
-			<?=BBCode2Html(printReady($postInfo['message']))."\n"?>
+			<?=BBCode2Html(printReady($post->message))."\n"?>
 		</div>
 		<hr>
 		
 <? } ?>
-		<form method="post" action="/forums/process/post">
+		<form method="post" action="/forums/process/post/">
 <?
 	if ($pathOptions[0] == 'newThread') echo "\t\t\t".'<input type="hidden" name="new" value="'.$forumID.'">'."\n";
 	elseif ($pathOptions[0] == 'editPost') echo "\t\t\t".'<input type="hidden" name="edit" value="'.$postID.'">'."\n";
 	elseif ($pathOptions[0] == 'post') echo "\t\t\t".'<input type="hidden" name="threadID" value="'.$threadID.'">'."\n";
 	
-	if (isset($postInfo, $postInfo['postTitle'])) $title = printReady($postInfo['postTitle'], array('stripslashes'));
-	elseif (isset($postInfo['threadTitle'])) $title = (substr($postInfo['threadTitle'], 0, 4) != 'Re: '?'Re: ':'').$postInfo['threadTitle'];
+	if (isset($post, $post->title)) 
+		$title = printReady($post->title, array('stripslashes'));
+	elseif (isset($post->title)) 
+		$title = (substr($post->title, 0, 4) != 'Re: '?'Re: ':'').$post->title;
 ?>
 			<div id="basicPostInfo" class="hbMargined">
 				<div class="table">
@@ -177,20 +184,20 @@
 						<div><select name="postAs">
 							<option value="p"<?=$postInfo['postAs'] == null?' selected="selected"':''?>>Player</option>
 <?		foreach ($characters as $character) { ?>
-							<option value="<?=$character->getCharacterID()?>"<?=$postInfo['postAs'] == $character->getCharacterID()?' selected="selected"':''?>><?=$character->getName()?></option>
+							<option value="<?=$character->getCharacterID()?>"<?=$post->postAs == $character->getCharacterID()?' selected="selected"':''?>><?=$character->getName()?></option>
 <?		} ?>
 						</select></div>
 					</div>
 <?	} ?>
 				</div>
-				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady($postInfo['message'], array('stripslashes'))?></textarea>
+				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady($post->message, array('stripslashes'))?></textarea>
 			</div>
 			
-<?	if ($firstPost && ($permissions['addPoll'] || $rollsAllowed || $drawsAllowed)) { ?>
+<?	if ($firstPost && ($threadManager->getPermissions('addPoll') || $rollsAllowed || $drawsAllowed)) { ?>
 			<div id="optionControls" class="clearfix hbdMargined"><div class="wingDiv sectionControls floatLeft">
 				<div>
 					<a href="" class="section_options<?=$firstPost?' current':''?>">Options</a>
-<?		if ($permissions['addPoll']) { ?>
+<?		if ($threadManager->getPermissions('addPoll')) { ?>
 					<a href="" class="section_poll">Poll</a>
 <?		} ?>
 <?		if ($rollsAllowed || $drawsAllowed) { ?>
@@ -213,23 +220,23 @@
 			
 <?	if ($firstPost) { ?>
 			<div id="threadOptions" class="section_options hbdMargined">
-<?		if ($permissions['moderate']) { ?>
-				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Make thread sticky</p>
+<?		if ($threadManager->getPermissions('moderate')) { ?>
+				<p><input type="checkbox" name="sticky"<?=$threadManager->getThreadProperty('sticky')?' checked="checked"':''?>> Make thread sticky</p>
 <?
 		}
-		if ($permissions['addRolls']) {
+		if ($threadManager->getPermissions('addRolls')) {
 ?>
-				<p><input type="checkbox" name="allowRolls"<?=$allowRolls || ($pathOptions[0] == 'newThread' && $gameForum)?' checked="checked"':''?>> Allow adding rolls to posts (if this box is unchecked, any rolls added to this thread will be ignored)</p>
+				<p><input type="checkbox" name="allowRolls"<?=$allowRolls || ($pathOptions[0] == 'newThread' && $gameID)?' checked="checked"':''?>> Allow adding rolls to posts (if this box is unchecked, any rolls added to this thread will be ignored)</p>
 <?
 		}
-		if ($permissions['addDraws']) {
+		if ($threadManager->getPermissions('addDraws')) {
 ?>
-				<p><input type="checkbox" name="allowDraws"<?=$allowDraws || ($pathOptions[0] == 'newThread' && $gameForum)?' checked="checked"':''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
+				<p><input type="checkbox" name="allowDraws"<?=$allowDraws || ($pathOptions[0] == 'newThread' && $gameID)?' checked="checked"':''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
 <?		} ?>
 			</div>
 
 <?
-		if ($permissions['addPoll']) {
+		if ($threadManager->getPermissions('addPoll')) {
 ?>
 			<div id="poll" class="section_poll hbdMargined hideDiv">
 <?			if ($pathOptions[0] == 'editPost') { ?>
@@ -240,14 +247,19 @@
 <?			} ?>
 				<div class="tr clearfix">
 					<label for="pollQuestion" class="textLabel"><b>Poll Question:</b></label>
-					<div><input id="pollQuestion" type="text" name="poll" value="<?=$postInfo['poll']?>" class="borderBox"></div>
+					<div><input id="pollQuestion" type="text" name="poll" value="<?=$threadManager->getPollProperty('question')?>" class="borderBox"></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="pollOption" class="textLabel">
 						<b>Poll Options:</b>
 						<p>Place each option on a new line. You may enter up to <b>25</b> options.</p>
 					</label>
-					<div><textarea id="pollOptions" name="pollOptions"><?=$postInfo['pollOptions']?></textarea></div>
+					<div><textarea id="pollOptions" name="pollOptions"><?
+			$options = array();
+			foreach ($threadManager->getPollProperty('options') as $option) 
+				$options[] = $option->option;
+			echo implode("\n", $options);
+?></textarea></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>

@@ -213,7 +213,7 @@
 	
 	if ($threadManager->getPermissions('moderate')) {
 ?>
-			<div class="clearfix"><form id="quickMod" method="post" action="/forums/process/modThread">
+			<div class="clearfix"><form id="quickMod" method="post" action="/forums/process/modThread/">
 <?
 	$sticky = $threadManager->getThreadProperty('sticky')?'Unsticky':'Sticky';
 	$lock = $threadManager->getThreadProperty('locked')?'Unlock':'lock';
@@ -243,7 +243,7 @@
 			</div>
 		</form>
 <?
-	} elseif ($threadManager->getThreadProperty('locked')) echo "\t\t\t<h2>Thread locked</h2>\n";
+	} elseif ($threadManager->getThreadProperty('locked')) echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
 	else echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
 	
 	require_once(FILEROOT.'/footer.php');

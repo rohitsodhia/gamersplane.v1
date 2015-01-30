@@ -20,7 +20,9 @@
 		protected $children = array();
 		protected $threads = array();
 
-		public function __construct($forumID, $forumData = null) {
+		public function __construct($forumID = null, $forumData = null) {
+			if ($forumID == null) return true;
+
 			$this->forumID = (int) $forumID;
 			foreach (get_object_vars($this) as $key => $value) {
 				if (in_array($key, array('children', 'threads', 'lastPost', 'admin'))) continue;
