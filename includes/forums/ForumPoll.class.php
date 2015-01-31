@@ -4,7 +4,7 @@
 		protected $question;
 		protected $optionsPerUser = 1;
 		protected $pollLength;
-		protected $allowRevoting;
+		protected $allowRevoting = false;
 		protected $options;
 
 		public function __construct($threadID = null) {

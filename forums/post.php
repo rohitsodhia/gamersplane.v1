@@ -51,11 +51,9 @@
 		$firstPost = true;
 		
 		$forumID = intval($pathOptions[1]);
-		$heritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$forumID);
-		$heritage = $heritage->fetchColumn();
-		$gameForum = (intval(substr($heritage, 0, 3)) == 2)?true:false;
-		$permissions = retrievePermissions($currentUser->userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', true);
-		if ($threadManager->getPermissions('createThread') != 1) $noChat = true;
+		$threadManager = new ThreadManager(null, $forumID);
+		$threadManager->thread->forumID = $forumID;
+		if (!$threadManager->getPermissions('createThread')) $noChat = true;
 	} elseif ($pathOptions[0] == 'post') {
 		$threadID = intval($pathOptions[1]);
 		try {
@@ -140,17 +138,20 @@
 <?	if ($_GET['errors'] && $errors) { ?>
 		<div class="alertBox_error"><ul>
 <?
-	if ($errors['overdrawn']) echo "			<li>Incorrect number of cards drawn.</li>\n";
-	if ($errors['noTitle']) echo "			<li>You can't leave the title blank.</li>\n";
-	if ($errors['noMessage']) echo "			<li>You can't leave the message blank.</li>\n";
-	if ($errors['noDrawReason']) echo "			<li>You left draw reasons blank.</li>\n";
-	if ($errors['noPoll']) echo "			<li>You did not provide a poll question.</li>\n";
-	if ($errors['noOptions']) echo "			<li>You did not provide poll options or provided too few (minimum 2).</li>\n";
-	if ($errors['noOptionsPerUser']) echo "			<li>You did not provide a valid number for \"Options per user\".</li>\n";
-	if ($errors['badRoll']) echo "			<li>One or more of your roll entries are malformed. Please make sure they are in the right format.</li>\n";
+		if ($errors['overdrawn']) echo "			<li>Incorrect number of cards drawn.</li>\n";
+		if ($errors['noTitle']) echo "			<li>You can't leave the title blank.</li>\n";
+		if ($errors['noMessage']) echo "			<li>You can't leave the message blank.</li>\n";
+		if ($errors['noDrawReason']) echo "			<li>You left draw reasons blank.</li>\n";
+		if ($errors['noPoll']) echo "			<li>You did not provide a poll question.</li>\n";
+		if ($errors['noOptions']) echo "			<li>You did not provide poll options or provided too few (minimum 2).</li>\n";
+		if ($errors['noOptionsPerUser']) echo "			<li>You did not provide a valid number for \"Options per user\".</li>\n";
+		if ($errors['badRoll']) echo "			<li>One or more of your roll entries are malformed. Please make sure they are in the right format.</li>\n";
 ?>
 		</ul></div>
-<?	} ?>
+<?
+	}
+	$threadManager->forumManager->displayBreadcrumbs();
+?>
 		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post')?($editPost?'Edit post':'Post a reply').' - '.printReady($threadManager->getThreadProperty('title')):'New Thread'?></h1>
 		
 <?	if ($_GET['preview'] && sizeof($_SESSION['previewVars']) && strlen($post->message) > 0) { ?>
@@ -263,11 +264,11 @@
 				</div>
 				<div class="tr clearfix">
 					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>
-					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($postInfo['optionsPerUser'])?$postInfo['optionsPerUser']:'1'?>" class="borderBox"></div>
+					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=$threadManager->getPollProperty('optionsPerUser')?>" class="borderBox"></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="allowRevoting"><b>Allow Revoting:</b></label>
-					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=isset($postInfo['allowRevoting']) && $postInfo['allowRevoting']?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
+					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=$threadManager->getPollProperty('allowRevoting')?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
 				</div>
 			</div>
 <?
@@ -276,13 +277,9 @@
 	if ($rollsAllowed || $drawsAllowed) {
 ?>
 			<div id="rolls_decks" class="section_rolls_decks hbdMargined<?=$firstPost?' hideDiv':''?>">
-<?
-		if ($rollsAllowed) {
-?>
+<?		if ($rollsAllowed) { ?>
 				<div id="rolls">
-<?
-			if ($drawsAllowed) {
-?>
+<?			if ($drawsAllowed) { ?>
 					<h3 id="rollsHeader">Rolls</h3>
 <?			} ?>
 					<div id="rollExplination">
@@ -299,7 +296,7 @@
 				$showAll = false;
 				$first = true;
 				foreach ($rolls as $roll) {
-					$showAll = $isGM || $currentUser->userID == $postInfo['userID']?true:false;
+					$showAll = $isGM || $currentUser->userID == $post->author->userID?true:false;
 					$hidden = false;
 ?>
 						<div class="rollInfo">
@@ -337,36 +334,32 @@
 					</div>
 				</div>
 <?		} ?>
-<?
-		if ($drawsAllowed) {
-?>
+<?		if ($drawsAllowed) { ?>
 				<div id="draws">
-<?
-			if ($rollsAllowed) {
-?>
+<?			if ($rollsAllowed) { ?>
 					<h3 id="decksHeader">Decks</h3>
 <?			} ?>
 					<p>Please remember, any cards you draw will be only visible to you until you reveal them. Reveal them by clicking them. An eye icon indicates they're visible, while an eye with a red slash through them indiates a hidden card.</p>
 					<table id="decksTable">
 <?
 			$firstDeck = true;
-			foreach ($deckInfos as $deckInfo) {
-				if ($draws[$deckInfo['deckID']]) {
-					$draw = $draws[$deckInfo['deckID']];
+			foreach ($post->draws as $deck) {
+				if ($draws[$deck['deckID']]) {
+					$draw = $draws[$deck['deckID']];
 ?>
 						<tr><td colspan="2">
-							<b><?=$deckInfo['label']?></b> has <?=(sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1)?> cards left.
+							<b><?=$deck['label']?></b> has <?=(sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1)?> cards left.
 							<p>Cards Drawn: <?=$draw['reason']?></p>
 <?
 					$cardsDrawn = explode('~', $draw['cardsDrawn']);
-					foreach ($cardsDrawn as $cardDrawn) echo "\t\t\t\t\t\t".getCardImg($cardDrawn, $deckInfo['type'], 'mini')."\n";
+					foreach ($cardsDrawn as $cardDrawn) echo "\t\t\t\t\t\t".getCardImg($cardDrawn, $deck['type'], 'mini')."\n";
 ?>
 						</td></tr>
 <?				} else { ?>
-						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deckInfo['label']?></b> has <?=sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1?> cards left</td></tr>
+						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deck['label']?></b> has <?=sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1?> cards left</td></tr>
 						<tr>
-							<td class="reason"><input type="text" name="decks[<?=$deckInfo['deckID']?>][reason]" maxlength="100"<?=isset($postInfo['deck'][$deckInfo['deckID']]['reason'])?' value="'.$postInfo['deck'][$deckInfo['deckID']]['reason'].'"':''?> tabindex="<?=tabOrder();?>"></td>
-							<td class="draw">Draw <input type="text" name="decks[<?=$deckInfo['deckID']?>][draw]" maxlength="2"<?=isset($postInfo['deck'][$deckInfo['deckID']]['draw'])?' value="'.$postInfo['deck'][$deckInfo['deckID']]['draw'].'"':''?> tabindex="<?=tabOrder();?>"> cards</td>
+							<td class="reason"><input type="text" name="decks[<?=$deck['deckID']?>][reason]" maxlength="100"<?=isset($postInfo['deck'][$deck['deckID']]['reason'])?' value="'.$postInfo['deck'][$deck['deckID']]['reason'].'"':''?> tabindex="<?=tabOrder();?>"></td>
+							<td class="draw">Draw <input type="text" name="decks[<?=$deck['deckID']?>][draw]" maxlength="2"<?=isset($postInfo['deck'][$deck['deckID']]['draw'])?' value="'.$postInfo['deck'][$deck['deckID']]['draw'].'"':''?> tabindex="<?=tabOrder();?>"> cards</td>
 						</tr>
 <?
 				}

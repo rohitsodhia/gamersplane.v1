@@ -180,8 +180,8 @@
 ?>
 				<div id="breadcrumbs">
 <?
-			if ($forumID != 0) {
-				$heritage = $this->forums[$forumID]->heritage;
+			if ($this->currentForum != 0) {
+				$heritage = $this->forums[$this->currentForum]->heritage;
 				$fCounter = 0;
 				foreach ($heritage as $hForumID) {
 					echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">".printReady($this->forums[$hForumID]->title)."</a>".($fCounter != sizeof($heritage) - 1?' > ':'')."\n";

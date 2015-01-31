@@ -18,6 +18,8 @@
 
 		protected $posts = array();
 		protected $poll = null;
+
+		protected $loaded = array();
 		
 		public function __construct($loadData = null) {
 			if ($loadData == null) return true;
@@ -32,6 +34,7 @@
 				$this->lastPost->username = $loadData['lp_username'];
 				$this->lastPost->datePosted = $loadData['lp_datePosted'];
 			}
+			$this->poll = new ForumPoll();
 		}
 
 		public function toggleValue($key) {
@@ -40,6 +43,10 @@
 
 		public function __get($key) {
 			if (property_exists($this, $key)) return $this->$key;
+		}
+
+		public function __set($key, $value) {
+			if (property_exists($this, $key)) $this->$key = $value;
 		}
 
 		public function newPosts($markedRead) {
@@ -71,9 +78,10 @@
 		}
 
 		public function getPoll() {
-			if ($this->poll) return true;
+			if (in_array('poll', $this->loaded)) return true;
 			try {
 				$this->poll = new ForumPoll($this->threadID);
+				$this->loaded[] = 'poll';
 				return true;
 			} catch (Exception $e) { return false; }
 		}
