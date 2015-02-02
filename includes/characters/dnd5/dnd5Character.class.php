@@ -302,9 +302,6 @@
 					$this->addSkill($skillInfo);
 				} }
 
-				var_dump($this->skills);
-				exit;
-
 				$this->clearVar('feats');
 				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
 					$this->addFeat($featInfo);
