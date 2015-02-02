@@ -2,7 +2,6 @@
 	if (intval($_POST['numCards'])) {
 		$deckShort = $_SESSION['deckType'];
 		$totalNumCards = sizeof($_SESSION['deck']);
-		print_r($_POST);
 		for ($count = 0; $count < intval($_POST['numCards']); $count++) {
 			if (in_array(1, $_POST['deck'])) {
 				do {
