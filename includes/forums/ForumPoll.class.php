@@ -5,7 +5,7 @@
 		protected $optionsPerUser = 1;
 		protected $pollLength;
 		protected $allowRevoting = false;
-		protected $options;
+		protected $options = array();
 
 		public function __construct($threadID = null) {
 			if ($threadID == null) return true;
@@ -22,9 +22,11 @@
 				$this->allowRevoting = $poll['allowRevoting'];
 
 				$options = $mysql->query("SELECT po.pollOptionID, po.option, IFNULL(v.votes, 0) votes, IF(pv.votedOn IS NOT NULL, 1, 0) voted FROM forums_pollOptions po LEFT JOIN (SELECT pollOptionID, COUNT(pollOptionID) votes FROM forums_pollVotes GROUP BY pollOptionID) v ON po.pollOptionID = v.pollOptionID LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID AND userID = {$currentUser->userID} WHERE po.threadID = {$this->threadID}");
-				$options = $options->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_OBJ);
-				array_walk($options, function (&$value, $key) { $value = $value[0]; });
-				$this->options = $options;
+				if ($options->rowCount()) {
+					$options = $options->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_OBJ);
+					array_walk($options, function (&$value, $key) { $value = $value[0]; });
+					$this->options = $options;
+				}
 			} else throw new Exception('No poll');
 		}
 

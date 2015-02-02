@@ -1,5 +1,5 @@
 <?
-	addPackage('tools');
+	addPackage('forum');
 
 	if (isset($_POST['advanced'])) {
 		$_SESSION['message'] = $_POST['message'];

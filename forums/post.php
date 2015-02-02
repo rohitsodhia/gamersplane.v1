@@ -53,6 +53,7 @@
 		$forumID = intval($pathOptions[1]);
 		$threadManager = new ThreadManager(null, $forumID);
 		$threadManager->thread->forumID = $forumID;
+		$post = new Post();
 		if (!$threadManager->getPermissions('createThread')) $noChat = true;
 	} elseif ($pathOptions[0] == 'post') {
 		$threadID = intval($pathOptions[1]);
@@ -94,10 +95,8 @@
 	}
 	
 	if ($_GET['preview']) {
-		if (isset($postInfo)) $postInfo = $_SESSION['previewVars'] + $postInfo;
-		else $postInfo = $_SESSION['previewVars'];
-		$postInfo['postTitle'] = $postInfo['title'];
-	}
+		var_dump($_SESSION['previewVars']); exit;
+	} else unset($_SESSION['previewVars']);
 
 	$gameID = false;
 	$isGM = false;

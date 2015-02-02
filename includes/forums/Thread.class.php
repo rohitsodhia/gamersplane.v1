@@ -22,6 +22,8 @@
 		protected $loaded = array();
 		
 		public function __construct($loadData = null) {
+			$this->poll = new ForumPoll();
+			
 			if ($loadData == null) return true;
 
 			if (!isset($loadData['threadID'], $loadData['title'])) throw new Exception('Need more thread info');
@@ -34,7 +36,6 @@
 				$this->lastPost->username = $loadData['lp_username'];
 				$this->lastPost->datePosted = $loadData['lp_datePosted'];
 			}
-			$this->poll = new ForumPoll();
 		}
 
 		public function toggleValue($key) {

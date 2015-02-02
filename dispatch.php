@@ -14,6 +14,7 @@
 	$reqPathParts = explode('/', $reqPath);
 	$pathOptions = array_slice(explode('/', $reqPath), 1);
 	$pathAction = $pathOptions[0];
+	$reqPath .= '/';
 
 	$pathOptions = array_slice($pathOptions, 1);
 
