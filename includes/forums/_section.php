@@ -1,8 +1,8 @@
 <?
-	function rollTR($count, $type = 'basic', $data = array()) {
+	function rollTR($count, $data) {
 		echo "						<div class=\"rollWrapper\">\n";
 		echo "							<button class=\"sprite cross small\"></button>\n";
-		if ($type == 'basic') {
+		if ($data->type == 'basic') {
 ?>
 							<div class="newRoll basicRoll">
 								<div class="headers">
@@ -13,19 +13,19 @@
 								</div>
 								<div>
 									<input type="hidden" name="rolls[<?=$count?>][type]" value="basic">
-									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data['reason'])?" value=\"{$data['reason']}\"":NULL?> class="borderBox"></div>
-									<div class="roll"><input type="text" name="rolls[<?=$count?>][roll]" maxlength="50"<?=isset($data['roll'])?" value=\"{$data['roll']}\"":NULL?> class="borderBox"></div>
+									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data->reason)?" value=\"{$data->reason}\"":null?> class="borderBox"></div>
+									<div class="roll"><input type="text" name="rolls[<?=$count?>][roll]" maxlength="50"<?=isset($data->roll)?" value=\"{$data->roll}\"":null?> class="borderBox"></div>
 									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
-										<option value="0"<?=isset($data['visibility']) && $data['visibility'] == 0?' selected="selected"':NULL?>>Hide Nothing</option>
-										<option value="1"<?=isset($data['visibility']) && $data['visibility'] == 1?' selected="selected"':NULL?>>Hide Roll/Result</option>
-										<option value="2"<?=isset($data['visibility']) && $data['visibility'] == 2?' selected="selected"':NULL?>>Hide Dice &amp; Roll</option>
-										<option value="3"<?=isset($data['visibility']) && $data['visibility'] == 3?' selected="selected"':NULL?>>Hide Everything</option>
+										<option value="0"<?=isset($data->visibility) && $data->visibility == 0?' selected="selected"':null?>>Hide Nothing</option>
+										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
+										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
+										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
 									</select></div>
-									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][options][rerollAces]"<?=isset($data['options']['rerollAces'])?' checked="checked"':NULL?>></div>
+									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][options][rerollAces]"<?=isset($data->options['rerollAces'])?' checked="checked"':null?>></div>
 								</div>
 							</div>
 <?
-		} elseif ($type == 'sweote') {
+		} elseif ($data->type == 'sweote') {
 ?>
 							<div class="newRoll sweoteRoll">
 								<div class="headers">
@@ -35,15 +35,15 @@
 								</div>
 								<div>
 									<input type="hidden" name="rolls[<?=$count?>][type]" value="sweote">
-									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data['reason'])?" value=\"{$data['reason']}\"":NULL?> class="borderBox"></div>
+									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data->reason)?" value=\"{$data->reason}\"":null?> class="borderBox"></div>
 									<div class="roll">
 										<div class="dicePool">
 											<div class="add"><img src="/images/plus.png"></div>
 											<div class="selectedDice">
 <?
-			if (isset($data['roll']) && strlen($data['roll'])) {
+			if (isset($data->roll) && strlen($data->roll)) {
 				$diceTypes = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
-				foreach (explode(',', $data['roll']) as $dice) {
+				foreach (explode(',', $data->roll) as $dice) {
 ?>
 												<div class="diceIcon sweote_<?=$diceTypes[$dice]?>" title="<?=ucwords($diceTypes[$dice])?>"></div>
 <?
@@ -63,19 +63,19 @@
 													<div class="diceIcon sweote_force" title="Force"></div>
 												</div>
 											</div>
-											<input type="hidden" name="rolls[<?=$count?>][roll]" value="<?=isset($data['roll'])?$data['roll']:NULL?>">
+											<input type="hidden" name="rolls[<?=$count?>][roll]" value="<?=isset($data->roll)?$data->roll:null?>">
 										</div>
 									</div>
 									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
-										<option value="0"<?=isset($data['visibility']) && $data['visibility'] == 0?' selected="selected"':NULL?>>Hide Nothing</option>
-										<option value="1"<?=isset($data['visibility']) && $data['visibility'] == 1?' selected="selected"':NULL?>>Hide Roll/Result</option>
-										<option value="2"<?=isset($data['visibility']) && $data['visibility'] == 2?' selected="selected"':NULL?>>Hide Dice &amp; Roll</option>
-										<option value="3"<?=isset($data['visibility']) && $data['visibility'] == 3?' selected="selected"':NULL?>>Hide Everything</option>
+										<option value="0"<?=isset($data->visibility) && $data->visibility == 0?' selected="selected"':null?>>Hide Nothing</option>
+										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
+										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
+										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
 									</select></div>
 								</div>
 							</div>
 <?
-		} elseif ($type == 'fate') {
+		} elseif ($data->type == 'fate') {
 ?>
 							<div class="newRoll fateRoll">
 								<div class="headers">
@@ -85,15 +85,15 @@
 								</div>
 								<div>
 									<input type="hidden" name="rolls[<?=$count?>][type]" value="fate">
-									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data['reason'])?" value=\"{$data['reason']}\"":NULL?> class="borderBox"></div>
+									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data->reason)?" value=\"{$data->reason}\"":null?> class="borderBox"></div>
 									<div class="roll">
-										<input type="text" name="rolls[<?=$count?>][roll]" value="<?=isset($data['roll'])?$data['roll']:4?>">
+										<input type="text" name="rolls[<?=$count?>][roll]" value="<?=isset($data->roll)?$data->roll:4?>">
 									</div>
 									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
-										<option value="0"<?=isset($data['visibility']) && $data['visibility'] == 0?' selected="selected"':NULL?>>Hide Nothing</option>
-										<option value="1"<?=isset($data['visibility']) && $data['visibility'] == 1?' selected="selected"':NULL?>>Hide Roll/Result</option>
-										<option value="2"<?=isset($data['visibility']) && $data['visibility'] == 2?' selected="selected"':NULL?>>Hide Dice &amp; Roll</option>
-										<option value="3"<?=isset($data['visibility']) && $data['visibility'] == 3?' selected="selected"':NULL?>>Hide Everything</option>
+										<option value="0"<?=isset($data->visibility) && $data->visibility == 0?' selected="selected"':null?>>Hide Nothing</option>
+										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
+										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
+										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
 									</select></div>
 								</div>
 							</div>
@@ -102,7 +102,7 @@
 		echo "						</div>\n";
 	}
 
-	function permissionSet($type, $label, $permissions, $forumID = NULL, $typeID = NULL, $gameForum = FALSE) {
+	function permissionSet($type, $label, $permissions, $forumID = null, $typeID = null, $gameForum = false) {
 		global $permissionTypes;
 ?>
 					<div class="permissionSet tr">
