@@ -6,7 +6,7 @@
 		protected $errorChecked = false;
 
 		private function __construct() {
-			if (isset($_SESSION['errors']['error']) < time()) $this->clearErrors();
+			if (isset($_SESSION['errors']['errorTimer']) < time()) $this->clearErrors();
 		}
 
 		public static function getInstance() {
@@ -23,12 +23,13 @@
 			else return false;
 		}
 
-		public function setErrors($for) {
+		public function setErrors($for, $errorVals = null) {
 			if (strlen($for) && sizeof($this->errors)) {
 				unset($_SESSION['errors'][$for]);
 				$_SESSION['errors']['for'] = $for;
 				$_SESSION['errors']['errorCodes'] = $this->errors;
 				$_SESSION['errors']['errorTimer'] = time() + $this->errorTimer;
+				if ($errorVals != null) $_SESSION['errors']['errorVals'] = $errorVals;
 			}
 		}
 
@@ -40,7 +41,9 @@
 			if (isset($_SESSION['errors']['for']) && $_SESSION['errors']['for'] == $for && time() <= $_SESSION['errors']['errorTimer']) {
 				$this->errors = $_SESSION['errors']['errorCodes'];
 				$this->errorChecked = true;
-				return true;
+				if (isset($_SESSION['errors']['errorVals'])) 
+					return $_SESSION['errors']['errorVals'];
+				else return true;
 			} else return false;
 		}
 

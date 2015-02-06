@@ -97,17 +97,17 @@ function BBCode2Html($text) {
 //					 '<li>\1</li>'
 	);
 	$text = preg_replace($in, $out, $text);
-	while (preg_match("/\[quote(?:=\"(\w+?)\")?]((?!\[quote).*?)\[\/quote\]/sm", $text)) $text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"(\w+?)\")?]((?!\[quote).*?)\[\/quote\][\r\n]*/sm", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
+	while (preg_match("/\[quote(?:=\"(\w\.+?)\")?]((?!\[quote).*?)\[\/quote\]/sm", $text)) $text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"(\w\.+?)\")?]((?!\[quote).*?)\[\/quote\][\r\n]*/sm", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
 	
 	$matches = NULL;
 	global $currentUser, $isGM, $postInfo;
 	$display = FALSE;
 
-	$text = preg_replace('/\[note="?(\w[\w +;,]+)"?](.*?)\[\/note\][\n\r]*/ms', '<blockquote class="note"><div>Note to \1</div>\2</blockquote>', $text);
+	$text = preg_replace('/\[note="?(\w[\w\. +;,]+)"?](.*?)\[\/note\][\n\r]*/ms', '<blockquote class="note"><div>Note to \1</div>\2</blockquote>', $text);
 	if (!$isGM && $postInfo['userID'] != $currentUser->userID && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
-			$noteTo = preg_split('/[^\w]+/', $match[1]);
+			$noteTo = preg_split('/[^\w\.]+/', $match[1]);
 			if (!in_array($currentUser->username, $noteTo)) $text = str_replace($match[0], '', $text);
 		}
 	}

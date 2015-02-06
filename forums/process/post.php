@@ -9,20 +9,24 @@
 		header("Location: {$_SESSION['lastURL']}?preview=1");
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
-		$title = sanitizeString(html_entity_decode($_POST['title']));
-		$message = sanitizeString($_POST['message']);
-		$postAs = isset($_POST['postAs']) && intval($_POST['postAs'])?intval($_POST['postAs']):null;
+
+
+		$post = new Post();
+		$post->setTitle($_POST['title']);
+		$post->setPostAs($_POST['postAs']);
+		$message = $_POST['message'];
 
 		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
 			foreach ($matches as $match) {
 				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) $allUsers[] = $eachUser;
 			}
-			$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = :username');
+			$userCheck = $mysql->prepare('SELECT username FROM users WHERE LOWER(username) = :username');
 			foreach ($allUsers as $key => $username) {
 				$userCheck->bindValue(':username', strtolower($username));
 				$userCheck->execute();
 				if (!$userCheck->rowCount()) unset($allUsers[$key]);
+				else $allUsers[$key] = $userCheck->fetchColumn();
 			}
 			foreach ($matches as $match) {
 				$matchUsers = preg_split('/[^\w]+/', $match[1]);
@@ -33,6 +37,7 @@
 				}
 			}
 		}
+		$post->setMessage($_POST['message']);
 		
 		$rolls = array();
 		$draws = array();
@@ -46,17 +51,17 @@
 				$rollObj->roll();
 				$rollObj->setReason($roll['reason']);
 				$rollObj->setVisibility($roll['visibility']);
-				$rolls[$num] = $rollObj;
-			} else unset($rolls[$num]);
+				$post->addRollObj($rollObj);
+			}
 		} }
 
 		if (sizeof($_POST['decks'])) {
-			$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?TRUE:FALSE; });
+			$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?true:false; });
 			$deckInfos = $mysql->query('SELECT decks.deckID, decks.deck, decks.type, decks.position FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deckPermissions.userID = '.$currentUser->userID.' AND decks.deckID IN ('.implode(',', array_keys($draws)).')');
 			$temp = array();
 			foreach ($deckInfos as $deckInfo) $temp[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
 			$deckInfos = $temp;
-			foreach ($draws as $deckID => &$draw) {
+			foreach ($draws as $deckID => $draw) {
 				if (isset($deckInfos[$deckID]) && $draw['draw'] > 0) {
 					$deck = explode('~', $deckInfos[$deckID]['deck']);
 					if (strlen($draw['reason']) == 0) {
@@ -72,67 +77,53 @@
 					$draw['cardsDrawn'] = implode('~', $draw['cardsDrawn']);
 					$draw['reason'] = sanitizeString($draw['reason']);
 					$draw['type'] = $deckInfos[$deckID]['type'];
-				} else unset($draws[$deckID]);
+					$post->addRaw($draw);
+				}
 			}
 		}
 
 		$postID = 0;
 		$threadID = 0;
-		$noChat = FALSE;
+		$noChat = false;
 		$permissions = array();
-		
+
+		$formErrors->clearErrors();
 		if ($_POST['new']) {
 			$forumID = intval($_POST['new']);
-			$permissions = retrievePermissions($currentUser->userID, $forumID, 'createThread, addPoll, addRolls, addDraws, moderate', TRUE);
-			
-			if (!$permissions['createThread']) { header('Location: /forums/'.$forumID); exit; }
-			$sticky = isset($_POST['sticky']) && $permissions['moderate']?1:0;
-			$allowRolls = isset($_POST['allowRolls']) && $permissions['addRolls']?1:0;
-			$allowDraws = isset($_POST['allowDraws']) && $permissions['addDraws']?1:0;
-			
-			if (strlen($title) == 0) $_SESSION['errors']['noTitle'] = 1;
-			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
-			
-			$poll = array('poll' => sanitizeString($_POST['poll']), 'pollOptions' => preg_split('/\n/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
-			if (strlen($poll['poll']) == 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noPoll'] = 1;
-			if (strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) <= 1) $_SESSION['errors']['noOptions'] = 1;
-			if ($poll['optionsPerUser'] == 0 && strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noOptionsPerUser'] = 1;
+			$threadManager = new ThreadManager(null, $forumID);
 
-			if (sizeof($_SESSION['errors'])) {
-				$_SESSION['errorVals'] = $_POST;
-				$_SESSION['errorTime'] = time() + 300;
+			if (!$threadManager->getPermissions('createThread')) { header('Location: /forums/'.$forumID); exit; }
+			$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate')?true:false);
+			$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate')?true:false);
+			$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls')?true:false);
+			$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls')?true:false);
+			
+			if (strlen($post->getTitle()) == 0) $formErrors->addError('noTitle');
+			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
+			
+			$threadManager->thread->poll->setQuestion($_POST['poll']);
+			$threadManager->thread->poll->parseOptions($_POST['pollOptions']);
+			if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
+				$formErrors->addError('noQuestion');
+			if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
+				$formErrors->addError('noOptions');
+			$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
+			if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
+				$formErrors->addError('noOptionsPerUser');
+			$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+
+			if ($formErrors->errorsExist()) {
+				$formErrors->setErrors('post', $_POST);
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
-			} else {
-				$mysql->query("INSERT INTO threads SET forumID = $forumID, sticky = $sticky, allowRolls = $allowRolls, allowDraws = $allowDraws");
-				$threadID = $mysql->lastInsertId();
-				
-				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($postAs?$postAs:'NULL'));
-				$addPost->bindValue(':title', $title);
-				$addPost->bindValue(':message', $message);
-				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
-				$addPost->execute();
-				$postID = $mysql->lastInsertId();
-				
-				if (strlen($poll['poll']) && sizeof($poll['pollOptions'])) {
-					$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ($threadID, :poll, :optionsPerUser, :allowRevoting)");
-					$addPoll->bindValue(':poll', $poll['poll']);
-					$addPoll->bindValue(':optionsPerUser', $poll['optionsPerUser']);
-					$addPoll->bindValue(':allowRevoting', $poll['allowRevoting']);
-					$addPoll->execute();
-					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = $threadID, `option` = :option");
-					foreach ($poll['pollOptions'] as $option) {
-						$addPollOptions->bindValue(':option', $option);
-						$addPollOptions->execute();
-					}
-				}
-			}
+			} else 
+				$postID = $threadManager->createThread($post);
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
 			$threadInfo = $mysql->query('SELECT forumID, locked, allowRolls, allowDraws FROM threads WHERE threadID = '.$threadID);
 			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
-			$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, addRolls, addDraws, moderate', TRUE);
-			if (!$permissions['write'] || $locked) { header('Location: /forums/'.$forumID); exit; }
+			$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, addRolls, addDraws, moderate', true);
+			if (!$threadManager->getPermission('write') || $locked) { header('Location: /forums/'.$forumID); exit; }
 			
 			if (strlen($title) == 0) {
 				$title = $mysql->query("SELECT p.title FROM posts p INNER JOIN threads_relPosts rp ON p.postID = rp.firstPostID WHERE rp.threadID = {$threadID} LIMIT 1");
@@ -146,7 +137,6 @@
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
 			} else {
-				$datePosted = date('Y-m-d H:i:s');
 				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($postAs?$postAs:'NULL'));
 				$addPost->bindValue(':title', $title);
 				$addPost->bindValue(':message', $message);
@@ -160,9 +150,9 @@
 			$postInfo = $postInfo->fetch();
 			$forumID = $postInfo['forumID'];
 			
-			$permissions = retrievePermissions($currentUser->userID, $forumID, 'editPost, addPoll, addRolls, addDraws, moderate', TRUE);
+			$permissions = retrievePermissions($currentUser->userID, $forumID, 'editPost, addPoll, addRolls, addDraws, moderate', true);
 			
-			if (!$postInfo || ($postInfo['authorID'] == $currentUser->userID && !$permissions['editPost']) || ($postInfo['authorID'] != $currentUser->userID && !$permissions['moderate']) || ($postInfo['locked'] && !$permissions['moderate'])) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
+			if (!$postInfo || ($postInfo['authorID'] == $currentUser->userID && !$threadManager->getPermission('editPost')) || ($postInfo['authorID'] != $currentUser->userID && !$threadManager->getPermission('moderate')) || ($postInfo['locked'] && !$threadManager->getPermission('moderate'))) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
 			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
 			
 			if ($postInfo['firstPostID'] == $postID && !isset($_POST['deletePoll'])) {
@@ -185,7 +175,7 @@
 					$updates['title'] = $title;
 				}
 				
-				if (((time() + 300) > strtotime($postInfo['datePosted']) || (time() + 60) > strtotime($postInfo['lastEdit'])) && !$permissions['moderate'] && ($postInfo['title'] != $title || $postInfo['message'] != $message)) {
+				if (((time() + 300) > strtotime($postInfo['datePosted']) || (time() + 60) > strtotime($postInfo['lastEdit'])) && !$threadManager->getPermission('moderate') && ($postInfo['title'] != $title || $postInfo['message'] != $message)) {
 					$updatePostQuery .= ', lastEdit = :lastEdit, timesEdited = :timesEdited';
 					$updates['lastEdit'] = date('Y-m-d H:i:s');
 					$updates['timesEdited'] = $postInfo['timesEdited'] + 1;
@@ -198,9 +188,9 @@
 				$threadID = $postInfo['threadID'];
 				
 				if ($postID == $postInfo['firstPostID']) {
-					$sticky = isset($_POST['sticky']) && $permissions['moderate']?1:0;
-					$allowRolls = isset($_POST['allowRolls']) && $permissions['addRolls']?1:0;
-					$allowDraws = isset($_POST['allowDraws']) && $permissions['addDraws']?1:0;
+					$sticky = isset($_POST['sticky']) && $threadManager->getPermission('moderate')?1:0;
+					$allowRolls = isset($_POST['allowRolls']) && $threadManager->getPermission('addRolls')?1:0;
+					$allowDraws = isset($_POST['allowDraws']) && $threadManager->getPermission('addDraws')?1:0;
 					
 					$mysql->query("UPDATE threads SET sticky = $sticky, allowRolls = $allowRolls, allowDraws = $allowDraws WHERE threadID = $threadID");
 					
@@ -239,31 +229,7 @@
 			}
 		}
 		
-		if ($postID && $threadID && (sizeof($rolls) || sizeof($draws))) {
-			if (sizeof($rolls) && $permissions['addRolls'] && ($allowRolls || $permissions['moderate'])) {
-				foreach($rolls as $roll) {
-					$roll->forumSave($postID);
-				}
-			}
-			
-			if (sizeof($draws)) {
-				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = :postID, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
-				foreach($draws as $deckID => $draw) {
-					$mysql->query('UPDATE decks SET position = position + '.$draw['draw'].' WHERE deckID = '.$deckID);
-					$addDraw->bindValue('postID', $postID);
-					$addDraw->bindValue('deckID', $deckID);
-					$addDraw->bindValue('type', $draw['type']);
-					$addDraw->bindValue('cardsDrawn', $draw['cardsDrawn']);
-					$addDraw->bindValue('reveals', str_repeat('0', $draw['draw']));
-					$addDraw->bindValue('reason', $draw['reason']);
-					$addDraw->execute();
-				}
-			}
-		}
-		
-		$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		 
-		if ($postID && $threadID) header('Location: /forums/thread/'.$threadID.($postID == $postInfo['firstPostID'] && $_POST['threadID']?'':'?p='.$postID.'#p'.$postID));
-		else header('Location: /403');
+		header('Location: /forums/thread/'.$threadManager->getThreadProperty('threadID').'?p='.$postID.'#p'.$postID));
 	} else header('Location: /forums/thread/'.$threadID);
 ?>

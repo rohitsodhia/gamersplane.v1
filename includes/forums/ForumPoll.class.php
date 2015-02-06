@@ -2,10 +2,10 @@
 	class ForumPoll {
 		protected $threadID;
 		protected $question;
+		protected $options = array();
 		protected $optionsPerUser = 1;
 		protected $pollLength;
 		protected $allowRevoting = false;
-		protected $options = array();
 
 		public function __construct($threadID = null) {
 			if ($threadID == null) return true;
@@ -32,6 +32,37 @@
 
 		public function __get($key) {
 			if (property_exists($this, $key)) return $this->$key;
+		}
+
+		public function setQuestion($value) {
+			$this->question = sanitizeString(html_entity_decode($value));
+		}
+
+		public function getQuestion($pr = false) {
+			if ($pr) return printReady($this->question);
+			else return $this->question;
+		}
+
+		public function parseOptions($value) {
+			$this->options = preg_split('/\n/', $value);
+			array_walk($this->options, function (&$value, $key) { $value = sanitizeString($value); });			
+		}
+
+		public function getOptions($key = null) {
+			if (array_key_exists($key, $this->options)) return $this->options[$key];
+			else return $this->options;
+		}
+
+		public function setOptionsPerUser($value) {
+			$this->optionsPerUser = intval($value);
+		}
+
+		public function getOptionsPerUser() {
+			return $this->optionsPerUser;
+		}
+
+		public function setAllowRevoting($value = null) {
+			$this->allowRevoting = $value != null?true:false;
 		}
 
 		public function getVotesCast() {

@@ -81,25 +81,12 @@
 	
 	if ($noChat) { header('Location: /forums/'); exit; }
 	
-	if ($_SESSION['errors']) {
-		if ($_SESSION['lastURL'] == '/forums/process/post/') {
-			$errors = $_SESSION['errors'];
-			if (isset($postInfo)) $postInfo = $_SESSION['errorVals'] + $postInfo;
-			else $postInfo = $_SESSION['errorVals'];
-			$postInfo['postTitle'] = $postInfo['title'];
-		}
-		if ($_SESSION['lastURL'] != '/forums/process/post' || time() > $_SESSION['errorTime']) {
-			unset($_SESSION['errors']);
-			unset($_SESSION['errorVals']);
-		}
-	}
+	$fillVars = $formErrors->getErrors('post');
 	
 	if ($_GET['preview']) 
-		$previewVars = $_SESSION['previewVars'];
+		$fillVars = $_SESSION['previewVars'];
 	else 
 		unset($_SESSION['previewVars']);
-
-$previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 
 	$gameID = false;
 	$isGM = false;
@@ -137,17 +124,17 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 
 	require_once(FILEROOT.'/header.php');
 ?>
-<?	if ($_GET['errors'] && $errors) { ?>
+<?	if ($_GET['errors'] && $formErrors->errorsExist()) { ?>
 		<div class="alertBox_error"><ul>
 <?
-		if ($errors['overdrawn']) echo "			<li>Incorrect number of cards drawn.</li>\n";
-		if ($errors['noTitle']) echo "			<li>You can't leave the title blank.</li>\n";
-		if ($errors['noMessage']) echo "			<li>You can't leave the message blank.</li>\n";
-		if ($errors['noDrawReason']) echo "			<li>You left draw reasons blank.</li>\n";
-		if ($errors['noPoll']) echo "			<li>You did not provide a poll question.</li>\n";
-		if ($errors['noOptions']) echo "			<li>You did not provide poll options or provided too few (minimum 2).</li>\n";
-		if ($errors['noOptionsPerUser']) echo "			<li>You did not provide a valid number for \"Options per user\".</li>\n";
-		if ($errors['badRoll']) echo "			<li>One or more of your roll entries are malformed. Please make sure they are in the right format.</li>\n";
+		if ($formErrors->checkError('overdrawn')) echo "			<li>Incorrect number of cards drawn.</li>\n";
+		if ($formErrors->checkError('noTitle')) echo "			<li>You can't leave the title blank.</li>\n";
+		if ($formErrors->checkError('noMessage')) echo "			<li>You can't leave the message blank.</li>\n";
+		if ($formErrors->checkError('noDrawReason')) echo "			<li>You left draw reasons blank.</li>\n";
+		if ($formErrors->checkError('noPoll')) echo "			<li>You did not provide a poll question.</li>\n";
+		if ($formErrors->checkError('noOptions')) echo "			<li>You did not provide poll options or provided too few (minimum 2).</li>\n";
+		if ($formErrors->checkError('noOptionsPerUser')) echo "			<li>You did not provide a valid number for \"Options per user\".</li>\n";
+		if ($formErrors->checkError('badRoll')) echo "			<li>One or more of your roll entries are malformed. Please make sure they are in the right format.</li>\n";
 ?>
 		</ul></div>
 <?
@@ -156,10 +143,10 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 ?>
 		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post')?($editPost?'Edit post':'Post a reply').' - '.printReady($threadManager->getThreadProperty('title')):'New Thread'?></h1>
 		
-<?	if ($_GET['preview'] && strlen($previewVars['message']) > 0) { ?>
+<?	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
 		<h2>Preview:</h2>
 		<div id="preview">
-			<?=BBCode2Html(printReady($previewVars['message']))."\n"?>
+			<?=BBCode2Html(printReady($fillVars['message']))."\n"?>
 		</div>
 		<hr>
 		
@@ -170,8 +157,8 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 	elseif ($pathOptions[0] == 'editPost') echo "\t\t\t".'<input type="hidden" name="edit" value="'.$postID.'">'."\n";
 	elseif ($pathOptions[0] == 'post') echo "\t\t\t".'<input type="hidden" name="threadID" value="'.$threadID.'">'."\n";
 	
-	if (isset($previewVars)) 
-		$title = printReady($previewVars['title']);
+	if (isset($fillVars)) 
+		$title = printReady($fillVars['title']);
 	elseif ($editPost) 
 		$title = (substr($post->title, 0, 4) != 'Re: '?'Re: ':'').$post->title;
 	else 
@@ -186,7 +173,7 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 <?	
 	if ($gameID && sizeof($characters)) {
 		$currentChar = $post->postAs;
-		if (isset($previewVars)) $currentChar = $previewVars['postAs'];
+		if (isset($fillVars)) $currentChar = $fillVars['postAs'];
 ?>
 					<div class="tr">
 						<label>Post As:</label>
@@ -199,7 +186,7 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 					</div>
 <?	} ?>
 				</div>
-				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady(isset($previewVars)?$previewVars['message']:$post->message, array('stripslashes'))?></textarea>
+				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady(isset($fillVars)?$fillVars['message']:$post->message, array('stripslashes'))?></textarea>
 			</div>
 			
 <?	if ($firstPost && ($threadManager->getPermissions('addPoll') || $rollsAllowed || $drawsAllowed)) { ?>
@@ -232,21 +219,28 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 <?
 		if ($threadManager->getPermissions('moderate')) {
 			$sticky = $threadManager->getThreadProperty('sticky');
-			if (isset($previewVars)) $sticky = $previewVars['sticky'];
+			if (isset($fillVars)) $sticky = $fillVars['sticky'];
 ?>
-				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Make thread sticky</p>
+				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Sticky thread</p>
+<?
+		}
+		if ($threadManager->getPermissions('moderate')) {
+			$locked = $threadManager->getThreadProperty('locked');
+			if (isset($fillVars)) $locked = $fillVars['locked'];
+?>
+				<p><input type="checkbox" name="locked"<?=$locked?' checked="checked"':''?>> Lock thread</p>
 <?
 		}
 		if ($threadManager->getPermissions('addRolls')) {
 			$addRolls = $allowRolls || ($pathOptions[0] == 'newThread' && $gameID);
-			if (isset($previewVars)) $addRolls = $previewVars['allowRolls'];
+			if (isset($fillVars)) $addRolls = $fillVars['allowRolls'];
 ?>
 				<p><input type="checkbox" name="allowRolls"<?=$addRolls?' checked="checked"':''?>> Allow adding rolls to posts (if this box is unchecked, any rolls added to this thread will be ignored)</p>
 <?
 		}
 		if ($threadManager->getPermissions('addDraws')) {
 			$addDraws = $allowDraws || ($pathOptions[0] == 'newThread' && $gameID);
-			if (isset($previewVars)) $addDraws = $previewVars['allowDraws'];
+			if (isset($fillVars)) $addDraws = $fillVars['allowDraws'];
 ?>
 				<p><input type="checkbox" name="allowDraws"<?=$addDraws?' checked="checked"':''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
 <?		} ?>
@@ -264,7 +258,7 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 <?			} ?>
 				<div class="tr clearfix">
 					<label for="pollQuestion" class="textLabel"><b>Poll Question:</b></label>
-					<div><input id="pollQuestion" type="text" name="poll" value="<?=isset($previewVars)?$previewVars['poll']:$threadManager->getPollProperty('question')?>" class="borderBox"></div>
+					<div><input id="pollQuestion" type="text" name="poll" value="<?=isset($fillVars)?$fillVars['poll']:$threadManager->getPollProperty('question')?>" class="borderBox"></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="pollOption" class="textLabel">
@@ -272,7 +266,7 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 						<p>Place each option on a new line. You may enter up to <b>25</b> options.</p>
 					</label>
 					<div><textarea id="pollOptions" name="pollOptions"><?
-			if (isset($previewVars)) echo $previewVars['pollOptions'];
+			if (isset($fillVars)) echo $fillVars['pollOptions'];
 			else {
 				$options = array();
 				foreach ($threadManager->getPollProperty('options') as $option) 
@@ -283,13 +277,13 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 				</div>
 				<div class="tr clearfix">
 					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>
-					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($previewVars)?$previewVars['optionsPerUser']:$threadManager->getPollProperty('optionsPerUser')?>" class="borderBox"></div>
+					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($fillVars)?$fillVars['optionsPerUser']:$threadManager->getPollProperty('optionsPerUser')?>" class="borderBox"></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="allowRevoting"><b>Allow Revoting:</b></label>
 <?
 			$allowRevoting = $threadManager->getPollProperty('allowRevoting');
-			if (isset($previewVars)) $allowRevoting = $previewVars['allowRevoting'];
+			if (isset($fillVars)) $allowRevoting = $fillVars['allowRevoting'];
 ?>
 					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=$allowRevoting?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
 				</div>
@@ -350,8 +344,8 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 					</div>
 					<div id="newRolls">
 <?
-			if (isset($previewVars['rolls'])) {
-				foreach ($previewVars['rolls'] as $count => $roll) {
+			if (isset($fillVars['rolls'])) {
+				foreach ($fillVars['rolls'] as $count => $roll) {
 					rollTR($count, (object) $roll);
 				}
 			}
@@ -383,8 +377,8 @@ $previewVars['rolls'][0]['options']['rerollAces'] = 'on';
 <?				} else { ?>
 						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deck['label']?></b> has <?=sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1?> cards left</td></tr>
 						<tr>
-							<td class="reason"><input type="text" name="decks[<?=$deck['deckID']?>][reason]" maxlength="100" value="<?=isset($previewVars)?$previewVars[$deck['deckID']]['reason']:''?>" tabindex="<?=tabOrder();?>"></td>
-							<td class="draw">Draw <input type="text" name="decks[<?=$deck['deckID']?>][draw]" maxlength="2" value="<?=isset($previewVars)?$previewVars[$deck['deckID']]['draw'].'"':''?>" tabindex="<?=tabOrder();?>"> cards</td>
+							<td class="reason"><input type="text" name="decks[<?=$deck['deckID']?>][reason]" maxlength="100" value="<?=isset($fillVars)?$fillVars[$deck['deckID']]['reason']:''?>" tabindex="<?=tabOrder();?>"></td>
+							<td class="draw">Draw <input type="text" name="decks[<?=$deck['deckID']?>][draw]" maxlength="2" value="<?=isset($fillVars)?$fillVars[$deck['deckID']]['draw'].'"':''?>" tabindex="<?=tabOrder();?>"> cards</td>
 						</tr>
 <?
 				}

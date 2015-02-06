@@ -46,8 +46,8 @@
 <? if ($threadManager->getPermissions('moderate')) { ?>
 					<form id="threadOptions" method="post" action="/forums/process/modThread/">
 <?
-	$sticky = $threadManager->getThreadProperty('sticky')?'unsticky':'sticky';
-	$lock = $threadManager->getThreadProperty('locked')?'unlock':'lock';
+	$sticky = $threadManager->thread->getStates('sticky')?'unsticky':'sticky';
+	$lock = $threadManager->thread->getStates('locked')?'unlock':'lock';
 ?>
 						<input type="hidden" name="threadID" value="<?=$threadID?>">
 						<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
@@ -215,8 +215,8 @@
 ?>
 			<div class="clearfix"><form id="quickMod" method="post" action="/forums/process/modThread/">
 <?
-	$sticky = $threadManager->getThreadProperty('sticky')?'Unsticky':'Sticky';
-	$lock = $threadManager->getThreadProperty('locked')?'Unlock':'lock';
+	$sticky = $threadManager->thread->getStates('sticky')?'Unsticky':'Sticky';
+	$lock = $threadManager->thread->getStates('locked')?'Unlock':'lock';
 ?>
 				Quick Mod Actions: 
 				<input type="hidden" name="threadID" value="<?=$threadID?>">

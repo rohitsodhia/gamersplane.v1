@@ -6,8 +6,7 @@
 		protected $authorID;
 		protected $authorUsername;
 		protected $datePosted;
-		protected $sticky = false;
-		protected $locked = false;
+		protected $states = array('sticky' => false, 'locked' => false);
 		protected $allowRolls = false;
 		protected $allowDraws = false;
 		protected $postCount = 0;
@@ -29,6 +28,8 @@
 			if (!isset($loadData['threadID'], $loadData['title'])) throw new Exception('Need more thread info');
 			foreach ($loadData as $key => $value) 
 				if (property_exists($this, $key)) $this->$key = $loadData[$key];
+			$this->states['sticky'] = $loadData['sticky'];
+			$this->states['locked'] = $loadData['locked'];
 			if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) {
 				$this->lastPost = new stdClass();
 				$this->lastPost->postID = $loadData['lp_postID'];
@@ -39,7 +40,10 @@
 		}
 
 		public function toggleValue($key) {
-			if (in_array($key, array('sticky', 'locked', 'allowRolls', 'allowDraws'))) $this->$key = !$this->$key;
+			if (in_array($key, array('sticky', 'locked', 'allowRolls', 'allowDraws'))) {
+				if ($key == 'sticky' || $key == 'locked') $this->states[$key] = !$this->states[$key];
+				else $this->$key = !$this->$key;
+			}
 		}
 
 		public function __get($key) {
@@ -48,6 +52,31 @@
 
 		public function __set($key, $value) {
 			if (property_exists($this, $key)) $this->$key = $value;
+		}
+
+		public function getStates($key = null) {
+			if (array_key_exists($key, $this->states)) return $this->states[$key];
+			else return $this->states;
+		}
+
+		public function setState($key, $value) {
+			if (array_key_exists($key, $this->states) && is_bool($value)) $this->states[$key] = $value;
+		}
+
+		public function setAllowRolls($value) {
+			if (is_bool($value)) $this->allowRolls = $value;
+		}
+
+		public function getAllowRolls() {
+			return $this->allowRolls;
+		}
+
+		public function setAllowDraws($value) {
+			if (is_bool($value)) $this->allowDraws = $value;
+		}
+
+		public function getAllowDraws() {
+			return $this->allowDraws;
 		}
 
 		public function newPosts($markedRead) {
@@ -63,13 +92,13 @@
 			$page = intval($page) > 0?intval($page):1;
 			if ($page > ceil($this->postCount / PAGINATE_PER_PAGE)) $page = ceil($this->postCount / PAGINATE_PER_PAGE);
 			$start = ($page - 1) * PAGINATE_PER_PAGE;
-			$posts = $mysql->query("SELECT p.postID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".PAGINATE_PER_PAGE);
+			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".PAGINATE_PER_PAGE);
 			if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$this->lastPost->postID} ON DUPLICATE KEY UPDATE lastRead = {$this->lastPost->postID}");
 			foreach ($posts as $post) $this->posts[$post['postID']] = new Post($post);
 
 			$rolls = $mysql->query("SELECT postID, rollID, type, reason, roll, indivRolls, results, visibility, extras FROM rolls WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY rollID");
 			foreach ($rolls as $rollInfo) 
-				$this->posts[$rollInfo['postID']]->addRoll($rollInfo);
+				$this->posts[$rollInfo['postID']]->loadRoll($rollInfo);
 			
 			$draws = $mysql->query("SELECT postID, drawID, type, cardsDrawn, reveals, reason FROM deckDraws WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY drawID");
 			foreach ($draws as $drawInfo) 
