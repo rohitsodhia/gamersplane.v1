@@ -7,6 +7,11 @@
 //	define('STATE', 'maintainance');
 //	define('STATE', 'moving');
 
+	if (explode('.', $_SERVER['HTTP_HOST'] != 2) {
+		include('subdomains.php');
+		exit;
+	}
+
 	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 //	echo $reqPath;
 	
