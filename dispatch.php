@@ -7,7 +7,7 @@
 //	define('STATE', 'maintainance');
 //	define('STATE', 'moving');
 
-	if (sizeof(explode('.', $_SERVER['HTTP_HOST'] != 2))) {
+	if (sizeof(explode('.', $_SERVER['HTTP_HOST'])) != 2) {
 		include('subdomains.php');
 		exit;
 	}
