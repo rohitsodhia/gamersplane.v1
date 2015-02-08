@@ -1,13 +1,15 @@
 <?
+	addPackage('forum');
 	$threadID = intval($_POST['threadID']);
-	
-	$forumID = $mysql->query('SELECT forumID FROM threads WHERE threadID = '.$threadID);
+	$forumID = $mysql->query("SELECT forumID FROM threads WHERE threadID = {$threadID}");
 	$forumID = $forumID->fetchColumn();
-	
-	$permissions = retrievePermissions($currentUser->userID, $forumID, 'read', TRUE);
-	
-	if ($permissions['read']) {
-		$pollInfo = $mysql->query("SELECT optionsPerUser, allowRevoting FROM forums_polls WHERE threadID = $threadID");
+	$permissions = $permissions = ForumPermissions::getPermissions($currentUser->userID, $forumID, 'write');
+
+	if ($permissions[$forumID]['write']) {
+		try {
+			$poll = new ForumPoll($threadID);
+		} catch (Exception $e) { header("Location: /forums/thread/{$threadID}"); exit; }
+		$threadManager->getPoll();
 		if ($pollInfo->rowCount()) {
 			$pollInfo = $pollInfo->fetch();
 			$checkVoted = $mysql->query("SELECT pv.pollOptionID FROM forums_pollVotes pv, forums_pollOptions po WHERE po.threadID = $threadID AND po.pollOptionID = pv.pollOptionID AND pv.userID = {$currentUser->userID}");
@@ -30,5 +32,5 @@
 		}
 	}
 	
-	header('Location: /forums/thread/'.$threadID);
+	header("Location: /forums/thread/{$threadID}");
 ?>

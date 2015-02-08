@@ -65,6 +65,10 @@
 			$this->allowRevoting = $value != null?true:false;
 		}
 
+		public function getAllowRevoting() {
+			return $this->allowRevoting;
+		}
+
 		public function getVotesCast() {
 			$cast = array();
 			foreach ($this->options as $option) 
