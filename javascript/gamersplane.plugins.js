@@ -74,9 +74,10 @@ $.fn.autocomplete = function (pathOption, sendData) {
 					$prettySelectOptions = $prettySelect.find('.prettySelectOptions'),
 					numOptions = $prettySelect.find('option').length;
 
-					$prettySelect.addClass('open');
-					if (numOptions > 8) $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * 5 + 1);
-					else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions + 1);
+					if (numOptions > 8) {
+						$prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * 5 + 1).addClass('showScroll');
+						console.log('more than 8');
+					} else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions + 1);
 					$prettySelectOptions.width($(this).parent().outerWidth() - 2).show();
 				});
 				$prettySelectOptions.on('click', 'li', function () {
