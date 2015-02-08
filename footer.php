@@ -5,6 +5,8 @@
 	<a href="/contact/">Contact Us</a>
 <?		if ($currentUser->checkACP()) { ?>
 	<div class="floatRight">
+		Help Gamers' Plane stay afloat!
+		<a href="http://amazon.gamersplane.com" target="_blank">Amazon referral link</a>
 		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 			<input type="hidden" name="cmd" value="_s-xclick">
 			<input type="hidden" name="hosted_button_id" value="6VHQ2BP4AS7L6">
