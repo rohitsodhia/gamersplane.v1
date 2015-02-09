@@ -75,11 +75,11 @@
 ?>
 				<ul>
 <?
-		foreach ($threadManager->getPollProperty('options') as $option) {
+		foreach ($threadManager->getPollProperty('options') as $pollOptionID => $option) {
 			echo "					<li class=\"clearfix\">\n";
 			if ($allowVote) {
-				if ($threadManager->getPollProperty('optionsPerUser') == 1) echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$option->pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
-				else echo "						<div class=\"poll_input\"><input type=\"checkbox\" name=\"votes[]\" value=\"{$optionInfo['pollOptionID']}\"".($option->voted?' checked="checked"':'')."></div>\n";
+				if ($threadManager->getPollProperty('optionsPerUser') == 1) echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
+				else echo "						<div class=\"poll_input\"><input type=\"checkbox\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
 			}
 			echo "						<div class=\"poll_option\">".printReady($option->option)."</div>\n";
 			if (sizeof($castVotes)) {

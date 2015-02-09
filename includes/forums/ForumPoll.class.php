@@ -49,8 +49,9 @@
 		}
 
 		public function getOptions($key = null) {
-			if (array_key_exists($key, $this->options)) return $this->options[$key];
-			else return $this->options;
+			if ($key == null) return $this->options;
+			elseif (array_key_exists($key, $this->options)) return (object) array_merge(array('pollOptionID' => $key), (array) $this->options[$key]);
+			else return null;
 		}
 
 		public function setOptionsPerUser($value) {
@@ -69,11 +70,28 @@
 			return $this->allowRevoting;
 		}
 
+		public function addVotes($votes) {
+			global $mysql, $currentUser;
+
+			if ($this->getAllowRevoting()) $this->clearVotesCast();
+			$addVote = $mysql->prepare("INSERT INTO forums_pollVotes SET userID = {$currentUser->userID}, pollOptionID = :vote, votedOn = NOW()");
+			foreach ($votes as $vote) {
+				$addVote->bindParam(':vote', $vote);
+				$addVote->execute();
+			}
+		}
+
 		public function getVotesCast() {
 			$cast = array();
 			foreach ($this->options as $option) 
 				if ($option->voted) $cast[] = $option->pollOptionID;
 			return $cast;
+		}
+
+		public function clearVotesCast() {
+			global $mysql, $currentUser;
+
+			$mysql->query("DELETE v FROM forums_pollVotes v INNER JOIN forums_pollOptions o USING (pollOptionID) WHERE o.threadID = {$this->threadID} AND v.userID = {$currentUser->userID}");
 		}
 
 		public function getVoteTotal() {
