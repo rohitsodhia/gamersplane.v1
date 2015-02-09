@@ -1,7 +1,7 @@
 $(function () {
 	$('#requestReset').attr('href', $('#requestReset').attr('href') + '?modal=1');
 
-	$('#username').focus();
+	$('#user').focus();
 
 	if ($('body').hasClass('modal')) {
 		$('#page_login form').append('<input type="hidden" name="modal" value="1">').ajaxForm({

@@ -1,14 +1,14 @@
 <?
 	if (isset($_POST['login'])) {
-		$username = sanitizeString($_POST['username'], 'lower');
+		$user = sanitizeString($_POST['user'], 'lower');
 		$password = $_POST['password'];
 		
 /*		$mysql->setTable('loginRecord');
 		$mysql->setInserts(array('username' => $username, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')));
 		$mysql->stdQuery('insert');
 */		
-		$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER(username) = ? AND (suspendedUntil IS NULL OR suspendedUntil < NOW()) AND banned = 0');
-		$userCheck->execute(array($username));
+		$userCheck = $mysql->prepare('SELECT userID FROM users WHERE LOWER('.(strpos($user, '@') == false?'username':'email').') = ? AND (suspendedUntil IS NULL OR suspendedUntil < NOW()) AND banned = 0');
+		$userCheck->execute(array($user));
 		
 		if ($userCheck->rowCount()) {
 			$userID = $userCheck->fetchColumn();

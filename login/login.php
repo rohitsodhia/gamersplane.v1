@@ -23,8 +23,8 @@
 			
 			<form method="post" action="/login/process/login/" class="hbMargined">
 				<div class="tr">
-					<label class="textLabel">Username</label>
-					<div class="textfield"><input id="username" type="text" name="username" maxlength="24" tabindex="3"></div>
+					<label class="textLabel">Username/Email</label>
+					<div class="textfield"><input id="user" type="text" name="user" maxlength="24" tabindex="3"></div>
 				</div>
 				<div class="tr">
 					<label class="textLabel">Password</label>
