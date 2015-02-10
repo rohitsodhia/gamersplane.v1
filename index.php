@@ -129,7 +129,7 @@
 	if ($affiliate == null) $affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$lte' => $rand)));
 ?>
 				<div class="widgetBody">
-					<img src="/images/links/<?=$affiliate['_id']?>.<?=$affiliate['image']?>">
+					<a href="<?=$affiliate['url']?>" target="_blank"><img src="/images/links/<?=$affiliate['_id']?>.<?=$affiliate['image']?>"></a>
 					<p><a href="<?=$affiliate['url']?>" target="_blank"><?=$affiliate['title']?></a></p>
 				</div>
 			</div>
