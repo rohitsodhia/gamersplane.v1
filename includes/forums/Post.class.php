@@ -16,15 +16,22 @@
 		public function __construct($loadData = null) {
 			if ($loadData == null) return true;
 
-			foreach (get_object_vars($this) as $key => $value) {
-				if (in_array($key, array('author', 'rolls', 'draws'))) continue;
-				if (!array_key_exists($key, $loadData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
-				$this->$key = $loadData[$key];
+			if (is_int($loadData)) {
+				global $mysql;
+
+				$loadData = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.postID = {$loadData}")->fetch();
 			}
-			$this->author = new stdClass();
-			$this->author->userID = $loadData['userID'];
-			$this->author->username = $loadData['username'];
-			$this->author->avatarExt = $loadData['avatarExt'];
+			if (is_array($loadData)) {
+				foreach (get_object_vars($this) as $key => $value) {
+					if (in_array($key, array('author', 'rolls', 'draws'))) continue;
+					if (!array_key_exists($key, $loadData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
+					$this->$key = $loadData[$key];
+				}
+				$this->author = new stdClass();
+				$this->author->userID = $loadData['userID'];
+				$this->author->username = $loadData['username'];
+				$this->author->avatarExt = $loadData['avatarExt'];
+			}
 		}
 
 		public function __set($key, $value) {
@@ -35,8 +42,16 @@
 			if (property_exists($this, $key)) return $this->$key;
 		}
 
+		public function getPostID() {
+			return $this->postID;
+		}
+
 		public function setThreadID($threadID) {
 			if (intval($threadID)) $this->threadID = intval($threadID);
+		}
+
+		public function getThreadID() {
+			return $this->threadID;
 		}
 
 		public function setTitle($value) {
@@ -46,6 +61,12 @@
 		public function getTitle($pr = false) {
 			if ($pr) return printReady($this->title);
 			else return $this->title;
+		}
+
+		public function getAuthor($key = null) {
+			if ($key == null) return $this->author;
+			elseif (property_exists($this->author, $key)) return $this->author->$key;
+			else return null;
 		}
 
 		public function setMessage($value) {

@@ -8,45 +8,17 @@
 
 	if ($editPost) {
 		$postID = intval($pathOptions[1]);
-		$threadInfo = $mysql->query("SELECT t.forumID, t.threadID, t.sticky, t.allowRolls, t.allowDraws, f.heritage FROM threads t, posts p, forums f WHERE t.threadID = p.threadID AND f.forumID = t.forumID AND p.postID = $postID");
-		list($forumID, $threadID, $sticky, $allowRolls, $allowDraws, $heritage) = $threadInfo->fetch(PDO::FETCH_NUM);
-		
-		$rolls = $mysql->query("SELECT p.postID, r.rollID, r.type, r.reason, r.roll, r.indivRolls, r.results, r.visibility, r.extras FROM posts p, rolls r WHERE p.postID = {$postID} AND r.postID = p.postID ORDER BY r.rollID");
-		$temp = array();
-		foreach ($rolls as $rollInfo) {
-			$rollObj = RollFactory::getRoll($rollInfo['type']);
-			$rollObj->forumLoad($rollInfo);
-			$temp[] = $rollObj;
-		}
-		$rolls = $temp;
-		
-		$draws = $mysql->query('SELECT deckDraws.deckID, deckDraws.type, deckDraws.cardsDrawn, deckDraws.reason FROM posts, deckDraws WHERE posts.postID = '.$postID.' AND deckDraws.postID = posts.postID');
-		$temp = array();
-		foreach ($draws as $drawInfo) $temp[$drawInfo['deckID']] = $drawInfo;
-		$draws = $temp;
-		
-		$postInfo = $mysql->query("SELECT t.forumID, p.postID, p.title postTitle, p.authorID, p.postAs, p.message, first.title threadTitle, first.postID fpPostID, t.locked, t.allowRolls, t.allowDraws FROM posts p, posts first, threads t, threads_relPosts relPosts WHERE p.postID = {$postID} AND p.threadID = t.threadID AND t.threadID = relPosts.threadID and relPosts.firstPostID = first.postID");
-		$postInfo = $postInfo->fetch();
-		
-		if ($postInfo['fpPostID'] == $postID) {
+		$post = new Post($postID);
+		$threadManager = new ThreadManager($post->getThreadID());
+		if ($postID == $threadManager->getThreadProperty('firstPostID')) 
 			$firstPost = true;
-			$pollInfo = $mysql->query("SELECT * FROM forums_polls WHERE threadID = $threadID");
-			if ($pollInfo->rowCount()) {
-				$postInfo += $pollInfo->fetch();
-				$pollOptions = $mysql->query("SELECT `option` FROM forums_pollOptions WHERE threadID = $threadID");
-				$postInfo['pollOptions'] = array();
-				foreach ($pollOptions as $pollOption) $postInfo['pollOptions'][] = $pollOption['option'];
-				$postInfo['pollOptions'] = implode("\n", $postInfo['pollOptions']);
-			}
-		}
-		
-		$permissions = retrievePermissions($currentUser->userID, $postInfo['forumID'], 'write, moderate, addPoll, addRolls, addDraws', true);
-		if ($postInfo['authorID'] != $currentUser->userID/* && $postInfo->rowCount() > 0*/) {
-			if ($threadManager->getPermissions('moderate') != 1) $noChat = true;
-		} elseif (($postInfo['locked'] && !$threadManager->getPermissions('moderate'))) $noChat = true;
-		else {
-			if (!$threadManager->getPermissions('write')) $noChat = true;
-		}
+
+		if ($post->getAuthor('userID') != $currentUser->userID && !$threadManager->getPermissions('moderate')) 
+			$noChat = true;
+		elseif ($threadManager->getThreadProperty('locked') && !$threadManager->getPermissions('moderate')) 
+			$noChat = true;
+		elseif (!$threadManager->getPermissions('write')) 
+			$noChat = true;
 	} elseif ($pathOptions[0] == 'newThread') {
 		$firstPost = true;
 		
@@ -82,7 +54,7 @@
 	if ($noChat) { header('Location: /forums/'); exit; }
 	
 	$fillVars = $formErrors->getErrors('post');
-	
+
 	if ($_GET['preview']) 
 		$fillVars = $_SESSION['previewVars'];
 	else 
@@ -157,10 +129,10 @@
 	elseif ($pathOptions[0] == 'editPost') echo "\t\t\t".'<input type="hidden" name="edit" value="'.$postID.'">'."\n";
 	elseif ($pathOptions[0] == 'post') echo "\t\t\t".'<input type="hidden" name="threadID" value="'.$threadID.'">'."\n";
 	
-	if (isset($fillVars)) 
+	if ($fillVars) 
 		$title = printReady($fillVars['title']);
-	elseif ($editPost) 
-		$title = (substr($post->title, 0, 4) != 'Re: '?'Re: ':'').$post->title;
+	elseif (strlen($post->getTitle())) 
+		$title = 'Re: '.$threadManager->getThreadProperty('title');
 	else 
 		$title = printReady($post->title, array('stripslashes'));
 ?>
@@ -173,7 +145,7 @@
 <?	
 	if ($gameID && sizeof($characters)) {
 		$currentChar = $post->postAs;
-		if (isset($fillVars)) $currentChar = $fillVars['postAs'];
+		if ($fillVars) $currentChar = $fillVars['postAs'];
 ?>
 					<div class="tr">
 						<label>Post As:</label>
@@ -186,7 +158,7 @@
 					</div>
 <?	} ?>
 				</div>
-				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=printReady(isset($fillVars)?$fillVars['message']:$post->message, array('stripslashes'))?></textarea>
+				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=$fillVars?$fillVars['message']:$post->message?></textarea>
 			</div>
 			
 <?	if ($firstPost && ($threadManager->getPermissions('addPoll') || $rollsAllowed || $drawsAllowed)) { ?>
@@ -219,28 +191,28 @@
 <?
 		if ($threadManager->getPermissions('moderate')) {
 			$sticky = $threadManager->getThreadProperty('sticky');
-			if (isset($fillVars)) $sticky = $fillVars['sticky'];
+			if ($fillVars) $sticky = $fillVars['sticky'];
 ?>
 				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Sticky thread</p>
 <?
 		}
 		if ($threadManager->getPermissions('moderate')) {
 			$locked = $threadManager->getThreadProperty('locked');
-			if (isset($fillVars)) $locked = $fillVars['locked'];
+			if ($fillVars) $locked = $fillVars['locked'];
 ?>
 				<p><input type="checkbox" name="locked"<?=$locked?' checked="checked"':''?>> Lock thread</p>
 <?
 		}
 		if ($threadManager->getPermissions('addRolls')) {
 			$addRolls = $allowRolls || ($pathOptions[0] == 'newThread' && $gameID);
-			if (isset($fillVars)) $addRolls = $fillVars['allowRolls'];
+			if ($fillVars) $addRolls = $fillVars['allowRolls'];
 ?>
 				<p><input type="checkbox" name="allowRolls"<?=$addRolls?' checked="checked"':''?>> Allow adding rolls to posts (if this box is unchecked, any rolls added to this thread will be ignored)</p>
 <?
 		}
 		if ($threadManager->getPermissions('addDraws')) {
 			$addDraws = $allowDraws || ($pathOptions[0] == 'newThread' && $gameID);
-			if (isset($fillVars)) $addDraws = $fillVars['allowDraws'];
+			if ($fillVars) $addDraws = $fillVars['allowDraws'];
 ?>
 				<p><input type="checkbox" name="allowDraws"<?=$addDraws?' checked="checked"':''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
 <?		} ?>
@@ -258,7 +230,7 @@
 <?			} ?>
 				<div class="tr clearfix">
 					<label for="pollQuestion" class="textLabel"><b>Poll Question:</b></label>
-					<div><input id="pollQuestion" type="text" name="poll" value="<?=isset($fillVars)?$fillVars['poll']:$threadManager->getPollProperty('question')?>" class="borderBox"></div>
+					<div><input id="pollQuestion" type="text" name="poll" value="<?=$fillVars?$fillVars['poll']:$threadManager->getPollProperty('question')?>" class="borderBox"></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="pollOption" class="textLabel">
@@ -266,7 +238,7 @@
 						<p>Place each option on a new line. You may enter up to <b>25</b> options.</p>
 					</label>
 					<div><textarea id="pollOptions" name="pollOptions"><?
-			if (isset($fillVars)) echo $fillVars['pollOptions'];
+			if ($fillVars) echo $fillVars['pollOptions'];
 			else {
 				$options = array();
 				foreach ($threadManager->getPollProperty('options') as $option) 
@@ -277,13 +249,13 @@
 				</div>
 				<div class="tr clearfix">
 					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>
-					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=isset($fillVars)?$fillVars['optionsPerUser']:$threadManager->getPollProperty('optionsPerUser')?>" class="borderBox"></div>
+					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=$fillVars?$fillVars['optionsPerUser']:$threadManager->getPollProperty('optionsPerUser')?>" class="borderBox"></div>
 				</div>
 				<div class="tr clearfix">
 					<label for="allowRevoting"><b>Allow Revoting:</b></label>
 <?
 			$allowRevoting = $threadManager->getPollProperty('allowRevoting');
-			if (isset($fillVars)) $allowRevoting = $fillVars['allowRevoting'];
+			if ($fillVars) $allowRevoting = $fillVars['allowRevoting'];
 ?>
 					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=$allowRevoting?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
 				</div>
@@ -377,8 +349,8 @@
 <?				} else { ?>
 						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deck['label']?></b> has <?=sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1?> cards left</td></tr>
 						<tr>
-							<td class="reason"><input type="text" name="decks[<?=$deck['deckID']?>][reason]" maxlength="100" value="<?=isset($fillVars)?$fillVars[$deck['deckID']]['reason']:''?>" tabindex="<?=tabOrder();?>"></td>
-							<td class="draw">Draw <input type="text" name="decks[<?=$deck['deckID']?>][draw]" maxlength="2" value="<?=isset($fillVars)?$fillVars[$deck['deckID']]['draw'].'"':''?>" tabindex="<?=tabOrder();?>"> cards</td>
+							<td class="reason"><input type="text" name="decks[<?=$deck['deckID']?>][reason]" maxlength="100" value="<?=$fillVars?$fillVars[$deck['deckID']]['reason']:''?>" tabindex="<?=tabOrder();?>"></td>
+							<td class="draw">Draw <input type="text" name="decks[<?=$deck['deckID']?>][draw]" maxlength="2" value="<?=$fillVars?$fillVars[$deck['deckID']]['draw'].'"':''?>" tabindex="<?=tabOrder();?>"> cards</td>
 						</tr>
 <?
 				}

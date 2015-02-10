@@ -30,11 +30,13 @@
 			}
 			foreach ($matches as $match) {
 				$matchUsers = preg_split('/[^\w]+/', $match[1]);
-				$validUsers = array_intersect($matchUsers, $allUsers);
-				if (sizeof($matchUsers) != $validUsers) {
-					$validNote = preg_replace('/\[note.*?\]/', '[note="'.implode(',', $validUsers).'"]', $match[0]);
-					$message = str_replace($match[0], $validNote, $message);
+				$validuser = array();
+				foreach ($matchUsers as $user) {
+					foreach ($allUsers as $realUser) 
+						if (strtolower($user) == strtolower($realUser)) $validUsers[] = $realUser;
 				}
+				$validNote = preg_replace('/\[note.*?\]/', '[note="'.implode(',', $validUsers).'"]', $match[0]);
+				$message = str_replace($match[0], $validNote, $message);
 			}
 		}
 		$post->setMessage($_POST['message']);
@@ -129,7 +131,7 @@
 				$title = $mysql->query("SELECT p.title FROM posts p INNER JOIN threads_relPosts rp ON p.postID = rp.firstPostID WHERE rp.threadID = {$threadID} LIMIT 1");
 				$title = 'Re: '.$title->fetchColumn();
 			}
-			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
+			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
 			
 			if (sizeof($_SESSION['errors'])) {
 				$_SESSION['errorVals'] = $_POST;
@@ -146,14 +148,11 @@
 			}
 		} elseif ($_POST['edit']) {
 			$postID = intval($_POST['edit']);
-			$postInfo = $mysql->query('SELECT posts.threadID, forums.forumID, posts.title, posts.message, posts.authorID, posts.datePosted, posts.lastEdit, posts.timesEdited, threads.locked, threads.allowRolls, threads.allowDraws, relPosts.firstPostID FROM posts, threads, forums, threads_relPosts relPosts WHERE posts.postID = '.$postID.' AND posts.threadID = threads.threadID AND threads.forumID = forums.forumID AND threads.threadID = relPosts.threadID');
-			$postInfo = $postInfo->fetch();
-			$forumID = $postInfo['forumID'];
+			$post = new Post($postID);
+			$threadManager = new ThreadManager($post->getThreadID()); exit;
 			
-			$permissions = retrievePermissions($currentUser->userID, $forumID, 'editPost, addPoll, addRolls, addDraws, moderate', true);
-			
-			if (!$postInfo || ($postInfo['authorID'] == $currentUser->userID && !$threadManager->getPermission('editPost')) || ($postInfo['authorID'] != $currentUser->userID && !$threadManager->getPermission('moderate')) || ($postInfo['locked'] && !$threadManager->getPermission('moderate'))) { header('Location: /forums/thread/'.$postInfo['threadID']); exit; }
-			if (strlen($message) == 0) $_SESSION['errors']['noMessage'] = 1;
+			if (($post->getAuthor('userID') == $currentUser->userID && !$threadManager->getPermission('editPost')) || $postInfo['locked'] || !$threadManager->getPermission('moderate')) { header('Location: /forums/thread/'.$post->getThreadID()); exit; }
+			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
 			
 			if ($postInfo['firstPostID'] == $postID && !isset($_POST['deletePoll'])) {
 				$poll = array('poll' => sanitizeString($_POST['poll']), 'pollOptions' => preg_split('/(\r|\n)+/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
@@ -230,6 +229,6 @@
 		}
 		
 		 
-		header('Location: /forums/thread/'.$threadManager->getThreadProperty('threadID').'?p='.$postID.'#p'.$postID));
+		header('Location: /forums/thread/'.$threadManager->getThreadProperty('threadID').'?p='.$postID.'#p'.$postID);
 	} else header('Location: /forums/thread/'.$threadID);
 ?>
