@@ -3,7 +3,6 @@
 </div></div>
 <footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?>"><div class="bodyContainer">
 	<a href="/contact/">Contact Us</a>
-<?		if ($currentUser->checkACP()) { ?>
 	<div class="floatRight">
 		<p><a href="http://amazon.gamersplane.com" target="_blank">Amazon referral link</a></p>
 		<p><a href="http://dtrp.gamersplane.com" target="_blank">DTRPG referral link</a></p>
@@ -13,11 +12,12 @@
 			<input type="image" src="/images/support_us.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 		</form>
+<?		if ($currentUser->checkACP()) { ?>
 		<div>
 			<a href="/acp/">ACP</a>
 		</div>
-	</div>
 <?		} ?>
+	</div>
 </div></footer>
 <?		if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
 <?	} else { ?>
