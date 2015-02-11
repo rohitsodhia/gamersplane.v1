@@ -154,19 +154,25 @@
 			if (($post->getAuthor('userID') == $currentUser->userID && !$threadManager->getPermission('editPost')) || $postInfo['locked'] || !$threadManager->getPermission('moderate')) { header('Location: /forums/thread/'.$post->getThreadID()); exit; }
 			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
 			
-			if ($postInfo['firstPostID'] == $postID && !isset($_POST['deletePoll'])) {
-				$poll = array('poll' => sanitizeString($_POST['poll']), 'pollOptions' => preg_split('/(\r|\n)+/', $_POST['pollOptions']), 'optionsPerUser' => intval($_POST['optionsPerUser']), 'allowRevoting' => isset($_POST['allowRevoting'])?1:0);
-				if (strlen($poll['poll']) == 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noPoll'] = 1;
-				if (strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) <= 1) $_SESSION['errors']['noOptions'] = 1;
-				if ($poll['optionsPerUser'] == 0 && strlen($poll['poll']) != 0 && sizeof($poll['pollOptions']) > 1) $_SESSION['errors']['noOptionsPerUser'] = 1;
+			if ($post->getThreadProperty('firstPostID') == $postID && !isset($_POST['deletePoll'])) {
+				$threadManager->thread->poll->setQuestion($_POST['poll']);
+				$threadManager->thread->poll->parseOptions($_POST['pollOptions']);
+				if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
+					$formErrors->addError('noQuestion');
+				if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
+					$formErrors->addError('noOptions');
+				$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
+				if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
+					$formErrors->addError('noOptionsPerUser');
+				$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
 			}
 			
-			if (sizeof($_SESSION['errors'])) {
-				$_SESSION['errorVals'] = $_POST;
-				$_SESSION['errorTime'] = time() + 300;
-				header('Location: '.$_SESSION['lastURL'].'/?errors=1');
+			if ($formErrors->errorsExist()) {
+				$formErrors->setErrors('post', $_POST);
+				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
-			} else {
+			} else 
+				$postID = $threadManager->createThread($post);
 				$updatePostQuery = 'UPDATE posts SET message = :message';
 				$updates = array('message' => $message);
 				if ($postInfo['firstPostID'] == $postID && strlen($title) != 0) {

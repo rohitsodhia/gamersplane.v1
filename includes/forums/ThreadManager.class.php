@@ -76,31 +76,35 @@
 			return $this->thread->getVoteMax();
 		}
 
-		public function createThread($post) {
+		public function saveThread($post) {
 			global $mysql;
 
-			$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky').", locked = ".$this->thread->getStates('locked').", allowRolls = ".$this->thread->getAllowRolls().", allowDraws = ".$this->thread->getAllowDraws().", postCount = 1");
-			$this->threadID = $mysql->lastInsertId();
+			if ($this->threadID == null) {
+				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky').", locked = ".$this->thread->getStates('locked').", allowRolls = ".$this->thread->getAllowRolls().", allowDraws = ".$this->thread->getAllowDraws().", postCount = 1");
+				$this->threadID = $mysql->lastInsertId();
 
-			if (strlen($this->getPollProperty('question')) && sizeof($this->getPollProperty('options'))) {
-				$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ({$this->threadID}, :poll, :optionsPerUser, :allowRevoting)");
-				$addPoll->bindValue(':poll', $this->getPollProperty('question'));
-				$addPoll->bindValue(':optionsPerUser', $this->getPollProperty('optionsPerUser'));
-				$addPoll->bindValue(':allowRevoting', $this->getPollProperty('allowRevoting'));
-				$addPoll->execute();
-				$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
-				foreach ($this->getPollProperty('options') as $option) {
-					$addPollOptions->bindValue(':option', $option);
-					$addPollOptions->execute();
+				if (strlen($this->getPollProperty('question')) && sizeof($this->getPollProperty('options'))) {
+					$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ({$this->threadID}, :poll, :optionsPerUser, :allowRevoting)");
+					$addPoll->bindValue(':poll', $this->getPollProperty('question'));
+					$addPoll->bindValue(':optionsPerUser', $this->getPollProperty('optionsPerUser'));
+					$addPoll->bindValue(':allowRevoting', $this->getPollProperty('allowRevoting'));
+					$addPoll->execute();
+					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
+					foreach ($this->getPollProperty('options') as $option) {
+						$addPollOptions->bindValue(':option', $option);
+						$addPollOptions->execute();
+					}
 				}
+
+				$post->setThreadID($this->threadID);
+				$postID = $post->savePost();
+
+				$mysql->query("UPDATE threads SET firstPostID = {$postID}, lastPostID = {$postID} WHERE threadID = {$this->threadID}");
+
+				$this->updateLastRead($postID);
+			} else {
+				
 			}
-
-			$post->setThreadID($this->threadID);
-			$postID = $post->savePost();
-
-			$mysql->query("UPDATE threads SET firstPostID = {$postID}, lastPostID = {$postID} WHERE threadID = {$this->threadID}");
-
-			$this->updateLastRead($postID);
 
 			return $postID;
 		}
