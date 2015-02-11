@@ -148,7 +148,12 @@ $(function() {
 		}
 	});
 
-	$('.convertTZ').each(function () { $(this).text(convertTZ($(this).text())); });
+	$('.convertTZ').each(function () {
+		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMMM D, YYYY h:mm a';
+		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
+		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
+		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
+	});
 
 
 	/* Individual Pages */

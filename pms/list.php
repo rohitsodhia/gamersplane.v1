@@ -42,7 +42,10 @@
 				<div class="delCol"><?=$box == 'outbox' && $pmInfo['viewed']?'':'<a href="/pms/delete/'.$pmInfo['pmID'].'" class="deletePM sprite cross"></a>'?></div>
 				<div class="titleCol"><a href="/pms/view/<?=$pmInfo['pmID']?>"><?=(!$pmInfo['viewed']?'<b>':'').printReady($pmInfo['title']).(!$pmInfo['viewed']?'</b>':'')?></a></div>
 				<div class="fromCol"><a href="<?='/'.$pmInfo['senderID']?>" class="username"><?=$pmInfo['senderName']?></a></div>
-				<div class="whenCol convertTZ"><?=date('F j, Y<\b\r>g:i a', strtotime($pmInfo['datestamp']))?></div>
+				<div class="whenCol">
+					<span class="convertTZ" data-parse-format="MMMM D, YYYY" data-display-format="MMMM D, YYYY"><?=date('F j, Y', strtotime($pmInfo['datestamp']))?></span><br>
+					<span class="convertTZ" data-parse-format="h:mm a" data-display-format="h:mm a"><?=date('g:i a', strtotime($pmInfo['datestamp']))?></span>
+				</div>
 			</div>
 <?
 		}
