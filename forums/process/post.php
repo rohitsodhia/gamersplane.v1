@@ -10,8 +10,10 @@
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 
-
-		$post = new Post();
+		if ($_POST['edit']) {
+			$postID = intval($_POST['edit']);
+			$post = new Post($postID);
+		} else $post = new Post();
 		$post->setTitle($_POST['title']);
 		$post->setPostAs($_POST['postAs']);
 		$message = $_POST['message'];
@@ -39,7 +41,7 @@
 				$message = str_replace($match[0], $validNote, $message);
 			}
 		}
-		$post->setMessage($_POST['message']);
+		$post->setMessage($message);
 		
 		$rolls = array();
 		$draws = array();
@@ -90,6 +92,7 @@
 		$permissions = array();
 
 		$formErrors->clearErrors();
+
 		if ($_POST['new']) {
 			$forumID = intval($_POST['new']);
 			$threadManager = new ThreadManager(null, $forumID);
@@ -125,7 +128,7 @@
 			$threadInfo = $mysql->query('SELECT forumID, locked, allowRolls, allowDraws FROM threads WHERE threadID = '.$threadID);
 			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
 			$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, addRolls, addDraws, moderate', true);
-			if (!$threadManager->getPermission('write') || $locked) { header('Location: /forums/'.$forumID); exit; }
+			if (!$threadManager->getPermissions('write') || $locked) { header('Location: /forums/'.$forumID); exit; }
 			
 			if (strlen($title) == 0) {
 				$title = $mysql->query("SELECT p.title FROM posts p INNER JOIN threads_relPosts rp ON p.postID = rp.firstPostID WHERE rp.threadID = {$threadID} LIMIT 1");
@@ -147,85 +150,58 @@
 				$postID = $mysql->lastInsertId();
 			}
 		} elseif ($_POST['edit']) {
-			$postID = intval($_POST['edit']);
-			$post = new Post($postID);
-			$threadManager = new ThreadManager($post->getThreadID()); exit;
-			
-			if (($post->getAuthor('userID') == $currentUser->userID && !$threadManager->getPermission('editPost')) || $postInfo['locked'] || !$threadManager->getPermission('moderate')) { header('Location: /forums/thread/'.$post->getThreadID()); exit; }
+			$threadManager = new ThreadManager($post->getThreadID());
+			$firstPost = $threadManager->getThreadProperty('firstPostID') == $post->getPostID()?true:false;
+
+			if (($post->getAuthor('userID') == $currentUser->userID && !$threadManager->getPermissions('editPost')) || $postInfo['locked'] || !$threadManager->getPermissions('moderate')) { header('Location: /forums/thread/'.$post->getThreadID()); exit; }
+
+			if ($firstPost && strlen($post->getTitle()) == 0) $formErrors->addError('noTitle');
 			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
 			
-			if ($post->getThreadProperty('firstPostID') == $postID && !isset($_POST['deletePoll'])) {
-				$threadManager->thread->poll->setQuestion($_POST['poll']);
-				$threadManager->thread->poll->parseOptions($_POST['pollOptions']);
-				if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
-					$formErrors->addError('noQuestion');
-				if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
-					$formErrors->addError('noOptions');
-				$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
-				if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
-					$formErrors->addError('noOptionsPerUser');
-				$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+			if ($firstPost) {
+				$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate')?true:false);
+				$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate')?true:false);
+				$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls')?true:false);
+				$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls')?true:false);
+
+				if (!isset($_POST['deletePoll'])) {
+					$threadManager->thread->poll->setQuestion($_POST['poll']);
+					$threadManager->thread->poll->parseOptions($_POST['pollOptions']);
+					if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
+						$formErrors->addError('noQuestion');
+					if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
+						$formErrors->addError('noOptions');
+					$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
+					if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
+						$formErrors->addError('noOptionsPerUser');
+					$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+				}
 			}
-			
+
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
-			} else 
-				$postID = $threadManager->createThread($post);
-				$updatePostQuery = 'UPDATE posts SET message = :message';
-				$updates = array('message' => $message);
-				if ($postInfo['firstPostID'] == $postID && strlen($title) != 0) {
-					$updatePostQuery .= ', title = :title';
-					$updates['title'] = $title;
+			} else {
+				if (((time() + 300) > strtotime($post->getDatePosted()) || (time() + 60) > strtotime($post->getLastEdit())) && !$threadManager->getPermissions('moderate') && $this->getModified()) {
+					$edited = true;
+					$post->updateEdited();
 				}
-				
-				if (((time() + 300) > strtotime($postInfo['datePosted']) || (time() + 60) > strtotime($postInfo['lastEdit'])) && !$threadManager->getPermission('moderate') && ($postInfo['title'] != $title || $postInfo['message'] != $message)) {
-					$updatePostQuery .= ', lastEdit = :lastEdit, timesEdited = :timesEdited';
-					$updates['lastEdit'] = date('Y-m-d H:i:s');
-					$updates['timesEdited'] = $postInfo['timesEdited'] + 1;
-				}
-				
-				$updatePost = $mysql->prepare($updatePostQuery.' WHERE postID = '.$postID);
-				foreach ($updates as $key => $value) $updatePost->bindValue(':'.$key, $value);
-				$updatePost->execute();
-				
-				$threadID = $postInfo['threadID'];
-				
-				if ($postID == $postInfo['firstPostID']) {
-					$sticky = isset($_POST['sticky']) && $threadManager->getPermission('moderate')?1:0;
-					$allowRolls = isset($_POST['allowRolls']) && $threadManager->getPermission('addRolls')?1:0;
-					$allowDraws = isset($_POST['allowDraws']) && $threadManager->getPermission('addDraws')?1:0;
-					
-					$mysql->query("UPDATE threads SET sticky = $sticky, allowRolls = $allowRolls, allowDraws = $allowDraws WHERE threadID = $threadID");
-					
-					if (isset($_POST['deletePoll'])) {
-						$mysql->query("DELETE FROM po, pv USING forums_pollOptions po LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID WHERE po.threadID = $threadID");
-						$mysql->query("DELETE FROM forums_polls WHERE threadID = $threadID");
-					} elseif (strlen($poll['poll']) && sizeof($poll['pollOptions'])) {
-						$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ($threadID, :poll, :optionsPerUser, :allowRevoting) ON DUPLICATE KEY UPDATE poll = :poll, optionsPerUser = :optionsPerUser, allowRevoting = :allowRevoting");
-						$addPoll->bindValue(':poll', $poll['poll']);
-						$addPoll->bindValue(':optionsPerUser', $poll['optionsPerUser']);
-						$addPoll->bindValue(':allowRevoting', $poll['allowRevoting']);
-						$addPoll->execute();
 
-						$pollOptions = $mysql->query("SELECT pollOptionID, `option` FROM forums_pollOptions WHERE threadID = $threadID");
-						$options = array();
-						foreach ($pollOptions as $optionInfo) $options[$optionInfo['pollOptionID']] = $optionInfo['option'];
-						$oInserts = '';
-						$addPollOption = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = $threadID, `option` = :option");
-						foreach ($poll['pollOptions'] as $option) {
-							if (in_array($option, $options)) unset($options[array_search($option, $options)]);
-							else {
-								$addPollOption->bindValue(':option', $option);
-								$addPollOption->execute();
-							}
-						}
-						if (sizeof($options)) $mysql->query('DELETE FROM po, pv USING forums_pollOptions po LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID WHERE po.pollOptionID IN ('.implode(', ', array_keys($options)).')');
-					}
+				if ($firstPost) {
+					$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate')?true:false);
+					$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate')?true:false);
+					$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls')?true:false);
+					$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addDraws')?true:false);
+					
+					if (isset($_POST['deletePoll'])) $threadManager->deletePoll();
+
+					$threadManager->saveThread($post);
 				} else {
 					$allowRolls = $postInfo['allowRolls'];
 					$allowDraws = $postInfo['allowDraws'];
+
+					$post->savePost();
 				}
 				
 				foreach ($_POST['nVisibility'] as $rollID => $nVisibility) {
@@ -233,8 +209,7 @@
 				}
 			}
 		}
-		
-		 
-		header('Location: /forums/thread/'.$threadManager->getThreadProperty('threadID').'?p='.$postID.'#p'.$postID);
+
+		header('Location: /forums/thread/'.$threadManager->getThreadProperty('threadID').'?p='.$post->getPostID().'#p'.$post->getPostID());
 	} else header('Location: /forums/thread/'.$threadID);
 ?>

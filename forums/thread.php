@@ -89,7 +89,9 @@
 		}
 ?>
 				</ul>
+<?		if ($allowVote) { ?>
 				<div id="poll_submit"><button type="submit" name="submit" class="fancyButton">Vote</button></div>
+<?		} ?>
 			</form>
 <?
 	}

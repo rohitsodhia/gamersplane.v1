@@ -3,6 +3,7 @@
 		protected $threadID;
 		protected $question;
 		protected $options = array();
+		protected $oldOptions = array();
 		protected $optionsPerUser = 1;
 		protected $pollLength;
 		protected $allowRevoting = false;
@@ -34,6 +35,10 @@
 			if (property_exists($this, $key)) return $this->$key;
 		}
 
+		public function setThreadID($value) {
+			$this->threadID = intval($value);
+		}
+
 		public function setQuestion($value) {
 			$this->question = sanitizeString(html_entity_decode($value));
 		}
@@ -44,8 +49,12 @@
 		}
 
 		public function parseOptions($value) {
-			$this->options = preg_split('/\n/', $value);
-			array_walk($this->options, function (&$value, $key) { $value = sanitizeString($value); });			
+			if (sizeof($this->options)) $this->oldOptions = $this->options;
+			$this->options = array();
+			$options = preg_split('/\n/', $value);
+			array_walk($options, function (&$value, $key) { $value = sanitizeString($value); });
+			foreach ($options as $option) 
+				if (strlen($option)) $this->options[] = $option;
 		}
 
 		public function getOptions($key = null) {
@@ -68,6 +77,41 @@
 
 		public function getAllowRevoting() {
 			return $this->allowRevoting;
+		}
+
+		public function savePoll($threadID = null) {
+			global $mysql;
+
+			if ($threadID != null && is_int($threadID)) {
+				$this->threadID = intval($threadID);
+				if (strlen($this->question) && sizeof($this->options)) {
+					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
+					foreach ($this->getPollProperty('options') as $option) {
+						$addPollOptions->bindValue(':option', $option);
+						$addPollOptions->execute();
+					}
+				}
+			} else {
+				$options = preg_split('/\n/', $value);
+				array_walk($options, function (&$value, $key) { $value = sanitizeString($value); });
+				$loadedOptions = array();
+				foreach ($this->oldOptions as $pollOptionID => $option) 
+					$loadedOptions[] = $option;
+				$addPollOption = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
+				foreach ($loadedOptions as $option) {
+					if (in_array($option, $loadedOptions)) unset($loadedOptions[array_search($option, $loadedOptions)]);
+					else {
+						$addPollOption->bindValue(':option', $option);
+						$addPollOption->execute();
+					}
+					if (sizeof($loadedOptions)) $mysql->query('DELETE FROM po, pv USING forums_pollOptions po LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID WHERE po.pollOptionID IN ('.implode(', ', array_keys($loadedOptions)).')');
+				}
+			}
+			$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ({$this->threadID}, :poll, :optionsPerUser, :allowRevoting) ON DUPLICATE KEY UPDATE poll = :poll, optionsPerUser = :optionsPerUser, allowRevoting = :allowRevoting");
+			$addPoll->bindValue(':poll', $this->question);
+			$addPoll->bindValue(':optionsPerUser', $this->optionsPerUser);
+			$addPoll->bindValue(':allowRevoting', $this->allowRevoting);
+			$addPoll->execute();
 		}
 
 		public function addVotes($votes) {
@@ -106,6 +150,13 @@
 			foreach ($this->options as $option) 
 				if ($option->votes > $max) $max = $option->votes;
 			return $max;
+		}
+
+		public function delete() {
+			global $mysql;
+
+			$mysql->query("DELETE FROM po, pv USING forums_pollOptions po LEFT JOIN forums_pollVotes pv ON po.pollOptionID = pv.pollOptionID WHERE po.threadID = {$this->threadID}");
+			$mysql->query("DELETE FROM forums_polls WHERE threadID = {$this->threadID}");
 		}
 	}
 ?>

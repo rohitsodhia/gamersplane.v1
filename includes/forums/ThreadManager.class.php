@@ -64,6 +64,10 @@
 			return $this->thread->getPollProperty($key);
 		}
 
+		public function deletePoll() {
+			return $this->thread->deletePoll();
+		}
+
 		public function getVotesCast() {
 			return $this->thread->getVotesCast();
 		}
@@ -83,19 +87,6 @@
 				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky').", locked = ".$this->thread->getStates('locked').", allowRolls = ".$this->thread->getAllowRolls().", allowDraws = ".$this->thread->getAllowDraws().", postCount = 1");
 				$this->threadID = $mysql->lastInsertId();
 
-				if (strlen($this->getPollProperty('question')) && sizeof($this->getPollProperty('options'))) {
-					$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ({$this->threadID}, :poll, :optionsPerUser, :allowRevoting)");
-					$addPoll->bindValue(':poll', $this->getPollProperty('question'));
-					$addPoll->bindValue(':optionsPerUser', $this->getPollProperty('optionsPerUser'));
-					$addPoll->bindValue(':allowRevoting', $this->getPollProperty('allowRevoting'));
-					$addPoll->execute();
-					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
-					foreach ($this->getPollProperty('options') as $option) {
-						$addPollOptions->bindValue(':option', $option);
-						$addPollOptions->execute();
-					}
-				}
-
 				$post->setThreadID($this->threadID);
 				$postID = $post->savePost();
 
@@ -103,8 +94,11 @@
 
 				$this->updateLastRead($postID);
 			} else {
-				
+				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0)." WHERE threadID = ".$this->threadID);
+				$postID = $post->savePost();
 			}
+
+			$this->thread->savePoll($this->threadID);
 
 			return $postID;
 		}

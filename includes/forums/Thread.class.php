@@ -120,6 +120,16 @@
 			return $this->poll->$key;
 		}
 
+		public function savePoll($theadID = null) {
+			$this->poll->savePoll($theadID);
+		}
+
+		public function deletePoll() {
+			$this->poll->delete();
+			$this->poll = new ForumPoll();
+			return true;
+		}
+
 		public function getVotesCast() {
 			return $this->poll->getVotesCast();
 		}

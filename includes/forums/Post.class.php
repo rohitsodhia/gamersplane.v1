@@ -12,6 +12,9 @@
 
 		protected $rolls = array();
 		protected $draws = array();
+
+		protected $modified = false;
+		protected $edited = false;
 		
 		public function __construct($loadData = null) {
 			if ($loadData == null) return true;
@@ -23,7 +26,7 @@
 			}
 			if (is_array($loadData)) {
 				foreach (get_object_vars($this) as $key => $value) {
-					if (in_array($key, array('author', 'rolls', 'draws'))) continue;
+					if (in_array($key, array('author', 'rolls', 'draws', 'modified', 'edited'))) continue;
 					if (!array_key_exists($key, $loadData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 					$this->$key = $loadData[$key];
 				}
@@ -55,7 +58,9 @@
 		}
 
 		public function setTitle($value) {
-			$this->title = sanitizeString(html_entity_decode($value));
+			$title = sanitizeString(html_entity_decode($value));
+			if ($title != $this->getTitle()) $this->modified = true;
+			$this->title = $title;
 		}
 
 		public function getTitle($pr = false) {
@@ -70,12 +75,22 @@
 		}
 
 		public function setMessage($value) {
-			$this->message = sanitizeString($value);
+			$message = sanitizeString($value);
+			if ($message != $this->getMessage()) $this->modified = true;
+			$this->message = $message;
 		}
 
 		public function getMessage($pr = false) {
 			if ($pr) return printReady($this->message);
 			else return $this->message;
+		}
+
+		public function getDatePosted() {
+			return $this->datePosted;
+		}
+
+		public function getLastEdit() {
+			return $this->lastEdit;
 		}
 
 		public function setPostAs($value) {
@@ -97,7 +112,8 @@
 		}
 
 		public function updateEdited() {
-
+			$this->edited = true;
+			$this->timesEdited += 1;
 		}
 
 		public function savePost() {
@@ -126,9 +142,18 @@
 						$addDraw->execute();
 					}
 				}
+			} else {
+				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = ".($this->postAs?$this->postAs:'NULL').($this->edited?" lastEdit = NOW(), timesEdited = {$this->timesEdited}":'')." WHERE postID = {$this->postID}");
+				$updatePost->bindValue(':title', $this->title);
+				$updatePost->bindValue(':message', $this->message);
+				$updatePost->execute();
 			}
 
 			return $this->postID;
+		}
+
+		public function getModified() {
+			return $this->modified;
 		}
 
 		public function dumpObj() {
