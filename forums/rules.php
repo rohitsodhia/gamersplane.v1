@@ -16,6 +16,7 @@
 			</ol>
 			<li>Post should not be spammy. Keep a post limited to 3 images, and make them images somewhat relevant.</li>
 			<li>No insulting people, directly or indirectly. Don't insult another player, a players family, a random stranger.</li>
+			<li>No hot button topics outside the gaming realm, including but not limited to politics, religion, etc., unless permitted by a moderator.</li>
 			<li>Do not post anything libelous or threatening.</li>
 			<li>No promoting commercial products not sanctioned by GP.</li>
 			<li>Any actions meant to harm GP, its server, or its content, or actions meant to circumvent its security are prohibited.</li>
