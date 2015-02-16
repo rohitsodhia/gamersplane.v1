@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head prefix="og: http://ogp.me/ns#">
 <?	require_once(FILEROOT.'/meta.php'); ?>
 
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
