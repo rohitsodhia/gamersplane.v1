@@ -33,7 +33,8 @@
 		$system = $systems->getShortName($systemID);
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = $system.'Character';
-	}
+	} else 
+		$fixedGameMenu = false;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$threadManager->getThreadProperty('title')?></h1>

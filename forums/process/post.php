@@ -125,30 +125,20 @@
 				$postID = $threadManager->createThread($post);
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
-			$threadInfo = $mysql->query('SELECT forumID, locked, allowRolls, allowDraws FROM threads WHERE threadID = '.$threadID);
-			list($forumID, $locked, $allowRolls, $allowDraws) = $threadInfo->fetch(PDO::FETCH_NUM);
-			$permissions = retrievePermissions($currentUser->userID, $forumID, 'write, addRolls, addDraws, moderate', true);
+			$threadManager = new ThreadManager($threadID);
 			if (!$threadManager->getPermissions('write') || $locked) { header('Location: /forums/'.$forumID); exit; }
 			
-			if (strlen($title) == 0) {
-				$title = $mysql->query("SELECT p.title FROM posts p INNER JOIN threads_relPosts rp ON p.postID = rp.firstPostID WHERE rp.threadID = {$threadID} LIMIT 1");
-				$title = 'Re: '.$title->fetchColumn();
-			}
+			$post->setThreadID($threadID);
+			if (strlen($post->getTitle()) == 0) 
+				$title = 'Re: '.$threadManager->getThreadProperty('title');
 			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
-			
-			if (sizeof($_SESSION['errors'])) {
-				$_SESSION['errorVals'] = $_POST;
-				$_SESSION['errorTime'] = time() + 300;
+
+			if ($formErrors->errorsExist()) {
+				$formErrors->setErrors('post', $_POST);
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
-			} else {
-				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = $threadID, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($postAs?$postAs:'NULL'));
-				$addPost->bindValue(':title', $title);
-				$addPost->bindValue(':message', $message);
-				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
-				$addPost->execute();
-				$postID = $mysql->lastInsertId();
-			}
+			} else 
+				$postID = $post->savePost();
 		} elseif ($_POST['edit']) {
 			$threadManager = new ThreadManager($post->getThreadID());
 			$firstPost = $threadManager->getThreadProperty('firstPostID') == $post->getPostID()?true:false;

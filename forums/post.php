@@ -81,7 +81,8 @@
 				if (strlen($character->getName())) $characters[$characterID] = $character;
 			}
 		}
-	}
+	} else 
+		$fixedGameMenu = false;
 
 	$rollsAllowed = ($threadManager->getPermissions('addRolls') && $threadManager->getThreadProperty('allowRolls') || $threadManager->getPermissions('moderate'))?true:false;
 	$drawsAllowed = false;
@@ -131,7 +132,7 @@
 	
 	if ($fillVars) 
 		$title = printReady($fillVars['title']);
-	elseif (strlen($post->getTitle())) 
+	elseif (!strlen($post->getTitle())) 
 		$title = 'Re: '.$threadManager->getThreadProperty('title');
 	else 
 		$title = printReady($post->title, array('stripslashes'));

@@ -651,19 +651,37 @@ div.prettySelect > div {
 
 footer {
 	margin-bottom: 10px;
-}
 
-footer.withFixedMenu {
-	margin-bottom: 50px;
-}
+	&.withFixedMenu {
+		margin-bottom: 50px;
+	}
 
-footer .bodyContainer {
-	padding: 10px 0;
-}
+	.bodyContainer {
+		padding: 10px 0;
+	}
 
-footer .floatRight > div {
-	margin-right: 20px;
-	text-align: right;
+	p, form {
+		margin-top: 0;
+		text-align: right;
+	}
+
+	form {
+		position: relative;
+		left: 5px;
+		margin-bottom: .3em;
+
+		input[type="image"] {
+			padding: 0;
+		}
+
+		img {
+			display: none;
+		}
+	}
+
+	.floatRight > div {
+		text-align: right;
+	}
 }
 
 #fixedMenu {
