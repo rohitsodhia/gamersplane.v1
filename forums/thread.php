@@ -22,7 +22,7 @@
 
 	$gameID = false;
 	$isGM = false;
-	if ($threadManager->getForumProperty('gameID')) {
+	if ($threadManager->isGameForum()) {
 		$gameID = $threadManager->getForumProperty('gameID');
 		$systemID = $mysql->query("SELECT systemID FROM games WHERE gameID = {$gameID}");
 		$systemID = $systemID->fetchColumn();
@@ -104,17 +104,32 @@
 	else $postSide = 'Left';
 	
 	$characters = array();
+	$hitLastRead = false;
+	if ($threadManager->getFirstPostID() > $threadManager->getThreadLastRead()) 
+		$hitLastRead = true;
+	$lastPostID = 0;
 	if (sizeof($threadManager->getPosts())) {
 		foreach ($threadManager->getPosts() as $post) {
-			if ($post->postAs) {
-				if (isset($characters[$post->postAs]) || $characters[$post->postAs] = new $charClass($post->postAs)) {
+			$lastPostID = $post->getPostID();
+			if ($post->getPostAs()) {
+				if (isset($characters[$post->getPostAs()]) || $characters[$post->getPostAs()] = new $charClass($post->getPostAs())) {
 					$postAsChar = true;
-					$character = $characters[$post->postAs];
+					$character = $characters[$post->getPostAs()];
 				} else $postAsChar = false;
 			} else $postAsChar = false;
 ?>
 			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
-				<a name="p<?=$post->postID?>"></a>
+				<a name="p<?=$post->getPostID?>"></a>
+<?
+			if ($hitLastRead ) {
+				$hitLastRead = false;
+?>
+				<a name="newPost"></a>
+<?
+			}
+			if ($post->getPostID() == $threadManager->getThreadLastRead()) 
+				$hitLastRead = true;
+?>
 				<div class="posterDetails">
 					<div class="avatar"><div>
 <?			if ($postAsChar && $character->getAvatar()) { ?>
@@ -248,6 +263,8 @@
 <?
 	} elseif ($threadManager->getThreadProperty('locked')) echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
 	else echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
+
+	$threadManager->updateLastRead($lastPostID);
 	
 	require_once(FILEROOT.'/footer.php');
 ?>

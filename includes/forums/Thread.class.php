@@ -79,6 +79,10 @@
 			return $this->allowDraws;
 		}
 
+		public function getFirstPostID() {
+			return $this->firstPostID;
+		}
+
 		public function newPosts($markedRead) {
 			if ($this->lastPost->postID > $this->lastRead && $this->lastPost->postID > $markedRead) return true;
 			else return false;
@@ -93,7 +97,6 @@
 			if ($page > ceil($this->postCount / PAGINATE_PER_PAGE)) $page = ceil($this->postCount / PAGINATE_PER_PAGE);
 			$start = ($page - 1) * PAGINATE_PER_PAGE;
 			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".PAGINATE_PER_PAGE);
-			if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$this->lastPost->postID} ON DUPLICATE KEY UPDATE lastRead = {$this->lastPost->postID}");
 			foreach ($posts as $post) $this->posts[$post['postID']] = new Post($post);
 
 			$rolls = $mysql->query("SELECT postID, rollID, type, reason, roll, indivRolls, results, visibility, extras FROM rolls WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY rollID");

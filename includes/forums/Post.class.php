@@ -117,6 +117,10 @@
 			$this->timesEdited += 1;
 		}
 
+		public function getPostAs() {
+			return $this->postAs;
+		}
+
 		public function savePost() {
 			global $mysql, $currentUser;
 

@@ -137,8 +137,11 @@
 				$formErrors->setErrors('post', $_POST);
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
-			} else 
+			} else {
 				$postID = $post->savePost();
+				$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$threadID}");
+				$threadManager->updateLastRead($postID);
+			}
 		} elseif ($_POST['edit']) {
 			$threadManager = new ThreadManager($post->getThreadID());
 			$firstPost = $threadManager->getThreadProperty('firstPostID') == $post->getPostID()?true:false;

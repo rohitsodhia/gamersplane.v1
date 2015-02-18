@@ -41,6 +41,14 @@
 			return $this->forumManager->getForumProperty($this->thread->forumID, $key);
 		}
 
+		public function getFirstPostID() {
+			return $this->thread->getFirstPostID();
+		}
+
+		public function isGameForum() {
+			return $this->forumManager->forums[$this->thread->forumID]->isGameForum();
+		}
+
 		public function getPermissions($permission = null) {
 			return $this->forumManager->getForumProperty($this->thread->forumID, 'permissions'.($permission != null?"[{$permission}]":''));
 		}
@@ -104,8 +112,8 @@
 		}
 
 		public function updateLastRead($postID) {
-			global $mysql, $currentUser;
-			$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
+			global $loggedIn, $mysql, $currentUser;
+			if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		}
 
 		public function displayPagination($page) {

@@ -222,7 +222,7 @@
 					<div class="td icon"><div class="forumIcon<?=$thread->getStates('sticky')?' sticky':''?><?=$thread->getStates('locked')?' locked':''?><?=$thread->newPosts($forum->markedRead)?' newPosts':''?>" title="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
 <?				if ($thread->newPosts($forum->markedRead)) { ?>
-						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="/forums/thread/<?=$thread->threadID?>/#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 				}
 				if ($thread->numPosts > PAGINATE_PER_PAGE) {
