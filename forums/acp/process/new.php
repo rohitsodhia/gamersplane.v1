@@ -1,17 +1,9 @@
 <?
+	addPackage('forum');
 	$forumID = intval($_POST['forumID']);
-	
-	$adminForums = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID}");
-	$temp = array();
-	foreach ($adminForums as $aForumID) $temp[] = $aForumID['forumID'];
-	$adminForums = $temp;
-	$gameInfo = $mysql->query('SELECT heritage, gameID FROM forums WHERE forumID = '.$forumID);
-	list($heritage, $gameID) = $gameInfo->fetch();
-	$oHeritage = $heritage;
-	$heritage = explode('-', $heritage);
-	foreach ($heritage as $key => $hForumID) $heritage[$key] = intval($hForumID);
-	
-	if (!(in_array(0, $adminForums) || array_intersect($adminForums, $heritage))) { header('Location: /forums/'); exit; }
+	$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+	$forum = $forumManager->forums[$forumID];
+	if (!$forum->getPermissions('admin')) { header('Location: /forums/'); exit; }
 	
 	if (isset($_POST['addForum'])) {
 		$numRows = $mysql->query('SELECT COUNT(forumID) FROM forums WHERE parentID = '.$forumID);
@@ -21,9 +13,9 @@
 		$addForum->bindValue(':order', intval($numRows + 1));
 		$addForum->execute();
 		$forumID = $mysql->lastInsertId();
-		$mysql->query('UPDATE forums SET heritage = "'.$oHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
+		$mysql->query('UPDATE forums SET heritage = "'.$forum->getHeritage(true).'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
 		
-		header('Location: /forums/acp/'.$forumID);
+		header('Location: /forums/acp/'.$forumID.'/');
 	} else header('Location: /forums/');
 ?>

@@ -79,6 +79,7 @@ $.fn.autocomplete = function (pathOption, sendData) {
 						console.log('more than 8');
 					} else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions + 1);
 					$prettySelectOptions.width($(this).parent().outerWidth() - 2).show();
+					$prettySelect.addClass('open');
 				});
 				$prettySelectOptions.on('click', 'li', function () {
 					$parent = $(this).closest('div.prettySelect');

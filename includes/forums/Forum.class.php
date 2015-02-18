@@ -7,7 +7,7 @@
 		protected $parentID;
 		protected $heritage;
 		protected $order;
-		protected $gameID;
+		protected $gameID = null;
 		protected $threadCount;
 
 		protected $postCount;
@@ -16,7 +16,6 @@
 		protected $newPosts = false;
 
 		protected $permissions = array();
-		protected $admin = false;
 		protected $children = array();
 		protected $threads = array();
 
@@ -25,7 +24,7 @@
 
 			$this->forumID = (int) $forumID;
 			foreach (get_object_vars($this) as $key => $value) {
-				if (in_array($key, array('children', 'threads', 'lastPost', 'admin'))) continue;
+				if (in_array($key, array('children', 'threads', 'lastPost'))) continue;
 				if (!array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 				$this->__set($key, $forumData[$key]);
 			}
@@ -55,16 +54,66 @@
 			elseif ($key == 'gameID' && (intval($value) || $value == null)) $this->gameID = $value != null?intval($value):null;
 		}
 
+		public function __get($key) {
+			if (isset($this->$key)) return $this->$key;
+		}
+
+		public function getForumID() {
+			return $this->forumID;
+		}
+
+		public function getTitle($pr = false) {
+			if ($pr) return printReady($this->title);
+			else return $this->title;
+		}
+
+		public function getDescription($pr = false) {
+			if ($pr) return printReady($this->description);
+			else return $this->description;
+		}
+
+		public function getType() {
+			return $this->forumType;
+		}
+
+		public function getParentID() {
+			return $this->parentID;
+		}
+
+		public function getHeritage($string = false) {
+			if ($string) {
+				$heritage = array();
+				foreach ($this->heritage as $forumID) 
+					$heritage[] = sql_forumIDPad($forumID);
+				return implode('-', $heritage);
+			} else return $this->heritage;
+		}
+
+		public function getPermissions($permission = null) {
+			if (in_array($permission, $this->permissions)) 
+				return $this->permissions[$permission];
+			else 
+				return $this->permissions;
+		}
+
 		public function setChild($childID, $order) {
 			$this->children[$order] = $childID;
+		}
+
+		public function getChildren() {
+			return $this->children;
 		}
 
 		public function sortChildren() {
 			ksort($this->children);
 		}
 
-		public function __get($key) {
-			if (isset($this->$key)) return $this->$key;
+		public function getGameID() {
+			return $this->gameID;
+		}
+
+		public function isGameForum() {
+			return $this->gameID?true:false;
 		}
 
 		public function getThreads($page = 1) {

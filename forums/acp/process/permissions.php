@@ -5,30 +5,24 @@
 		return $value * $multipliers[$pType];
 	}
 	
+	addPackage('forum');
+
 	$forumID = intval($_POST['forumID']);
-	$pType = in_array($_POST['pType'], array('general', 'group', 'user'))?$_POST['pType']:FALSE;
-	
-	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	$forumInfo = $mysql->query("SELECT forumID, title, forumType, parentID, heritage FROM forums WHERE forumID = $forumID");
-	$forumInfo = $forumInfo->fetch();
-	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $forumID != 10) || (!$pType && !isset($_POST['save']))) {
+	$pType = in_array($_POST['pType'], array('general', 'group', 'user'))?$_POST['pType']:false;
+
+	$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS|ForumManager::NO_CHILDREN|ForumManager::ADMIN_FORUMS);
+	$forum = $forumManager->forums[$forumID];
+	if (!$forum->getPermissions('admin') || $forum->isGameForum() || (!$pType && !isset($_POST['save']))) {
 		if (MODAL) echo 0;
 		else { header('Location: /forums/'); exit; }
 	} 
 
-	$gameForum = strpos($forumInfo['heritage'], sql_forumIDPad(2)) !== FALSE && $forumID != 10?TRUE:FALSE;
-	if ($gameForum) {
-		$heritage = explode('-', $forumInfo['heritage']);
-		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($heritage[1]));
-		$gameID = $gameID->fetchColumn();
-	} else $gameID = NULL;
-	
 	if (isset($_POST['add'])) {
 		$permissions = $_POST['permissions'];
 		if ($permissions['moderate']) foreach ($permissions as $key => $value) $permissions[$key] = 1;
 		else foreach ($permissions as $key => $value) $permissions[$key] = getTrinary($value, $pType);
 
-		if ($gameForum && $pType == 'user') $validOpt = $mysql->prepare("SELECT u.userID optID FROM users u INNER JOIN players p ON u.userID = p.userID and p.approved = 1 LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE u.username = ? AND p.gameID = {$gameID} AND per.forumID IS NULL LIMIT 1");
+		if ($forum->isGameForum() && $pType == 'user') $validOpt = $mysql->prepare("SELECT u.userID optID FROM users u INNER JOIN players p ON u.userID = p.userID and p.approved = 1 LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE u.username = ? AND p.gameID = {$forum->getGameID()} AND per.forumID IS NULL LIMIT 1");
 		elseif ($pType == 'user') $validOpt = $mysql->prepare("SELECT u.userID optID FROM users u LEFT JOIN forums_permissions_users per ON u.userID = per.userID AND per.forumID = {$forumID} WHERE u.username = ? AND per.forumID IS NULL LIMIT 1");
 		elseif ($pType == 'group') $validOpt = $mysql->prepare("SELECT fg.groupID optID FROM forums_groups fg LEFT JOIN forums_permissions_groups per ON fg.groupID = per.groupID AND per.forumID = {$forumID} WHERE fg.name = ? AND fg.ownerID = {$currentUser->userID} LIMIT 1");
 
@@ -51,6 +45,6 @@
 				}
 			}
 		}
-		header('Location: /forums/acp/'.$forumID.'/permissions');
+		header('Location: /forums/acp/'.$forumID.'/permissions/');
 	} else header('Location: /forums/');
 ?>

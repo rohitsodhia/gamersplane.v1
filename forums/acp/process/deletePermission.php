@@ -1,12 +1,12 @@
 <?
+	addPackage('forum');
 	$forumID = intval($_POST['forumID']);
+	$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS|ForumManager::NO_CHILDREN|ForumManager::ADMIN_FORUMS);
+	$forum = $forumManager->forums[$forumID];
+	if (!$forum->getPermissions('admin') || $forum->isGameForum() || (!$pType && !isset($_POST['save']))) { header('Location: /forums/'); exit; }
+
 	$pType = in_array($_POST['pType'], array('group', 'user'))?$_POST['pType']:NULL;
 	$typeID = intval($_POST['typeID']);
-	
-	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	$forumInfo = $mysql->query("SELECT forumID, title, forumType, parentID, heritage FROM forums WHERE forumID = $forumID");
-	$forumInfo = $forumInfo->fetch();
-	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $pType == 'group') || $pType == NULL || $typeID == 0) { header('Location: /forums/'); exit; }
 	
 	if (isset($_POST['delete'])) {
 		if ($pType == 'group') $mysql->query("DELETE FROM forums_permissions_groups WHERE groupID = $typeID");

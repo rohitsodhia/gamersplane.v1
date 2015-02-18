@@ -1,8 +1,9 @@
 <?
+	addPackage('forum');
 	$forumID = intval($_POST['forumID']);
-	
-	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	if (!$isAdmin->rowCount()) { header('Location: /forums/'); exit; }
+	$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS|ForumManager::NO_CHILDREN|ForumManager::ADMIN_FORUMS);
+	$forum = $forumManager->forums[$forumID];
+	if (!$forum->getPermissions('admin') || $forum->getParentID() == 2) { header('Location: /forums/'); exit; }
 	
 	$toDo = '';
 	$actionKey = '';
@@ -17,6 +18,6 @@
 			$updateForum->execute();
 		}
 		
-		header('Location: /forums/acp/'.$forumID);
+		header('Location: /forums/acp/'.$forumID.'/');
 	} else header('Location: /forums/');
 ?>

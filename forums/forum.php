@@ -34,7 +34,7 @@
 		<div id="topLinks" class="clearfix hbMargined">
 			<div class="floatRight alignRight">
 				<div><? if ($forumID == 0) echo '<a href="/forums/search?search=latestPosts">Latest Posts</a>'; ?></div>
-				<div><? if ($forumManager->getForumProperty($forumID, 'permissions[admin]')) echo '<a href="/forums/acp/'.$forumID.'">Administrative Control Panel</a>'; ?></div>
+				<div><? if ($forumManager->getForumProperty($forumID, 'permissions[admin]')) echo "<a href=\"/forums/acp/{$forumID}/\">Administrative Control Panel</a>"; ?></div>
 			</div>
 			<div class="floatLeft alignLeft">
 <?	$forumManager->displayBreadcrumbs(); ?>

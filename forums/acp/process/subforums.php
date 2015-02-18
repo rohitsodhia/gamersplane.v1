@@ -1,8 +1,9 @@
 <?
+	addPackage('forum');
 	$forumID = intval($_POST['forumID']);
-	
-	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	if (!$isAdmin->rowCount()) { header('Location: /forums/'); exit; }
+	$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS|ForumManager::NO_CHILDREN|ForumManager::ADMIN_FORUMS);
+	$forum = $forumManager->forums[$forumID];
+	if (!$forum->getPermissions('admin')) { header('Location: /forums/'); exit; }
 	
 	$toDo = '';
 	$actionKey = '';
@@ -41,17 +42,15 @@
 		header("Location: /forums/acp/{$forumID}/subforums/");
 	} elseif ($toDo == 'new') {
 		$pForumID = $forumID;
-		$forumInfo = $mysql->query('SELECT heritage, gameID FROM forums WHERE forumID = '.$pForumID);
-		list($baseHeritage, $gameID) = $forumInfo->fetch(PDO::FETCH_NUM);
-		if (!$gameID) $gameID = 'NULL';
-		$numForums = $mysql->query('SELECT COUNT(forumID) FROM forums WHERE parentID = '.$pForumID);
-		$numForums = $numForums->fetchColumn();
-		$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, `order`, gameID) VALUES (:title, $pForumID, :order, $gameID)");
+		$gameID = $forum->isGameForum()?$forum->getGameID():'NULL';
+		$numForums = $mysql->query('SELECT COUNT(forumID) FROM forums WHERE parentID = '.$pForumID)->fetchColumn();
+		$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, $pForumID, :heritage, :order, $gameID)");
 		$addForum->bindValue(':title', sanitizeString($_POST['newForum']));
+		$addForum->bindValue(':heritage', $forum->getHeritage(true).'-');
 		$addForum->bindValue(':order', intval($numForums + 1));
 		$addForum->execute();
 		$forumID = $mysql->lastInsertId();
-		$mysql->query('UPDATE forums SET heritage = "'.$baseHeritage.'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
+		$mysql->query('UPDATE forums SET heritage = "'.$forum->getHeritage(true).'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
 		
 		header('Location: /forums/acp/'.$pForumID.'/subforums/');

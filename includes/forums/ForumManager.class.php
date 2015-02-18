@@ -2,11 +2,12 @@
 	class ForumManager {
 		protected $currentForum;
 		protected $forumsData = array();
-		protected $forums = array();
+		public $forums = array();
 		protected $lastRead = array();
 
 		const NO_CHILDREN = 1;
 		const NO_NEWPOSTS = 2;
+		const ADMIN_FORUMS = 4;
 
 		public function __construct($forumID, $options = 0) {
 			global $mysql, $currentUser;
@@ -36,7 +37,10 @@
 			}
 			foreach (array_keys($this->forumsData) as $forumID) 
 				$this->forums[$forumID]->sortChildren();
-			$this->pruneByPermissions();
+			if ($options&$this::ADMIN_FORUMS) 
+				$this->pruneByPermissions(0, 'admin');
+			else 
+				$this->pruneByPermissions();
 		}
 
 		protected function spawnForum($forumID) {
@@ -49,10 +53,10 @@
 			$this->forums[$parentID]->setChild($forumID, $this->forums[$forumID]->order);
 		}
 
-		protected function pruneByPermissions($forumID = 0) {
+		protected function pruneByPermissions($forumID = 0, $permission = 'read') {
 			foreach ($this->forums[$forumID]->children as $childID) 
-				$this->pruneByPermissions($childID);
-			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions['read'] == 0) unset($this->forums[$forumID]);
+				$this->pruneByPermissions($childID, $permission);
+			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == 0) unset($this->forums[$forumID]);
 		}
 
 		public function getForumProperty($forumID, $property) {
@@ -248,6 +252,29 @@
 			} } else echo "\t\t\t\t<div class=\"tr noThreads\">No threads yet</div>\n";
 		echo "			</div>
 		</div>\n";
+		}
+
+		public function displayAdminSidelist($forumID = 0, $currentForum = 0) {
+			if (!isset($this->forums[$forumID])) return null;
+
+			$forum = $this->forums[$forumID];
+			$classes = array();
+			if ($forum->getPermissions('admin')) 
+				$classes[] = 'adminLink';
+			if ($forumID == $currentForum) 
+				$classes[] = 'currentForum';
+			echo '<li'.(sizeof($classes)?' class="'.implode(' ', $classes).'"':'').">\n";
+			if ($forum->getPermissions('admin')) 
+				echo "<a href=\"/forums/acp/{$forumID}/\">{$forum->getTitle(true)}</a>\n";
+			else
+				echo "<div>{$forum->getTitle(true)}</div>\n";
+
+			if (sizeof($forum->getChildren())) {
+				echo "<ul>\n";
+				foreach ($forum->getChildren() as $childID)
+					$this->displayAdminSidelist($childID, $currentForum);
+				echo "</ul>\n";
+			}
 		}
 	}
 ?>
