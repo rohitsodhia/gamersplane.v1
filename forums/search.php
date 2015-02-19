@@ -1,4 +1,6 @@
 <?
+	addPackage('forum');
+	
 	$search = $_GET['search'];
 	if ($search == 'newPosts') {
 		$checkPostsSince = $mysql->query('SELECT attemptStamp FROM loginRecords WHERE userID = '.$currentUser->userID.' AND attemptStamp < NOW() - INTERVAL 3 HOUR ORDER BY attemptStamp DESC LIMIT 1');

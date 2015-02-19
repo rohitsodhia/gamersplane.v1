@@ -140,6 +140,7 @@
 			} else {
 				$postID = $post->savePost();
 				$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$threadID}");
+				$threadManager->updatePostCount();
 				$threadManager->updateLastRead($postID);
 			}
 		} elseif ($_POST['edit']) {

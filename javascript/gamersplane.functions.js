@@ -36,7 +36,6 @@ function convertTZ(dtString, parseString, displayString) {
 	displayString = typeof displayString !== 'undefined'?displayString:'MMM D, YYYY h:mm a';
 
 	utcDT = moment.utc(dtString, parseString);
-	console.log(utcDT);
 	return utcDT.local().format(displayString);
 }
 

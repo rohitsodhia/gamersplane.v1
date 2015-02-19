@@ -69,9 +69,8 @@
 		}
 
 		public function getAuthor($key = null) {
-			if ($key == null) return $this->author;
-			elseif (property_exists($this->author, $key)) return $this->author->$key;
-			else return null;
+			if (property_exists($this->author, $key)) return $this->author->$key;
+			else return $this->author;
 		}
 
 		public function setMessage($value) {
@@ -159,6 +158,12 @@
 
 		public function getModified() {
 			return $this->modified;
+		}
+
+		public function delete() {
+			global $mysql;
+
+			$mysql->query('DELETE FROM posts, rolls, deckDraws USING posts LEFT JOIN rolls ON posts.postID = rolls.postID LEFT JOIN deckDraws ON posts.postID = deckDraws.postID WHERE posts.postID = '.$this->postID);
 		}
 
 		public function dumpObj() {

@@ -7,5 +7,6 @@
 	require_once(FILEROOT.'/includes/forums/ThreadManager.class.php');
 	require_once(FILEROOT.'/includes/forums/Thread.class.php');
 	require_once(FILEROOT.'/includes/forums/ForumPoll.class.php');
+	require_once(FILEROOT.'/includes/forums/ForumSearch.class.php');
 	require_once(FILEROOT.'/includes/forums/Post.class.php');
 ?>

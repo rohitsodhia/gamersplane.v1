@@ -119,7 +119,7 @@
 			} else $postAsChar = false;
 ?>
 			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
-				<a name="p<?=$post->getPostID?>"></a>
+				<a name="p<?=$post->getPostID()?>"></a>
 <?
 			if ($hitLastRead ) {
 				$hitLastRead = false;

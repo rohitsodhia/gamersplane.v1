@@ -45,6 +45,10 @@
 			return $this->thread->getFirstPostID();
 		}
 
+		public function getLastPost($key = null) {
+			return $this->thread->getLastPost($key);
+		}
+
 		public function isGameForum() {
 			return $this->forumManager->forums[$this->thread->forumID]->isGameForum();
 		}
@@ -62,6 +66,13 @@
 
 		public function getPosts($page = 1) {
 			return $this->thread->getPosts($page);
+		}
+
+		public function updatePostCount() {
+			global $mysql;
+
+			$count = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID}")->fetchColumn();
+			$mysql->query("UPDATE threads SET postCount = {$count} WHERE threadID = {$this->threadID} LIMIT 1");
 		}
 
 		public function getPoll() {
@@ -104,6 +115,8 @@
 			} else {
 				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0)." WHERE threadID = ".$this->threadID);
 				$postID = $post->savePost();
+
+				$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$this->threadID}");
 			}
 
 			$this->thread->savePoll($this->threadID);
@@ -138,6 +151,23 @@
 				echo "\t\t\t</div>\n";
 				echo "\t\t\t<br class=\"clear\">\n";
 			}
+		}
+
+		public function deletePost($post) {
+			global $mysql;
+
+			$post->delete();
+			if ($post->getPostID() == $this->getLastPost('postID')) {
+				$newLPID = $mysql->query("SELECT postID FROM posts WHERE threadID = {$this->threadID} ORDER BY datePosted DESC LIMIT 1")->fetchColumn();
+				$mysql->query("UPDATE threads SET lastPostID = {$newLPID} WHERE threadID = {$this->threadID}");
+			}
+			$this->updatePostCount();
+		}
+
+		public function deleteThread() {
+			global $mysql;
+
+			$mysql->query("DELETE FROM threads, posts, rolls, deckDraws USING threads LEFT JOIN posts ON threads.threadID = posts.threadID LEFT JOIN rolls ON posts.postID = rolls.postID LEFT JOIN deckDraws ON posts.postID = deckDraws.postID WHERE threads.threadID = {$this->threadID}");
 		}
 	}
 ?>
