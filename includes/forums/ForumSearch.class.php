@@ -123,7 +123,7 @@
 						<div class="forumIcon<?=$newPosts?' newPosts':''?>"></div>
 						<div class="title"><a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><?=$result->title?></a></div>
 						<div class="byLine">by <a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a>, <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></div>
-						<div class="forum">in <a href="/forums/<?=$result->forumID?>/"><?=$result->fTitle?></a></div>
+						<div class="forum">in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a></div>
 					</div>
 <?
 			}
