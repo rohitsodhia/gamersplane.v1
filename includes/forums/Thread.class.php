@@ -69,7 +69,8 @@
 			if (is_bool($value)) $this->allowRolls = $value;
 		}
 
-		public function getAllowRolls() {
+		public function getAllowRolls($int = false) {
+			if ($int) return $this->allowRolls?1:0;
 			return $this->allowRolls;
 		}
 
@@ -77,7 +78,8 @@
 			if (is_bool($value)) $this->allowDraws = $value;
 		}
 
-		public function getAllowDraws() {
+		public function getAllowDraws($int = false) {
+			if ($int) return $this->allowDraws?1:0;
 			return $this->allowDraws;
 		}
 

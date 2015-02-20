@@ -103,7 +103,7 @@
 			global $mysql;
 
 			if ($this->threadID == null) {
-				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky').", locked = ".$this->thread->getStates('locked').", allowRolls = ".$this->thread->getAllowRolls().", allowDraws = ".$this->thread->getAllowDraws().", postCount = 1");
+				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1");
 				$this->threadID = $mysql->lastInsertId();
 
 				$post->setThreadID($this->threadID);
