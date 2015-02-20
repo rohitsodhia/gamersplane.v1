@@ -81,7 +81,7 @@
 					$draw['cardsDrawn'] = implode('~', $draw['cardsDrawn']);
 					$draw['reason'] = sanitizeString($draw['reason']);
 					$draw['type'] = $deckInfos[$deckID]['type'];
-					$post->addRaw($draw);
+					$post->addDraw($deckID, $draw);
 				}
 			}
 		}

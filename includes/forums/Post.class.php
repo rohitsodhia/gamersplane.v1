@@ -107,8 +107,8 @@
 			$this->rolls[] = $rollObj;
 		}
 
-		public function addDraw($drawInfo) {
-			$this->draws[] = $drawInfo;
+		public function addDraw($deckID, $drawInfo) {
+			$this->draws[$deckID] = $drawInfo;
 		}
 
 		public function updateEdited() {
@@ -136,7 +136,7 @@
 
 				if (sizeof($this->draws)) {
 					$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = {$this->postID}, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
-					foreach($draws as $deckID => $draw) {
+					foreach($this->draws as $deckID => $draw) {
 						$mysql->query("UPDATE decks SET position = position + {$draw['draw']} WHERE deckID = {$deckID}");
 						$addDraw->bindValue('deckID', $deckID);
 						$addDraw->bindValue('type', $draw['type']);
@@ -147,10 +147,23 @@
 					}
 				}
 			} else {
-				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = ".($this->postAs?$this->postAs:'NULL').', '.($this->edited?" lastEdit = NOW(), timesEdited = {$this->timesEdited}":'')." WHERE postID = {$this->postID}");
+				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = ".($this->postAs?$this->postAs:'NULL').($this->edited?", lastEdit = NOW(), timesEdited = {$this->timesEdited}":'')." WHERE postID = {$this->postID}");
 				$updatePost->bindValue(':title', $this->title);
 				$updatePost->bindValue(':message', $this->message);
 				$updatePost->execute();
+
+				if (sizeof($this->draws)) {
+					$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = {$this->postID}, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
+					foreach($this->draws as $deckID => $draw) {
+						$mysql->query("UPDATE decks SET position = position + {$draw['draw']} WHERE deckID = {$deckID}");
+						$addDraw->bindValue('deckID', $deckID);
+						$addDraw->bindValue('type', $draw['type']);
+						$addDraw->bindValue('cardsDrawn', $draw['cardsDrawn']);
+						$addDraw->bindValue('reveals', str_repeat('0', $draw['draw']));
+						$addDraw->bindValue('reason', $draw['reason']);
+						$addDraw->execute();
+					}
+				}
 			}
 
 			return $this->postID;

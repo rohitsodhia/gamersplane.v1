@@ -123,8 +123,9 @@
 					$tableOpen = true;
 				}
 				if ($this->forums[$childID]->forumType == 'f') $this->displayForumRow($childID);
-				else foreach ($this->forums[$childID]->children as $cChildID) 
-					$this->displayForumRow($cChildID);
+				elseif (is_array($this->forums[$childID]->children))
+					foreach ($this->forums[$childID]->children as $cChildID) 
+						$this->displayForumRow($cChildID);
 				$lastType = $this->forums[$childID]->forumType;
 			}
 			echo "\t\t\t</div>\n\t\t</div>\n";

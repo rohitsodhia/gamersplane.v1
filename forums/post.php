@@ -335,7 +335,7 @@
 					<table id="decksTable">
 <?
 			$firstDeck = true;
-			foreach ($post->draws as $deck) {
+			foreach ($decks as $deck) {
 				if ($draws[$deck['deckID']]) {
 					$draw = $draws[$deck['deckID']];
 ?>

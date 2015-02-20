@@ -176,7 +176,7 @@
 <?
 	 		}
 			
-			if (sizeof($draws[$post->postID])) {
+			if (sizeof($post->draws)) {
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 				$hidden = false;
 ?>

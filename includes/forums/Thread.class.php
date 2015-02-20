@@ -115,9 +115,9 @@
 			foreach ($rolls as $rollInfo) 
 				$this->posts[$rollInfo['postID']]->loadRoll($rollInfo);
 			
-			$draws = $mysql->query("SELECT postID, drawID, type, cardsDrawn, reveals, reason FROM deckDraws WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY drawID");
+			$draws = $mysql->query("SELECT postID, drawID, deckID, type, cardsDrawn, reveals, reason FROM deckDraws WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY drawID");
 			foreach ($draws as $drawInfo) 
-				$this->posts[$drawInfo['postID']]->addDraw($drawInfo);
+				$this->posts[$drawInfo['postID']]->addDraw($drawInfo['deckID'], $drawInfo);
 
 			return $this->posts;
 		}
