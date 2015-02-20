@@ -126,7 +126,7 @@
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
 			$threadManager = new ThreadManager($threadID);
-			if (!$threadManager->getPermissions('write') || $locked) { header('Location: /forums/'.$forumID); exit; }
+			if (!$threadManager->getPermissions('write') || $locked) { header('Location: /forums/'.$forumID.'/'); exit; }
 			
 			$post->setThreadID($threadID);
 			if (strlen($post->getTitle()) == 0) 
@@ -147,7 +147,7 @@
 			$threadManager = new ThreadManager($post->getThreadID());
 			$firstPost = $threadManager->getThreadProperty('firstPostID') == $post->getPostID()?true:false;
 
-			if (($post->getAuthor('userID') == $currentUser->userID && !$threadManager->getPermissions('editPost')) || $postInfo['locked'] || !$threadManager->getPermissions('moderate')) { header('Location: /forums/thread/'.$post->getThreadID()); exit; }
+			if (!(($post->getAuthor('userID') == $currentUser->userID && $threadManager->getPermissions('editPost') && $threadManager->thread->getStates('locked')) || !$threadManager->getPermissions('moderate'))) { header('Location: /forums/thread/'.$post->getThreadID().'/'); exit; }
 
 			if ($firstPost && strlen($post->getTitle()) == 0) $formErrors->addError('noTitle');
 			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
@@ -177,7 +177,7 @@
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
 			} else {
-				if (((time() + 300) > strtotime($post->getDatePosted()) || (time() + 60) > strtotime($post->getLastEdit())) && !$threadManager->getPermissions('moderate') && $this->getModified()) {
+				if (((time() + 300) > strtotime($post->getDatePosted()) || (time() + 60) > strtotime($post->getLastEdit())) && !$threadManager->getPermissions('moderate') && $post->getModified()) {
 					$edited = true;
 					$post->updateEdited();
 				}

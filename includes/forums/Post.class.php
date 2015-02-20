@@ -147,7 +147,7 @@
 					}
 				}
 			} else {
-				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = ".($this->postAs?$this->postAs:'NULL').($this->edited?" lastEdit = NOW(), timesEdited = {$this->timesEdited}":'')." WHERE postID = {$this->postID}");
+				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = ".($this->postAs?$this->postAs:'NULL').', '.($this->edited?" lastEdit = NOW(), timesEdited = {$this->timesEdited}":'')." WHERE postID = {$this->postID}");
 				$updatePost->bindValue(':title', $this->title);
 				$updatePost->bindValue(':message', $this->message);
 				$updatePost->execute();
