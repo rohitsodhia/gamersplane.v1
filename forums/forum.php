@@ -47,6 +47,7 @@
 	if ($forumID && $forumManager->getForumProperty($forumID, 'forumType') == 'f') {
 		$forumManager->getThreads();
 		$forumManager->displayThreads();
+		ForumView::displayPagination($forumManager->getForumProperty('threadCount'), $_GET['page']);
 	}
 ?>
 <?
