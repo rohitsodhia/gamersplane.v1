@@ -132,7 +132,7 @@
 	
 	if ($fillVars) 
 		$title = printReady($fillVars['title']);
-	elseif (!strlen($post->getTitle())) 
+	elseif (!strlen($post->getTitle()) && $post->getThreadID()) 
 		$title = 'Re: '.$threadManager->getThreadProperty('title');
 	else 
 		$title = printReady($post->title, array('stripslashes'));
