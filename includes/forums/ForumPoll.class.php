@@ -82,6 +82,8 @@
 		public function savePoll($threadID = null) {
 			global $mysql;
 
+			if (strlen($this->question) == 0 || sizeof($this->options) == 0) return null;
+
 			if ($threadID != null && is_int($threadID)) {
 				$this->threadID = intval($threadID);
 				if (strlen($this->question) && sizeof($this->options)) {
