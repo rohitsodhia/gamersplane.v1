@@ -214,7 +214,7 @@
 				<div class="postActions">
 <?
 			if ($threadManager->getPermissions('write')) echo "						<a href=\"/forums/post/{$threadID}/?quote={$post->postID}\">Quote</a>\n";
-			if (($post->userID == $currentUser->userID && !$threadManager->getThreadProperty('locked')) || $threadManager->getPermissions('moderate')) {
+			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('locked')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) echo "					<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('deletePost') && $post->postID != $threadManager->getThreadProperty('firstPostID') || $threadManager->getPermissions('deleteThread') && $post->postID == $threadManager->getThreadProperty('firstPostID')) echo "					<a href=\"/forums/delete/{$post->postID}/\" class=\"deletePost\">Delete</a>\n";
 			}
