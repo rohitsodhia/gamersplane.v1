@@ -54,9 +54,11 @@
 			if (property_exists($this, $key)) $this->$key = $value;
 		}
 
-		public function getStates($key = null) {
-			if (array_key_exists($key, $this->states)) return $this->states[$key];
-			else return $this->states;
+		public function getStates($key = null, $int = false) {
+			if (array_key_exists($key, $this->states)) {
+				if ($int) return $this->states[$key]?1:0;
+				return $this->states[$key];
+			} else return $this->states;
 		}
 
 		public function setState($key, $value) {
