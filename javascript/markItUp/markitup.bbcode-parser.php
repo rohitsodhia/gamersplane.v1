@@ -97,7 +97,7 @@ function BBCode2Html($text) {
 //					 '<li>\1</li>'
 	);
 	$text = preg_replace($in, $out, $text);
-	while (preg_match("/\[quote(?:=\"(\w\.+?)\")?]((?!\[quote).*?)\[\/quote\]/sm", $text)) $text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"(\w\.+?)\")?]((?!\[quote).*?)\[\/quote\][\r\n]*/sm", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
+	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text)) $text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\][\r\n]*/sm", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
 	
 	$matches = NULL;
