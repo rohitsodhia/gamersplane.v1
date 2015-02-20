@@ -9,4 +9,5 @@
 	require_once(FILEROOT.'/includes/forums/ForumPoll.class.php');
 	require_once(FILEROOT.'/includes/forums/ForumSearch.class.php');
 	require_once(FILEROOT.'/includes/forums/Post.class.php');
+	require_once(FILEROOT.'/includes/forums/ForumView.class.php');
 ?>

@@ -47,7 +47,7 @@
 				$this->$key = $value;
 			elseif ($key == 'forumType' && in_array(strtolower($value), array('f', 'c'))) 
 				$this->forumType = strtolower($value);
-			elseif (in_array($key, array('parentID', 'order', 'threadCount', 'markedRead'))) 
+			elseif (in_array($key, array('parentID', 'order', 'threadCount', 'postCount', 'markedRead'))) 
 				$this->$key = intval($value);
 			elseif ($key == 'newPosts') 
 				$this->newPosts = $value?true:false;
@@ -84,7 +84,8 @@
 			if ($string) {
 				$heritage = array();
 				foreach ($this->heritage as $forumID) 
-					$heritage[] = sql_forumIDPad($forumID);
+					if ($forumID != 0) 
+						$heritage[] = sql_forumIDPad($forumID);
 				return implode('-', $heritage);
 			} else return $this->heritage;
 		}

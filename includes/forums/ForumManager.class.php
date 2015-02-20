@@ -24,7 +24,7 @@
 			$permissions = ForumPermissions::getPermissions($currentUser->userID, array_keys($this->forumsData), null, $this->forumsData);
 			foreach ($permissions as $pForumID => $permission)
 				$this->forumsData[$pForumID]['permissions'] = $permission;
-			if ($options&$this::NO_NEWPOSTS == $this::NO_NEWPOSTS) 
+			if (!($options&$this::NO_NEWPOSTS)) 
 				$lastRead = $mysql->query("SELECT f.forumID, rdf.markedRead, IF(unread.numUnread > 0 OR unread.latestReadPost > rdf.markedRead, 1, 0) newPosts FROM forums f LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID} LEFT JOIN (SELECT t.forumID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0)) numUnread, MAX(rdt.lastRead) latestReadPost FROM threads t LEFT JOIN forums_readData_threads rdt ON rdt.userID = {$currentUser->userID} AND t.threadID = rdt.threadID GROUP BY t.forumID) unread ON f.forumID = unread.forumID WHERE f.forumID IN (".implode(',', array_keys($this->forumsData)).")");
 			else 
 				$lastRead = $mysql->query("SELECT f.forumID, rdf.markedRead FROM forums f LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID} WHERE f.forumID IN (".implode(',', array_keys($this->forumsData)).")");
@@ -57,6 +57,27 @@
 			foreach ($this->forums[$forumID]->children as $childID) 
 				$this->pruneByPermissions($childID, $permission);
 			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == 0) unset($this->forums[$forumID]);
+		}
+
+		public function getAccessableForums($validForums = null) {
+			if ($validForums == null) $validForums = array();
+
+			$forums = array();
+			foreach ($this->forums as $forum) {
+				if ($forum->getPermissions('read') && ((sizeof($validForums) && in_array($forum->getForumID(), $validForums)) || sizeof($validForums) == 0)) 
+					$forums[] = $forum->getForumID();
+			}
+			return $forums;
+		}
+
+		public function getAllChildren($forumID = 0) {
+			$forums = array($forumID);
+			$forum = $this->forums[$forumID];
+			foreach ($forum->getChildren() as $childID) {
+				if (!in_array($childID, $forums)) $forums[] = $childID;
+				$this->getAllChildren($childID);
+			}
+			return $forums;
 		}
 
 		public function getForumProperty($forumID, $property) {
@@ -146,14 +167,18 @@
 			$forum = $this->forums[$forumID];
 
 			$total = 0;
-			if (sizeof($forum->children)) 
+			if (sizeof($forum->children)) {
 				foreach ($forum->children as $cForumID) 
 					$total += $this->getTotalPostCount($cForumID);
+			}
 			if ($forum->permissions['read']) $total += $forum->postCount;
 			return $total;
 		}
 
 		public function newPosts($forumID) {
+			global $loggedIn;
+			if (!$loggedIn) return false;
+			
 			$forum = $this->forums[$forumID];
 
 			if (sizeof($forum->children)) { foreach ($forum->children as $childID) {
@@ -222,7 +247,7 @@
 					<div class="td icon"><div class="forumIcon<?=$thread->getStates('sticky')?' sticky':''?><?=$thread->getStates('locked')?' locked':''?><?=$thread->newPosts($forum->markedRead)?' newPosts':''?>" title="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
 <?				if ($thread->newPosts($forum->markedRead)) { ?>
-						<a href="/forums/thread/<?=$thread->threadID?>/#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 				}
 				if ($thread->numPosts > PAGINATE_PER_PAGE) {
