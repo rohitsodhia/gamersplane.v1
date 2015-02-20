@@ -110,7 +110,7 @@
 			$addPoll = $mysql->prepare("INSERT INTO forums_polls (threadID, poll, optionsPerUser, allowRevoting) VALUES ({$this->threadID}, :poll, :optionsPerUser, :allowRevoting) ON DUPLICATE KEY UPDATE poll = :poll, optionsPerUser = :optionsPerUser, allowRevoting = :allowRevoting");
 			$addPoll->bindValue(':poll', $this->question);
 			$addPoll->bindValue(':optionsPerUser', $this->optionsPerUser);
-			$addPoll->bindValue(':allowRevoting', $this->allowRevoting);
+			$addPoll->bindValue(':allowRevoting', $this->allowRevoting?1:0);
 			$addPoll->execute();
 		}
 
