@@ -122,7 +122,7 @@
 				header('Location: '.$_SESSION['lastURL'].'?errors=1');
 				exit;
 			} else 
-				$postID = $threadManager->createThread($post);
+				$postID = $threadManager->saveThread($post);
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
 			$threadManager = new ThreadManager($threadID);
