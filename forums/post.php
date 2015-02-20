@@ -91,7 +91,7 @@
 		if ($gmCheck->rowCount()) 
 			$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
 		else 
-			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, d.deck, d.position FROM decks d INNER JOIN deckPermissions p ON d.deckID = p.deckID AND p.useID = {$currentUser->userID} WHERE d.gameID = {$gameID}");
+			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, d.deck, d.position FROM decks d INNER JOIN deckPermissions p ON d.deckID = p.deckID AND p.userID = {$currentUser->userID} WHERE d.gameID = {$gameID}");
 		if ($decks->rowCount()) $drawsAllowed = true;
 	}
 
