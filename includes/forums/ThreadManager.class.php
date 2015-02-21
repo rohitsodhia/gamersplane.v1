@@ -73,7 +73,7 @@
 			global $mysql;
 
 			if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
-				$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID} AND postID <= ".$this->getThreadLastRead());
+				$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$this->threadID} AND postID <= ".$this->getThreadLastRead());
 				$numPrevPosts = $numPrevPosts->fetchColumn() + 1;
 				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
 			} elseif (isset($_GET['post'])) {
