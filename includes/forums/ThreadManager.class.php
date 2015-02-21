@@ -3,6 +3,7 @@
 		protected $threadID;
 		protected $thread;
 		protected $forumManager;
+		protected $page = 1;
 
 		public function __construct($threadID = null, $forumID = null) {
 			if (intval($threadID))	{
@@ -148,7 +149,7 @@
 		}
 
 		public function displayPagination($page) {
-			ForumView::displayPagination($this->getThreadProperty('postCount'));
+			ForumView::displayPagination($this->getThreadProperty('postCount'), $this->page);
 		}
 
 		public function deletePost($post) {
