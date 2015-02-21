@@ -148,7 +148,7 @@
 			if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		}
 
-		public function displayPagination($page) {
+		public function displayPagination() {
 			ForumView::displayPagination($this->getThreadProperty('postCount'), $this->page);
 		}
 
