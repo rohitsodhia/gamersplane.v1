@@ -16,7 +16,7 @@
 		<div id="forumLinks">
 			<div id="forumOptions">
 			</div>
-<?	ForumView::displayPagination($forumSearch->getResultsCount(), $forumSearch->getPage()); ?>
+<?	ForumView::displayPagination($forumSearch->getResultsCount(), $forumSearch->getPage(), array('search' => $search)); ?>
 			<br class="clear">
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
