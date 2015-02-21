@@ -108,14 +108,16 @@
 			
 			$threadManager->thread->poll->setQuestion($_POST['poll']);
 			$threadManager->thread->poll->parseOptions($_POST['pollOptions']);
-			if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
-				$formErrors->addError('noQuestion');
-			if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
-				$formErrors->addError('noOptions');
-			$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
-			if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
-				$formErrors->addError('noOptionsPerUser');
-			$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+			if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions())) {
+				if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
+					$formErrors->addError('noQuestion');
+				if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
+					$formErrors->addError('noOptions');
+				$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
+				if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
+					$formErrors->addError('noOptionsPerUser');
+				$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+			}
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
@@ -161,14 +163,16 @@
 				if (!isset($_POST['deletePoll'])) {
 					$threadManager->thread->poll->setQuestion($_POST['poll']);
 					$threadManager->thread->poll->parseOptions($_POST['pollOptions']);
-					if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
-						$formErrors->addError('noQuestion');
-					if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
-						$formErrors->addError('noOptions');
-					$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
-					if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
-						$formErrors->addError('noOptionsPerUser');
-					$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+					if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions())) {
+						if (strlen($threadManager->thread->poll->getQuestion()) == 0 && sizeof($threadManager->thread->poll->getOptions()) != 0) 
+							$formErrors->addError('noQuestion');
+						if (strlen($threadManager->thread->poll->getQuestion()) && sizeof($threadManager->thread->poll->getOptions()) <= 1) 
+							$formErrors->addError('noOptions');
+						$threadManager->thread->poll->setOptionsPerUser($_POST['optionsPerUser']);
+						if ($threadManager->thread->poll->getOptionsPerUser() == 0) 
+							$formErrors->addError('noOptionsPerUser');
+						$threadManager->thread->poll->setAllowRevoting($_POST['allowRevoting']);
+					}
 				}
 			}
 
@@ -204,6 +208,6 @@
 			}
 		}
 
-		header('Location: /forums/thread/'.$threadManager->getThreadProperty('threadID').'?p='.$post->getPostID().'#p'.$post->getPostID());
+		header('Location: /forums/thread/'.$threadManager->threadID.'?p='.$post->getPostID().'#p'.$post->getPostID());
 	} else header('Location: /forums/thread/'.$threadID);
 ?>

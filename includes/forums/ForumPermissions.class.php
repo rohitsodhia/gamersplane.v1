@@ -8,7 +8,7 @@
 			$userID = intval($userID);
 			if (!is_array($forumIDs)) $forumIDs = array($forumIDs);
 			$queryColumn = array('permissions' => '', 'permissionSums' => '', 'general' => '', 'group' => '');
-			$allTypes = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
+			$allTypes = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addRolls', 'addDraws', 'moderate');
 			if ($types == null) $types = $allTypes;
 			elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);
 

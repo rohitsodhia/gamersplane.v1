@@ -389,25 +389,4 @@
 	function sql_forumIDPad($forumID) {
 		return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
 	}
-
-	function sql_forumPermissions($userID, $types, $forumIDs = NULL) {
-		if ($types == '') $types = array('read', 'write', 'editPost', 'deletePost', 'createThread', 'deleteThread', 'addPoll', 'addRolls', 'addDraws', 'moderate');
-		elseif (is_string($types)) $types = preg_split('/\s*,\s*/', $types);
-		
-		$query = "SELECT f.forumID";
-		foreach ($types as $type) $query .= ",\n\tIF(MAX(IF(a.forumID IS NOT NULL, 1, 0)) = 1, 1, IF(MAX(IF(IFNULL(up.$type, 0) <> 0, up.$type, IF(IFNULL(gp.$type, 0) <> 0, gp.$type, bp.$type)) * LENGTH(p.heritage)) + MIN(IF(IFNULL(up.$type, 0) <> 0, up.$type, IF(IFNULL(gp.$type, 0) <> 0, gp.$type, bp.$type)) * LENGTH(p.heritage)) > 0, 1, 0)) '$type'";
-		$query .= "
-FROM forums f
-LEFT JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%')
-LEFT JOIN forumAdmins a ON p.forumID = a.forumID AND a.userID = $userID
-LEFT JOIN forums_permissions_general bp ON p.forumID = bp.forumID
-LEFT JOIN forums_permissions_groups_c gp ON bp.forumID = gp.forumID AND gp.userID = $userID
-LEFT JOIN forums_permissions_users up ON bp.forumID = up.forumID AND up.userID = $userID
-WHERE f.forumID != 0 AND (gp.userID IS NULL OR up.userID IS NULL OR gp.userID = up.userID)";
-		if (is_numeric($forumIDs)) $query .= " AND f.forumID = $forumIDs";
-		elseif (is_array($forumIDs)) $query .= " AND f.forumID IN (".implode(', ', $forumIDs).')';
-		$query .= "\nGROUP BY f.forumID";
-		
-		return $query;
-	}
 ?>

@@ -159,7 +159,7 @@
 				<div id="permissions_general">
 					<h3>General</h3>
 <?
-	$permissions = $mysql->query("SELECT `read`, `write`, editPost, deletePost, createThread, deleteThread, addPoll, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}");
+	$permissions = $mysql->query("SELECT `read`, `write`, editPost, deletePost, createThread, deleteThread, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}");
 	$permissions = $permissions->fetch();
 	if (!$forum->isGameForum()) permissionSet('general', 'General', $permissions);
 ?>
@@ -168,7 +168,7 @@
 				<div id="permissions_groups">
 					<h3 class="gapAbove">Groups</h3>
 <?
-	$gPermissions = $mysql->query('SELECT g.groupID, g.name, g.gameGroup, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addPoll, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_groups p, forums_groups g WHERE p.forumID = '.$forumID.' AND p.groupID = g.groupID');
+	$gPermissions = $mysql->query('SELECT g.groupID, g.name, g.gameGroup, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_groups p, forums_groups g WHERE p.forumID = '.$forumID.' AND p.groupID = g.groupID');
 	if ($gPermissions->rowCount()) { foreach ($gPermissions as $permission) {
 		permissionSet('group', $permission['name'], $permission, $forumID, $permission['groupID'], $permission['gameGroup']);
 	} } else echo "\t\t\t\t\t<div class=\"tr\">No group level permissions for this forum.</div>\n";
@@ -180,7 +180,7 @@
 					<h3 class="gapAbove">User</h3>
 	
 <?
-	$uPermissions = $mysql->query("SELECT u.userID, u.username, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addPoll, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_users p, users u WHERE p.forumID = {$forumID} AND p.userID = u.userID");
+	$uPermissions = $mysql->query("SELECT u.userID, u.username, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_users p, users u WHERE p.forumID = {$forumID} AND p.userID = u.userID");
 	if ($uPermissions->rowCount()) { foreach ($uPermissions as $permission) {
 		permissionSet('user', $permission['username'], $permission, $forumID, $permission['userID']);
 	} } else echo "\t\t\t\t\t<div class=\"tr\">No user level permissions for this forum.</div>\n";

@@ -12,7 +12,7 @@
 
 	$dispatchInfo404 = array('url' => '/404', 'pageID' => '404', 'file' => 'errors/404.php', 'title' => 'Not Found');
 	
-	$permissionTypes = array('read' => 'Read', 'write' => 'Write', 'editPost' => 'Edit Post', 'deletePost' => 'Delete Post', 'createThread' => 'Create Thread', 'deleteThread' => 'Delete Thread', 'addPoll' => 'Add Poll', 'addRolls' => 'Add Rolls', 'addDraws' => 'Add Draws', 'moderate' => 'Moderate');
+	$permissionTypes = array('read' => 'Read', 'write' => 'Write', 'editPost' => 'Edit Post', 'deletePost' => 'Delete Post', 'createThread' => 'Create Thread', 'deleteThread' => 'Delete Thread', 'addRolls' => 'Add Rolls', 'addDraws' => 'Add Draws', 'moderate' => 'Moderate');
 
 	$faqsCategories = array('Getting Started' => 'getting-started', 'Characters' => 'characters', 'Games' => 'games', 'Tools' => 'tools');
 

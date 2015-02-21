@@ -162,13 +162,11 @@
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=$fillVars?$fillVars['message']:$post->message?></textarea>
 			</div>
 			
-<?	if ($firstPost && ($threadManager->getPermissions('addPoll') || $rollsAllowed || $drawsAllowed)) { ?>
+<?	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
 			<div id="optionControls" class="clearfix hbdMargined"><div class="wingDiv sectionControls floatLeft">
 				<div>
 					<a href="" class="section_options<?=$firstPost?' current':''?>">Options</a>
-<?		if ($threadManager->getPermissions('addPoll')) { ?>
 					<a href="" class="section_poll">Poll</a>
-<?		} ?>
 <?		if ($rollsAllowed || $drawsAllowed) { ?>
 					<a href="" class="section_rolls_decks<?=!$firstPost?' current':''?>">Rolls and Decks</a>
 <?		} ?>
@@ -177,7 +175,7 @@
 				<div class="wing drWing"></div>
 			</div></div>
 <?	} ?>
-<?	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
+<?	if (($firstPost) || $rollsAllowed || $drawsAllowed) { ?>
 			<h2 class="headerbar hbDark">
 <?		if ($firstPost) { ?>
 				<span class="section_options">Thread Options</span>
@@ -219,16 +217,13 @@
 <?		} ?>
 			</div>
 
-<?
-		if ($threadManager->getPermissions('addPoll')) {
-?>
 			<div id="poll" class="section_poll hbdMargined hideDiv">
-<?			if ($pathOptions[0] == 'editPost') { ?>
+<?		if ($pathOptions[0] == 'editPost') { ?>
 				<div class="clearfix">
 					<label for="allowRevoting"><b>Delete Poll:</b></label>
 					<div><input id="deletePoll" type="checkbox" name="deletePoll"> If checked, your poll will be deleted and cannot be recovered.</div>
 				</div>
-<?			} ?>
+<?		} ?>
 				<div class="tr clearfix">
 					<label for="pollQuestion" class="textLabel"><b>Poll Question:</b></label>
 					<div><input id="pollQuestion" type="text" name="poll" value="<?=$fillVars?$fillVars['poll']:$threadManager->getPollProperty('question')?>" class="borderBox"></div>
@@ -255,14 +250,13 @@
 				<div class="tr clearfix">
 					<label for="allowRevoting"><b>Allow Revoting:</b></label>
 <?
-			$allowRevoting = $threadManager->getPollProperty('allowRevoting');
-			if ($fillVars) $allowRevoting = $fillVars['allowRevoting'];
+		$allowRevoting = $threadManager->getPollProperty('allowRevoting');
+		if ($fillVars) $allowRevoting = $fillVars['allowRevoting'];
 ?>
 					<div><input id="allowRevoting" type="checkbox" name="allowRevoting" <?=$allowRevoting?' checked="checked"':''?>> If checked, people will be allowed to change their votes.</div>
 				</div>
 			</div>
 <?
-		}
 	}
 	if ($rollsAllowed || $drawsAllowed) {
 ?>

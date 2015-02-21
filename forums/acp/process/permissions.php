@@ -30,18 +30,18 @@
 		$validOpt->execute(array($search));
 		$optID = $validOpt->fetchColumn();
 
-		if ($optID) $mysql->query("INSERT INTO forums_permissions_{$pType}s SET {$pType}ID = {$optID}, forumID = {$forumID}, `read` = {$permissions['read']}, `write` = {$permissions['write']}, `editPost` = {$permissions['editPost']}, `deletePost` = {$permissions['deletePost']}, `createThread` = {$permissions['createThread']}, `deleteThread` = {$permissions['deleteThread']}, `addPoll` = {$permissions['addPoll']}, `addRolls` = {$permissions['addRolls']}, `addDraws` = {$permissions['addDraws']}, `moderate` = {$permissions['moderate']}");
+		if ($optID) $mysql->query("INSERT INTO forums_permissions_{$pType}s SET {$pType}ID = {$optID}, forumID = {$forumID}, `read` = {$permissions['read']}, `write` = {$permissions['write']}, `editPost` = {$permissions['editPost']}, `deletePost` = {$permissions['deletePost']}, `createThread` = {$permissions['createThread']}, `deleteThread` = {$permissions['deleteThread']}, `addRolls` = {$permissions['addRolls']}, `addDraws` = {$permissions['addDraws']}, `moderate` = {$permissions['moderate']}");
 
 		echo 1;
 	} elseif (isset($_POST['save'])) {
 		foreach ($_POST['permissions'] as $pType => $permissions) {
 			if ($pType == 'general') {
 				foreach ($permissions as $key => $value) $permissions[$key] = getTrinary($value, 'general');
-				$mysql->query("UPDATE forums_permissions_general SET `read` = {$permissions['read']}, `write` = {$permissions['write']}, `editPost` = {$permissions['editPost']}, `deletePost` = {$permissions['deletePost']}, `createThread` = {$permissions['createThread']}, `deleteThread` = {$permissions['deleteThread']}, `addPoll` = {$permissions['addPoll']}, `addRolls` = {$permissions['addRolls']}, `addDraws` = {$permissions['addDraws']} WHERE forumID = {$forumID}");
+				$mysql->query("UPDATE forums_permissions_general SET `read` = {$permissions['read']}, `write` = {$permissions['write']}, `editPost` = {$permissions['editPost']}, `deletePost` = {$permissions['deletePost']}, `createThread` = {$permissions['createThread']}, `deleteThread` = {$permissions['deleteThread']}, `addRolls` = {$permissions['addRolls']}, `addDraws` = {$permissions['addDraws']} WHERE forumID = {$forumID}");
 			} else {
 				foreach ($permissions as $typeID => $permission) {
 					foreach ($permission as $key => $value) $permission[$key] = getTrinary($value, $pType);
-					$mysql->query("UPDATE forums_permissions_{$pType}s SET `read` = {$permission['read']}, `write` = {$permission['write']}, `editPost` = {$permission['editPost']}, `deletePost` = {$permission['deletePost']}, `createThread` = {$permission['createThread']}, `deleteThread` = {$permission['deleteThread']}, `addPoll` = {$permission['addPoll']}, `addRolls` = {$permission['addRolls']}, `addDraws` = {$permission['addDraws']}, `moderate` = {$permission['moderate']} WHERE {$pType}ID = {$typeID} AND forumID = {$forumID}");
+					$mysql->query("UPDATE forums_permissions_{$pType}s SET `read` = {$permission['read']}, `write` = {$permission['write']}, `editPost` = {$permission['editPost']}, `deletePost` = {$permission['deletePost']}, `createThread` = {$permission['createThread']}, `deleteThread` = {$permission['deleteThread']}, `addRolls` = {$permission['addRolls']}, `addDraws` = {$permission['addDraws']}, `moderate` = {$permission['moderate']} WHERE {$pType}ID = {$typeID} AND forumID = {$forumID}");
 				}
 			}
 		}
