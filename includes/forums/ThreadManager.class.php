@@ -84,7 +84,7 @@
 			} else $page = intval($_GET['page']);
 			$this->page = intval($page) > 0?intval($page):1;
 
-			return $this->thread->getPosts($page);
+			return $this->thread->getPosts($this->page);
 		}
 
 		public function updatePostCount() {
