@@ -208,6 +208,6 @@
 			}
 		}
 
-		header('Location: /forums/thread/'.$threadManager->threadID.'?p='.$post->getPostID().'#p'.$post->getPostID());
+		header('Location: /forums/thread/'.$threadManager->threadID.'/?p='.$post->getPostID().'#p'.$post->getPostID());
 	} else header('Location: /forums/thread/'.$threadID);
 ?>
