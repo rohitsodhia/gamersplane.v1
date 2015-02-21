@@ -31,6 +31,10 @@
 			if (property_exists($this, $key)) $this->$key = $value;
 		}
 
+		public function getThreadID() {
+			return $this->threadID;
+		}
+
 		public function getThreadProperty($property) {
 			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) return $this->thread->{$matches[1]}[$matches[2]];
 			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) return $this->thread->$matches[1]->$matches[2];
