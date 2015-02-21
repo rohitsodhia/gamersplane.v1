@@ -87,7 +87,7 @@
 							<a href="<?=$url?>?page=1">1</a>
 							<div>...</div>
 <?						for ($count = ($numPages - 2); $count <= $numPages; $count++) { ?>
-							<a href="<?=$url?>?page=<?=$count?>">$count</a>
+							<a href="<?=$url?>?page=<?=$count?>"><?=$count?></a>
 <?
 						}
 					}
