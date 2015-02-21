@@ -8,17 +8,7 @@
 	$threadManager = new ThreadManager($threadID);
 	if ($threadManager->getPermissions('read') == false) { header('Location: /403'); exit; }
 
-	if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
-		$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$threadID} AND postID <= ".$threadManager->getThreadLastRead());
-		$numPrevPosts = $numPrevPosts->fetchColumn() + 1;
-		$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
-	} elseif (isset($_GET['post'])) {
-		$post = intval($_GET['post']);
-		$numPrevPosts = $mysql->query('SELECT COUNT(postID) FROM posts WHERE threadID = '.$threadID.' AND postID <= '.$post);
-		$numPrevPosts = $numPrevPosts->fetchColumn();
-		$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
-	} else $page = intval($_GET['page']);
-	$threadManager->getPosts($page);
+	$threadManager->getPosts();
 
 	$gameID = false;
 	$isGM = false;
@@ -226,7 +216,7 @@
 			if ($forumOptions['postSide'] == 'c') $postSide = $postSide == 'Right'?'Left':'Right';
 		}
 
-		$threadManager->displayPagination($page);
+		$threadManager->displayPagination();
 	}
 	
 	if ($threadManager->getPermissions('moderate')) {
