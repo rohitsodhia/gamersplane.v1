@@ -75,6 +75,12 @@ $(function() {
 		});
 	}
 
+	$('.ofToggle').not('.disable').click(function (e) {
+		e.preventDefault();
+
+		$(this).toggleClass('on');
+	});
+
 	$('#mainMenu li').mouseenter(function () {
 		$(this).children('ul').stop(true, true).slideDown();
 	}).mouseleave(function () {

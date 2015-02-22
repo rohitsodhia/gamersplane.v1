@@ -106,11 +106,19 @@
 				if (!$tableOpen) {
 ?>
 		<div class="tableDiv">
-			<div class="clearfix"><h2 class="wingDiv redWing">
-				<div><?=$this->forums[$childID]->forumType == 'c'?$this->forums[$childID]->title:'Subforums'?></div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
-			</h2></div>
+			<div class="clearfix">
+<?					if ($childID == 2) { ?>
+				<div class="pubGameToggle hbdMargined">
+					<span>Show public games: </span>
+					<a href="" class="ofToggle disable"></a>
+				</div>
+<?					} ?>
+				<h2 class="wingDiv redWing">
+					<div><?=$this->forums[$childID]->forumType == 'c'?$this->forums[$childID]->title:'Subforums'?></div>
+					<div class="wing dlWing"></div>
+					<div class="wing drWing"></div>
+				</h2>
+			</div>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
 				<div class="td name">Forum</div>
