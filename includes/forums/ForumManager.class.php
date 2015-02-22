@@ -153,7 +153,7 @@
 					<div class="td lastPost">
 <?
 			$lastPost = $this->getLastPost($forumID);
-			if ($lastPost) echo "\t\t\t\t\t\t<a href=\"/ucp/{$lastPost->authorID}/\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($lastPost->datePosted))."</span>\n";
+			if ($lastPost) echo "\t\t\t\t\t\t<a href=\"/user/{$lastPost->userID}/\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($lastPost->datePosted))."</span>\n";
 			else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
@@ -182,6 +182,16 @@
 			}
 			if ($forum->permissions['read']) $total += $forum->postCount;
 			return $total;
+		}
+
+		public function maxRead($forumID) {
+			$maxRead = 0;
+			foreach ($this->forums[$forumID]->getHeritage() as $heritageID) {
+				if ($this->forums[$heritageID]->getMarkedRead() > $maxRead) 
+					$maxRead = $this->forums[$heritageID]->getMarkedRead();
+			}
+
+			return $maxRead;
 		}
 
 		public function newPosts($forumID) {
@@ -251,11 +261,14 @@
 				<div class="td lastPost">Last Post</div>
 			</div>
 			<div class="sudoTable threadList hbdMargined">
-<?			if (sizeof($forum->threads)) { foreach ($forum->threads as $thread) { ?>
+<?
+			if (sizeof($forum->threads)) { foreach ($forum->threads as $thread) {
+				$maxRead = $this->maxRead($forum->getForumID());
+?>
 				<div class="tr">
-					<div class="td icon"><div class="forumIcon<?=$thread->getStates('sticky')?' sticky':''?><?=$thread->getStates('locked')?' locked':''?><?=$thread->newPosts($forum->markedRead)?' newPosts':''?>" title="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($forum->markedRead)?'New':'No new'?> posts in thread"></div></div>
+					<div class="td icon"><div class="forumIcon<?=$thread->getStates('sticky')?' sticky':''?><?=$thread->getStates('locked')?' locked':''?><?=$thread->newPosts($maxRead)?' newPosts':''?>" title="<?=$thread->newPosts($maxRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($maxRead)?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
-<?				if ($thread->newPosts($forum->markedRead)) { ?>
+<?				if ($thread->newPosts($maxRead)) { ?>
 						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 				}

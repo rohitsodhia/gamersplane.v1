@@ -39,14 +39,14 @@
 			}
 			$allForumIDs = array_unique($allForumIDs);
 			sort($allForumIDs);
-			
+
 			if ($userID) {
 				$adminForums = array();
 				$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
-				$forumAdmins = $adminIn->fetchAll(PDO::FETCH_COLUMN);
-				array_walk($forumAdmins, function (&$value, $key) { $value = intval($value); });
+				$adminForums = $adminIn->fetchAll(PDO::FETCH_COLUMN);
+				array_walk($adminForums, function (&$value, $key) { $value = intval($value); });
 				$getPermissionsFor = array();
-				$superFAdmin = array_search(0, $forumAdmins) !== false?true:false;
+				$superFAdmin = array_search(0, $adminForums) !== false?true:false;
 				foreach ($forumIDs as $forumID) {
 					if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = array_merge($aTemplate, array('admin' => 1));
 					else $getPermissionsFor[] = $forumID;
