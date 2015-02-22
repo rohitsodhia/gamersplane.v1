@@ -145,7 +145,7 @@
 					<div class="td lastPost">
 <?
 			$lastPost = $this->getLastPost($forumID);
-			if ($lastPost) echo "\t\t\t\t\t\t<a href=\"/ucp/{$lastPost->authorID}/\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($lastPost->datePosted))."</span>\n";
+			if ($lastPost) echo "\t\t\t\t\t\t<a href=\"/user/{$lastPost->userID}/\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">".date('M j, Y g:i a', strtotime($lastPost->datePosted))."</span>\n";
 			else echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 ?>
 					</div>
