@@ -133,7 +133,7 @@
 				$character->getForumTop($post->author);
 			} else {
 ?>
-					<p class="posterName"><a href="/user/<?=$post->userID?>/" class="username"><?=$post->author->username?></a></p>
+					<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a></p>
 <?			} ?>
 				</div>
 				<div class="postContent">
