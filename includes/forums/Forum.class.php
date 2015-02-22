@@ -117,6 +117,10 @@
 			return $this->gameID?true:false;
 		}
 
+		public function getMarkedRead() {
+			return $this->markedRead;
+		}
+
 		public function getThreads($page = 1) {
 			global $currentUser, $mysql;
 
