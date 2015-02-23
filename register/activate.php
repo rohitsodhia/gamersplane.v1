@@ -17,6 +17,8 @@
 		$currentUser->updateUsermeta('newGameMail', 1);
 		$currentUser->updateUsermeta('postSide', 'r');
 		$currentUser->setMetaAutoload('postSide', 1);
+		$currentUser->updateUsermeta('showPubGames', 1);
+		$currentUser->setMetaAutoload('showPubGames', 1);
 
 		addUserHistory($userID, 'activated');
 

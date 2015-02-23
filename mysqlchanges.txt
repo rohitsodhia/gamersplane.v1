@@ -1,18 +1,1 @@
-ALTER TABLE `forums` ADD UNIQUE INDEX (`heritage`), ADD threadCount int NOT NULL, MODIFY COLUMN `description` text NULL AFTER `title`, MODIFY COLUMN `forumType` varchar(1) NULL DEFAULT 'f' AFTER `description`, MODIFY COLUMN `parentID` int(11) NULL AFTER `forumType`;
-ALTER TABLE `forums_permissions_users`
-MODIFY COLUMN `addRolls`  tinyint(1) NOT NULL DEFAULT '-4' AFTER `addPoll`,
-MODIFY COLUMN `addDraws`  tinyint(1) NOT NULL DEFAULT '-4' AFTER `addRolls`,
-MODIFY COLUMN `moderate`  tinyint(1) NOT NULL DEFAULT '-4' AFTER `addDraws`;
-
-UPDATE forums SET description = NULL WHERE description = '';
-UPDATE forums SET forumType = NULL, parentID = NULL, heritage = NULL WHERE forumID = 0;
-UPDATE forums f LEFT JOIN (SELECT forumID, COUNT(*) threadCount FROM threads GROUP BY forumID) t ON f.forumID = t.forumID SET f.threadCount = IFNULL(t.threadCount, 0);
-
-ALTER TABLE threads ADD firstPostID int NOT NULL, ADD lastPostID int NOT NULL, ADD postCount int NOT NULL;
-UPDATE threads t LEFT JOIN (SELECT threadID, COUNT(*) postCount FROM posts GROUP BY threadID) p ON t.threadID = p.threadID SET t.postCount = IFNULL(p.postCount, 0);
-UPDATE threads t LEFT JOIN (select `posts`.`threadID` AS `threadID`,min(`posts`.`postID`) AS `firstPostID`,max(`posts`.`postID`) AS `lastPostID` from `posts` group by `posts`.`threadID`) p ON t.threadID = p.threadID SET t.firstPostID = p.firstPostID, t.lastPostID = p.lastPostID;
-
-ALTER TABLE games ADD public bool NOT NULL AFTER open;
-
-ALTER TABLE `forums_readData_forums` CHANGE COLUMN `lastRead` `markedRead` int(11) NOT NULL AFTER `forumID`;
-
+INSERT INTO dispatch SET url = 'forums/process/togglePubGames/', file = 'forums/process/togglePubGames.php';
