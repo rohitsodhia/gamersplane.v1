@@ -208,14 +208,18 @@
 			}
 		}
 
-		$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE f.userID = {$currentUser->userID} AND ((f.type = 'f' AND f.ID = {$threadManager->getThreadProperty('forumID')}) OR (f.type = 't' AND f.ID = {$threadManager->getThreadID()}))");
+		$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE s.userID = {$currentUser->userID} AND ((s.type = 'f' AND s.ID = {$threadManager->getThreadProperty('forumID')}) OR (s.type = 't' AND s.ID = {$threadManager->getThreadID()}))");
 		$subs = array();
 		if ($subbedUsers->rowCount()) 
-			foreach ($subbedUsers => $user) 
+			foreach ($subbedUsers as $user) 
 				$subs[] = $user['email'];
 		if (sizeof($subs)) {
 			$subs = array_unique($subs);
-			
+			ob_start();
+			include('forums/process/threadSubEmail.php');
+			$email = ob_get_contents();
+			ob_end_clean();
+			mail('Gamers Plane <contact@gamersplane.com>', "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".implode(',', $subs));
 		}
 
 		header('Location: /forums/thread/'.$threadManager->threadID.'/?p='.$post->getPostID().'#p'.$post->getPostID());
