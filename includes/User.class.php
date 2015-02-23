@@ -115,7 +115,7 @@
 		public function updateUsermeta($metaKey, $metaValue) {
 			global $mysql;
 
-			if ($metaValue !== null && $metaValue != '') {
+			if ($metaValue !== null && $metaValue !== '') {
 				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue ON DUPLICATE KEY UPDATE metaValue = :metaValue");
 				$updateUsermeta->bindValue(':metaKey', $metaKey);
 				if (is_array($metaValue)) $metaValue = serialize($metaValue);
