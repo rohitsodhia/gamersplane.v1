@@ -10,13 +10,15 @@
 		const ADMIN_FORUMS = 4;
 
 		public function __construct($forumID, $options = 0) {
-			global $mysql, $currentUser;
+			global $mysql, $loggedIn, $currentUser;
 
-			$showPubGames = $currentUser->showPubGames;
-			if ($showPubGames === null) {
-				$showPubGames = 1;
-				$currentUser->updateUsermeta('showPubGames', '1');
-				$currentUser->setMetaAutoload('showPubGames', '1');
+			if ($loggedIn) {
+				$showPubGames = $currentUser->showPubGames;
+				if ($showPubGames === null) {
+					$showPubGames = 1;
+					$currentUser->updateUsermeta('showPubGames', '1');
+					$currentUser->setMetaAutoload('showPubGames', '1');
+				}
 			}
 
 			$this->currentForum = intval($forumID);
@@ -103,7 +105,7 @@
 		}
 
 		public function displayForum() {
-			global $currentUser;
+			global $loggedIn, $currentUser;
 
 			if (sizeof($this->forums[$this->currentForum]->children) == 0) return false;
 
@@ -118,7 +120,7 @@
 ?>
 		<div class="tableDiv">
 			<div class="clearfix">
-<?					if ($childID == 2) { ?>
+<?					if ($loggedIn && $childID == 2) { ?>
 				<div class="pubGameToggle hbdMargined">
 					<span>Show public games: </span>
 					<a href="/forums/process/togglePubGames/" class="ofToggle disable<?=$currentUser->showPubGames?' on':''?>"></a>
