@@ -81,11 +81,11 @@
 			return $forums;
 		}
 
-		public function getAllChildren($forumID = 0) {
+		public function getAllChildren($forumID = 0, $read = false) {
 			$forums = array($forumID);
 			$forum = $this->forums[$forumID];
 			foreach ($forum->getChildren() as $childID) {
-				if (!in_array($childID, $forums)) $forums[] = $childID;
+				if (!in_array($childID, $forums) && (!$read || ($read && $this->forums[$childID]->getPermissions('read')))) $forums[] = $childID;
 				$this->getAllChildren($childID);
 			}
 			return $forums;

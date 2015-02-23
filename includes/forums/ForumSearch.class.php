@@ -41,13 +41,12 @@
 			if (intval($limit) <= 0) $limit = PAGINATE_PER_PAGE;
 			$this->page = intval($page) > 0?intval($page):1;
 			$start = ($this->page - 1) * PAGINATE_PER_PAGE;
-
 			if ($this->search == 'latestPosts') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID WHERE t.forumID IN (".implode(', ', array_keys($this->forumManager->getAccessableForums())).") AND p.datePosted > NOW() - INTERVAL 1 WEEK")->rowCount();
 				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->forumManager->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
 			} elseif ($this->search == 'homepage') {
 				$forums = array();
-				foreach (array(1, 6, 10) as $forumID) $forums = array_merge($forums, $this->forumManager->getAllChildren($forumID));
+				foreach (array(1, 2, 6) as $forumID) $forums = array_merge($forums, $this->forumManager->getAllChildren($forumID, true));
 
 				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, IFNULL(rdt.lastRead, 0) lastRead, lp.postID lastPostID, lp.title, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $forums).") ORDER BY lp.datePosted DESC LIMIT 3")->fetchAll(PDO::FETCH_OBJ);
 			}
