@@ -12,11 +12,13 @@
 		public function __construct($forumID, $options = 0) {
 			global $mysql, $currentUser;
 
-			$showPubGames = $currentUser->showPubGames;
-			if ($showPubGames === null) {
-				$showPubGames = 1;
-				$currentUser->updateUsermeta('showPubGames', '1');
-				$currentUser->setMetaAutoload('showPubGames', '1');
+			if ($loggedIn) {
+				$showPubGames = $currentUser->showPubGames;
+				if ($showPubGames === null) {
+					$showPubGames = 1;
+					$currentUser->updateUsermeta('showPubGames', '1');
+					$currentUser->setMetaAutoload('showPubGames', '1');
+				}
 			}
 
 			$this->currentForum = intval($forumID);
