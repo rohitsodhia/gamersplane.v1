@@ -12,12 +12,21 @@
 		public function __construct($forumID, $options = 0) {
 			global $mysql, $currentUser;
 
+			$showPubGames = $currentUser->showPubGames;
+			if ($showPubGames === null) {
+				$showPubGames = 1;
+				$currentUser->updateUsermeta('showPubGames', '1');
+				$currentUser->setMetaAutoload('showPubGames', '1');
+			}
+
 			$this->currentForum = intval($forumID);
 			$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
 			foreach ($forumsR as $forum) $this->forumsData[$forum['forumID']] = $forum;
 			if (($this->currentForum == 0 || $this->currentForum == 2) && bindec($options&$this::NO_CHILDREN) == 0) {
-				$publicGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games g ON f.gameID = g.gameID AND g.public = 1 LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
-				foreach ($publicGameForums as $forum) $this->forumsData[$forum['forumID']] = $forum;
+				if ($showPubGames) {
+					$publicGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games g ON f.gameID = g.gameID AND g.public = 1 LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
+					foreach ($publicGameForums as $forum) $this->forumsData[$forum['forumID']] = $forum;
+				}
 				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN players p ON f.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
 				foreach ($userGameForums as $forum) $this->forumsData[$forum['forumID']] = $forum;
 			}
@@ -94,6 +103,8 @@
 		}
 
 		public function displayForum() {
+			global $currentUser;
+
 			if (sizeof($this->forums[$this->currentForum]->children) == 0) return false;
 
 			$tableOpen = false;
@@ -106,11 +117,19 @@
 				if (!$tableOpen) {
 ?>
 		<div class="tableDiv">
-			<div class="clearfix"><h2 class="wingDiv redWing">
-				<div><?=$this->forums[$childID]->forumType == 'c'?$this->forums[$childID]->title:'Subforums'?></div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
-			</h2></div>
+			<div class="clearfix">
+<?					if ($childID == 2) { ?>
+				<div class="pubGameToggle hbdMargined">
+					<span>Show public games: </span>
+					<a href="/forums/process/togglePubGames/" class="ofToggle disable<?=$currentUser->showPubGames?' on':''?>"></a>
+				</div>
+<?					} ?>
+				<h2 class="wingDiv redWing">
+					<div><?=$this->forums[$childID]->forumType == 'c'?$this->forums[$childID]->title:'Subforums'?></div>
+					<div class="wing dlWing"></div>
+					<div class="wing drWing"></div>
+				</h2>
+			</div>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
 				<div class="td name">Forum</div>

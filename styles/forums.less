@@ -113,22 +113,40 @@
 	border-bottom-width: 2px;
 }
 
-#page_forum .tableDiv th, #page_forum_search .tableDiv th {
-	text-align: center;
-	vertical-align: middle;
-}
+#page_forum, #page_forum_search {
+	.tableDiv {
+		th {
+			text-align: center;
+			vertical-align: middle;
+		}
 
-#page_forum .threadTable th, #page_forum_search .threadTable th {
-	padding-top: 6px;
-}
+		td {
+			vertical-align: middle;
+			padding: 8px 2px;
+		}
 
-#page_forum .tableDiv td, #page_forum_search .tableDiv td {
-	vertical-align: middle;
-	padding: 8px 2px;
-}
+		.noPosts td {
+			height: 41px;
+		}
 
-#page_forum .tableDiv .noPosts td, #page_forum_search.tableDiv .noPosts td {
-	height: 41px;
+		.pubGameToggle {
+			display: inline-block;
+			margin-top: 4px;
+
+			& > * {
+				vertical-align: middle;
+			}
+
+			span {
+				display: inline-block;
+				margin-bottom: 4px;
+			}
+		}
+	}
+
+	.threadTable th, .threadTable th {
+		padding-top: 6px;
+	}
 }
 
 #page_forum .icon, #page_forum .icon, #page_forum_search .icon, #page_forum_search .icon {
