@@ -5,24 +5,7 @@
 	$forumManager = new ForumManager($forumID);
 
 	if (!$forumManager->displayCheck()) { header('Location: /forums'); exit; }
-	
-/*	if ($currentUser->userID) {
-		// Get lastRead for current forum; if none, create
-		$cLastRead = $mysql->query("SELECT cLastRead FROM forums_readData_forums_c WHERE forumID = $forumID AND userID = $currentUser->userID");
-		if ($cLastRead->rowCount()) $lastReadID = $cLastRead->fetchColumn();
-		else {
-			$lastReadID = $mysql->query('SELECT MAX(postID) FROM posts');
-			$lastReadID = $lastReadID->fetchColumn();
-			$mysql->query("INSERT INTO forums_readData_forums (userID, forumID, lastRead) VALUES ($currentUser->userID, $forumID, $lastReadID)");
-		}
 
-		// Check if admin of current forum
-		$forumAdmin = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID IN (0".(($forumID != 0)?', '.implode(', ', $heritage):'').')');
-		$forumAdmin = $forumAdmin->rowCount()?TRUE:FALSE;
-	} else {
-		$forumAdmin = false;
-	}*/
-	
 	if ($forumManager->getForumProperty($forumID, 'gameID')) {
 		$gameID = $forumManager->getForumProperty($forumID, 'gameID');
 		$fixedGameMenu = true;
@@ -30,10 +13,16 @@
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumManager->getForumProperty($forumID, 'title'):'s'?></h1>
-		
+
 		<div id="topLinks" class="clearfix hbMargined">
 			<div class="floatRight alignRight">
-				<div><? if ($forumID == 0) echo '<a href="/forums/search/?search=latestPosts">Unread Posts</a>'; ?></div>
+				<div><? 
+	if ($forumID == 0) echo '<a href="/forums/search/?search=latestPosts">Latest Posts</a>';
+	elseif ($loggedIn) {
+		$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 'f' AND ID = {$forumID}");
+		echo '<a id="forumSub" href="/forums/process/subscribe/?forumID='.$forumID.'">'.($isSubbed->rowCount()?'Unsubscribe from':'Subscribe to').' forum</a>';
+	}
+?></div>
 				<div><? if ($forumManager->getForumProperty($forumID, 'permissions[admin]')) echo "<a href=\"/forums/acp/{$forumID}/\">Administrative Control Panel</a>"; ?></div>
 			</div>
 			<div class="floatLeft alignLeft">

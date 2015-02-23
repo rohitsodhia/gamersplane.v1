@@ -208,6 +208,16 @@
 			}
 		}
 
+		$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE f.userID = {$currentUser->userID} AND ((f.type = 'f' AND f.ID = {$threadManager->getThreadProperty('forumID')}) OR (f.type = 't' AND f.ID = {$threadManager->getThreadID()}))");
+		$subs = array();
+		if ($subbedUsers->rowCount()) 
+			foreach ($subbedUsers => $user) 
+				$subs[] = $user['email'];
+		if (sizeof($subs)) {
+			$subs = array_unique($subs);
+			
+		}
+
 		header('Location: /forums/thread/'.$threadManager->threadID.'/?p='.$post->getPostID().'#p'.$post->getPostID());
 	} else header('Location: /forums/thread/'.$threadID);
 ?>

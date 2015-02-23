@@ -6,7 +6,7 @@
 <head>
 	<meta http-equip="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>New Game!</title>
+	<title>Updates and Growth</title>
 </head>
 
 <body style="margin:0;font-family:Arial;font-size:14px;line-height:1.3em"><table style="width:100%"><tr><td>

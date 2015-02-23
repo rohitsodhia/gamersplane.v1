@@ -26,7 +26,7 @@
 	} else 
 		$fixedGameMenu = false;
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$threadManager->getThreadProperty('title')?></h1>
 		<div class="hbMargined">
 			<div id="threadMenu" class="clearfix">
@@ -34,7 +34,18 @@
 					<a href="/forums/<?=$threadManager->getThreadProperty('forumID')?>/">Back to the forums</a>
 				</div>
 				<div class="rightCol alignRight">
-<? if ($threadManager->getPermissions('moderate')) { ?>
+<?
+	if ($loggedIn) {
+		$forumSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 'f' AND ID = {$threadManager->getThreadProperty('forumID')}");
+		if (!$forumSubbed->rowCount()) {
+			$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 't' AND ID = {$threadID}");
+?>
+					<p class="threadSub"><a id="forumSub" href="/forums/process/subscribe/?threadID=<?=$threadID?>"><?=$isSubbed->rowCount()?'Unsubscribe from':'Subscribe to'?> thread</a></p>
+<?
+		}
+	}
+	if ($threadManager->getPermissions('moderate')) {
+?>
 					<form id="threadOptions" method="post" action="/forums/process/modThread/">
 <?
 	$sticky = $threadManager->thread->getStates('sticky')?'unsticky':'sticky';
