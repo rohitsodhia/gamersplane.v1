@@ -105,7 +105,7 @@
 	else $postSide = 'Left';
 	
 	$characters = array();
-	$hitLastRead = false;
+	$newPostMarked = false;
 	if ($threadManager->getFirstPostID() > $threadManager->getThreadLastRead()) 
 		$hitLastRead = true;
 	$lastPostID = 0;
@@ -122,14 +122,12 @@
 			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
 				<a name="p<?=$post->getPostID()?>"></a>
 <?
-			if ($hitLastRead ) {
-				$hitLastRead = false;
+			if (!$newPostMarked && $post->getPostID() >= $threadManager->getThreadLastRead()) {
+				$newPostMarked = true;
 ?>
 				<a name="newPost"></a>
 <?
 			}
-			if ($post->getPostID() == $threadManager->getThreadLastRead()) 
-				$hitLastRead = true;
 ?>
 				<div class="posterDetails">
 					<div class="avatar"><div>
