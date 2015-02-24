@@ -63,8 +63,8 @@
 		}
 
 		public function getThreadLastRead() {
-			if ($this->getForumProperty('markedRead') > $this->getThreadProperty('lastRead')) 
-				return $this->getForumProperty('markedRead');
+			if ($this->forumManager->maxRead($this->thread->forumID) > $this->getThreadProperty('lastRead')) 
+				return $this->forumManager->maxRead($this->thread->forumID);
 			else 
 				return $this->getThreadProperty('lastRead');
 		}
