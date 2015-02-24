@@ -36,7 +36,7 @@
 			foreach ($permissions as $pForumID => $permission)
 				$this->forumsData[$pForumID]['permissions'] = $permission;
 			if (!($options&$this::NO_NEWPOSTS)) 
-				$lastRead = $mysql->query("SELECT f.forumID, rdf.markedRead, IF(unread.numUnread = 0 AND unread.latestPost <= IFNULL(rdf.markedRead, 0), 0, 1) newPosts FROM forums f LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID} LEFT JOIN (SELECT t.forumID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0)) numUnread, MAX(rdt.lastRead) latestReadPost, MAX(IF(t.lastPostID > IFNULL(rdt.lastRead, 0), t.lastPostID, 0)) latestPost FROM threads t LEFT JOIN forums_readData_threads rdt ON rdt.userID = {$currentUser->userID} AND t.threadID = rdt.threadID GROUP BY t.forumID) unread ON f.forumID = unread.forumID WHERE f.forumID IN (".implode(',', array_keys($this->forumsData)).")");
+				$lastRead = $mysql->query("SELECT f.forumID, unread.markedRead, unread.numUnread newPosts FROM forums f LEFT JOIN (SELECT t.forumID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(crdf.markedRead, 0)) numUnread, MAX(t.lastPostID) latestPost, crdf.markedRead FROM threads t LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} LEFT JOIN (SELECT f.forumID, MAX(rdf.markedRead) markedRead FROM forums f LEFT JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN forums_readData_forums rdf ON p.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID} GROUP BY f.forumID) crdf ON t.forumID = crdf.forumID GROUP BY t.forumID) unread ON f.forumID = unread.forumID WHERE f.forumID IN (".implode(',', array_keys($this->forumsData)).")");
 			else 
 				$lastRead = $mysql->query("SELECT f.forumID, rdf.markedRead FROM forums f LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID} WHERE f.forumID IN (".implode(',', array_keys($this->forumsData)).")");
 			$lastRead = $lastRead->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
@@ -210,7 +210,7 @@
 		public function newPosts($forumID) {
 			global $loggedIn;
 			if (!$loggedIn) return false;
-			
+
 			$forum = $this->forums[$forumID];
 
 			if (sizeof($forum->children)) { foreach ($forum->children as $childID) {
