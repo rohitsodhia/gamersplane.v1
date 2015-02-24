@@ -220,7 +220,8 @@
 				include('forums/process/threadSubEmail.php');
 				$email = ob_get_contents();
 				ob_end_clean();
-				mail('Gamers Plane <contact@gamersplane.com>', "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".implode(',', $subs));
+				foreach ($subs as $sub) 
+					mail($sub, "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 			}
 		}
 
