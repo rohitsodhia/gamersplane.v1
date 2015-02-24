@@ -1,5 +1,5 @@
 <?
-	$currentUser->updateUsermeta('showPubGames', (bool) $currentUser->getuserMeta?0:1);
+	$currentUser->updateUsermeta('showPubGames', (bool) $currentUser->showPubGames?0:1);
 
 	header("Location: {$_SESSION['lastURL']}");
 ?>
