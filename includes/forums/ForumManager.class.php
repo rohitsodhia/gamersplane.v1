@@ -86,7 +86,7 @@
 			$forum = $this->forums[$forumID];
 			foreach ($forum->getChildren() as $childID) {
 				if (!in_array($childID, $forums) && (!$read || ($read && $this->forums[$childID]->getPermissions('read')))) $forums[] = $childID;
-				$this->getAllChildren($childID);
+				$forums = array_merge($forums, $this->getAllChildren($childID));
 			}
 			return $forums;
 		}
