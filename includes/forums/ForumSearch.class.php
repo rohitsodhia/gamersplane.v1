@@ -46,7 +46,7 @@
 				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->forumManager->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
 			} elseif ($this->search == 'homepage') {
 				$forums = array();
-				foreach (array(1, 2, 6) as $forumID) $forums = array_merge($forums, $this->forumManager->getAllChildren($forumID, true));
+				$forums = $this->forumManager->getAllChildren(0, true);
 
 				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, IFNULL(rdt.lastRead, 0) lastRead, lp.postID lastPostID, lp.title, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $forums).") ORDER BY lp.datePosted DESC LIMIT 3")->fetchAll(PDO::FETCH_OBJ);
 			}
