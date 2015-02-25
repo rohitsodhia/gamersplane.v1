@@ -74,7 +74,7 @@
 			}
 		}
 
-		public function skillEditFormat($key = 1, $skillInfo = null) {
+		public function skillEditFormat($key = 0, $skillInfo = null) {
 			if ($skillInfo == null) $skillInfo = array('name' => '', 'rating' => 0);
 ?>
 									<div class="skill tr clearfix">
@@ -111,7 +111,7 @@
 			return $this->extras;
 		}
 
-		public static function stuntEditFormat($key = 1, $stuntInfo = null) {
+		public static function stuntEditFormat($key = 0, $stuntInfo = null) {
 			if ($stuntInfo == null) $stuntInfo = array('name' => '', 'notes' => '');
 ?>
 									<div class="stunt tr clearfix">
