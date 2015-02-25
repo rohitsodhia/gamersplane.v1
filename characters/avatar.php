@@ -20,8 +20,11 @@
 <?	if (!$charPermissions) { ?>
 			<p>Seems like you're trying to change a character that isn't yours!</p>
 <?	} ?>
-<?	if ($character->getAvatar()) { ?>
-			<img id="avatar" src="<?=$character->getAvatar()?>">
+<?
+	if ($character->getAvatar()) {
+		$imageSize = getimagesize(FILEROOT.'/'.$character->getAvatar(false));
+?>
+			<img id="avatar" src="<?=$character->getAvatar()?>" class="width: <?=$imageSize[0]?>px; height: <?=$imageSize[1]?>px;">
 <?	} else { ?>
 			<div id="avatar"<?=$character->getAvatar()?'':' class="noAvatar"'?>>
 				<p>No Avatar</p>
