@@ -16,7 +16,7 @@
 ?>
 		<h1 class="headerbar">Character Avatar</h1>
 
-		<form method="post" action="/characters/process/avatar/" enctype="multipart/form-data" class="hbMargined" class="height: 257px;">
+		<form method="post" action="/characters/process/avatar/" enctype="multipart/form-data" class="hbMargined" style="height: 257px;">
 <?	if (!$charPermissions) { ?>
 			<p>Seems like you're trying to change a character that isn't yours!</p>
 <?	} ?>
