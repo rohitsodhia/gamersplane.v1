@@ -16,14 +16,11 @@
 ?>
 		<h1 class="headerbar">Character Avatar</h1>
 
-		<form method="post" action="/characters/process/avatar/" enctype="multipart/form-data" class="hbMargined" style="height: 257px;">
+		<form method="post" action="/characters/process/avatar/" enctype="multipart/form-data" class="hbMargined">
 <?	if (!$charPermissions) { ?>
 			<p>Seems like you're trying to change a character that isn't yours!</p>
 <?	} ?>
-<?
-	if ($character->getAvatar()) {
-		$imageSize = getimagesize(FILEROOT.'/'.$character->getAvatar(false));
-?>
+<?	if ($character->getAvatar()) { ?>
 			<img id="avatar" src="<?=$character->getAvatar()?>">
 <?	} else { ?>
 			<div id="avatar"<?=$character->getAvatar()?'':' class="noAvatar"'?>>
