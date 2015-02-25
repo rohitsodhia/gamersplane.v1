@@ -13,9 +13,9 @@
 			}
 		}
 
-		if ($charPermissions) {
-			if ($_POST['delete']) unlink(FILEROOT."/characters/avatars/{$characterID}.jpg");
-			if ($_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) {
+		if ($charPermissions && (($_FILES['avatar'] && $_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] > 15 && $_FILES['avatar']['size'] < 1048576) || $_POST['delete'])) {
+			unlink(FILEROOT."/characters/avatars/{$characterID}.jpg");
+			if (isset($_FILES['avatar'])) {
 				$avatarExt = trim(end(explode('.', strtolower($_FILES['avatar']['name']))));
 				if ($avatarExt == 'jpeg') $avatarExt = 'jpg';
 				if (in_array($avatarExt, array('jpg', 'gif', 'png'))) {
