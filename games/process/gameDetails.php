@@ -70,7 +70,7 @@
 			
 			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
 			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
-			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, `order`, gameID) VALUES (:title, 2, {$order}, {$gameID})");
+			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, 2, ".mt_rand(0, 9999).", {$order}, {$gameID})");
 			$addForum->execute(array(':title' => $details['title']));
 			$forumID = $mysql->lastInsertId();
 			$heritage = sql_forumIDPad(2).'-'.sql_forumIDPad($forumID);
