@@ -126,8 +126,8 @@
 <?
 		}
 
-		public function getAvatar() {
-			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg")) return "/characters/avatars/{$this->characterID}.jpg?".time();
+		public function getAvatar($showTS = true) {
+			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg")) return "/characters/avatars/{$this->characterID}.jpg".($showTS?'?'.time():'');
 			else return false;
 		}
 
