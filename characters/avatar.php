@@ -16,7 +16,7 @@
 ?>
 		<h1 class="headerbar">Character Avatar</h1>
 
-		<form method="post" action="/characters/process/avatar/" enctype="multipart/form-data" class="hbMargined">
+		<form method="post" action="/characters/process/avatar/" enctype="multipart/form-data" class="hbMargined" class="height: 257px;">
 <?	if (!$charPermissions) { ?>
 			<p>Seems like you're trying to change a character that isn't yours!</p>
 <?	} ?>
@@ -24,7 +24,7 @@
 	if ($character->getAvatar()) {
 		$imageSize = getimagesize(FILEROOT.'/'.$character->getAvatar(false));
 ?>
-			<img id="avatar" src="<?=$character->getAvatar()?>" class="width: <?=$imageSize[0]?>px; height: <?=$imageSize[1]?>px;">
+			<img id="avatar" src="<?=$character->getAvatar()?>">
 <?	} else { ?>
 			<div id="avatar"<?=$character->getAvatar()?'':' class="noAvatar"'?>>
 				<p>No Avatar</p>
