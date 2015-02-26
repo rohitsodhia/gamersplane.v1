@@ -172,8 +172,10 @@
 	if ($gPermissions->rowCount()) { foreach ($gPermissions as $permission) {
 		permissionSet('group', $permission['name'], $permission, $forumID, $permission['groupID'], $permission['gameGroup']);
 	} } else echo "\t\t\t\t\t<div class=\"tr\">No group level permissions for this forum.</div>\n";
+	if (!$forum->isGameForum()) {
 ?>
 					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/group" class="newPermission">Add Group Permission</a></div>
+<?	} ?>
 				</div>
 				
 				<div id="permissions_users">
@@ -184,8 +186,10 @@
 	if ($uPermissions->rowCount()) { foreach ($uPermissions as $permission) {
 		permissionSet('user', $permission['username'], $permission, $forumID, $permission['userID']);
 	} } else echo "\t\t\t\t\t<div class=\"tr\">No user level permissions for this forum.</div>\n";
+	if (!$forum->isGameForum()) {
 ?>
 					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/user" class="newPermission">Add User Permission</a></div>
+<?	} ?>
 				</div>
 				<input type="hidden" name="forumID" value="<?=$forumID?>">
 				<div class="tr alignCenter"><button type="submit" name="save" class="fancyButton" value="<?=$updateType?>">Save</button></div>

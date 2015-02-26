@@ -1,18 +1,15 @@
 <?
-	$forumID = intval($pathOptions[1]);
-	$redirect = FALSE;
+	addPackage('forum');
 
-	$isAdmin = $mysql->query("SELECT f.forumID, p.forumID, fa.forumID FROM forums f, forums p, forumAdmins fa WHERE fa.userID = 1 AND fa.forumID = p.forumID AND f.heritage LIKE CONCAT(p.heritage, '%') AND f.forumID = $forumID");
-	$forumInfo = $mysql->query("SELECT forumID, title, forumType, parentID, heritage FROM forums WHERE forumID = $forumID");
-	$forumInfo = $forumInfo->fetch();
+	$forumID = intval($pathOptions[1]);
+	$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS);
+
+	$isAdmin = $forumManager->forums[$forumID]->getPermissions('admin');
 	$permissionType = in_array($pathOptions[3], array('group', 'user'))?$pathOptions[3]:FALSE;
-	if (!$isAdmin->rowCount() || ($forumInfo['parentID'] == 2 && $forumID != 10) || !$permissionType) { header('Location: /forums/'); exit; }
-	$gameForum = strpos($forumInfo['heritage'], sql_forumIDPad(2)) !== FALSE && $forumID != 10?TRUE:FALSE;
-	if ($gameForum) {
-		$heritage = explode('-', $forumInfo['heritage']);
-		$gameID = $mysql->query('SELECT gameID FROM games WHERE forumID = '.intval($heritage[1]));
-		$gameID = $gameID->fetchColumn();
-	} else $gameID = NULL;
+	if (!$isAdmin || ($forumManager->forums[$forumID]->getParentID() == 2 && $forumID != 10) || !$permissionType) { header('Location: /forums/'); exit; }
+	if ($forumManager->forums[$forumID]->isGameForum()) 
+		$gameID = $forumManager->forums[$forumID]->getGameID();
+	else $gameID = null;
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Add <?=ucwords($permissionType)?> Permission</h1>
