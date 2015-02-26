@@ -4,9 +4,9 @@
 	elseif ($_POST['orderBy'] == 'name_a') $order = 'g.title';
 	elseif ($_POST['orderBy'] == 'name_d') $order = 'g.title DESC';
 	elseif ($_POST['orderBy'] == 'system') $order = 's.fullName';
-	
-	if (sizeof($_POST['filterSystem']) != $_POST['numSystems']) $systems = implode(', ', $_POST['filterSystem']);
-	else $systems = NULL;
+
+	if (isset($_POST['filterSystem']) && sizeof($_POST['filterSystem']) != $_POST['numSystems']) $systems = implode(', ', $_POST['filterSystem']);
+	else $systems = null;
 	
 	if (strlen(trim($_POST['search']))) {
 		$search = array();

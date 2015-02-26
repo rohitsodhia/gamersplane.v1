@@ -139,62 +139,72 @@
 
 /* --------------------------------------------*/
 
-#page_listGames #filterGames .tr:first-child {
-	padding-top: 0;
-}
-
-#page_listGames #filterGames input[type="text"] {
-	width: 212px;
-}
-
-#page_listGames #filterGames > ul {
-	margin: .5em 0 1em;
-	clear: both;
-	list-style: none;
-}
-
-#page_listGames #filterGames > ul li {
-	padding: 0.1em 0
-}
-
-#page_listGames label {
-	display: inline;
-}
-
-#page_listGames h1 {
-	margin: 0;
-}
-
 #page_listGames {
+	#filterGames {
+		#clearCheckboxes {
+			margin-bottom: .8em;
+
+			a {
+				vertical-align: bottom;
+			}
+		}
+
+		.tr:first-child {
+			padding-top: 0;
+		}
+
+		input[type="text"] {
+			width: 212px;
+		}
+
+		& > ul {
+			margin: .5em 0 1em;
+			clear: both;
+			list-style: none;
+		}
+
+		& > ul li {
+			padding: 0.1em 0
+		}
+	}
+
+	label {
+		display: inline;
+	}
+
+	h1 {
+		margin: 0;
+	}
+
 	.gameTitle, .systemType, .gmLink {
 		display: inline-block;
 		vertical-align: middle;
 	}
-}
 
-#page_listGames .gameTitle {
-	width: 210px;
-	padding-right: 10px;
-}
+	.gameTitle {
+		width: 210px;
+		padding-right: 10px;
+	}
 
-#page_listGames .systemType {
-	width: 200px;
-	padding: 0 15px;
-	border-left: 1px solid #999;
-	border-right: 1px solid #999;
-	text-align: center;
-}
+	.systemType {
+		width: 200px;
+		padding: 0 15px;
+		border-left: 1px solid #999;
+		border-right: 1px solid #999;
+		text-align: center;
+	}
 
-#page_listGames .gmLink {
-	margin-left: 15px;
-}
+	.gmLink {
+		margin-left: 15px;
+	}
 
-#page_listGames #noResults {
-	margin: 2em 0;
-	font-size: 1.5em;
-	font-weight: bold;
-	line-height: 1.2em;
-	text-align: center;
+	#noResults {
+		margin: 2em 0;
+		font-size: 1.5em;
+		font-weight: bold;
+		line-height: 1.2em;
+		text-align: center;
+	}
 }
 
 /* --------------------------------------------*/

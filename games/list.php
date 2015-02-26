@@ -13,9 +13,10 @@
 				</div>
 <!--				<div class="tr"><input id="search" name="search" type="text" class="placeholder" data-placeholder="Search for..."></div>-->
 				<ul class="clearfix">
+					<li id="clearCheckboxes"<?=isset($_GET['filter'])?'':' class="hideDiv"'?>><a href="" class="sprite cross small"></a> Clear choices</li>
 <?
 	$allSystems = $systems->getAllSystems();
-	foreach ($allSystems as $systemID => $systemInfo) echo "					<li><input id=\"system_{$systemInfo['shortName']}\" type=\"checkbox\" name=\"filterSystem[]\" value=\"{$systemID}\"".(isset($_GET['filter']) && array_search($systemID, $_GET['filterSystem']) !== FALSE || !isset($_GET['filter'])?' checked="checked"':'')."> <label for=\"system_{$systemInfo['shortName']}\">{$systemInfo['fullName']}</label></li>\n"
+	foreach ($allSystems as $systemID => $systemInfo) echo "					<li><input id=\"system_{$systemInfo['shortName']}\" type=\"checkbox\" name=\"filterSystem[]\" value=\"{$systemID}\"".(isset($_GET['filter']) && array_search($systemID, $_GET['filterSystem']) !== false?' checked="checked"':'')."> <label for=\"system_{$systemInfo['shortName']}\">{$systemInfo['fullName']}</label></li>\n"
 ?>
 				</ul>
 				<input type="hidden" name="numSystems" value="<?=sizeof($allSystems)?>">
@@ -38,9 +39,9 @@
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>
 				<li class="clearfix">
-					<a href="/games/<?=$gameInfo['gameID']?>" class="gameTitle"><?=$gameInfo['title']?></a>
+					<a href="/games/<?=$gameInfo['gameID']?>/" class="gameTitle"><?=$gameInfo['title']?></a>
 					<div class="systemType"><?=$gameInfo['system']?></div>
-					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></div>
 				</li>
 <?
 	} } else echo "\t\t\t\t<li id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new/\">make one</a>?</li>\n";
