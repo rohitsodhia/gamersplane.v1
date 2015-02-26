@@ -124,7 +124,7 @@
 				$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$currentUser->userID.' AND systemID = '.$gameInfo['systemID'].' AND ISNULL(gameID)');
 				if ($readyChars->rowCount()) {
 ?>
-					<form method="post" action="/games/process/addCharacter" class="hbdMargined">
+					<form method="post" action="/games/process/addCharacter/" class="hbdMargined">
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<select name="characterID">
 <?
@@ -162,7 +162,7 @@
 			<div class="rightCol">
 				<div id="applyToGame">
 					<h2 class="headerbar hbDark">Join Game</h2>
-					<form method="post" action="/games/process/join" class="alignCenter">
+					<form method="post" action="/games/process/join/" class="alignCenter">
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
 					</form>
@@ -190,11 +190,11 @@
 ?>
 					<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
 						<div class="playerInfo clearfix">
-							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="/images/gm_icon.png">':''?></div>
+							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>/" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="/images/gm_icon.png">':''?></div>
 							<div class="actionLinks">
 <?		if ($isGM && !$playerInfo['primaryGM']) { ?>
-								<a href="<?='/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>" class="removePlayer">Remove player from Game</a>
-								<a href="<?='/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
+								<a href="<?='/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>/" class="removePlayer">Remove player from Game</a>
+								<a href="<?='/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>/" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
 <?		} elseif ($playerInfo['userID'] == $currentUser->userID && !$playerInfo['primaryGM']) { ?>
 								<a href="<?='/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
 <?		} ?>
@@ -234,8 +234,8 @@
 					<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
 						<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
 						<div class="actionLinks">
-							<a href="<?='/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>" class="approvePlayer">Approve Player</a>
-							<a href="<?='/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>" class="rejectPlayer">Reject Player</a>
+							<a href="<?='/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>/" class="approvePlayer">Approve Player</a>
+							<a href="<?='/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>/" class="rejectPlayer">Reject Player</a>
 						</div>
 					</li>
 <?			} ?>
