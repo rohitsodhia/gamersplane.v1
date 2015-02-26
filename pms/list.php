@@ -1,15 +1,15 @@
 <?
 	$box = $pathOptions[0] == 'outbox'?'outbox':'inbox';
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
-<? if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
+<?	if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
 		<div class="alertBox_success">
 <?
 	if ($_GET['deleteSuc']) { echo "\t\t\tPM successfully deleted.\n"; }
 	if ($_GET['sent']) { echo "\t\t\tPM successfully sent.\n"; }
 ?>
 		</div>
-<? } ?>
+<?	} ?>
 		<h1 class="headerbar">Private Messages - <?=ucwords($box)?></h1>
 		
 		<div id="controlsContainer" class="clearfix">
@@ -31,7 +31,7 @@
 				<div class="whenCol">When</div>
 			</div>
 <?
-	$pms = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.datestamp, pms.viewed FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE '.($box == 'outbox'?'senderID':'recipientID').' = '.$currentUser->userID.' ORDER BY datestamp DESC');
+	$pms = $mysql->query('SELECT pms.pmID, pms.recipientID, pms.title, pms.datestamp, pms.viewed FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE '.($box == 'outbox'?'senderID':'recipientID')." = {$currentUser->userID} ORDER BY datestamp DESC");
 	
 	if ($pms->rowCount()) {
 		$count = 0;
@@ -53,4 +53,4 @@
 ?>
 			<div id="noPMs" class="<?=$pms->rowCount()?'hideDiv':''?>">Doesn't seem like <?=$box == 'inbox'?'anyone has contacted you':'you have contacted anyone'?> yet...</div>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

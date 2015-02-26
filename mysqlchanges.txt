@@ -1,8 +1,10 @@
-CREATE TABLE forumSubs (
-	userID INT NOT NULL,
-	type varchar(1) NOT NULL,
-	ID INT NOT NULL,
-	PRIMARY KEY (userID, type, ID)
+CREATE TABLE pms_inInbox (
+	pmID int NOT NULL,
+	userID int not null,
+	isRead bool NOT NULL,
+	PRIMARY KEY (pmID, userID)
 ) ENGINE=MyISAM;
 
-INSERT INTO dispatch SET url = 'forums/process/subscribe/', file = 'forums/process/subscribe.php';
+ALTER TABLE pms ADD recipientIDs varchar(10) NOT NULL AFTER senderID;
+UPDATE pms SET recipientIDs = recipientID;
+ALTER TABLE pms DROP recipientID;
