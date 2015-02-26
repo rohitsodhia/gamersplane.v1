@@ -2,6 +2,7 @@ var characterID = parseInt($('#characterID').val()), system = $('#system').val()
 var itemizationFunctions = new Array(), itemizedCount = new Array();
 
 function setupItemized($list) {
+	itemizationFunctions[$list.attr('id')]['count'] = 0;
 	$list.on('click', '.remove', function (e) {
 		e.preventDefault();
 
@@ -10,14 +11,13 @@ function setupItemized($list) {
 	}).on('click', 'a.addItem', function (e) {
 		e.preventDefault();
 
-		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: nextCount }, function (data) {
+		itemizationFunctions[$list.attr('id')]['count'] += 1;
+		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: 'n' + itemizationFunctions[$list.attr('id')]['count'] }, function (data) {
 			$newItem = $(data);
 			itemizationFunctions[$list.attr('id')]['newItem']($newItem);
-			nextCount += 1;
 		});
 	});
 
-	var nextCount = $list.find('.item').length + 1;
 	itemizationFunctions[$list.attr('id')]['init']($list);
 }
 

@@ -16,11 +16,11 @@
 							<h2 class="headerbar hbDark">Aspects</h2>
 							<div id="aspectList" class="hbdMargined">
 								<div class="aspect withLabel tr clearfix">
-									<div><label class="shiftRight">High Aspect</label></div>
+									<div><label>High Aspect</label></div>
 									<div><?=$this->getHighConcept()?></div>
 								</div>
 								<div class="aspect withLabel tr clearfix">
-									<div><label class="shiftRight">Trouble</label></div>
+									<div><label>Trouble</label></div>
 									<div><?=$this->getTrouble()?></div>
 								</div>
 <?	$this->displayAspects(); ?>

@@ -16,7 +16,7 @@
 								<h2 class="headerbar hbDark">Aspects <a id="addAspect" href="" class="addItem">[ Add Aspect ]</a></h2>
 								<div id="aspectList" class="hbdMargined">
 									<div class="aspect item tr clearfix">
-										<input type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="aspectName placeholder width5 alignLeft" data-placeholder="High Aspect">
+										<input type="text" name="highConcept" value="<?=$this->getHighConcept()?>" class="aspectName placeholder width5 alignLeft" data-placeholder="High Concept">
 									</div>
 									<div class="aspect item tr clearfix">
 										<input type="text" name="trouble" value="<?=$this->getTrouble()?>" class="aspectName placeholder width5 alignLeft" data-placeholder="Trouble">
