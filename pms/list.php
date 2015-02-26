@@ -1,5 +1,9 @@
 <?
+	addPackage('pms');
+
 	$box = $pathOptions[0] == 'outbox'?'outbox':'inbox';
+	$boxManager = new PMBoxManager($box);
+	exit;
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 <?	if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
