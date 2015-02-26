@@ -10,43 +10,17 @@
 		protected $sender;
 		protected $recipients = array();
 
-		public function __construct($forumID = null, $forumData = null) {
-			if ($forumID === null) return true;
+		public function __construct($pmID = null, $pmData = null) {
+			if ($pmID === null) return false;
 
-			$this->forumID = (int) $forumID;
+			$this->pmID = (int) $pmID;
 			foreach (get_object_vars($this) as $key => $value) {
-				if (in_array($key, array('children', 'threads', 'lastPost'))) continue;
-				if (!array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
-				$this->__set($key, $forumData[$key]);
+//				if (in_array($key, array('children', 'threads', 'lastPost'))) continue;
+				if (!array_key_exists($key, $pmData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
+				$this->$key = $pmData[$key];
 			}
-			$this->heritage = explode('-', $this->heritage);
-			array_walk($this->heritage, function (&$value, $key) { $value = intval($value); });
-			if ($this->forumID != 0) $this->heritage = array_merge(array(0), $this->heritage);
-			if (isset($forumData['lastPostID'])) {
-				$this->lastPost = new stdClass();
-				$this->lastPost->postID = $forumData['lastPostID'];
-				$this->lastPost->userID = $forumData['userID'];
-				$this->lastPost->username = $forumData['username'];
-				$this->lastPost->datePosted = $forumData['datePosted'];
-			}
-		}
 
-		public function __set($key, $value) {
-			if ($key == 'forumID' && intval($value)) 
-				$this->forumID = intval($value);
-			elseif (in_array($key, array('title', 'description', 'heritage', 'permissions'))) 
-				$this->$key = $value;
-			elseif ($key == 'forumType' && in_array(strtolower($value), array('f', 'c'))) 
-				$this->forumType = strtolower($value);
-			elseif (in_array($key, array('parentID', 'order', 'threadCount', 'postCount', 'markedRead'))) 
-				$this->$key = intval($value);
-			elseif ($key == 'newPosts') 
-				$this->newPosts = $value?true:false;
-			elseif ($key == 'gameID' && (intval($value) || $value == null)) $this->gameID = $value != null?intval($value):null;
-		}
-
-		public function __get($key) {
-			if (isset($this->$key)) return $this->$key;
+			var_dump($this);
 		}
 
 		public function getForumID() {

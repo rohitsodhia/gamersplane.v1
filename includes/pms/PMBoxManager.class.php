@@ -4,13 +4,31 @@
 		protected $pms = array();
 
 		public function __construct($box) {
-			global $currentForum, $mysql;
-			if ($box == 'inbox') {
-				$this->box = 'inbox';
-				$pms = $mysql->query("SELECT pms.pmID, pms.senderID, pms.recipientIDs, pms.title, pms.datestamp, pms.viewed FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE pms.senderID != {$currentUser->userID} ORDER BY datestamp DESC");
-			} elseif ($box == 'outbox') {
-				$this->box = 'outbox';
-				$pms = $mysql->query("SELECT pms.pmID, pms.senderID, pms.recipientIDs, pms.title, pms.datestamp, c.`read` FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE pms.senderID = {$currentUser->userID} ORDER BY datestamp DESC");
+			global $currentUser, $mysql;
+
+			if ($box == 'inbox' || $box == 'outbox') 
+				$this->box = $box;
+			else 
+				return false;
+
+			$pms = $mysql->query("SELECT pms.pmID, pms.senderID, pms.recipientIDs, pms.title, pms.datestamp, c.`read` FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE pms.senderID ".($this->box == 'inbox'?'!':'')."= {$currentUser->userID} ORDER BY datestamp DESC")->fetchAll(PDO::FETCH_GROUP);
+			array_walk($pms, function (&$value, $key) { $value = array_merge(array('pmID' => $key), $value[0]); });
+			$userIDs = array();
+			foreach ($pms as $pmID => $pm) {
+				$userIDs[] = $pm['senderID'];
+				$pms[$pmID]['recipientIDs'] = explode(',', $pm['recipientIDs']);
+				$userIDs = array_merge($userIDs, explode(',', $pm['recipientIDs']));
+			}
+			$userIDs = array_unique($userIDs);
+			$users = $mysql->query("SELECT userID, username FROM users WHERE userID in (".implode(',', $userIDs).")")->fetchAll(PDO::FETCH_GROUP);
+			array_walk($users, function (&$value, $key) { $value = array_merge(array('userID' => $key), $value[0]); });
+
+			foreach ($pms as $pmID => $pm) {
+				$pm['sender'] = $users[$pm['senderID']];
+				$pm['recipients'] = array();
+				foreach ($pm['recipientIDs'] as $recipientID) 
+					$pm['recipients'][] = $users[$recipientID];
+				$pms[$pmID] = new PM($pmID, $pm);
 			}
 		}
 
