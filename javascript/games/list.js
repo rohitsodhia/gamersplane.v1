@@ -13,17 +13,28 @@ function equalizeHeights() {
 }
 
 $(function() {
-	$('form').ajaxForm({
-		url: '/games/ajax/gamesSearch',
+	$clearCheckboxes = $('#clearCheckboxes');
+	$form = $('form');
+
+	$form.ajaxForm({
+		url: '/games/ajax/gamesSearch/',
 		type: 'post',
 		success: function (data) {
 			$('#gamesList').slideUp(function () {
 				$(this).html(data).slideDown(function () {
 					equalizeHeights();
+					if ($('input[type="checkbox"]:checked').length) $clearCheckboxes.show();
+					else $clearCheckboxes.hide();
 				});
 			});
 		}
 	});
+
+	$clearCheckboxes.children().click(function (e) {
+		e.preventDefault();
+
+		$('input[type="checkbox"]:checked').each(function () { $(this).parent().click() });;
+	})
 
 	equalizeHeights();
 });
