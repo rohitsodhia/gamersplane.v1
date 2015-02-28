@@ -122,7 +122,7 @@
 			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
 				<a name="p<?=$post->getPostID()?>"></a>
 <?
-			if (!$newPostMarked && $post->getPostID() >= $threadManager->getThreadLastRead()) {
+			if (!$newPostMarked && ($post->getPostID() > $threadManager->getThreadLastRead() || $threadManager->thread->getLastPost('postID') == $post->getPostID())) {
 				$newPostMarked = true;
 ?>
 				<a name="newPost"></a>
