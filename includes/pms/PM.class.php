@@ -19,12 +19,10 @@
 				if (!array_key_exists($key, $pmData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 				$this->$key = $pmData[$key];
 			}
-
-			var_dump($this);
 		}
 
-		public function getForumID() {
-			return $this->forumID;
+		public function getPMID() {
+			return $this->pmID;
 		}
 
 		public function getTitle($pr = false) {
@@ -32,69 +30,31 @@
 			else return $this->title;
 		}
 
-		public function getDescription($pr = false) {
-			if ($pr) return printReady($this->description);
-			else return $this->description;
+		public function getMessage($pr = false) {
+			if ($pr) return printReady($this->message);
+			else return $this->message;
 		}
 
-		public function getType() {
-			return $this->forumType;
+		public function getSender($key = null) {
+			if (property_exists($this->sender, $key)) return $this->sender->$key;
+			else return $this->sender;
 		}
 
-		public function getParentID() {
-			return $this->parentID;
+		public function getRecipients() {
+			return $this->recipients;
 		}
 
-		public function getHeritage($string = false) {
-			if ($string) {
-				$heritage = array();
-				foreach ($this->heritage as $forumID) 
-					if ($forumID != 0) 
-						$heritage[] = sql_forumIDPad($forumID);
-				return implode('-', $heritage);
-			} else return $this->heritage;
+		public function getDatestamp($format = null) {
+			if (is_string($format)) return date($format, strtotime($this->datestamp));
+			else return $this->datestamp;
 		}
 
-		public function getPermissions($permission = null) {
-			if (in_array($permission, $this->permissions)) 
-				return $this->permissions[$permission];
-			else 
-				return $this->permissions;
+		public function getRead() {
+			return $this->read;
 		}
 
-		public function setChild($childID, $order) {
-			$this->children[$order] = $childID;
-		}
-
-		public function getChildren() {
-			return $this->children;
-		}
-
-		public function sortChildren() {
-			ksort($this->children);
-		}
-
-		public function getGameID() {
-			return $this->gameID;
-		}
-
-		public function isGameForum() {
-			return $this->gameID?true:false;
-		}
-
-		public function getMarkedRead() {
-			return $this->markedRead;
-		}
-
-		public function getThreads($page = 1) {
-			global $currentUser, $mysql;
-
-			$page = intval($page) > 0?intval($page):1;
-			$offset = ($page - 1) * PAGINATE_PER_PAGE;
-
-			$threads = $mysql->query("SELECT t.threadID, t.locked, t.sticky, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.forumID = {$this->forumID} ORDER BY t.sticky DESC, lp.datePosted DESC LIMIT {$offset}, ".PAGINATE_PER_PAGE);
-			foreach ($threads as $thread) 
-				$this->threads[] = new Thread($thread);
+		public function getReplyTo() {
+			return $this->replyTo;
 		}
 	}
 ?>

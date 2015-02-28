@@ -1,9 +1,10 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+	addPackage('pms');
 	
 	$pmID = intval($pathOptions[1]);
 	
-	$pmCheck = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.message, pms.datestamp, pms.viewed FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE (recipientID = '.$currentUser->userID." OR senderID = {$currentUser->userID}) AND pmID = $pmID");
+	$pmManager = new PMManager($pmID);
 	if (!$pmCheck->rowCount()) { header('Location: /pms/'); exit; }
 	$pmInfo = $pmCheck->fetch();
 	
