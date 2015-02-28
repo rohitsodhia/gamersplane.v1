@@ -174,8 +174,8 @@
 				}
 				$this->setHP('total', $data['hp']['total']);
 				$this->setHP('subdual', $data['hp']['subdual']);
-				$this->setSanity('max', $data['hp']['max']);
-				$this->setSanity('current', $data['hp']['current']);
+				$this->setSanity('max', $data['sanity']['max']);
+				$this->setSanity('current', $data['sanity']['current']);
 				foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
 				$this->setSpeed($data['speed']);
 				$this->setInitiative('stat', $data['initiative']['stat']);
