@@ -44,6 +44,20 @@
 			return $this->recipients;
 		}
 
+		public function hasAccess($userID = null) {
+			if ($userID == null) {
+				global $currentUser;
+				$userID = $currentUser->userID;
+			}
+
+			if ($this->sender->userID == $userID) return true;
+			else { foreach ($this->recipients as $recipient) {
+				if ($recipient->userID == $userID) return true;
+			} }
+
+			return false;
+		}
+
 		public function getDatestamp($format = null) {
 			if (is_string($format)) return date($format, strtotime($this->datestamp));
 			else return $this->datestamp;
