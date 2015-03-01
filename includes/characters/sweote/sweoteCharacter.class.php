@@ -14,7 +14,7 @@
 		protected $obligations = '';
 
 		public function setSpecies($species) {
-			$this->species = $species;
+			$this->species = sanitizeString($species);
 		}
 
 		public function getSpecies() {
@@ -22,7 +22,7 @@
 		}
 
 		public function setCareer($career) {
-			$this->career = $career;
+			$this->career = sanitizeString($career);
 		}
 
 		public function getCareer() {
@@ -30,7 +30,7 @@
 		}
 
 		public function setSpecialization($specialization) {
-			$this->specialization = $specialization;
+			$this->specialization = sanitizeString($specialization);
 		}
 
 		public function getSpecialization() {
@@ -40,53 +40,72 @@
 		public function setXP($type, $value = '') {
 			if (in_array($type, array_keys($this->xp))) {
 				$value = intval($value);
-				if ($value >= 0) $this->xp[$type] = $value;
+				if ($value >= 0) 
+					$this->xp[$type] = $value;
 			} else return false;
 		}
 		
 		public function getXP($type = null) {
-			if ($type == null) return $this->xp;
-			elseif (in_array($type, array_keys($this->xp))) return $this->xp[$type];
-			else return false;
+			if ($type == null) 
+				return $this->xp;
+			elseif (in_array($type, array_keys($this->xp))) 
+				return $this->xp[$type];
+			else 
+				return false;
 		}
 
 		public function setStat($stat, $value = '') {
 			if (in_array($stat, array_keys($this->stats))) {
 				$value = intval($value);
-				if ($value > 0) $this->stats[$stat] = $value;
-			} else return false;
+				if ($value > 0) 
+					$this->stats[$stat] = $value;
+			} else 
+				return false;
 		}
 		
 		public function getStat($stat = null) {
-			if ($stat == null) return $this->stats;
-			elseif (in_array($stat, array_keys($this->stats))) return $this->stats[$stat];
-			else return false;
+			if ($stat == null) 
+				return $this->stats;
+			elseif (in_array($stat, array_keys($this->stats))) 
+				return $this->stats[$stat];
+			else 
+				return false;
 		}
 
 		public function setDefense($defense, $value = '') {
 			if (in_array($defense, array_keys($this->defenses))) {
 				$value = intval($value);
-				if ($value >= 0) $this->defenses[$defense] = $value;
-			} else return false;
+				if ($value >= 0) 
+					$this->defenses[$defense] = $value;
+			} else 
+				return false;
 		}
 		
 		public function getDefense($defense = null) {
-			if ($defense == null) return $this->defenses;
-			elseif (in_array($defense, array_keys($this->defenses))) return $this->defenses[$defense];
-			else return false;
+			if ($defense == null) 
+				return $this->defenses;
+			elseif (in_array($defense, array_keys($this->defenses))) 
+				return $this->defenses[$defense];
+			else 
+				return false;
 		}
 
 		public function setHP($type, $value = '') {
 			if (in_array($type, array_keys($this->hp))) {
 				$value = intval($value);
-				if ($value > 0) $this->hp[$type] = $value;
-			} else return false;
+				if ($value > 0) 
+					$this->hp[$type] = $value;
+			} else 
+				return false;
 		}
 		
 		public function getHP($type = null) {
-			if ($type == null) return $this->hp;
-			elseif (in_array($type, array_keys($this->hp))) return $this->hp[$type];
-			else return false;
+			if ($type == null) 
+				return $this->hp;
+			elseif (in_array($type, array_keys($this->hp))) 
+				return $this->hp[$type];
+			else 
+				return false;
 		}
 
 		static public function skillEditFormat($key = 1, $skillInfo = null) {
@@ -127,6 +146,10 @@
 		public function addSkill($skill) {
 			if (strlen($skill['name'])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$skill['name'] = sanitizeString($skill['name']);
+				$skill['stat'] = sanitizeString($skill['stat']);
+				$skill['rank'] = intval($skill['rank']);
+				$skill['career'] = $skill['career']?true:false;
 				$this->skills[] = $skill;
 			}
 		}
@@ -165,23 +188,34 @@
 		public function addTalent($talent) {
 			if (strlen($talent['name'])) {
 				newItemized('talent', $talent['name'], $this::SYSTEM);
+				foreach ($talent as $key => $value) 
+					$talent[$key] = sanitizeString($value);
 				$this->talents[] = $talent;
 			}
 		}
 		
 		public function addWeapon($weapon) {
-			if (strlen($weapon['name']) && strlen($weapon['skill']) && strlen($weapon['damage'])) $this->weapons[] = $weapon;
+			if (strlen($weapon['name']) && strlen($weapon['skill']) && strlen($weapon['damage'])) {
+				foreach ($weapon as $key => $value) 
+					$weapon[$key] = sanitizeString($value);
+				$this->weapons[] = $weapon;
+			}
 		}
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			if (!is_array($this->weapons)) $this->weapons = (array) $this->weapons;
-			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
+			if (!is_array($this->weapons)) 
+				$this->weapons = (array) $this->weapons;
+			foreach ($this->weapons as $weaponInfo) 
+				$this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) 
+				while ($weaponNum < $min) 
+					$this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
-			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) $weaponInfo = array();
+			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) 
+				$weaponInfo = array();
 ?>
 							<div class="weapon">
 								<div class="tr labelTR">
@@ -247,7 +281,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {
@@ -255,7 +289,7 @@
 		}
 
 		public function setMotivations($motivations) {
-			$this->motivations = $motivations;
+			$this->motivations = sanitizeString($motivations);
 		}
 
 		public function getMotivations() {
@@ -263,7 +297,7 @@
 		}
 
 		public function setObligations($obligations) {
-			$this->obligations = $obligations;
+			$this->obligations = sanitizeString($obligations);
 		}
 
 		public function getObligations() {

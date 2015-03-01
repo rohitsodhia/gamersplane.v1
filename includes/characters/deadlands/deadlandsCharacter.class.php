@@ -23,23 +23,23 @@
 		protected $equipment = '';
 
 		public function setStat($stat, $sub, $value = '') {
-			if ($sub != 'dice' && $sub != 'skills') return FALSE;
+			if ($sub != 'dice' && $sub != 'skills') return false;
 
-			if (array_key_exists($stat, $this->stats)) $this->stats[$stat][$sub] = $value;
-			else return FALSE;
+			if (array_key_exists($stat, $this->stats)) $this->stats[$stat][$sub] = intval($value);
+			else return false;
 		}
 		
-		public function getStats($stat = NULL, $sub = NULL) {
-			if ($stat == NULL) return $this->stats;
-			elseif (array_key_exists($stat, $this->stats) && $sub == NULL) return $this->stats[$stat];
+		public function getStats($stat = null, $sub = null) {
+			if ($stat == null) return $this->stats;
+			elseif (array_key_exists($stat, $this->stats) && $sub == null) return $this->stats[$stat];
 			elseif (array_key_exists($stat, $this->stats)) {
-				if ($sub != 'dice' && $sub != 'skills') return FALSE;
+				if ($sub != 'dice' && $sub != 'skills') return false;
 				else return $this->stats[$stat][$sub];
-			} else return FALSE;
+			} else return false;
 		}
 
 		public function setEdgesHindrances($edgesHindrances) {
-			$this->edgesHindrances = $edgesHindrances;
+			$this->edgesHindrances = sanitizeString($edgesHindrances);
 		}
 
 		public function getEdgesHindrances() {
@@ -47,7 +47,7 @@
 		}
 
 		public function setNightmare($nightmare) {
-			$this->nightmare = $nightmare;
+			$this->nightmare = sanitizeString($nightmare);
 		}
 
 		public function getNightmare() {
@@ -55,14 +55,14 @@
 		}
 
 		public function setWounds($region, $value) {
-			if (array_key_exists($region, $this->wounds)) $this->wounds[$region] = $value;
-			else return FALSE;
+			if (array_key_exists($region, $this->wounds)) $this->wounds[$region] = intval($value);
+			else return false;
 		}
 
 		public function getWounds($region) {
-			if ($region == NULL) return $this->wounds;
+			if ($region == null) return $this->wounds;
 			elseif (array_key_exists($region, $this->wounds)) return $this->wounds[$region];
-			else return FALSE;
+			else return false;
 		}
 
 		public function setWind($wind) {
@@ -74,7 +74,7 @@
 		}
 
 		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
+			$this->weapons = sanitizeString($weapons);
 		}
 
 		public function getWeapons() {
@@ -82,7 +82,7 @@
 		}
 
 		public function setArcane($arcane) {
-			$this->arcane = $arcane;
+			$this->arcane = sanitizeString($arcane);
 		}
 
 		public function getArcane() {
@@ -90,7 +90,7 @@
 		}
 
 		public function setEquipment($equipment) {
-			$this->equipment = $equipment;
+			$this->equipment = sanitizeString($equipment);
 		}
 
 		public function getEquipment() {

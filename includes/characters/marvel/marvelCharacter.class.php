@@ -14,7 +14,8 @@
 		protected $linkedTables = array('actions', 'modifiers');
 
 		public function getRedStones($stones) {
-			if ($stones - intval($stones) == 0) return 0;
+			if ($stones - intval($stones) == 0) 
+				return 0;
 			else {
 				$redStones = intval(($stones - intval($stones)) * 10 / 3);
 				if ($redStones == 3) $redStones = 0;
@@ -24,12 +25,14 @@
 		}
 		
 		public function getWhiteStones($stones) {
-			if ($this->getRedStones($stones) == 0 || $stones > 0) return intval($stones);
-			else return '-'.intval(abs($stones));
+			if ($this->getRedStones($stones) == 0 || $stones > 0) 
+				return intval($stones);
+			else 
+				return '-'.intval(abs($stones));
 		}
 
 		public function setSuperName($superName) {
-			$this->superName = $superName;
+			$this->superName = sanitizeString($superName);
 		}
 
 		public function getSuperName() {
@@ -57,27 +60,39 @@
 		}
 
 		public function getUnusedStones($color = null) {
-			if ($color == 'white') return $this->getWhiteStones($this->unusedStones);
-			elseif ($color == 'red') return $this->getRedStones($this->unusedStones);
-			else return $this->unusedStones;
+			if ($color == 'white') 
+				return $this->getWhiteStones($this->unusedStones);
+			elseif ($color == 'red') 
+				return $this->getRedStones($this->unusedStones);
+			else 
+				return $this->unusedStones;
 		}
 
 		public function setStat($stat, $value) {
 			if (array_key_exists($stat, $this->stats)) {
 				$value = intval($value);
-				if ($value > 0) $this->stats[$stat] = $value;
-			} else return FALSE;
+				if ($value > 0) 
+					$this->stats[$stat] = $value;
+			} else 
+				return false;
 		}
 		
 		public function getStat($stat = null) {
-			if ($stat == null) return $this->stats;
-			elseif (array_key_exists($stat, $this->stats)) return $this->stats[$stat];
-			else return FALSE;
+			if ($stat == null) 
+				return $this->stats;
+			elseif (array_key_exists($stat, $this->stats)) 
+				return $this->stats[$stat];
+			else 
+				return false;
 		}
 
 		public function addAction($action) {
 			if (strlen($action['name'])) {
 //				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$action['name'] = sanitizeString($action['name']);
+				$action['cost'] = intval($action['cost']);
+				$action['level'] = intval($action['level']);
+				$action['details'] = sanitizeString($action['details']);
 				$this->actions[] = $action;
 			}
 		}
@@ -132,6 +147,10 @@
 		public function addModifier($modifier) {
 			if (strlen($modifier['name'])) {
 //				newItemized('skill', $skill['name'], $this::SYSTEM);
+				$modifier['name'] = sanitizeString($modifier['name']);
+				$modifier['cost'] = intval($modifier['cost']);
+				$modifier['level'] = intval($modifier['level']);
+				$modifier['details'] = sanitizeString($modifier['details']);
 				$this->modifiers[] = $modifier;
 			}
 		}
@@ -185,7 +204,7 @@
 
 		public function addChallenge($challenge) {
 			if (strlen($challenge['name']) && strlen($challenge['stones']) && intval($challenge['stones']) >= 0) {
-				$cleanChallenge['name'] = $challenge['name'];
+				$cleanChallenge['name'] = sanitizeString($challenge['name']);
 				$cleanChallenge['stones'] = intval($challenge['stones']);
 				$this->challenges[] = $cleanChallenge;
 			}
@@ -197,8 +216,10 @@
 		}
 
 		static public function challengeEditFormat($key = null, $challengeInfo = null) {
-			if ($key == null) $key = 1;
-			if ($challengeInfo == null) $challengeInfo = array('name' => '', 'stones' => 0)
+			if ($key == null) 
+				$key = 1;
+			if ($challengeInfo == null) 
+				$challengeInfo = array('name' => '', 'stones' => 0)
 ?>
 					<div class="tr challenge">
 						<input type="text" name="challenges[<?=$key?>][name]" value="<?=$challengeInfo['name']?>" class="name">

@@ -5,7 +5,7 @@
 		unset($_SESSION['errorTime']);
 		
 		$gameID = intval($_POST['gameID']);
-		$details['title'] = $_POST['title'];
+		$details['title'] = sanitizeString($_POST['title']);
 		$systemInfo = $systems->getSystemInfo(intval($_POST['system']));
 		if ($systemInfo) {
 			$details['systemID'] = intval($_POST['system']);

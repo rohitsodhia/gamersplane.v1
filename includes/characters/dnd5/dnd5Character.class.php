@@ -42,7 +42,7 @@
 		}
 
 		public function setRace($value) {
-			$this->race = $value;
+			$this->race = sanitizeString($value);
 		}
 
 		public function getRace() {
@@ -50,7 +50,7 @@
 		}
 
 		public function setBackground($value) {
-			$this->background = $value;
+			$this->background = sanitizeString($value);
 		}
 
 		public function getBackground() {
@@ -58,7 +58,8 @@
 		}
 
 		public function setAlignment($value) {
-			if (dnd5_consts::getAlignments($value) && $value != NULL) $this->alignment = $value;
+			if (dnd5_consts::getAlignments($value) && $value != null) 
+				$this->alignment = $value;
 		}
 
 		public function getAlignment() {
@@ -82,14 +83,19 @@
 		}
 		
 		public function setSaveProf($save, $value) {
-			if (d20Character_consts::getStatNames($save)) $this->saveProf[$save] = $value;
-			else return false;
+			if (d20Character_consts::getStatNames($save)) 
+				$this->saveProf[$save] = $value;
+			else 
+				return false;
 		}
 
 		public function getSaveProf($save = null) {
-			if (d20Character_consts::getStatNames($save)) return $this->saveProf[$save];
-			elseif ($save == null) return $this->saveProf;
-			else return false;
+			if (d20Character_consts::getStatNames($save)) 
+				return $this->saveProf[$save];
+			elseif ($save == null) 
+				return $this->saveProf;
+			else 
+				return false;
 		}
 
 		public function setAC($value) {
@@ -117,15 +123,16 @@
 		}
 
 		static public function skillEditFormat($key = 1, $skillInfo = null) {
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'proficient' => false);
+			if ($skillInfo == null) 
+				$skillInfo = array('name' => '', 'proficient' => false);
 ?>
 						<div class="skill clearfix">
 							<span class="shortNum alignCenter skill_prof"><input type="checkbox" name="skills[<?=$key?>][proficient]"<?=$skillInfo['proficient']?' checked="checked"':''?>></span>
 							<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
-<?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
-?>
+<?				foreach (d20Character_consts::getStatNames() as $short => $stat) { ?>
+								<option value="<?=$short?>"<?=$skillInfo['stat'] == $short?' selected="selected"':''?>><?=ucfirst($short)?></option>
+<?				} ?>
 							</select></span>
 						</div>
 <?
@@ -150,14 +157,22 @@
 		}
 
 		public function addWeapon($weapon) {
-			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) $this->weapons[] = $weapon;
+			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) {
+				foreach ($weapon as $key => $value) 
+					$weapon[$key] = sanitizeString($value);
+				$this->weapons[] = $weapon;
+			}
 		}
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			if (!is_array($this->weapons)) $this->weapons = (array) $this->weapons;
-			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
+			if (!is_array($this->weapons)) 
+				$this->weapons = (array) $this->weapons;
+			foreach ($this->weapons as $weaponInfo) 
+				$this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) 
+				while ($weaponNum < $min) 
+					$this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
@@ -211,13 +226,17 @@
 		}
 
 		public function setSpellStats($stat, $value = null) {
-			if (is_array($stat)) $this->spellStats = $stat;
-			elseif (in_array($stat, $this->spellStats)) $this->spellStats[$stat] = $value;
+			if (is_array($stat)) 
+				$this->spellStats = $stat;
+			elseif (in_array($stat, $this->spellStats)) 
+				$this->spellStats[$stat] = $value;
 		}
 
 		public function getSpellStats($stat = null) {
-			if ($stat == null) return $this->spellStats;
-			elseif (in_array($stat, $this->spellStats)) return $this->spellStats[$stat];
+			if ($stat == null) 
+				return $this->spellStats;
+			elseif (in_array($stat, $this->spellStats)) 
+				return $this->spellStats[$stat];
 		}
 
 		public static function spellEditFormat($key = 1, $spellInfo = null) {
@@ -226,8 +245,8 @@
 							<div class="spell clearfix tr">
 								<input type="text" name="spells[<?=$key?>][name]" value="<?=$spellInfo['name']?>" class="spell_name placeholder" data-placeholder="Spell Name">
 								<span class="spell_stat"><select name="spells[<?=$key?>][stat]">
-<?
-	foreach (array('int', 'wis', 'cha') as $stat) echo "								<option value=\"$stat\"".($skillInfo['stat'] == $stat?' selected="selected"':'').">".ucfirst($stat)."</option>\n";
+<?				foreach (array('int', 'wis', 'cha') as $stat) { ?>
+									<option value="<?=$stat?>"<?=$skillInfo['stat'] == $stat?' selected="selected"':''?>><?=ucfirst($stat)?></option>
 ?>
 								</select></span>
 								<a href="" class="spell_notesLink">Notes</a>
@@ -266,7 +285,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {

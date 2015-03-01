@@ -38,14 +38,14 @@
 		}
 
 		public function addSkill($skill) {
-			if (strlen($skill['name']) && in_array($skill['diceType'], array(4, 6, 8, 10, 12))) {
+			if (strlen($skill['name']) && in_array(intval($skill['diceType']), array(4, 6, 8, 10, 12))) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[] = array('name' => $skill['name'], 'diceType' => $skill['diceType']);
+				$this->skills[] = array('name' => sanitizeString($skill['name']), 'diceType' => intval($skill['diceType']));
 			}
 		}
 
 		public function setSpells($spells) {
-			$this->spells = $spells;
+			$this->spells = sanitizeString($spells);
 		}
 
 		public function getSpells() {

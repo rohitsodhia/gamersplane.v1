@@ -50,7 +50,8 @@
 		}
 
 		public function setThreadID($threadID) {
-			if (intval($threadID)) $this->threadID = intval($threadID);
+			if (intval($threadID)) 
+				$this->threadID = intval($threadID);
 		}
 
 		public function getThreadID() {
@@ -59,7 +60,8 @@
 
 		public function setTitle($value) {
 			$title = sanitizeString(html_entity_decode($value));
-			if ($title != $this->getTitle()) $this->modified = true;
+			if ($title != $this->getTitle()) 
+				$this->modified = true;
 			$this->title = $title;
 		}
 

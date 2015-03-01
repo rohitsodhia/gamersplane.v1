@@ -16,7 +16,7 @@
 		protected $items = '';
 
 		public function setCodename($value) {
-			$this->codename = $value;
+			$this->codename = sanitizeString($value);
 		}
 
 		public function getCodename() {
@@ -24,7 +24,7 @@
 		}
 
 		public function setTalent($value) {
-			$this->talent = $value;
+			$this->talent = sanitizeString($value);
 		}
 
 		public function getTalent() {
@@ -32,7 +32,7 @@
 		}
 
 		public function setSpecialty($value) {
-			$this->specialty = $value;
+			$this->specialty = sanitizeString($value);
 		}
 
 		public function getSpecialty() {
@@ -41,30 +41,41 @@
 
 		public function setActionDie($part, $value = 0) {
 			if (array_key_exists($part, $this->actionDie)) {
-				if ($part == 'number' && $value > 0) $this->actionDie['number'] = intval($value);
-				elseif ($part == 'type' && preg_match('/d?(\d+)/', $value, $match)) {
-					if (intval($match[1]) >= 4) $this->actionDie['type'] = $value;
-				}
-			} else return false;
+				if ($part == 'number' && $value > 0) 
+					$this->actionDie['number'] = intval($value);
+				elseif ($part == 'type' && preg_match('/d?(\d+)/', $value, $match)) 
+					if (intval($match[1]) >= 4) 
+						$this->actionDie['type'] = intval($value);
+			} else 
+				return false;
 		}
 
 		public function getActionDie($part = null) {
-			if ($part == null) return $this->actionDie['number'].'d'.$this->actionDie['type'];
-			elseif (array_key_exists($part, $this->actionDie)) return $this->actionDie[$part];
-			else return false;
+			if ($part == null) 
+				return $this->actionDie['number'].'d'.$this->actionDie['type'];
+			elseif (array_key_exists($part, $this->actionDie)) 
+				return $this->actionDie[$part];
+			else 
+				return false;
 		}
 
 		public function setExtraStats($stat, $value = 0) {
 			$value = (int) $value;
-			if ($value < 0) $value = 0;
-			if (array_key_exists($stat, $this->extraStats)) return $this->extraStats[$stat];
-			else return false;
+			if ($value < 0) 
+				$value = 0;
+			if (array_key_exists($stat, $this->extraStats)) 
+				return $this->extraStats[$stat];
+			else 
+				return false;
 		}
 
 		public function getExtraStats($stat = null) {
-			if ($stat == null) return $this->extraStats;
-			elseif (array_key_exists($stat, $this->extraStats)) return $this->extraStats[$stat];
-			else return false;
+			if ($stat == null) 
+				return $this->extraStats;
+			elseif (array_key_exists($stat, $this->extraStats)) 
+				return $this->extraStats[$stat];
+			else 
+				return false;
 		}
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus_1 = null, $statBonus_2 = null) {
@@ -76,15 +87,15 @@
 						<span class="skill_total lrBuffer shortNum"><span id="skillTotal_<?=$key?>_1" class="skill_total_1 total addStat_<?=$skillInfo['stat_1']?>"><?=showSign($total_1)?></span>/<span id="skillTotal_<?=$key?>_2" class="skill_total_2 total addStat_<?=$skillInfo['stat_2']?>"><?=showSign($total_2)?></span></span>
 						<span class="skill_stat">
 							<select name="skills[<?=$key?>][stat_1]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat_1']?>" data-total-ele="skillTotal_<?=$key?>_1">
-<?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "						<option value=\"$short\"".($skillInfo['stat_1'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
-?>
+<?			foreach (d20Character_consts::getStatNames() as $short => $stat) { ?>
+								<option value="<?=$short?>"<?=$skillInfo['stat_1'] == $short?' selected="selected"':''?>><?=ucfirst($short)?></option>
+<?			} ?>
 							</select> / 
 							<select name="skills[<?=$key?>][stat_2]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat_2']?>" data-total-ele="skillTotal_<?=$key?>_2">
 								<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
-<?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "						<option value=\"$short\"".($skillInfo['stat_2'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
-?>
+<?			foreach (d20Character_consts::getStatNames() as $short => $stat) { ?>
+								<option value="<?=$short?>"<?=$skillInfo['stat_2'] == $short?' selected="selected"':''?>><?=ucfirst($short)?></option>
+<?			} ?>
 							</select>
 						</span>
 						<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
@@ -123,6 +134,8 @@
 		public function addFocus($focus) {
 			if (strlen($focus['name'])) {
 //				newItemized('focus', $focus['name'], $this::SYSTEM);
+				$focus['forte'] = $focus['forte']?true:false;
+				$focus['name'] = sanitizeString($focus['name']);
 				$this->focuses[] = $focus;
 			}
 		}
@@ -161,18 +174,27 @@
 		}
 
 		public function addWeapon($weapon) {
-			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) $this->weapons[] = $weapon;
+			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) {
+				foreach ($weapon as $key => $value) 
+					$weapon[$key] = sanitizeString($value);
+				$this->weapons[] = $weapon;
+			}
 		}
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			if (!is_array($this->weapons)) $this->weapons = (array) $this->weapons;
-			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
+			if (!is_array($this->weapons)) 
+				$this->weapons = (array) $this->weapons;
+			foreach ($this->weapons as $weaponInfo) 
+				$this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) 
+				while ($weaponNum < $min) 
+					$this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
-			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) $weaponInfo = array();
+			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) 
+				$weaponInfo = array();
 ?>
 						<div class="weapon">
 							<div class="tr labelTR">
@@ -250,18 +272,27 @@
 		}
 
 		public function addArmor($armor) {
-			if (strlen($armor['name']) && strlen($armor['ac'])) $this->armor[] = $armor;
+			if (strlen($armor['name']) && strlen($armor['ac'])) {
+				foreach ($armor as $key => $value) 
+					$armor[$key] = sanitizeString($value);
+				$this->armor[] = $armor;
+			}
 		}
 
 		public function showArmorEdit($min) {
 			$armorNum = 0;
-			if (!is_array($this->armor)) $this->armor = (array) $this->armor;
-			foreach ($this->armor as $armorInfo) $this->armorEditFormat($armorNum++, $armorInfo);
-			if ($armorNum < $min) while ($armorNum < $min) $this->armorEditFormat($armorNum++);
+			if (!is_array($this->armor)) 
+				$this->armor = (array) $this->armor;
+			foreach ($this->armor as $armorInfo) 
+				$this->armorEditFormat($armorNum++, $armorInfo);
+			if ($armorNum < $min) 
+				while ($armorNum < $min) 
+					$this->armorEditFormat($armorNum++);
 		}
 
 		public function armorEditFormat($armorNum, $armorInfo = array()) {
-			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) $armorInfo = array();
+			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) 
+				$armorInfo = array();
 ?>
 						<div class="armor<?=$armorNum == 1?' first':''?>">
 							<div class="tr labelTR armor_firstRow">
@@ -335,7 +366,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {

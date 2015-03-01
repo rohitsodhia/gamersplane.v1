@@ -36,7 +36,7 @@
 		}
 
 		public function setLabel($label) {
-			$this->label = $label;
+			$this->label = sanitizeString($label);
 		}
 
 		public function getLabel() {
@@ -45,7 +45,8 @@
 
 		public function setCharType($charType) {
 			global $charTypes;
-			if (in_array($charType, $charTypes)) $this->charType = $charType;
+			if (in_array($charType, $charTypes)) 
+				$this->charType = $charType;
 		}
 
 		public function getCharType() {
@@ -75,8 +76,10 @@
 		public function checkPermissions($userID = null) {
 			global $mysql;
 
-			if ($userID == null) $userID = $this->userID;
-			else $userID = intval($userID);
+			if ($userID == null) 
+				$userID = $this->userID;
+			else 
+				$userID = intval($userID);
 
 			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = $userID OR p.userID = $userID)");
 			if ($charCheck->rowCount()) return 'edit';
@@ -98,7 +101,7 @@
 		}
 		
 		public function setName($name) {
-			$this->name = $name;
+			$this->name = sanitizeString($name);
 		}
 
 		public function getName() {
@@ -106,7 +109,7 @@
 		}
 
 		public function setNotes($notes) {
-			$this->notes = $notes;
+			$this->notes = sanitizeString($notes);
 		}
 
 		public function getNotes() {
@@ -127,15 +130,18 @@
 		}
 
 		public function getAvatar($showTS = true) {
-			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg")) return "/characters/avatars/{$this->characterID}.jpg".($showTS?'?'.time():'');
-			else return false;
+			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg")) 
+				return "/characters/avatars/{$this->characterID}.jpg".($showTS?'?'.time():'');
+			else 
+				return false;
 		}
 
 		public function save() {
 			global $mongo;
 
 			$classVars = get_object_vars($this);
-			foreach ($this->mongoIgnore['save'] as $key) unset($classVars[$key]);
+			foreach ($this->mongoIgnore['save'] as $key) 
+				unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
 			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => true));
 			addCharacterHistory($this->characterID, 'charEdited');
@@ -145,16 +151,17 @@
 			global $mongo;
 
 			$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
-			foreach ($result as $key => $value) {
-				if (!in_array($key, $this->mongoIgnore['load'])) $this->$key = $value;
-			}
+			foreach ($result as $key => $value) 
+				if (!in_array($key, $this->mongoIgnore['load'])) 
+					$this->$key = $value;
 		}
 
 		public function delete() {
 			global $currentUser, $mysql, $mongo;
 
-			$mysql->query('DELETE FROM characters WHERE characterID = '.$this->characterID);
-			foreach ($this->linkedTables as $table) $mysql->query('DELETE FROM '.$this::SYSTEM.'_'.$table.' WHERE characterID = '.$this->characterID);
+			$mysql->query("DELETE FROM characters WHERE characterID = {$this->characterID}");
+			foreach ($this->linkedTables as $table) 
+				$mysql->query('DELETE FROM '.$this::SYSTEM.'_'.$table.' WHERE characterID = '.$this->characterID);
 			$mongo->characters->remove(array('characterID' => $this->characterID));
 			
 			addCharacterHistory($this->characterID, 'charDeleted', $currentUser->userID, 'NOW()');

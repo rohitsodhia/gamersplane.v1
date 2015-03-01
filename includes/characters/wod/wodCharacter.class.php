@@ -13,29 +13,38 @@
 		public function setAttribute($attribute, $value = 1) {
 			if (array_key_exists($attribute, $this->attributes)) {
 				$value = intval($value);
-				if ($value >= 1 && $value <= 5) $this->attributes[$attribute] = $value;
-			} else return FALSE;
+				if ($value >= 1 && $value <= 5) 
+					$this->attributes[$attribute] = $value;
+			} else 
+				return false;
 		}
 		
-		public function getAttribute($attribute = NULL) {
-			if ($attribute == NULL) return $this->attributes;
-			elseif (array_key_exists($attribute, $this->attributes)) return $this->attributes[$attribute];
-			else return FALSE;
+		public function getAttribute($attribute = null) {
+			if ($attribute == null) 
+				return $this->attributes;
+			elseif (array_key_exists($attribute, $this->attributes)) 
+				return $this->attributes[$attribute];
+			else 
+				return false;
 		}
 
 		public function setSkill($skill, $value = 0) {
 			$value = (int) $value;
-			if ($value >= 0 && $value <= 5) $this->skills[$skill] = $value;
+			if ($value >= 0 && $value <= 5) 
+				$this->skills[$skill] = $value;
 		}
 		
-		public function getSkill($skill = NULL) {
-			if ($skill == NULL) return $this->skills;
-			elseif (array_key_exists($skill, $this->skills)) return $this->skills[$skill];
-			else return FALSE;
+		public function getSkill($skill = null) {
+			if ($skill == null) 
+				return $this->skills;
+			elseif (array_key_exists($skill, $this->skills)) 
+				return $this->skills[$skill];
+			else 
+				return false;
 		}
 
 		public function setMerits($value) {
-			$this->merits = $value;
+			$this->merits = sanitizeString($value);
 		}
 
 		public function getMerits() {
@@ -43,7 +52,7 @@
 		}
 
 		public function setFlaws($value) {
-			$this->flaws = $value;
+			$this->flaws = sanitizeString($value);
 		}
 
 		public function getFlaws() {
@@ -53,18 +62,23 @@
 		public function setTrait($trait, $value = 1) {
 			if (array_key_exists($trait, $this->traits)) {
 				$value = intval($value);
-				if ($value >= 1 && $value <= 5) $this->traits[$trait] = $value;
-			} else return FALSE;
+				if ($value >= 1 && $value <= 5) 
+					$this->traits[$trait] = $value;
+			} else 
+				return false;
 		}
 		
-		public function getTrait($trait = NULL) {
-			if ($trait == NULL) return $this->traits;
-			elseif (array_key_exists($trait, $this->traits)) return $this->traits[$trait];
-			else return FALSE;
+		public function getTrait($trait = null) {
+			if ($trait == null) 
+				return $this->traits;
+			elseif (array_key_exists($trait, $this->traits)) 
+				return $this->traits[$trait];
+			else 
+				return false;
 		}
 
 		public function setWeapons($value) {
-			$this->weapons = $value;
+			$this->weapons = sanitizeString($value);
 		}
 
 		public function getWeapons() {
@@ -72,7 +86,7 @@
 		}
 
 		public function setEquipment($value) {
-			$this->equipment = $value;
+			$this->equipment = sanitizeString($value);
 		}
 
 		public function getEquipment() {

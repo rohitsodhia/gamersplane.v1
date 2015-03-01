@@ -14,18 +14,23 @@
 		protected $consequences;
 
 		public function setFatePoints($key, $value) {
-			if (array_key_exists($key, $this->fatePoints)) $this->fatePoints[$key] = intval($value);
-			else return false;
+			if (array_key_exists($key, $this->fatePoints)) 
+				$this->fatePoints[$key] = intval($value);
+			else 
+				return false;
 		}
 
 		public function getFatePoints($key = null) {
-			if ($key == null) return $this->fatePoints;
-			elseif (array_key_exists($key, $this->fatePoints)) return $this->fatePoints[$key];
-			else return false;
+			if ($key == null) 
+				return $this->fatePoints;
+			elseif (array_key_exists($key, $this->fatePoints)) 
+				return $this->fatePoints[$key];
+			else 
+				return false;
 		}
 
 		public function setHighConcept($highConcept) {
-			$this->highConcept = $highConcept;
+			$this->highConcept = sanitizeString($highConcept);
 		}
 
 		public function getHighConcept() {
@@ -33,7 +38,7 @@
 		}
 
 		public function setTrouble($trouble) {
-			$this->trouble = $trouble;
+			$this->trouble = sanitizeString($trouble);
 		}
 
 		public function getTrouble() {
@@ -41,7 +46,8 @@
 		}
 
 		public function addAspect($aspect) {
-			if (strlen($aspect)) $this->aspects[] = $aspect;
+			if (strlen($aspect)) 
+				$this->aspects[] = sanitizeString($aspect);
 		}
 
 		public function aspectEditFormat($key = 1, $aspect = null) {
@@ -70,7 +76,7 @@
 		public function addSkill($skill) {
 			if (strlen($skill['name'])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[] = array('name' => $skill['name'], 'rating' => intval($skill['rating']));
+				$this->skills[] = array('name' => sanitizeString($skill['name']), 'rating' => intval($skill['rating']));
 			}
 		}
 
@@ -104,7 +110,7 @@
 		}
 
 		public function setExtras($extras) {
-			$this->extras = $extras;
+			$this->extras = sanitizeString($extras);
 		}
 
 		public function getExtras() {
@@ -145,12 +151,14 @@
 		public function addStunt($stunt) {
 			if (strlen($stunt['name'])) {
 				newItemized('stunt', $stunt['name'], $this::SYSTEM);
+				$stunt['name'] = sanitizeString($stunt['name']);
+				$stunt['notes'] = sanitizeString($stunt['notes']);
 				$this->stunts[] = $stunt;
 			}
 		}
 
 		public function setInjuries($injuries) {
-			$this->injuries = $injuries;
+			$this->injuries = sanitizeString($injuries);
 		}
 
 		public function getInjuries() {
@@ -161,25 +169,32 @@
 			$numBoxes = intval($numBoxes);
 			if (in_array($type, array_keys($this->stresses)) && $numBoxes > 2 && $numBoxes <= $this->maxStress) {
 				$this->stresses[$type] = array();
-				for ($count = 1; $count <= $numBoxes; $count++) $this->stresses[$type][$count] = 0;
+				for ($count = 1; $count <= $numBoxes; $count++) 
+					$this->stresses[$type][$count] = 0;
 			}
 		}
 
 		public function setStress($type, $key, $value = 0) {
-			if (in_array($type, array_keys($this->stresses)) && array_key_exists($key, $this->stresses[$type]) && (in_array($value, array(0, 1)))) $this->stresses[$type][$key] = $value;
-			else return false;
+			if (in_array($type, array_keys($this->stresses)) && array_key_exists($key, $this->stresses[$type]) && (in_array(intval($value), array(0, 1)))) 
+				$this->stresses[$type][$key] = intval($value);
+			else 
+				return false;
 		}
 
 		public function getStress($type = null, $key = null) {
-			if ($type == null) return $this->stresses;
+			if ($type == null) 
+				return $this->stresses;
 			elseif (in_array($type, array_keys($this->stresses))) {
-				if ($key == null) return $this->stresses[$type];
-				elseif (in_array($key, in_array($key, $this->stresses[$type]))) return $this->stresses[$type][$key];
-			} else return false;
+				if ($key == null) 
+					return $this->stresses[$type];
+				elseif (in_array($key, in_array($key, $this->stresses[$type]))) 
+					return $this->stresses[$type][$key];
+			} else 
+			return false;
 		}
 
 		public function setConsequences($consequences) {
-			$this->consequences = $consequences;
+			$this->consequences = sanitizeString($consequences);
 		}
 
 		public function getConsequences($level = null) {
