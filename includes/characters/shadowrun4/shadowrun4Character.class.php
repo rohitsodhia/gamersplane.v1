@@ -15,7 +15,7 @@
 		protected $items = '';
 
 		public function setMetatype($value) {
-			$this->metatype = $value;
+			$this->metatype = sanitizeString($value);
 		}
 
 		public function getMetatype() {
@@ -25,18 +25,22 @@
 		public function setStat($stat, $value = 0) {
 			if (array_key_exists($stat, $this->stats)) {
 				$value = intval($value);
-				if ($value > 0) $this->stats[$stat] = $value;
-			} else return FALSE;
+				if ($value > 0) 
+					$this->stats[$stat] = $value;
+			} else return false;
 		}
 		
-		public function getStat($stat = NULL) {
-			if ($stat == NULL) return $this->stats;
-			elseif (array_key_exists($stat, $this->stats)) return $this->stats[$stat];
-			else return FALSE;
+		public function getStat($stat = null) {
+			if ($stat == null) 
+				return $this->stats;
+			elseif (array_key_exists($stat, $this->stats)) 
+				return $this->stats[$stat];
+			else 
+				return false;
 		}
 
 		public function setQualities($value) {
-			$this->qualities = $value;
+			$this->qualities = sanitizeString($value);
 		}
 
 		public function getQualities() {
@@ -44,18 +48,23 @@
 		}
 
 		public function setDamage($key, $value) {
-			if (in_array($key, array_keys($this->damage))) $this->damage[$key] = intval($value);
-			else return FALSE;
+			if (in_array($key, array_keys($this->damage))) 
+				$this->damage[$key] = intval($value);
+			else 
+				return false;
 		}
 
-		public function getDamage($key = NULL) {
-			if (in_array($key, array_keys($this->damage))) return $this->damage[$key];
-			elseif ($key == NULL) return $this->damage;
-			else return FALSE;
+		public function getDamage($key = null) {
+			if (in_array($key, array_keys($this->damage))) 
+				return $this->damage[$key];
+			elseif ($key == null) 
+				return $this->damage;
+			else 
+				return false;
 		}
 
 		public function setSkills($value) {
-			$this->skills = $value;
+			$this->skills = sanitizeString($value);
 		}
 
 		public function getSkills() {
@@ -63,7 +72,7 @@
 		}
 
 		public function setSpells($value) {
-			$this->spells = $value;
+			$this->spells = sanitizeString($value);
 		}
 
 		public function getSpells() {
@@ -71,7 +80,7 @@
 		}
 
 		public function setWeapons($value) {
-			$this->weapons = $value;
+			$this->weapons = sanitizeString($value);
 		}
 
 		public function getWeapons() {
@@ -79,7 +88,7 @@
 		}
 
 		public function setArmor($value) {
-			$this->armor = $value;
+			$this->armor = sanitizeString($value);
 		}
 
 		public function getArmor() {
@@ -87,7 +96,7 @@
 		}
 
 		public function setAugments($value) {
-			$this->augments = $value;
+			$this->augments = sanitizeString($value);
 		}
 
 		public function getAugments() {
@@ -95,7 +104,7 @@
 		}
 
 		public function setContacts($value) {
-			$this->contacts = $value;
+			$this->contacts = sanitizeString($value);
 		}
 
 		public function getContacts() {
@@ -103,7 +112,7 @@
 		}
 
 		public function setItems($value) {
-			$this->items = $value;
+			$this->items = sanitizeString($value);
 		}
 
 		public function getItems() {

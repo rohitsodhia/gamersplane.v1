@@ -14,44 +14,59 @@
 		public function setStat($stat, $value) {
 			if (array_key_exists($stat, $this->stats)) {
 				$value = intval($value);
-				if ($value > 0) $this->stats[$stat] = $value;
-			} else return FALSE;
+				if ($value > 0) 
+					$this->stats[$stat] = $value;
+			} else 
+				return false;
 		}
 		
-		public function getStat($stat = NULL) {
-			if ($stat == NULL) return $this->stats;
-			elseif (array_key_exists($stat, $this->stats)) return $this->stats[$stat];
-			else return FALSE;
+		public function getStat($stat = null) {
+			if ($stat == null) 
+				return $this->stats;
+			elseif (array_key_exists($stat, $this->stats)) 
+				return $this->stats[$stat];
+			else 
+				return false;
 		}
 
 		public function setDamage($type, $value) {
 			if (array_key_exists($type, $this->damage)) {
 				$value = intval($value);
-				if ($value > 0) $this->damage[$type] = $value;
-			} else return FALSE;
+				if ($value > 0) 
+					$this->damage[$type] = $value;
+			} else 
+				return false;
 		}
 		
-		public function getDamage($type = NULL) {
-			if ($type == NULL) return $this->damage;
-			elseif (array_key_exists($type, $this->damage)) return $this->damage[$type];
-			else return FALSE;
+		public function getDamage($type = null) {
+			if ($type == null) 
+				return $this->damage;
+			elseif (array_key_exists($type, $this->damage)) 
+				return $this->damage[$type];
+			else 
+				return false;
 		}
 
 		public function setSpeed($type, $value) {
 			if (array_key_exists($type, $this->speed)) {
 				$value = floatval($value);
-				if ($value > 0) $this->speed[$type] = $value;
-			} else return FALSE;
+				if ($value > 0) 
+					$this->speed[$type] = $value;
+			} else 
+				return false;
 		}
 		
-		public function getSpeed($type = NULL) {
-			if ($type == NULL) return $this->speed;
-			elseif (array_key_exists($type, $this->speed)) return $this->speed[$type];
-			else return FALSE;
+		public function getSpeed($type = null) {
+			if ($type == null) 
+				return $this->speed;
+			elseif (array_key_exists($type, $this->speed)) 
+				return $this->speed[$type];
+			else 
+				return false;
 		}
 
 		public function setLanguages($languages) {
-			$this->languages = $languages;
+			$this->languages = sanitizeString($languages);
 		}
 
 		public function getLanguages() {
@@ -59,7 +74,7 @@
 		}
 
 		public function setAdvantages($advantages) {
-			$this->advantages = $advantages;
+			$this->advantages = sanitizeString($advantages);
 		}
 
 		public function getAdvantages() {
@@ -67,7 +82,7 @@
 		}
 
 		public function setDisadvantages($disadvantages) {
-			$this->disadvantages = $disadvantages;
+			$this->disadvantages = sanitizeString($disadvantages);
 		}
 
 		public function getDisadvantages() {
@@ -75,7 +90,7 @@
 		}
 
 		public function setSkills($skills) {
-			$this->skills = $skills;
+			$this->skills = sanitizeString($skills);
 		}
 
 		public function getSkills() {
@@ -83,7 +98,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {

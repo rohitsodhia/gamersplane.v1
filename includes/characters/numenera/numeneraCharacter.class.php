@@ -35,7 +35,7 @@
 		protected $possessions = '';
 
 		public function setDescriptor($descriptor) {
-			$this->descriptor = $descriptor;
+			$this->descriptor = sanitizeString($descriptor);
 		}
 
 		public function getDescriptor() {
@@ -43,7 +43,7 @@
 		}
 
 		public function setType($type) {
-			$this->type = $type;
+			$this->type = sanitizeString($type);
 		}
 
 		public function getType() {
@@ -51,7 +51,7 @@
 		}
 
 		public function setFocus($focus) {
-			$this->focus = $focus;
+			$this->focus = sanitizeString($focus);
 		}
 
 		public function getFocus() {
@@ -86,10 +86,11 @@
 			$key = explode('.', $key);
 			$cKey = &$this->stats[$stat];
 			foreach ($key as $iKey) {
-				if (!isset($cKey[$iKey])) return false;
+				if (!isset($cKey[$iKey])) 
+					return false;
 				$cKey = &$cKey[$iKey];
 			}
-			$cKey = $value;
+			$cKey = sanitizeString($value);
 		}
 		
 		public function getStats($stat = null, $key = null) {
@@ -106,14 +107,19 @@
 		}
 
 		public function setDamage($key, $value = null) {
-			if (array_key_exists($key, $this->damage)) $this->damage[$key] = intval($value);
-			else return false;
+			if (array_key_exists($key, $this->damage)) 
+				$this->damage[$key] = intval($value);
+			else 
+				return false;
 		}
 		
 		public function getDamage($key = null) {
-			if ($key == null) return $this->damage;
-			elseif (array_key_exists($key, $this->damage)) return $this->damage[$key];
-			else return false;
+			if ($key == null) 
+				return $this->damage;
+			elseif (array_key_exists($key, $this->damage)) 
+				return $this->damage[$key];
+			else 
+				return false;
 		}
 
 		public function setRecovery($recovery) {
@@ -125,14 +131,19 @@
 		}
 
 		public function setRecoveryTimes($key, $value = null) {
-			if (array_key_exists($key, $this->recoveryTimes)) $this->recoveryTimes[$key] = intval($value);
-			else return false;
+			if (array_key_exists($key, $this->recoveryTimes)) 
+				$this->recoveryTimes[$key] = intval($value);
+			else 
+				return false;
 		}
 		
 		public function getRecoveryTimes($key = null) {
-			if ($key == null) return $this->recoveryTimes;
-			elseif (array_key_exists($key, $this->recoveryTimes)) return $this->recoveryTimes[$key];
-			else return false;
+			if ($key == null) 
+				return $this->recoveryTimes;
+			elseif (array_key_exists($key, $this->recoveryTimes)) 
+				return $this->recoveryTimes[$key];
+			else 
+				return false;
 		}
 
 		public function setArmor($armor) {
@@ -144,14 +155,21 @@
 		}
 
 		public function addAttack($attack) {
-			if (strlen($attack['name'])) $this->attacks[] = $attack;
+			if (strlen($attack['name'])) 
+				foreach ($attack as $key => $value) 
+					$attack[$key] = sanitizeString($value);
+				$this->attacks[] = $attack;
 		}
 
 		public function showAttacksEdit($min) {
 			$attackNum = 0;
-			if (!is_array($this->attacks)) $this->attacks = (array) $this->attacks;
-			foreach ($this->attacks as $attackInfo) $this->attackEditFormat($attackNum++, $attackInfo);
-			if ($attackNum < $min) while ($attackNum < $min) $this->attackEditFormat($attackNum++);
+			if (!is_array($this->attacks)) 
+				$this->attacks = (array) $this->attacks;
+			foreach ($this->attacks as $attackInfo) 
+				$this->attackEditFormat($attackNum++, $attackInfo);
+			if ($attackNum < $min) 
+				while ($attackNum < $min) 
+					$this->attackEditFormat($attackNum++);
 		}
 
 		public function attackEditFormat($attackNum, $attackInfo = array()) {
@@ -181,6 +199,8 @@
 		public function addSkill($skill) {
 			if (strlen($skill['name'])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
+				foreach ($skill as $key => $value) 
+					$skill[$key] = sanitizeString($value);
 				$this->skills[] = $skill;
 			}
 		}
@@ -217,6 +237,8 @@
 		public function addSpecialAbility($specialAbility) {
 			if (strlen($specialAbility['name'])) {
 				newItemized('specialAbility', $specialAbility['name'], $this::SYSTEM);
+				foreach ($specialAbility as $key => $value) 
+					$specialAbility[$key] = sanitizeString($value);
 				$this->specialAbilities[] = $specialAbility;
 			}
 		}
@@ -255,6 +277,8 @@
 		public function addCypher($cypher) {
 			if (strlen($cypher['name'])) {
 				newItemized('cypher', $cypher['name'], $this::SYSTEM);
+				foreach ($cypher as $key => $value) 
+					$cyper[$key] = sanitizeString($value);
 				$this->cyphers[] = $cypher;
 			}
 		}
@@ -291,7 +315,7 @@
 		}
 		
 		public function setPossessions($possessions) {
-			$this->possessions = $possessions;
+			$this->possessions = sanitizeString($possessions);
 		}
 
 		public function getPossessions() {

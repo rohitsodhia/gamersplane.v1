@@ -15,37 +15,49 @@
 //		protected $advances = '';
 
 		public function setTrait($trait, $value = null) {
-			if (array_key_exists($trait, $this->traits)) $this->traits[$trait] = intval($value);
-			else return FALSE;
+			if (array_key_exists($trait, $this->traits)) 
+				$this->traits[$trait] = intval($value);
+			else 
+				return false;
 		}
 		
 		public function getTraits($trait = null) {
-			if ($trait == null) return $this->traits;
-			elseif (array_key_exists($trait, $this->traits)) return $this->traits[$trait];
-			else return FALSE;
+			if ($trait == null) 
+				return $this->traits;
+			elseif (array_key_exists($trait, $this->traits)) 
+				return $this->traits[$trait];
+			else 
+				return false;
 		}
 
 		public function setDerivedTrait($trait, $value = null) {
-			if (array_key_exists($trait, $this->derivedTraits) && ($trait == 'parry' || $trait == 'toughness')) $this->derivedTraits[$trait] = $value;
-			elseif (array_key_exists($trait, $this->derivedTraits)) $this->derivedTraits[$trait] = intval($value);
-			else return FALSE;
+			if (array_key_exists($trait, $this->derivedTraits) && ($trait == 'parry' || $trait == 'toughness')) 
+				$this->derivedTraits[$trait] = sanitizeString($value);
+			elseif (array_key_exists($trait, $this->derivedTraits)) 
+				$this->derivedTraits[$trait] = intval($value);
+			else 
+				return false;
 		}
 		
 		public function getDerivedTraits($trait = null) {
-			if ($trait == null) return $this->derivedTraits;
-			elseif (array_key_exists($trait, $this->derivedTraits)) return $this->derivedTraits[$trait];
-			else return FALSE;
+			if ($trait == null) 
+				return $this->derivedTraits;
+			elseif (array_key_exists($trait, $this->derivedTraits)) 
+				return $this->derivedTraits[$trait];
+			else 
+				return false;
 		}
 
 		public function addSkill($skill) {
 			if (array_key_exists($skill['trait'], savageworlds_consts::getTraits()) && strlen($skill['name']) && in_array($skill['diceType'], array(4, 6, 8, 10, 12))) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[$skill['trait']][] = array('name' => $skill['name'], 'diceType' => $skill['diceType']);
+				$this->skills[$skill['trait']][] = array('name' => sanitizeString($skill['name']), 'diceType' => intval($skill['diceType']));
 			}
 		}
 
 		public function skillEditFormat($key = 1, $skillInfo = null) {
-			if ($skillInfo == null) $skillInfo = array('trait' => 'trait', 'name' => '', 'diceType' => 4);
+			if ($skillInfo == null) 
+				$skillInfo = array('trait' => 'trait', 'name' => '', 'diceType' => 4);
 ?>
 									<div class="skill clearfix">
 										<input type="text" name="skills[<?=$skillInfo['trait']?>][<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
@@ -78,7 +90,7 @@
 		}
 
 		public function setEdgesHindrances($edgesHindrances) {
-			$this->edgesHindrances = $edgesHindrances;
+			$this->edgesHindrances = sanitizeString($edgesHindrances);
 		}
 
 		public function getEdgesHindrances() {
@@ -102,7 +114,7 @@
 		}
 
 		public function setInjuries($injuries) {
-			$this->injuries = $injuries;
+			$this->injuries = sanitizeString($injuries);
 		}
 
 		public function getInjuries() {
@@ -110,7 +122,7 @@
 		}
 
 		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
+			$this->weapons = sanitizeString($weapons);
 		}
 
 		public function getWeapons() {
@@ -118,7 +130,7 @@
 		}
 
 		public function setEquipment($equipment) {
-			$this->equipment = $equipment;
+			$this->equipment = sanitizeString($equipment);
 		}
 
 		public function getEquipment() {

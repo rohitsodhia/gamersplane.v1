@@ -17,7 +17,7 @@
 		protected $spells = '';
 
 		public function setRace($value) {
-			$this->race = $value;
+			$this->race = sanitizeString($value);
 		}
 
 		public function getRace() {
@@ -34,7 +34,8 @@
 		}
 
 		public function setAlignment($value) {
-			if (dnd3_consts::getAlignments($value) && $value != NULL) $this->alignment = $value;
+			if (dnd3_consts::getAlignments($value) && $value != null) 
+				$this->alignment = $value;
 		}
 
 		public function getAlignment() {
@@ -42,7 +43,7 @@
 		}
 
 		public function setDamageReduction($value) {
-			$this->damageReduction = $value;
+			$this->damageReduction = sanitizeString($value);
 		}
 
 		public function getDamageReduction() {
@@ -90,7 +91,11 @@
 		}
 
 		public function addWeapon($weapon) {
-			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) $this->weapons[] = $weapon;
+			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) {
+				foreach ($weapon as $key => $value) 
+					$weapon[$key] = sanitizeString($value);
+				$this->weapons[] = $weapon;
+			}
 		}
 
 		public function showWeaponsEdit($min) {
@@ -175,14 +180,22 @@
 		}
 
 		public function addArmor($armor) {
-			if (strlen($armor['name']) && strlen($armor['ac'])) $this->armor[] = $armor;
+			if (strlen($armor['name']) && strlen($armor['ac'])) {
+				foreach ($armor as $key => $value) 
+					$armor[$key] = sanitizeString($value);
+				$this->armor[] = $armor;
+			}
 		}
 
 		public function showArmorEdit($min) {
 			$armorNum = 0;
-			if (!is_array($this->armor)) $this->armor = (array) $this->armor;
-			foreach ($this->armor as $armorInfo) $this->armorEditFormat($armorNum++, $armorInfo);
-			if ($armorNum < $min) while ($armorNum < $min) $this->armorEditFormat($armorNum++);
+			if (!is_array($this->armor)) 
+				$this->armor = (array) $this->armor;
+			foreach ($this->armor as $armorInfo) 
+				$this->armorEditFormat($armorNum++, $armorInfo);
+			if ($armorNum < $min) 
+				while ($armorNum < $min) 
+					$this->armorEditFormat($armorNum++);
 		}
 
 		public function armorEditFormat($armorNum, $armorInfo = array()) {
@@ -260,7 +273,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {
@@ -268,7 +281,7 @@
 		}
 
 		public function setSpells($spells) {
-			$this->spells = $spells;
+			$this->spells = sanitizeString($spells);
 		}
 
 		public function getSpells() {

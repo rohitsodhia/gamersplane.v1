@@ -21,7 +21,7 @@
 		protected $armor = '';
 
 		public function setRace($value) {
-			$this->race = $value;
+			$this->race = sanitizeString($value);
 		}
 
 		public function getRace() {
@@ -29,21 +29,22 @@
 		}
 
 		public function setAlignment($value) {
-			if (dnd4_consts::getAlignments($value)) $this->alignment = $value;
+			if (dnd4_consts::getAlignments($value)) 
+				$this->alignment = $value;
 		}
 
 		public function getAlignment() {
 			return dnd4_consts::getAlignments($this->alignment);
 		}
 
-		public function getHL($showSign = FALSE) {
+		public function getHL($showSign = false) {
 			$hl = floor(array_sum($this->classes) / 2);
 			if ($showSign) return showSign($hl);
 			else return $hl;
 		}
 
 		public function setParagon($paragon) {
-			$this->paragon = $paragon;
+			$this->paragon = sanitizeString($paragon);
 		}
 
 		public function getParagon() {
@@ -51,7 +52,7 @@
 		}
 
 		public function setEpic($epic) {
-			$this->epic = $epic;
+			$this->epic = sanitizeString($epic);
 		}
 
 		public function getEpic() {
@@ -59,49 +60,68 @@
 		}
 
 		public function getStatModPHL($stat) {
-			if (array_key_exists($stat, $this->stats)) return showSign(floor(($this->stats[$stat] - 10) / 2) + $this->getHL());
-			else return FALSE;
+			if (array_key_exists($stat, $this->stats)) 
+				return showSign(floor(($this->stats[$stat] - 10) / 2) + $this->getHL());
+			else 
+				return false;
 		}
 
-		public function getSave($save = NULL, $key = NULL) {
+		public function getSave($save = null, $key = null) {
 			if (array_key_exists($save, $this->saves)) {
-				if ($key == NULL) return $this->saves[$save];
-				elseif (array_key_exists($key, $this->saves[$save])) return $this->saves[$save][$key];
+				if ($key == null) 
+					return $this->saves[$save];
+				elseif (array_key_exists($key, $this->saves[$save])) 
+					return $this->saves[$save][$key];
 				elseif ($key == 'total') {
 					$total = 10 + $this->getHL();
-					foreach ($this->saves[$save] as $value) if (is_numeric($value)) $total += $value;
+					foreach ($this->saves[$save] as $value) 
+						if (is_numeric($value)) 
+							$total += $value;
 					$abilities = $this->saves[$save]['ability'];
-					$abilityMods = array($this->getStatMod($abilities[0], FALSE), $this->getStatMod($abilities[1], FALSE));
-					if ($abilityMods[0] > $abilityMods[1]) $total += $abilityMods[0];
-					else $total += $abilityMods[1];
+					$abilityMods = array($this->getStatMod($abilities[0], false), $this->getStatMod($abilities[1], false));
+					if ($abilityMods[0] > $abilityMods[1]) 
+						$total += $abilityMods[0];
+					else 
+						$total += $abilityMods[1];
 					return $total;
-				} else return FALSE;
-			} elseif ($save == NULL) return $this->saves;
-			else return FALSE;
+				} else 
+					return false;
+			} elseif ($save == null) 
+				return $this->saves;
+			else 
+				return false;
 		}
 
-		public function getInitiative($key = NULL) {
+		public function getInitiative($key = null) {
 			$return = parent::getInitiative($key);
 			if ($key == 'total') $return += $this->getHL();
 			return $return;
 		}
 
 		public function setSpeed($key, $value) {
-			if (array_key_exists($key, $this->speed)) $this->speed[$key] = intval($value);
-			else return FALSE;
+			if (array_key_exists($key, $this->speed)) 
+				$this->speed[$key] = intval($value);
+			else 
+				return false;
 		}
 
-		public function getSpeed($key = NULL) {
-			if ($key == NULL) return array_merge(array('total' => array_sum($this->speed)), $this->speed);
-			elseif (array_key_exists($key, $this->speed)) return $this->speed[$key];
-			elseif ($key == 'total') return array_sum($this->speed);
-			else return FALSE;
+		public function getSpeed($key = null) {
+			if ($key == null) 
+				return array_merge(array('total' => array_sum($this->speed)), $this->speed);
+			elseif (array_key_exists($key, $this->speed)) 
+				return $this->speed[$key];
+			elseif ($key == 'total') 
+				return array_sum($this->speed);
+			else 
+				return false;
 		}
 
 		public function setActionPoints($value) {
 			$value = intval($value);
-			if ($value >= 0) $this->actionPoints = $value;
-			else return FALSE;
+			if ($value >= 0) 
+				$this->actionPoints = $value;
+			else 
+				return false;
 		}
 
 		public function getActionPoints() {
@@ -110,31 +130,50 @@
 
 		public function setPassiveSenses($key, $value) {
 			$value = intval($value);
-			if (array_key_exists($key, $this->passiveSenses) && $value >= 0) $this->passiveSenses[$key] = $value;
-			else return FALSE;
+			if (array_key_exists($key, $this->passiveSenses) && $value >= 0) 
+				$this->passiveSenses[$key] = $value;
+			else 
+				return false;
 		}
 
 		public function getPassiveSenses($key) {
-			if (array_key_exists($key, $this->passiveSenses)) return $this->passiveSenses[$key];
-			else return FALSE;
+			if (array_key_exists($key, $this->passiveSenses)) 
+				return $this->passiveSenses[$key];
+			else 
+				return false;
 		}
 
 		public function addAttack($attack) {
-			if (strlen($attack['ability'])) $this->attacks[] = $attack;
+			if (strlen($attack['ability'])) {
+				foreach ($attack as $key => $value) {
+					if ($key == 'ability') 
+						$attack[$key] = sanitizeString($value);
+					else 
+						$attack[$key] = intval($value);
+				}
+				$this->attacks[] = $attack;
+			}
 		}
 
 		public function showAttacksEdit($min) {
 			$attackNum = 0;
-			if (!is_array($this->attacks)) $this->attacks = (array) $this->attacks;
-			foreach ($this->attacks as $attackInfo) $this->attackEditFormat($attackNum++, $attackInfo);
-			if ($attackNum < $min) while ($attackNum < $min) $this->attackEditFormat($attackNum++);
+			if (!is_array($this->attacks)) 
+				$this->attacks = (array) $this->attacks;
+			foreach ($this->attacks as $attackInfo) 
+				$this->attackEditFormat($attackNum++, $attackInfo);
+			if ($attackNum < $min) 
+				while ($attackNum < $min) 
+					$this->attackEditFormat($attackNum++);
 		}
 
 		public function attackEditFormat($attackNum, $attackInfo = array()) {
 			$defaults = array('total' => 0, 'stat' => 0, 'class' => 0, 'prof' => 0, 'feat' => 0, 'enh' => 0, 'misc' => 0);
-			foreach ($defaults as $key => $value) if (!isset($attackInfo[$key])) $attackInfo[$key] = $value;
+			foreach ($defaults as $key => $value) 
+				if (!isset($attackInfo[$key])) 
+					$attackInfo[$key] = $value;
 			$total = $this->getHL();
-			foreach ($attackInfo as $value) $total += intval($value);
+			foreach ($attackInfo as $value) 
+				$total += intval($value);
 ?>
 							<div class="attackBonusSet">
 								<div class="tr">
@@ -200,17 +239,20 @@
 		}
 
 		public static function skillEditFormat($key = null, $skillInfo = null, $statBonus = null) {
-			if ($key == null) $key = 1;
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
-			if ($skillInfo['stat'] == null || $statBonus == null) $statBonus = 0;
+			if ($key == null) 
+				$key = 1;
+			if ($skillInfo == null) 
+				$skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
+			if ($skillInfo['stat'] == null || $statBonus == null) 
+				$statBonus = 0;
 ?>
 						<div class="skill clearfix sumRow">
 							<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="medText placeholder dontAdd" data-placeholder="Skill Name">
 							<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer addStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
-<?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "							<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
-?>
+<?			foreach (d20Character_consts::getStatNames() as $short => $stat) { ?>
+								<option value="<?=$short?>"<=$skillInfo['stat'] == $short?' selected="selected"':''?>><?=ucfirst($short)?></option>
+<?			} ?>
 							</select></span>
 							<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 							<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
@@ -249,7 +291,8 @@
 		}
 
 		public function showPowersEdit($type) {
-			foreach ($this->powers[$type] as $power) dnd4Character::powerEditFormat($type, $power);
+			foreach ($this->powers[$type] as $power) 
+				dnd4Character::powerEditFormat($type, $power);
 		}
 
 		public function powerSheetFormat($type) {
@@ -268,7 +311,7 @@
 		}
 
 		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
+			$this->weapons = sanitizeString($weapons);
 		}
 
 		public function getWeapons() {
@@ -276,7 +319,7 @@
 		}
 
 		public function setArmor($armor) {
-			$this->armor = $armor;
+			$this->armor = sanitizeString($armor);
 		}
 
 		public function getArmor() {
@@ -284,7 +327,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {

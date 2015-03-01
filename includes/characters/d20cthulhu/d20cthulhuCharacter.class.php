@@ -60,7 +60,11 @@
 		}
 		
 		public function addWeapon($weapon) {
-			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) $this->weapons[] = $weapon;
+			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) {
+				foreach ($weapon as $key => $value) 
+					$weapon[$key] = sanitizeString($value);
+				$this->weapons[] = $weapon;
+			}
 		}
 
 		public function showWeaponsEdit($min) {
@@ -144,7 +148,7 @@
 		}
 
 		public function setItems($items) {
-			$this->items = $items;
+			$this->items = sanitizeString($items);
 		}
 
 		public function getItems() {
@@ -152,7 +156,7 @@
 		}
 
 		public function setSpells($spells) {
-			$this->spells = $spells;
+			$this->spells = sanitizeString($spells);
 		}
 
 		public function getSpells() {

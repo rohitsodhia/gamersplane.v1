@@ -12,7 +12,7 @@
 		protected $stresses = array('physical' => array(1 => 0, 0), 'mental' => array(1 => 0, 0), 'social' => array(1 => 0, 0));
 
 		public function setTemplate($template) {
-			$this->template = $template;
+			$this->template = sanitizeString($template);
 		}
 
 		public function getTemplate() {
@@ -20,7 +20,7 @@
 		}
 
 		public function setPowerLevel($powerLevel) {
-			$this->powerLevel = $powerLevel;
+			$this->powerLevel = sanitizeString($powerLevel);
 		}
 
 		public function getPowerLevel() {
@@ -29,18 +29,24 @@
 
 		public function setPhase($phase, $key, $value) {
 			$phase = intval($phase);
-			if ($phase >= 1 && $phase <= 5 && in_array($key, array('aspect', 'events'))) $this->phases[$phase][$key] = $value;
+			if ($phase >= 1 && $phase <= 5 && in_array($key, array('aspect', 'events'))) 
+				$this->phases[$phase][$key] = $value;
 		}
 
 		public function getPhase($phase = null, $key = null) {
-			if ($phase == null) return $this->phases;
+			if ($phase == null) 
+				return $this->phases;
 			else {
 				$phase = intval($phase);
-				if ($phase < 1 || $phase > 5) return false;
+				if ($phase < 1 || $phase > 5) 
+					return false;
 
-				if ($key == null) return $this->phases[$phase];
-				elseif (in_array($key, array('aspect', 'events'))) return $this->phases[$phase][$key];
-				else return false;
+				if ($key == null) 
+					return $this->phases[$phase];
+				elseif (in_array($key, array('aspect', 'events'))) 
+					return $this->phases[$phase][$key];
+				else 
+					return false;
 			}
 		}
 
@@ -53,18 +59,24 @@
 		}
 
 		public function setSkillPoints($key, $value) {
-			if (array_key_exists($key, $this->skillPoints)) $this->skillPoints[$key] = intval($value);
-			else return false;
+			if (array_key_exists($key, $this->skillPoints)) 
+				$this->skillPoints[$key] = intval($value);
+			else 
+				return false;
 		}
 
 		public function getSkillPoints($key = null) {
-			if ($key == null) return $this->skillPoints;
-			elseif (array_key_exists($key, $this->skillPoints)) return $this->skillPoints[$key];
-			else return false;
+			if ($key == null) 
+				return $this->skillPoints;
+			elseif (array_key_exists($key, $this->skillPoints)) 
+				return $this->skillPoints[$key];
+			else 
+				return false;
 		}
 
 		public static function stuntEditFormat($key = 1, $stuntInfo = null) {
-			if ($stuntInfo == null) $stuntInfo = array('name' => '', 'cost' => 0, 'notes' => '');
+			if ($stuntInfo == null) 
+				$stuntInfo = array('name' => '', 'cost' => 0, 'notes' => '');
 ?>
 									<div class="stunt tr clearfix">
 										<input type="text" name="stunts[<?=$key?>][cost]" value="<?=$stuntInfo['cost']?>" class="cost">
@@ -77,14 +89,15 @@
 		}
 
 		public function displayStunts() {
-			if ($this->stunts) { foreach ($this->stunts as $stunt) { ?>
+			if ($this->stunts) { foreach ($this->stunts as $stunt) {
+?>
 					<div class="stunt tr clearfix">
 						<span class="cost"><?=$stunt['cost']?></span>
 						<span class="name"><?=$stunt['name']?></span>
-<?	if (strlen($stunt['notes'])) { ?>
+<?				if (strlen($stunt['notes'])) { ?>
 						<a href="" class="notesLink">Notes</a>
 						<div class="notes"><?=$stunt['notes']?></div>
-<?	} ?>
+<?				} ?>
 					</div>
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noStunts\">This character currently has no stunts/abilities.</p>\n";

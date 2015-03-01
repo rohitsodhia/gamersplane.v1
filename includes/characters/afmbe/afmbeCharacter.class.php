@@ -24,7 +24,7 @@
 		}
 
 		public function setQualities($qualities) {
-			$this->qualities = $qualities;
+			$this->qualities = sanitizeString($qualities);
 		}
 
 		public function getQualities() {
@@ -32,7 +32,7 @@
 		}
 
 		public function setDrawbacks($drawbacks) {
-			$this->drawbacks = $drawbacks;
+			$this->drawbacks = sanitizeString($drawbacks);
 		}
 
 		public function getDrawbacks() {
@@ -40,7 +40,7 @@
 		}
 
 		public function setSkills($skills) {
-			$this->skills = $skills;
+			$this->skills = sanitizeString($skills);
 		}
 
 		public function getSkills() {
@@ -48,7 +48,7 @@
 		}
 
 		public function setPowers($powers) {
-			$this->powers = $powers;
+			$this->powers = sanitizeString($powers);
 		}
 
 		public function getPowers() {
@@ -56,7 +56,7 @@
 		}
 
 		public function setWeapons($weapons) {
-			$this->weapons = $weapons;
+			$this->weapons = sanitizeString($weapons);
 		}
 
 		public function getWeapons() {
@@ -64,7 +64,7 @@
 		}
 
 		public function setPosessions($posessions) {
-			$this->posessions = $posessions;
+			$this->posessions = sanitizeString($posessions);
 		}
 
 		public function getPosessions() {
