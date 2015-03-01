@@ -4,54 +4,58 @@
 		protected $pm;
 		protected $history = array();
 
-		public function __construct($pmID) {
+		public function __construct($pmID = null) {
 			global $currentUser, $mysql;
 
-			$this->pmID = intval($pmID);
-			$getPM = $mysql->prepare("SELECT pms.pmID, pms.senderID, pms.recipientIDs, pms.title, pms.message, pms.datestamp, pms.replyTo, c.`read` FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE pms.pmID = :pm LIMIT 1");
-			$getPM->execute(array(':pm' => $this->pmID));
-			if ($getPM->rowCount() == 0) throw new Exception('No PM');
-			$pm = $getPM->fetch();
-			$userIDs = array_merge(array($pm['senderID']), explode(',', $pm['recipientIDs']));
-			$users = $mysql->query("SELECT userID, username FROM users WHERE userID in (".implode(',', $userIDs).")")->fetchAll(PDO::FETCH_GROUP);
-			array_walk($users, function (&$value, $key) { $value = array_merge(array('userID' => $key), $value[0]); });
+			if ($pmID !== null) {
+				$this->pmID = intval($pmID);
+				$getPM = $mysql->prepare("SELECT pms.pmID, pms.senderID, pms.recipientIDs, pms.title, pms.message, pms.datestamp, pms.replyTo, c.`read` FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE pms.pmID = :pm LIMIT 1");
+				$getPM->execute(array(':pm' => $this->pmID));
+				if ($getPM->rowCount() == 0) throw new Exception('No PM');
+				$pm = $getPM->fetch();
+				$userIDs = array_merge(array($pm['senderID']), explode(',', $pm['recipientIDs']));
+				$users = $mysql->query("SELECT userID, username FROM users WHERE userID in (".implode(',', $userIDs).")")->fetchAll(PDO::FETCH_GROUP);
+				array_walk($users, function (&$value, $key) { $value = array_merge(array('userID' => $key), $value[0]); });
 
-			$pm['sender'] = (object) $users[$pm['senderID']];
-			$pm['recipients'] = array();
-			foreach (explode(',', $pm['recipientIDs']) as $recipientID) 
-				$pm['recipients'][] = (object) $users[$recipientID];
-			$this->pm = new PM($pmID, $pm);
+				$pm['sender'] = (object) $users[$pm['senderID']];
+				$pm['recipients'] = array();
+				foreach (explode(',', $pm['recipientIDs']) as $recipientID) 
+					$pm['recipients'][] = (object) $users[$recipientID];
+				$this->pm = new PM($pmID, $pm);
 
-			if ($this->pm->getReplyTo()) {
-				$parentID = $this->pm->getReplyTo();
-				$hUserIDs = array();
-				for ($count = 0; $count < 10; $count++) {
-					$getPM->execute(array(':pm' => $parentID));
-					if ($getPM->rowCount() == 0) break;
-					$pm = $getPM->fetch();
-					$this->history[$pm['pmID']] = $pm;
-					$hUserIDs = array_merge($hUserIDs, array($pm['senderID']), explode(',', $pm['recipientIDs']));
-					$parentID = $pm['replyTo'];
-				}
-				$hUserIDs = array_unique($hUserIDs);
-				foreach (array_keys($users) as $userID) {
-					$key = array_search($userID, $hUserIDs);
-					if ($key !== false) unset($hUserIDs[$key]);
-				}
+				if ($this->pm->getReplyTo()) {
+					$parentID = $this->pm->getReplyTo();
+					$hUserIDs = array();
+					for ($count = 0; $count < 10; $count++) {
+						$getPM->execute(array(':pm' => $parentID));
+						if ($getPM->rowCount() == 0) break;
+						$pm = $getPM->fetch();
+						$this->history[$pm['pmID']] = $pm;
+						$hUserIDs = array_merge($hUserIDs, array($pm['senderID']), explode(',', $pm['recipientIDs']));
+						$parentID = $pm['replyTo'];
+					}
+					$hUserIDs = array_unique($hUserIDs);
+					foreach (array_keys($users) as $userID) {
+						$key = array_search($userID, $hUserIDs);
+						if ($key !== false) unset($hUserIDs[$key]);
+					}
 
-				if (sizeof($hUserIDs)) {
-					$hUsers = $mysql->query("SELECT userID, username FROM users WHERE userID in (".implode(',', $hUserIDs).")")->fetchAll(PDO::FETCH_GROUP);
-					array_walk($hUsers, function (&$value, $key) { $value = array_merge(array('userID' => $key), $value[0]); });
-					foreach ($hUsers as $user) 
-						$users[$user['userID']] = $user;
-					foreach ($this->history as $pmID => $pm) {
-						$pm['sender'] = (object) $users[$pm['senderID']];
-						$pm['recipients'] = array();
-						foreach (explode(',', $pm['recipientIDs']) as $recipientID) 
-							$pm['recipients'][] = (object) $users[$recipientID];
-						$this->history[$pmID] = new PM($pmID, $pm);
+					if (sizeof($hUserIDs)) {
+						$hUsers = $mysql->query("SELECT userID, username FROM users WHERE userID in (".implode(',', $hUserIDs).")")->fetchAll(PDO::FETCH_GROUP);
+						array_walk($hUsers, function (&$value, $key) { $value = array_merge(array('userID' => $key), $value[0]); });
+						foreach ($hUsers as $user) 
+							$users[$user['userID']] = $user;
+						foreach ($this->history as $pmID => $pm) {
+							$pm['sender'] = (object) $users[$pm['senderID']];
+							$pm['recipients'] = array();
+							foreach (explode(',', $pm['recipientIDs']) as $recipientID) 
+								$pm['recipients'][] = (object) $users[$recipientID];
+							$this->history[$pmID] = new PM($pmID, $pm);
+						}
 					}
 				}
+			} else {
+				$this->pm = new PM();
 			}
 		}
 

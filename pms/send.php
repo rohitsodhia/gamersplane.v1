@@ -1,35 +1,41 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-	
-	if ($pathOptions[0] == 'reply') {
+	addPackage('pms');
+
+	$pmManager = new PMManager();
+	$reply = $pathOptions[0] == 'reply'?true:false;
+	if ($reply) {
 		$pmID = intval($pathOptions[1]);
-		
-		$pmCheck = $mysql->query('SELECT pms.pmID, pms.recipientID, recipients.username recipientName, pms.senderID, senders.username senderName, pms.title, pms.message FROM pms LEFT JOIN users AS recipients ON pms.recipientID = recipients.userID LEFT JOIN users AS senders ON pms.senderID = senders.userID WHERE recipientID = '.$currentUser->userID.' AND pmID = '.$pmID);
-		
-		if (!$pmCheck->rowCount()) { header('Location: /pms/'); exit; }
-		
-		$pmInfo = $pmCheck->fetch();
+		try { $replyManager = new PMManager($pmID); }
+		catch (Exception $e) { header('Location: /pms/'); exit; }
+
+		$recipients = $replyManager->pm->getRecipients();
+		$allowed = false;
+		if ($replyManager->pm->getSender('userID') == $currentUser->userID) 
+			$allowed = true;
+		else { foreach ($recipients as $recipient) {
+			if ($recipient->userID == $currentUser->userID) {
+				$allowed = true;
+				break;
+			}
+		} }
+		if (!$allowed) { header('Location: /pms/'); exit; }
+
+		$title = $replyManager->pm->getTitle();
+		if (substr($title, 0, 4) != 'Re: ') 
+			$title = 'Re: '.$title;
+		$pmManager->pm->setTitle($title);
+		$pmManager->pm->setSender($replyManager->pm->getSender());
+		$pmManager->pm->setReplyTo($pmID);
 	} elseif ($_GET['userID']) {
-		$userCheck = $mysql->query('SELECT username senderName FROM users WHERE userID = '.intval($_GET['userID']));
-		
-		$pmInfo = $userCheck->fetch();
-	}
-	
-	if ($_SESSION['errors']) {
-		if (preg_match('/pms\/.*$/', $_SESSION['lastURL'])) {
-			$errors = $_SESSION['errors'];
-			foreach ($_SESSION['errorVals'] as $key => $value) { $$key = $value; }
-			
-			$pmInfo = array('senderName' => $username, 'title' => $title, 'message' => $message);
-		}
-		if (!preg_match('/pms\/.*$/', $_SESSION['lastURL']) || time() > $_SESSION['errorTime']) {
-			unset($_SESSION['errors']);
-			unset($_SESSION['errorVals']);
-		}
+		$recipient = $mysql->query('SELECT username FROM users WHERE userID = '.intval($_GET['userID']));
+		if ($recipient->rowCount()) $recipient = $recipient->fetchColumn();
+
+		$pmManager->pm->addRecipient(array('userID' => intval($_GET['userID']), 'username' => $recipient));
 	}
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar"><?=$pathOptions[0] == 'reply'?'Reply':'Send Private Message'?></h1>
+		<h1 class="headerbar"><?=$reply?'Reply':'Send Private Message'?></h1>
 		
 <?
 	if ($errors) {
@@ -41,24 +47,26 @@
 	}
 ?>
 		
-		<form method="post" action="/pms/process/<?=($pathOptions[0] == 'reply')?'reply':'send'?>">
-			<input id="pmID" type="hidden" name="pmID" value="<?=$pmID?>">
+		<form method="post" action="/pms/process/<?=($reply)?'reply':'send'?>/">
+<?	if ($reply) { ?>
+			<input id="replyTo" type="hidden" name="pmID" value="<?=$pmManager->pm->getReplyTo()?>">
+<?	} ?>
 			<div class="tr clearfix">
 				<label class="textLabel">Username:</label>
-				<input id="username" type="text" name="username" maxlength="24" value="<?=$pmInfo['senderName']?>">
+				<input id="username" type="text" name="username" maxlength="24" value="<?=$pmManager->pm->getSender('username')?>">
 				<div id="invalidUser" class="alert hideDiv">Invalid User</div>
 			</div>
 			<div class="tr">
 				<label class="textLabel">Title:</label>
-				<input id="title" type="text" name="title" maxlength="100" value="<?=(($pathOptions[0] == 'reply' && substr($pmInfo['title'], 0, 4) != 'Re: ')?'Re: ':'').$pmInfo['title']?>">
+				<input id="title" type="text" name="title" maxlength="100" value="<?=$pmManager->pm->getTitle()?>">
 			</div>
 			<div id="titleRequired" class="tr alert hideDiv">Title required!</div>
-			<textarea id="messageTextArea" name="message"><?=sizeof($errors)?$pmInfo['message']:''?></textarea>
+			<textarea id="messageTextArea" name="message"></textarea>
 			<div id="messageRequired" class="alert hideDiv">Message required!</div>
 			
 			<div id="submitDiv" class="alignCenter"><button type="submit" name="send" class="fancyButton">Send</button></div>
 		</form>
-<? if ($pathOptions[0] == 'reply') { ?>
+<? if ($reply) { ?>
 		
 		<hr>
 		<div class="tr">

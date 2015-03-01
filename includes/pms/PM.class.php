@@ -25,6 +25,10 @@
 			return $this->pmID;
 		}
 
+		public function setTitle($title) {
+			$this->title = $title;
+		}
+
 		public function getTitle($pr = false) {
 			if ($pr) return printReady($this->title);
 			else return $this->title;
@@ -35,9 +39,20 @@
 			else return $this->message;
 		}
 
+		public function setSender($sender) {
+			$this->sender = (object) $sender;
+		}
+
 		public function getSender($key = null) {
-			if (property_exists($this->sender, $key)) return $this->sender->$key;
+			if (is_object($this->sender) && property_exists($this->sender, $key)) return $this->sender->$key;
 			else return $this->sender;
+		}
+
+		public function addRecipient($nRecipient) {
+			foreach ($this->recipients as $recipient) 
+				if ($recipient->userID == $recipient->userID) 
+					return false;
+			$this->recipients[] = (object) $nRecipient;
 		}
 
 		public function getRecipients() {
@@ -65,6 +80,11 @@
 
 		public function getRead() {
 			return $this->read;
+		}
+
+		public function setReplyTo($replyTo) {
+			$replyTo = intval($replyTo) > 0?intval($replyTo):null;
+			$this->replyTo = $replyTo;
 		}
 
 		public function getReplyTo() {
