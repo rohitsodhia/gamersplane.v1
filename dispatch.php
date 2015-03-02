@@ -35,7 +35,7 @@
 	
 //	echo $pathAction;
 //	print_r($pathOptions);
-//	print_r($_SESSION);
+//	var_dump($_SESSION);
 //	var_dump($_COOKIE);
 
 	$requireLoc = '';

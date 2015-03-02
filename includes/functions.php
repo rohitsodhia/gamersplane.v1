@@ -132,7 +132,7 @@
 		return true;
 	}
 
-/* Session Functions */
+/*	Session Functions */
 	function startSession() {
 		session_start();
 		

@@ -26,12 +26,16 @@
 		}
 
 		public function setTitle($title) {
-			$this->title = $title;
+			$this->title = sanitizeString($title);
 		}
 
 		public function getTitle($pr = false) {
 			if ($pr) return printReady($this->title);
 			else return $this->title;
+		}
+
+		public function setMessage($message) {
+			$this->message = sanitizeString($message);
 		}
 
 		public function getMessage($pr = false) {
@@ -48,9 +52,13 @@
 			else return $this->sender;
 		}
 
+		public function clearRecipients() {
+			$this->recipients = array();
+		}
+
 		public function addRecipient($nRecipient) {
 			foreach ($this->recipients as $recipient) 
-				if ($recipient->userID == $recipient->userID) 
+				if ($recipient->userID == $nRecipient->userID) 
 					return false;
 			$this->recipients[] = (object) $nRecipient;
 		}

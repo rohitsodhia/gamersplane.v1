@@ -3,50 +3,46 @@
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorTime']);
 		
-		$pmID = intval($_POST['pmID']);
+		$replyTo = intval($_POST['replyTo']);
 		$username = sanitizeString($_POST['username']);
 		$title = sanitizeString($_POST['title']);
 		$message = sanitizeString($_POST['message']);
 		
-/*		if ($pathOptions[1] == 'reply') {
-			$mysql->setTable('pms');
-			$mysql->setSelectCols('COUNT(*)');
-			$mysql->setWhere('pmID = '.$pmID);
-			$mysql->stdQuery('select', 'selectCols', 'where');
-			
-			if (!$mysql->numRow()) { header('Location: /unauthorized'); }
-		}*/
+		if ($replyTo) {
+			try { $replyManager = new PMManager($pmID); }
+			catch (Exception $e) { header('Location: /pms/'); exit; }
+		}
 		
 		$recipientCheck = $mysql->prepare("SELECT userID FROM users WHERE username = :username");
 		$recipientCheck->bindValue(':username', $username);
 		$recipientCheck->execute();
 		$recipientID = $recipientCheck->fetchColumn();
+
+		$formErrors->clearErrors();
 		
-		if (!$recipientID) $_SESSION['errors']['invalidUser'] = TRUE;
-		if (!strlen($title)) $_SESSION['errors']['noTitle'] = TRUE;
-		if (!strlen($message)) $_SESSION['errors']['noMessage'] = TRUE;
+		if (!$recipientID) $formErrors->addError('invalidUser');
+		if (!strlen($title)) $formErrors->addError('noTitle');
+		if (!strlen($message)) $formErrors->addError('noMessage');
 		
-		if ($_SESSION['errors']) {
-			$_SESSION['errorVals']['username'] = $username;
-			$_SESSION['errorVals']['title'] = $title;
-			$_SESSION['message']['message'] = $message;
-			$_SESSION['errorTime'] = time() + 300;
-			
-			header('Location: /pms/send/failed');
+		if ($formErrors->errorsExist()) {
+			$formErrors->setErrors('pm', $_POST);
+			header('Location: '.$_SESSION['lastURL']);
 		} else {
-			unset($_SESSION['errors']);
-			unset($_SESSION['errorTime']);
-			
-			$sendMessage = $mysql->prepare('INSERT INTO pms SET recipientID = :recipientID, senderID = :senderID, title = :title, message = :message, datestamp = :datestamp, replyTo = :replyTo');
-			$sendMessage->bindValue(':recipientID', $recipientID);
+			$sendMessage = $mysql->prepare('INSERT INTO pms SET senderID = :senderID, recipientIDs = :recipientID, title = :title, message = :message, datestamp = NOW()'.($replyTo?', replyTo = :replyTo':''));
 			$sendMessage->bindValue(':senderID', $currentUser->userID);
+			$sendMessage->bindValue(':recipientID', $recipientID);
 			$sendMessage->bindValue(':title', $title);
 			$sendMessage->bindValue(':message', $message);
-			$sendMessage->bindValue(':datestamp', date('Y-m-d H:i:s'));
-			$sendMessage->bindValue(':replyTo', $pmID);
+			if ($replyTo) 
+				$sendMessage->bindValue(':replyTo', $replyTo);
 			$sendMessage->execute();
-			
+			$pmID = $mysql->lastInsertId();
+
+			$mysql->query("INSERT INTO pms_inBox SET pmID = {$pmID}, userID = {$currentUser->userID}");
+			$mysql->query("INSERT INTO pms_inBox SET pmID = {$pmID}, userID = {$recipientID}");
+
 			header('Location: /pms/?sent=1');
 		}
-	} else header('Location: /pms');
+	} else 
+		header('Location: /pms/');
 ?>

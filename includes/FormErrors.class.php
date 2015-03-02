@@ -25,6 +25,8 @@
 
 		public function setErrors($for, $errorVals = null) {
 			if (strlen($for) && sizeof($this->errors)) {
+				$this->errorChecked = true;
+				
 				unset($_SESSION['errors'][$for]);
 				$_SESSION['errors']['for'] = $for;
 				$_SESSION['errors']['errorCodes'] = $this->errors;
