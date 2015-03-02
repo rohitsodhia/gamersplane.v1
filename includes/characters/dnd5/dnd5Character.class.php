@@ -247,13 +247,14 @@
 								<span class="spell_stat"><select name="spells[<?=$key?>][stat]">
 <?				foreach (array('int', 'wis', 'cha') as $stat) { ?>
 									<option value="<?=$stat?>"<?=$skillInfo['stat'] == $stat?' selected="selected"':''?>><?=ucfirst($stat)?></option>
-?>
+<?				} ?>
 								</select></span>
 								<a href="" class="spell_notesLink">Notes</a>
 								<a href="" class="spell_remove sprite cross"></a>
 								<textarea name="spells[<?=$key?>][notes]"><?=$spellInfo['notes']?></textarea>
 							</div>
 <?
+			}
 		}
 
 		public function showSpellsEdit() {
