@@ -240,21 +240,21 @@
 		}
 
 		public static function spellEditFormat($key = 1, $spellInfo = null) {
-			if ($spellInfo == null) $spellInfo = array('name' => '', 'notes' => '');
+			if ($spellInfo == null) 
+				$spellInfo = array('name' => '', 'notes' => '');
 ?>
 							<div class="spell clearfix tr">
 								<input type="text" name="spells[<?=$key?>][name]" value="<?=$spellInfo['name']?>" class="spell_name placeholder" data-placeholder="Spell Name">
 								<span class="spell_stat"><select name="spells[<?=$key?>][stat]">
-<?				foreach (array('int', 'wis', 'cha') as $stat) { ?>
+<?			foreach (array('int', 'wis', 'cha') as $stat) { ?>
 									<option value="<?=$stat?>"<?=$skillInfo['stat'] == $stat?' selected="selected"':''?>><?=ucfirst($stat)?></option>
-<?				} ?>
+<?			} ?>
 								</select></span>
 								<a href="" class="spell_notesLink">Notes</a>
 								<a href="" class="spell_remove sprite cross"></a>
 								<textarea name="spells[<?=$key?>][notes]"><?=$spellInfo['notes']?></textarea>
 							</div>
 <?
-			}
 		}
 
 		public function showSpellsEdit() {
