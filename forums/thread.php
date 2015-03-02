@@ -251,7 +251,7 @@
 		<form id="quickReply" method="post" action="/forums/process/post/">
 			<h2 class="headerbar hbDark">Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
-			<input type="hidden" name="title" value="Re: <?=$threadManager->getThreadProperty('title')?>">
+			<input type="hidden" name="title" value="Re: <?=htmlspecialchars($threadManager->getThreadProperty('title'))?>">
 			<div class="hbdMargined"><textarea id="messageTextArea" name="message"></textarea></div>
 			
 			<div id="submitDiv" class="alignCenter">

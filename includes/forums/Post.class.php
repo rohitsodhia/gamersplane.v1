@@ -59,7 +59,7 @@
 		}
 
 		public function setTitle($value) {
-			$title = sanitizeString(html_entity_decode($value));
+			$title = sanitizeString(htmlspecialchars_decode($value));
 			if ($title != $this->getTitle()) 
 				$this->modified = true;
 			$this->title = $title;
