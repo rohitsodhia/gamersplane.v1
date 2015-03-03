@@ -131,9 +131,17 @@
 ?>
 				<div class="posterDetails">
 					<div class="avatar"><div>
-<?			if ($postAsChar && $character->getAvatar()) { ?>
-						<a href="/character/<?=$character::SYSTEM?>/<?=$character->getCharacterID()?>/"><img src="<?=$character->getAvatar()?>"></a>
-<?			} ?>
+<?
+			if ($postAsChar && $character->getAvatar()) {
+				if ($character->checkPermissions()) {
+?>
+						<a href="/characters/<?=$character::SYSTEM?>/<?=$character->getCharacterID()?>/"><img src="<?=$character->getAvatar()?>"></a>
+<?				} else { ?>
+						<img src="<?=$character->getAvatar()?>">
+<?
+				}
+			}
+?>
 						<a href="/user/<?=$post->author->userID?>/" class="userAvatar"><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
 					</div></div>
 <?
