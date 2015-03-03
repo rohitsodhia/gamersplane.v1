@@ -1,5 +1,6 @@
 <?
 	require('../includes/connect.php');
+	define('PVAR', 'xU3Fh9XLo21mlHuk6H31');
 	require('functions.php');
 	startSession();
 	require('../includes/User.class.php');
@@ -36,12 +37,9 @@
 	global $loggedIn;
 	$loggedIn = User::checkLogin(false);
 
-	if(file_exists(FILEROOT.'/'.$pathAction.'/')) {
-		foreach(glob(FILEROOT.'/'.$pathAction.'/*.php') as $file) 
-			require($file);
-		$controllerName = $pathAction.'Controller';
-		$controller = new $controllerName();
-
+	if(file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {
+		require(FILEROOT.'/'.$pathAction.'.class.php');
+		$controller = new $pathAction();
 	}
 
 	$mysql = null;

@@ -1,5 +1,6 @@
 <script type="text/javascript" src="/javascript/html5shiv.js"></script>
 <script type="text/javascript" src="/javascript/moment.js"></script>
+<script type="text/javascript" src="/javascript/angular.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery.colorbox-min.js"></script>

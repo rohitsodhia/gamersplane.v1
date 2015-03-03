@@ -50,8 +50,6 @@
 				if ($userCheck->rowCount()) {
 					$userID = $userCheck->fetchColumn();
 					$currentUser = new User($userID);
-					var_dump($currentUser->getLoginHash());
-					var_dump($loginHash);
 					if ($currentUser->getLoginHash() == $loginHash) {
 						$currentUser->generateLoginCookie();
 
