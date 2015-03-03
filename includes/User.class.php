@@ -27,10 +27,64 @@
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
 				foreach ($usermeta as $eMeta) {
-					if ($eMeta['metaKey'] == 'acpPermissions') $this->acpPermissions = unserialize($eMeta['metaValue']);
-					else $this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+					if ($eMeta['metaKey'] == 'acpPermissions') 
+						$this->acpPermissions = unserialize($eMeta['metaValue']);
+					else 
+						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
-			} else return false;
+			} else 
+				return false;
+		}
+
+		public static function checkLogin($redirect = 1) {
+			global $currentUser;
+			if (!isset($currentUser)) $currentUser = new User();
+			
+			if (isset($_COOKIE['loginHash'])) {
+				global $mysql;
+
+				list($username, $loginHash) = explode('|', sanitizeString($_COOKIE['loginHash']));
+				$userCheck = $mysql->prepare('SELECT userID FROM users WHERE username = :username AND suspendedUntil IS NULL AND banned = 0');
+				$userCheck->execute(array(':username' => $username));
+
+				if ($userCheck->rowCount()) {
+					$userID = $userCheck->fetchColumn();
+					$currentUser = new User($userID);
+					var_dump($currentUser->getLoginHash());
+					var_dump($loginHash);
+					if ($currentUser->getLoginHash() == $loginHash) {
+						$currentUser->generateLoginCookie();
+
+//						wp_set_current_user($userInfo['userID']);
+//						wp_set_auth_cookie($userInfo['userID']);
+//						do_action('wp_login', $userInfo['userID']);
+
+						$mysql->query('UPDATE users SET lastActivity = NOW() WHERE userID = '.$currentUser->userID);
+
+						return true;
+					}
+				}
+			}
+			
+			User::logout();
+			if ($redirect) { header('Location: /login/?redirect=1'); exit; }
+			
+			return false;
+		}
+
+		public static function logout($resetSession = false) {
+			if ($resetSession) {
+				session_unset();
+//				unset($_COOKIE[session_name()]);
+			
+				session_regenerate_id(TRUE);
+				session_destroy();
+				setcookie(session_name(), '', time() - 30, '/');
+				$_SESSION = array();
+			}
+
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN);
+//			session_destroy();
 		}
 
 		public function __get($var) {
@@ -83,8 +137,8 @@
 		}
 
 		public function generateLoginCookie() {
-			setcookie('loginHash', '', time() - 30, '/');
-			setcookie('loginHash', $this->username.'|'.$this->getLoginHash(), time() + LOGIN_COOKIE_LENGTH, '/');
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN);
+			setcookie('loginHash', $this->username.'|'.$this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN);
 		}
 
 		public function getUsermeta($metaKey) {

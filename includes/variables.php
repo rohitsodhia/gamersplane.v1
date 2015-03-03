@@ -6,7 +6,9 @@
 	define('CUR_TIMEZONE', '-08:00');
 	define('PAGINATE_PER_PAGE', 20);
 	define('HERITAGE_PAD', 4);
-	define('LOGIN_COOKIE_LENGTH', 60 * 60 * 24 * 7);
+	$ext = explode('.', $_SERVER['HTTP_HOST']);
+	$ext = end($ext);
+	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);
 	$loggedIn = 0;
 	$fixedMenu = FALSE;
 
