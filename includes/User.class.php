@@ -24,6 +24,7 @@
 			if ($userInfo->rowCount()) {
 				$userInfo = $userInfo->fetch();
 				foreach ($userInfo as $key => $value) $this->$key = $value;
+				$this->userID = (int) $this->userID;
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
 				foreach ($usermeta as $eMeta) {
@@ -36,14 +37,16 @@
 				return false;
 		}
 
-		public static function checkLogin($redirect = 1) {
+		public static function checkLogin($redirect = 1, $loginHash = null) {
 			global $currentUser;
 			if (!isset($currentUser)) $currentUser = new User();
-			
-			if (isset($_COOKIE['loginHash'])) {
+
+			if (isset($_COOKIE['loginHash'])) 
+				$loginHash = $_COOKIE['loginHash'];
+			if (is_string($loginHash) && strlen($loginHash)) {
 				global $mysql;
 
-				list($username, $loginHash) = explode('|', sanitizeString($_COOKIE['loginHash']));
+				list($username, $loginHash) = explode('|', sanitizeString($loginHash));
 				$userCheck = $mysql->prepare('SELECT userID FROM users WHERE username = :username AND suspendedUntil IS NULL AND banned = 0');
 				$userCheck->execute(array(':username' => $username));
 

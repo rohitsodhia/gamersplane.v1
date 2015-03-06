@@ -5,6 +5,9 @@
 	startSession();
 	require('../includes/User.class.php');
 	define('FILEROOT', $_SERVER['DOCUMENT_ROOT']);
+	$ext = explode('.', $_SERVER['HTTP_HOST']);
+	$ext = end($ext);
+	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);
 	
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 
@@ -34,8 +37,19 @@
 	
 	$moddedPath = $pathAction?$pathAction:'';
 
+	header("Access-Control-Allow-Origin: *");
+	header('Access-Control-Allow-Credentials: true');
+	if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+		if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) 
+			header("Access-Control-Allow-Methods: GET, POST, OPTIONS");         
+		if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) 
+			header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+		exit(0);
+	}
+
 	global $loggedIn;
-	$loggedIn = User::checkLogin(false);
+	$_POST = (array) json_decode(file_get_contents("php://input"));
+	$loggedIn = User::checkLogin(false, $_POST['loginHash']);
 
 	if(file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {
 		require(FILEROOT.'/'.$pathAction.'.class.php');
