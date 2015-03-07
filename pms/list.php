@@ -32,8 +32,8 @@
 				<div class="info">Message</div>
 			</div>
 			<div id="pmList">
-				<div ng-repeat="pm in pms" id="pm_{{pm.pmID}}" class="pm tr" ng-class="{'lastTR': $last, 'new': pm.read}">
-					<div class="delCol"><a href="/pms/delete/{{pm.pmID}}/" class="deletePM sprite cross"></a></div>
+				<div ng-repeat="pm in pms" id="pm_{{pm.pmID}}" class="pm tr" ng-class="{'lastTR': $last, 'new': !pm.read}">
+					<div class="delCol"><a ng-if="pm.allowDelete" href="/pms/delete/{{pm.pmID}}/" class="deletePM sprite cross"></a></div>
 					<div class="info">
 						<div class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></div>
 						<div class="details" ng-show="box == 'Inbox'">

@@ -5,6 +5,7 @@
 <script type="text/javascript" src="/javascript/jquery.colorbox-min.js"></script>
 <script type="text/javascript" src="/javascript/jquery.form.js"></script>
 <script type="text/javascript" src="/javascript/angular.min.js"></script>
+<script type="text/javascript" src="/javascript/angular-route.min.js"></script>
 <script type="text/javascript" src="/javascript/angular-cookies.min.js"></script>
 <?	if (in_array($pathAction, array('forums', 'pms'))) { ?>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js"></script>
