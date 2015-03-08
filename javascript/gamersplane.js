@@ -166,3 +166,6 @@ $(function() {
 	if (!$('body').hasClass('modal')) var curPage = $('#content > div > div').attr('id').substring(5);
 	else var curPage = $('body > div').attr('id').substring(5);
 });
+
+var app = angular.module('gamersplane', ['controllers', 'ngCookies']);
+var controllers = angular.module('controllers', []);

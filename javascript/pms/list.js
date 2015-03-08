@@ -1,5 +1,4 @@
-var app = angular.module('gamersplane', ['ngCookies', 'ngRoute']);
-app.controller('pmList', function ($scope, $cookies, $http) {
+controllers.controller('pmList', function ($scope, $cookies, $http) {
 	function getPMs(box) {
 		$http.post('http://api.gamersplane.local/pms/view/', { loginHash: $cookies.loginHash, box: box }).success(function (data) {
 			data.pms.forEach(function (value, key) {
