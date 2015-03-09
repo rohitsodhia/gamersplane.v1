@@ -2,6 +2,17 @@ String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+function getPathElements() {
+	pathElements = window.location.pathname.split('/');
+	var cleanArray = new Array();
+	for (key in pathElements) {
+		if (pathElements[key]) 
+			cleanArray.push(pathElements[key]);
+	}
+
+	return cleanArray;
+}
+
 function decToB26(num) {
 	var str = '';
 	var letterCode;

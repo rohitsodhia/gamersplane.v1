@@ -1,13 +1,3 @@
-<?
-	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
-	addPackage('pms');
-	
-	$pmID = intval($pathOptions[1]);
-	
-	try {
-		$pmManager = new PMManager($pmID);
-	} catch (Exception $e) { header('Location: /pms/'); exit; }
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Private Message</h1>
 		

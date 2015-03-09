@@ -1,14 +1,2 @@
-CREATE TABLE pms_inInbox (
-	pmID int NOT NULL,
-	userID int not null,
-	isRead bool NOT NULL,
-	PRIMARY KEY (pmID, userID)
-) ENGINE=MyISAM;
-
-ALTER TABLE pms ADD recipientIDs varchar(10) NOT NULL AFTER senderID;
-UPDATE pms SET recipientIDs = recipientID;
-ALTER TABLE pms DROP recipientID;
-
-
-
 ALTER TABLE dispatch ADD ngController varchar(50) AFTER pageID;
+UPDATE dispatch SET ngController = 'pmList' WHERE url = 'pms/';

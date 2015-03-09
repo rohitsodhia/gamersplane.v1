@@ -1,15 +1,17 @@
 controllers.controller('pmList', function ($scope, $cookies, $http) {
 	function getPMs(box) {
-		$http.post('http://api.gamersplane.local/pms/view/', { loginHash: $cookies.loginHash, box: box }).success(function (data) {
+		$http.post('http://api.gamersplane.local/pms/list/', { loginHash: $cookies.loginHash, box: box }).success(function (data) {
 			data.pms.forEach(function (value, key) {
 				data.pms[key].datestamp = convertTZ(value.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a')
 			});
 			$scope.pms = data.pms;
 		});
 	}
-	
-	$scope.box = 'Inbox';
-	getPMs('inbox');
+
+	pathElements = getPathElements();
+
+	$scope.box = pathElements[1] == 'outbox'?'Outbox':'Inbox';
+	getPMs($scope.box.toLowerCase());
 
 	$scope.switchBox = function ($event, box) {
 		$event.preventDefault();

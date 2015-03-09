@@ -4,8 +4,10 @@
 			global $loggedIn, $pathOptions;
 			if (!$loggedIn) exit;
 
-			if ($pathOptions[0] == 'view' && in_array($_POST['box'], array('inbox', 'outbox'))) 
+			if ($pathOptions[0] == 'list' && in_array($_POST['box'], array('inbox', 'outbox'))) 
 				$this->displayBox($_POST['box']);
+			if ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
+				$this->displayPM($_POST['pmID']);
 		}
 
 		public function displayBox($box) {
