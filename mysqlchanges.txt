@@ -1,2 +1,4 @@
 ALTER TABLE dispatch ADD ngController varchar(50) AFTER pageID;
 UPDATE dispatch SET ngController = 'pmList' WHERE url = 'pms/';
+UPDATE dispatch SET ngController = 'pmView' WHERE url = 'pms/view/';
+UPDATE dispatch SET ngController = 'pmDelete' WHERE url = 'pms/delete/(###)/';

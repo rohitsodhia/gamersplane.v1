@@ -1,52 +1,31 @@
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Private Message</h1>
 		
 		<div id="buttonsDiv">
-			<a href="/pms/reply/<?=$pmManager->getPMID()?>/" class="fancyButton">Reply</a>
-			<a href="/pms/delete/<?=$pmManager->getPMID()?>/" class="fancyButton deletePM">Delete</a>
+			<a href="/pms/reply/{{pmID}}/" class="fancyButton">Reply</a>
+			<a href="/pms/delete/{{pmID}}/" class="fancyButton deletePM" ng-show="allowDelete">Delete</a>
 		</div>
-		
 		<div class="tr">
 			<div class="leftCol">Title</div>
-			<div class="rightCol"><?=$pmManager->pm->getTitle(true)?></div>
+			<div class="rightCol">{{title}}</div>
 		</div>
 		<div class="tr">
 			<div class="leftCol">From</div>
-			<div class="rightCol"><a href="/user/<?=$pmManager->pm->getSender('userID')?>/" class="username"><?=$pmManager->pm->getSender('username')?></a></div>
+			<div class="rightCol"><a href="/user/{{sender.userID}}/" class="username">{{sender.username}}</a></div>
 		</div>
 		<div class="tr">
 			<div class="leftCol">When</div>
-			<div class="rightCol convertTZ"><?=$pmManager->pm->getDatestamp('F j, Y g:i a')?></div>
+			<div class="rightCol">{{datestamp}}</div>
 		</div>
-		<div id="messageDiv" class="tr"><?=BBCode2Html($pmManager->pm->getMessage(true))?></div>
-<?	if (sizeof($pmManager->history)) { ?>
+		<div id="messageDiv" class="tr">{{message}}</div>
 
-		<div id="history">
-<?
-		$first = true;
-		foreach ($pmManager->history as $pm) {
-?>
-			<div class="historyPM<?=$first?' first':''?>">
-<?			if ($pm->hasAccess()) { ?>
-				<p class="title"><a href="/pms/view/<?=$pm->getPMID()?>/"><?=$pm->getTitle(true)?></a></p>
-<?			} else { ?>
-				<p class="title"><?=$pm->getTitle(true)?></p>
-<?			} ?>
-				<p class="user">from <a href="/user/<?=$pm->getSender('userID')?>/" class="username"><?=$pm->getSender('username')?></a> on <span class="convertTZ"><?=$pm->getDatestamp('F j, Y g:i a')?></span></p>
-<?
-			$recipients = array();
-			foreach ($pm->getRecipients() as $recipient) 
-				$recipients[] = "<a href=\"/user/{$recipient->userID}/\" class=\"username\">{$recipient->username}</a>";
-?>
-				<p class="user">to <?=implode(', ', $recipients)?></p>
-				<div class="message">
-<?=$pm->getMessage(true)?>
-				</div>
+		<div id="history" ng-if="hasHistory">
+			<div ng-repeat="pm in history" class="historyPM" ng-class="{'first': $first}">
+				<p ng-if="hasAccess" class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></p>
+				<p ng-if="!hasAccess" class="title">{{pm.title}}</p>
+				<p class="user">from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span></p>
+				<p class="user">to <span ng-repeat="recipient in pm.recipients"><a ng-href="/user/{{recipient.userID}}/" class="username">{{recipient.username}}</a>{{$last?'':', '}}</span></p>
+				<div class="message">{{pm.message}}</div>
 			</div>
-<?
-			if ($first) $first = false;
-		}
-?>
 		</div>
-<?	} ?>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

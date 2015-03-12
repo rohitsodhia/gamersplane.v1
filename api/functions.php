@@ -5,6 +5,11 @@
 */
 
 /* General Functions */
+	function displayJSON($data) {
+		header('Content-Type: application/json');
+		echo json_encode($data);
+	}
+
 	function sanitizeString($string) {
 		$options = func_get_args();
 		array_shift($options);

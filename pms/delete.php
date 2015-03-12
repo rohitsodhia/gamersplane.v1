@@ -1,20 +1,11 @@
-<?
-	$pmID = intval($pathOptions[1]);
-	
-	$recipientCheck = $mysql->query('SELECT recipientID, senderID FROM pms WHERE (recipientID = '.$currentUser->userID.' OR senderID = '.$currentUser->userID.') AND pmID = '.$pmID);
-	$recipientID = $recipientCheck->fetchColumn();
-
-	if (!$recipientID) { header('Location: /403'); exit; }
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 			<h1 class="headerbar">Delete Message</h1>
 			
 			<p class="alignCenter">
 				Are you sure you wanna delete this PM?
 			</p>
-			<form method="post" action="/pms/process/delete/" class="alignCenter">
-				<input id="pmID" type="hidden" name="pmID" value="<?=$pmID?>">
-				<button type="submit" name="delete" class="fancyButton">Delete</button>
-				<button type="submit" name="cancel" class="fancyButton">Cancel</button>
+			<form class="alignCenter">
+				<button type="submit" name="delete" class="fancyButton" ng-click="deletePM($event)">Delete</button>
+				<button type="submit" name="cancel" class="fancyButton" ng-click="cancel($event)">Cancel</button>
 			</form>
 <? require_once(FILEROOT.'/footer.php'); ?>

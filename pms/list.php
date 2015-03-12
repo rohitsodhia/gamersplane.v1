@@ -16,7 +16,7 @@
 		<h1 class="headerbar">Private Messages - {{box}}</h1>
 		
 		<div id="controlsContainer" class="clearfix">
-			<a id="newPM" href="/pms/send" class="fancyButton">New PM</a>
+			<a id="newPM" href="/pms/send/" class="fancyButton">New PM</a>
 			<div id="controls" class="wingDiv sectionControls" data-ratio=".8">
 				<div class="wingDivContent clearfix">
 					<a href="/pms/" class="borderBox" ng-class="{'current': box == 'Inbox'}" ng-click="switchBox($event, 'inbox')">Inbox</a>
