@@ -1,3 +1,6 @@
+<script type="text/javascript">
+	var API_HOST = 'http://api.<?=$_SERVER['HTTP_HOST']?>';
+</script>
 <script type="text/javascript" src="/javascript/html5shiv.js"></script>
 <script type="text/javascript" src="/javascript/moment.js"></script>
 <script type="text/javascript" src="/javascript/jquery.min.js"></script>

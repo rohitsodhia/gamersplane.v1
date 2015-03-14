@@ -2,7 +2,7 @@ controllers.controller('pmView', function ($scope, $cookies, $http) {
 	pathElements = getPathElements();
 
 	$scope.allowDelete = true;
-	$http.post('http://api.gamersplane.local/pms/view/', { loginHash: $cookies.loginHash, pmID: pathElements[2] }).success(function (data) {
+	$http.post('http://api.gamersplane.local/pms/view/', { pmID: pathElements[2] }).success(function (data) {
 		if (data.failed || data.noPM) 
 			document.location = '/pms/';
 
@@ -14,7 +14,7 @@ controllers.controller('pmView', function ($scope, $cookies, $http) {
 		if (!isNaN(replyTo)) {
 			$scope.history = new Array();
 			$scope.hasHistory = true;
-			$http.post('http://api.gamersplane.local/pms/view/', { loginHash: $cookies.loginHash, pmID: replyTo }).success(function (historyPM) {
+			$http.post('http://api.gamersplane.local/pms/view/', { pmID: replyTo }).success(function (historyPM) {
 				historyPM.datestamp = convertTZ(historyPM.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a');
 				replyTo = historyPM.replyTo;
 				$scope.history.push(historyPM);

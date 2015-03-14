@@ -1,5 +1,4 @@
-var redirectTimeout = 3000,
-	API_HOST = 'http://api.gamersplane.local';
+var redirectTimeout = 3000;
 $.colorbox.settings.href = function () { return this.href + '?modal=1' };
 $.colorbox.settings.iframe = true;
 $.colorbox.settings.innerHeight = '100px';

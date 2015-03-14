@@ -88,8 +88,21 @@
 		date_default_timezone_set('GMT');
 	}
 
-/* MySQL Functions */
+/* DB Functions */
 	function sql_forumIDPad($forumID) {
 		return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
+	}
+
+	function mongo_getNextSequence($key) {
+		global $mongo;
+
+		$counter = $mongo->counters->findAndModify(
+			array('_id' => $key),
+			array('$inc' => array('seq' => 1)),
+			null,
+			array('new' => true)
+		);
+
+		return $counter['seq'];
 	}
 ?>

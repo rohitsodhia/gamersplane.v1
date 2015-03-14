@@ -37,12 +37,11 @@
 				return false;
 		}
 
-		public static function checkLogin($redirect = 1, $loginHash = null) {
+		public static function checkLogin($redirect = true) {
 			global $currentUser;
 			if (!isset($currentUser)) $currentUser = new User();
 
-			if (isset($_COOKIE['loginHash'])) 
-				$loginHash = $_COOKIE['loginHash'];
+			$loginHash = $_COOKIE['loginHash'];
 			if (is_string($loginHash) && strlen($loginHash)) {
 				global $mysql;
 

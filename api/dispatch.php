@@ -2,12 +2,12 @@
 	require('../includes/connect.php');
 	define('PVAR', 'xU3Fh9XLo21mlHuk6H31');
 	require('functions.php');
-	startSession();
-	require('../includes/User.class.php');
 	define('FILEROOT', $_SERVER['DOCUMENT_ROOT']);
 	$ext = explode('.', $_SERVER['HTTP_HOST']);
 	$ext = end($ext);
 	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);
+	startSession();
+	require('../includes/User.class.php');
 	
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 
@@ -25,7 +25,7 @@
 	$pathOptions = array_slice($pathOptions, 1);
 
 //	$reqPath .= strlen($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:'';
-	
+
 	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php')) include(FILEROOT.'/includes/'.$pathAction.'/_section.php');
 	
 //	echo $pathAction;
@@ -37,7 +37,7 @@
 	
 	$moddedPath = $pathAction?$pathAction:'';
 
-	header("Access-Control-Allow-Origin: *");
+	header("Access-Control-Allow-Origin: http://".substr(COOKIE_DOMAIN, 1));
 	header('Access-Control-Allow-Credentials: true');
 	if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 		if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) 
@@ -49,7 +49,7 @@
 
 	global $loggedIn;
 	$_POST = (array) json_decode(file_get_contents("php://input"));
-	$loggedIn = User::checkLogin(false, $_POST['loginHash']);
+	$loggedIn = User::checkLogin(false);
 
 	if(file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {
 		require(FILEROOT.'/'.$pathAction.'.class.php');

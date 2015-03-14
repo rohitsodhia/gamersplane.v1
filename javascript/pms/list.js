@@ -1,6 +1,6 @@
 controllers.controller('pmList', function ($scope, $cookies, $http) {
 	function getPMs(box) {
-		$http.post('http://api.gamersplane.local/pms/list/', { loginHash: $cookies.loginHash, box: box }).success(function (data) {
+		$http.post('http://api.gamersplane.local/pms/list/', { box: box }).success(function (data) {
 			data.pms.forEach(function (value, key) {
 				data.pms[key].datestamp = convertTZ(value.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a')
 			});
