@@ -1,9 +1,3 @@
-<?
-	addPackage('pms');
-
-	$box = $pathOptions[0] == 'outbox'?'outbox':'inbox';
-	$boxManager = new PMBoxManager($box);
-?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 <?	if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
 		<div class="alertBox_success">
@@ -33,7 +27,7 @@
 			</div>
 			<div id="pmList">
 				<div ng-repeat="pm in pms" id="pm_{{pm.pmID}}" class="pm tr" ng-class="{'lastTR': $last, 'new': !pm.read}">
-					<div class="delCol"><a ng-if="pm.allowDelete" href="/pms/delete/{{pm.pmID}}/" class="deletePM sprite cross"></a></div>
+					<div class="delCol"><a ng-if="pm.allowDelete" ng-click="delete(pm.pmID)" class="deletePM sprite cross"></a></div>
 					<div class="info">
 						<div class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></div>
 						<div class="details" ng-show="box == 'Inbox'">

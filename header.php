@@ -19,10 +19,10 @@
 		<a href="/register/" class="last">Register</a>
 <?
 		} else {
-			$g_unreadMail = $mysql->query("SELECT COUNT(pms.pmID) numUnread FROM pms INNER JOIN pms_inBox c ON pms.pmID = c.pmID AND c.userID = {$currentUser->userID} WHERE pms.senderID != {$currentUser->userID}")->fetchColumn();
+			$pmCount = $mongo->pms->find(array('recipients.userID' => $currentUser->userID, 'recipients.read' => false))->count();
 ?>
 		<span id="menuMessage"><a href="/ucp/" class="username first"><?=$currentUser->username?></a></span>
-		<a href="/pms/"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$g_unreadMail?>)</a>
+		<a href="/pms/"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$pmCount?>)</a>
 		<a href="/notifications/"><img src="/images/bodyComponents/exclamation.jpg" title="Notifications" alt="Notifications"></a>
 		<a href="/logout/" class="last">Logout</a>
 <?		} ?>

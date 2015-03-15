@@ -3,7 +3,7 @@
 		
 		<div id="buttonsDiv">
 			<a href="/pms/reply/{{pmID}}/" class="fancyButton">Reply</a>
-			<a href="/pms/delete/{{pmID}}/" class="fancyButton deletePM" ng-show="allowDelete">Delete</a>
+			<a class="fancyButton deletePM" ng-show="allowDelete" ng-click="delete()">Delete</a>
 		</div>
 		<div class="tr">
 			<div class="leftCol">Title</div>

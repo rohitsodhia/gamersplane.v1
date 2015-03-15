@@ -1,4 +1,4 @@
-controllers.controller('pmList', function ($scope, $cookies, $http) {
+controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 	function getPMs(box) {
 		$http.post('http://api.gamersplane.local/pms/list/', { box: box }).success(function (data) {
 			data.pms.forEach(function (value, key) {
@@ -21,6 +21,13 @@ controllers.controller('pmList', function ($scope, $cookies, $http) {
 			getPMs(box);
 		}
 	};
+
+	$scope.delete = function (pmID) {
+		DeletePM(pmID).success(function (data) {
+			if (!isNaN(data.deleted)) 
+				getPMs($scope.box.toLowerCase());
+		});
+	}
 });
 
 $(function () {

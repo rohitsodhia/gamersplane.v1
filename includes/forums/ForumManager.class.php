@@ -85,6 +85,8 @@
 
 		public function getAllChildren($forumID = 0, $read = false) {
 			$forums = array($forumID);
+			if (!isset($this->forums[$forumID])) 
+				return array();
 			$forum = $this->forums[$forumID];
 			foreach ($forum->getChildren() as $childID) {
 				if (!in_array($childID, $forums) && (!$read || ($read && $this->forums[$childID]->getPermissions('read')))) $forums[] = $childID;

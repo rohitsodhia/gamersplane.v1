@@ -4,12 +4,12 @@
 		<form ng-submit="sendPM()">
 			<input id="replyTo" type="hidden" name="pmID" value="{{replyTo}}">
 			<div class="tr clearfix">
-				<label for="username" class="textLabel">Username:</label>
+				<label for="username">Username:</label>
 				<input id="username" type="text" name="username" maxlength="24" ng-model="username" ng-blur="checkUser()">
 				<div id="invalidUser" class="alert" ng-hide="formError.validUser">Invalid User</div>
 			</div>
 			<div class="tr">
-				<label for="title" class="textLabel">Title:</label>
+				<label for="title">Title:</label>
 				<input id="title" type="text" name="title" maxlength="100" ng-model="title" ng-change="checkTitle()" ng-blur="checkTitle()">
 			</div>
 			<div id="titleRequired" class="tr alert" ng-hide="formError.validTitle">Title required!</div>

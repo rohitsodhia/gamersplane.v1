@@ -61,10 +61,12 @@
 				$pm['title'] = printReady($pm['title']);
 				$pm['message'] = BBCode2Html(printReady($pm['message']));
 				$pm['allowDelete'] = true;
-				if ($pm['sender']['userID'] == $currentUser->userID) 
+				if ($pm['sender']['userID'] == $currentUser->userID) {
 					foreach ($pm['recipients'] as $recipient) 
 						if ($recipient['read'] && !$recipient['deleted']) 
 							$pm['allowDelete'] = false;
+				} elseif (isset($_POST['markRead']) && $_POST['markRead']) 
+					$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.read' => true)));
 				displayJSON($pm);
 			}
 		}
@@ -83,7 +85,7 @@
 			$sender = (object) array('userID' => $currentUser->userID, 'username' => $currentUser->username);
 			$recipient = sanitizeString(preg_replace('/[^\w.]/', '', $_POST['username']));
 			$recipient = $mysql->query("SELECT userID, username FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
-			$recipient->userID = $recipient->userID;
+			$recipient->userID = (int) $recipient->userID;
 			$recipient->read = false;
 			$recipient->deleted = false;
 			if ($sender->userID == $recipient->userID) 
@@ -98,9 +100,9 @@
 			global $mongo, $currentUser;
 
 			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipient.userID' => $currentUser->userID))));
+			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
 			if ($pm === null) 
-				displayJSON(array('success' => true));
+				displayJSON(array('noMatch' => true));
 			elseif ($pm['sender']['userID'] == $currentUser->userID) {
 				$allowDelete = true;
 				foreach ($pm['recipients'] as $recipient) 
@@ -109,8 +111,13 @@
 
 				if ($allowDelete) 
 					$mongo->pms->remove(array('pmID' => $pmID));
-			} else 
-				$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('recipients.$.deleted' => true));
+
+				displayJSON(array('deleted' => true));
+			} else {
+				$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.deleted' => true)));
+
+				displayJSON(array('deleted' => true));
+			}
 		}
 	}
 ?>

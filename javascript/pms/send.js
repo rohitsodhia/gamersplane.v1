@@ -47,6 +47,10 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $
 			$scope.formError.validMessage = false;
 		if ($scope.formError.validUser && $scope.formError.validTitle && $scope.formError.validMessage) {
 			$http.post(API_HOST + '/pms/send/', { username: $scope.username, title: $scope.title, message: $scope.message }).success(function (data) {
+				if (!isNaN(data.mailingSelf)) 
+					$scope.formError.validUser = false;
+				else if (!isNaN(data.sent)) 
+					document.location = '/pms/?sent=1';
 				sendingPM = false;
 			});
 		}
@@ -54,24 +58,4 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $
 
 	$('#messageTextArea').markItUp(mySettings);
 	$compile($('#messageTextArea'))($scope);
-/*	$scope.allowDelete = true;
-	$http.post('http://api.gamersplane.local/pms/view/', { loginHash: $cookies.loginHash, pmID: pathElements[2] }).success(function (data) {
-		if (data.failed || data.noPM) 
-			document.location = '/pms/';
-
-		data.datestamp = convertTZ(data.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a');
-		for (key in data) 
-			$scope[key] = data[key];
-
-		replyTo = parseInt(data.replyTo);
-		if (!isNaN(replyTo)) {
-			$scope.history = new Array();
-			$scope.hasHistory = true;
-			$http.post('http://api.gamersplane.local/pms/view/', { loginHash: $cookies.loginHash, pmID: replyTo }).success(function (historyPM) {
-				historyPM.datestamp = convertTZ(historyPM.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a');
-				replyTo = historyPM.replyTo;
-				$scope.history.push(historyPM);
-			});
-		}
-	});*/
 });
