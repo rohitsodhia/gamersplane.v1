@@ -1,11 +1,11 @@
-controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $compile) {
+controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 	pathElements = getPathElements();
 
 	$scope.headerTitle = pathElements[1] == 'reply'?'Reply':'Send Private Message';
 
 	var userID = null;
-	if (typeof $location.search().userID != 'undefined') 
-		userID = $location.search().userID;
+	if ($.urlParam('userID')) 
+		userID = $.urlParam('userID');
 	$scope.username = '';
 	if (userID != null) {
 		$http.get(API_HOST + '/users/search/', { params: { search: userID, searchBy: 'userID', exact: true } }).success(function (data) {

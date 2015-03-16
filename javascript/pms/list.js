@@ -1,4 +1,4 @@
-controllers.controller('pmList', function ($scope, $cookies, $http, $location, DeletePM) {
+controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 	function getPMs(box, page) {
 		if (isNaN(page)) 
 			page = 1;
@@ -24,8 +24,8 @@ controllers.controller('pmList', function ($scope, $cookies, $http, $location, D
 	pathElements = getPathElements();
 
 	$scope.pagination = {};
-	if (typeof $location.search().page == 'undefined') 
-		$scope.pagination.current = parseInt($location.search().page);
+	if ($.urlParam('page')) 
+		$scope.pagination.current = parseInt($.urlParam('page'));
 	else 
 		$scope.pagination.current = 1;
 	$scope.showPagination = false;

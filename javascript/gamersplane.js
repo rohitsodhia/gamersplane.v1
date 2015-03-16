@@ -168,9 +168,8 @@ $(function() {
 });
 
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize']);
-app.config(function ($httpProvider, $locationProvider) {
+app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
-	$locationProvider.html5Mode({ enabled: true, requireBase: false });
 }).directive('paginate', function () {
 	return {
 		restrict: 'E',
