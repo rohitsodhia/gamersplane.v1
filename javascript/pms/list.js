@@ -16,8 +16,8 @@ controllers.controller('pmList', function ($scope, $cookies, $http, $location, D
 					$scope.pagination.pages.push(count);
 				}
 				$scope.showPagination = true;
-				console.log($scope.pagination);
-			}
+			} else
+				$scope.showPagination = false;
 		});
 	}
 
