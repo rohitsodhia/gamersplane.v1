@@ -1,6 +1,7 @@
 <?
 	require('../includes/connect.php');
 	define('PVAR', 'xU3Fh9XLo21mlHuk6H31');
+	define('PAGINATE_PER_PAGE', 20);
 	require('functions.php');
 	define('FILEROOT', $_SERVER['DOCUMENT_ROOT']);
 	$ext = explode('.', $_SERVER['HTTP_HOST']);

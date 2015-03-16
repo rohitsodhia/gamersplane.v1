@@ -26,7 +26,9 @@
 				$search = array('recipients.userID' => $currentUser->userID, 'recipients.deleted' => false);
 			else 
 				$search = array('sender.userID' => $currentUser->userID);
-			$pmsResults = $mongo->pms->find($search)->sort(array('datestamp' => -1));
+			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
+			$numPMs = $mongo->pms->find($search, array('_id' => 1))->count();
+			$pmsResults = $mongo->pms->find($search)->sort(array('datestamp' => -1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
 			$pms = array();
 			foreach ($pmsResults as $pm) {
 				$pm['read'] = true;
@@ -46,7 +48,7 @@
 				}
 				$pms[] = $pm;
 			}
-			displayJSON(array('box' => $box, 'pms' => $pms));
+			displayJSON(array('box' => $box, 'pms' => $pms, 'totalCount' => $numPMs));
 		}
 
 		public function displayPM($pmID) {

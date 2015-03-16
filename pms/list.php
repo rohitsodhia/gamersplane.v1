@@ -40,4 +40,5 @@
 				</div>
 			</div>
 		</div>
+		<paginate class="tr"></paginate>
 <?	require_once(FILEROOT.'/footer.php'); ?>

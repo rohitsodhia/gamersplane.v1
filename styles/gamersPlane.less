@@ -277,6 +277,10 @@ a, a:visited, a:active, .fauxLink, button.normal, button.normal:visited, button.
 	cursor: pointer;
 }
 
+a.noPointer {
+	cursor: default;
+}
+
 a:hover {
 	color: #06D;
 /*	text-decoration: underline;*/
@@ -1966,18 +1970,17 @@ input[type="text"].placeholder {
 /* Pagination */
 .paginateDiv {
 	float: right;
-}
 
-.paginateDiv div, .paginateDiv a {
-	display: block;
-	float: left;
-	padding: 3px 6px;
-}
+	div, a {
+		display: inline-block;
+		padding: 3px 6px;
+	}
 
-.paginateDiv div.currentPage {
-	border: 1px solid #AAA;
-	background: #222;
-	color: #AAA;
+	.currentPage {
+		border: 1px solid #AAA;
+		background: #222;
+		color: #AAA;
+	}
 }
 
 /* ----------------------------------------------------------------------------------------------*/

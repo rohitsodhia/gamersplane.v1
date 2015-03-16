@@ -19,7 +19,6 @@
 				if (($page - $spread) > 1) echo "\t\t\t\t<a href=\"?".http_build_query(array_merge($query, array('page' => 1)))."\">&lt;&lt; First</a>\n";
 				if ($page > 1) echo "\t\t\t\t<a href=\"?".http_build_query(array_merge($query, array('page' => $page - 1)))."\">&lt;</a>\n";
 				for ($count = $firstPage; $count <= $lastPage; $count++) echo "\t\t\t\t<a href=\"?".http_build_query(array_merge($query, array('page' => $count)))."\"".(($count == $page)?' class="page"':'').">$count</a>\n";
-				
 				if ($page < $numPages) echo "\t\t\t\t<a href=\"?".http_build_query(array_merge($query, array('page' => $page + 1)))."\">&gt;</a>\n";
 				if (($page + $spread) < $numPages) echo "\t\t\t\t<a href=\"?".http_build_query(array_merge($query, array('page' => $numPages)))."\">Last &gt;&gt;</a>\n";
 				echo "\t\t\t</div>\n";
