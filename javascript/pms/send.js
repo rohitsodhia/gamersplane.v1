@@ -16,7 +16,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $
 	$scope.replyTo = null;
 	$scope.hasHistory = false;
 	if (pathElements[1] == 'reply') {
-		$http.post('http://api.gamersplane.local/pms/view/', { pmID: pathElements[2] }).success(function (data) {
+		$http.post(API_HOST + '/pms/view/', { pmID: pathElements[2] }).success(function (data) {
 			$scope.replyTo = data.pmID;
 			$scope.username = data.sender.username;
 			$scope.title = (data.title.substring(0, 3) == 'Re:'?'':'Re: ') + data.title;

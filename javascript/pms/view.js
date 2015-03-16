@@ -2,7 +2,7 @@ controllers.controller('pmView', function ($scope, $cookies, $http, DeletePM) {
 	pathElements = getPathElements();
 
 	$scope.allowDelete = true;
-	$http.post('http://api.gamersplane.local/pms/view/', { pmID: pathElements[2], markRead: true }).success(function (data) {
+	$http.post(API_HOST + '/pms/view/', { pmID: pathElements[2], markRead: true }).success(function (data) {
 		if (data.failed || data.noPM) 
 			document.location = '/pms/';
 
