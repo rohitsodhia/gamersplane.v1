@@ -1,4 +1,4 @@
-controllers.controller('pmView', function ($scope, $cookies, $http, DeletePM) {
+controllers.controller('pmView', function ($scope, $cookies, $http, $compile, DeletePM) {
 	pathElements = getPathElements();
 
 	$scope.allowDelete = true;
@@ -6,6 +6,7 @@ controllers.controller('pmView', function ($scope, $cookies, $http, DeletePM) {
 		if (data.failed || data.noPM) 
 			document.location = '/pms/';
 
+		data.message = $compile(data.message);
 		data.datestamp = convertTZ(data.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a');
 		for (key in data) 
 			$scope[key] = data[key];

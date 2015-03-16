@@ -10,6 +10,7 @@
 <script type="text/javascript" src="/javascript/angular.min.js"></script>
 <script type="text/javascript" src="/javascript/angular-route.min.js"></script>
 <script type="text/javascript" src="/javascript/angular-cookies.min.js"></script>
+<script type="text/javascript" src="/javascript/angular-sanitize.min.js"></script>
 <?	if (in_array($pathAction, array('forums', 'pms'))) { ?>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js"></script>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js"></script>
