@@ -9,7 +9,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 	$scope.username = '';
 	if (userID != null) {
 		$http.get(API_HOST + '/users/search/', { params: { search: userID, searchBy: 'userID', exact: true } }).success(function (data) {
-			if (!isNaN(data.noUsers)) 
+			if (isNaN(data.noUsers)) 
 				$scope.username = data.users[0].username;
 		});
 	}
