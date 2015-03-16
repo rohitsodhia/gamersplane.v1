@@ -6,7 +6,7 @@
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
 </head>
 
-<body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>" ng-app="gamersplane">
+<body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>"<?=strlen($dispatchInfo['ngController'])?' ng-app="gamersplane"':''?>>
 <?	if (!MODAL) { ?>
 <header class="bodyHeader"><div class="bodyContainer">
 	<a href="/"><img id="logo" src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>
