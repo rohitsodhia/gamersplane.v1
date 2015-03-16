@@ -17,7 +17,7 @@
 			<div class="leftCol">When</div>
 			<div class="rightCol">{{datestamp}}</div>
 		</div>
-		<div id="messageDiv" class="tr">{{message}}</div>
+		<div id="messageDiv" class="tr" ng-bind-html="message"></div>
 
 		<div id="history" ng-if="hasHistory">
 			<div ng-repeat="pm in history" class="historyPM" ng-class="{'first': $first}">
