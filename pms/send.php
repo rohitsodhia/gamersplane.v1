@@ -1,4 +1,4 @@
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">{{headerTitle}}</h1>
 
 		<form ng-submit="sendPM()">
@@ -17,34 +17,14 @@
 			<div id="messageRequired" class="alert" ng-hide="formError.validMessage">Message required!</div>
 			<div id="submitDiv" class="alignCenter"><button type="submit" name="send" class="fancyButton">Send</button></div>
 		</form>
-<? if ($reply) { ?>
 		
-		<div id="history">
-<?
-		$first = true;
-		foreach ($replyManager->history as $pm) {
-?>
-			<div class="historyPM<?=$first?' first':''?>">
-<?			if ($pm->hasAccess()) { ?>
-				<p class="title"><a href="/pms/view/<?=$pm->getPMID()?>/"><?=$pm->getTitle(true)?></a></p>
-<?			} else { ?>
-				<p class="title"><?=$pm->getTitle(true)?></p>
-<?			} ?>
-				<p class="user">from <a href="/user/<?=$pm->getSender('userID')?>/" class="username"><?=$pm->getSender('username')?></a> on <span class="convertTZ"><?=$pm->getDatestamp('F j, Y g:i a')?></span></p>
-<?
-			$recipients = array();
-			foreach ($pm->getRecipients() as $recipient) 
-				$recipients[] = "<a href=\"/user/{$recipient->userID}/\" class=\"username\">{$recipient->username}</a>";
-?>
-				<p class="user">to <?=implode(', ', $recipients)?></p>
-				<div class="message">
-<?=$pm->getMessage(true)?>
-				</div>
+		<div id="history" ng-if="hasHistory">
+			<div ng-repeat="pm in history" class="historyPM" ng-class="{'first': $first}">
+				<p ng-if="hasAccess" class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></p>
+				<p ng-if="!hasAccess" class="title">{{pm.title}}</p>
+				<p class="user">from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span></p>
+				<p class="user">to <span ng-repeat="recipient in pm.recipients"><a ng-href="/user/{{recipient.userID}}/" class="username">{{recipient.username}}</a>{{$last?'':', '}}</span></p>
+				<div class="message">{{pm.message}}</div>
 			</div>
-<?
-			if ($first) $first = false;
-		}
-?>
 		</div>
-<? } ?>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

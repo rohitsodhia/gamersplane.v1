@@ -61,12 +61,22 @@
 				$pm['title'] = printReady($pm['title']);
 				$pm['message'] = BBCode2Html(printReady($pm['message']));
 				$pm['allowDelete'] = true;
+				$history = $pm['history'];
 				if ($pm['sender']['userID'] == $currentUser->userID) {
 					foreach ($pm['recipients'] as $recipient) 
 						if ($recipient['read'] && !$recipient['deleted']) 
 							$pm['allowDelete'] = false;
 				} elseif (isset($_POST['markRead']) && $_POST['markRead']) 
 					$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.read' => true)));
+				if (sizeof($history)) {
+					$pm['history'] = array();
+					foreach ($history as $pmID) {
+						$pm['history'][] = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
+						if (sizeof($pm['history']) == 10) 
+							break;
+					}
+
+				}
 				displayJSON($pm);
 			}
 		}
@@ -88,10 +98,18 @@
 			$recipient->userID = (int) $recipient->userID;
 			$recipient->read = false;
 			$recipient->deleted = false;
+			$replyTo = intval($_POST['replyTo']) > 0?intval($_POST['replyTo']):null;
 			if ($sender->userID == $recipient->userID) 
 				displayJSON(array('mailingSelf' => true));
 			else {
-				$mongo->pms->insert(array('pmID' => mongo_getNextSequence('pmID'), 'sender' => $sender, 'recipients' => array($recipient), 'title' => sanitizeString($_POST['title']), 'message' => sanitizeString($_POST['message']), 'datestamp' => date('Y-m-d H:i:s'), 'replyTo' => null));
+				$history = null;
+				if ($replyTo) {
+					$parent = $mongo->pms->findOne(array('pmID' => $replyTo));
+					$history = array($replyTo);
+					if ($parent['history']) 
+						$history = array_merge($history, $parent['history']);
+				}
+				$mongo->pms->insert(array('pmID' => mongo_getNextSequence('pmID'), 'sender' => $sender, 'recipients' => array($recipient), 'title' => sanitizeString($_POST['title']), 'message' => sanitizeString($_POST['message']), 'datestamp' => date('Y-m-d H:i:s'), 'replyTo' => $replyTo, 'history' => $history));
 				displayJSON(array('sent' => true));
 			}
 		}

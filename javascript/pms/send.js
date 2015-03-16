@@ -4,7 +4,6 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $
 	$scope.headerTitle = pathElements[1] == 'reply'?'Reply':'Send Private Message';
 
 	var userID = null;
-	$scope.replyTo = 0
 	if (typeof $location.search().userID != 'undefined') 
 		userID = $location.search().userID;
 	$scope.username = '';
@@ -12,6 +11,17 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $
 		$http.get(API_HOST + '/users/search/', { params: { search: userID, searchBy: 'userID', exact: true } }).success(function (data) {
 			if (!isNaN(data.noUsers)) 
 				$scope.username = data.users[0].username;
+		});
+	}
+	$scope.replyTo = null;
+	$scope.hasHistory = false;
+	if (pathElements[1] == 'reply') {
+		$http.post('http://api.gamersplane.local/pms/view/', { pmID: pathElements[2] }).success(function (data) {
+			$scope.replyTo = data.pmID;
+			$scope.username = data.sender.username;
+			$scope.title = (data.title.substring(0, 3) == 'Re:'?'':'Re: ') + data.title;
+			$scope.hasHistory = true;
+			$scope.history = data.history;
 		});
 	}
 	$scope.title = '';
@@ -46,7 +56,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $location, $
 		else 
 			$scope.formError.validMessage = false;
 		if ($scope.formError.validUser && $scope.formError.validTitle && $scope.formError.validMessage) {
-			$http.post(API_HOST + '/pms/send/', { username: $scope.username, title: $scope.title, message: $scope.message }).success(function (data) {
+			$http.post(API_HOST + '/pms/send/', { username: $scope.username, title: $scope.title, message: $scope.message, replyTo: $scope.replyTo }).success(function (data) {
 				if (!isNaN(data.mailingSelf)) 
 					$scope.formError.validUser = false;
 				else if (!isNaN(data.sent)) 
