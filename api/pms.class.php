@@ -71,7 +71,10 @@
 				if (sizeof($history)) {
 					$pm['history'] = array();
 					foreach ($history as $pmID) {
-						$pm['history'][] = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
+						$hPM = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
+						$hPM['title'] = printReady($hPM['title']);
+						$hPM['message'] = BBCode2Html(printReady($hPM['message']));
+						$pm['history'][] = $hPM;
 						if (sizeof($pm['history']) == 10) 
 							break;
 					}
