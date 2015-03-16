@@ -34,7 +34,7 @@
 					<li class="gamePlaying">
 						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['open']?'':' (Closed)')?></a>
 						<div class="systemType"><?=$info['system']?></div>
-						<div class="gmInfo"><a href="/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
+						<div class="gmInfo"><a href="/user/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 					</li>
 <?
 			if ($first) $first = false;
