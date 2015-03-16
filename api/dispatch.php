@@ -26,7 +26,8 @@
 
 //	$reqPath .= strlen($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:'';
 
-	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php')) include(FILEROOT.'/includes/'.$pathAction.'/_section.php');
+//	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php')) 
+//		include(FILEROOT.'/includes/'.$pathAction.'/_section.php');
 	
 //	echo $pathAction;
 //	print_r($pathOptions);
