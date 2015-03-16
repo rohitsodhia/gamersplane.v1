@@ -24,7 +24,7 @@
 				<p ng-if="!hasAccess" class="title">{{pm.title}}</p>
 				<p class="user">from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span></p>
 				<p class="user">to <span ng-repeat="recipient in pm.recipients"><a ng-href="/user/{{recipient.userID}}/" class="username">{{recipient.username}}</a>{{$last?'':', '}}</span></p>
-				<div class="message">{{pm.message}}</div>
+				<div class="message" ng-bind-html="pm.message"></div>
 			</div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
