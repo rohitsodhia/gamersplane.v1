@@ -64,4 +64,4 @@
 				</div>
 			</div>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

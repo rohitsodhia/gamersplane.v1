@@ -12,6 +12,11 @@
 				<li><a href="/acp/users/">Manage Users</a></li>
 <?
 	}
+	if ($currentUser->checkACP('systems', false)) {
+?>
+				<li><a href="/acp/systems/">Manage Systems</a></li>
+<?
+	}
 	if ($currentUser->checkACP('music', false)) {
 ?>
 				<li><a href="/acp/music/">Manage Music</a></li>
@@ -33,4 +38,4 @@
 <?	} ?>
 			</div>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

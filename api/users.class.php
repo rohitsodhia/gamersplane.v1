@@ -25,8 +25,9 @@
 					displayJSON(array('users' => array($user)));
 				else 
 					displayJSON(array('noUsers' => true));
+			} else {
+//				$valid = $mysql->query("SELECT userID, username, email FROM users WHERE username LIKE '%{$search}%'");
 			}
-			$valid = $mysql->query("SELECT userID, username, email FROM users WHERE username LIKE '%{$search}%'");
 		}
 	}
 ?>

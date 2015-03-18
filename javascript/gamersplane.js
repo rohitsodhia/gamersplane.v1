@@ -174,7 +174,41 @@ app.config(function ($httpProvider) {
 	return {
 		restrict: 'E',
 		replace: true,
-		templateUrl: '../angular/directives/paginate.php'
+		templateUrl: '/angular/directives/paginate.php'
+	}
+}).directive('combobox', function () {
+	return {
+		restrict: 'E',
+		templateUrl: '/angular/directives/combobox.php',
+		scope: {
+			'data': '=data',
+			'search': '=results'
+		},
+		link: function postLink(scope, element, attrs) {
+			scope.showDropdown = false;
+			$combobox = element.children('.combobox');
+			$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
+			$combobox.children('.dropdown').css('height', $combobox.outerHeight());
+
+			scope.toggleDropdown = function ($event) {
+				$event.stopPropagation();
+				scope.showDropdown = scope.showDropdown?false:true;
+			}
+			scope.revealDropdown = function () {
+				scope.showDropdown = true;
+			}
+			scope.hideDropdown = function () {
+				scope.showDropdown = false;
+			}
+			$('html').click(function () {
+				scope.hideDropdown();
+				scope.$apply();
+			});
+
+			scope.setBox = function (set) {
+				scope.search = set;
+			}
+		}
 	}
 });
 var controllers = angular.module('controllers', []);

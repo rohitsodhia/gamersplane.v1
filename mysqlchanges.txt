@@ -1,9 +1,1 @@
-ALTER TABLE dispatch ADD ngController varchar(50) AFTER pageID;
-UPDATE dispatch SET ngController = 'pmList' WHERE url = 'pms/';
-UPDATE dispatch SET ngController = 'pmView' WHERE url = 'pms/view/';
-UPDATE dispatch SET ngController = 'pmDelete' WHERE url = 'pms/delete/(###)/';
-UPDATE dispatch SET ngController = 'pmSend' WHERE url = 'pms/send/';
-UPDATE dispatch SET ngController = 'pmSend' WHERE url = 'pms/reply/';
-
-ALTER TABLE `users` ADD UNIQUE INDEX (`username`) ;
-
+INSERT INTO dispatch SET url ='acp/systems/', pageID = 'acp_systems', ngController = 'acp_systems', file = 'acp/systems.php', title = 'Site ACP - Systems';

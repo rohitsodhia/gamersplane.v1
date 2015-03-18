@@ -9,10 +9,10 @@ controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 			$scope.pms = data.pms;
 
 			if (data.totalCount > PAGINATE_PER_PAGE) {
-				$scope.pagination.numPages = Math.ceil(data.totalCount / PAGINATE_PER_PAGE);
+				$scope.pagination.numItems = Math.ceil(data.totalCount / PAGINATE_PER_PAGE);
 				$scope.pagination.current = page;
 				$scope.pagination.pages = new Array();
-				for (count = $scope.pagination.numPages - 2 > 0?$scope.pagination.numPages - 2:1; count <= $scope.pagination.numPages + 2 && count <= $scope.pagination.numPages; count++) {
+				for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
 					$scope.pagination.pages.push(count);
 				}
 				$scope.showPagination = true;
@@ -30,7 +30,7 @@ controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 		$scope.pagination.current = 1;
 	$scope.showPagination = false;
 	$scope.box = pathElements[1] == 'outbox'?'Outbox':'Inbox';
-	getPMs($scope.box.toLowerCase(), 1);
+	getPMs($scope.box.toLowerCase(), $scope.pagination.current);
 
 	$scope.switchBox = function ($event, box) {
 		$event.preventDefault();
@@ -50,7 +50,7 @@ controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 
 	$scope.changePage = function (page) {
 		page = parseInt(page);
-		if (page < 0 && page > $scope.pagination.numPages) 
+		if (page < 0 && page > $scope.pagination.numItems) 
 			page = 1;
 		getPMs($scope.box.toLowerCase(), page);
 

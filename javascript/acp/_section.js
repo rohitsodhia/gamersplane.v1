@@ -227,3 +227,59 @@ $(function () {
 		});
 	}
 });
+
+controllers.controller('acp_systems', function ($scope, $http, $sce) {
+	function getSystems() {
+		$http.post(API_HOST + '/systems/search/', { all: true }).success(function (data) {
+			$scope.systems = data.systems;
+			$scope.combobox.systems = new Array();
+			for (key in $scope.systems) {
+				if ($scope.systems[key].shortName != 'custom') 
+					$scope.combobox.systems.push({ 'id': $scope.systems[key].shortName, 'value': $scope.systems[key].fullName });
+			}
+			$scope.combobox.systems.push({ 'id': 'custom', 'value': 'Custom' });
+		});
+	}
+
+	function getGeneres() {
+		$http.post(API_HOST + '/systems/search/', { for: 'genres' }).success(function (data) {
+
+		});
+	}
+
+	$scope.combobox = {};
+	getSystems();
+	$scope.edit = {};
+
+	$scope.showEdit = function (shortName) {
+		$scope.edit = {};
+		for (key in $scope.systems) {
+			if ($scope.systems[key].shortName == shortName) {
+				$scope.edit = $scope.systems[key];
+				break;
+			}
+		}
+	}
+
+	$scope.saveStatusBtn = 'cancel';
+	$scope.setEditBtn = function (type) {
+		$scope.saveStatusBtn = type;
+	}
+
+	$scope.saveSystem = function () {
+		if ($scope.saveStatusBtn != 'save') return;
+
+		$http.post(API_HOST + '/systems/save/', { system: $scope.edit }).success(function (data) {
+			for (key in $scope.systems) {
+				if ($scope.systems[key].shortName == data.shortName) {
+					$scope.systems[key] = data;
+					break;
+				}
+			}
+		});
+	}
+
+	$scope.loadSystem = function () {
+		$scope.showEdit($scope.systemSearch.id);
+	}
+});

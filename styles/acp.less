@@ -8,17 +8,19 @@
 	list-style: none;
 }
 
-#acpMenu li {
-	margin-top: .3em;
-}
+#acpMenu {
+	li {
+		margin-top: .3em;
+	}
 
-#acpMenu li:first-of-type {
-	margin-top: 0;
-}
+	li:first-of-type {
+		margin-top: 0;
+	}
 
-#acpMenu a, #acpMenu a:visited, #acpMenu a:active {
-	display: block;
-	color: #FFF;
+	a, a:visited, a:active {
+		display: block;
+		color: #FFF;
+	}
 }
 
 #page_acp {
@@ -79,10 +81,10 @@
 		margin-top: 1em;
 		padding-top: 1em;
 		border-top: 1px solid #999;
-	}
 
-	#addToSystem .system {
-		width: 200px;
+		.system {
+			width: 200px;
+		}
 	}
 }
 
@@ -344,5 +346,34 @@
 		.prettySelect {
 			visibility: visible;
 		}
+	}
+}
+
+#page_acp_systems {
+	form {
+		margin-bottom: 1em;
+		padding-bottom: 1em;
+
+		&.borderBottom {
+			border-bottom: 1px solid #888;
+		}
+
+		label {
+			display: inline-block;
+			width: 100px;
+		}
+
+		input[type="text"] {
+			width: 300px;
+		}
+
+		#buttonDiv {
+			margin-top: .3em;
+			margin-left: 100px;
+		}
+	}
+
+	#systems > div {
+		margin-bottom: .3em;		
 	}
 }

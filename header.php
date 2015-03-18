@@ -45,6 +45,7 @@
 					<li><a href="/tools/music/">Music</a></li>
 				</ul>
 			</li>
+			<li><a href="/systems/">Systems</a></li>
 <?		if ($loggedIn) { ?>
 			<li>
 				<a href="/characters/my/">Characters</a>

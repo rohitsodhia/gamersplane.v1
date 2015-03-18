@@ -547,6 +547,54 @@ div.prettySelect > div {
 
 /* ----------------------------------------------------------------------------------------------*/
 
+/* Combobox */
+.combobox {
+	position: relative;
+	display: inline-block;
+	z-index: 5000;
+
+	input {
+		padding-right: 24px;
+
+		&.resultsOpen {
+			-webkit-border-bottom-right-radius: 0;
+			-webkit-border-bottom-left-radius: 0;
+			-moz-border-radius-bottomright: 0;
+			-moz-border-radius-bottomleft: 0;
+			border-bottom-right-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+	}
+
+	.dropdown {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background: url('../images/dropdown_arrow_red.png') center center no-repeat;
+		width: 24px;
+	}
+
+	.results {
+		position: absolute;
+		top: 0;
+		left: 0;
+		max-height: 115px;
+		.borderBox;
+		overflow-y: auto;
+		background-color: #FFF;
+		border: 1px solid #900;
+		border-top: none;
+		border-left-color: #400;
+
+		a {
+			display: block;
+			padding: 3px 5px;
+		}
+	}
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
 .iconLink {
 	display: inline-block;
 	height: 20px;
