@@ -176,7 +176,7 @@ app.config(function ($httpProvider) {
 		replace: true,
 		templateUrl: '/angular/directives/paginate.php'
 	}
-}).directive('combobox', function () {
+}).directive('combobox', ['$filter', function ($filter) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/combobox.php',
@@ -184,7 +184,7 @@ app.config(function ($httpProvider) {
 			'data': '=data',
 			'search': '=results'
 		},
-		link: function postLink(scope, element, attrs) {
+		link: function (scope, element, attrs) {
 			scope.showDropdown = false;
 			$combobox = element.children('.combobox');
 			$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
@@ -195,7 +195,10 @@ app.config(function ($httpProvider) {
 				scope.showDropdown = scope.showDropdown?false:true;
 			}
 			scope.revealDropdown = function () {
-				scope.showDropdown = true;
+				if ($filter('filter')(scope.data, scope.search).length) 
+					scope.showDropdown = true;
+				else 
+					scope.showDropdown = false;
 			}
 			scope.hideDropdown = function () {
 				scope.showDropdown = false;
@@ -210,5 +213,36 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
+}]).directive('ngPlaceholder', function () {
+	return {
+		scope: {
+			'value': '=ngModel'
+		},
+		link: function (scope, element, attrs) {
+			holderText = attrs.ngPlaceholder;
+/*			scope.$watch(attrs.ngModel, function (val) {
+				if (isNaN(val) || val == '' || val == holderText) {
+					element.addClass('default');
+					if (val != holderText) 
+						scope.value = holderText;
+				}
+			});*/
+
+			element.addClass('placeholder');
+			if (element.val().length == 0) {
+				scope.value = holderText;
+				element.addClass('default');
+			} else 
+				scope.value = element.val();
+			element.focus(function () {
+				if (element.val() == holderText || element.val().length == 0) element.val('').removeClass('default');
+			}).blur(function () {
+				if (element.val().length == 0) element.val(holderText).addClass('default');
+			}).change(function () {
+				if (element.val() != holderText) element.removeClass('default');
+				else if (element.val() == holderText) element.addClass('default');
+			});
+		}
+	} 
 });
 var controllers = angular.module('controllers', []);
