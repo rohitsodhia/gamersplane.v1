@@ -176,7 +176,7 @@ app.config(function ($httpProvider) {
 		replace: true,
 		templateUrl: '/angular/directives/paginate.php'
 	}
-}).directive('combobox', ['$filter', function ($filter) {
+}).directive('combobox', ['$filter', '$timeout', function ($filter, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/combobox.php',
@@ -193,56 +193,26 @@ app.config(function ($httpProvider) {
 			scope.toggleDropdown = function ($event) {
 				$event.stopPropagation();
 				scope.showDropdown = scope.showDropdown?false:true;
-			}
+			};
 			scope.revealDropdown = function () {
-				if ($filter('filter')(scope.data, scope.search).length) 
+				if (isNaN(scope.search) || scope.search.length == 0 || $filter('filter')(scope.data, scope.search).length) 
 					scope.showDropdown = true;
 				else 
 					scope.showDropdown = false;
-			}
+			};
 			scope.hideDropdown = function () {
-				scope.showDropdown = false;
-			}
+				$timeout(function () { scope.showDropdown = false; }, 200);
+			};
 			$('html').click(function () {
 				scope.hideDropdown();
 				scope.$apply();
 			});
 
-			scope.setBox = function (set) {
+			scope.setBox = function ($event, set) {
+				console.log(set);
 				scope.search = set;
-			}
+			};
 		}
 	}
-}]).directive('ngPlaceholder', function () {
-	return {
-		scope: {
-			'value': '=ngModel'
-		},
-		link: function (scope, element, attrs) {
-			holderText = attrs.ngPlaceholder;
-/*			scope.$watch(attrs.ngModel, function (val) {
-				if (isNaN(val) || val == '' || val == holderText) {
-					element.addClass('default');
-					if (val != holderText) 
-						scope.value = holderText;
-				}
-			});*/
-
-			element.addClass('placeholder');
-			if (element.val().length == 0) {
-				scope.value = holderText;
-				element.addClass('default');
-			} else 
-				scope.value = element.val();
-			element.focus(function () {
-				if (element.val() == holderText || element.val().length == 0) element.val('').removeClass('default');
-			}).blur(function () {
-				if (element.val().length == 0) element.val(holderText).addClass('default');
-			}).change(function () {
-				if (element.val() != holderText) element.removeClass('default');
-				else if (element.val() == holderText) element.addClass('default');
-			});
-		}
-	} 
-});
+}]);
 var controllers = angular.module('controllers', []);

@@ -31,7 +31,7 @@
 				</div>
 			</form>
 
-			<form ng-submit="loadSystem()">
+			<form id="loadSystem" ng-submit="loadSystem()">
 				<combobox data="combobox.systems" results="systemSearch"></combobox>
 				<button type="submit" class="fancyButton">Load</button>
 			</form>
