@@ -24,8 +24,8 @@
 		public function setClasses($classes) {
 			if (is_array($classes)) {
 				$this->classes = array();
-				foreach ($this->classes as $class) 
-					$this->setClass($class['class'], $class['level']);
+				foreach ($classes as $class => $level) 
+					$this->setClass($class, $level);
 			}
 		}
 
