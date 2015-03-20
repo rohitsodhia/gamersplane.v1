@@ -201,7 +201,8 @@ app.config(function ($httpProvider) {
 					scope.showDropdown = false;
 			};
 			scope.hideDropdown = function () {
-				$timeout(function () { scope.showDropdown = false; }, 200);
+//				$timeout(function () { scope.showDropdown = false; }, 200);
+				scope.showDropdown = false;
 			};
 			$('html').click(function () {
 				scope.hideDropdown();
@@ -214,5 +215,19 @@ app.config(function ($httpProvider) {
 			};
 		}
 	}
-}]);
+}]).filter('paginateItems', function () {
+	return function (input, limit, skip) {
+		output = [];
+		count = -1;
+		for (key in input) {
+			count++;
+			if (count < skip) 
+				continue;
+			else if (count >= limit + skip) 
+				break;
+			output.push(input[key]);
+		}
+		return output;
+	}
+});
 var controllers = angular.module('controllers', []);

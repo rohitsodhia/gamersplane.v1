@@ -19,16 +19,31 @@
 				$rGenres = $mongo->systems->find(array(), array('_id' => -1, 'genres' => 1));
 				var_dump($rGenres);
 			} else {
-				$numSystems = $mongo->systems->find(array(), array('_id' => 1))->count();
-				$rSystems = $mongo->systems->find()->sort(array('sortName' => 1));
+				$search = array();
+				if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
+					$search['_id'] = array('$ne' => 'custom');
+				$numSystems = $mongo->systems->find($search, array('_id' => 1))->count();
+				if (isset($_POST['getAll']) && $_POST['getAll']) 
+					$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1));
+				else {
+					$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
+					$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
+				}
 				$systems = array();
 				foreach ($rSystems as $system) {
+					if ($system['_id'] == 'custom') 
+						continue;
 					$systems[] = (object) array(
 						'shortName' => $system['_id'],
 						'fullName' => $system['name'],
 						'publisher' => $system['publisher']
 					);
 				}
+				$systems[] = (object) array(
+					'shortName' => 'custom',
+					'fullName' => 'Custom',
+					'publisher' => null
+				);
 				displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
 			}
 		}

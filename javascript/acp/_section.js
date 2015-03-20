@@ -230,7 +230,7 @@ $(function () {
 
 controllers.controller('acp_systems', function ($scope, $http, $sce) {
 	function getSystems() {
-		$http.post(API_HOST + '/systems/search/', { all: true }).success(function (data) {
+		$http.post(API_HOST + '/systems/search/', { getAll: true }).success(function (data) {
 			$scope.systems = data.systems;
 			$scope.combobox.systems = new Array();
 			for (key in $scope.systems) {

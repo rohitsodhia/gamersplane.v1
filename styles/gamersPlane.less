@@ -42,6 +42,14 @@
 
 /* ----------------------------------------------------------------------------------------------*/
 
+.border-radius(@radius: 6px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
 body, td, input, select, textarea {
 	font-size: 13px;
 	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
@@ -2463,4 +2471,78 @@ div.forumIcon.newPosts.locked {
 
 #page_notifications hr {
 	margin: .4em 0;
+}
+
+/* --------------------------------------------*/
+
+#page_systems {
+	.sideWidget {
+		h2 {
+			margin-bottom: 0;
+			line-height: 1.2em;
+		}
+
+		.tr {
+			padding-top: 0;
+		}
+
+		input[type="text"] {
+			.borderBox;
+			width: 215px;
+		}
+	}
+
+	#systems {
+		.system {
+			margin-top: 1em;
+			padding: 10px;
+			border: 1px solid #888;
+			background: #FFF;
+
+			& > * {
+				vertical-align: top;
+			}
+
+			.logoWrapper {
+				display: inline-block;
+			}
+
+			.logo {
+				display: table-cell;
+				height: 100px;
+				width: 180px;
+				padding: 10px;
+				border: 1px solid #888;
+				.border-radius(10px);
+				text-align: center;
+				vertical-align: middle;
+				background: #EEE;
+
+				img {
+					max-height: 100px;
+					max-width: 180px;
+				}
+			}
+
+			.info {
+				display: inline-block;
+				margin-left: 20px;
+			}
+
+			h2 {
+				margin-bottom: .3em;
+				font-family: AgencyFB;
+				font-size: 2.2em;
+				line-height: 1.2em;
+			}
+		}
+	}
+
+	#noResults {
+		font-family: AgencyFB;
+		font-size: 2.6em;
+		line-height: 1.2em;
+		font-weight: bold;
+		text-align: center;
+	} 
 }

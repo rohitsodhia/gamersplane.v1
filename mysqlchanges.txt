@@ -1,1 +1,2 @@
 INSERT INTO dispatch SET url ='acp/systems/', pageID = 'acp_systems', ngController = 'acp_systems', file = 'acp/systems.php', title = 'Site ACP - Systems';
+INSERT INTO dispatch SET url ='systems/', pageID = 'systems', ngController = 'systems', file = 'systems.php', title = 'Systems';
