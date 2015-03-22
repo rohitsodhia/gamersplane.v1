@@ -17,7 +17,7 @@
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>
 						<div class="publisher" ng-if="system.publisher">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
-						<div class="genres" ng-if"system.genres.length"><span ng-repeat="genre | system.genres">{{genre}}{{$last?'':','}}</span></div>
+						<div class="genres" ng-if="system.genres.length"><span ng-repeat="genre | system.genres">{{genre}}{{$last?'':','}}</span></div>
 					</div>
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>
