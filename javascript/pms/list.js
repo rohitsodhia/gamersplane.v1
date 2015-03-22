@@ -53,7 +53,6 @@ controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 		if (page < 0 && page > $scope.pagination.numItems) 
 			page = 1;
 		getPMs($scope.box.toLowerCase(), page);
-
 	}
 });
 

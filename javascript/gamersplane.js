@@ -182,26 +182,46 @@ app.config(function ($httpProvider) {
 		templateUrl: '/angular/directives/combobox.php',
 		scope: {
 			'data': '=data',
-			'search': '=results'
+			'value': '=value'
 		},
 		link: function (scope, element, attrs) {
+			scope.value = '';
+			scope.search = '';
+			if (typeof attrs.placeholder != 'undefined') 
+				element.find('input').attr('placeholder', attrs.placeholder);
 			scope.showDropdown = false;
 			$combobox = element.children('.combobox');
 			$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
 			$combobox.children('.dropdown').css('height', $combobox.outerHeight());
+			if (typeof scope.data == 'undefined') 
+				scope.data = [];
+			var oldIndex = currentIndex = -1;
 
 			scope.toggleDropdown = function ($event) {
+				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				scope.showDropdown = scope.showDropdown?false:true;
+				console.log($filter('filter')(scope.data, scope.search));
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) 
+					scope.showDropdown = scope.showDropdown?false:true;
 			};
 			scope.revealDropdown = function () {
-				if (isNaN(scope.search) || scope.search.length == 0 || $filter('filter')(scope.data, scope.search).length) 
+				scope.value = '';
+				for (key in scope.data) 
+					if (scope.search == scope.data[key].value) 
+						scope.value = scope.data[key].id;
+				if (scope.value.length == 0) 
+					scope.value = scope.search;
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) {
+					oldIndex = currentIndex = -1;
 					scope.showDropdown = true;
-				else 
+				} else {
+					oldIndex = currentIndex = -1;
+					element.find('.selected').removeClass('selected');
 					scope.showDropdown = false;
+				}
 			};
 			scope.hideDropdown = function () {
-//				$timeout(function () { scope.showDropdown = false; }, 200);
+				element.find('.selected').removeClass('selected');
 				scope.showDropdown = false;
 			};
 			$('html').click(function () {
@@ -209,11 +229,51 @@ app.config(function ($httpProvider) {
 				scope.$apply();
 			});
 
-			scope.setBox = function ($event, set) {
-				console.log(set);
-				scope.search = set;
+			scope.navigateResults = function ($event) {
+				if ($event.keyCode == 13) {
+					var set = $($resultsWrapper).find('.selected').data('$scope')['set'];
+					scope.setBox(set);
+				} else {
+					$resultsWrapper = element.find('.results');
+					$results = $($resultsWrapper).children();
+					resultsHeight = $resultsWrapper.height();
+					$results.each(function (key, value) {
+						if ($(this).hasClass('selected')) {
+							oldIndex = currentIndex = key;
+						}
+					});
+
+					if ($event.keyCode == 40) 
+						currentIndex += 1;
+					else if ($event.keyCode == 38) 
+						currentIndex -= 1;
+					else 
+						return;
+
+					if (currentIndex < 0) 
+						currentIndex = $results.length - 1;
+					else if (currentIndex >= $results.length) 
+						currentIndex = 0;
+
+					if ($results[currentIndex].offsetTop + $($results[currentIndex]).outerHeight() > $resultsWrapper.scrollTop() + resultsHeight) 
+						$resultsWrapper.scrollTop($results[currentIndex].offsetTop + $($results[currentIndex]).outerHeight() - resultsHeight);
+					else if ($results[currentIndex].offsetTop < $resultsWrapper.scrollTop()) 
+						$resultsWrapper.scrollTop($results[currentIndex].offsetTop);
+
+					$($results[oldIndex]).removeClass('selected');
+					$($results[currentIndex]).addClass('selected');
+				}
+			};
+
+			scope.setBox = function (set) {
+				scope.value = set.id;
+				scope.search = set.value;
 			};
 		}
+	}
+}]).filter('trustHTML', ['$sce', function($sce){
+	return function(text) {
+		return $sce.trustAsHtml(text);
 	}
 }]).filter('paginateItems', function () {
 	return function (input, limit, skip) {

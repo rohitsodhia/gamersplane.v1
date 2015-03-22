@@ -228,7 +228,7 @@ $(function () {
 	}
 });
 
-controllers.controller('acp_systems', function ($scope, $http, $sce) {
+controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	function getSystems() {
 		$http.post(API_HOST + '/systems/search/', { getAll: true }).success(function (data) {
 			$scope.systems = data.systems;
@@ -243,13 +243,20 @@ controllers.controller('acp_systems', function ($scope, $http, $sce) {
 
 	function getGeneres() {
 		$http.post(API_HOST + '/systems/search/', { for: 'genres' }).success(function (data) {
-
+			$scope.allGenres = $scope.combobox.genres = [];
+			for (key in data) {
+				$scope.allGenres.push(data[key]);
+				$scope.combobox.genres.push({ 'id': $scope.allGenres, 'value': $scope.allGenres });
+			}
 		});
 	}
 
 	$scope.combobox = {};
 	getSystems();
+	getGeneres();
 	$scope.edit = {};
+	$scope.allGenres = [];
+	$scope.saveSuccess = false;
 
 	$scope.showEdit = function (shortName) {
 		$scope.edit = {};
@@ -266,6 +273,24 @@ controllers.controller('acp_systems', function ($scope, $http, $sce) {
 		$scope.saveStatusBtn = type;
 	}
 
+	function updateGenres() {
+		$scope.combobox.genres = [];
+		for (key in $scope.allGenres) 
+			if ($scope.edit.genres.indexOf($scope.allGenres[key]) == -1)
+				$scope.combobox.genres.push({ 'id': $scope.allGenres[key], 'value': $scope.allGenres[key]});
+	}
+	$scope.addGenre = function () {
+		if (typeof $scope.edit.genres == 'undefined') 
+			$scope.edit.genres = [];
+		$scope.edit.genres.push($scope.newGenre);
+		updateGenres();
+	}
+	$scope.removeGenre = function (genre) {
+		index = $scope.edit.genres.indexOf(genre);
+		if (index >= 0) 
+			$scope.edit.genres.splice(index, 1);
+		updateGenres();
+	}
 	$scope.saveSystem = function () {
 		if ($scope.saveStatusBtn != 'save') return;
 
@@ -276,10 +301,14 @@ controllers.controller('acp_systems', function ($scope, $http, $sce) {
 					break;
 				}
 			}
+			$scope.saveSuccess = true;
+			$timeout(function () { $scope.saveSuccess = false; }, 1500);
 		});
 	}
 
 	$scope.loadSystem = function () {
-		$scope.showEdit($scope.systemSearch.id);
+		$scope.showEdit($scope.systemSearch);
+		$scope.newGenre = '';
+		updateGenres();
 	}
 });

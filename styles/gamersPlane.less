@@ -77,6 +77,10 @@ input {
 
 input, textarea {
 	padding: 4px 5px;
+
+	&:focus {
+		outline: 0;
+	}
 }
 
 input[type="text"], input[type="password"], input[type="button"], input[type="file"], select, textarea {
@@ -2009,13 +2013,13 @@ input[type="text"].placeholder {
 
 .alertBox_error {
 	border-color: #900;
-	background-image: url('../images/alerts/error.jpg');
+	background-image: url('../images/alerts/error.png');
 	background-color: #D33;
 }
 
 .alertBox_success {
 	border-color: #060;
-	background-image: url('../images/alerts/check.jpg');
+	background-image: url('../images/alerts/check.png');
 	background-color: #5A5;
 }
 

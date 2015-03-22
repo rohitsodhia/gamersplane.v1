@@ -1,7 +1,7 @@
 <div class="combobox" ng-click="$event.stopPropagation()">
-	<input type="text" ng-model="search.value" search-id="search.id" placeholder="System" ng-class="{ resultsOpen: showDropdown }" ng-change="revealDropdown()" ng-focus="revealDropdown()" ng-blur="hideDropdown()">
+	<input type="text" ng-model="search" ng-class="{ resultsOpen: showDropdown }" ng-change="revealDropdown()" ng-focus="revealDropdown()" ng-blur="hideDropdown()" ng-keydown="navigateResults($event)">
 	<a class="dropdown" ng-click="toggleDropdown($event)"></a>
 	<div class="results" ng-show="showDropdown">
-		<a ng-repeat="set in data | filter:search" ng-mousedown="setBox($event, set)" ng-bind-html="set.value"></a>
+		<a ng-repeat="set in data | filter: { value: search }" data-id="{{set.id}}" ng-mousedown="setBox(set)" ng-bind-html="set.value | trustHTML"></a>
 	</div>
 </div>

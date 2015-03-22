@@ -16,8 +16,11 @@
 
 			if (isset($_POST['for']) && $_POST['for'] == 'genres') {
 				$genres = array();
-				$rGenres = $mongo->systems->find(array(), array('_id' => -1, 'genres' => 1));
-				var_dump($rGenres);
+				$rSystem = $mongo->systems->find(array('genres' => array('$not' => array('$size' => 0))), array('_id' => -1, 'genres' => 1));
+				foreach ($rSystem as $system) 
+					foreach ($system['genres'] as $genre)
+						$genres[] = $genre;
+				displayJSON(array_unique($genres));
 			} else {
 				$search = array();
 				if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
@@ -36,14 +39,16 @@
 					$systems[] = (object) array(
 						'shortName' => $system['_id'],
 						'fullName' => $system['name'],
+						'genres' => $system['genres'],
 						'publisher' => $system['publisher']
 					);
 				}
-				$systems[] = (object) array(
-					'shortName' => 'custom',
-					'fullName' => 'Custom',
-					'publisher' => null
-				);
+				if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
+					$systems[] = (object) array(
+						'shortName' => 'custom',
+						'fullName' => 'Custom',
+						'publisher' => null
+					);
 				displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
 			}
 		}
@@ -52,9 +57,16 @@
 			global $mongo, $currentUser;
 
 			if ($currentUser->checkACP('systems', false)) {
+				$genres = array();
+				foreach ($_POST['system']->genres as $genre) {
+					$genre = sanitizeString($genre);
+					if (strlen($genre) && !array_search($genre, $genres)) 
+						$genres[] = $genre;
+				}
 				$system = array(
 					'name' => sanitizeString($_POST['system']->fullName),
 					'sortName' => sanitizeString($_POST['system']->fullName, 'lower'),
+					'genres' => $genres,
 					'publisher' => (object) array(
 						'name' => strlen($_POST['system']->publisher->name)?sanitizeString($_POST['system']->publisher->name):null,
 						'site' => strlen($_POST['system']->publisher->site)?$_POST['system']->publisher->site:null

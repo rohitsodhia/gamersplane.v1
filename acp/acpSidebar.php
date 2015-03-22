@@ -8,6 +8,11 @@
 			<li><a href="/acp/music/">Manage Music</a></li>
 <?
 	}
+	if ($currentUser->checkACP('systems', false)) {
+?>
+			<li><a href="/acp/systems/">Manage Systems</a></li>
+<?
+	}
 	if ($currentUser->checkACP('autocomplete', false)) {
 ?>
 			<li><a href="/acp/autocomplete/">Manage Autocomplete</a></li>
