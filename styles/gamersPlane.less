@@ -2285,44 +2285,46 @@ div.forumIcon.newPosts.locked {
 
 /* --------------------------------------------*/
 
-#page_login #formWrapper {
-	max-width: 500px;
-	margin: 0 auto;
-}
+#page_login {
+	#formWrapper {
+		max-width: 500px;
+		margin: 0 auto;
+	}
 
-#page_login h1 {
-	margin: 0;
-}
+	h1 {
+		margin: 0;
+	}
 
-#page_login form {
-	margin: 0 0 1em;
-	padding: 10px 0;
-	border: 2px solid #C60;
-	border-top: 0;
-}
+	form {
+		margin: 0 0 1em;
+		padding: 10px 0;
+		border: 2px solid #C60;
+		border-top: 0;
+	}
 
-#page_login .tr {
-	width: 325px;
-	margin: 0 auto;
-}
+	.tr {
+		width: 335px;
+		margin: 0 auto;
 
-#page_login label {
-	width: 100px;
-	text-align: right;
-	float: left;
-}
+		& > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+	}
 
-#page_login .textfield {
-	float: none;
-	margin-left: 110px;
-}
+	label {
+		width: 110px;
+		margin-right: 10px;
+		text-align: right;
+	}
 
-#page_login #submitDiv {
-	padding-top: .5em;
-}
+	#submitDiv {
+		padding-top: .5em;
+	}
 
-#page_login p {
-	text-align: center;
+	p {
+		text-align: center;
+	}
 }
 
 /* --------------------------------------------*/
