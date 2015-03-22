@@ -16,7 +16,7 @@
 					<div class="logoWrapper"><div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div></div>
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>
-						<div class="publisher" ng-if="system.publisher">Publisher: {{wrapPublisher(system)}}</div>
+						<div class="publisher" ng-if="system.publisher">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
 					</div>
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>
