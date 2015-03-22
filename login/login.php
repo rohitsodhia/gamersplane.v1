@@ -23,12 +23,12 @@
 			
 			<form method="post" action="/login/process/login/" class="hbMargined">
 				<div class="tr">
-					<label class="textLabel">Username/Email</label>
-					<div class="textfield"><input id="user" type="text" name="user" maxlength="24" tabindex="3"></div>
+					<label>Username/Email</label>
+					<input id="user" type="text" name="user" maxlength="24" tabindex="3">
 				</div>
 				<div class="tr">
-					<label class="textLabel">Password</label>
-					<div class="textfield"><input id="password" type="password" name="password" maxlength="16" tabindex="4"></div>
+					<label>Password</label>
+					<input id="password" type="password" name="password" maxlength="16" tabindex="4">
 				</div>
 				<div id="submitDiv" class="alignCenter"><button type="submit" name="login" value="login" tabindex="5">Login</button></div>
 			</form>
