@@ -4,7 +4,7 @@
 			<form>
 				<div class="tr">Search:</div>
 				<div class="tr"><input type="text" name="search" ng-model="filter.search" ng-change="adjustPagination()"></div>
-				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
+<!--				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>-->
 			</form>
 		</div>
 
