@@ -5,6 +5,7 @@ _backup/
 *.sh
 *.txt
 *.psd
+*.doc
 javascript/markItUp/sets/default/
 javascript/markItUp/skins/markitup/
 javascript/markItUp/skins/simple/
@@ -17,3 +18,4 @@ test*.php
 includes/connect_local.php
 oneRunScripts/
 images/links/
+images/tools/dice/sweote/sweote/

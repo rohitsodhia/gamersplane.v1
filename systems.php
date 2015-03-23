@@ -12,12 +12,12 @@
 			<h1 class="headerbar">Systems on Gamers' Plane</h1>
 			<div class="clearfix"><paginate class="tr"></paginate></div>
 			<div id="systems">
-				<div class="system clearfix" ng-repeat="system in systems | filter:'!Custom' | filter:filter | paginateItems:10:(pagination.current - 1) * 10">
+				<div class="system clearfix" ng-repeat="system in systems | filter:filter | paginateItems:10:(pagination.current - 1) * 10">
 					<div class="logoWrapper"><div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div></div>
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>
-						<div class="publisher" ng-if="system.publisher">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
-						<div class="genres" ng-if="system.genres.length"><span ng-repeat="genre | system.genres">{{genre}}{{$last?'':','}}</span></div>
+						<div class="tr publisher" ng-if="system.publisher">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
+						<div class="tr genres" ng-if="system.genres.length">Genre(s): <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
 					</div>
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>

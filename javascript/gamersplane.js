@@ -182,6 +182,7 @@ app.config(function ($httpProvider) {
 		templateUrl: '/angular/directives/combobox.php',
 		scope: {
 			'data': '=data',
+			'search': '=search',
 			'value': '=value'
 		},
 		link: function (scope, element, attrs) {
@@ -200,7 +201,6 @@ app.config(function ($httpProvider) {
 			scope.toggleDropdown = function ($event) {
 				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				console.log($filter('filter')(scope.data, scope.search));
 				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) 
 					scope.showDropdown = scope.showDropdown?false:true;
 			};
@@ -273,6 +273,8 @@ app.config(function ($httpProvider) {
 	}
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
+		if (typeof text != 'string') 
+			text = '';
 		return $sce.trustAsHtml(text);
 	}
 }]).filter('paginateItems', function () {

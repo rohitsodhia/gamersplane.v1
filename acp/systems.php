@@ -19,7 +19,7 @@
 				</div>
 				<div class="tr">
 					<label for="genres">Genres:</label>
-					<combobox data="combobox.genres" value="newGenre" placeholder="New Genre"></combobox> <a ng-click="addGenre()">[ + ]</a>
+					<combobox data="combobox.genres" value="newGenre" search="combobox.search.systems" placeholder="New Genre"></combobox> <a ng-click="addGenre()">[ + ]</a>
 					<div id="genres" ng-show="edit.genres.length">
 						<a ng-repeat="genre in edit.genres | orderBy:genre" ng-click="removeGenre(genre)">{{genre}}{{$last?'':', '}}</a>
 					</div>
@@ -42,7 +42,7 @@
 			</form>
 
 			<form id="loadSystem" ng-submit="loadSystem()">
-				<combobox data="combobox.systems" value="systemSearch" placeholder="System"></combobox>
+				<combobox data="combobox.systems" value="systemSearch" search="combobox.search.genres" placeholder="System"></combobox>
 				<button type="submit" class="fancyButton">Load</button>
 			</form>
 		</div>

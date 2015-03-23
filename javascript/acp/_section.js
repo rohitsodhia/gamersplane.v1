@@ -246,12 +246,13 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			$scope.allGenres = $scope.combobox.genres = [];
 			for (key in data) {
 				$scope.allGenres.push(data[key]);
-				$scope.combobox.genres.push({ 'id': $scope.allGenres, 'value': $scope.allGenres });
+				$scope.combobox.genres.push({ 'id': data[key], 'value': data[key] });
 			}
 		});
 	}
 
 	$scope.combobox = {};
+	$scope.combobox.search = { 'systems': '', 'genres': '' };
 	getSystems();
 	getGeneres();
 	$scope.edit = {};
@@ -282,6 +283,8 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	$scope.addGenre = function () {
 		if (typeof $scope.edit.genres == 'undefined') 
 			$scope.edit.genres = [];
+		if ($scope.newGenre.length == 0) 
+			return;
 		$scope.edit.genres.push($scope.newGenre);
 		updateGenres();
 	}
@@ -308,7 +311,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 
 	$scope.loadSystem = function () {
 		$scope.showEdit($scope.systemSearch);
-		$scope.newGenre = '';
+		$scope.combobox.search = { 'systems': '', 'genres': '' };
 		updateGenres();
 	}
 });
