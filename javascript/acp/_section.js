@@ -319,6 +319,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				}
 			}
 			$scope.saveSuccess = true;
+			getGeneres();
 			$timeout(function () { $scope.saveSuccess = false; }, 1500);
 		});
 	}
