@@ -32,6 +32,14 @@
 					<label for="publisherSite">Publisher Site</label>
 					<input id="publisherSite" type="text" ng-model="edit.publisher.site">
 				</div>
+				<div class="tr">
+					<label for="buyTheBasics">Buy the Basics</label>
+					<input id="buyTheBasics" type="text" ng-model="edit.newBasic.text"> <a ng-click="addBasic()">[ + ]</a>
+					<input id="buyTheBasics_site" type="text" ng-model="edit.newBasic.site">
+					<div id="basics" ng-show="edit.basics.length">
+						<a ng-repeat="basic in edit.basics" ng-click="removeBasic(basic)">{{basic.text}} / {{basic.site}}</a>
+					</div>
+				</div>
 				<div id="systemSave" class="alertBox_success" ng-show="saveSuccess">
 					System saved!
 				</div>

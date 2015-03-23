@@ -16,8 +16,12 @@
 					<div class="logoWrapper"><div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div></div>
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>
-						<div class="tr publisher" ng-if="system.publisher">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
-						<div class="tr genres" ng-if="system.genres.length">Genre(s): <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
+						<div class="tr publisher" ng-if="system.publisher.name.length">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
+						<div class="tr genres" ng-if="system.genres.length">Genre<span ng-if="system.genres.length > 1">s</span>: <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
+						<div class="tr basics" ng-if="system.basics.length">
+							<h3>Buy the Basics!</h3>
+							<a ng-repeat="basic in system.basics" ng-href="basic.site" ng-bind-html="basic.text | trustHTML"></a>
+						</div>
 					</div>
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>

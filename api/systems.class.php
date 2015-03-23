@@ -40,7 +40,8 @@
 						'shortName' => $system['_id'],
 						'fullName' => $system['name'],
 						'genres' => $system['genres'],
-						'publisher' => $system['publisher']
+						'publisher' => $system['publisher'],
+						'basics' => $system['basics']
 					);
 				}
 				if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
@@ -63,6 +64,15 @@
 					if (strlen($genre) && !array_search($genre, $genres)) 
 						$genres[] = $genre;
 				}
+				$basics = array();
+				foreach ($_POST['system']->basics as $basic) {
+					if (strlen($basic->text) && strlen($basic->site)) {
+						$basics[] = (object) array(
+							'text' => sanitizeString($basic->text),
+							'site' => sanitizeString($basic->site)
+						);
+					}
+				}
 				$system = array(
 					'name' => sanitizeString($_POST['system']->fullName),
 					'sortName' => sanitizeString($_POST['system']->fullName, 'lower'),
@@ -70,7 +80,8 @@
 					'publisher' => (object) array(
 						'name' => strlen($_POST['system']->publisher->name)?sanitizeString($_POST['system']->publisher->name):null,
 						'site' => strlen($_POST['system']->publisher->site)?$_POST['system']->publisher->site:null
-					)
+					),
+					'basics' => $basics
 				);
 				$system = $mongo->systems->findAndModify(array('_id' => $_POST['system']->shortName), array('$set' => $system), null, array('new' => true));
 				$system['shortName'] = $system['_id'];

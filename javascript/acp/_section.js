@@ -294,6 +294,20 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			$scope.edit.genres.splice(index, 1);
 		updateGenres();
 	}
+	$scope.addBasic = function () {
+		if (typeof $scope.edit.basics == 'undefined') 
+			$scope.edit.basics = [];
+		if (typeof $scope.edit.newBasic == 'undefined' || $scope.edit.newBasic.text.length == 0 || $scope.edit.newBasic.site.length == 0) 
+			return false;
+		console.log($scope.edit.newBasic);
+		$scope.edit.basics.push($scope.edit.newBasic);
+		$scope.edit.newBasic = { 'text': '', 'site': '' };
+	}
+	$scope.removeBasic = function (basic) {
+		index = $scope.edit.basics.indexOf(basic);
+		if (index >= 0) 
+			$scope.edit.basics.splice(basic, 1);
+	}
 	$scope.saveSystem = function () {
 		if ($scope.saveStatusBtn != 'save') return;
 
