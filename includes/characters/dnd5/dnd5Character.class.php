@@ -247,7 +247,7 @@
 								<input type="text" name="spells[<?=$key?>][name]" value="<?=$spellInfo['name']?>" class="spell_name placeholder" data-placeholder="Spell Name">
 								<span class="spell_stat"><select name="spells[<?=$key?>][stat]">
 <?			foreach (array('int', 'wis', 'cha') as $stat) { ?>
-									<option value="<?=$stat?>"<?=$skillInfo['stat'] == $stat?' selected="selected"':''?>><?=ucfirst($stat)?></option>
+									<option value="<?=$stat?>"<?=$spellInfo['stat'] == $stat?' selected="selected"':''?>><?=ucfirst($stat)?></option>
 <?			} ?>
 								</select></span>
 								<a href="" class="spell_notesLink">Notes</a>
