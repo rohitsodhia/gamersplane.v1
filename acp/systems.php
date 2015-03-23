@@ -18,7 +18,7 @@
 					<input id="fullName" type="text" ng-model="edit.fullName">
 				</div>
 				<div class="tr">
-					<label for="genres">Genres:</label>
+					<label for="genres">Genres</label>
 					<combobox data="combobox.genres" value="newGenre" search="combobox.search.systems" placeholder="New Genre"></combobox> <a ng-click="addGenre()">[ + ]</a>
 					<div id="genres" ng-show="edit.genres.length">
 						<a ng-repeat="genre in edit.genres | orderBy:genre" ng-click="removeGenre(genre)">{{genre}}{{$last?'':', '}}</a>

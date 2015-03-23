@@ -269,6 +269,10 @@ app.config(function ($httpProvider) {
 				scope.value = set.id;
 				scope.search = set.value;
 			};
+			scope.setSelected = function (set, $event) {
+				element.find('.results .selected').removeClass('selected');
+				$($event.currentTarget).addClass('selected');
+			}
 		}
 	}
 }]).filter('trustHTML', ['$sce', function($sce){
