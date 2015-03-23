@@ -29,6 +29,6 @@
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>
 			</div>
-			<div class="clearfix"><paginate class="tr"></paginate></div>
+			<div class="alignRight"><paginate class="tr"></paginate></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
