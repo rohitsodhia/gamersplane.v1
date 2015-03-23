@@ -10,7 +10,7 @@
 
 		<div class="mainColumn right">
 			<h1 class="headerbar">Systems on Gamers' Plane</h1>
-			<div class="clearfix">
+			<div class="alignRight">
 				<div id="numResults" ng-show="filter.search.length != 0"><strong>{{numSystems}}</strong> Systems Found</div>
 				<paginate class="tr"></paginate>
 			</div>
