@@ -59,31 +59,32 @@
 
 			if ($currentUser->checkACP('systems', false)) {
 				$genres = array();
-				foreach ($_POST['system']->genres as $genre) {
+				$systemData = $_POST['system'];
+				if (isset($systemData->genres) && is_array($systemData->genres)) { foreach ($systemData->genres as $genre) {
 					$genre = sanitizeString($genre);
 					if (strlen($genre) && !array_search($genre, $genres)) 
 						$genres[] = $genre;
-				}
+				} }
 				$basics = array();
-				foreach ($_POST['system']->basics as $basic) {
+				if (isset($systemData->basics) && is_array($systemData->basics)) { foreach ($systemData->basics as $basic) {
 					if (strlen($basic->text) && strlen($basic->site)) {
 						$basics[] = (object) array(
 							'text' => sanitizeString($basic->text),
 							'site' => sanitizeString($basic->site)
 						);
 					}
-				}
+				} }
 				$system = array(
-					'name' => sanitizeString($_POST['system']->fullName),
-					'sortName' => sanitizeString($_POST['system']->fullName, 'lower'),
+					'name' => sanitizeString($systemData->fullName),
+					'sortName' => sanitizeString($systemData->fullName, 'lower'),
 					'genres' => $genres,
 					'publisher' => (object) array(
-						'name' => strlen($_POST['system']->publisher->name)?sanitizeString($_POST['system']->publisher->name):null,
-						'site' => strlen($_POST['system']->publisher->site)?$_POST['system']->publisher->site:null
+						'name' => strlen($systemData->publisher->name)?sanitizeString($systemData->publisher->name):null,
+						'site' => strlen($systemData->publisher->site)?$systemData->publisher->site:null
 					),
 					'basics' => $basics
 				);
-				$system = $mongo->systems->findAndModify(array('_id' => $_POST['system']->shortName), array('$set' => $system), null, array('new' => true));
+				$system = $mongo->systems->findAndModify(array('_id' => $systemData->shortName), array('$set' => $system), null, array('new' => true));
 				$system['shortName'] = $system['_id'];
 				$system['fullName'] = $system['name'];
 				unset($system['_id'], $system['name']);
