@@ -18,9 +18,9 @@
 					<div id="classWrapper">
 						<a href="">[ Add Class ]</a>
 <?
-	$hasClasses = FALSE;
+	$hasClasses = false;
 	foreach ($this->getClasses() as $class => $level) {
-			$hasClasses = TRUE;
+			$hasClasses = true;
 ?>
 						<div class="classSet">
 							<input type="text" name="class[]" value="<?=$class?>" class="medText lrBuffer">

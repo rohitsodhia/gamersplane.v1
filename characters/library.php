@@ -1,4 +1,4 @@
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<div class="sideWidget left">
 			<h2>Filter</h2>
 			<form id="filterChars" method="get">
@@ -15,15 +15,16 @@
 				<ul class="clearfix">
 <?
 	$selectedSystems = array();
-	foreach ($systems->getAllSystems() as $systemID => $systemInfo) {
-		$selectedSystem = isset($_GET['filter'], $_GET['filterSystem']) && array_search($systemID, $_GET['filterSystem']) !== FALSE?TRUE:FALSE;
-		echo "					<li><input id=\"system_{$systemInfo['shortName']}\" type=\"checkbox\" name=\"filterSystem[]\" value=\"{$systemID}\"".($selectedSystem?' checked="checked"':'')."> <label for=\"system_{$systemInfo['shortName']}\">{$systemInfo['fullName']}</label></li>\n";
-
-		if ($selectedSystem) $selectedSystems[] = $systemID;
+	foreach ($systems->getAllSystems() as $slug => $fullName) {
+		$selectedSystem = isset($_GET['filter'], $_GET['filterSystem']) && array_search($system, $_GET['filterSystem']) !== false?true:false;
+?>
+					<li><input id="system_<?=$slug?>" type="checkbox" name="filterSystem[]" value="<?=$slug?>"<?=$selectedSystem?' checked="checked"':''?>> <label for="system_<?=$slug?>"><?=$fullName?></label></li>
+<?
+		if ($selectedSystem) 
+			$selectedSystems[] = $slug;
 	}
 ?>
 				</ul>
-				<input type="hidden" name="numSystems" value="<?=sizeof($systems)?>">
 				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 			</form>
 		</div>
@@ -39,13 +40,13 @@
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'games.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 'systems.fullName ASC';*/
 	$orderBy = 's.fullName ASC';
-	$characters = $mysql->query("SELECT c.*, s.shortName, s.fullName, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN systems s ON c.systemID = s.systemID INNER JOIN users u ON c.userID = u.userID ".(sizeof($selectedSystems)?'WHERE c.systemID IN ('.implode(', ', $selectedSystems).') ':'')."ORDER BY $orderBy");
+	$characters = $mysql->query("SELECT c.*, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN users u ON c.userID = u.userID ".(sizeof($selectedSystems)?'WHERE c.systemID IN ('.implode(', ', $selectedSystems).') ':'')."ORDER BY {$orderBy}");
 	
 	if ($characters->rowCount()) { foreach ($characters as $info) {
 ?>
 				<li class="clearfix">
-					<a href="/characters/<?=$info['shortName']?>/<?=$info['characterID']?>" class="charLabel"><?=$info['label']?></a
-					><div class="systemType"><?=$info['fullName']?></div
+					<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>" class="charLabel"><?=$info['label']?></a
+					><div class="systemType"><?=$systems->getFullName($info['system'])?></div
 					><div class="playerLink"><a href="/ucp/<?=$info['gmID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
 <?

@@ -65,7 +65,7 @@
 <?
 	foreach (d20Character_consts::getSaveNames() as $save => $saveFull) {
 		$abilities = $this->getSave($save, 'ability');
-		$abilityMods = array($this->getStatMod($abilities[0], FALSE), $this->getStatMod($abilities[1], FALSE));
+		$abilityMods = array($this->getStatMod($abilities[0], false), $this->getStatMod($abilities[1], false));
 		$useAbility = 0;
 		if ($abilityMods[1] > $abilityMods[0]) $useAbility = 1;
 ?>

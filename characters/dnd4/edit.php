@@ -23,9 +23,9 @@
 					<div id="classWrapper">
 						<a href="">[ Add Class ]</a>
 <?
-	$hasClasses = FALSE;
+	$hasClasses = false;
 	foreach ($this->getClasses() as $class => $level) {
-		$hasClasses = TRUE;
+		$hasClasses = true;
 ?>
 						<div class="classSet">
 							<input type="text" name="class[]" value="<?=$class?>" class="medText lrBuffer classInput">
@@ -90,7 +90,7 @@
 <?
 	foreach (d20Character_consts::getSaveNames() as $save => $saveFull) {
 		$abilities = $this->saves[$save]['ability'];
-		$abilityMods = array($this->getStatMod($abilities[0], FALSE), $this->getStatMod($abilities[1], FALSE));
+		$abilityMods = array($this->getStatMod($abilities[0], false), $this->getStatMod($abilities[1], false));
 		$useAbility = 0;
 		if ($abilityMods[1] > $abilityMods[0]) $useAbility = 1;
 ?>

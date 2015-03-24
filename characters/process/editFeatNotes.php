@@ -1,5 +1,5 @@
 <?
-	$success = FALSE;
+	$success = false;
 	if ($loggedIn) {
 		$characterID = intval($_POST['characterID']);
 		define('SYSTEM', $_POST['system']);
@@ -17,11 +17,12 @@
 					if ($updateFeat->rowCount()) echo 1;
 					else echo -1;
 
-					$success = TRUE;
+					$success = true;
 				}
 			}
 		}
 	}
 
-	if (!$success) echo 0;
+	if (!$success) 
+		echo 0;
 ?>

@@ -8,7 +8,7 @@
 	$newSystemItem = $newSystemItem->fetch();
 
 	if ($_POST['action'] == 'add') {
-		$addSystemRequest = $mysql->query("INSERT INTO system_charAutocomplete_map SET system = {$newSystemItem['system']}, itemID = {$newSystemItem['itemID']}");
+		$addSystemRequest = $mysql->query("INSERT INTO system_charAutocomplete_map SET system = '{$newSystemItem['system']}', itemID = {$newSystemItem['itemID']}");
 		$mysql->query("UPDATE userAddedItems SET action = 'approved', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
 	} elseif ($_POST['action'] == 'reject') {
 		$mysql->query("UPDATE userAddedItems SET action = 'rejected', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));

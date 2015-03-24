@@ -3,11 +3,11 @@
 		$type = sanitizeString($_POST['type']);
 		$search = sanitizeString($_POST['search'], 'search_format');
 		$characterID = intval($_POST['characterID']);
-		$system = sanitizeString($_POST['system']);
-		$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly'] == true?true:false;
+		$system = $_POST['system'];
+		$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
 
-		if ($systemID = $systems->getSystemID($system)) {
-			$itemIDs = $mysql->prepare("SELECT il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = {$systemID} AND sacm.itemID = il.itemID WHERE il.type = ?".($systemOnly?' AND sacm.systemID = '.$systemID:'')." AND il.name LIKE ? ORDER BY systemItem DESC, il.name LIMIT 5");
+		if ($systems->verifySystem($system)) {
+			$itemIDs = $mysql->prepare("SELECT il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.system = '{$system}' AND sacm.itemID = il.itemID WHERE il.type = ?".($systemOnly?" AND sacm.system = '{$system}'":'')." AND il.name LIKE ? ORDER BY systemItem DESC, il.name LIMIT 5");
 //			echo "SELECT il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = {$systemID} AND sacm.itemID = il.itemID WHERE il.type = '$type'".($systemOnly?' AND sacm.systemID = '.$systemID:'')." AND il.name LIKE '%$search%' ORDER BY systemItem DESC, il.name LIMIT 5";
 			$itemIDs->execute(array($type, "%$search%"));
 			$lastType = null;

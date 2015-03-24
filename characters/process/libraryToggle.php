@@ -8,5 +8,6 @@
 
 		$mysql->query("INSERT INTO characterLibrary SET characterID = $characterID ON DUPLICATE KEY UPDATE inLibrary = inLibrary ^ 1");
 		echo 1;
-	} else echo 0;
+	} else 
+		echo 0;
 ?>
