@@ -10,11 +10,11 @@
 			$itemIDs = $mysql->prepare("SELECT il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = {$systemID} AND sacm.itemID = il.itemID WHERE il.type = ?".($systemOnly?' AND sacm.systemID = '.$systemID:'')." AND il.name LIKE ? ORDER BY systemItem DESC, il.name LIMIT 5");
 //			echo "SELECT il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = {$systemID} AND sacm.itemID = il.itemID WHERE il.type = '$type'".($systemOnly?' AND sacm.systemID = '.$systemID:'')." AND il.name LIKE '%$search%' ORDER BY systemItem DESC, il.name LIMIT 5";
 			$itemIDs->execute(array($type, "%$search%"));
-			$lastType = NULL;
+			$lastType = null;
 			foreach ($itemIDs as $info) {
 				$classes = array();
 				if (!$info['systemItem']) $classes[] = 'nonSystemItem';
-				if ($info['systemItem'] != $lastType && $lastType != NULL) $classes[] = 'lineAbove';
+				if ($info['systemItem'] != $lastType && $lastType != null) $classes[] = 'lineAbove';
 				$lastType = $info['systemItem'];
 				echo "<a href=\"\"".(sizeof($classes)?' class="'.implode(' ', $classes).'"':'').">{$info['name']}</a>\n";
 			}

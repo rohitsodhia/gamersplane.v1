@@ -1,18 +1,14 @@
 <?
 	class Systems {
 		private static $instance;
-		protected $shortNames = array();
-		protected $fullNames = array();
-		protected $classes = array();
+		protected $systems = array();
 
 		private function __construct() {
-			global $mysql;
+			global $mongo;
 
-			$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 ORDER BY fullName');
-			foreach ($systems as $system) {
-				$this->shortNames[$system['systemID']] = $system['shortName'];
-				$this->fullNames[$system['systemID']] = $system['fullName'];
-			}
+			$systems = $mongo->systems->find(array(), array('name'))->sort(array('sortName' => 1));
+			foreach ($systems as $system) 
+				$this->systems[$system['_id']] = $system['name'];
 		}
 
 		public static function getInstance() {
@@ -43,8 +39,11 @@
 			return $randSystems;
 		}
 
-		public function getSystemInfo($systemID) {
-			if (array_search($systemID, array_keys($this->shortNames))) return array('systemID' => $systemID, 'shortName' => $this->shortNames[$systemID], 'fullName' => $this->fullNames[$systemID]);
+		public function getSystemInfo($system) {
+			if (array_search($system, array_keys($this->shortNames))) 
+				return array('systemID' => $systemID, 'shortName' => $this->shortNames[$systemID], 'fullName' => $this->fullNames[$systemID]);
+			else 
+				return null;
 		}
 
 		public function getSystemID($shortName) {
