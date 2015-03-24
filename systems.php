@@ -23,7 +23,7 @@
 						<div class="tr genres" ng-if="system.genres.length">Genre<span ng-if="system.genres.length > 1">s</span>: <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
 						<div class="tr basics" ng-if="system.basics.length">
 							<h3>Buy the Basics!</h3>
-							<a ng-repeat="basic in system.basics" ng-href="basic.site" ng-bind-html="basic.text | trustHTML"></a>
+							<a ng-repeat="basic in system.basics" ng-href="{{basic.site}}" ng-bind-html="basic.text | trustHTML"></a>
 						</div>
 					</div>
 				</div>
