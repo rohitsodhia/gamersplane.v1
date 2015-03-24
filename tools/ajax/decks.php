@@ -12,5 +12,6 @@
 				echo "\t\t\t".getCardImg($rndCard, $deckShort, $_POST['mini']?TRUE:FALSE)."\n";	
 			} else { echo "\t\t\t".'<p id="deckAnnouncement">Deck Empty</p>'."\n"; break; }
 		}
-	} elseif (isset($deckShort)) echo "\t\t\t".'<p id="deckAnnouncement">Deck Shuffled!</p>'."\n";
+	} elseif (isset($deckShort)) 
+		echo "\t\t\t".'<p id="deckAnnouncement">Deck Shuffled!</p>'."\n";
 ?>

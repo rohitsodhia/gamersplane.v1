@@ -1,7 +1,7 @@
 <?
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
+	require_once(FILEROOT.'/header.php');
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Music and Clips</h1>
 
 		<div id="info" class="hbMargined">
@@ -41,8 +41,10 @@
 <?	} ?>
 <?
 	if (!isset($_GET['filter'], $_GET['lyrics']['has'], $_GET['lyrics']['none'])) {
-		if (isset($_GET['filter'], $_GET['lyrics']['has'])) $filter['lyrics'] = true;
-		elseif (isset($_GET['filter'], $_GET['lyrics']['none'])) $filter['lyrics'] = false;
+		if (isset($_GET['filter'], $_GET['lyrics']['has'])) 
+			$filter['lyrics'] = true;
+		elseif (isset($_GET['filter'], $_GET['lyrics']['none'])) 
+			$filter['lyrics'] = false;
 	}
 	$result = $mongo->music->find(array_merge($filter, array('approved' => true)))->sort(array('genres' => 1, 'title' => 1));
 	if (sizeof($result)) {
@@ -68,4 +70,4 @@
 			</ul>
 <?	} ?>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>
