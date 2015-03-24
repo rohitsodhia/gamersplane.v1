@@ -19,8 +19,10 @@
 		}
 
 		public function errorsExist() {
-			if (sizeof($this->errors)) return true;
-			else return false;
+			if (sizeof($this->errors)) 
+				return true;
+			else 
+				return false;
 		}
 
 		public function setErrors($for, $errorVals = null) {

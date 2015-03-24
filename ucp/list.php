@@ -1,6 +1,4 @@
-<?
-?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">GP's Gamers</h1>
 		
 		<ul class="clearfix hbMargined">
@@ -23,7 +21,7 @@
 				</a>
 				<p><a href="<?='/user/'.$userInfo['userID']?>"><?=$user->username?></a></p>
 			</li>
-<? } ?>
+<?	} ?>
 		</ul>
 		
 <?
