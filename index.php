@@ -35,7 +35,7 @@
 ?>
 						<div class="gameInfo">
 							<p class="title"><a href="/games/<?=$gameInfo['gameID']?>"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-							<p class="details"><u><?=$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+							<p class="details"><u><?=$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
 						</div>
 <?			} ?>
 					</div>
@@ -71,12 +71,14 @@
 		$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);
 		$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
 		$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
-		if (!$first) echo "					<hr>\n";
-		else $first = false;
+		if (!$first) 
+			echo "					<hr>\n";
+		else 
+			$first = false;
 ?>
 					<div class="gameInfo">
 						<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-						<p class="details"><u><?=$system->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+						<p class="details"><u><?=$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
 					</div>
 <?	} ?>
 				</div>

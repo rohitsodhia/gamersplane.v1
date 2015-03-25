@@ -39,8 +39,8 @@
 			return array_key_exists($slug, $this->systems)?true:false;
 		}
 
-		public function getFullName($slug) {
-			if (in_array($slug, $this->systems)) 
+		public function getFullName($slug, $debug = false) {
+			if (array_key_exists($slug, $this->systems)) 
 				return $this->systems[$slug];
 			else 
 				return null;
