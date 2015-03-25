@@ -158,10 +158,13 @@
 	function getCharacterClass($characterID) {
 		global $mysql;
 
-		$system = $mysql->query('SELECT s.shortName FROM systems s INNER JOIN characters c USING (systemID) WHERE c.characterID = '.$characterID);
+		$characterID = intval($characterID);
+		$system = $mysql->query('SELECT c.system FROM characters WHERE characterID = '.$characterID);
 
-		if ($system->rowCount()) return $system->fetchColumn();
-		else return false;
+		if ($system->rowCount()) 
+			return $system->fetchColumn();
+		else 
+			return false;
 	}
 
 	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {

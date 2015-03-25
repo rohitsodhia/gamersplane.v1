@@ -1,7 +1,7 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	
-	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.systemID, s.shortName systemShort, s.fullName systemFull, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
+	$gameInfo = $mysql->query("SELECT g.gameID, g.open, g.title, g.system, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.start, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 
@@ -13,7 +13,8 @@
 		if ($userCheck->rowCount()) {
 			$inGame = true;
 			$approved = $userCheck->fetchColumn();
-		} else $inGame = false;
+		} else 
+			$inGame = false;
 	} else {
 		$inGame = true;
 		$approved = true;
@@ -22,14 +23,15 @@
 	$approvedPlayers = $mysql->query("SELECT u.userID, u.username, p.isGM, p.primaryGM FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 1 ORDER BY u.username ASC");
 
 	$characters = array();
-	foreach ($mysql->query('SELECT characterID, userID, label, approved FROM characters WHERE gameID = '.$gameID) as $character) $characters[$character['userID']][] = $character;
+	foreach ($mysql->query('SELECT characterID, userID, label, approved FROM characters WHERE gameID = '.$gameID) as $character) 
+		$characters[$character['userID']][] = $character;
 	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = 1");
 	$playerApprovedChars = $playerApprovedChars->fetchColumn();
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Game Details<?=$gameInfo['isGM']?' <a href="/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>
 		
-<? if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
+<?	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
 		<div class="alertBox_error"><ul>
 <?
 		if ($_GET['submitted']) { echo "\t\t\t<li>You already submitted that character to a game.</li>\n"; }
@@ -37,7 +39,7 @@
 		if ($_GET['approveError']) { echo "\t\t\t<li>There was an issue approving the character.</li>\n"; }
 ?>
 		</ul></div>
-<? } if ($_GET['removed'] || $_GET['gmAdded'] || $_GET['gmRemoved']) { ?>
+<?	} if ($_GET['removed'] || $_GET['gmAdded'] || $_GET['gmRemoved']) { ?>
 		<div class="alertBox_success"><ul>
 <?
 		if ($_GET['gmAdded']) echo "\t\t\t<li>GM successfully added.</li>\n";
@@ -45,17 +47,17 @@
 		if ($_GET['removed']) echo "\t\t\t<li>Character successfully removed from game.</li>\n";
 ?>
 		</ul></div>
-<? } ?>
+<?	} ?>
 		
 		<input id="gameID" type="hidden" value="<?=$gameInfo['gameID']?>">
 		<div id="details">
 			<div class="tr clearfix">
 				<label>Game Status</label>
-<? if ($gameInfo['primaryGM']) { ?>
+<?	if ($gameInfo['primaryGM']) { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?> <a id="changeStatus" href="<?='/games/changeStatus/'.$gameID?>">[ Change ]</a></div>
-<? } else { ?>
+<?	} else { ?>
 				<div><?=$gameInfo['open']?'Open':'Closed'?></div>
-<? } ?>
+<?	} ?>
 			</div>
 			<div class="tr clearfix">
 				<label>Game Title</label>
@@ -63,7 +65,7 @@
 			</div>
 			<div class="tr clearfix">
 				<label>System</label>
-				<div><?=printReady($gameInfo['systemFull'])?></div>
+				<div><?=printReady($systems->getFullName($gameInfo['system']))?></div>
 			</div>
 			<div class="tr clearfix">
 				<label>Game Master</label>
@@ -99,11 +101,11 @@
 ?>
 			<div class="tr clearfix">
 				<label>Game Forums are:</label>
-<? if ($gameInfo['primaryGM']) { ?>
+<?	if ($gameInfo['primaryGM']) { ?>
 				<div><span><?=$forumStatus == 1?'Public':'Private'?></span> <a id="toggleForumVisibility" href="">[ Make game <?=$forumStatus != 1?'Public':'Private'?> ]</a></div>
-<? } else { ?>
+<?	} else { ?>
 				<div><?=$forumStatus == 1?'Public':'Private'?></div>
-<? } ?>
+<?	} ?>
 			</div>
 		</div>
 
@@ -121,17 +123,15 @@
 					<h2 class="headerbar hbDark">Submit a Character</h2>
 <?
 			if ($playerApprovedChars < $gameInfo['charsPerPlayer']) {
-				$readyChars = $mysql->query('SELECT characterID, label FROM characters WHERE userID = '.$currentUser->userID.' AND systemID = '.$gameInfo['systemID'].' AND ISNULL(gameID)');
+				$readyChars = $mysql->query("SELECT characterID, label FROM characters WHERE userID = '{$currentUser->userID}' AND system = '{$gameInfo['system']}' AND ISNULL(gameID)");
 				if ($readyChars->rowCount()) {
 ?>
 					<form method="post" action="/games/process/addCharacter/" class="hbdMargined">
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<select name="characterID">
-<?
-					foreach ($readyChars as $charInfo) {
-						echo "\t\t\t\t\t\t\t".'<option value="'.$charInfo['characterID'].'">'.$charInfo['label']."</option>\n";
-					}
-?>
+<?					foreach ($readyChars as $charInfo) { ?>
+							<option value="<?=$charInfo['characterID']?>"><?=$charInfo['label']?></option>
+<?					} ?>
 						</select>
 						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 					</form>
@@ -178,16 +178,12 @@
 					<p class="hbdMargined notice">This game is currently full</p>
 				</div>
 			</div>
-<?
-		}
-?>
+<?		} ?>
 			
 			<div<?=$hasRightCol?' class="leftCol"':''?>>
 				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
 				<ul id="playersInGame" class="hbdMargined hbAttachedList">
-<?
-	foreach ($approvedPlayers as $playerInfo) {
-?>
+<?	foreach ($approvedPlayers as $playerInfo) { ?>
 					<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
 						<div class="playerInfo clearfix">
 							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>/" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="/images/gm_icon.png">':''?></div>
@@ -204,7 +200,7 @@
 						<ul class="characters">
 <?			foreach ($characters[$playerInfo['userID']] as $character) { ?>
 							<li class="clearfix">
-								<div class="charLabel"><?=(($isGM || $currentUser->userID == $playerInfo['userID'])?'<a href="/characters/'.$gameInfo['systemShort'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $currentUser->userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
+								<div class="charLabel"><?=(($isGM || $currentUser->userID == $playerInfo['userID'])?'<a href="/characters/'.$gameInfo['system'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $currentUser->userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
 								<div class="actionLinks">
 <?				if ($isGM && !$character['approved']) { ?>
 									<a href="<?='/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
@@ -220,7 +216,7 @@
 						</ul>
 <?		} ?>
 					</li>
-<? 	} ?>
+<?	} ?>
 				</ul>
 
 <?
@@ -265,9 +261,7 @@
 						<div class="mapSize">Size</div>
 						<div class="mapActions">Actions</div>
 					</div>
-<?
-			foreach ($mapList as $mapInfo) {
-?>
+<?			foreach ($mapList as $mapInfo) { ?>
 					<div class="tr clearfix">
 						<div class="mapVisible<?=$mapInfo['visible']?'':' invisible'?>"></div>
 						<div class="mapLink"><a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>"><?=$mapInfo['name']?></a></div>
@@ -282,7 +276,8 @@
 					</div>
 <?
 			}
-		} else echo "					<p class=\"notice\">There are no maps available at this time</p>\n";
+		} else 
+			echo "					<p class=\"notice\">There are no maps available at this time</p>\n";
 ?>
 				</div>
 			</div>
@@ -339,4 +334,4 @@
 	} else echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="/login" class="loginLink">Login</a> or <a href="/register" class="last">Register</a> to join!</div>'."\n";
 
 ?>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

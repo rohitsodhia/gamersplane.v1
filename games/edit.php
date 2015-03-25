@@ -4,7 +4,7 @@
 
 	if ($display == 'edit') {
 		$gameID = intval($pathOptions[0]);
-		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.systemID, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$currentUser->userID);
+		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.system, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$currentUser->userID);
 		if ($gameDetails->rowCount() == 0) { header('Location: /403'); exit; }
 		else {
 			$gameDetails = $gameDetails->fetch();
@@ -25,27 +25,28 @@
 
 	if (isset($postFrequency)) list($timesPer, $perPeriod) = explode('/', $postFrequency);
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
-<? if ($display == 'new') { ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
+<?	if ($display == 'new') { ?>
 		<div class="sideWidget">
 			<h2>LFGs</h2>
 			<div class="widgetBody">
 				<p>Players are currently looking to play...</p>
 				<ul>
 <?
-	$lfgSummaries = $mysql->query('SELECT s.systemID, s.fullName, l.numPlayers FROM systems s LEFT JOIN (SELECT systemID, COUNT(systemID) numPlayers FROM lfg GROUP BY systemID) l USING (systemID) WHERE l.numPlayers != 0 ORDER BY l.numPlayers DESC, s.fullName');
-	$totalsInfo = array();
-	foreach ($lfgSummaries as $info) echo "\t\t\t\t\t<li>{$info['fullName']} - ".($info['numPlayers']?$info['numPlayers']:'0')."</li>\n";
+	$lfgSummaries = $mysql->query('SELECT system, COUNT(systemID) numPlayers FROM lfg GROUP BY systemID')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+	array_walk($lfgSummaries, function (&$value, $key) { $value = $value[0]['numPlayers']; });
+	foreach ($systems->getAllSystems(true) as $slug => $system)  
+		echo "\t\t\t\t\t<li>{$system} - ".(array_key_exists($lfgSummaries[$slug])?$lfgSummaries[$slug]:'0')."</li>\n";
 ?>
 				</ul>
 			</div>
 		</div>
 
 		<div class="mainColumn">
-<? } ?>
+<?	} ?>
 			<h1 class="headerbar"><?=$display == 'new'?'New':'Edit'?> Game</h1>
 			
-<? if (sizeof($_GET) && $errors) { ?>
+<?	if (sizeof($_GET) && $errors) { ?>
 			<div class="alertBox_error">
 				Seems like there were some problems:
 				<ul>
@@ -57,30 +58,28 @@
 ?>
 				</ul>
 			</div>
-<? } ?>
+<?	} ?>
 			
 			<form method="post" action="/games/process/<?=$display?>">
-<? if ($display == 'edit') { ?>
+<?	if ($display == 'edit') { ?>
 				<input type="hidden" name="gameID" value="<?=$gameID?>">
-<? } ?>
+<?	} ?>
 				<div class="tr">
 					<label>Title</label>
 					<input type="text" name="title" value="<?=$title?>" maxlength="50">
 				</div>
-<? if ($display == 'new') { ?>
+<?	if ($display == 'new') { ?>
 				<div class="tr">
 					<label>System</label>
 					<select name="system">
 						<option value="">Select One</option>
-<?
-	$allSystems = $systems->getAllSystems(TRUE);
-	foreach ($allSystems as $systemID => $systemInfo) echo "\t\t\t\t\t\t".'<option value="'.$systemID.'">'.printReady($systemInfo['fullName'])."</option>\n";
-//	foreach ($systemNames as $value => $name) { echo "\t\t\t\t\t\t".'<option value="'.$value.'"'.(($system == $value)?' selected="selected"':'').'>'.$name.'</option>'."\n"; }
-?>
-						<option value="1">Custom</option>
+<?		foreach ($systems->getAllSystems(true) as $slug => $system) { ?>
+						<option value="<?=$slug?>"><?=$system?></option>
+<?		} ?>
+						<option value="custom">Custom</option>
 					</select>
 				</div>
-<? } ?>
+<?	} ?>
 				<div class="tr">
 					<label>Post Frequency</label>
 					<input id="timesPer" type="text" name="timesPer" value="<?=$timesPer?$timesPer:1?>" maxlength="2"> time(s) per 
@@ -108,7 +107,7 @@
 				
 				<div id="submitDiv"><button type="submit" name="<?=$display == 'new'?'create':'save'?>" class="fancyButton"><?=$display == 'new'?'Create':'Save'?></button></div>
 			</form>
-<? if ($display == 'new') { ?>
+<?	if ($display == 'new') { ?>
 		</div>
-<? } ?>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	} ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

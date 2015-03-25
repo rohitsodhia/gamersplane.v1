@@ -29,7 +29,7 @@
 			$systemSlugs = shuffle(array_keys($this->systems));
 			for ($count = 0; $count < $num; $count++) 
 				$randSystems[] = array_shift($systemSlugs);
-			foreach ($this->systems as $slug => $name) {
+			foreach ($this->systems as $slug => $name) 
 				if (in_array($slug, $randSystemSlugs)) 
 					$randSystems[$slug] = $name;
 			return $randSystems;

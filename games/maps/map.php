@@ -1,10 +1,11 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
-	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = $gameID AND m.gameID = p.gameID AND p.userID = {$currentUser->userID} AND m.mapID = $mapID");
+	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = {$gameID} AND m.gameID = p.gameID AND p.userID = {$currentUser->userID} AND m.mapID = {$mapID}");
 	if (!$playerCheck->rowCount()) { header('Location: /403'); exit; }
-	else $isGM = $playerCheck->fetchColumn();
-	$mapInfo = $mysql->query('SELECT m.gameID, m.name, m.cols, m.rows, m.info, g.title, g.systemID, s.fullName FROM maps m, games g, systems s WHERE g.systemID = s.systemID AND m.gameID = g.gameID AND m.mapID = '.$mapID);
+	else 
+		$isGM = $playerCheck->fetchColumn();
+	$mapInfo = $mysql->query("SELECT m.gameID, m.name, m.cols, m.rows, m.info, g.title, g.system FROM maps m INNER JOIN games g ON m.gameID = g.gameID WHERE m.mapID = {$mapID}");
 	$mapInfo = $mapInfo->fetch();
 	
 	$mapIcons = $mysql->query("SELECT iconID, label, name, description, color, location FROM maps_icons WHERE mapID = $mapID AND deleted = 0");
@@ -59,7 +60,7 @@
 					<div id="sidebarIconHolder"></div>
 					<div id="mapSidebar_contentContainer" style="height: <?=$maxMapWindow['height'] - 92?>px;">
 						<div id="mapSidebar_content_info">
-							<p><strong>Game:</strong> <?=$mapInfo['title']?> (<?=$mapInfo['fullName']?>)</p>
+							<p><strong>Game:</strong> <?=$mapInfo['title']?> (<?=$systems->getFullName($mapInfo['system'])?>)</p>
 							<p><strong>Info:</strong> <span id="infoSpan"><? if (strlen($mapInfo['info'])) echo printReady($mapInfo['info']); elseif ($isGM) echo 'No info yet.'; ?></span> <sup><a id="infoEdit" href="/games/<?=$gameID?>/maps/<?=$mapID?>/editInfo">[ Edit ]</a></sup></p>
 							<p class="reminder">Remember: you can see each icon's label by holding your mouse over it.</p>
 						</div>
