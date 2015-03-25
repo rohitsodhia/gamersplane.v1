@@ -55,12 +55,11 @@
 				move_uploaded_file($_FILES['avatar']['tmp_name'], FILEROOT."/ucp/avatars/{$user->userID}.svg");
 				$fileUploaded = true;
 			}
-		}
 
-		$usermeta = array();
-		if ($avatarExt == '') $avatarExt = null;
-		$user->updateUsermeta('avatarExt', $avatarExt);
-		$user->setMetaAutoload('avatarExt', 1);
+			if ($avatarExt == '') $avatarExt = null;
+			$user->updateUsermeta('avatarExt', $avatarExt);
+			$user->setMetaAutoload('avatarExt', 1);
+		}
 
 		$user->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
 		if ($_POST['gender'] == 'n') $gender = '';
