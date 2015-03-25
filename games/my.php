@@ -4,14 +4,21 @@
 			<div class="widgetBody">
 				<p>Your current LFG Status:</p>
 <?
-	$lfgs = $mysql->query('SELECT systems.fullName FROM lfg, systems WHERE lfg.systemID = systems.systemID AND lfg.userID = '.$currentUser->userID);
-	$lfgStatus = '';
-	if ($lfgs->rowCount()) {
-		echo "\t\t\t\t<ul>\n";
-		while ($game = $lfgs->fetchColumn()) echo "\t\t\t\t\t\t<li>{$game}</li>\n";
-		echo "\t\t\t\t</ul>\n";
-	} else echo "\t\t\t\t<p>No games selected.</p>\n";
+	$lfgs = $mysql->query("SELECT systems FROM lfg WHERE userID = {$currentUser->userID}")->fetchAll(PDO::FETCH_COLUMN);
+	if (sizeof($lfgs)) {
 ?>
+				<ul>
+<?
+		foreach ($systems->getAllSystems(true) as $slug => $system) {
+			if (in_array($slug, $lfgs)) {
+?>
+					<li>{$game}</li>
+<?
+			}
+		}
+?>
+				</ul>
+<?	} else echo "\t\t\t\t<p>No games selected.</p>\n"; ?>
 				<p class="alignRight"><a id="lfgEdit" href="/games/lfg">Edit</a></p>
 			</div>
 		</div>

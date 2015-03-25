@@ -64,13 +64,11 @@
 	$isGM = false;
 	if ($threadManager->getForumProperty('gameID')) {
 		$gameID = $threadManager->getForumProperty('gameID');
-		$systemID = $mysql->query("SELECT systemID FROM games WHERE gameID = {$gameID}");
-		$systemID = $systemID->fetchColumn();
+		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
 		
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
 		if ($gmCheck->rowCount()) $isGM = true;
 
-		$system = $systems->getShortName($systemID);
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = $system.'Character';
 		$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");

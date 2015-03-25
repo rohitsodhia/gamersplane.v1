@@ -6,30 +6,36 @@
 		
 		$gameID = intval($_POST['gameID']);
 		$details['title'] = sanitizeString($_POST['title']);
-		$systemInfo = $systems->getSystemInfo(intval($_POST['system']));
-		if ($systemInfo) {
-			$details['systemID'] = intval($_POST['system']);
-			$details['system'] = $systemInfo['fullName'];
-		} else $details['systemID'] = 0;
+		if ($systems->verifySystem($_POST['system'])) 
+			$details['system'] = $_POST['system'];
+		else 
+			$details['system'] = null;
 		$details['postFrequency'] = intval($_POST['timesPer']).'/'.$_POST['perPeriod'];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		
-		if (strlen($details['title']) == 0) $_SESSION['errors']['invalidTitle'] = TRUE;
+		if (strlen($details['title']) == 0) 
+			$_SESSION['errors']['invalidTitle'] = true;
 		$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
 		$titleCheck->execute(array(':title' => $details['title']));
-		if ($titleCheck->rowCount()) $_SESSION['errors']['repeatTitle'] = TRUE;
-		if ($details['systemID'] == 0 && !isset($_POST['save'])) $_SESSION['errors']['invalidSystem'] = TRUE;
-		if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) { $_SESSION['errors']['invalidFreq'] = TRUE; }
-		if ($details['numPlayers'] < 2) { $_SESSION['errors']['invalidNumPlayers'] = TRUE; }
+		if ($titleCheck->rowCount()) 
+			$_SESSION['errors']['repeatTitle'] = true;
+		if ($details['system'] == null && !isset($_POST['save'])) 
+			$_SESSION['errors']['invalidSystem'] = true;
+		if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) 
+			$_SESSION['errors']['invalidFreq'] = true;
+		if ($details['numPlayers'] < 2) 
+			$_SESSION['errors']['invalidNumPlayers'] = true;
 		
 		if (sizeof($_SESSION['errors'])) {
 			$_SESSION['errorVals'] = $_POST;
 			$_SESSION['errorTime'] = time() + 300;
-			if (isset($_POST['save'])) header('Location: /games/'.$gameID.'/edit?failed=1');
-			else header('Location: /games/new?failed=1');
+			if (isset($_POST['save'])) 
+				header('Location: /games/'.$gameID.'/edit?failed=1');
+			else 
+				header('Location: /games/new?failed=1');
 		} elseif (isset($_POST['save'])) {
 			$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, charsPerPlayer = :charsPerPlayer, description = :description, charGenInfo = :charGenInfo WHERE gameID = :gameID');
 			$updateGame->bindValue(':title', $details['title']);
@@ -53,9 +59,9 @@
 			$details['start'] = $details['created'];
 
 			$system = $details['system'];
-			$addGame = $mysql->prepare('INSERT INTO games (title, systemID, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :systemID, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, -1, -1)');
+			$addGame = $mysql->prepare('INSERT INTO games (title, system, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :system, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, -1, -1)');
 			$addGame->bindParam('title', $details['title']);
-			$addGame->bindParam('systemID', $details['systemID']);
+			$addGame->bindParam('system', $details['system']);
 			$addGame->bindParam('gmID', $details['gmID']);
 			$addGame->bindParam('created', $details['created']);
 			$addGame->bindParam('start', $details['start']);
@@ -92,14 +98,15 @@
 			
 			addGameHistory($gameID, 'newGame');
 			
-			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.systemID = {$details['systemID']}");
+			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.system = '{$details['system']}'");
 			$recips = '';
-			foreach ($lfgRecips as $info) $recips .= $info['email'].', ';
+			foreach ($lfgRecips as $info) 
+				$recips .= $info['email'].', ';
 			ob_start();
 			include('games/process/newGameEmail.php');
 			$email = ob_get_contents();
 			ob_end_clean();
-			mail('Gamers Plane <contact@gamersplane.com>', "New {$systemNames[$system]} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
+			mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName([$system])} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
 			
 			header('Location: /games/my/');
 		}
