@@ -274,8 +274,8 @@
 						<div class="mapSize"><?=$mapInfo['rows']?> x <?=$mapInfo['cols']?></div>
 <?				if ($isGM) { ?>
 			 			<div class="mapActions">
-			 				<a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/edit/" class="iconLink edit">Edit</a>
-			 				<a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/delete/" class="iconLink delete">Delete</a>
+			 				<a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/edit/" Title="Edit" alt="Edit" class="sprite editWheel"></a>
+			 				<a href="/games/<?=$gameID?>/maps/<?=$mapInfo['mapID']?>/delete/" title="Delete" alt="Delete" class="sprite cross"></a>
 			 			</div>
 <?				} else { ?>
 <?				} ?>
@@ -321,9 +321,9 @@
 						<div class="deckRemaining"><?=$cardsRemaining?></div>
 <?				if ($isGM) { ?>
 						<div class="deckActions">
-							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/edit/" title="Edit Deck" class="iconLink edit">Edit Deck</a>
-							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/shuffle/" title="Shuffle Deck" class="iconLink shuffle">Shuffle Deck</a>
-							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/delete/" title="Delete Deck" class="iconLink delete">Delete Deck</a>
+							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/edit/" title="Edit Deck" class="sprite editWheel"></a>
+							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/shuffle/" title="Shuffle Deck" class="sprite shuffle"></a>
+							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/delete/" title="Delete Deck" class="sprite cross"></a>
 						</div>
 <?				} ?>
 					</div>
