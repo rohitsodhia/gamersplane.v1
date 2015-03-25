@@ -11,9 +11,9 @@
 		$order = 's.fullName';
 
 	if (isset($_POST['filterSystem']) && sizeof($_POST['filterSystem']) != $_POST['numSystems']) 
-		$systems = '"'.implode('", "', $_POST['filterSystem']).'"';
+		$fSystems = '"'.implode('", "', $_POST['filterSystem']).'"';
 	else 
-		$systems = null;
+		$fSystems = null;
 	
 	if (strlen(trim($_POST['search']))) {
 		$search = array();
@@ -22,7 +22,7 @@
 		$search = implode(' OR ', $search);
 	}
 	
-	$games = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username FROM games g LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.open = 1".($systems?" AND g.system IN ($systems)":'').(isset($search)?" AND ($search)":'')." ORDER BY $order");
+	$games = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username FROM games g LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.open = 1".($fSystems?" AND g.system IN ($fSystems)":'').(isset($search)?" AND ($search)":'')." ORDER BY $order");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>

@@ -4,7 +4,7 @@
 			<div class="widgetBody">
 				<p>Your current LFG Status:</p>
 <?
-	$lfgs = $mysql->query("SELECT systems FROM lfg WHERE userID = {$currentUser->userID}")->fetchAll(PDO::FETCH_COLUMN);
+	$lfgs = $mysql->query("SELECT system FROM lfg WHERE userID = {$currentUser->userID}")->fetchAll(PDO::FETCH_COLUMN);
 	if (sizeof($lfgs)) {
 ?>
 				<ul>
@@ -12,7 +12,7 @@
 		foreach ($systems->getAllSystems(true) as $slug => $system) {
 			if (in_array($slug, $lfgs)) {
 ?>
-					<li>{$game}</li>
+					<li><?=$system?></li>
 <?
 			}
 		}
