@@ -19,7 +19,7 @@
 			array('name' => 'Animal Handling', 'stat' => 'wis'),
 			array('name' => 'Arcana', 'stat' => 'int'),
 			array('name' => 'Athletics', 'stat' => 'Str'),
-			array('name' => 'Deception', 'stat' => 'char'),
+			array('name' => 'Deception', 'stat' => 'cha'),
 			array('name' => 'History', 'stat' => 'int'),
 			array('name' => 'Insight', 'stat' => 'wis'),
 			array('name' => 'Intimidation', 'stat' => 'cha'),
