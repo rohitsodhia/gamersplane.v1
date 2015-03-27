@@ -83,7 +83,7 @@
 			<div id="gmStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">GM Stats</h2>
 <?
-	$games = $mysql->query("SELECT g.gameID, g.system, g.retired, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s USING ON g.system = s.shortName INNER JOIN players p USING (gameID) WHERE p.userID = {$profileID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
+	$games = $mysql->query("SELECT g.gameID, g.system, g.retired, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s ON g.system = s.shortName INNER JOIN players p USING (gameID) WHERE p.userID = {$profileID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
 	echo "				<div class=\"details clearfix".($games->rowCount()?'':' noInfo')."\">\n";
 	if ($games->rowCount()) {
 		$gameStats = array();
