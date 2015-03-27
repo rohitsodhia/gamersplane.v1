@@ -51,7 +51,7 @@
 			<div id="charStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">Characters Stats</h2>
 <?
-	$characters = $mysql->query("SELECT c.characterID, c.system, s.fullName, c.gameID, c.retired, count(c.characterID) numChars FROM characters c INNER JOIN systems s USING (systemID) WHERE c.userID = $profileID GROUP BY c.systemID ORDER BY numChars DESC, s.fullName");
+	$characters = $mysql->query("SELECT c.characterID, c.system, c.gameID, c.retired, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s USING (system) WHERE c.userID = {$profileID} GROUP BY c.system ORDER BY numChars DESC, s.fullName");
 	echo "				<div class=\"details clearfix".($characters->rowCount()?'':' noInfo')."\">\n";
 	if ($characters->rowCount()) {
 		$charStats = array();
@@ -68,7 +68,7 @@
 					<div class="game<?=$count % 3 == 0?' third':'')?>">
 						<div class="gameLogo"><img src="/images/logos/<?=$game['system']?>.png"></div>
 						<div class="gameInfo">
-							<p><?=$game['fullName']?></p>
+							<p><?=$systems->getFullName($game['system'])?></p>
 							<p><?=$game['numChars']?> Char"<?=($game['numChars'] == 1?'':'s')." - ".round($game['numChars'] / $numChars * 100, 2)?>%</p>
 						</div>
 					</div>
@@ -83,7 +83,7 @@
 			<div id="gmStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">GM Stats</h2>
 <?
-	$games = $mysql->query("SELECT g.gameID, s.fullName, g.retired, count(g.gameID) numGames FROM games g INNER JOIN systems s USING (systemID) INNER JOIN players p USING (gameID) WHERE p.userID = $profileID AND p.isGM = 1 GROUP BY g.systemID ORDER BY numGames DESC, s.fullName");
+	$games = $mysql->query("SELECT g.gameID, g.system, g.retired, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s USING (system) INNER JOIN players p USING (gameID) WHERE p.userID = {$profileID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
 	echo "				<div class=\"details clearfix".($games->rowCount()?'':' noInfo')."\">\n";
 	if ($games->rowCount()) {
 		$gameStats = array();
@@ -100,7 +100,7 @@
 					<div class="game<?=$count % 3 == 0?' third':''?>">
 						<div class="gameLogo"><img src="/images/logos/<?=$game['system']?>.png"></div>
 						<div class="gameInfo">
-							<p><?=$game['fullName']?></p>
+							<p><?=$system->getFullName($game['system'])?></p>
 							<p><?=$game['numGames']?> Game<?=($game['numGames'] == 1?'':'s')." - ".round($game['numGames'] / $numGames * 100, 2)?>%</p>
 						</div>
 					</div>

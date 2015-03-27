@@ -15,7 +15,7 @@
 				<ul class="clearfix">
 					<li id="clearCheckboxes"<?=isset($_GET['filter'])?'':' class="hideDiv"'?>><a href="" class="sprite cross small"></a> Clear choices</li>
 <?	foreach ($systems->getAllSystems() as $slug => $system) { ?>
-					<li><input id="system_<?=$slug?>" type="checkbox" name="filterSystem[]" value="<?=$slug?>"<?=isset($_GET['filter']) && array_search($systemID, $_GET['filterSystem']) !== false?' checked="checked"':''?>> <label for="system_<?=$slug?>"><?=$system?></label></li>
+					<li><input id="system_<?=$slug?>" type="checkbox" name="filterSystem[]" value="<?=$slug?>"<?=isset($_GET['filter']) && array_search($slug, $_GET['filterSystem']) !== false?' checked="checked"':''?>> <label for="system_<?=$slug?>"><?=$system?></label></li>
 <?	} ?>
 				</ul>
 				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>

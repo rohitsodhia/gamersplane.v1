@@ -2,7 +2,7 @@
 	if (isset($_POST['create'])) {
 		$system = $_POST['system'];
 		$errors = '?';
-		if ($systems->verifySystem($system)) 
+		if (!$systems->verifySystem($system)) 
 			$errors .= 'invalidType=1&';
 		if (strcmp(filterString($_POST['label']), $_POST['label']) || $_POST['label'] == '') 
 			$errors .= 'invalidLabel=1&';

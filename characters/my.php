@@ -19,7 +19,7 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
-	$characters = $mysql->query("SELECT c.*, s.fullName, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.systemID = s.systemID LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = {$currentUser->userID} ORDER BY s.fullName, c.charType, c.label");
+	$characters = $mysql->query("SELECT c.*, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.system = s.system LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = {$currentUser->userID} ORDER BY s.fullName, c.charType, c.label");
 	
 	$noItems = false;
 	if ($characters->rowCount()) {
@@ -29,7 +29,7 @@
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
 					<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
 					><div class="charType"><?=$info['charType']?></div
-					><div class="systemType"><?=$info['fullName']?></div
+					><div class="systemType"><?=$systems->getFullName($info['system'])?></div
 					><div class="links">
 						<a href="/characters/editBasic/<?=$info['characterID']?>/" class="editBasic sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type"></a>
 						<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>/edit/" class="editChar sprite pencil" title="Edit Character" alt="Edit Character"></a>
@@ -50,7 +50,7 @@
 			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
 <?
-	$libraryItems = $mysql->query("SELECT c.*, s.fullName, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.systemID = s.systemID AND c.userID = u.userID AND f.userID = {$currentUser->userID} AND f.characterID = c.characterID ORDER BY s.fullName, c.charType, c.label");
+	$libraryItems = $mysql->query("SELECT c.*, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.system = s.system AND c.userID = u.userID AND f.userID = {$currentUser->userID} AND f.characterID = c.characterID ORDER BY s.fullName, c.charType, c.label");
 	$noItems = false;
 	if ($libraryItems->rowCount()) {
 		echo "\t\t\t<ul id=\"libraryChars\" class=\"hbdMargined hbAttachedList\">\n";
@@ -60,7 +60,7 @@
 					<a href="/characters/library/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
 					><a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
 					><div class="charType"><?=$info['charType']?></div
-					><div class="systemType"><?=$info['fullName']?></div
+					><div class="systemType"><?=$systems->getFullName($info['system'])?></div
 					><div class="owner"><a href="/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 				</li>
 <?

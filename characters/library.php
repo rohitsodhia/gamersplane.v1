@@ -16,7 +16,7 @@
 <?
 	$selectedSystems = array();
 	foreach ($systems->getAllSystems() as $slug => $fullName) {
-		$selectedSystem = isset($_GET['filter'], $_GET['filterSystem']) && array_search($system, $_GET['filterSystem']) !== false?true:false;
+		$selectedSystem = isset($_GET['filter'], $_GET['filterSystem']) && array_search($slug, $_GET['filterSystem']) !== false?true:false;
 ?>
 					<li><input id="system_<?=$slug?>" type="checkbox" name="filterSystem[]" value="<?=$slug?>"<?=$selectedSystem?' checked="checked"':''?>> <label for="system_<?=$slug?>"><?=$fullName?></label></li>
 <?
@@ -40,7 +40,7 @@
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'games.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 'systems.fullName ASC';*/
 	$orderBy = 's.fullName ASC';
-	$characters = $mysql->query("SELECT c.*, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN users u ON c.userID = u.userID ".(sizeof($selectedSystems)?'WHERE c.systemID IN ('.implode(', ', $selectedSystems).') ':'')."ORDER BY {$orderBy}");
+	$characters = $mysql->query("SELECT c.*, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID INNER JOIN users u ON c.userID = u.userID ".(sizeof($selectedSystems)?'WHERE c.system IN ("'.implode('", "', $selectedSystems).'") ':'')."ORDER BY {$orderBy}");
 	
 	if ($characters->rowCount()) { foreach ($characters as $info) {
 ?>
