@@ -65,7 +65,7 @@
 		foreach ($charStats as $game) {
 			$count++;
 ?>
-					<div class="game<?=$count % 3 == 0?' third':'')?>">
+					<div class="game<?=$count % 3 == 0?' third':''?>">
 						<div class="gameLogo"><img src="/images/logos/<?=$game['system']?>.png"></div>
 						<div class="gameInfo">
 							<p><?=$systems->getFullName($game['system'])?></p>
