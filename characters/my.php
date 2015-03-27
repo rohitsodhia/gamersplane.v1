@@ -19,7 +19,7 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 <?
-	$characters = $mysql->query("SELECT c.*, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.system = s.system LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = {$currentUser->userID} ORDER BY s.fullName, c.charType, c.label");
+	$characters = $mysql->query("SELECT c.*, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.system = s.shortName LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.userID = {$currentUser->userID} ORDER BY s.fullName, c.charType, c.label");
 	
 	$noItems = false;
 	if ($characters->rowCount()) {
@@ -50,7 +50,7 @@
 			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
 <?
-	$libraryItems = $mysql->query("SELECT c.*, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.system = s.system AND c.userID = u.userID AND f.userID = {$currentUser->userID} AND f.characterID = c.characterID ORDER BY s.fullName, c.charType, c.label");
+	$libraryItems = $mysql->query("SELECT c.*, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.system = s.shortName AND c.userID = u.userID AND f.userID = {$currentUser->userID} AND f.characterID = c.characterID ORDER BY s.fullName, c.charType, c.label");
 	$noItems = false;
 	if ($libraryItems->rowCount()) {
 		echo "\t\t\t<ul id=\"libraryChars\" class=\"hbdMargined hbAttachedList\">\n";

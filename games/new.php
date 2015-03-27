@@ -31,10 +31,10 @@
 				<p>Players are currently looking to play...</p>
 				<ul>
 <?
-	$lfgSummaries = $mysql->query('SELECT s.system, s.fullName, l.numPlayers FROM systems s LEFT JOIN (SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system) l USING (system) WHERE l.numPlayers != 0 ORDER BY l.numPlayers DESC, s.fullName');
+	$lfgSummaries = $mysql->query('SELECT s.shortName system, l.numPlayers FROM systems s LEFT JOIN (SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system) l USING (system) WHERE l.numPlayers != 0 ORDER BY l.numPlayers DESC, s.fullName');
 	$totalsInfo = array();
 	foreach ($lfgSummaries as $info) 
-		echo "\t\t\t\t\t<li>{$info['fullName']} - ".($info['numPlayers']?$info['numPlayers']:'0')."</li>\n";
+		echo "\t\t\t\t\t<li>{$systems->getFullName($info['system'])} - ".($info['numPlayers']?$info['numPlayers']:'0')."</li>\n";
 ?>
 				</ul>
 			</div>
