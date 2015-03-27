@@ -4,7 +4,7 @@
 
 		if ($system == 'custom') 
 			return false;
-		if ($systems->validateSystem($system)) 
+		if ($systems->verifySystem($system)) 
 			return false;
 
 		$itemCheck = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE type = :type AND LOWER(searchName) = :searchName");
