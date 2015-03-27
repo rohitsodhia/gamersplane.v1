@@ -51,7 +51,7 @@
 			<div id="charStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">Characters Stats</h2>
 <?
-	$characters = $mysql->query("SELECT c.characterID, c.system, c.gameID, c.retired, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s USING (system) WHERE c.userID = {$profileID} GROUP BY c.system ORDER BY numChars DESC, s.fullName");
+	$characters = $mysql->query("SELECT c.characterID, c.system, c.gameID, c.retired, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$profileID} GROUP BY c.system ORDER BY numChars DESC, s.fullName");
 	echo "				<div class=\"details clearfix".($characters->rowCount()?'':' noInfo')."\">\n";
 	if ($characters->rowCount()) {
 		$charStats = array();
@@ -83,7 +83,7 @@
 			<div id="gmStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">GM Stats</h2>
 <?
-	$games = $mysql->query("SELECT g.gameID, g.system, g.retired, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s USING (system) INNER JOIN players p USING (gameID) WHERE p.userID = {$profileID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
+	$games = $mysql->query("SELECT g.gameID, g.system, g.retired, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s USING ON g.system = s.shortName INNER JOIN players p USING (gameID) WHERE p.userID = {$profileID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
 	echo "				<div class=\"details clearfix".($games->rowCount()?'':' noInfo')."\">\n";
 	if ($games->rowCount()) {
 		$gameStats = array();
