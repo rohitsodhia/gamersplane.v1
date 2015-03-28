@@ -3,7 +3,7 @@
 	$characterID = intval($pathOptions[2]);
 	$pendingAction = $pathOptions[1] == 'approveChar'?'approve':'remove';
 	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
-	$charInfo = $mysql->query('SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, s.shortName FROM characters c, users u, games g, systems s WHERE c.userID = u.userID AND g.systemID = s.systemID AND c.characterID = '.$characterID.' AND g.gameID = '.$gameID);
+	$charInfo = $mysql->query("SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, g.system FROM characters c, users u, games g WHERE c.userID = u.userID AND c.characterID = {$characterID} AND g.gameID = {$gameID}");
 	if ($gmCheck->rowCount() == 0 && $charInfo->rowCount() == 0) { header('Location: /403'); exit; }
 	list($label, $playerID, $playerName, $title, $charsPerPlayer, $shortName) = $charInfo->fetch(PDO::FETCH_NUM);
 	$numApprovedChars = $mysql->query("SELECT COUNT(characterID) FROM characters WHERE userID = $playerID AND gameID = $gameID AND approved = 1");

@@ -1,7 +1,7 @@
 <?
 	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
+	require_once(FILEROOT.'/header.php');
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Add Music</h1>
 		
 		<form method="post" action="/tools/process/music/add/" class="hbMargined">
@@ -45,4 +45,4 @@
 			</div>
 			<div id="submitDiv"><button type="submit" name="submit" class="fancyButton">Submit</button></div>
 		</form>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

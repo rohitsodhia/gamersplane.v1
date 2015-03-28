@@ -41,7 +41,7 @@
 						<div class="addedBy">Added By</div>
 					</div>
 <?
-	$addToSystem = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.itemID, il.name, ua.addedBy, u.username, ua.systemID FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy INNER JOIN charAutocomplete il ON ua.itemType = il.type AND ua.itemID = il.itemID WHERE ua.name IS NULL AND ua.itemID IS NOT NULL AND action IS NULL ORDER BY ua.itemType, il.name');
+	$addToSystem = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.itemID, il.name, ua.addedBy, u.username, ua.system FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy INNER JOIN charAutocomplete il ON ua.itemType = il.type AND ua.itemID = il.itemID WHERE ua.name IS NULL AND ua.itemID IS NOT NULL AND action IS NULL ORDER BY ua.itemType, il.name');
 	$currentType = '';
 	foreach ($addToSystem as $item) {
 		if ($item['itemType'] != $currentType) {
@@ -51,7 +51,7 @@
 ?>
 					<div id="item_<?=$item['uItemID']?>" class="tr item">
 						<div class="name"><?=$item['name']?></div>
-						<div class="system"><?=$systems->getFullName($systems->getShortName($item['systemID']))?></div>
+						<div class="system"><?=$systems->getFullName($item['system'])?></div>
 						<div class="addedBy"><a href="/ucp/<?=$item['addedBy']?>/" class="username"><?=$item['username']?></a></div>
 						<div class="actions">
 							<a href="" class="sprite check"></a>

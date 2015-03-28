@@ -2,10 +2,10 @@
 	if ($loggedIn) {
 		$search = sanitizeString($_POST['search'], 'search_format');
 		$characterID = intval($_POST['characterID']);
-		$system = sanitizeString($_POST['system']);
+		$system = $_POST['system'];
 		
-		if ($systemID = $systems->getSystemID($system)) {
-			$skills = $mysql->prepare("SELECT sl.itemID skillID, sl.name, sacm.itemID IS NOT NULL systemSkill FROM charAutocomplete sl LEFT JOIN system_charAutocomplete_map sacm ON sacm.systemID = $systemID AND sacm.itemID = sl.itemID WHERE sl.type = 'skill' AND sl.name LIKE ? ORDER BY systemSkill DESC, sl.name LIMIT 5");
+		if ($systems->verifySystem($system)) {
+			$skills = $mysql->prepare("SELECT sl.itemID skillID, sl.name, sacm.itemID IS NOT NULL systemSkill FROM charAutocomplete sl LEFT JOIN system_charAutocomplete_map sacm ON sacm.system = '{$system}' AND sacm.itemID = sl.itemID WHERE sl.type = 'skill' AND sl.name LIKE ? ORDER BY systemSkill DESC, sl.name LIMIT 5");
 			$skills->execute(array("%$search%"));
 			$lastType = NULL;
 			foreach ($skills as $info) {

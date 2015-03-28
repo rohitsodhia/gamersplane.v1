@@ -3,7 +3,7 @@
 		DEFINE(SYSTEM, $_POST['system']);
 		$characterID = intval($_POST['characterID']);
 		$charPermissions = false;
-		if ($systems->getSystemID(SYSTEM)) {
+		if ($systems->verifySystem(SYSTEM)) {
 			require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 			$charClass = SYSTEM.'Character';
 			$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';

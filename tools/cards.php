@@ -8,7 +8,7 @@
 		unset($_SESSION['cardsDrawn']);
 	}
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Card Dealer</h1>
         
 		<form method="post" action="/tools/process/cards" class="cardControls<?=isset($cardCount[0]) && $cardCount[0] == 0?' hideDiv':''?>">
@@ -32,11 +32,15 @@
 	if (isset($cardsDrawn)) {
 		$deckShort = $_SESSION['deckShort'];
 		$totalNumCards = sizeof($_SESSION['deck']);
-		foreach ($cardsDrawn as $card)  echo "\t\t\t".getCardImg($card, $deckShort)."\n";
-	} elseif (isset($deckShort)) echo "\t\t\t".'<p id="deckAnnouncement">Deck shuffled!</p>'."\n";
-	elseif ($cardCount[0] > 0) echo "\t\t\t".'<p id="deckAnnouncement">Draw cards on the left</p>'."\n";
-	else echo "\t\t\t".'<p id="deckAnnouncement">Deck empty. Please select a new deck from above.</p>'."\n";
+		foreach ($cardsDrawn as $card) 
+			echo "\t\t\t".getCardImg($card, $deckShort)."\n";
+	} elseif (isset($deckShort)) 
+		echo "\t\t\t".'<p id="deckAnnouncement">Deck shuffled!</p>'."\n";
+	elseif ($cardCount[0] > 0) 
+		echo "\t\t\t".'<p id="deckAnnouncement">Draw cards on the left</p>'."\n";
+	else 
+		echo "\t\t\t".'<p id="deckAnnouncement">Deck empty. Please select a new deck from above.</p>'."\n";
 ?>
 			</div></div>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

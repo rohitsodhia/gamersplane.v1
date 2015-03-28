@@ -1,10 +1,10 @@
 <?
 	$characterID = intval($pathOptions[1]);
 	$featID = intval($pathOptions[3]);
-	$noChar = TRUE;
+	$noChar = true;
 
 	define('SYSTEM', $pathOptions[0]);
-	if ($systems->getSystemID(SYSTEM)) {
+	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Edit Feat Notes';
@@ -12,9 +12,10 @@
 			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
 				$featInfo = $mysql->query("SELECT fl.name, f.notes FROM ".SYSTEM."_feats f INNER JOIN featsList fl USING (featID) WHERE f.featID = $featID AND f.characterID = $characterID");
-				if ($featInfo->rowCount()) $featInfo = $featInfo->fetch();
+				if ($featInfo->rowCount()) 
+					$featInfo = $featInfo->fetch();
 
-				$noChar = FALSE;
+				$noChar = false;
 			}
 		}
 	}

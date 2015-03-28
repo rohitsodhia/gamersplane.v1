@@ -22,9 +22,8 @@
 			$itemID = $findItem->fetchColumn();
 			$action = 'duplicate';
 		}
-		$addSystemRequest = $mysql->query("INSERT INTO userAddedItems SET itemType = '{$newItemInfo['itemType']}', itemID = {$itemID}, addedBy = {$newItemInfo['addedBy']}, addedOn = '{$newItemInfo['addedOn']}', systemID = {$newItemInfo['systemID']}");
-		$mysql->query("UPDATE userAddedItems SET itemID = {$itemID}, systemID = NULL, action = '{$action}', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
-	} elseif ($_POST['action'] == 'reject') {
+		$addSystemRequest = $mysql->query("INSERT INTO userAddedItems SET itemType = '{$newItemInfo['itemType']}', itemID = {$itemID}, addedBy = {$newItemInfo['addedBy']}, addedOn = '{$newItemInfo['addedOn']}', system = '{$newItemInfo['system']}'");
+		$mysql->query("UPDATE userAddedItems SET itemID = {$itemID}, system = NULL, action = '{$action}', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
+	} elseif ($_POST['action'] == 'reject') 
 		$mysql->query("UPDATE userAddedItems SET action = 'rejected', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
-	}
 ?>

@@ -1,6 +1,4 @@
-<?
-?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Tools</h1>
 		
 		<div id="toolsList">
@@ -17,4 +15,4 @@
 				<p>Music</p>
 			</a>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

@@ -2,7 +2,8 @@
 	if (isset($pathOptions[0]) && intval($pathOptions[0]) && $currentUser->checkACP('users')) {
 		$user = new User(intval($pathOptions[0]));
 		if (!$user->userID) { header('Location: /ucp/'); exit; }
-	} else $user = $currentUser;
+	} else 
+		$user = $currentUser;
 	$user->getAllUsermeta();
 	require_once(FILEROOT.'/header.php');
 ?>

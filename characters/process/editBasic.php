@@ -6,18 +6,26 @@
 		$labelCheck = $mysql->query("SELECT label, charType FROM characters WHERE userID = {$currentUser->userID} AND characterID = $characterID");
 		
 		if ($labelCheck->rowCount() == 0) {
-			if (isset($_POST['modal'])) echo 0;
-			else header('Location: /403/');
+			if (isset($_POST['modal'])) 
+				echo 0;
+			else 
+				header('Location: /403/');
 		} elseif (strlen($label) == 0) {
-			if (isset($_POST['modal'])) echo 'invalidLabel';
-			else header("Location: {$_SESSION['lastURL']}?invalidLabel=1");
+			if (isset($_POST['modal'])) 
+				echo 'invalidLabel';
+			else 
+				header("Location: {$_SESSION['lastURL']}?invalidLabel=1");
 		} else {
 			$updateLabel = $mysql->prepare("UPDATE characters SET label = :label, charType = {$charType} WHERE characterID = $characterID");
 			$updateLabel->execute(array(':label' => $label));
 			addCharacterHistory($characterID, 'basicEdited', $currentUser->userID);
-			if (isset($_POST['modal'])) echo 'updated';
-			else header('Location: /characters/my?label=1');
+			if (isset($_POST['modal'])) 
+				echo 'updated';
+			else 
+				header('Location: /characters/my?label=1');
 		}
-	} elseif (isset($_POST['cancel'])) header('Location: /characters/my');
-	else header('Location: /403');
+	} elseif (isset($_POST['cancel'])) 
+		header('Location: /characters/my');
+	else 
+		header('Location: /403');
 ?>

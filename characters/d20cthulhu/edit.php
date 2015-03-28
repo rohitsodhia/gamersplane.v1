@@ -8,9 +8,9 @@
 					<div id="classWrapper">
 						<a href="">[ Add Profession ]</a>
 <?
-	$hasProfessions = FALSE;
+	$hasProfessions = false;
 	foreach ($this->getClasses() as $class => $level) {
-		$hasProfessions = TRUE;
+		$hasProfessions = true;
 ?>
 						<div class="classSet">
 							<input type="text" name="class[]" value="<?=$class?>" class="medText lrBuffer">

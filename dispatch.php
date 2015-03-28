@@ -49,9 +49,12 @@
 			if ($pathOption == 'ajax') $isAJAX = true;
 
 			$moddedPath .= '/';
-			if (is_numeric($pathOption)) $moddedPath .= '(###)';
-			elseif (!$isAJAX && $systems->getSystemID($pathOption)) $moddedPath .= '(system)';
-			else $moddedPath .= $pathOption;
+			if (is_numeric($pathOption)) 
+				$moddedPath .= '(###)';
+			elseif (!$isAJAX && $systems->verifySystem($pathOption)) 
+				$moddedPath .= '(system)';
+			else 
+				$moddedPath .= $pathOption;
 		}
 //		echo $moddedPath;
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, ngController, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');

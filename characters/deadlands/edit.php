@@ -7,10 +7,10 @@
 					<div class="triCol">
 						<h2 class="headerbar hbDark">Mental</h2>
 <?
-	$first = TRUE;
+	$first = true;
 	foreach (deadlands_consts::getStats() as $abbrev => $label) {
 		if ($abbrev == 'def') {
-			$first = TRUE;
+			$first = true;
 ?>
 					</div>
 					<div class="triCol">
@@ -27,7 +27,7 @@
 							<textarea name="stats[<?=$abbrev?>][skills]"><?=$this->getStats($abbrev, 'skills')?></textarea>
 						</div>
 <?
-		if ($first) $first = FALSE;
+		if ($first) $first = false;
 	}
 ?>
 					</div>

@@ -1,6 +1,4 @@
-<?
-?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Dice Roller</h1>
 		
 		<div id="roller">
@@ -30,7 +28,7 @@
 						<textarea id="basic_dice" name="dice"><?=$_POST['dice']?></textarea>
 						<button id="basic_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
 						<div class="cbWrapper">
-							<input id="basic_rerollAces" type="checkbox" name="options[rerollAces]"<? if ($_POST['rerollAces']) echo ' checked="checked"'; ?>><label for="basic_rerollAces">Reroll Aces</label>
+							<input id="basic_rerollAces" type="checkbox" name="options[rerollAces]"<?	if ($_POST['rerollAces']) echo ' checked="checked"'; ?>><label for="basic_rerollAces">Reroll Aces</label>
 						</div>
 					</div>
 					<div id="basic_indivDice">
@@ -110,4 +108,4 @@
 	} }
 ?>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

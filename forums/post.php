@@ -64,13 +64,11 @@
 	$isGM = false;
 	if ($threadManager->getForumProperty('gameID')) {
 		$gameID = $threadManager->getForumProperty('gameID');
-		$systemID = $mysql->query("SELECT systemID FROM games WHERE gameID = {$gameID}");
-		$systemID = $systemID->fetchColumn();
+		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
 		
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
 		if ($gmCheck->rowCount()) $isGM = true;
 
-		$system = $systems->getShortName($systemID);
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = $system.'Character';
 		$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
@@ -78,7 +76,8 @@
 		while ($characterID = $characterIDs->fetchColumn()) {
 			if ($character = new $charClass($characterID)) {
 				$character->load();
-				if (strlen($character->getName())) $characters[$characterID] = $character;
+				if (strlen($character->getName())) 
+					$characters[$characterID] = $character;
 			}
 		}
 	} else 
@@ -146,7 +145,8 @@
 <?	
 	if ($gameID && sizeof($characters)) {
 		$currentChar = $post->postAs;
-		if ($fillVars) $currentChar = $fillVars['postAs'];
+		if ($fillVars) 
+			$currentChar = $fillVars['postAs'];
 ?>
 					<div class="tr">
 						<label>Post As:</label>
@@ -361,6 +361,7 @@
 <?
 	}
 ?>
+			<input type="hidden" name="postURL" value="<?=$_SESSION['currentURL']?>">
 			
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>

@@ -3,7 +3,7 @@
 	$noChar = true;
 
 	define('SYSTEM', $pathOptions[0]);
-	if ($systems->getSystemID(SYSTEM)) {
+	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
 		$charClass = SYSTEM.'Character';
 		$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';

@@ -1,4 +1,4 @@
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<div class="sideWidget left">
 			<h2>Filter</h2>
 			<form id="filterGames" method="get">
@@ -14,12 +14,10 @@
 <!--				<div class="tr"><input id="search" name="search" type="text" class="placeholder" data-placeholder="Search for..."></div>-->
 				<ul class="clearfix">
 					<li id="clearCheckboxes"<?=isset($_GET['filter'])?'':' class="hideDiv"'?>><a href="" class="sprite cross small"></a> Clear choices</li>
-<?
-	$allSystems = $systems->getAllSystems();
-	foreach ($allSystems as $systemID => $systemInfo) echo "					<li><input id=\"system_{$systemInfo['shortName']}\" type=\"checkbox\" name=\"filterSystem[]\" value=\"{$systemID}\"".(isset($_GET['filter']) && array_search($systemID, $_GET['filterSystem']) !== false?' checked="checked"':'')."> <label for=\"system_{$systemInfo['shortName']}\">{$systemInfo['fullName']}</label></li>\n"
-?>
+<?	foreach ($systems->getAllSystems() as $slug => $system) { ?>
+					<li><input id="system_<?=$slug?>" type="checkbox" name="filterSystem[]" value="<?=$slug?>"<?=isset($_GET['filter']) && array_search($slug, $_GET['filterSystem']) !== false?' checked="checked"':''?>> <label for="system_<?=$slug?>"><?=$system?></label></li>
+<?	} ?>
 				</ul>
-				<input type="hidden" name="numSystems" value="<?=sizeof($allSystems)?>">
 				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 			</form>
 		</div>
@@ -29,12 +27,17 @@
 			
 			<ul id="gamesList" class="hbAttachedList hbMargined">
 <?
-	if (isset($_GET['filter']) && $_GET['orderBy'] == 'createdOn_d' || !isset($_GET['filter'])) $orderBy = 'g.created DESC';
-	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'createdOn_a') $orderBy = 'g.created ASC';
-	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_a') $orderBy = 'g.title ASC';
-	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'g.title DESC';
-	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 's.fullName ASC';
-	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.open = 1".(isset($_GET['filter'])?' AND games.systemID IN ('.implode(', ', $_GET['filterSystem']).')':'')." ORDER BY $orderBy");
+	if (isset($_GET['filter']) && $_GET['orderBy'] == 'createdOn_d' || !isset($_GET['filter'])) 
+		$orderBy = 'g.created DESC';
+	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'createdOn_a') 
+		$orderBy = 'g.created ASC';
+	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_a') 
+		$orderBy = 'g.title ASC';
+	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') 
+		$orderBy = 'g.title DESC';
+	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') 
+		$orderBy = 's.fullName ASC';
+	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.system = s.shortName LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.open = 1".(isset($_GET['filter'])?' AND games.system IN ("'.implode('", "', $_GET['filterSystem']).'"")':'')." ORDER BY $orderBy");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>
@@ -48,4 +51,4 @@
 ?>
 			</ul>
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

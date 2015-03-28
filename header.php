@@ -50,7 +50,7 @@
 			<li>
 				<a href="/characters/my/">Characters</a>
 <?
-			$header_characters = $mysql->query('SELECT c.characterID, c.label, s.shortName FROM characters c, systems s WHERE c.systemID = s.systemID AND c.userID = '.intval($currentUser->userID).' ORDER BY c.label');
+			$header_characters = $mysql->query("SELECT characterID, label, system FROM characters WHERE userID = {$currentUser->userID} ORDER BY label");
 			if ($header_characters->rowCount()) {
 				echo "				<ul>\n";
 				$count = 0;
@@ -59,7 +59,7 @@
 						echo "					".'<li><a href="/characters/my/">All characters</a></li>'."\n";
 						break;
 					}
-					echo "					".'<li><a href="/characters/'.$hCharacter['shortName'].'/'.$hCharacter['characterID'].'/">'.$hCharacter['label'].'</a></li>'."\n";
+					echo "					".'<li><a href="/characters/'.$hCharacter['system'].'/'.$hCharacter['characterID'].'/">'.$hCharacter['label'].'</a></li>'."\n";
 					$count++;
 				}
 				echo "				</ul>\n";

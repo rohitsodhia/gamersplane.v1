@@ -21,7 +21,7 @@
 			<div class="sideWidget">
 <?
 	if ($loggedIn) {
-		$usersGames = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID INNER JOIN users u ON g.gmID = u.userID INNER JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN (SELECT gameID, COUNT(*) - 1 playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID ORDER BY gameID DESC LIMIT 3");
+		$usersGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN (SELECT gameID, COUNT(*) - 1 playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID ORDER BY gameID DESC LIMIT 3");
 ?>
 				<div class="loggedIn<?=$usersGames->rowCount()?'':' noGames'?>">
 					<h2>Your Games</h2>
@@ -35,7 +35,7 @@
 ?>
 						<div class="gameInfo">
 							<p class="title"><a href="/games/<?=$gameInfo['gameID']?>"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-							<p class="details"><u><?=$gameInfo['system']?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+							<p class="details"><u><?=$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
 						</div>
 <?			} ?>
 					</div>
@@ -64,19 +64,21 @@
 				<h3 class="headerbar">Latest Games</h3>
 				<div class="widgetBody">
 <?
-	if ($loggedIn) $latestGames = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = {$currentUser->userID} WHERE g.retired = 0 AND c.characterID IS NULL AND g.open = 1 ORDER BY gameID DESC LIMIT 5");
-	else $latestGames = $mysql->query('SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g INNER JOIN systems s ON g.systemID = s.systemID LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired = 0 AND g.open = 1 ORDER BY gameID DESC LIMIT 5');
+	if ($loggedIn) $latestGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = {$currentUser->userID} WHERE g.retired = 0 AND c.characterID IS NULL AND g.open = 1 ORDER BY gameID DESC LIMIT 5");
+	else $latestGames = $mysql->query('SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired = 0 AND g.open = 1 ORDER BY gameID DESC LIMIT 5');
 	$first = true;
 	foreach ($latestGames as $gameInfo) {
 		$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);
 		$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
 		$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
-		if (!$first) echo "					<hr>\n";
-		else $first = false;
+		if (!$first) 
+			echo "					<hr>\n";
+		else 
+			$first = false;
 ?>
 					<div class="gameInfo">
 						<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-						<p class="details"><u><?=$gameInfo['system']?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+						<p class="details"><u><?=$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
 					</div>
 <?	} ?>
 				</div>

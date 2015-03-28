@@ -1,2 +1,12 @@
-INSERT INTO dispatch SET url ='acp/systems/', pageID = 'acp_systems', ngController = 'acp_systems', file = 'acp/systems.php', title = 'Site ACP - Systems';
-INSERT INTO dispatch SET url ='systems/', pageID = 'systems', ngController = 'systems', file = 'systems.php', title = 'Systems';
+ALTER TABLE characters ADD system varchar(30) NOT NULL AFTER systemID;
+UPDATE characters c JOIN systems s ON c.systemID = s.systemID SET c.system = s.shortName;
+UPDATE characterHistory h INNER JOIN systems s ON h.additionalInfo = s.systemID SET h.additionalInfo = s.shortName;
+ALTER TABLE `lfg` DROP PRIMARY KEY, ADD PRIMARY KEY (`userID`, `system`), DROP INDEX `userID`;
+ALTER TABLE lfg ADD system varchar(30) NOT NULL AFTER systemID;
+UPDATE lfg JOIN systems s ON lfg.systemID = s.systemID SET lfg.system = s.shortName;
+ALTER TABLE games ADD system varchar(30) NOT NULL AFTER systemID;
+UPDATE games g JOIN systems s ON g.systemID = s.systemID SET g.system = s.shortName;
+ALTER TABLE system_charAutocomplete_map ADD system varchar(30) NOT NULL AFTER systemID;
+UPDATE system_charAutocomplete_map a JOIN systems s ON a.systemID = s.systemID SET a.system = s.shortName;
+ALTER TABLE userAddedItems ADD system varchar(30) NULL AFTER systemID;
+UPDATE userAddedItems a JOIN systems s ON a.systemID = s.systemID SET a.system = s.shortName;

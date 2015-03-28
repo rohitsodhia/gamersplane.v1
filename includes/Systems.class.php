@@ -1,18 +1,14 @@
 <?
 	class Systems {
 		private static $instance;
-		protected $shortNames = array();
-		protected $fullNames = array();
-		protected $classes = array();
+		protected $systems = array();
 
 		private function __construct() {
-			global $mysql;
+			global $mongo;
 
-			$systems = $mysql->query('SELECT systemID, shortName, fullName FROM systems WHERE enabled = 1 ORDER BY fullName');
-			foreach ($systems as $system) {
-				$this->shortNames[$system['systemID']] = $system['shortName'];
-				$this->fullNames[$system['systemID']] = $system['fullName'];
-			}
+			$systems = $mongo->systems->find(array(), array('name'))->sort(array('sortName' => 1));
+			foreach ($systems as $system) 
+				$this->systems[$system['_id']] = $system['name'];
 		}
 
 		public static function getInstance() {
@@ -20,45 +16,34 @@
 			return self::$instance;
 		}
 
-		public function getAllSystems($ignoreCustom = FALSE) {
-			$systems = array();
-			foreach ($this->shortNames as $systemID => $shortName) $systems[$systemID] = array('shortName' => $shortName, 'fullName' => $this->fullNames[$systemID]);
-			if ($ignoreCustom) unset($systems[1]);
+		public function getAllSystems($ignoreCustom = false) {
+			$systems = $this->systems;
+			if ($ignoreCustom) 
+				unset($systems['custom']);
 			return $systems;
 		}
 
 		public function getRandomSystems($num) {
-			$systems = $this->getAllSystems();
-			$systemIDs = array_keys($systems);
-			$randSystemIDs = array();
-			for ($count = 0; $count < $num; $count++) {
-				$newID = $systemIDs[mt_rand(0, count($systemIDs) - 1)];
-				if (!in_array($newID, $randSystemIDs)) $randSystemIDs[] = $newID;
-				else $count -= 1;
-			}
+			$randSystemSlugs = array();
 			$randSystems = array();
-			foreach (array_keys($this->shortNames) as $systemID) {
-				if (in_array($systemID, $randSystemIDs)) $randSystems[$systemID] = $systems[$systemID];
-			}
+			$systemSlugs = shuffle(array_keys($this->systems));
+			for ($count = 0; $count < $num; $count++) 
+				$randSystems[] = array_shift($systemSlugs);
+			foreach ($this->systems as $slug => $name) 
+				if (in_array($slug, $randSystemSlugs)) 
+					$randSystems[$slug] = $name;
 			return $randSystems;
 		}
 
-		public function getSystemInfo($systemID) {
-			if (array_search($systemID, array_keys($this->shortNames))) return array('systemID' => $systemID, 'shortName' => $this->shortNames[$systemID], 'fullName' => $this->fullNames[$systemID]);
+		public function verifySystem($slug) {
+			return array_key_exists($slug, $this->systems)?true:false;
 		}
 
-		public function getSystemID($shortName) {
-			return array_search($shortName, $this->shortNames);
-		}
-
-		public function getShortName($systemID) {
-			return isset($this->shortNames[$systemID])?$this->shortNames[$systemID]:FALSE;
-		}
-
-		public function getFullName($shortName) {
-			$systemID = $this->getSystemID($shortName);
-			if ($systemID) return $this->fullNames[$systemID];
-			else return FALSE;
+		public function getFullName($slug, $debug = false) {
+			if (array_key_exists($slug, $this->systems)) 
+				return $this->systems[$slug];
+			else 
+				return null;
 		}
 	}
 ?>
