@@ -361,7 +361,7 @@
 <?
 	}
 ?>
-			<input type="hidden" value="postURL" value="<?=$_SESSION['currentURL']?>">
+			<input type="hidden" name="postURL" value="<?=$_SESSION['currentURL']?>">
 			
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
