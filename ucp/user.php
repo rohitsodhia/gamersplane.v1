@@ -100,7 +100,7 @@
 					<div class="game<?=$count % 3 == 0?' third':''?>">
 						<div class="gameLogo"><img src="/images/logos/<?=$game['system']?>.png"></div>
 						<div class="gameInfo">
-							<p><?=$system->getFullName($game['system'])?></p>
+							<p><?=$systems->getFullName($game['system'])?></p>
 							<p><?=$game['numGames']?> Game<?=($game['numGames'] == 1?'':'s')." - ".round($game['numGames'] / $numGames * 100, 2)?>%</p>
 						</div>
 					</div>
