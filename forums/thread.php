@@ -255,17 +255,19 @@
 
 <?
 	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('locked')) {
-		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
-		$charClass = $system.'Character';
-		$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
 		$characters = array();
-		if ($characterIDs->rowCount()) { while ($characterID = $characterIDs->fetchColumn()) {
-			if ($character = new $charClass($characterID)) {
-				$character->load();
-				if (strlen($character->getName())) 
-					$characters[$characterID] = $character;
-			}
-		} }
+		if ($gameID) {
+			require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
+			$charClass = $system.'Character';
+			$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
+			if ($characterIDs->rowCount()) { while ($characterID = $characterIDs->fetchColumn()) {
+				if ($character = new $charClass($characterID)) {
+					$character->load();
+					if (strlen($character->getName())) 
+						$characters[$characterID] = $character;
+				}
+			} }
+		}
 ?>
 		<form id="quickReply" method="post" action="/forums/process/post/">
 			<h2 class="headerbar hbDark">Quick Reply</h2>
