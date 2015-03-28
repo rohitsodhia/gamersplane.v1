@@ -253,13 +253,38 @@
 <?	} ?>
 		</div>
 
-<?	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('locked')) { ?>
+<?
+	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('locked')) {
+		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
+		$charClass = $system.'Character';
+		$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
+		$characters = array();
+		if ($characterIDs->rowCount()) { while ($characterID = $characterIDs->fetchColumn()) {
+			if ($character = new $charClass($characterID)) {
+				$character->load();
+				if (strlen($character->getName())) 
+					$characters[$characterID] = $character;
+			}
+		} }
+?>
 		<form id="quickReply" method="post" action="/forums/process/post/">
 			<h2 class="headerbar hbDark">Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
 			<input type="hidden" name="title" value="Re: <?=htmlspecialchars($threadManager->getThreadProperty('title'))?>">
-			<div class="hbdMargined"><textarea id="messageTextArea" name="message"></textarea></div>
-			
+			<div class="hbdMargined">
+<?		if (sizeof($characters)) { ?>
+				<div id="charSelect" class="tr">
+					<label>Post As:</label>
+					<div><select name="postAs">
+						<option value="p"<?=$currentChar == null?' selected="selected"':''?>>Player</option>
+<?			foreach ($characters as $character) { ?>
+						<option value="<?=$character->getCharacterID()?>"<?=$currentChar == $character->getCharacterID()?' selected="selected"':''?>><?=$character->getName()?></option>
+<?			} ?>
+					</select></div>
+				</div>
+<?		} ?>			
+				<textarea id="messageTextArea" name="message"></textarea>
+			</div>
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" class="fancyButton">Post</button>
 				<button type="submit" name="advanced" class="fancyButton">Advanced</button>

@@ -76,7 +76,8 @@
 		while ($characterID = $characterIDs->fetchColumn()) {
 			if ($character = new $charClass($characterID)) {
 				$character->load();
-				if (strlen($character->getName())) $characters[$characterID] = $character;
+				if (strlen($character->getName())) 
+					$characters[$characterID] = $character;
 			}
 		}
 	} else 
@@ -144,7 +145,8 @@
 <?	
 	if ($gameID && sizeof($characters)) {
 		$currentChar = $post->postAs;
-		if ($fillVars) $currentChar = $fillVars['postAs'];
+		if ($fillVars) 
+			$currentChar = $fillVars['postAs'];
 ?>
 					<div class="tr">
 						<label>Post As:</label>
@@ -359,6 +361,7 @@
 <?
 	}
 ?>
+			<input type="hidden" value="postURL" value="<?=$_SESSION['currentURL']?>">
 			
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>

@@ -562,8 +562,21 @@
 	height: 20em;
 }
 
-#page_forum_thread #markItUpMessageTextArea {
-	margin-bottom: 1em;
+#page_forum_thread {
+	#charSelect {
+		& > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+		
+		label {
+			margin-right: 10px;
+		}
+	}
+
+	#markItUpMessageTextArea {
+		margin-bottom: 1em;
+	}
 }
 
 /* --------------------------------------------*/

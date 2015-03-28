@@ -6,7 +6,7 @@
 		header('Location: /forums/post/'.intval($_POST['threadID']).'/');
 	} elseif (isset($_POST['preview'])) {
 		$_SESSION['previewVars'] = $_POST;
-		header("Location: {$_SESSION['lastURL']}?preview=1");
+		header("Location: {$_POST['postURL']}?preview=1");
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 
