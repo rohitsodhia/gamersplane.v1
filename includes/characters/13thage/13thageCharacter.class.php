@@ -125,7 +125,8 @@
 <?	} ?>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noBackgrounds\">This character currently has no backgrounds/abilities.</p>\n";
+			} } else 
+				echo "\t\t\t\t\t<p id=\"noBackgrounds\">This character currently has no backgrounds/abilities.</p>\n";
 		}
 		
 		public function addBackground($background) {
@@ -166,7 +167,8 @@
 <?	} ?>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noClassAbilitiess\">This character currently has no classAbilitiess/abilities.</p>\n";
+			} } else 
+				echo "\t\t\t\t\t<p id=\"noClassAbilitiess\">This character currently has no classAbilitiess/abilities.</p>\n";
 		}
 		
 		public function addClassAbilities($classAbilities) {
@@ -207,7 +209,8 @@
 <?	} ?>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noPowers\">This character currently has no powers/abilities.</p>\n";
+			} } else 
+				echo "\t\t\t\t\t<p id=\"noPowers\">This character currently has no powers/abilities.</p>\n";
 		}
 		
 		public function addPower($power) {
@@ -231,36 +234,37 @@
 
 				foreach ($data['stats'] as $stat => $value) 
 					$this->setStat($stat, $value);
+				foreach ($data['saves'] as $save => $values) 
+					foreach ($values as $sub => $value) 
+						$this->setSave($save, $sub, $value);
+				$this->setHP('current', $data['hp']['current']);
+				$this->setHP('current', $data['hp']['maximum']);
+				$this->setRecoveries('current', $data['recoveries']['current']);
+				$this->setRecoveries('current', $data['recoveries']['maximum']);
+				$this->setRecoveryRoll($data['recoveryRoll']);
 
-				$this->setInspiration($data['inspiration']);
-				$this->setProfBonus($data['profBonus']);
-				foreach ($data['stats'] as $stat => $value) {
-					$this->setStat($stat, $value);
-					$this->setSaveProf($stat, isset($data['statProf'][$stat])?true:false);
-				}
-				$this->setHP('total', $data['hp']['total']);
-				$this->setHP('temp', $data['hp']['temp']);
-				$this->setAC($data['ac']);
-				$this->setInitiative($data['initiative']);
-				$this->setSpeed($data['speed']);
+				$this->setUniqueThing($data['uniqueThing']);
+				$this->setIconRelationships($data['iconRelationships']);
 
-				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					$this->addSkill($skillInfo);
-				} }
+				$this->clearVar('backgrounds');
+				if (sizeof($data['backgrounds'])) 
+					foreach ($data['backgrounds'] as $backgroundInfo) 
+						$this->addBackground($backgroundInfo);
+
+				$this->clearVar('classAbilities');
+				if (sizeof($data['classAbilities'])) 
+					foreach ($data['classAbilities'] as $info) 
+						$this->addClassAbilities($info);
+
+				$this->clearVar('powers');
+				if (sizeof($data['powers'])) 
+					foreach ($data['powers'] as $info) 
+						$this->addPower($info);
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					$this->addFeat($featInfo);
-				} }
-
-				$this->clearVar('weapons');
-				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
-
-				$this->clearVar('spells');
-				if (sizeof($data['spells'])) { foreach ($data['spells'] as $spellInfo) {
-					$this->addSpell($spellInfo);
-				} }
+				if (sizeof($data['feats'])) 
+					foreach ($data['feats'] as $featInfo) 
+						$this->addFeat($featInfo);
 
 				$this->setItems($data['items']);
 				$this->setNotes($data['notes']);
