@@ -285,14 +285,6 @@
 			}
 		}
 
-		public function setItems($items) {
-			$this->items = sanitizeString($items);
-		}
-
-		public function getItems() {
-			return $this->items;
-		}
-
 		public function save() {
 			global $mysql;
 			$data = $_POST;
