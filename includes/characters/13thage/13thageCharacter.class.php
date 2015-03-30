@@ -19,12 +19,13 @@
 		);
 		protected $hp = array('current' => 0, 'maximum' => 0);
 		protected $recoveries = array('current' => 0, 'maximum' => 0);
-		protected $recovery = 0;
+		protected $recoveryRoll = 0;
 		protected $uniqueThing = '';
 		protected $iconRelationships = '';
 		protected $backgrounds = array();
 		protected $classAbilities = array();
 		protected $powers = array();
+		protected $feats = array();
 
 		public function __construct($characterID, $userID = null) {
 			unset($this->ac, $this->speed, $this->initiative, $this->attackBonus, $this->skills);
@@ -37,6 +38,46 @@
 
 		public function getRace() {
 			return $this->race;
+		}
+
+		public function setHP($key, $value) {
+			if (array_key_exists($key, $this->hp)) {
+				$this->hp[$key] = intval($value);
+			else 
+				return false;
+		}
+
+		public function getHP($key = null) {
+			if ($key == null) 
+				return $this->hp;
+			elseif (array_key_exists($key, $this->hp)) {
+				return $this->hp[$key];
+			else 
+				return false;
+		}
+
+		public function setRecoveries($key, $value) {
+			if (array_key_exists($key, $this->recoveries)) {
+				$this->recoveries[$key] = intval($value);
+			else 
+				return false;
+		}
+
+		public function getRecoveries($key = null) {
+			if ($key == null) 
+				return $this->recoveries;
+			elseif (array_key_exists($key, $this->recoveries)) {
+				return $this->recoveries[$key];
+			else 
+				return false;
+		}
+
+		public function setRecoveryRoll($value) {
+			$this->recoveryRoll = intval($value);
+		}
+
+		public function getRecoveryRoll() {
+			return $this->recoveryRoll;
 		}
 
 		public function setUniqueThing($value) {
@@ -96,6 +137,88 @@
 			}
 		}
 
+		public static function classAbilitiesEditFormat($key = 1, $classAbilitiesInfo = null) {
+			if ($classAbilitiesInfo == null) 
+				$classAbilitiesInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="classAbilities clearfix">
+								<input type="text" name="classAbilitiess[<?=$key?>][name]" value="<?=$classAbilitiesInfo['name']?>" class="classAbilities_name placeholder" data-placeholder="Feature/Talent Name">
+								<a href="" class="classAbilities_notesLink">Notes</a>
+								<a href="" class="classAbilities_remove sprite cross"></a>
+								<textarea name="classAbilitiess[<?=$key?>][notes]"><?=$classAbilitiesInfo['notes']?></textarea>
+							</div>
+<?
+		}
+
+		public function showClassAbilitiessEdit() {
+			if (sizeof($this->classAbilitiess)) { foreach ($this->classAbilitiess as $key => $classAbilities) {
+				$this->classAbilitiesEditFormat($key + 1, $classAbilities);
+			} } else $this->classAbilitiesEditFormat();
+		}
+
+		public function displayClassAbilitiess() {
+			if ($this->classAbilitiess) { foreach ($this->classAbilitiess as $classAbilities) { ?>
+					<div class="classAbilities tr clearfix">
+						<span class="classAbilities_name"><?=$classAbilities['name']?></span>
+<?	if (strlen($classAbilities['notes'])) { ?>
+						<a href="" class="classAbilities_notesLink">Notes</a>
+						<div class="notes"><?=$classAbilities['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noClassAbilitiess\">This character currently has no classAbilitiess/abilities.</p>\n";
+		}
+		
+		public function addClassAbilities($classAbilities) {
+			if (strlen($classAbilities['name'])) {
+				newItemized('classAbilities', $classAbilities['name'], $this::SYSTEM);
+				foreach ($classAbilities as $key => $value) 
+					$classAbilities[$key] = sanitizeString($value);
+				$this->classAbilitiess[] = $classAbilities;
+			}
+		}
+
+		public static function powerEditFormat($key = 1, $powerInfo = null) {
+			if ($powerInfo == null) 
+				$powerInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="power clearfix">
+								<input type="text" name="powers[<?=$key?>][name]" value="<?=$powerInfo['name']?>" class="power_name placeholder" data-placeholder="Power Name">
+								<a href="" class="power_notesLink">Notes</a>
+								<a href="" class="power_remove sprite cross"></a>
+								<textarea name="powers[<?=$key?>][notes]"><?=$powerInfo['notes']?></textarea>
+							</div>
+<?
+		}
+
+		public function showPowersEdit() {
+			if (sizeof($this->powers)) { foreach ($this->powers as $key => $power) {
+				$this->powerEditFormat($key + 1, $power);
+			} } else $this->powerEditFormat();
+		}
+
+		public function displayPowers() {
+			if ($this->powers) { foreach ($this->powers as $power) { ?>
+					<div class="power tr clearfix">
+						<span class="power_name"><?=$power['name']?></span>
+<?	if (strlen($power['notes'])) { ?>
+						<a href="" class="power_notesLink">Notes</a>
+						<div class="notes"><?=$power['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else echo "\t\t\t\t\t<p id=\"noPowers\">This character currently has no powers/abilities.</p>\n";
+		}
+		
+		public function addPower($power) {
+			if (strlen($power['name'])) {
+				newItemized('power', $power['name'], $this::SYSTEM);
+				foreach ($power as $key => $value) 
+					$power[$key] = sanitizeString($value);
+				$this->powers[] = $power;
+			}
+		}
+
 		public function save() {
 			global $mysql;
 			$data = $_POST;
@@ -103,10 +226,11 @@
 			if (!isset($data['create'])) {
 				$this->setName($data['name']);
 				$this->setRace($data['race']);
-				$this->setBackground($data['background']);
 				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
 				$this->setClasses($data['classes']);
-				$this->setAlignment($data['alignment']);
+
+				foreach ($data['stats'] as $stat => $value) 
+					$this->setStat($stat, $value);
 
 				$this->setInspiration($data['inspiration']);
 				$this->setProfBonus($data['profBonus']);
