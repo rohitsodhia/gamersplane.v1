@@ -156,7 +156,7 @@
 				</div>
 			</div>
 <?
-		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers']) {
+		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers'] && $gameInfo['open']) {
 			$hasRightCol = true;
 ?>
 			<div class="rightCol">
