@@ -4,8 +4,8 @@
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->verifySystem(SYSTEM)) {
-		require_once(FILEROOT.'/includes/packages/'.SYSTEM.'Character.package.php');
-		$charClass = SYSTEM.'Character';
+		$charClass = $systems->systemClassName(SYSTEM).'Character';
+		require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
 		$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';
 		if ($character = new $charClass($characterID)) {
 			$character->load();

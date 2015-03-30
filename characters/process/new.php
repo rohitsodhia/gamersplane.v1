@@ -1,8 +1,8 @@
 <?
 	if (isset($_POST['create'])) {
-		$system = $_POST['system'];
+		define('SYSTEM', $_POST['system']);
 		$errors = '?';
-		if (!$systems->verifySystem($system)) 
+		if (!$systems->verifySystem(SYSTEM)) 
 			$errors .= 'invalidType=1&';
 		if (strcmp(filterString($_POST['label']), $_POST['label']) || $_POST['label'] == '') 
 			$errors .= 'invalidLabel=1&';
@@ -14,20 +14,19 @@
 			$addCharacter->bindValue(':userID', $currentUser->userID);
 			$addCharacter->bindValue(':label', $_POST['label']);
 			$addCharacter->bindValue(':charType', $_POST['charType']);
-			$addCharacter->bindValue(':system', $system);
+			$addCharacter->bindValue(':system', SYSTEM);
 			$addCharacter->execute();
 			$characterID = $mysql->lastInsertId();
 
-			require_once(FILEROOT.'/includes/packages/'.$system.'Character.package.php');
-
-			$charClass = $system.'Character';
+			$charClass = $systems->systemClassName(SYSTEM).'Character';
+			require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
 			$newChar = new $charClass($characterID);
 			$newChar->setLabel($_POST['label']);
 			$newChar->setCharType($_POST['charType']);
 			$newChar->save();
-			addCharacterHistory($characterID, 'charCreated', $currentUser->userID, 'NOW()', $system);
+			addCharacterHistory($characterID, 'charCreated', $currentUser->userID, 'NOW()', SYSTEM);
 
-			header('Location: /characters/'.$system.'/'.$characterID.'/edit/new/');
+			header('Location: /characters/'.SYSTEM.'/'.$characterID.'/edit/new/');
 		}
 	} else 
 		header('Location: /403');
