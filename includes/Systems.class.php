@@ -45,5 +45,12 @@
 			else 
 				return null;
 		}
+
+		public function systemClassName($slug) {
+			if (is_numeric($slug[0])) 
+				return 'n_'.$slug;
+			else 
+				return $slug;
+		}
 	}
 ?>

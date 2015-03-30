@@ -106,4 +106,6 @@
 
 		return $counter['seq'];
 	}
+
+/* Character Functions */
 ?>

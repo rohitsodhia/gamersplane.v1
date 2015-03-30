@@ -1,5 +1,5 @@
 <?
-	class 13thageCharacter extends d20Character {
+	class n_13thageCharacter extends d20Character {
 		const SYSTEM = '13thage';
 
 		protected $race = '';
