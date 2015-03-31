@@ -19,8 +19,8 @@
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
 		if ($gmCheck->rowCount()) $isGM = true;
 
+		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = $systems->systemClassName($system).'Character';
-		require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
 	} else 
 		$fixedGameMenu = false;
 ?>

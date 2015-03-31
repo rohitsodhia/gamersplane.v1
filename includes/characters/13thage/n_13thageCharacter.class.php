@@ -41,7 +41,7 @@
 		}
 
 		public function setHP($key, $value) {
-			if (array_key_exists($key, $this->hp)) {
+			if (array_key_exists($key, $this->hp)) 
 				$this->hp[$key] = intval($value);
 			else 
 				return false;
@@ -50,14 +50,14 @@
 		public function getHP($key = null) {
 			if ($key == null) 
 				return $this->hp;
-			elseif (array_key_exists($key, $this->hp)) {
+			elseif (array_key_exists($key, $this->hp)) 
 				return $this->hp[$key];
 			else 
 				return false;
 		}
 
 		public function setRecoveries($key, $value) {
-			if (array_key_exists($key, $this->recoveries)) {
+			if (array_key_exists($key, $this->recoveries)) 
 				$this->recoveries[$key] = intval($value);
 			else 
 				return false;
@@ -66,7 +66,7 @@
 		public function getRecoveries($key = null) {
 			if ($key == null) 
 				return $this->recoveries;
-			elseif (array_key_exists($key, $this->recoveries)) {
+			elseif (array_key_exists($key, $this->recoveries)) 
 				return $this->recoveries[$key];
 			else 
 				return false;

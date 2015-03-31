@@ -5,8 +5,8 @@
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->verifySystem(SYSTEM)) {
+		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
-		require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
 		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Edit Feat Notes';
 		if ($character = new $charClass($characterID)) {
 			$charPermissions = $character->checkPermissions($currentUser->userID);

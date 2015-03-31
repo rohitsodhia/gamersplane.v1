@@ -1,18 +1,15 @@
 				<div class="tr labelTR">
 					<label id="label_name" class="medText lrBuffer borderBox shiftRight">Name</label>
 					<label id="label_race" class="medText lrBuffer borderBox shiftRight">Race</label>
-					<label id="label_background" class="medText lrBuffer borderBox shiftRight">Background</label>
 				</div>
 				<div class="tr">
 					<input type="text" name="name" value="<?=$this->getName()?>" class="medText lrBuffer">
 					<input type="text" name="race" value="<?=$this->getRace()?>" class="medText lrBuffer">
-					<input type="text" name="background" value="<?=$this->getBackground()?>" class="medText lrBuffer">
 				</div>
 				
 				<div class="tr labelTR">
 					<label id="label_classes" class="medText lrBuffer borderBox shiftRight">Class(es)</label>
 					<label id="label_levels" class="shortNum lrBuffer borderBox">Level(s)</label>
-					<label id="label_alignment" class="medText lrBuffer borderBox shiftRight">Alignment</label>
 				</div>
 				<div class="tr">
 					<div id="classWrapper">
@@ -36,38 +33,28 @@
 						</div>
 <?	} ?>
 					</div>
-					<select id="alignment" name="alignment" class="lrBuffer">
-<?	foreach (dnd5_consts::getAlignments() as $alignShort => $alignment) { ?>
-						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignment?' selected="selected"':''?>><?=$alignment?></option>
-<?	} ?>
-					</select>
 				</div>
 				
 				<div class="clearfix">
 					<div id="stats">
-						<div class="tr">
-							<label class="longerStatLabel leftLabel">Inspiration</label>
-							<input type="text" name="inspiration" value="<?=$this->getInspiration()?>">
-						</div>
-						<div class="tr">
-							<label class="longerStatLabel leftLabel">Proficiency Bonus</label>
-							<input type="text" name="profBonus" value="<?=$this->getProfBonus()?>">
-						</div>
-
 						<div id="abilityScoreLabels" class="labelTR">
 							<label class="saveProficient">Save Prof?</label>
 						</div>
 <?
+	$statLabels = ''
+	$statRow = '';
+	$modRow = '';
+	$modPLRow = '';
 	$stats = d20Character_consts::getStatNames();
 	foreach ($stats as $short => $stat) {
+		$statRow .= "<input type=\"text\" id=\"{$short}\" name=\"stats[{$short}]\" value=\"{$this->getStat($short)}\" maxlength=\"2\" class=\"stat\">\n";
+		$modRow .= "<div>".$this->getStatMod($short)."</div>";
+		$modPLRow .= "<div>".($this->getStatMod($short) + $this->getLevel())."</div>";
+	}
+	echo "<div class=\"tr\">$statRow</div>";
+	echo "<div class=\"tr\">$modRow</div>";
+	echo "<div class=\"tr\">$modPLRow</div>";
 ?>
-						<div class="tr abilityScore">
-							<label id="label_<?=$short?>" class="textLabel shortText leftLabel"><?=$stat?></label>
-							<input type="text" id="<?=$short?>" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="2" class="stat">
-							<span id="<?=$short?>Modifier"><?=$this->getStatMod($short)?></span>
-							<span class="saveProficient"><input type="checkbox" name="statProf[<?=$short?>]"<?=$this->getSaveProf($short)?' checked="checked"':''?>></span>
-						</div>
-<?	} ?>
 						
 						<div class="tr">
 							<label class="shortText leftLabel textLabel">Total HP</label>

@@ -4,8 +4,8 @@
 		$characterID = intval($_POST['characterID']);
 		$charPermissions = false;
 		if ($systems->verifySystem(SYSTEM)) {
-			$charClass = $systems->systemClassName(SYSTEM).'Character';
-			require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
+		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
+		$charClass = $systems->systemClassName(SYSTEM).'Character';
 			$dispatchInfo['title'] = 'Edit '.$systems->getFullName(SYSTEM).' Character Sheet';
 			if ($character = new $charClass($characterID)) {
 				$character->load();

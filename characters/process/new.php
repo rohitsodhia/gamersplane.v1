@@ -18,8 +18,8 @@
 			$addCharacter->execute();
 			$characterID = $mysql->lastInsertId();
 
+			require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 			$charClass = $systems->systemClassName(SYSTEM).'Character';
-			require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
 			$newChar = new $charClass($characterID);
 			$newChar->setLabel($_POST['label']);
 			$newChar->setCharType($_POST['charType']);
