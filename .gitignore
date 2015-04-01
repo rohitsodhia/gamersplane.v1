@@ -19,3 +19,4 @@ includes/connect_local.php
 oneRunScripts/
 images/links/
 images/tools/dice/sweote/sweote/
+node_modules/
