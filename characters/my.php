@@ -27,7 +27,7 @@
 		foreach ($characters as $info) {
 ?>
 				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
+					<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>/" class="label"><?=$info['label']?></a
 					><div class="charType"><?=$info['charType']?></div
 					><div class="systemType"><?=$systems->getFullName($info['system'])?></div
 					><div class="links">

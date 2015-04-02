@@ -41,12 +41,12 @@
 	foreach ($stats as $short => $stat) {
 		$statLabels .= "<label>".ucwords($short)."</label>\n";
 		$statRow .= "<input type=\"text\" id=\"{$short}\" name=\"stats[{$short}]\" value=\"{$this->getStat($short)}\" maxlength=\"2\" class=\"stat\">\n";
-		$modRow .= "<div>".$this->getStatMod($short)."</div>\n";
-		$modPLRow .= "<div>".($this->getStatMod($short) + $this->getLevel())."</div>\n";
+		$modRow .= "<div class=\"statMod_{$short}\">".$this->getStatMod($short)."</div>\n";
+		$modPLRow .= "<div class=\"statModPL_{$short}\">".showSign($this->getStatMod($short) + $this->getLevel())."</div>\n";
 	}
 	echo "<div class=\"tr\">$statLabels</div>";
 	echo "<div class=\"tr\">$statRow</div>";
-	echo "<div class=\"tr\">$modRow</div>";
+	echo "<div id=\"statMods\" class=\"tr\">$modRow</div>";
 	echo "<div class=\"tr\">$modPLRow</div>";
 ?>
 					</div>
@@ -72,71 +72,76 @@
 						</div>
 <?	} ?>
 					</div>
+					<div id="hp">
+						<div class="title" class="tr labelTR">HP</div>
+						<div>
+							<label for="hp_current">Current</label>
+							<label for="hp_maximum">Max</label>
+						</div>
+						<div class="tr">
+							<input id="hp_current" type="text" name="hp[current]" value="<?=$this->getHP('current')?>">
+							<input id="hp_maximum" type="text" name="hp[maximum]" value="<?=$this->getHP('maximum')?>">
+						</div>
+					</div>
+					<div id="recoveries">
+						<div class="title" class="tr labelTR">Recoveries</div>
+						<div>
+							<label for="recoveries_current">Current</label>
+							<label for="recoveries_maximum">Max</label>
+							<label for="recoveries_roll">Roll</label>
+						</div>
+						<div class="tr">
+							<input id="recoveries_current" type="text" name="recoveries[current]" value="<?=$this->getRecoveries('current')?>">
+							<input id="recoveries_maximum" type="text" name="recoveries[maximum]" value="<?=$this->getRecoveries('maximum')?>">
+							<input id="recoveries_roll" type="text" name="recoveryRoll" value="<?=$this->getRecoveryRoll()?>">
+						</div>
+					</div>
 				</div>
 
-						<div class="tr">
-							<label class="shortText leftLabel textLabel">Total HP</label>
-							<input type="text" name="hp[total]" value="<?=$this->getHP('total')?>" class="medNum">
-						</div>
-						<div class="tr">
-							<label class="shortText leftLabel textLabel">Temp HP</label>
-							<input type="text" name="hp[temp]" value="<?=$this->getHP('temp')?>" class="medNum">
-						</div>
-					
-						<div class="tr">
-							<label class="shortText leftLabel">AC</label>
-							<input type="text" name="ac" value="<?=$this->getAC()?>">
-						</div>
-						<div class="tr">
-							<label class="shortText leftLabel">Initiative</label>
-							<input type="text" name="initiative" value="<?=$this->getInitiative()?>">
-						</div>
-						<div class="tr">
-							<label class="shortText leftLabel">Speed</label>
-							<input type="text" name="speed" value="<?=$this->getSpeed()?>">
-						</div>
-					</div>
-					<div id="skills">
-						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
-						<div class="hbdMargined">
-							<div class="tr labelTR">
-								<label class="shortNum alignCenter lfBuffer">Prof?</label>
-								<label class="medText">Skill</label>
-								<label class="skill_stat alignCenter">Stat</label>
-							</div>
-							<div id="skillList">
-<?	$this->showSkillsEdit(); ?>
-							</div>
-						</div>
-					</div>
-					<div id="feats">
-						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
-						<div id="featList" class="hbdMargined">
-<?	$this->showFeatsEdit(); ?>
-						</div>
-					</div>
-				</div>
-				
 				<div class="clearfix">
-					<div id="weapons" class="floatLeft">
-						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
-						<div>
-<?	$this->showWeaponsEdit(2); ?>
+					<div id="uniqueThing" class="floatLeft">
+						<h2 class="headerbar hbDark">One Unique Thing</h2>
+						<textarea name="uniqueThing" class="hbdMargined"><?=$this->getUniqueThing()?></textarea>
+					</div>
+					<div id="iconRelationships" class="floatRight">
+						<h2 class="headerbar hbDark">Icon Relationships</h2>
+						<textarea name="iconRelationships" class="hbdMargined"><?=$this->getIconRelationships()?></textarea>
+					</div>
+				</div>
+				<div class="clearfix">
+					<div class="column">
+						<div id="backgrounds" class="itemizedList" data-type="background">
+							<h2 class="headerbar hbDark">Backgrounds <a id="addBackground" href="" class="addItem">[ Add Background ]</a></h2>
+							<div id="backgroundList" class="hbdMargined">
+<?	$this->showBackgroundsEdit(); ?>
+							</div>
+						</div>
+						<div id="feats" class="itemizedList" data-type="feat">
+							<h2 class="headerbar hbDark">Feats <a id="addFeat" href="" class="addItem">[ Add Feat ]</a></h2>
+							<div id="featList" class="hbdMargined">
+<?	$this->showFeatsEdit(); ?>
+							</div>
 						</div>
 					</div>
-					<div id="spells" class="floatRight">
-						<h2 class="headerbar hbDark">Spells <a id="addSpell" href="">[ Add Spell ]</a></h2>
-						<div id="spellList" class="hbdMargined">
-<?	$this->showSpellsEdit(); ?>
+					<div class="column">
+						<div id="classAbilities" class="itemizedList" data-type="classAbility">
+							<h2 class="headerbar hbDark">Class Abilities <a id="addClassAbility" href="" class="addItem">[ Add Ability ]</a></h2>
+							<div id="classAbilityList" class="hbdMargined">
+<?	$this->showClassAbilitiesEdit(); ?>
+							</div>
+						</div>
+						<div id="talents" class="itemizedList" data-type="talent">
+							<h2 class="headerbar hbDark">Talents <a id="addTalent" href="" class="addItem">[ Add Talent ]</a></h2>
+							<div id="talentList" class="hbdMargined">
+<?	$this->showTalentsEdit(); ?>
+							</div>
 						</div>
 					</div>
 				</div>
-				
 				<div id="items" class="clearfix">
 					<h2 class="headerbar hbDark">Items</h2>
 					<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
 				</div>
-
 				<div id="notes">
 					<h2 class="headerbar hbDark">Notes</h2>
 					<textarea name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>

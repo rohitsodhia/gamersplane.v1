@@ -23,9 +23,10 @@
 		protected $uniqueThing = '';
 		protected $iconRelationships = '';
 		protected $backgrounds = array();
-		protected $classAbilities = array();
-		protected $powers = array();
 		protected $feats = array();
+		protected $classAbilities = array();
+		protected $talents = array();
+		protected $powers = array();
 
 		public function __construct($characterID, $userID = null) {
 			unset($this->ac, $this->speed, $this->initiative, $this->attackBonus, $this->skills);
@@ -100,12 +101,12 @@
 			if ($backgroundInfo == null) 
 				$backgroundInfo = array('name' => '', 'notes' => '');
 ?>
-							<div class="background clearfix">
-								<input type="text" name="backgrounds[<?=$key?>][name]" value="<?=$backgroundInfo['name']?>" class="background_name placeholder" data-placeholder="Background Name">
-								<a href="" class="background_notesLink">Notes</a>
-								<a href="" class="background_remove sprite cross"></a>
-								<textarea name="backgrounds[<?=$key?>][notes]"><?=$backgroundInfo['notes']?></textarea>
-							</div>
+								<div class="tr background clearfix">
+									<input type="text" name="backgrounds[<?=$key?>][name]" value="<?=$backgroundInfo['name']?>" class="background_name placeholder" data-placeholder="Background">
+									<a href="" class="notesLink">Notes</a>
+									<a href="" class="remove sprite cross"></a>
+									<textarea name="backgrounds[<?=$key?>][notes]"><?=$backgroundInfo['notes']?></textarea>
+								</div>
 <?
 		}
 
@@ -143,22 +144,22 @@
 				$classAbilitiesInfo = array('name' => '', 'notes' => '');
 ?>
 							<div class="classAbilities clearfix">
-								<input type="text" name="classAbilitiess[<?=$key?>][name]" value="<?=$classAbilitiesInfo['name']?>" class="classAbilities_name placeholder" data-placeholder="Feature/Talent Name">
-								<a href="" class="classAbilities_notesLink">Notes</a>
-								<a href="" class="classAbilities_remove sprite cross"></a>
-								<textarea name="classAbilitiess[<?=$key?>][notes]"><?=$classAbilitiesInfo['notes']?></textarea>
+								<input type="text" name="classAbilities[<?=$key?>][name]" value="<?=$classAbilitiesInfo['name']?>" class="classAbilities_name placeholder" data-placeholder="Ability">
+								<a href="" class="notesLink">Notes</a>
+								<a href="" class="remove sprite cross"></a>
+								<textarea name="classAbilities[<?=$key?>][notes]"><?=$classAbilitiesInfo['notes']?></textarea>
 							</div>
 <?
 		}
 
-		public function showClassAbilitiessEdit() {
-			if (sizeof($this->classAbilitiess)) { foreach ($this->classAbilitiess as $key => $classAbilities) {
+		public function showClassAbilitiesEdit() {
+			if (sizeof($this->classAbilities)) { foreach ($this->classAbilities as $key => $classAbilities) {
 				$this->classAbilitiesEditFormat($key + 1, $classAbilities);
 			} } else $this->classAbilitiesEditFormat();
 		}
 
-		public function displayClassAbilitiess() {
-			if ($this->classAbilitiess) { foreach ($this->classAbilitiess as $classAbilities) { ?>
+		public function displayClassAbilities() {
+			if ($this->classAbilities) { foreach ($this->classAbilities as $classAbilities) { ?>
 					<div class="classAbilities tr clearfix">
 						<span class="classAbilities_name"><?=$classAbilities['name']?></span>
 <?	if (strlen($classAbilities['notes'])) { ?>
@@ -168,7 +169,7 @@
 					</div>
 <?
 			} } else 
-				echo "\t\t\t\t\t<p id=\"noClassAbilitiess\">This character currently has no classAbilitiess/abilities.</p>\n";
+				echo "\t\t\t\t\t<p id=\"noClassAbilities\">This character currently has no classAbilities/abilities.</p>\n";
 		}
 		
 		public function addClassAbilities($classAbilities) {
@@ -176,7 +177,52 @@
 				newItemized('classAbilities', $classAbilities['name'], $this::SYSTEM);
 				foreach ($classAbilities as $key => $value) 
 					$classAbilities[$key] = sanitizeString($value);
-				$this->classAbilitiess[] = $classAbilities;
+				$this->classAbilities[] = $classAbilities;
+			}
+		}
+
+		public static function talentsEditFormat($key = 1, $talentsInfo = null) {
+			if ($talentsInfo == null) 
+				$talentsInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="talents clearfix">
+								<input type="text" name="talents[<?=$key?>][name]" value="<?=$talentsInfo['name']?>" class="talents_name placeholder" data-placeholder="Ability">
+								<a href="" class="notesLink">Notes</a>
+								<a href="" class="remove sprite cross"></a>
+								<textarea name="talents[<?=$key?>][notes]"><?=$talentsInfo['notes']?></textarea>
+							</div>
+<?
+		}
+
+		public function showTalentsEdit() {
+			if (sizeof($this->talents)) 
+				foreach ($this->talents as $key => $talents) 
+					$this->talentsEditFormat($key + 1, $talents);
+			else 
+				$this->talentsEditFormat();
+		}
+
+		public function displayTalents() {
+			if ($this->talents) { foreach ($this->talents as $talents) {
+?>
+					<div class="talents tr clearfix">
+						<span class="talents_name"><?=$talents['name']?></span>
+<?	if (strlen($talents['notes'])) { ?>
+						<a href="" class="talents_notesLink">Notes</a>
+						<div class="notes"><?=$talents['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else 
+				echo "\t\t\t\t\t<p id=\"noTalents\">This character currently has no talents/abilities.</p>\n";
+		}
+		
+		public function addTalents($talents) {
+			if (strlen($talents['name'])) {
+				newItemized('talents', $talents['name'], $this::SYSTEM);
+				foreach ($talents as $key => $value) 
+					$talents[$key] = sanitizeString($value);
+				$this->talents[] = $talents;
 			}
 		}
 

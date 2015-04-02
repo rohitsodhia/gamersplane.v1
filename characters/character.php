@@ -25,7 +25,7 @@
 		<div class="clearfix"><div id="sheetActions" class="wingDiv hbMargined floatRight">
 			<div>
 <?		if ($charPermissions == 'edit') { ?>
-				<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit" class="sprite pencil"></a>
+				<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit/" class="sprite pencil"></a>
 <?		} else { ?>
 				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
 <?		} ?>
