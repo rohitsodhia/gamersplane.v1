@@ -41,7 +41,7 @@
 	foreach ($stats as $short => $stat) {
 		$statLabels .= "<label>".ucwords($short)."</label>\n";
 		$statRow .= "<input type=\"text\" id=\"{$short}\" name=\"stats[{$short}]\" value=\"{$this->getStat($short)}\" maxlength=\"2\" class=\"stat\">\n";
-		$modRow .= "<div class=\"statMod_{$short}\">".$this->getStatMod($short)."</div>\n";
+		$modRow .= "<div class=\"statBonus_{$short}\">".$this->getStatMod($short)."</div>\n";
 		$modPLRow .= "<div class=\"statModPL_{$short}\">".showSign($this->getStatMod($short) + $this->getLevel())."</div>\n";
 	}
 	echo "<div class=\"tr\">$statLabels</div>";
@@ -62,7 +62,7 @@
 						</div>
 <?	foreach (array('ac', 'pd', 'md') as $save) { ?>
 						<div class="saveSet tr">
-							<label for="<?=$save?>"><?=strtoupper($save)?></label><div class="total"><?=$this->getSave($save, 'total')?></div>
+							<label><?=strtoupper($save)?></label><div class="total"><?=$this->getSave($save, 'total')?></div>
 							<span>=</span>
 							<input type="text" name="save[<?=$def?>][base]" value="<?=$this->getSave($save, 'base')?>">
 							<span>+</span>
@@ -109,7 +109,7 @@
 					</div>
 				</div>
 				<div class="clearfix">
-					<div class="column">
+					<div class="column first">
 						<div id="backgrounds" class="itemizedList" data-type="background">
 							<h2 class="headerbar hbDark">Backgrounds <a id="addBackground" href="" class="addItem">[ Add Background ]</a></h2>
 							<div id="backgroundList" class="hbdMargined">
@@ -125,15 +125,27 @@
 					</div>
 					<div class="column">
 						<div id="classAbilities" class="itemizedList" data-type="classAbility">
-							<h2 class="headerbar hbDark">Class Abilities <a id="addClassAbility" href="" class="addItem">[ Add Ability ]</a></h2>
+							<h2 class="headerbar hbDark">Class Abilities/Talents <a id="addClassAbility" href="" class="addItem">[ Add Ability/Talent ]</a></h2>
 							<div id="classAbilityList" class="hbdMargined">
 <?	$this->showClassAbilitiesEdit(); ?>
 							</div>
 						</div>
-						<div id="talents" class="itemizedList" data-type="talent">
-							<h2 class="headerbar hbDark">Talents <a id="addTalent" href="" class="addItem">[ Add Talent ]</a></h2>
-							<div id="talentList" class="hbdMargined">
-<?	$this->showTalentsEdit(); ?>
+					</div>
+				</div>
+				<div class="clearfix">
+					<div class="column first">
+						<div id="powers" class="itemizedList" data-type="power">
+							<h2 class="headerbar hbDark">Powers/Spells <a id="addPower" href="" class="addItem">[ Add Power/Spells ]</a></h2>
+							<div id="powerList" class="hbdMargined">
+<?	$this->showPowersEdit(); ?>
+							</div>
+						</div>
+					</div>
+					<div class="column">
+						<div id="attacks" class="itemizedList" data-type="attack">
+							<h2 class="headerbar hbDark">Attacks <a id="addAttack" href="" class="addItem">[ Add Attack ]</a></h2>
+							<div id="attackList" class="hbdMargined">
+<?	$this->showAttacksEdit(); ?>
 							</div>
 						</div>
 					</div>

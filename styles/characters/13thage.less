@@ -125,7 +125,7 @@
 }
 
 #uniqueThing, #iconRelationships {
-	width: 49%;
+	width: 49.4%;
 
 	textarea {
 		width: 100%;
@@ -135,16 +135,21 @@
 
 .column {
 	float: left;
-	width: 32.5%;
+	width: 49.4%;
+	margin-left: 1%;
+
+	&.first {
+		margin-left: 0;
+	}
 }
 
-#backgrounds, #feats, #classAbilities, #talents {
+#backgrounds, #feats, #classAbilities, #powers {
 	& > * > * {
 		vertical-align: middle;
 	}
 
 	input, .feat_name {
-		width: 190px;
+		width: 350px;
 	}
 
 	.notesLink {
@@ -155,7 +160,7 @@
 	textarea {
 		display: none;
 		margin-top: .5em;
-		width: 260px;
+		width: 425px;
 		height: 4.2em;
 	}
 }

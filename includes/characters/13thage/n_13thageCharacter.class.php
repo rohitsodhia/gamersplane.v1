@@ -27,6 +27,7 @@
 		protected $classAbilities = array();
 		protected $talents = array();
 		protected $powers = array();
+		protected $attacks = array();
 
 		public function __construct($characterID, $userID = null) {
 			unset($this->ac, $this->speed, $this->initiative, $this->attackBonus, $this->skills);
@@ -39,6 +40,14 @@
 
 		public function getRace() {
 			return $this->race;
+		}
+
+		public function getHL($showSign = false) {
+			$hl = floor(array_sum($this->classes) / 2);
+			if ($showSign) 
+				return showSign($hl);
+			else 
+				return $hl;
 		}
 
 		public function setHP($key, $value) {
@@ -139,11 +148,11 @@
 			}
 		}
 
-		public static function classAbilitiesEditFormat($key = 1, $classAbilitiesInfo = null) {
+		public static function classAbilityEditFormat($key = 1, $classAbilitiesInfo = null) {
 			if ($classAbilitiesInfo == null) 
 				$classAbilitiesInfo = array('name' => '', 'notes' => '');
 ?>
-							<div class="classAbilities clearfix">
+							<div class="classAbilities tr clearfix">
 								<input type="text" name="classAbilities[<?=$key?>][name]" value="<?=$classAbilitiesInfo['name']?>" class="classAbilities_name placeholder" data-placeholder="Ability">
 								<a href="" class="notesLink">Notes</a>
 								<a href="" class="remove sprite cross"></a>
@@ -154,8 +163,8 @@
 
 		public function showClassAbilitiesEdit() {
 			if (sizeof($this->classAbilities)) { foreach ($this->classAbilities as $key => $classAbilities) {
-				$this->classAbilitiesEditFormat($key + 1, $classAbilities);
-			} } else $this->classAbilitiesEditFormat();
+				$this->classAbilityEditFormat($key + 1, $classAbilities);
+			} } else $this->classAbilityEditFormat();
 		}
 
 		public function displayClassAbilities() {
@@ -181,11 +190,11 @@
 			}
 		}
 
-		public static function talentsEditFormat($key = 1, $talentsInfo = null) {
+		public static function talentEditFormat($key = 1, $talentsInfo = null) {
 			if ($talentsInfo == null) 
 				$talentsInfo = array('name' => '', 'notes' => '');
 ?>
-							<div class="talents clearfix">
+							<div class="talents tr clearfix">
 								<input type="text" name="talents[<?=$key?>][name]" value="<?=$talentsInfo['name']?>" class="talents_name placeholder" data-placeholder="Ability">
 								<a href="" class="notesLink">Notes</a>
 								<a href="" class="remove sprite cross"></a>
@@ -197,9 +206,9 @@
 		public function showTalentsEdit() {
 			if (sizeof($this->talents)) 
 				foreach ($this->talents as $key => $talents) 
-					$this->talentsEditFormat($key + 1, $talents);
+					$this->talentEditFormat($key + 1, $talents);
 			else 
-				$this->talentsEditFormat();
+				$this->talentEditFormat();
 		}
 
 		public function displayTalents() {
@@ -230,10 +239,10 @@
 			if ($powerInfo == null) 
 				$powerInfo = array('name' => '', 'notes' => '');
 ?>
-							<div class="power clearfix">
+							<div class="power tr clearfix">
 								<input type="text" name="powers[<?=$key?>][name]" value="<?=$powerInfo['name']?>" class="power_name placeholder" data-placeholder="Power Name">
-								<a href="" class="power_notesLink">Notes</a>
-								<a href="" class="power_remove sprite cross"></a>
+								<a href="" class="notesLink">Notes</a>
+								<a href="" class="remove sprite cross"></a>
 								<textarea name="powers[<?=$key?>][notes]"><?=$powerInfo['notes']?></textarea>
 							</div>
 <?
@@ -265,6 +274,39 @@
 				foreach ($power as $key => $value) 
 					$power[$key] = sanitizeString($value);
 				$this->powers[] = $power;
+			}
+		}
+
+		public function addAttack($attack) {
+			if (strlen($attack['ability'])) {
+				foreach ($attack as $key => $value) {
+					if ($key == 'ability') 
+						$attack[$key] = sanitizeString($value);
+					else 
+						$attack[$key] = intval($value);
+				}
+				$this->attacks[] = $attack;
+			}
+		}
+
+		public function showAttacksEdit($min = 2) {
+			$attackNum = 0;
+			if (!is_array($this->attacks)) 
+				$this->attacks = (array) $this->attacks;
+			foreach ($this->attacks as $attackInfo) 
+				$this->attackEditFormat($attackNum++, $attackInfo);
+			if ($attackNum < $min) 
+				while ($attackNum < $min) 
+					$this->attackEditFormat($attackNum++);
+		}
+
+		public static function attackEditFormat($attackNum, $attackInfo = array()) {
+			$defaults = array('total' => 0, 'stat' => 0, 'class' => 0, 'prof' => 0, 'feat' => 0, 'enh' => 0, 'misc' => 0);
+		}
+
+		public function displayAttacks() {
+			foreach ($this->attacks as $attack) {
+				$total = showSign($this->getHL() + $attack['stat'] + $attack['class'] + $attack['prof'] + $attack['feat'] + $attack['enh'] + $attack['misc']);
 			}
 		}
 
