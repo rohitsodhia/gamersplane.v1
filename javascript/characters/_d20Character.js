@@ -23,6 +23,7 @@ $(function() {
 	$('#classWrapper').on('blur', '.levelInput', function () {
 		oldLevel = level;
 		level = 0;
+		console.log(level);
 		$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
 		if (isNaN(level)) level = 0;
 

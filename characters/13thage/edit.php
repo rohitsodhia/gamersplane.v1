@@ -16,7 +16,7 @@
 ?>
 						<div class="classSet">
 							<input type="text" name="class[]" value="<?=$class?>" class="medText lrBuffer">
-							<input type="text" name="level[]" value="<?=$level?>" class="shortNum lrBuffer">
+							<input type="text" name="level[]" value="<?=$level?>" class="shortNum levelInput lrBuffer">
 						</div>
 <?
 	}
@@ -24,7 +24,7 @@
 ?>
 						<div class="classSet">
 							<input type="text" name="class[]" class="medText lrBuffer">
-							<input type="text" name="level[]" class="shortNum lrBuffer">
+							<input type="text" name="level[]" class="shortNum levelInput lrBuffer">
 						</div>
 <?	} ?>
 					</div>
@@ -42,7 +42,7 @@
 		$statLabels .= "<label>".ucwords($short)."</label>\n";
 		$statRow .= "<input type=\"text\" id=\"{$short}\" name=\"stats[{$short}]\" value=\"{$this->getStat($short)}\" maxlength=\"2\" class=\"stat\">\n";
 		$modRow .= "<div class=\"statBonus_{$short}\">".$this->getStatMod($short)."</div>\n";
-		$modPLRow .= "<div class=\"statModPL_{$short}\">".showSign($this->getStatMod($short) + $this->getLevel())."</div>\n";
+		$modPLRow .= "<div class=\"statBonus_{$short} addHL\">".showSign($this->getStatMod($short) + $this->getLevel())."</div>\n";
 	}
 	echo "<div class=\"tr\">$statLabels</div>";
 	echo "<div class=\"tr\">$statRow</div>";

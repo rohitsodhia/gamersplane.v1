@@ -1,4 +1,5 @@
 function trigger_levelUpdate(oldLevel) {
+	console.log(1);
 	$('.addHL').each(function () {
 		$(this).text(showSign(parseInt($(this).text()) - Math.floor(oldLevel / 2) + Math.floor(level / 2)));
 	});
