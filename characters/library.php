@@ -40,7 +40,7 @@
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'name_d') $orderBy = 'games.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') $orderBy = 'systems.fullName ASC';*/
 	$orderBy = 's.fullName ASC';
-	$characters = $mysql->query("SELECT c.*, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID AND l.inLibrary == 1 INNER JOIN systems s ON c.system = s.shortName INNER JOIN users u ON c.userID = u.userID ".(sizeof($selectedSystems)?'WHERE c.system IN ("'.implode('", "', $selectedSystems).'") ':'')."ORDER BY {$orderBy}");
+	$characters = $mysql->query("SELECT c.*, u.username FROM characterLibrary l INNER JOIN characters c ON l.characterID = c.characterID AND l.inLibrary = 1 INNER JOIN systems s ON c.system = s.shortName INNER JOIN users u ON c.userID = u.userID ".(sizeof($selectedSystems)?'WHERE c.system IN ("'.implode('", "', $selectedSystems).'") ':'')."ORDER BY {$orderBy}");
 	
 	if ($characters->rowCount()) { foreach ($characters as $info) {
 ?>
