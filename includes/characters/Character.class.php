@@ -82,14 +82,14 @@
 				$userID = intval($userID);
 
 			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = $userID OR p.userID = $userID)");
-			if ($charCheck->rowCount()) return 'edit';
+			if ($charCheck->rowCount()) 
+				return 'edit';
 
 			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$this->characterID} AND inLibrary = 1");
-			if ($libraryCheck->rowCount()) {
-				$charCheck = $mysql->query("SELECT c.characterID FROM characters c INNER JOIN players p ON c.gameID = p.gameID AND p.isGM = 0 WHERE c.characterID = {$this->characterID} AND c.userID != $userID AND p.userID = $userID");
-				if ($charCheck->rowCount()) return false;
-				else return 'library';
-			} else return false;
+			if ($libraryCheck->rowCount()) 
+				return 'library';
+			else 
+				return false;
 		}
 		
 		public function showSheet() {
