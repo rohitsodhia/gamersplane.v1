@@ -8,7 +8,7 @@
 	$usersPerPage = 25;
 	
 	$page = intval($_GET['page']) > 0?intval($_GET['page']):1;
-	$usersOnPage = $mysql->query('SELECT userID, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users ORDER BY online DESC, username LIMIT '.(($page - 1) * $usersPerPage).', '.$usersPerPage);
+	$usersOnPage = $mysql->query('SELECT userID, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users WHERE activatedOn IS NOT NULL ORDER BY online DESC, username LIMIT '.(($page - 1) * $usersPerPage).', '.$usersPerPage);
 	$count = 0;
 	foreach ($usersOnPage as $userInfo) {
 		$user = new User($userInfo['userID']);
