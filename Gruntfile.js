@@ -2,6 +2,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -28,6 +29,17 @@ module.exports = function(grunt) {
 				}]
 			}
 		},
+		cssmin: {
+			css: {
+				files: [{
+					expand: true,
+					cwd: 'styles/',
+					src: ['**/*.css', '!colorbox.css'],
+					dest: 'styles/',
+					ext: '.css'
+				}]
+			}
+		},
 		watch: {
 			less: {
 				files: ['styles/**/*.less'],
@@ -37,4 +49,5 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask('default', ['less:dev']);
+	grunt.registerTask('release', ['less:prod', 'cssmin']);
 };
