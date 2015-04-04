@@ -1,71 +1,81 @@
 			<div class="tr labelTR tr-noPadding">
 				<label id="label_name" class="medText">Name</label>
 				<label id="label_race" class="medText">Race</label>
-				<label id="label_background" class="medText">Background</label>
+				<label id="label_classes" class="longText">Class(es)</label>
 			</div>
 			<div class="tr dataTR">
 				<div class="medText"><?=$this->getName()?></div>
 				<div class="medText"><?=$this->getRace()?></div>
-				<div class="medText"><?=$this->getBackground()?></div>
-			</div>
-			
-			<div class="tr labelTR">
-				<label id="label_classes" class="longText">Class(es)</label>
-				<label id="label_alignment" class="medText">Alignment</label>
-			</div>
-			<div class="tr dataTR">
 				<div class="longText"><? $this->displayClasses(); ?></div>
-				<div class="longText"><?=$this->getAlignment()?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
-					<div class="tr">
-						<label class="longerStatLabel leftLabel">Inspiration</label>
-						<div><?=$this->getInspiration()?></div>
-					</div>
-					<div class="tr">
-						<label class="longerStatLabel leftLabel">Proficiency Bonus</label>
-						<div><?=$this->getProfBonus()?></div>
-					</div>
-
-					<div id="abilityScoreLabels" class="labelTR">
-						<label class="saveProficient">Save</label>
-					</div>
 <?
+	$statLabels = '';
+	$statRow = '';
+	$modRow = '';
+	$modPLRow = '';
 	$stats = d20Character_consts::getStatNames();
 	foreach ($stats as $short => $stat) {
+		$statLabels .= "<label>".ucwords($short)."</label>\n";
+		$statRow .= "<div>{$this->getStat($short)}</div>\n";
+		$modRow .= "<div class=\"statBonus_{$short}\">".$this->getStatMod($short)."</div>\n";
+		$modPLRow .= "<div class=\"statBonus_{$short} addHL\">".showSign($this->getStatMod($short) + $this->getLevel())."</div>\n";
+	}
+	echo "<div class=\"tr\">$statLabels</div>";
+	echo "<div class=\"tr\">$statRow</div>";
+	echo "<div class=\"tr\">$modRow</div>";
+	echo "<div class=\"tr\">$modPLRow</div>";
 ?>
-					<div class="tr abilityScore">
-						<label id="label_<?=$short?>" class="shortText leftLabel"><?=$stat?></label>
-						<div class="stat"><?=$this->getStat($short)?></div>
-						<span id="<?=$short?>Modifier" class="stat_mod"><?=$this->getStatMod($short)?></span>
-						<span class="saveProficient"><?=showSign($this->getStatMod($short, false) + ($this->getSaveProf($short)?$this->getProfBonus():0))?></span>
+				</div>
+
+				<div id="saves">
+					<div class="labelTR tr">
+						<div class="cell">&nbsp;</div>
+						<label>Base</label>
+						<span>&nbsp;</span>
+						<label>Stat</label>
+						<span>&nbsp;</span>
+						<label>Misc</label>
+					</div>
+<?	foreach (array('ac', 'pd', 'md') as $save) { ?>
+					<div class="saveSet tr">
+						<label><?=strtoupper($save)?></label><div class="total"><?=$this->getSave($save, 'total')?></div>
+						<span>=</span>
+						<div><?=$this->getSave($save, 'base')?></div>
+						<span>+</span>
+						<div id="<?=$save?>Stat" class="saveStat"><?=$this->getStatMod($this->getSaveStat($save), true)?></div>
+						<span>+</span>
+						<div><?=$this->getSave($save, 'misc')?></div>
 					</div>
 <?	} ?>
-
-					<div class="tr">
-						<label class="shortText leftLabel">Total HP</label>
-						<div><?=$this->getHP('total')?></div>
+				</div>
+				<div id="hp">
+					<div class="title" class="tr labelTR">HP</div>
+					<div>
+						<label for="hp_current">Current</label>
+						<label for="hp_maximum">Max</label>
 					</div>
 					<div class="tr">
-						<label class="shortText leftLabel">Temp HP</label>
-						<div><?=$this->getHP('temp')?></div>
-					</div>
-
-					<div class="tr">
-						<label class="shortText leftLabel">AC</label>
-						<div><?=$this->getAC()?></div>
-					</div>
-					<div class="tr">
-						<label class="shortText leftLabel">Initiative</label>
-						<div><?=$this->getInitiative()?></div>
-					</div>
-					<div class="tr">
-						<label class="shortText leftLabel">Speed</label>
-						<div><?=$this->getSpeed()?></div>
+						<div><?=$this->getHP('current')?></div>
+						<div><?=$this->getHP('maximum')?></div>
 					</div>
 				</div>
+				<div id="recoveries">
+					<div class="title" class="tr labelTR">Recoveries</div>
+					<div>
+						<label for="recoveries_current">Current</label>
+						<label for="recoveries_maximum">Max</label>
+						<label for="recoveries_roll">Roll</label>
+					</div>
+					<div class="tr">
+						<div><?=$this->getRecoveries('current')?></div>
+						<div><?=$this->getRecoveries('maximum')?></div>
+						<div><?=$this->getRecoveryRoll()?></div>
+					</div>
+				</div>
+			</div>
 
 				<div id="skills">
 					<h2 class="headerbar hbDark">Skills</h2>

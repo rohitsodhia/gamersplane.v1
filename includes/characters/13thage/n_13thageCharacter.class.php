@@ -50,7 +50,7 @@
 				return $hl;
 		}
 
-		public function getSaveStat($stat, $showSign = false) {
+		public function getSaveStat($stat) {
 			if ($stat == 'ac') 
 				$stats = array('dex', 'con', 'wis');
 			elseif ($stat == 'pd') 
@@ -368,6 +368,11 @@
 					foreach ($data['backgrounds'] as $backgroundInfo) 
 						$this->addBackground($backgroundInfo);
 
+				$this->clearVar('feats');
+				if (sizeof($data['feats'])) 
+					foreach ($data['feats'] as $featInfo) 
+						$this->addFeat($featInfo);
+
 				$this->clearVar('classAbilities');
 				if (sizeof($data['classAbilities'])) 
 					foreach ($data['classAbilities'] as $info) 
@@ -377,11 +382,6 @@
 				if (sizeof($data['powers'])) 
 					foreach ($data['powers'] as $info) 
 						$this->addPower($info);
-
-				$this->clearVar('feats');
-				if (sizeof($data['feats'])) 
-					foreach ($data['feats'] as $featInfo) 
-						$this->addFeat($featInfo);
 
 				$this->setItems($data['items']);
 				$this->setNotes($data['notes']);
