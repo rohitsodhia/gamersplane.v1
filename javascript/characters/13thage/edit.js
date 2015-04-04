@@ -1,5 +1,4 @@
 function trigger_levelUpdate(oldLevel) {
-	console.log(1);
 	$('.addHL').each(function () {
 		$(this).text(showSign(parseInt($(this).text()) - Math.floor(oldLevel / 2) + Math.floor(level / 2)));
 	});
@@ -64,5 +63,28 @@ $(function() {
 	}
 	setupItemized($('#attacks'));
 
-
+	$('.stat').blur(function () {
+		$.each({
+			'ac': ['dex', 'con', 'wis'],
+			'pd': ['str', 'dex', 'con'],
+			'md': ['int', 'wis', 'cha']
+		}, function (index, stats){
+			if (statBonus[stats[1]] > statBonus[stats[0]]) {
+				hold = stats[0];
+				stats[0] = stats[1];
+				stats[1] = hold;
+			}
+			if (statBonus[stats[2]] > statBonus[stats[1]]) {
+				hold = stats[1];
+				stats[1] = stats[2];
+				stats[2] = hold;
+			}
+			if (statBonus[stats[1]] > statBonus[stats[0]]) {
+				hold = stats[0];
+				stats[0] = stats[1];
+				stats[1] = hold;
+			}
+			$('#' + index + 'Stat').text(showSign(statBonus[stats[1]]));
+		});
+	});
 });

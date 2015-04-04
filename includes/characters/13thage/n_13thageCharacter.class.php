@@ -50,6 +50,35 @@
 				return $hl;
 		}
 
+		public function getSaveStat($stat) {
+			if ($stat == 'ac') 
+				$stats = array('dex', 'con', 'wis');
+			elseif ($stat == 'pd') 
+				$stats = array('str', 'dex', 'con');
+			elseif ($stat == 'md') 
+				$stats = array('int', 'wis', 'cha');
+			else
+				return false;
+
+			if ($this->getStatMod($stats[1]) > $this->getStatMod($stats[0])) {
+				$hold = $stats[0];
+				$stats[0] = $stats[1];
+				$stats[0] = $hold;
+			}
+			if ($this->getStatMod($stats[2]) > $this->getStatMod($stats[1])) {
+				$hold = $stats[1];
+				$stats[1] = $stats[2];
+				$stats[1] = $hold;
+			}
+			if ($this->getStatMod($stats[1]) > $this->getStatMod($stats[0])) {
+				$hold = $stats[0];
+				$stats[0] = $stats[1];
+				$stats[0] = $hold;
+			}
+
+			return $stats[1];
+		}
+
 		public function setHP($key, $value) {
 			if (array_key_exists($key, $this->hp)) 
 				$this->hp[$key] = intval($value);

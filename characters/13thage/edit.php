@@ -60,13 +60,15 @@
 							<span>&nbsp;</span>
 							<label>Misc</label>
 						</div>
-<?	foreach (array('ac', 'pd', 'md') as $save) { ?>
+<?
+	foreach (array('ac', 'pd', 'md') as $save) {
+?>
 						<div class="saveSet tr">
 							<label><?=strtoupper($save)?></label><div class="total"><?=$this->getSave($save, 'total')?></div>
 							<span>=</span>
 							<input type="text" name="save[<?=$def?>][base]" value="<?=$this->getSave($save, 'base')?>">
 							<span>+</span>
-							<div class="stat"></div>
+							<div id="<?=$save?>Stat" class="saveStat"></div>
 							<span>+</span>
 							<input type="text" name="save[<?=$def?>][misc]" value="<?=$this->getSave($save, 'misc')?>">
 						</div>

@@ -1,13 +1,7 @@
 var size = 0, level = 0, statBonus = { 'str' : 0, 'dex' : 0, 'con' : 0, 'int' : 0, 'wis' : 0, 'cha' : 0 };
 $(function() {
 	size = parseInt($('#size').val());
-	$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
-	statBonus = { 'str': parseInt($('#strModifier').text()),
-				  'con': parseInt($('#conModifier').text()),
-				  'dex': parseInt($('#dexModifier').text()),
-				  'int': parseInt($('#intModifier').text()),
-				  'wis': parseInt($('#wisModifier').text()),
-				  'cha': parseInt($('#chaModifier').text()) }
+	$('#classWrapper .levelInput').each(function () { level += !isNaN(parseInt($(this).val()))?parseInt($(this).val()):0; });
 	
 	$('#size').blur(function() {
 		oldSize = size;
@@ -23,11 +17,12 @@ $(function() {
 	$('#classWrapper').on('blur', '.levelInput', function () {
 		oldLevel = level;
 		level = 0;
-		console.log(level);
 		$('#classWrapper .levelInput').each(function () { level += parseInt($(this).val()); });
-		if (isNaN(level)) level = 0;
+		if (isNaN(level)) 
+			level = 0;
 
-		if (typeof trigger_levelUpdate == 'function') trigger_levelUpdate(oldLevel);
+		if (typeof trigger_levelUpdate == 'function') 
+			trigger_levelUpdate(oldLevel);
 	});
 	$('.stat').blur(function() {
 		modifier = Math.floor(($(this).val() - 10)/2);
@@ -41,7 +36,7 @@ $(function() {
 		statBonus[this.id] = parseInt(modifier);
 
 		if (typeof trigger_statUpdate == 'function') trigger_statUpdate(this.id);
-	});
+	}).blur();
 	$('#bab').blur(function () {
 		$('.bab').text(showSign($(this).val()));
 		$('#ranged_misc').blur();
