@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 		},
 		clean: {
 			less: ['styles/**/*.less']
-		}
+		},
 		watch: {
 			less: {
 				files: ['styles/**/*.less'],
