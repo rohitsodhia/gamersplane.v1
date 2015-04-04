@@ -50,7 +50,7 @@
 				return $hl;
 		}
 
-		public function getSaveStat($stat) {
+		public function getSaveStat($stat, $showSign = false) {
 			if ($stat == 'ac') 
 				$stats = array('dex', 'con', 'wis');
 			elseif ($stat == 'pd') 
@@ -76,7 +76,7 @@
 				$stats[0] = $hold;
 			}
 
-			return $stats[1];
+			return $showSign?showSign($stats[1]):$stats[1];
 		}
 
 		public function setHP($key, $value) {

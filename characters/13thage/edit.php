@@ -68,7 +68,7 @@
 							<span>=</span>
 							<input type="text" name="save[<?=$def?>][base]" value="<?=$this->getSave($save, 'base')?>">
 							<span>+</span>
-							<div id="<?=$save?>Stat" class="saveStat"></div>
+							<div id="<?=$save?>Stat" class="saveStat"><?=$this->getStatMod($this->getSaveStat($save), true)?></div>
 							<span>+</span>
 							<input type="text" name="save[<?=$def?>][misc]" value="<?=$this->getSave($save, 'misc')?>">
 						</div>
