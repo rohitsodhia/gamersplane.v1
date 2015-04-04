@@ -6,13 +6,14 @@ _backup/
 *.txt
 *.psd
 *.doc
+*.css
+*.pdf
+*.sql
 javascript/markItUp/sets/default/
 javascript/markItUp/skins/markitup/
 javascript/markItUp/skins/simple/
 ucp/avatars/
 characters/avatars/
-*.pdf
-*.sql
 blog/
 test*.php
 includes/connect_local.php
