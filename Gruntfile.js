@@ -3,6 +3,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -40,6 +41,9 @@ module.exports = function(grunt) {
 				}]
 			}
 		},
+		clean: {
+			less: ['styles/**/*.less']
+		}
 		watch: {
 			less: {
 				files: ['styles/**/*.less'],
