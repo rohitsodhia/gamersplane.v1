@@ -4,6 +4,18 @@ function trigger_levelUpdate(oldLevel) {
 	});
 }
 
+function updateStats() {
+	$.each(['ac', 'pd', 'md'], function (key, value) {
+		$statRow = $('#' + value + 'Row');
+		total = parseInt($statRow.find('.saveStat').text());
+		console.log($statRow.find('.saveStat'));
+		$statRow.find('input').each(function () {
+			total += parseInt($(this).val());
+		});
+		$statRow.find('.total').text(total);
+	});
+}
+
 $(function() {
 	itemizationFunctions['backgrounds'] = {
 		newItem: function ($newItem) {
@@ -86,5 +98,8 @@ $(function() {
 			}
 			$('#' + index + 'Stat').text(showSign(statBonus[stats[1]]));
 		});
+		updateStats();
 	});
+
+	$('#saves').on('blur', 'input', updateStats);
 });

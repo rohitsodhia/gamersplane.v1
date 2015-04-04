@@ -40,17 +40,18 @@
 						<label>Misc</label>
 					</div>
 <?	foreach (array('ac', 'pd', 'md') as $save) { ?>
-					<div class="saveSet tr">
+					<div id="<?=$save?>Row" class="saveSet tr">
 						<label><?=strtoupper($save)?></label><div class="total"><?=$this->getSave($save, 'total')?></div>
 						<span>=</span>
-						<div><?=$this->getSave($save, 'base')?></div>
+						<div class="shortNum"><?=$this->getSave($save, 'base')?></div>
 						<span>+</span>
 						<div id="<?=$save?>Stat" class="saveStat"><?=$this->getStatMod($this->getSaveStat($save), true)?></div>
 						<span>+</span>
-						<div><?=$this->getSave($save, 'misc')?></div>
+						<div class="shortNum"><?=$this->getSave($save, 'misc')?></div>
 					</div>
 <?	} ?>
 				</div>
+
 				<div id="hp">
 					<div class="title" class="tr labelTR">HP</div>
 					<div>
@@ -58,8 +59,8 @@
 						<label for="hp_maximum">Max</label>
 					</div>
 					<div class="tr">
-						<div><?=$this->getHP('current')?></div>
-						<div><?=$this->getHP('maximum')?></div>
+						<div class="shortNum"><?=$this->getHP('current')?></div>
+						<div class="shortNum"><?=$this->getHP('maximum')?></div>
 					</div>
 				</div>
 				<div id="recoveries">
@@ -70,48 +71,62 @@
 						<label for="recoveries_roll">Roll</label>
 					</div>
 					<div class="tr">
-						<div><?=$this->getRecoveries('current')?></div>
-						<div><?=$this->getRecoveries('maximum')?></div>
-						<div><?=$this->getRecoveryRoll()?></div>
+						<div class="shortNum"><?=$this->getRecoveries('current')?></div>
+						<div class="shortNum"><?=$this->getRecoveries('maximum')?></div>
+						<div class="shortNum"><?=$this->getRecoveryRoll()?></div>
 					</div>
 				</div>
 			</div>
 
-				<div id="skills">
-					<h2 class="headerbar hbDark">Skills</h2>
-					<div class="hbdMargined">
-						<div class="tr labelTR">
-							<label class="shortNum alignCenter lfBuffer">Prof?</label>
-							<label class="medText">Skill</label>
-							<label class="skill_stat alignCenter">Stat</label>
+			<div class="clearfix">
+				<div id="uniqueThing" class="floatLeft">
+					<h2 class="headerbar hbDark">One Unique Thing</h2>
+					<div class="hbdMargined"><?=printReady($this->getUniqueThing())?></div>
+				</div>
+				<div id="iconRelationships" class="floatRight">
+					<h2 class="headerbar hbDark">Icon Relationships</h2>
+					<div class="hbdMargined"><?=printReady($this->getIconRelationships())?></div>
+				</div>
+			</div>
+			<div class="clearfix">
+				<div class="column first">
+					<div id="backgrounds">
+						<h2 class="headerbar hbDark">Backgrounds</h2>
+						<div class="hbdMargined">
+<?	$this->displayBackgrounds(); ?>
 						</div>
-<?	$this->displaySkills(); ?>
+					</div>
+					<div id="feats">
+						<h2 class="headerbar hbDark">Feats</h2>
+						<div class="hbdMargined">
+<?	$this->displayFeats(); ?>
+						</div>
 					</div>
 				</div>
-				<div id="feats">
-					<h2 class="headerbar hbDark">Feats/Abilities</h2>
-					<div class="hbdMargined">
-<?	$this->displayFeats(); ?>
+				<div class="column">
+					<div id="classAbilities">
+						<h2 class="headerbar hbDark">Class Abilities/Talents</h2>
+						<div class="hbdMargined">
+<?	$this->displayClassAbilities(); ?>
+						</div>
 					</div>
 				</div>
 			</div>
-			
 			<div class="clearfix">
-				<div id="weapons" class="floatLeft">
-					<h2 class="headerbar hbDark">Weapons</h2>
-					<div class="hbdMargined">
-<?	$this->displayWeapons(); ?>
+				<div class="column first">
+					<div id="powers">
+						<h2 class="headerbar hbDark">Powers</h2>
+						<div class="hbdMargined">
+<?	$this->displayPowers(); ?>
+						</div>
 					</div>
 				</div>
-				<div id="spells" class="floatRight">
-					<h2 class="headerbar hbDark">Spells</h2>
-					<div class="hbdMargined">
-					<div class="spell tr labelTR clearfix">
-						<label class="spell_name"><?=$spell['name']?></label>
-						<label class="spell_ab shortNum">AB</label>
-						<label class="spell_save shortNum">Save</label>
-					</div>
-<?	$this->displaySpells(); ?>
+				<div class="column">
+					<div id="attacks">
+						<h2 class="headerbar hbDark">Attacks</h2>
+						<div class="hbdMargined">
+<?	$this->displayAttacks(); ?>
+						</div>
 					</div>
 				</div>
 			</div>

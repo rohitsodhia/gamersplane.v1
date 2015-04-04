@@ -3,6 +3,12 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+#page_characterSheet {
+	.dataTR {
+		margin-bottom: 0;
+	}
+}
+
 #stats, #saves, #hp, #recoveries {
 	float: left;
 	margin-top: 1.5em;
@@ -98,6 +104,15 @@
 	}
 }
 
+#page_characterSheet {
+	#saves {
+		.shortNum {
+			display: inline-block;
+			text-align: center;
+		}
+	}
+}
+
 #hp, #recoveries {
 	width: 125px;
 
@@ -113,6 +128,16 @@
 
 	input {
 		margin: 0 10px;
+	}
+}
+
+#page_characterSheet {
+	#hp, #recoveries {
+		& > div > div {
+			display: inline-block;
+			margin: 0 10px;
+			text-align: center;
+		}
 	}
 }
 
@@ -149,8 +174,12 @@
 		vertical-align: middle;
 	}
 
-	input, .feat_name {
+	input, .name, .feat_name {
 		width: 350px;
+	}
+
+	.name {
+		display: inline-block;
 	}
 
 	.notesLink {
@@ -163,6 +192,14 @@
 		margin-top: .5em;
 		width: 425px;
 		height: 4.2em;
+	}
+}
+
+#page_characterSheet {
+	#backgrounds, #feats, #classAbilities, #powers {
+		.name, .feat_name {
+			width: 370px;
+		}
 	}
 }
 
