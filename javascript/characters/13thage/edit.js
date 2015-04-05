@@ -7,8 +7,7 @@ function trigger_levelUpdate(oldLevel) {
 function updateStats() {
 	$.each(['ac', 'pd', 'md'], function (key, value) {
 		$statRow = $('#' + value + 'Row');
-		total = parseInt($statRow.find('.saveStat').text());
-		console.log($statRow.find('.saveStat'));
+		total = parseInt($statRow.find('.saveStat').text()) + level;
 		$statRow.find('input').each(function () {
 			total += parseInt($(this).val());
 		});

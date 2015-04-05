@@ -132,7 +132,11 @@
 		}
 
 		public function setRecoveryRoll($value) {
-			$this->recoveryRoll = intval($value);
+			$value = str_replace(' ', '', strtolower($value));
+			if (preg_match('/\d+d\d+([+-]\d+)?/', $value)) 
+				$this->recoveryRoll = $value;
+			else 
+				$this->recoveryRoll = '';
 		}
 
 		public function getRecoveryRoll() {

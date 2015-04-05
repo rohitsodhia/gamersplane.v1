@@ -88,12 +88,12 @@
 						<div>
 							<label for="recoveries_current">Current</label>
 							<label for="recoveries_maximum">Max</label>
-							<label for="recoveries_roll">Roll</label>
+							<label for="recoveries_roll" class="recovery">Roll</label>
 						</div>
 						<div class="tr">
 							<input id="recoveries_current" type="text" name="recoveries[current]" value="<?=$this->getRecoveries('current')?>">
 							<input id="recoveries_maximum" type="text" name="recoveries[maximum]" value="<?=$this->getRecoveries('maximum')?>">
-							<input id="recoveries_roll" type="text" name="recoveryRoll" value="<?=$this->getRecoveryRoll()?>">
+							<input id="recoveries_roll" type="text" name="recoveryRoll" value="<?=$this->getRecoveryRoll()?>" class="recovery medNum">
 						</div>
 					</div>
 				</div>
