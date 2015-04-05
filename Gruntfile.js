@@ -43,6 +43,7 @@ module.exports = function(grunt) {
 		},
 		clean: {
 			less: ['styles/**/*.less']
+			css: ['styles/**/*.css']
 		},
 		watch: {
 			less: {
@@ -53,5 +54,5 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask('default', ['less:dev']);
-	grunt.registerTask('release', ['less:prod', 'cssmin']);
+	grunt.registerTask('release', ['clean:css', 'less:prod', 'cssmin']);
 };
