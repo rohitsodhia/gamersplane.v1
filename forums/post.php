@@ -190,28 +190,32 @@
 <?
 		if ($threadManager->getPermissions('moderate')) {
 			$sticky = $threadManager->getThreadProperty('sticky');
-			if ($fillVars) $sticky = $fillVars['sticky'];
+			if ($fillVars) 
+				$sticky = $fillVars['sticky'];
 ?>
 				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Sticky thread</p>
 <?
 		}
 		if ($threadManager->getPermissions('moderate')) {
 			$locked = $threadManager->getThreadProperty('locked');
-			if ($fillVars) $locked = $fillVars['locked'];
+			if ($fillVars) 
+				$locked = $fillVars['locked'];
 ?>
 				<p><input type="checkbox" name="locked"<?=$locked?' checked="checked"':''?>> Lock thread</p>
 <?
 		}
 		if ($threadManager->getPermissions('addRolls')) {
-			$addRolls = $allowRolls || ($pathOptions[0] == 'newThread' && $gameID);
-			if ($fillVars) $addRolls = $fillVars['allowRolls'];
+			$addRolls = $rollsAllowed || ($pathOptions[0] == 'newThread' && $gameID);
+			if ($fillVars) 
+				$addRolls = $fillVars['allowRolls'];
 ?>
 				<p><input type="checkbox" name="allowRolls"<?=$addRolls?' checked="checked"':''?>> Allow adding rolls to posts (if this box is unchecked, any rolls added to this thread will be ignored)</p>
 <?
 		}
 		if ($threadManager->getPermissions('addDraws')) {
-			$addDraws = $allowDraws || ($pathOptions[0] == 'newThread' && $gameID);
-			if ($fillVars) $addDraws = $fillVars['allowDraws'];
+			$addDraws = $drawsAllowed || ($pathOptions[0] == 'newThread' && $gameID);
+			if ($fillVars) 
+				$addDraws = $fillVars['allowDraws'];
 ?>
 				<p><input type="checkbox" name="allowDraws"<?=$addDraws?' checked="checked"':''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
 <?		} ?>
