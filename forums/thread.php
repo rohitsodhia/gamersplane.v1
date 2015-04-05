@@ -257,8 +257,8 @@
 	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('locked')) {
 		$characters = array();
 		if ($gameID) {
+			require_once(FILEROOT."/includes/packages/{$system}.package.php");
 			$charClass = $systems->systemClassName($system).'Character';
-			require_once(FILEROOT."/includes/packages/{$charClass}.package.php");
 			$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
 			if ($characterIDs->rowCount()) { while ($characterID = $characterIDs->fetchColumn()) {
 				if ($character = new $charClass($characterID)) {
