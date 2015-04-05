@@ -49,6 +49,27 @@
 				return $hl;
 		}
 
+		public function getSave($save = null, $key = null) {
+			if (array_key_exists($save, $this->saves)) {
+				if ($key == null) 
+					return $this->saves[$save];
+				elseif (array_key_exists($key, $this->saves[$save])) 
+					return $this->saves[$save][$key];
+				elseif ($key == 'total') {
+					$total = 0;
+					foreach ($this->saves[$save] as $value) 
+						if (is_numeric($value)) 
+							$total += $value;
+					$total += $this->getStatMod($this->getSaveStat($save), false) + $this->getLevel();
+					return $total;
+				} else 
+					return false;
+			} elseif ($save == null) 
+				return $this->saves;
+			else 
+				return false;
+		}
+
 		public function getSaveStat($stat) {
 			if ($stat == 'ac') 
 				$stats = array('dex', 'con', 'wis');
