@@ -42,7 +42,7 @@ module.exports = function(grunt) {
 			}
 		},
 		clean: {
-			less: ['styles/**/*.less']
+			less: ['styles/**/*.less'],
 			css: ['styles/**/*.css']
 		},
 		watch: {
