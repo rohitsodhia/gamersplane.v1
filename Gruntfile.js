@@ -53,5 +53,5 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask('default', ['less:dev']);
-	grunt.registerTask('release', ['less:prod', 'cssmin', 'clean:less']);
+	grunt.registerTask('release', ['less:prod', 'cssmin']);
 };
