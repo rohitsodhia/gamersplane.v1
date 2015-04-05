@@ -88,8 +88,10 @@
 		}
 
 		public function getLastPost($key = null) {
-			if (property_exists($this->lastPost, $key)) return $this->lastPost->$key;
-			else return $this->lastPost;
+			if (property_exists($this->lastPost, $key)) 
+				return $this->lastPost->$key;
+			else 
+				return $this->lastPost;
 		}
 
 		public function newPosts($markedRead) {

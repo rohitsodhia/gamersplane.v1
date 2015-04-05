@@ -151,8 +151,10 @@
 
 			if (!(($post->getAuthor('userID') == $currentUser->userID && $threadManager->getPermissions('editPost') && !$threadManager->thread->getStates('locked')) || $threadManager->getPermissions('moderate'))) { header('Location: /forums/thread/'.$post->getThreadID().'/'); exit; }
 
-			if ($firstPost && strlen($post->getTitle()) == 0) $formErrors->addError('noTitle');
-			if (strlen($post->getMessage()) == 0) $formErrors->addError('noMessage');
+			if ($firstPost && strlen($post->getTitle()) == 0) 
+				$formErrors->addError('noTitle');
+			if (strlen($post->getMessage()) == 0) 
+				$formErrors->addError('noMessage');
 
 			if ($firstPost) {
 				$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate')?true:false);
