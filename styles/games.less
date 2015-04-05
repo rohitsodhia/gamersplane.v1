@@ -229,205 +229,216 @@
 
 /* --------------------------------------------*/
 
-#page_gameDetails h1 a {
-	font-size: .6em;
-}
+#page_gameDetails {
+	h1 a {
+		font-size: .6em;
+	}
 
-#page_gameDetails .tr label {
-	float: left;
-	width: 320px;
-	margin-right: 10px;
-	font-size: .9em;
-	text-transform: uppercase;
-	text-align: right;
-	font-weight: bold;
-}
+	#details {
+		.tr > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
 
-#page_gameDetails #details .tr > div {
-	float: left;
-	width: 620px;
-}
+		.textareaRow > * {
+			vertical-align: top;
+		}
 
-#page_gameDetails .notice, #page_gameDetails #loggedOutNotice {
-	margin: 1em 0;
-	font-size: 1.2em;
-	line-height: 1.2em;
-	font-weight: bold;
-	text-align: center;
-}
+		label {
+			width: 320px;
+			margin-right: 10px;
+			font-size: .9em;
+			text-transform: uppercase;
+			text-align: right;
+			font-weight: bold;
+		}
 
-#page_gameDetails #playerDetails .leftCol {
-	float: left;
-	width: 630px;
-}
+		.tr > div {
+			width: 590px;
+		}
+	}
 
-#page_gameDetails #playerDetails .rightCol {
-	float: right;
-	width: 300px;
-}
+	.notice, #loggedOutNotice {
+		margin: 1em 0;
+		font-size: 1.2em;
+		line-height: 1.2em;
+		font-weight: bold;
+		text-align: center;
+	}
 
-/*#page_gameDetails #playersInGame li {
-	padding: 0;
-}*/
+	#playerDetails .leftCol {
+		float: left;
+		width: 630px;
+	}
 
-#page_gameDetails .playerInfo > div, #page_gameDetails .characters li > div {
-	float: left;
-}
+	#playerDetails .rightCol {
+		float: right;
+		width: 300px;
+	}
 
-/*#page_gameDetails .playerInfo {
-	padding: 8px;
-}
+/*	#playersInGame li {
+		padding: 0;
+	}*/
 
-#page_gameDetails .playerInfo:hover {
-	padding: 7px;
-	border: 1;
-}
+	.playerInfo > div, .characters li > div {
+		float: left;
+	}
 
-#page_gameDetails #playersInGame li:hover {
-	padding: 0;
-}*/
+/*	.playerInfo {
+		padding: 8px;
+	}
 
-#page_gameDetails .hasChars {
-	padding-bottom: 4px;
-}
+	.playerInfo:hover {
+		padding: 7px;
+		border: 1;
+	}
 
-#page_gameDetails .hasChars:hover {
-	padding-bottom: 3px;
-}
+	#playersInGame li:hover {
+		padding: 0;
+	}*/
 
-#page_gameDetails .hasChars .playerInfo {
-	padding-bottom: 6px;
-}
+	.hasChars {
+		padding-bottom: 4px;
+	}
 
-#page_gameDetails .player {
-	width: 210px;
-	padding-right: 15px;
-}
+	.hasChars:hover {
+		padding-bottom: 3px;
+	}
 
-#page_gameDetails .player img {
-	vertical-align: top;
-	margin-left: 10px;
-}
+	.hasChars .playerInfo {
+		padding-bottom: 6px;
+	}
 
-#page_gameDetails .actionLinks a, #page_gameDetails .actionLinks a {
-	margin-right: 20px;
-}
+	.player {
+		width: 210px;
+		padding-right: 15px;
+	}
 
-#page_gameDetails .characters {
-	margin-left: 0;
-	list-style: none;
-	background: #EEE;
-}
+	.player img {
+		vertical-align: top;
+		margin-left: 10px;
+	}
 
-#page_gameDetails #playersInGame > li:hover .characters {
-	background: #DDD;
-}
+	.actionLinks a, .actionLinks a {
+		margin-right: 20px;
+	}
 
-#page_gameDetails #playersInGame .characters li {
-	padding: 6px 0;
-	border-top: 1px solid #CCC;
-}
+	.characters {
+		margin-left: 0;
+		list-style: none;
+		background: #EEE;
+	}
 
-#page_gameDetails #playersInGame .characters li:first-child {
-	border-top: none;
-}
+	#playersInGame > li:hover .characters {
+		background: #DDD;
+	}
 
-#page_gameDetails #playersInGame > li:hover .characters li {
-	border-color: #BBB;
-}
+	#playersInGame .characters li {
+		padding: 6px 0;
+		border-top: 1px solid #CCC;
+	}
 
-#page_gameDetails .charLabel {
-	width: 190px;
-	padding-left: 20px;
-	padding-right: 15px;
-}
+	#playersInGame .characters li:first-child {
+		border-top: none;
+	}
 
-#page_gameDetails #submitChar form > * {
-	vertical-align: middle;
-}
+	#playersInGame > li:hover .characters li {
+		border-color: #BBB;
+	}
 
-#page_gameDetails #submitChar .prettySelect {
-	margin-left: 15px;
-}
+	.charLabel {
+		width: 190px;
+		padding-left: 20px;
+		padding-right: 15px;
+	}
 
-#page_gameDetails #gameFeatures {
-	margin-top: 1em;
-}
+	#submitChar form > * {
+		vertical-align: middle;
+	}
 
-#page_gameDetails #gameFeatures .headerbar {
-	margin-top: 0;
-}
+	#submitChar .prettySelect {
+		margin-left: 15px;
+	}
 
-#page_gameDetails .tr div {
-	display: inline-block;
-	vertical-align: middle;
-}
+	#gameFeatures {
+		margin-top: 1em;
+	}
 
-#page_gameDetails .headers div {
-	font-weight: bold;
-	vertical-align: bottom;
-}
+	#gameFeatures .headerbar {
+		margin-top: 0;
+	}
 
-#page_gameDetails .sprite {
-	margin-right: 5px;
-}
+	.tr div {
+		display: inline-block;
+		vertical-align: middle;
+	}
 
-#page_gameDetails #maps {
-	width: 470px;
-}
+	.headers div {
+		font-weight: bold;
+		vertical-align: bottom;
+	}
 
-#page_gameDetails .headers .mapVisible {
-	background: none;
-}
+	.sprite {
+		margin-right: 5px;
+	}
 
-#page_gameDetails .mapVisible {
-	width: 20px;
-	height: 20px;
-	margin-right: 10px;
-	background: url('../images/eye_mini.png') top left no-repeat;
-}
+	#maps {
+		width: 470px;
+	}
 
-#page_gameDetails .mapVisible.invisible {
-	background-position: bottom left;
-}
+	.headers .mapVisible {
+		background: none;
+	}
 
-#page_gameDetails .mapLink {
-	width: 200px;
-}
+	.mapVisible {
+		width: 20px;
+		height: 20px;
+		margin-right: 10px;
+		background: url('../images/eye_mini.png') top left no-repeat;
+	}
 
-#page_gameDetails .mapSize {
-	width: 75px;
-	margin: 0 10px;
-	text-align: center;
-}
+	.mapVisible.invisible {
+		background-position: bottom left;
+	}
 
-#page_gameDetails .deckRemaining {
-	width: 85px;
-	text-align: center;
-	margin: 0 10px;
-}
-#page_gameDetails #decks {
-	width: 470px;
-}
+	.mapLink {
+		width: 200px;
+	}
 
-#page_gameDetails .deckLabel {
-	width: 205px;
-}
+	.mapSize {
+		width: 75px;
+		margin: 0 10px;
+		text-align: center;
+	}
 
-#page_gameDetails .deckType {
-	display: block !important;
-	font-size: .8em;
-	font-style: italic;
-}
+	.deckRemaining {
+		width: 85px;
+		text-align: center;
+		margin: 0 10px;
+	}
+	#decks {
+		width: 470px;
+	}
 
-#page_gameDetails .deckRemaining {
-	width: 85px;
-	text-align: center;
-	margin: 0 10px;
-}
+	.deckLabel {
+		width: 205px;
+	}
 
-#page_gameDetails #submitChar .fancyButton {
-	margin-top: 10px;
+	.deckType {
+		display: block !important;
+		font-size: .8em;
+		font-style: italic;
+	}
+
+	.deckRemaining {
+		width: 85px;
+		text-align: center;
+		margin: 0 10px;
+	}
+
+	#submitChar .fancyButton {
+		margin-top: 10px;
+	}
 }
 
 /* --------------------------------------------*/
