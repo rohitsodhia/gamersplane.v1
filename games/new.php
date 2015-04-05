@@ -85,11 +85,11 @@
 					<label>Number of Players</label>
 					<input id="numPlayers" type="text" name="numPlayers" value="<?=$errors?$numPlayers:2?>" maxlength="2">
 				</div>
-				<div class="tr">
+				<div class="tr textareaRow">
 					<label>Description</label>
 					<textarea name="description"><?=$description?></textarea>
 				</div>
-				<div class="tr">
+				<div class="tr textareaRow">
 					<label>Character Generation Info</label>
 					<textarea name="charGenInfo"><?=$charGenInfo?></textarea>
 				</div>

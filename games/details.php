@@ -87,11 +87,11 @@
 				<label>Number of Characters per Player</label>
 				<div><?=$gameInfo['charsPerPlayer']?></div>
 			</div>
-			<div class="tr clearfix">
+			<div class="tr textareaRow clearfix">
 				<label>Description</label>
 				<div><?=$gameInfo['description']?printReady($gameInfo['description']):'None Provided'?></div>
 			</div>
-			<div class="tr clearfix">
+			<div class="tr textareaRow clearfix">
 				<label>Character Generation Info</label>
 				<div><?=$gameInfo['charGenInfo']?printReady($gameInfo['charGenInfo']):'None Provided'?></div>
 			</div>

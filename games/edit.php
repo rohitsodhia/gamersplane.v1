@@ -97,11 +97,11 @@
 					<label>Number of Characters per Player</label>
 					<input id="charsPerPlayer" type="text" name="charsPerPlayer" value="<?=$charsPerPlayer?$charsPerPlayer:1?>" maxlength="1">
 				</div>
-				<div class="tr">
+				<div class="tr textareaRow">
 					<label>Description</label>
 					<textarea name="description"><?=$description?></textarea>
 				</div>
-				<div class="tr">
+				<div class="tr textareaRow">
 					<label>Character Generation Info</label>
 					<textarea name="charGenInfo"><?=$charGenInfo?></textarea>
 				</div>
