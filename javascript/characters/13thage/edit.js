@@ -101,4 +101,11 @@ $(function() {
 	});
 
 	$('#saves').on('blur', 'input', updateStats);
+
+	$basicAttacks = $('#basicAttacks');
+	basicAttacks_misc = { 'melee': $basicAttacks.find('#ba_melee input').val(), 'ranged': $basicAttacks.find('#ba_ranged input').val() };
+	$basicAttacks.on('change', 'input', function () {
+		$(this).siblings('.total').text(showSign(parseInt($(this).siblings('.total').text()) - basicAttacks_misc[$(this).data('type')] + parseInt($(this).val())));
+		basicAttacks_misc[$(this).data('type')] = parseInt($(this).val());
+	});
 });

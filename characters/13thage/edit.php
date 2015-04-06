@@ -144,6 +144,18 @@
 					<div class="column">
 						<div id="attacks" class="itemizedList" data-type="attack">
 							<h2 class="headerbar hbDark">Attacks <a id="addAttack" href="" class="addItem">[ Add Attack ]</a></h2>
+							<div id="basicAttacks" class="hbdMargined">
+<?	foreach (array('melee' => 'str', 'ranged' => 'dex') as $attack => $mod) { ?>
+								<div id="ba_<?=$attack?>" class="tr">
+									<span class="label"><?=ucwords($attack)?></span>
+									<span class="total addStat_<?=$mod?>"><?=showSign($this->getLevel() + $this->getBasicAttacks($attack, 'misc'))?></span>
+									<span> = </span>
+									<span class="stat"><?=ucwords($mod)?></span>
+									<span> + Level +</span>
+									<input type="text" name="basicAttacks[<?=$attack?>][misc]" value="<?=$this->getBasicAttacks($attack, 'misc')?>" data-type="<?=$attack?>">
+								</div>
+<?	} ?>
+							</div>
 							<div id="attackList" class="hbdMargined">
 <?	$this->showAttacksEdit(); ?>
 							</div>

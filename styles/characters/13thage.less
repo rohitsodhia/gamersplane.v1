@@ -173,7 +173,7 @@
 	}
 }
 
-#backgrounds, #feats, #classAbilities, #powers {
+#backgrounds, #feats, #classAbilities, #powers, #attacks {
 	& > * > * {
 		vertical-align: middle;
 	}
@@ -200,10 +200,34 @@
 }
 
 #page_characterSheet {
-	#backgrounds, #feats, #classAbilities, #powers {
+	#backgrounds, #feats, #classAbilities, #powers, #attacks {
 		.name, .feat_name {
 			width: 370px;
 		}
+	}
+}
+
+#basicAttacks {
+	.tr > * {
+		display: inline-block;
+	}
+
+	.label {
+		width: 60px;
+	}
+
+	.total, .stat {
+		width: 30px;
+		text-align: center;
+	}
+
+	.total {
+		font-weight: bold;
+	}
+
+	input {
+		margin-left: 5px;
+		width: 40px;
 	}
 }
 

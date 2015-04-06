@@ -26,6 +26,7 @@
 		protected $feats = array();
 		protected $classAbilities = array();
 		protected $powers = array();
+		protected $basicAttacks = array('melee' => array('misc' => 0), 'ranged' => array('misc' => 0));
 		protected $attacks = array();
 
 		public function __construct($characterID, $userID = null) {
@@ -248,7 +249,7 @@
 				$powerInfo = array('name' => '', 'notes' => '');
 ?>
 							<div class="power tr clearfix">
-								<input type="text" name="powers[<?=$key?>][name]" value="<?=$powerInfo['name']?>" class="name placeholder" data-placeholder="Power Name">
+								<input type="text" name="powers[<?=$key?>][name]" value="<?=$powerInfo['name']?>" class="name placeholder" data-placeholder="Power">
 								<a href="" class="notesLink">Notes</a>
 								<a href="" class="remove sprite cross"></a>
 								<textarea name="powers[<?=$key?>][notes]"><?=$powerInfo['notes']?></textarea>
@@ -285,36 +286,62 @@
 			}
 		}
 
-		public function addAttack($attack) {
-			if (strlen($attack['ability'])) {
-				foreach ($attack as $key => $value) {
-					if ($key == 'ability') 
-						$attack[$key] = sanitizeString($value);
-					else 
-						$attack[$key] = intval($value);
-				}
-				$this->attacks[] = $attack;
-			}
+		public function setBasicAttack($attack, $key, $value) {
+			if (in_array($attack, $this->basicAttacks) && in_array($key, $this->basicAttacks[$attack])) 
+				$this->basicAttacks[$key] = intval($value);
 		}
 
-		public function showAttacksEdit($min = 2) {
-			$attackNum = 0;
-			if (!is_array($this->attacks)) 
-				$this->attacks = (array) $this->attacks;
-			foreach ($this->attacks as $attackInfo) 
-				$this->attackEditFormat($attackNum++, $attackInfo);
-			if ($attackNum < $min) 
-				while ($attackNum < $min) 
-					$this->attackEditFormat($attackNum++);
+		public function getBasicAttacks($attack = null, $key = null) {
+			if (array_key_exists($attack, $this->basicAttacks)) {
+				if (array_key_exists($key, $this->basicAttacks[$attack])) 
+					return $this->basicAttacks[$attack][$key];
+				elseif ($key == null) 
+					return $this->basicAttacks[$attack];
+			} elseif ($attack == null) 
+				return $this->basicAttacks;
+			else 
+				return null;
 		}
 
-		public static function attackEditFormat($attackNum, $attackInfo = array()) {
-			$defaults = array('total' => 0, 'stat' => 0, 'class' => 0, 'prof' => 0, 'feat' => 0, 'enh' => 0, 'misc' => 0);
+		public static function attackEditFormat($key = 1, $attackInfo = null) {
+			if ($attackInfo == null) 
+				$attackInfo = array('name' => '', 'notes' => '');
+?>
+							<div class="attack tr clearfix">
+								<input type="text" name="attacks[<?=$key?>][name]" value="<?=$attackInfo['name']?>" class="name placeholder" data-placeholder="Attack">
+								<a href="" class="notesLink">Notes</a>
+								<a href="" class="remove sprite cross"></a>
+								<textarea name="attacks[<?=$key?>][notes]"><?=$attackInfo['notes']?></textarea>
+							</div>
+<?
+		}
+
+		public function showAttacksEdit() {
+			if (sizeof($this->attacks)) { foreach ($this->attacks as $key => $attack) {
+				$this->attackEditFormat($key + 1, $attack);
+			} } else $this->attackEditFormat();
 		}
 
 		public function displayAttacks() {
-			foreach ($this->attacks as $attack) {
-				$total = showSign($this->getHL() + $attack['stat'] + $attack['class'] + $attack['prof'] + $attack['feat'] + $attack['enh'] + $attack['misc']);
+			if ($this->attacks) { foreach ($this->attacks as $attack) { ?>
+					<div class="attack tr clearfix">
+						<span class="name"><?=$attack['name']?></span>
+<?	if (strlen($attack['notes'])) { ?>
+						<a href="" class="notesLink">Notes</a>
+						<div class="notes"><?=$attack['notes']?></div>
+<?	} ?>
+					</div>
+<?
+			} } else 
+				echo "\t\t\t\t\t<p id=\"noAttacks\">This character currently has no attacks/abilities.</p>\n";
+		}
+		
+		public function addAttack($attack) {
+			if (strlen($attack['name'])) {
+				newItemized('attack', $attack['name'], $this::SYSTEM);
+				foreach ($attack as $key => $value) 
+					$attack[$key] = sanitizeString($value);
+				$this->attacks[] = $attack;
 			}
 		}
 
@@ -361,6 +388,14 @@
 				if (sizeof($data['powers'])) 
 					foreach ($data['powers'] as $info) 
 						$this->addPower($info);
+
+				$this->setBasicAttack('melee', 'misc', $data['basicAttack']['melee']['misc']);
+				$this->setBasicAttack('ranged', 'misc', $data['basicAttack']['ranged']['misc']);
+
+				$this->clearVar('attacks');
+				if (sizeof($data['attacks'])) 
+					foreach ($data['attacks'] as $info) 
+						$this->addAttack($info);
 
 				$this->setItems($data['items']);
 				$this->setNotes($data['notes']);
