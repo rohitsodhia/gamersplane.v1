@@ -86,15 +86,16 @@
 				}
 
 				foreach ($forumIDs as $forumID) {
-					if (!isset($permissions[$forumID])) {
-						if (isset($rawPermissions[$forumID])) $permissions[$forumID] = $rawPermissions[$forumID];
-						else $permissions[$forumID] = $bTemplate;
-						foreach (array_reverse($heritages[$forumID]) as $heritage) {
-							if ($heritage == $forumID) continue;
-							if (isset($rawPermissions[$heritage])) { foreach (array_keys($permissions[$forumID], 0) as $type) {
-								if ($rawPermissions[$heritage][$type] != 0) $permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
-							} }
-						}
+					if (isset($rawPermissions[$forumID])) 
+						$permissions[$forumID] = $rawPermissions[$forumID];
+					else 
+						$permissions[$forumID] = $bTemplate;
+					foreach (array_reverse($heritages[$forumID]) as $heritage) {
+						if ($heritage == $forumID) continue;
+						if (isset($rawPermissions[$heritage])) { 
+							foreach (array_keys($permissions[$forumID], 0) as $type) 
+								if ($rawPermissions[$heritage][$type] != 0) 
+									$permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
 					}
 				}
 			}
