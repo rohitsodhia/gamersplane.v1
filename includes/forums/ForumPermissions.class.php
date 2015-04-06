@@ -93,8 +93,8 @@
 					foreach (array_reverse($heritages[$forumID]) as $heritage) {
 						if ($heritage == $forumID) continue;
 						if (isset($rawPermissions[$heritage])) 
-							foreach (array_keys($permissions[$forumID], 0) as $type) 
-								if ($rawPermissions[$heritage][$type] != 0) 
+							foreach ($types as $type) 
+								if (abs($rawPermissions[$heritage][$type]) > abs($permissions[$forumID][$type])) 
 									$permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
 					}
 				}
