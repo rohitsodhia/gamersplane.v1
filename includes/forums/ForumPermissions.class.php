@@ -92,7 +92,7 @@
 						$permissions[$forumID] = $bTemplate;
 					foreach (array_reverse($heritages[$forumID]) as $heritage) {
 						if ($heritage == $forumID) continue;
-						if (isset($rawPermissions[$heritage])) { 
+						if (isset($rawPermissions[$heritage])) 
 							foreach (array_keys($permissions[$forumID], 0) as $type) 
 								if ($rawPermissions[$heritage][$type] != 0) 
 									$permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
