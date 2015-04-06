@@ -71,7 +71,7 @@
 							$pm['allowDelete'] = false;
 				} elseif (isset($_POST['markRead']) && $_POST['markRead']) 
 					$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.read' => true)));
-				if (sizeof($history)) {
+				if (sizeof($history) || $includeSelfHistory) {
 					$pm['history'] = array();
 					if ($includeSelfHistory) 
 						$pm['history'][] = array(
