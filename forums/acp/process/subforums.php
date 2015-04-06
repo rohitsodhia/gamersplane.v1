@@ -52,6 +52,10 @@
 		$forumID = $mysql->lastInsertId();
 		$mysql->query('UPDATE forums SET heritage = "'.$forum->getHeritage(true).'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
+		if ($gameID != 'NULL') {
+			$groupID = $mysql->query("SELECT groupID FROM games WHERE gameID = {$gameID}")->fetchColumn();
+			$mysql->query("INSERT INTO forums_permissions_group (groupID, forumID) VALUES ({$groupID}, {$forumID})");
+		}
 		
 		header('Location: /forums/acp/'.$pForumID.'/subforums/');
 	} else header('Location: /forums/');
