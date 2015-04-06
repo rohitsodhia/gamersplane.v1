@@ -83,15 +83,16 @@
 							'datestamp' => $pm['datestamp'],
 							'replyTo' => $pm['replyTo'],
 						);
-					foreach ($history as $pmID) {
-						$hPM = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
-						$hPM['title'] = printReady($hPM['title']);
-						$hPM['message'] = BBCode2Html(printReady($hPM['message']));
-						$pm['history'][] = $hPM;
-						if (sizeof($pm['history']) == 10) 
-							break;
+					if (is_array($history)) {
+						foreach ($history as $pmID) {
+							$hPM = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
+							$hPM['title'] = printReady($hPM['title']);
+							$hPM['message'] = BBCode2Html(printReady($hPM['message']));
+							$pm['history'][] = $hPM;
+							if (sizeof($pm['history']) == 10) 
+								break;
+						}
 					}
-
 				}
 				displayJSON($pm);
 			}
