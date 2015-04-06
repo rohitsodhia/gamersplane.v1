@@ -55,17 +55,35 @@
 					$getPermissionsFor = array_merge($getPermissionsFor, $heritages[$forumID]);
 				$getPermissionsFor = array_unique($getPermissionsFor);
 				sort($getPermissionsFor);
-			} else $getPermissionsFor = $allForumIDs;
+			} else 
+				$getPermissionsFor = $allForumIDs;
 
 			if (sizeof($getPermissionsFor)) {
-				if (sizeof($getPermissionsFor) == 1) $forumString = '= '.$getPermissionsFor[0];
+				if (sizeof($getPermissionsFor) == 1) 
+					$forumString = '= '.$getPermissionsFor[0];
 				else {
 					$forumString = implode(', ', $getPermissionsFor);
 					$forumString = 'IN ('.$forumString.')';
 				}
-				$permissionsInfos = $mysql->query("SELECT forumID, {$queryColumn['permissionSums']} FROM (SELECT forumID, {$queryColumn['permissions']} FROM forums_permissions_general WHERE forumID {$forumString} UNION SELECT forumID, {$queryColumn['permissions']} FROM forums_permissions_groups_c WHERE userID = {$userID} AND forumID {$forumString} UNION SELECT forumID, {$queryColumn['permissions']} FROM forums_permissions_users WHERE userID = {$userID} AND forumID {$forumString}) permissions GROUP BY forumID");
-				$rawPermissions = $permissionsInfos->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-				$rawPermissions = array_map('reset', $rawPermissions);
+				$permissionsInfos = $mysql->query("SELECT forumID, 'general' pType, {$queryColumn['permissions']} FROM forums_permissions_general WHERE forumID {$forumString} UNION SELECT forumID, 'group' pType, {$queryColumn['permissions']} FROM forums_permissions_groups_c WHERE userID = {$userID} AND forumID {$forumString} UNION SELECT forumID, 'user' pType, {$queryColumn['permissions']} FROM forums_permissions_users WHERE userID = {$userID} AND forumID {$forumString}");
+				$rawPermissions = array();
+				foreach ($permissionsInfos->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC) as $key => $rawPermission) {
+					if (sizeof($rawPermission) == 1) {
+						unset($rawPermission[0]['pType']);
+						$rawPermissions[$key] = $rawPermission[0];
+					} else {
+						$toStore = 0;
+						foreach ($rawPermission as $sKey => $indivPermission) {
+							if ($indivPermission['pType'] == 'user') {
+								$toStore = $sKey;
+								break;
+							} elseif ($indivPermission['pType'] == 'group') 
+								$toStore = $sKey;
+						}
+						unset($rawPermission[$toStore]['pType']);
+						$rawPermissions[$key] = $rawPermission[$toStore];
+					}
+				}
 
 				foreach ($forumIDs as $forumID) {
 					if (!isset($permissions[$forumID])) {
