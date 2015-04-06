@@ -2,6 +2,7 @@ controllers.controller('pmView', function ($scope, $cookies, $http, $sce, Delete
 	pathElements = getPathElements();
 
 	$scope.allowDelete = true;
+	$scope.hasHistory = false;
 	$http.post(API_HOST + '/pms/view/', { pmID: pathElements[2], markRead: true }).success(function (data) {
 		if (data.failed || data.noPM) 
 			document.location = '/pms/';
