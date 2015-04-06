@@ -15,7 +15,6 @@ controllers.controller('pmView', function ($scope, $cookies, $http, $sce, Delete
 			$scope.hasHistory = true;
 			for (key in $scope.history) 
 				$scope.history[key].datestamp = convertTZ($scope.history[key].datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a');
-
 		}
 	});
 

@@ -56,6 +56,7 @@
 			global $mongo, $currentUser;
 
 			$pmID = intval($pmID);
+			$includeSelfHistory = isset($_POST['includeSelfHistory']) && $_POST['includeSelfHistory']?true:false;
 
 			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID, 'recipients.deleted' => false))));
 			if ($pm === null) displayJSON(array('noPM' => true));
@@ -72,6 +73,16 @@
 					$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.read' => true)));
 				if (sizeof($history)) {
 					$pm['history'] = array();
+					if ($includeSelfHistory) 
+						$pm['history'] = array(
+							'pmID' => $pm['pmID'],
+							'sender' => $pm['sender'],
+							'recipients' => $pm['recipients'],
+							'title' => $pm['title'],
+							'message' => $pm['message'],
+							'datestamp' => $pm['datestamp'],
+							'replyTo' => $pm['replyTo'],
+						);
 					foreach ($history as $pmID) {
 						$hPM = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
 						$hPM['title'] = printReady($hPM['title']);
