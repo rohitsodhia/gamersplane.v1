@@ -88,7 +88,7 @@
 				foreach ($forumIDs as $forumID) {
 					if (isset($rawPermissions[$forumID])) 
 						$permissions[$forumID] = $rawPermissions[$forumID];
-					else 
+					elseif (!isset($permissions[$forumID]))
 						$permissions[$forumID] = $bTemplate;
 					foreach (array_reverse($heritages[$forumID]) as $heritage) {
 						if ($heritage == $forumID) continue;
