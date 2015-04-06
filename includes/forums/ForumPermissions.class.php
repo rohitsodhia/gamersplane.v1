@@ -16,7 +16,7 @@
 				$queryColumn['permissions'] .= "`$type`, ";
 				$queryColumn['permissionSums'] .= "SUM(`$type`) `$type`, ";
 				$bTemplate[$type] = 0;
-				$aTemplate[$type] = 1;
+				$aTemplate[$type] = 4;
 			}
 			$queryColumn['permissions'] = substr($queryColumn['permissions'], 0, -2);
 			$queryColumn['permissionSums'] = substr($queryColumn['permissionSums'], 0, -2);
@@ -48,7 +48,7 @@
 				$getPermissionsFor = array();
 				$superFAdmin = array_search(0, $adminForums) !== false?true:false;
 				foreach ($forumIDs as $forumID) {
-					if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = array_merge($aTemplate, array('admin' => 1));
+					if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = array_merge($aTemplate, array('admin' => 4));
 					else $getPermissionsFor[] = $forumID;
 				}
 				foreach ($getPermissionsFor as $forumID) 
