@@ -74,7 +74,7 @@
 				if (sizeof($history)) {
 					$pm['history'] = array();
 					if ($includeSelfHistory) 
-						$pm['history'] = array(
+						$pm[]['history'] = array(
 							'pmID' => $pm['pmID'],
 							'sender' => $pm['sender'],
 							'recipients' => $pm['recipients'],
