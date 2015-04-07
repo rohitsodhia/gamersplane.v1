@@ -30,11 +30,11 @@ $(function() {
 
 		$(this).siblings('textarea').slideToggle();
 	});
-	$('.background_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'background', characterID: characterID, system: system });
+	$('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'background', characterID: characterID, system: system });
 
 	itemizationFunctions['abilitiesTalents'] = {
 		newItem: function ($newItem) {
-			$newItem.appendTo('#abilitiesTalentList').find('input').placeholder().focus();
+			$newItem.appendTo('#abilitiesTalentsList').find('input').placeholder().focus();
 		},
 		init: function ($list) {
 			$list.find('input').placeholder();
@@ -46,7 +46,7 @@ $(function() {
 
 		$(this).siblings('textarea').slideToggle();
 	});
-	$('.abilitiesTalent_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'abilitiesTalent', characterID: characterID, system: system });
+	$('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'abilitiesTalent', characterID: characterID, system: system });
 
 	itemizationFunctions['powers'] = {
 		newItem: function ($newItem) {
@@ -62,7 +62,7 @@ $(function() {
 
 		$(this).siblings('textarea').slideToggle();
 	});
-	$('.power_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'power', characterID: characterID, system: system });
+	$('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'power', characterID: characterID, system: system });
 
 	itemizationFunctions['attacks'] = {
 		newItem: function ($newItem) {
