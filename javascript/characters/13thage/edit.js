@@ -32,21 +32,21 @@ $(function() {
 	});
 	$('.background_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'background', characterID: characterID, system: system });
 
-	itemizationFunctions['classAbilities'] = {
+	itemizationFunctions['abilitiesTalents'] = {
 		newItem: function ($newItem) {
-			$newItem.appendTo('#classAbilityList').find('input').placeholder().focus();
+			$newItem.appendTo('#abilitiesTalentList').find('input').placeholder().focus();
 		},
 		init: function ($list) {
 			$list.find('input').placeholder();
 		}
 	}
-	setupItemized($('#classAbilities'));
-	$('#classAbilities').on('click', '.notesLink', function(e) {
+	setupItemized($('#abilitiesTalents'));
+	$('#abilitiesTalents').on('click', '.notesLink', function(e) {
 		e.preventDefault();
 
 		$(this).siblings('textarea').slideToggle();
 	});
-	$('.classAbility_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'classAbility', characterID: characterID, system: system });
+	$('.abilitiesTalent_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'abilitiesTalent', characterID: characterID, system: system });
 
 	itemizationFunctions['powers'] = {
 		newItem: function ($newItem) {

@@ -124,10 +124,10 @@
 						</div>
 					</div>
 					<div class="column">
-						<div id="classAbilities" class="itemizedList" data-type="classAbility">
-							<h2 class="headerbar hbDark">Class Abilities/Talents <a id="addClassAbility" href="" class="addItem">[ Add Ability/Talent ]</a></h2>
-							<div id="classAbilityList" class="hbdMargined">
-<?	$this->showClassAbilitiesEdit(); ?>
+						<div id="abilitiesTalents" class="itemizedList" data-type="abilitiesTalents">
+							<h2 class="headerbar hbDark">Abilities/Talents <a id="addAbilityTalent" href="" class="addItem">[ Add Ability/Talent ]</a></h2>
+							<div id="abilitiesTalentsList" class="hbdMargined">
+<?	$this->showAbilitiesTalentsEdit(); ?>
 							</div>
 						</div>
 					</div>

@@ -104,10 +104,10 @@
 					</div>
 				</div>
 				<div class="column">
-					<div id="classAbilities">
-						<h2 class="headerbar hbDark">Class Abilities/Talents</h2>
+					<div id="abilitiesTalents">
+						<h2 class="headerbar hbDark">Abilities/Talents</h2>
 						<div class="hbdMargined">
-<?	$this->displayClassAbilities(); ?>
+<?	$this->displayAbilitiesTalents(); ?>
 						</div>
 					</div>
 				</div>
