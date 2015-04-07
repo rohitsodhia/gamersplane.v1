@@ -4,7 +4,6 @@
 			global $loggedIn, $pathOptions;
 			if (!$loggedIn) exit;
 
-
 			if ($pathOptions[0] == 'list' && in_array($_POST['box'], array('inbox', 'outbox'))) 
 				$this->displayBox($_POST['box']);
 			elseif ($pathOptions[0] == 'allowed' && intval($_POST['pmID'])) 

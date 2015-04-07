@@ -329,4 +329,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		$scope.combobox.search = { 'systems': '', 'genres': '' };
 		updateGenres();
 	}
+}).controller('acp_systems', function ($scope, $http, $sce) {
+
 });

@@ -99,9 +99,9 @@
 				<h3 class="headerbar">Affiliates</h3>
 <?
 	$rand = $mongo->execute('Math.random()');
-	$rand = $rand['retval'];
-	$affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$gte' => $rand)));
-	if ($affiliate == null) $affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$lte' => $rand)));
+	$affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$gte' => $rand['retval'])));
+	if ($affiliate == null) 
+		$affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$lte' => $rand['retval'])));
 ?>
 				<div class="widgetBody">
 					<a href="<?=$affiliate['url']?>" target="_blank"><img src="/images/links/<?=$affiliate['_id']?>.<?=$affiliate['image']?>"></a>

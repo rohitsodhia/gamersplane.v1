@@ -1,1 +1,1 @@
-INSERT INTO systems SET shortName = '13thage', 'fullName' = '13th Age';
+UPDATE dispatch SET ngController = 'acp_links' WHERE pageID = 'acp_links';
