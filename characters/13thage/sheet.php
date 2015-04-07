@@ -124,6 +124,18 @@
 				<div class="column">
 					<div id="attacks">
 						<h2 class="headerbar hbDark">Attacks</h2>
+						<div id="basicAttacks" class="hbdMargined">
+<?	foreach (array('melee', 'ranged') as $attack) { ?>
+							<div id="ba_<?=$attack?>" class="tr" data-type="<?=$attack?>">
+								<span class="label"><?=ucwords($attack)?></span>
+								<span class="total"><?=showSign($this->getStatMod($this->getBasicAttacks($attack, 'stat'), false) + $this->getLevel() + $this->getBasicAttacks($attack, 'misc'))?></span>
+								<span> = </span>
+								<span class="stat"><?=ucwords($this->getBasicAttacks($attack, 'stat'))?></span>
+								<span> + Level + </span>
+								<span><?=$this->getBasicAttacks($attack, 'misc')?></span>
+							</div>
+<?	} ?>
+						</div>
 						<div class="hbdMargined">
 <?	$this->displayAttacks(); ?>
 						</div>

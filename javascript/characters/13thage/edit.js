@@ -103,9 +103,23 @@ $(function() {
 	$('#saves').on('blur', 'input', updateStats);
 
 	$basicAttacks = $('#basicAttacks');
-	basicAttacks_misc = { 'melee': $basicAttacks.find('#ba_melee input').val(), 'ranged': $basicAttacks.find('#ba_ranged input').val() };
+	basicAttacks = { 
+		'melee': {
+			'stat': $basicAttacks.find('#ba_melee select').val(),
+			'misc': $basicAttacks.find('#ba_melee input').val()
+		},
+		'ranged': {
+			'stat': $basicAttacks.find('#ba_ranged select').val(),
+			'misc': $basicAttacks.find('#ba_ranged input').val()
+		}
+	};
 	$basicAttacks.on('change', 'input', function () {
-		$(this).siblings('.total').text(showSign(parseInt($(this).siblings('.total').text()) - basicAttacks_misc[$(this).data('type')] + parseInt($(this).val())));
-		basicAttacks_misc[$(this).data('type')] = parseInt($(this).val());
+		$row = $(this).closest('.tr');
+		$row.children('.total').text(showSign(parseInt($row.children('.total').text()) - basicAttacks[$row.data('type')]['misc'] + parseInt($(this).val())));
+		basicAttacks[$row.data('type')]['misc'] = parseInt($(this).val());
+	}).on('change', 'select', function() {
+		$row = $(this).closest('.tr');
+		$row.children('.total').text(showSign(parseInt($row.children('.total').text()) - statBonus[basicAttacks[$row.data('type')]['stat']] + statBonus[$(this).val()])).removeClass('addStat_' + basicAttacks[$row.data('type')]['stat']).addClass('addStat_' + $(this).val());
+		basicAttacks[$row.data('type')]['stat'] = $(this).val();
 	});
 });

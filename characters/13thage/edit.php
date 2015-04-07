@@ -145,14 +145,20 @@
 						<div id="attacks" class="itemizedList" data-type="attack">
 							<h2 class="headerbar hbDark">Attacks <a id="addAttack" href="" class="addItem">[ Add Attack ]</a></h2>
 							<div id="basicAttacks" class="hbdMargined">
-<?	foreach (array('melee' => 'str', 'ranged' => 'dex') as $attack => $mod) { ?>
-								<div id="ba_<?=$attack?>" class="tr">
+<?	foreach (array('melee', 'ranged') as $attack) { ?>
+								<div id="ba_<?=$attack?>" class="tr" data-type="<?=$attack?>">
 									<span class="label"><?=ucwords($attack)?></span>
-									<span class="total addStat_<?=$mod?>"><?=showSign($this->getLevel() + $this->getBasicAttacks($attack, 'misc'))?></span>
+									<span class="total addStat_<?=$this->getBasicAttacks($attack, 'stat')?>"><?=showSign($this->getLevel() + $this->getBasicAttacks($attack, 'misc'))?></span>
 									<span> = </span>
-									<span class="stat"><?=ucwords($mod)?></span>
+									<span class="stat">
+										<select name="basicAttacks[<?=$attack?>][stat]">
+<?		foreach ($stats as $short => $stat) { ?>
+											<option value="<?=$short?>"<?=$this->getBasicAttacks($attack, 'stat') == $short?' selected="selected"':''?>><?=ucwords($short)?></option>
+<?		} ?>
+										</select>
+									</span>
 									<span> + Level +</span>
-									<input type="text" name="basicAttacks[<?=$attack?>][misc]" value="<?=$this->getBasicAttacks($attack, 'misc')?>" data-type="<?=$attack?>">
+									<input type="text" name="basicAttacks[<?=$attack?>][misc]" value="<?=$this->getBasicAttacks($attack, 'misc')?>">
 								</div>
 <?	} ?>
 							</div>

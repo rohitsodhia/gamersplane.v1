@@ -26,7 +26,16 @@
 		protected $feats = array();
 		protected $classAbilities = array();
 		protected $powers = array();
-		protected $basicAttacks = array('melee' => array('misc' => 0), 'ranged' => array('misc' => 0));
+		protected $basicAttacks = array(
+			'melee' => array(
+				'stat' => 'str',
+				'misc' => 0
+			),
+			'ranged' => array(
+				'stat' => 'dex',
+				'misc' => 0
+			)
+		);
 		protected $attacks = array();
 
 		public function __construct($characterID, $userID = null) {
@@ -389,8 +398,10 @@
 					foreach ($data['powers'] as $info) 
 						$this->addPower($info);
 
-				$this->setBasicAttack('melee', 'misc', $data['basicAttack']['melee']['misc']);
-				$this->setBasicAttack('ranged', 'misc', $data['basicAttack']['ranged']['misc']);
+				$this->setBasicAttack('melee', 'stat', $data['basicAttacks']['melee']['stat']);
+				$this->setBasicAttack('melee', 'misc', $data['basicAttacks']['melee']['misc']);
+				$this->setBasicAttack('ranged', 'stat', $data['basicAttacks']['ranged']['stat']);
+				$this->setBasicAttack('ranged', 'misc', $data['basicAttacks']['ranged']['misc']);
 
 				$this->clearVar('attacks');
 				if (sizeof($data['attacks'])) 
