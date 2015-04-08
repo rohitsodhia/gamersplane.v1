@@ -32,16 +32,16 @@ $(function() {
 	});
 	$('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'background', characterID: characterID, system: system });
 
-	itemizationFunctions['abilitiesTalents'] = {
+	itemizationFunctions['classAbilities'] = {
 		newItem: function ($newItem) {
-			$newItem.appendTo('#abilitiesTalentsList').find('input').placeholder().focus();
+			$newItem.appendTo('#classAbilitiesList').find('input').placeholder().focus();
 		},
 		init: function ($list) {
 			$list.find('input').placeholder();
 		}
 	}
-	setupItemized($('#abilitiesTalents'));
-	$('#abilitiesTalents').on('click', '.notesLink', function(e) {
+	setupItemized($('#classAbilities'));
+	$('#classAbilities').on('click', '.notesLink', function(e) {
 		e.preventDefault();
 
 		$(this).siblings('textarea').slideToggle();
