@@ -1,10 +1,10 @@
 				<div class="tr">
 					<label for="name" class="textLabel">Name:</label>
-					<input type="text" name="name" value="<?=$this->getName()?>" maxlength="50">
+					<input type="text" name="name" value="<?=$this->getName()?>" maxlength="50" class="medText">
 				</div>
 				<div class="tr">
 					<label for="metatype" class="textLabel">Metatype:</label>
-					<input type="text" name="metatype" value="<?=$this->getMetatype()?>" maxlength="20">
+					<input type="text" name="metatype" value="<?=$this->getMetatype()?>" maxlength="20" class="medText">
 				</div>
 				
 				<div class="clearfix">
