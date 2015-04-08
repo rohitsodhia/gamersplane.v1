@@ -144,7 +144,9 @@
 				unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
 			try {
-				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value)) $value = mb_convert_encoding($value, 'UTF-8'); });
+//				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value)) 
+//					$value = mb_convert_encoding($value, 'UTF-8');
+//				});
 				$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => true));
 			} catch (Exception $e) { var_dump($e); }
 			addCharacterHistory($this->characterID, 'charEdited');
