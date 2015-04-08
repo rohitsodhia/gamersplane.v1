@@ -13,7 +13,8 @@
 				$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, t.allowRolls, t.allowDraws, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
 				$this->thread = $thread->fetch();
 	//			throw new Exception('No thread');
-				if (!$this->thread) return false;
+				if (!$this->thread) 
+					return false;
 				$this->thread = new Thread($this->thread);
 
 				$this->forumManager = new ForumManager($this->thread->forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS);
@@ -25,11 +26,13 @@
 		}
 
 		public function __get($key) {
-			if (property_exists($this, $key)) return $this->$key;
+			if (property_exists($this, $key)) 
+				return $this->$key;
 		}
 
 		public function __set($key, $value) {
-			if (property_exists($this, $key)) $this->$key = $value;
+			if (property_exists($this, $key)) 
+				$this->$key = $value;
 		}
 
 		public function getThreadID() {
@@ -37,9 +40,12 @@
 		}
 
 		public function getThreadProperty($property) {
-			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) return $this->thread->{$matches[1]}[$matches[2]];
-			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) return $this->thread->$matches[1]->$matches[2];
-			else return $this->thread->$property;
+			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) 
+				return $this->thread->{$matches[1]}[$matches[2]];
+			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) 
+				return $this->thread->$matches[1]->$matches[2];
+			else 
+				return $this->thread->$property;
 		}
 
 		public function getForumProperty($key) {
@@ -81,7 +87,8 @@
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");
 				$numPrevPosts = $numPrevPosts->fetchColumn();
 				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
-			} else $page = intval($_GET['page']);
+			} else 
+				$page = intval($_GET['page']);
 			$this->page = intval($page) > 0?intval($page):1;
 
 			return $this->thread->getPosts($this->page);
@@ -147,7 +154,8 @@
 
 		public function updateLastRead($postID) {
 			global $loggedIn, $mysql, $currentUser;
-			if ($loggedIn) $mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
+			if ($loggedIn && $postID > $this->getThreadProperty('lastRead')) 
+				$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		}
 
 		public function displayPagination() {
