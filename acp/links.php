@@ -12,6 +12,8 @@
 				<div id="submitRow" class="pRow"><button type="submit" name="action" value="add" class="fancyButton">Add Link</button></div>
 			</form>
 			<ul class="hbMargined">
+				<li<?=!$link['active']?' class="inactive"':''?>>
+				</li>
 <?
 	$result = $mongo->links->find()->sort(array('level' => -1, 'title' => 1));
 	foreach ($result as $link) linkFormat($link);
