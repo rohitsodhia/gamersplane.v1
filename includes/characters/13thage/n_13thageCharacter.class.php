@@ -90,20 +90,20 @@
 			else
 				return false;
 
-			if ($this->getStatMod($stats[1]) > $this->getStatMod($stats[0])) {
-				$hold = $stats[1];
+			if ($this->getStatMod($stats[1], false) > $this->getStatMod($stats[0], false)) {
+				$hold = $stats[0];
 				$stats[0] = $stats[1];
-				$stats[0] = $hold;
-			}
-			if ($this->getStatMod($stats[2]) > $this->getStatMod($stats[1])) {
-				$hold = $stats[2];
-				$stats[1] = $stats[2];
 				$stats[1] = $hold;
 			}
-			if ($this->getStatMod($stats[1]) > $this->getStatMod($stats[0])) {
+			if ($this->getStatMod($stats[2], false) > $this->getStatMod($stats[1], false)) {
 				$hold = $stats[1];
+				$stats[1] = $stats[2];
+				$stats[2] = $hold;
+			}
+			if ($this->getStatMod($stats[1], false) > $this->getStatMod($stats[0], false)) {
+				$hold = $stats[0];
 				$stats[0] = $stats[1];
-				$stats[0] = $hold;
+				$stats[1] = $hold;
 			}
 
 			return $showSign?showSign($stats[1]):$stats[1];
@@ -199,7 +199,7 @@
 					</div>
 <?
 			} } else 
-				echo "\t\t\t\t\t<p id=\"noBackgrounds\">This character currently has no backgrounds/abilities.</p>\n";
+				echo "\t\t\t\t\t<p id=\"noBackgrounds\">This character currently has no backgrounds.</p>\n";
 		}
 		
 		public function addBackground($background) {
