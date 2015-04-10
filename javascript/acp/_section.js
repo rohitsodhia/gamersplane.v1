@@ -329,6 +329,21 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		$scope.combobox.search = { 'systems': '', 'genres': '' };
 		updateGenres();
 	}
-}).controller('acp_systems', function ($scope, $http, $sce) {
+}).controller('acp_links', function ($scope, $http, $sce) {
+	$scope.data = {};
+	$scope.data.new = {'level': 'link'};
+});
 
+app.directive('linkEdit', function () {
+	return {
+		restrict: 'E',
+		templateUrl: '/angular/directives/acp/links.php',
+		scope: {
+			'data': '=data'
+		},
+		link: function (scope, element, attrs) {
+			scope.levels = ['link', 'affiliate', 'partner'];
+//			$('select').prettySelect();
+		}
+	}
 });

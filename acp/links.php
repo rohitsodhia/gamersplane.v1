@@ -8,7 +8,7 @@
 		<div class="mainColumn right">
 			<h1 class="headerbar">Manage Links</h1>
 			<form id="newLink" method="post" action="/acp/process/manageLink/" enctype="multipart/form-data" class="hbMargined editing">
-<?	linkFormat(); ?>
+				<link-edit data="data.new"></link-edit>
 				<div id="submitRow" class="pRow"><button type="submit" name="action" value="add" class="fancyButton">Add Link</button></div>
 			</form>
 			<ul class="hbMargined">

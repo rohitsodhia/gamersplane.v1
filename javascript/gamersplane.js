@@ -275,6 +275,15 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
+}]).directive('prettySelect', [function () {
+	return {
+		restrict: 'E',
+		transclude: true,
+		templateUrl: '/angular/directives/select.php',
+		link: function (scope, element, attrs) {
+			$select = $(element).find('select');
+		}
+	};
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
 		if (typeof text != 'string') 
