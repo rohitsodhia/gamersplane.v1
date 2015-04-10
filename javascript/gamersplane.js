@@ -282,6 +282,8 @@ app.config(function ($httpProvider) {
 		templateUrl: '/angular/directives/select.php',
 		link: function (scope, element, attrs) {
 			$select = $(element).find('select');
+			console.log($select.children());
+			console.log(element.find('option'));
 		}
 	};
 }]).filter('trustHTML', ['$sce', function($sce){
