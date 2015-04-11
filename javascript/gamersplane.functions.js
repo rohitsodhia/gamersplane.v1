@@ -69,6 +69,55 @@ function addCSSRule(selector, rules, index) {
 	else if ('addRule' in jsCSSSheet) jsCSSSheet.addRule(selector, rules, index);
 }
 
+function skewElement() {
+	$element = $(this);
+	if (typeof $element.data('skew') != 'undefined') 
+		skewDeg = parseInt($element.data('skew'));
+	else 
+		skewDeg = -30;
+	$skewDiv = $element.wrapInner('<div></div>').children('div');
+	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
+	console.log($element.outerHeight());
+	$element.css({
+		'-webkit-transform' : 'skew(' + skewDeg + 'deg)',
+		'-moz-transform'    : 'skew(' + skewDeg + 'deg)',
+		'-ms-transform'     : 'skew(' + skewDeg + 'deg)',
+		'-o-transform'      : 'skew(' + skewDeg + 'deg)',
+		'transform'         : 'skew(' + skewDeg + 'deg)',
+		'margin-left'       : Math.ceil(skewedOut) + 'px',
+		'margin-right'      : Math.ceil(skewedOut) + 'px'
+	}).data('skewedOut', skewedOut);
+	$skewDiv.css({
+		'-webkit-transform' : 'skew(' + (skewDeg * -1) + 'deg)',
+		'-moz-transform'    : 'skew(' + (skewDeg * -1) + 'deg)',
+		'-ms-transform'     : 'skew(' + (skewDeg * -1) + 'deg)',
+		'-o-transform'      : 'skew(' + (skewDeg * -1) + 'deg)',
+		'transform'         : 'skew(' + (skewDeg * -1) + 'deg)',
+		'margin-left'       : Math.ceil(skewedOut) + 'px',
+		'margin-right'      : Math.ceil(skewedOut) + 'px'
+	});
+}
+
+function trapizoidify() {
+	$element = $(this);
+	$element.wrapInner('<div class="contents"></div>').prepend('<div class="shape"></div>');
+	if (typeof $element.data('skew') != 'undefined') 
+		skewDeg = parseInt($element.data('skew'));
+	else 
+		skewDeg = -30;
+	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
+	$element.children('.contents').css({
+		'margin-left'         : sideBorderWidth + 'px',
+		'margin-right'        : sideBorderWidth + 'px'
+	});
+	$element.children('.shape').css({
+		'width'               : ($element.width() - sideBorderWidth * 2) + 'px',
+		'border-bottom-width' : $element.outerHeight() + 'px',
+		'border-left-width'   : sideBorderWidth + 'px',
+		'border-right-width'  : sideBorderWidth + 'px',
+	});
+}
+
 function setupWingContainer() {
 	element = this.nodeName.toLowerCase();
 	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';

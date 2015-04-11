@@ -178,17 +178,16 @@ h3 {
 	text-decoration: none;
 }
 
-.headerbar, .wingDiv {
-	position: relative;
-/*	overflow: hidden;*/
-}
-
 h1.headerbar, h2.headerbar, h3.headerbar, h4.headerbar {
 	margin: .5em 0;
 	font-family: "AgencyFB";
 	color: #FFF;
 	background: #C60;
 	text-align: left;
+}
+
+h2.hbDark, h3.hbDark, h4.hbDark {
+	background: #222;
 }
 
 div.headerbar {
@@ -216,39 +215,8 @@ h3.headerbar {
 	line-height: 1.3em;
 }
 
-.headerbar > div:first-child {
+.headerbar > div {
 	padding: 0 8px;
-	background: #C60;
-}
-
-.headerbar.hbDark > div:first-child {
-	background: #222;
-}
-
-.headerbar .wing {
-	position: absolute;
-	top: 0;
-	margin: 0;
-}
-
-.headerbar .dlWing {
-	left: 0;
-	border-top: 45px solid transparent;
-	border-right: 32px solid #C60;
-}
-
-.headerbar.hbDark .dlWing {
-	border-right-color: #222;
-}
-
-.headerbar .urWing {
-	right: 0;
-	border-top: 45px solid #C60;
-	border-right: 32px solid transparent;
-}
-
-.headerbar.hbDark .urWing {
-	border-top-color: #222;
 }
 
 .headerbar a, .headerbar a:visited, .headerbar a:active {
@@ -283,6 +251,10 @@ strong {
 
 em {
 	font-style: italic;
+}
+
+.trapizoid {
+	border-style: solid;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -325,6 +297,7 @@ a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redWing {
 	font-size: 1.6em;
 	line-height: 1.2em;
 	color: #FFF;
+	background: #800;
 }
 
 a.fancyButton.smallButton {
@@ -341,10 +314,9 @@ a.fancyButton.smallButton {
 	display: block;
 }
 
-a.fancyButton div:first-child, .redWing div:first-child {
+a.fancyButton > div, .redWing > div {
 	display: inline-block;
 	padding: 3px 8px;
-	background: #800;
 }
 
 a.fancyButton .wing, .redWing .wing {
@@ -387,7 +359,7 @@ button, button:visited, button:active, a.button, a.button:visited, a.button:acti
 	width: auto;
 	height: auto;
 	color: #B00;
-	background: none;
+	background: #800;
 	font-family: Neuropol;
 	font-size: 2em;
 	line-height: 1.2em;
@@ -412,7 +384,7 @@ button.normal, button.normal:visited, button.normal:active {
 	padding: 0;
 }
 
-.fancyButton button, .fancyButton button:visited, .fancyButton button:active {
+button.fancyButton, button.fancyButton:visited, button.fancyButton:active {
 	padding: 3px 8px;
 	background: #800;
 	font-size: 1.5em;
@@ -643,46 +615,42 @@ div.prettySelect > div {
 /* ----------------------------------------------------------------------------------------------*/
 
 .sectionControls {
+	position: relative;
 	float: right;
-}
 
-.sectionControls a {
-	display: block;
-	float: left;
-	padding: .35em 15px;
-	color: #FDD;
-	background: #522;
-	border-top: .3em solid #222;
-	border-left: 2px solid #222;
-}
+	.shape {
+		position: absolute;
+		top: 0;
+		left: 0;
+		border-style: solid;
+		border-bottom-color: #222;
+		border-left-color: transparent;
+		border-right-color: transparent;
+		z-index: 0;
+	}
 
-.sectionControls a:first-child {
-	border-left: none;
-}
+	.contents {
+		position: relative;
+		z-index: 1;
+	}
 
-.sectionControls .wing {
-	float: none;
-	position: absolute;
-	top: 0;
-	margin: 0;
-	padding: 0;
-	border-style: solid;
-	border-color: #222;
-	border-top-color: transparent;
-	background: none;
-}
+	a {
+		display: inline-block;
+		padding: .35em 15px;
+		color: #FDD;
+		background: #522;
+		border-top: .3em solid #222;
+		border-left: 2px solid #222;
+	}
 
-.sectionControls .dlWing {
-	left: 0;
-}
+	a:first-child {
+		border-left: none;
+	}
 
-.sectionControls .drWing {
-	right: 0;
-}
-
-.sectionControls .current, .sectionControls a:hover {
-	color: #F00;
-	background: #222;
+	.current, a:hover {
+		color: #F00;
+		background: #222;
+	}
 }
 
 /* ----------------------------------------------------------------------------------------------*/
