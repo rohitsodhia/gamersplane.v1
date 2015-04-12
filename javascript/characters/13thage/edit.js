@@ -73,6 +73,11 @@ $(function() {
 		}
 	}
 	setupItemized($('#attacks'));
+	$('#attacks').on('click', '.notesLink', function(e) {
+		e.preventDefault();
+
+		$(this).siblings('textarea').slideToggle();
+	});
 
 	$('.stat').blur(function () {
 		$.each({
