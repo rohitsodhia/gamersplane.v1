@@ -253,7 +253,7 @@ em {
 	font-style: italic;
 }
 
-.trapizoid {
+.trapezoid {
 	border-style: solid;
 }
 
@@ -614,25 +614,38 @@ div.prettySelect > div {
 
 /* ----------------------------------------------------------------------------------------------*/
 
-.sectionControls {
+.trapezoid {
 	position: relative;
-	float: right;
-
+	
 	.shape {
 		position: absolute;
 		top: 0;
 		left: 0;
 		border-style: solid;
-		border-bottom-color: #222;
 		border-left-color: transparent;
 		border-right-color: transparent;
 		z-index: 0;
+	}
+
+	&.facingUp .shape {
+		border-bottom-color: #222;
+	}
+
+	&.facingDown .shape {
+		border-bottom-color: #222;
 	}
 
 	.contents {
 		position: relative;
 		z-index: 1;
 	}
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
+.sectionControls {
+	position: relative;
+	float: right;
 
 	a {
 		display: inline-block;

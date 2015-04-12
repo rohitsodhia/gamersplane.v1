@@ -67,7 +67,7 @@ $(function() {
 		$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
 	});
 
-	$('.sectionControls').each(trapizoidify);
+	$('.trapezoid').each(trapezoidify);
 
 	$('#mainMenu li').mouseenter(function () {
 		$(this).children('ul').stop(true, true).slideDown();

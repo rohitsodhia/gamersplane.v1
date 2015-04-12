@@ -77,7 +77,6 @@ function skewElement() {
 		skewDeg = -30;
 	$skewDiv = $element.wrapInner('<div></div>').children('div');
 	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
-	console.log($element.outerHeight());
 	$element.css({
 		'-webkit-transform' : 'skew(' + skewDeg + 'deg)',
 		'-moz-transform'    : 'skew(' + skewDeg + 'deg)',
@@ -98,13 +97,17 @@ function skewElement() {
 	});
 }
 
-function trapizoidify() {
+function trapezoidify() {
 	$element = $(this);
 	$element.wrapInner('<div class="contents"></div>').prepend('<div class="shape"></div>');
 	if (typeof $element.data('skew') != 'undefined') 
 		skewDeg = parseInt($element.data('skew'));
 	else 
 		skewDeg = -30;
+	if ($element.hasClass('facingUp')) 
+		direction = 'up';
+	else 
+		direction = 'down';
 	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
 	$element.children('.contents').css({
 		'margin-left'         : sideBorderWidth + 'px',
@@ -112,10 +115,13 @@ function trapizoidify() {
 	});
 	$element.children('.shape').css({
 		'width'               : ($element.width() - sideBorderWidth * 2) + 'px',
-		'border-bottom-width' : $element.outerHeight() + 'px',
 		'border-left-width'   : sideBorderWidth + 'px',
 		'border-right-width'  : sideBorderWidth + 'px',
 	});
+	if (direction == 'down') 
+		$element.children('.shape').css('border-bottom-width', $element.outerHeight() + 'px');
+	else 
+		$element.children('.shape').css('border-top-width', $element.outerHeight() + 'px');
 }
 
 function setupWingContainer() {

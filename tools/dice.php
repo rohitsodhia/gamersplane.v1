@@ -3,15 +3,13 @@
 		
 		<div id="roller">
 			<div class="clearfix"><div id="controls" class="wingDiv sectionControls" data-ratio=".8">
-				<div class="wingDivContent">
+				<div class="trapezoid">
 					<select class="prettySelect">
 						<option value="basic">Basic Dice</option>
 						<option value="sweote">Star Wars: Edge of the Empire</option>
 						<option value="fate">Fate Dice</option>
 					</select>
 				</div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
 			</div></div>
 			<h2 class="headerbar hbDark hb_hasButton">
 				<span class="dice_basic">Basic Dice</span>
