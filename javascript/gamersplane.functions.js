@@ -69,75 +69,73 @@ function addCSSRule(selector, rules, index) {
 	else if ('addRule' in jsCSSSheet) jsCSSSheet.addRule(selector, rules, index);
 }
 
-function setupWingContainer() {
-	element = this.nodeName.toLowerCase();
-	if ($(this).hasClass('headerbar')) baseClass = 'headerbar';
-	else if ($(this).hasClass('fancyButton')) baseClass = 'fancyButton';
-	else if ($(this).hasClass('wingDiv')) baseClass = 'wingDiv';
-	classes = $(this).attr('class');
-	modClasses = new Array();
-	modClasses['fancyButton'] = new Array('smallButton', 'disabled');
-	modClasses['headerbar'] = new Array('hb_hasButton', 'hb_hasList');
-	hasDark = $(this).hasClass('hbDark')?true:false;
-	currentID = this.id;
-	if ((element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') && baseClass != 'wingDiv') {
-		$(this).css('background', 'none').attr('class', baseClass).wrapInner('<div>').children().attr('class', classes).removeClass(baseClass);
-		if (typeof modClasses[baseClass] !== 'undefined') {
-			for (key in modClasses[baseClass]) {
-				modClass = modClasses[baseClass][key];
-				if (classes.match(new RegExp(modClass))) $(this).addClass(modClass).children().removeClass(modClass);
-			}
-		}
-//		if (baseClass == 'headerbar' && (classes.match(/hb_hasButton/) || classes.match(/hb_hasList/))) $(this).addClass
-	} else if (baseClass == 'fancyButton') {
-		$(this).wrap('<div></div>').removeClass(baseClass).parent().attr('class', baseClass);
-		if (currentID.length) $(this).parent().attr('id', 'ww_' + currentID);
-		if (typeof modClasses[baseClass] !== 'undefined') {
-			for (key in modClasses[baseClass]) {
-				modClass = modClasses[baseClass][key];
-					if (classes.match(new RegExp(modClass))) $(this).removeClass(modClass).parent().addClass(modClass);
-			}
-		}
-	}
-
-	if (element != 'a' && baseClass == 'fancyButton') wingMargins($(this).parent()[0]);
-	else wingMargins(this);
-	if (hasDark) $(this).addClass('hbDark');
-	wings = '';
-	if (baseClass != 'wingDiv' && (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton')) $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo(this);
-	else if (baseClass == 'fancyButton') $('<div class="wing dlWing"></div><div class="wing urWing"></div>').appendTo($(this).parent());
+function skewElement() {
+	$element = $(this);
+	if (typeof $element.data('skew') != 'undefined') 
+		skewDeg = parseInt($element.data('skew'));
+	else 
+		skewDeg = -30;
+	$skewDiv = $element.wrapInner('<div></div>').children('div');
+	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
+	$element.css({
+		'-webkit-transform' : 'skew(' + skewDeg + 'deg)',
+		'-moz-transform'    : 'skew(' + skewDeg + 'deg)',
+		'-ms-transform'     : 'skew(' + skewDeg + 'deg)',
+		'-o-transform'      : 'skew(' + skewDeg + 'deg)',
+		'transform'         : 'skew(' + skewDeg + 'deg)',
+		'margin-left'       : Math.ceil(skewedOut) + 'px',
+		'margin-right'      : Math.ceil(skewedOut) + 'px'
+	}).data('skewedOut', skewedOut);
+	$skewDiv.css({
+		'-webkit-transform' : 'skew(' + (skewDeg * -1) + 'deg)',
+		'-moz-transform'    : 'skew(' + (skewDeg * -1) + 'deg)',
+		'-ms-transform'     : 'skew(' + (skewDeg * -1) + 'deg)',
+		'-o-transform'      : 'skew(' + (skewDeg * -1) + 'deg)',
+		'transform'         : 'skew(' + (skewDeg * -1) + 'deg)',
+		'margin-left'       : Math.ceil(skewedOut) + 'px',
+		'margin-right'      : Math.ceil(skewedOut) + 'px'
+	});
 }
 
-function wingMargins(container) {
-	element = container.nodeName.toLowerCase();
-	$container = $(container);
-	if ($container.hasClass('headerbar')) baseClass = 'headerbar';
-	else if ($container.hasClass('fancyButton')) {
-		baseClass = 'fancyButton';
-		if ($container.children('button').length) $container.height('auto').children('button').height('auto');
-	} else if ($container.hasClass('wingDiv')) baseClass = 'wingDiv';
-	if (element == 'a' && baseClass == 'fancyButton' || baseClass != 'fancyButton') $content = $container.children('div:not(.wing)');
-	else $content = $container.children('button');
-
-	var height = $container.outerHeight()/* + 2*/;
-	var width = Math.ceil(height * ($container.data('ratio') == undefined?.6:Number($container.data('ratio'))));
-	$container.data('height', height).data('width', width);
-	$content.css('margin', '0 ' + width + 'px');
-	if ($container.hasClass('headerbar') || $container.hasClass('fancyButton') || $container.attr('id') != 'controls') {
-		$container.css({'height': height + 'px', 'overflow-y': 'hidden'});;
-		$content.outerHeight(height + 1);
-	}
-	$container.children('.wing').each(setupWings);
+function adjustSkewMargins() {
+	$element = $(this);
+	$skewDiv = $element.children('div');
+	if (typeof $element.data('skew') != 'undefined') 
+		skewDeg = parseInt($element.data('skew'));
+	else 
+		skewDeg = -30;
+	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
+	$element.add($skewDiv).css({
+		'margin-left'  : skewedOut + 'px',
+		'margin-right' : skewedOut + 'px'
+	})
 }
 
-function setupWings() {
-	height = $(this).parent().data('height');
-	width = $(this).parent().data('width');
-	if ($(this).hasClass('dlWing')) bCSS = { 'borderTopWidth': height, 'borderRightWidth': width };
-	else if ($(this).hasClass('urWing')) bCSS = { 'borderTopWidth': height, 'borderRightWidth': width };
-	else if ($(this).hasClass('drWing')) bCSS = { 'borderTopWidth': height, 'borderLeftWidth': width };
-	else if ($(this).hasClass('ulWing')) bCSS = { 'borderTopWidth': height, 'borderLeftWidth': width };
-	$(this).css(bCSS);
+function trapezoidify() {
+	$element = $(this);
+	$element.wrapInner('<div class="contents"></div>').prepend('<div class="shape"></div>');
+	if (typeof $element.data('skew') != 'undefined') 
+		skewDeg = parseInt($element.data('skew'));
+	else 
+		skewDeg = -30;
+	if ($element.hasClass('facingUp')) 
+		direction = 'up';
+	else 
+		direction = 'down';
+	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
+	$element.children('.contents').css({
+		'margin-left'         : sideBorderWidth + 'px',
+		'margin-right'        : sideBorderWidth + 'px'
+	});
+	$element.children('.shape').css({
+		'width'               : ($element.width() - sideBorderWidth * 2) + 'px',
+		'border-left-width'   : sideBorderWidth + 'px',
+		'border-right-width'  : sideBorderWidth + 'px',
+	});
+	if (direction == 'down') 
+		$element.children('.shape').css('border-bottom-width', $element.outerHeight() + 'px');
+	else 
+		$element.children('.shape').css('border-top-width', $element.outerHeight() + 'px');
 }
 
 function fm_rollDice(dice, rerollAces) {

@@ -57,6 +57,7 @@ controllers.controller('pmList', function ($scope, $cookies, $http, DeletePM) {
 });
 
 $(function () {
-	leftSpacing = $('#pms .hbDark .dlWing').css('borderRightWidth');
-	$('#pmList, #newPM').css('margin', '0 ' + leftSpacing);
+	leftSpacing = $('#pms .hbDark').data('skewedOut');
+	$('#pmList').css('margin', '0 ' + Math.ceil(skewedOut * 2) + 'px');
+	$('#newPM').css('margin', '0 ' + (Math.ceil(skewedOut * 2) + parseFloat($('#newPM').css('marginLeft'))) + 'px');
 });

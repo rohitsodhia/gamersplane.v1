@@ -11,13 +11,9 @@
 		
 		<div id="controlsContainer" class="clearfix">
 			<a id="newPM" href="/pms/send/" class="fancyButton">New PM</a>
-			<div id="controls" class="wingDiv sectionControls" data-ratio=".8">
-				<div class="wingDivContent clearfix">
-					<a href="/pms/" class="borderBox" ng-class="{'current': box == 'Inbox'}" ng-click="switchBox($event, 'inbox')">Inbox</a>
-					<a href="/pms/outbox" class="borderBox" ng-class="{'current': box == 'Outbox'}" ng-click="switchBox($event, 'outbox')">Outbox</a>
-				</div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
+			<div id="controls" class="trapezoid sectionControls">
+				<a href="/pms/" class="borderBox" ng-class="{'current': box == 'Inbox'}" ng-click="switchBox($event, 'inbox')">Inbox</a
+				><a href="/pms/outbox" class="borderBox" ng-class="{'current': box == 'Outbox'}" ng-click="switchBox($event, 'outbox')">Outbox</a>
 			</div>
 		</div>
 		<div id="pms">

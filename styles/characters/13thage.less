@@ -122,16 +122,20 @@
 
 	label {
 		display: inline-block;
-		width: 60px;
+		width: 52px;
 		text-align: center;
 	}
 
 	input {
-		margin: 0 10px;
+		margin: 0 6px;
 	}
 
 	label.recovery {
-		width: 80px;
+		width: 72px;
+	}
+
+	.medNum {
+		width: 70px;
 	}
 }
 
@@ -173,7 +177,7 @@
 	}
 }
 
-#backgrounds, #feats, #classAbilities, #powers, #attacks {
+#backgrounds, #feats, #abilitiesTalents, #powers, #attacks {
 	& > * > * {
 		vertical-align: middle;
 	}
@@ -225,6 +229,24 @@
 	input {
 		margin-left: 5px;
 		width: 40px;
+
+		&.medNum {
+			width: 80px;
+		}
+	}
+
+	.baDmg {
+		span {
+			display: inline-block;
+		}
+
+		.miss {
+			margin-left: 10px;
+		}
+	}
+
+	#ba_ranged, #attackList {
+		margin-top: 1em;
 	}
 }
 

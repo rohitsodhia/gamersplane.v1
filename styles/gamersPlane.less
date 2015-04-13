@@ -178,17 +178,16 @@ h3 {
 	text-decoration: none;
 }
 
-.headerbar, .wingDiv {
-	position: relative;
-/*	overflow: hidden;*/
-}
-
 h1.headerbar, h2.headerbar, h3.headerbar, h4.headerbar {
 	margin: .5em 0;
 	font-family: "AgencyFB";
 	color: #FFF;
 	background: #C60;
 	text-align: left;
+}
+
+h2.hbDark, h3.hbDark, h4.hbDark {
+	background: #222;
 }
 
 div.headerbar {
@@ -216,39 +215,8 @@ h3.headerbar {
 	line-height: 1.3em;
 }
 
-.headerbar > div:first-child {
+.headerbar > div {
 	padding: 0 8px;
-	background: #C60;
-}
-
-.headerbar.hbDark > div:first-child {
-	background: #222;
-}
-
-.headerbar .wing {
-	position: absolute;
-	top: 0;
-	margin: 0;
-}
-
-.headerbar .dlWing {
-	left: 0;
-	border-top: 45px solid transparent;
-	border-right: 32px solid #C60;
-}
-
-.headerbar.hbDark .dlWing {
-	border-right-color: #222;
-}
-
-.headerbar .urWing {
-	right: 0;
-	border-top: 45px solid #C60;
-	border-right: 32px solid transparent;
-}
-
-.headerbar.hbDark .urWing {
-	border-top-color: #222;
 }
 
 .headerbar a, .headerbar a:visited, .headerbar a:active {
@@ -258,10 +226,6 @@ h3.headerbar {
 .headerbar a:hover {
 	color: #FFF;
 	font-style: italic;
-}
-
-.wingDivContent {
-/*	overflow: hidden;*/
 }
 
 h1.hb_hasButton, h2.hb_hasButton, h3.hb_hasButton, h4.hb_hasButton {
@@ -283,6 +247,10 @@ strong {
 
 em {
 	font-style: italic;
+}
+
+.trapezoid {
+	border-style: solid;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -317,14 +285,20 @@ footer a, footer a:visited, footer a:active {
 	font-size: 12px;
 }
 
-a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redWing {
-	position: relative;
-/*	overflow: hidden;*/
-	display: inline-block;
+a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redTrapezoid {
 	font-family: Neuropol;
 	font-size: 1.6em;
 	line-height: 1.2em;
+	background-color: #800;
 	color: #FFF;
+}
+
+.redTrapezoid {
+	background: none;
+
+	.shape {
+		border-bottom-color: #800;
+	}
 }
 
 a.fancyButton.smallButton {
@@ -341,38 +315,9 @@ a.fancyButton.smallButton {
 	display: block;
 }
 
-a.fancyButton div:first-child, .redWing div:first-child {
+a.fancyButton > div, .redWing > div {
 	display: inline-block;
 	padding: 3px 8px;
-	background: #800;
-}
-
-a.fancyButton .wing, .redWing .wing {
-	position: absolute;
-	top: 0;
-	margin: 0;
-	border-color: #800;
-	border-style: solid;
-}
-
-a.fancyButton .dlWing, .redWing .dlWing {
-	left: 0;
-	border-top-color: transparent;
-}
-
-.redWing .drWing {
-	right: 0;
-	border-top-color: transparent;
-}
-
-.redWing .ulWing {
-	left: 0;
-	border-left-color: transparent;
-}
-
-a.fancyButton .urWing, .redWing .urWing {
-	right: 0;
-	border-right-color: transparent;
 }
 
 a.fancyButton:hover {
@@ -412,7 +357,7 @@ button.normal, button.normal:visited, button.normal:active {
 	padding: 0;
 }
 
-.fancyButton button, .fancyButton button:visited, .fancyButton button:active {
+button.fancyButton, button.fancyButton:visited, button.fancyButton:active {
 	padding: 3px 8px;
 	background: #800;
 	font-size: 1.5em;
@@ -642,47 +587,56 @@ div.prettySelect > div {
 
 /* ----------------------------------------------------------------------------------------------*/
 
+.trapezoid {
+	position: relative;
+	
+	.shape {
+		position: absolute;
+		top: 0;
+		left: 0;
+		border-style: solid;
+		border-left-color: transparent;
+		border-right-color: transparent;
+		z-index: 0;
+	}
+
+	&.facingUp .shape {
+		border-bottom-color: #222;
+	}
+
+	&.facingDown .shape {
+		border-bottom-color: #222;
+	}
+
+	.contents {
+		position: relative;
+		z-index: 1;
+	}
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+
 .sectionControls {
+	position: relative;
 	float: right;
-}
 
-.sectionControls a {
-	display: block;
-	float: left;
-	padding: .35em 15px;
-	color: #FDD;
-	background: #522;
-	border-top: .3em solid #222;
-	border-left: 2px solid #222;
-}
+	a {
+		display: inline-block;
+		padding: .35em 15px;
+		color: #FDD;
+		background: #522;
+		border-top: .3em solid #222;
+		border-left: 2px solid #222;
+	}
 
-.sectionControls a:first-child {
-	border-left: none;
-}
+	a:first-child {
+		border-left: none;
+	}
 
-.sectionControls .wing {
-	float: none;
-	position: absolute;
-	top: 0;
-	margin: 0;
-	padding: 0;
-	border-style: solid;
-	border-color: #222;
-	border-top-color: transparent;
-	background: none;
-}
-
-.sectionControls .dlWing {
-	left: 0;
-}
-
-.sectionControls .drWing {
-	right: 0;
-}
-
-.sectionControls .current, .sectionControls a:hover {
-	color: #F00;
-	background: #222;
+	.current, a:hover {
+		color: #F00;
+		background: #222;
+	}
 }
 
 /* ----------------------------------------------------------------------------------------------*/

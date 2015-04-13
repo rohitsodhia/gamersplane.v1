@@ -50,36 +50,24 @@ $(function() {
 		});
 	}
 
-	$('.headerbar, .fancyButton, .wingDiv').each(setupWingContainer);
-	$('.wing').each(setupWings);
-	if ($('.headerbar .wing').length) {
-		leftMargin = $('.headerbar .wing').css('border-right-width');
-		$('.hbMargined:not(textarea)').css({ 'margin-left': leftMargin, 'margin-right': leftMargin });
-		$('.hbTopper').css({ 'marginLeft': leftMargin });
+	$('.headerbar, .fancyButton').each(skewElement);
+	hbMargin = parseFloat($('.headerbar').data('skewedOut')) * 2;
+	$('.hbMargined:not(textarea)').css({ 'margin-left': Math.ceil(hbMargin) + 'px', 'margin-right': Math.ceil(hbMargin) + 'px' });
+	$('.hbTopper').css({ 'marginLeft': Math.round(hbMargin) + 'px' });
+	$('textarea.hbMargined').each(function () {
+		tWidth = $(this).parent().width();
+		$(this).css({ 'margin-left': Math.ceil(hbMargin) + 'px', 'margin-right': Math.ceil(hbMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbMargin) + 'px' });
+	});
 
-		leftMargin = leftMargin.slice(0, -2);
-		$('textarea.hbMargined').each(function () {
-			tWidth = $(this).parent().width();
-			$(this).css({ 'margin-left': leftMargin + 'px', 'margin-right': leftMargin + 'px', 'width': (tWidth - 2 * leftMargin) + 'px' });
-		});
-	}
-	if ($('.hbDark .wing').length) {
-		leftMargin = $('.hbDark .wing').css('border-right-width');
-		$('.hbdMargined:not(textarea)').css({ 'margin-left': leftMargin, 'margin-right': leftMargin });
-		$('.hbdTopper').css({ 'marginLeft': leftMargin });
+	hbdMargin = parseFloat($('.hbDark').data('skewedOut')) * 2;
+	$('.hbdMargined:not(textarea)').css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px' });
+	$('.hbdTopper').css({ 'marginLeft': Math.round(hbdMargin) + 'px' });
+	$('textarea.hbdMargined').each(function () {
+		tWidth = $(this).parent().width();
+		$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
+	});
 
-		leftMargin = leftMargin.slice(0, -2);
-		$('textarea.hbdMargined').each(function () {
-			tWidth = $(this).parent().width();
-			$(this).css({ 'margin-left': leftMargin + 'px', 'margin-right': leftMargin + 'px', 'width': (tWidth - 2 * leftMargin) + 'px' });
-		});
-	}
-
-/*	$('.ofToggle').not('.disable').click(function (e) {
-		e.preventDefault();
-
-		$(this).toggleClass('on');
-	});*/
+	$('.trapezoid').each(trapezoidify);
 
 	$('#mainMenu li').mouseenter(function () {
 		$(this).children('ul').stop(true, true).slideDown();

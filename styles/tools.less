@@ -52,7 +52,7 @@
 	}
 
 	.drawCards {
-		margin: 10px 0 4px;
+		margin: 10px 0;
 	}
 
 	#dispArea {
@@ -65,28 +65,20 @@
 		border: 1px solid #CCC;
 		background-color: #EEE;
 		text-align: left;
-	}
 
-	.newDeck h2 {
-		margin: .2em 0 .2em;
-		padding: 0 10px;
-		background: #444;
-		font-size: 2em;
-		font-family: 'AgencyFB';
-		color: #FFF;
+		h2 {
+			margin: .2em 0 .2em;
+			padding: 0 10px;
+			background: #444;
+			font-size: 2em;
+			font-family: 'AgencyFB';
+			color: #FFF;
+		}
 	}
 
 	.deckType {
 		display: inline-block;
 		width: 222px;
-	}
-
-	.fancyButton {
-		display: inline-block;
-	}
-
-	.fancyButton button {
-		width: 150px;
 	}
 
 	.button :first-child {
@@ -120,44 +112,45 @@
 		float: left;
 	}
 
-	#controls, .wingDivContent {
+	#controls {
 		overflow: visible;
-	}
 
-	#controls .prettySelect, #controls .prettySelectCurrent, #controls .prettySelectOptions {
-		background: #522;
-	}
+		.shape {
+			border-bottom-color: #222;
+		}
 
-	#controls .prettySelect, #controls .prettySelectOptions {
-		color: #FDD;
-		border: none;
-		border-top: .3em solid #222;
-		-webkit-border-radius: 0;
-		-moz-border-radius: 0;
-		border-radius: 0;
-	}
+		.prettySelect, .prettySelectCurrent, .prettySelectOptions {
+			background: #522;
+		}
 
-	#controls .prettySelectCurrent, #controls .prettySelectLongest, #controls .prettySelectDropdown, #controls .prettySelectOptions li {
-	}
+		.prettySelect, .prettySelectOptions {
+			color: #FDD;
+			border: none;
+			border-top: .3em solid #222;
+			-webkit-border-radius: 0;
+			-moz-border-radius: 0;
+			border-radius: 0;
+		}
 
-	#controls .prettySelectCurrent, #controls .prettySelectLongest, #controls .prettySelectOptions li {
-		padding: .3em 15px;
-	}
+		.prettySelectCurrent, .prettySelectLongest, .prettySelectOptions li {
+			padding: .3em 15px;
+		}
 
-	#controls .prettySelectDropdown {
-		background-image: url('../images/dropdown_arrow_white.png');
-	}
+		.prettySelectDropdown {
+			background-image: url('../images/dropdown_arrow_white.png');
+		}
 
-	#controls .prettySelectOptions {
-		top: -3px;
-		left: -1px;
-		border: 1px solid #522;
-		border-top: .3em solid #222;
-	}
+		.prettySelectOptions {
+			top: -3px;
+			left: -1px;
+			border: 1px solid #522;
+			border-top: .3em solid #222;
+		}
 
-	#controls .prettySelectOptions li:hover {
-		background: #449;
-		color: #FFF	;
+		.prettySelectOptions li:hover {
+			background: #449;
+			color: #FFF	;
+		}
 	}
 
 	.dice_basic textarea {
@@ -166,13 +159,15 @@
 		width: 275px;
 	}
 
-	#basic_customDice .fancyButton {
-		display: inline-block;
-		margin: 20px 0 0 15px;
-	}
+	#basic_customDice {
+		.rollWrapper {
+			display: inline-block;
+			margin: 20px 0 0 15px;
+		}
 
-	#basic_customDice label {
-		display: inline;
+		label {
+			display: inline;
+		}
 	}
 
 	.dice_basic .cbWrapper {
@@ -183,72 +178,75 @@
 
 	#basic_indivDice {
 		margin-top: 1em;
+
+		& > div {
+			text-align: center;
+			margin-top: .5em;
+		}
+
+		.fancyButton {
+			margin: 0;
+		}
 	}
 
-	#basic_indivDice > div {
-		text-align: center;
-		margin-top: .5em;
-	}
+	.dice_sweote {
+		.dicePool {
+			float: left;
+			min-height: 60px;
+			width: 245px;
+			margin: .5em 0;
+			padding: 0 10px 10px 0;
+			background: #DDF;
+			border: 1px solid #400;
+			border-bottom-color: #900;
+			border-right-color: #900;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			border-radius: 6px;
 
-	#basic_indivDice .fancyButton {
-		margin: 0;
-	}
+			.sweote_dice {
+				display: block;
+				float: left;
+				margin: 10px 0 0 10px;
+			}
 
-	.dice_sweote .dicePool {
-		float: left;
-		min-height: 60px;
-		width: 245px;
-		margin: .5em 0;
-		padding: 0 10px 10px 0;
-		background: #DDF;
-		border: 1px solid #400;
-		border-bottom-color: #900;
-		border-right-color: #900;
-		-webkit-border-radius: 6px;
-		-moz-border-radius: 6px;
-		border-radius: 6px;
-	}
+			.rollWrapper {
+				display: inline-block;
+				margin: 20px 0 0 20px;
+			}
 
-	#ww_sweote_roll {
-		margin: 20px 0 0 20px;
-	}
+			#sweote_clear {
+				display: inline-block;
+				margin: 5px 0 0 45px;
+			}
+		}
 
-	#sweote_clear {
-		display: inline-block;
-		margin: 5px 0 0 50px;
-	}
+		.addDiceLink {
+			display: inline-block;
+			width: 48%;
+			margin: 5px 0;
+			padding: 5px 10px;
+			border: 1px solid #000;
+			font-family: 'AgencyFB';
+			font-size: 2em;
+			line-height: 1em;
+		}
 
-	.dice_sweote .dicePool .sweote_dice {
-		display: block;
-		float: left;
-		margin: 10px 0 0 10px;
-	}
+		.addDiceLink, .addDiceLink:active, .addDiceLink:visited {
+			color: #000;
+		}
 
-	.dice_sweote .addDiceLink {
-		display: inline-block;
-		width: 48%;
-		margin: 5px 0;
-		padding: 5px 10px;
-		border: 1px solid #000;
-		font-family: 'AgencyFB';
-		font-size: 2em;
-		line-height: 1em;
-	}
+		.addDiceLink:hover span {
+			text-decoration: underline;
+		}
 
-	.dice_sweote .addDiceLink, .dice_sweote .addDiceLink:active, .dice_sweote .addDiceLink:visited {
-		color: #000;
-	}
+		.addDiceLink span {
+			margin-left: 5px;
+		}
 
-	.dice_sweote .addDiceLink:hover span {
-		text-decoration: underline;
-	}
-
-	.dice_sweote .addDiceLink span {
-		margin-left: 5px;
-	}
-
-	.dice_sweote .addDiceLink > * {
-		vertical-align: middle;
+		.addDiceLink > * {
+			vertical-align: middle;
+		}
 	}
 
 	#sweote_ability {
@@ -280,61 +278,67 @@
 		border: 1px solid #A00;
 		overflow: auto;
 		background: #EEE;
+
+		.roll {
+			margin: 0;
+			padding: .5em 1em;
+			font-size: 1.15em;
+			line-height: 1.3em;
+		}
+
+		.roll p {
+			margin: .3em 0 0;
+		}
+
+		.rollString {
+			margin: 0;
+		}
+
+		/*.newestRoll {
+			display: none;
+			margin: 1em;
+			background-color: #222;
+		}*/
+
+		.newestRolls {
+			display: none;
+			border-bottom: 1px solid #D99;
+			background-color: #FFF;
+		}
+
+		.newestRolls p.error {
+			font-weight: bold;
+		}
+
+		.sweote_dice, .fate_dice {
+			margin-right: 10px;
+		}
 	}
 
-	#diceSpace .roll {
-		margin: 0;
-		padding: .5em 1em;
-		font-size: 1.15em;
-		line-height: 1.3em;
-	}
-
-	#diceSpace .roll p {
-		margin: .3em 0 0;
-	}
-
-	#diceSpace .rollString {
-		margin: 0;
-	}
-
-	/*#diceSpace .newestRoll {
-		display: none;
-		margin: 1em;
-		background-color: #222;
-	}*/
-
-	#diceSpace .newestRolls {
-		display: none;
-		border-bottom: 1px solid #D99;
-	}
-
-	#diceSpace .newestRolls {
-		background-color: #FFF;
-	}
-
-	#diceSpace .newestRolls p.error {
-		font-weight: bold;
-	}
-
-	#diceSpace .sweote_dice, #diceSpace .fate_dice {
-		margin-right: 10px;
-	}
-
-	#roller .dice_fate > div > * {
-		vertical-align: middle;
-	}
-
-	#roller .dice_fate label {
+	.dice_fate .rollWrapper {
 		display: inline-block;
+		margin-left: 5px;
 	}
 
-	#roller .dice_fate input {
-		width: 30px;
-		text-align: center;
-	}
+	#roller {
+		.dice_fate > div > * {
+			vertical-align: middle;
+		}
 
-	#roller .dice_fate .fancyButton {
-		margin-left: 10px;
+		.dice_fate {
+			label {
+				display: inline-block;
+			}
+
+			input {
+				width: 30px;
+				text-align: center;
+			}
+
+			.fancyButton {
+				margin-left: 10px;
+			}
+		}
 	}
 }
 

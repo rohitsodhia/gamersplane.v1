@@ -163,16 +163,16 @@
 			</div>
 			
 <?	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
-			<div id="optionControls" class="clearfix hbdMargined"><div class="wingDiv sectionControls floatLeft">
+			<div id="optionControls" class="clearfix"><div class="trapezoid sectionControls">
 				<div>
+<?		if ($firstPost) { ?>
 					<a href="" class="section_options<?=$firstPost?' current':''?>">Options</a>
 					<a href="" class="section_poll">Poll</a>
+<?		} ?>
 <?		if ($rollsAllowed || $drawsAllowed) { ?>
 					<a href="" class="section_rolls_decks<?=!$firstPost?' current':''?>">Rolls and Decks</a>
 <?		} ?>
 				</div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
 			</div></div>
 <?	} ?>
 <?	if (($firstPost) || $rollsAllowed || $drawsAllowed) { ?>

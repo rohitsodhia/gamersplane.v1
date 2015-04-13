@@ -91,7 +91,7 @@
 			<div class="clearfix">
 				<div class="column first">
 					<div id="backgrounds">
-						<h2 class="headerbar hbDark">Backgrounds/Racial</h2>
+						<h2 class="headerbar hbDark">Backgrounds</h2>
 						<div class="hbdMargined">
 <?	$this->displayBackgrounds(); ?>
 						</div>
@@ -104,10 +104,10 @@
 					</div>
 				</div>
 				<div class="column">
-					<div id="classAbilities">
-						<h2 class="headerbar hbDark">Class Abilities/Talents</h2>
+					<div id="abilitiesTalents">
+						<h2 class="headerbar hbDark">Abilities/Talents</h2>
 						<div class="hbdMargined">
-<?	$this->displayClassAbilities(); ?>
+<?	$this->displayAbilitiesTalents(); ?>
 						</div>
 					</div>
 				</div>
@@ -131,8 +131,12 @@
 								<span class="total"><?=showSign($this->getStatMod($this->getBasicAttacks($attack, 'stat'), false) + $this->getLevel() + $this->getBasicAttacks($attack, 'misc'))?></span>
 								<span> = </span>
 								<span class="stat"><?=ucwords($this->getBasicAttacks($attack, 'stat'))?></span>
-								<span> + Level + </span>
+								<span> + Lvl + </span>
 								<span><?=$this->getBasicAttacks($attack, 'misc')?></span>
+							</div>
+							<div id="baDmg_<?=$attack?>" class="tr baDmg">
+								<span class="hit">Hit: <?=$this->getBasicAttacks($attack, 'hit')?></span>
+								<span class="miss">Miss: <?=$this->getBasicAttacks($attack, 'miss')?></span>
 							</div>
 <?	} ?>
 						</div>
