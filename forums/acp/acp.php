@@ -26,7 +26,7 @@
 		</ul></div>
 
 		<div class="mainColumn right">
-			<div class="clearfix"><div id="controls" class="wingDiv hbDark floatLeft" data-ratio=".8">
+			<div class="clearfix"><div id="controls" class="trapezoid floatLeft" data-ratio=".8">
 				<div>
 <?	if ($forumID != 0) { ?>
 				<a id="ml_forumDetails" href="" class="section_details<?=$section == 'details'?' current':''?>">Details</a>
@@ -36,8 +36,6 @@
 				<a id="ml_permissions" href="" class="section_permissions<?=$section == 'permissions'?' current':''?>">Permissions</a>
 <?	} ?>
 				</div>
-				<div class="wing dlWing"></div>
-				<div class="wing drWing"></div>
 			</div></div>
 			<h2 class="headerbar hbDark">
 <?	if ($forumID != 0) { ?>
