@@ -130,11 +130,7 @@
 					<a href="/forums/process/togglePubGames/" class="ofToggle disable<?=$currentUser->showPubGames?' on':''?>"></a>
 				</div>
 <?					} ?>
-				<h2 class="wingDiv redWing">
-					<div><?=$this->forums[$childID]->forumType == 'c'?$this->forums[$childID]->title:'Subforums'?></div>
-					<div class="wing dlWing"></div>
-					<div class="wing drWing"></div>
-				</h2>
+				<h2 class="trapezoid redTrapezoid"><?=$this->forums[$childID]->forumType == 'c'?$this->forums[$childID]->title:'Subforums'?></h2>
 			</div>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>
