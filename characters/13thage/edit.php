@@ -111,7 +111,7 @@
 				<div class="clearfix">
 					<div class="column first">
 						<div id="backgrounds" class="itemizedList" data-type="background">
-							<h2 class="headerbar hbDark">Backgrounds/Racial <a id="addBackground" href="" class="addItem">[ Add Background/Racial ]</a></h2>
+							<h2 class="headerbar hbDark">Backgrounds <a id="addBackground" href="" class="addItem">[ Add Background/Racial ]</a></h2>
 							<div id="backgroundList" class="hbdMargined">
 <?	$this->showBackgroundsEdit(); ?>
 							</div>
@@ -124,10 +124,10 @@
 						</div>
 					</div>
 					<div class="column">
-						<div id="classAbilities" class="itemizedList" data-type="classAbility">
+						<div id="abilitiesTalents" class="itemizedList" data-type="abilityTalent">
 							<h2 class="headerbar hbDark">Abilities/Talents <a id="addAbilityTalent" href="" class="addItem">[ Add Ability/Talent ]</a></h2>
-							<div id="classAbilitiesList" class="hbdMargined">
-<?	$this->showClassAbilitiesEdit(); ?>
+							<div id="abilitiesTalentsList" class="hbdMargined">
+<?	$this->showAbilitiesTalentsEdit(); ?>
 							</div>
 						</div>
 					</div>
