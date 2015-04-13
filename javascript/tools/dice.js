@@ -8,7 +8,7 @@ $(function() {
 			$('span.dice_' + currentlyShown + ', div.dice_' + currentlyShown).hide();
 			$('span.dice_' + switchTo + ', div.dice_' + switchTo).show();
 			currentlyShown = switchTo;
-			$('div.dice_' + switchTo + ' .fancyButton').each(function () { wingMargins($(this)[0]); });
+			$('.rollWrapper button').each(adjustSkewMargins);
 		}
 	});
 

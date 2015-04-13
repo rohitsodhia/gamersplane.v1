@@ -265,7 +265,7 @@
 ?>
 		<div class="tableDiv threadTable">
 <?			if ($forum->permissions['createThread']) { ?>
-			<div id="newThread" class="clearfix"><a href="/forums/newThread/<?=$forum->forumID?>/" class="fancyButton">New Thread</a></div>
+			<div class="hbdMargined"><a href="/forums/newThread/<?=$forum->forumID?>/" class="fancyButton">New Thread</a></div>
 <? 			} ?>
 			<div class="tr headerTR headerbar hbDark">
 				<div class="td icon">&nbsp;</div>

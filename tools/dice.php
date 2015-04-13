@@ -2,7 +2,7 @@
 		<h1 class="headerbar">Dice Roller</h1>
 		
 		<div id="roller">
-			<div class="clearfix"><div id="controls" class="wingDiv sectionControls" data-ratio=".8">
+			<div class="clearfix"><div id="controls" class="sectionControls" data-ratio=".8">
 				<div class="trapezoid">
 					<select class="prettySelect">
 						<option value="basic">Basic Dice</option>
@@ -24,7 +24,7 @@
 					<div class="clearfix">
 						<input type="hidden" name="rollType" value="basic">
 						<textarea id="basic_dice" name="dice"><?=$_POST['dice']?></textarea>
-						<button id="basic_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
+						<div class="rollWrapper"><button id="basic_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
 						<div class="cbWrapper">
 							<input id="basic_rerollAces" type="checkbox" name="options[rerollAces]"<?	if ($_POST['rerollAces']) echo ' checked="checked"'; ?>><label for="basic_rerollAces">Reroll Aces</label>
 						</div>
@@ -47,7 +47,7 @@
 			<div class="dice_sweote hideDiv">
 				<div class="clearfix">
 					<div class="dicePool"></div>
-					<button id="sweote_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
+					<div class="rollWrapper"><button id="sweote_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
 					<a id="sweote_clear" href="">Clear</a>
 				</div>
 				<p>Click on a dice above to remove it from the dice pool.<br>Click on a dice below to add it to the dice pool.</p>
@@ -92,7 +92,7 @@
 				<div class="clearfix">
 					<label for="fate_count">Number of dice: </label>
 					<input id="fate_count" type="text" value="4">
-					<button id="fate_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
+					<div class="rollWrapper"><button id="fate_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
 				</div>
 			</div>
 		</div>

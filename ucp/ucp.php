@@ -27,20 +27,6 @@
 		</div>
 		
 <?	} ?>
-<!--		<div class="clearfix"><div id="controls" class="wingDiv hbDark floatLeft" data-ratio=".8">
-			<div>
-				<a href="" class="section_profile current">Profile</a>
-				<a href="" class="section_security">Security</a>
-				<a href="" class="section_forumOptions">Forum Options</a>
-			</div>
-			<div class="wing dlWing"></div>
-			<div class="wing drWing"></div>
-		</div></div>
-		<h2 class="headerbar hbDark">
-			<span class="section_profile">Profile</span>
-			<span class="section_security hideDiv">Security</span>
-			<span class="section_forumOptions hideDiv">Forum Options</span>
-		</h2>-->
 		<form method="post" action="/ucp/process/ucp/" enctype="multipart/form-data">
 			<div id="profile">
 				<h2 class="headerbar hbDark">Profile</h2>
