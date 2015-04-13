@@ -32,16 +32,16 @@ $(function() {
 	});
 	$('.name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'background', characterID: characterID, system: system });
 
-	itemizationFunctions['classAbilities'] = {
+	itemizationFunctions['abilitiesTalents'] = {
 		newItem: function ($newItem) {
-			$newItem.appendTo('#classAbilitiesList').find('input').placeholder().focus();
+			$newItem.appendTo('#abilitiesTalentsList').find('input').placeholder().focus();
 		},
 		init: function ($list) {
 			$list.find('input').placeholder();
 		}
 	}
-	setupItemized($('#classAbilities'));
-	$('#classAbilities').on('click', '.notesLink', function(e) {
+	setupItemized($('#abilitiesTalents'));
+	$('#abilitiesTalents').on('click', '.notesLink', function(e) {
 		e.preventDefault();
 
 		$(this).siblings('textarea').slideToggle();
@@ -73,6 +73,11 @@ $(function() {
 		}
 	}
 	setupItemized($('#attacks'));
+	$('#attacks').on('click', '.notesLink', function(e) {
+		e.preventDefault();
+
+		$(this).siblings('textarea').slideToggle();
+	});
 
 	$('.stat').blur(function () {
 		$.each({

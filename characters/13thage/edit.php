@@ -111,7 +111,7 @@
 				<div class="clearfix">
 					<div class="column first">
 						<div id="backgrounds" class="itemizedList" data-type="background">
-							<h2 class="headerbar hbDark">Backgrounds/Racial <a id="addBackground" href="" class="addItem">[ Add Background/Racial ]</a></h2>
+							<h2 class="headerbar hbDark">Backgrounds <a id="addBackground" href="" class="addItem">[ Add Background/Racial ]</a></h2>
 							<div id="backgroundList" class="hbdMargined">
 <?	$this->showBackgroundsEdit(); ?>
 							</div>
@@ -124,10 +124,10 @@
 						</div>
 					</div>
 					<div class="column">
-						<div id="classAbilities" class="itemizedList" data-type="classAbility">
+						<div id="abilitiesTalents" class="itemizedList" data-type="abilityTalent">
 							<h2 class="headerbar hbDark">Abilities/Talents <a id="addAbilityTalent" href="" class="addItem">[ Add Ability/Talent ]</a></h2>
-							<div id="classAbilitiesList" class="hbdMargined">
-<?	$this->showClassAbilitiesEdit(); ?>
+							<div id="abilitiesTalentsList" class="hbdMargined">
+<?	$this->showAbilitiesTalentsEdit(); ?>
 							</div>
 						</div>
 					</div>
@@ -157,8 +157,12 @@
 <?		} ?>
 										</select>
 									</span>
-									<span> + Level +</span>
+									<span> + Lvl +</span>
 									<input type="text" name="basicAttacks[<?=$attack?>][misc]" value="<?=$this->getBasicAttacks($attack, 'misc')?>">
+								</div>
+								<div id="baDmg_<?=$attack?>" class="tr baDmg">
+									<span class="hit">Hit: <input type="text" name="basicAttacks[<?=$attack?>][hit]"  value="<?=$this->getBasicAttacks($attack, 'hit')?>" class="medNum"></span>
+									<span class="miss">Miss: <input type="text" name="basicAttacks[<?=$attack?>][miss]"  value="<?=$this->getBasicAttacks($attack, 'miss')?>" class="medNum"></span>
 								</div>
 <?	} ?>
 							</div>
