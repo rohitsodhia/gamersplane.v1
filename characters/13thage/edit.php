@@ -157,8 +157,12 @@
 <?		} ?>
 										</select>
 									</span>
-									<span> + Level +</span>
+									<span> + Lvl +</span>
 									<input type="text" name="basicAttacks[<?=$attack?>][misc]" value="<?=$this->getBasicAttacks($attack, 'misc')?>">
+								</div>
+								<div id="baDmg_<?=$attack?>" class="tr baDmg">
+									<span class="hit">Hit: <input type="text" name="basicAttacks[<?=$attack?>][hit]"  value="<?=$this->getBasicAttacks($attack, 'hit')?>" class="medNum"></span>
+									<span class="miss">Miss: <input type="text" name="basicAttacks[<?=$attack?>][miss]"  value="<?=$this->getBasicAttacks($attack, 'miss')?>" class="medNum"></span>
 								</div>
 <?	} ?>
 							</div>

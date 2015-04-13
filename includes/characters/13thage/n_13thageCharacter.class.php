@@ -29,11 +29,15 @@
 		protected $basicAttacks = array(
 			'melee' => array(
 				'stat' => 'str',
-				'misc' => 0
+				'misc' => 0,
+				'hit' => '',
+				'miss' => ''
 			),
 			'ranged' => array(
 				'stat' => 'dex',
-				'misc' => 0
+				'misc' => 0,
+				'hit' => '',
+				'miss' => ''
 			)
 		);
 		protected $attacks = array();
@@ -301,8 +305,12 @@
 		}
 
 		public function setBasicAttack($attack, $key, $value) {
-			if (in_array($attack, $this->basicAttacks) && in_array($key, $this->basicAttacks[$attack])) 
-				$this->basicAttacks[$key] = intval($value);
+			if (array_key_exists($attack, $this->basicAttacks)) {
+				if (is_int($value)) 
+					$this->basicAttacks[$attack][$key] = intval($value);
+				else 
+					$this->basicAttacks[$attack][$key] = sanitizeString($value);
+			}
 		}
 
 		public function getBasicAttacks($attack = null, $key = null) {
@@ -403,10 +411,9 @@
 					foreach ($data['powers'] as $info) 
 						$this->addPower($info);
 
-				$this->setBasicAttack('melee', 'stat', $data['basicAttacks']['melee']['stat']);
-				$this->setBasicAttack('melee', 'misc', $data['basicAttacks']['melee']['misc']);
-				$this->setBasicAttack('ranged', 'stat', $data['basicAttacks']['ranged']['stat']);
-				$this->setBasicAttack('ranged', 'misc', $data['basicAttacks']['ranged']['misc']);
+				foreach ($data['basicAttacks'] as $type => $field) 
+					foreach ($field as $key => $value) 
+						$this->setBasicAttack($type, $key, $value);
 
 				$this->clearVar('attacks');
 				if (sizeof($data['attacks'])) 

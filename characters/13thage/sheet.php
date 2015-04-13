@@ -131,8 +131,12 @@
 								<span class="total"><?=showSign($this->getStatMod($this->getBasicAttacks($attack, 'stat'), false) + $this->getLevel() + $this->getBasicAttacks($attack, 'misc'))?></span>
 								<span> = </span>
 								<span class="stat"><?=ucwords($this->getBasicAttacks($attack, 'stat'))?></span>
-								<span> + Level + </span>
+								<span> + Lvl + </span>
 								<span><?=$this->getBasicAttacks($attack, 'misc')?></span>
+							</div>
+							<div id="baDmg_<?=$attack?>" class="tr baDmg">
+								<span class="hit">Hit: <?=$this->getBasicAttacks($attack, 'hit')?></span>
+								<span class="miss">Miss: <?=$this->getBasicAttacks($attack, 'miss')?></span>
 							</div>
 <?	} ?>
 						</div>
