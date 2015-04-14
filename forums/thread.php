@@ -138,9 +138,11 @@
 						<img src="<?=$character->getAvatar()?>">
 <?
 				}
+				$userAvatarSize = getimagesize(User::getAvatar($post->author->userID, $post->author->avatarExt));
+				if ($currentUser->userID == 1) var_dump($userAvatarSize);
 			}
 ?>
-						<a href="/user/<?=$post->author->userID?>/" class="userAvatar"><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
+						<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postAsChar && $character->getAvatar()?' ':''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
 					</div></div>
 <?
 			if ($postAsChar) {
