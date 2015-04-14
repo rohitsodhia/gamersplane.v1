@@ -139,10 +139,22 @@
 <?
 				}
 				$userAvatarSize = getimagesize(FILEROOT.User::getAvatar($post->author->userID, $post->author->avatarExt));
-				if ($currentUser->userID == 1) var_dump($userAvatarSize);
+				$xRatio = 40 / $userAvatarSize[0];
+				$yRatio = 40 / $userAvatarSize[1];
+				
+				if ($userAvatarSize[0] <= 40 && $userAvatarSize[1] <= 40) {
+					$finalWidth = $userAvatarSize[0];
+					$finalHeight = $userAvatarSize[1];
+				} elseif (($xRatio * $userAvatarSize[1]) < 40) {
+					$finalWidth = 40;
+					$finalHeight = ceil($xRatio * $userAvatarSize[1]);
+				} else {
+					$finalWidth = ceil($yRatio * $userAvatarSize[0]);
+					$finalHeight = 40;
+				}
 			}
 ?>
-						<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postAsChar && $character->getAvatar()?' ':''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
+						<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postAsChar && $character->getAvatar()?' style="top: -'.($finalHeight / 2).'px; right: -'.($finalWidth / 2).'px;"':''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
 					</div></div>
 <?
 			if ($postAsChar) {
