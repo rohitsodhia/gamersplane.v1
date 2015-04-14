@@ -139,7 +139,7 @@
 <?
 				}
 				$userAvatarSize = getimagesize(User::getAvatar($post->author->userID, $post->author->avatarExt));
-				if ($currentUser->userID == 1) var_dump(FILEROT.$userAvatarSize);
+				if ($currentUser->userID == 1) var_dump(FILEROOT.$userAvatarSize);
 			}
 ?>
 						<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postAsChar && $character->getAvatar()?' ':''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
