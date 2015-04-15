@@ -174,6 +174,7 @@ app.config(function ($httpProvider) {
 			'value': '=value'
 		},
 		link: function (scope, element, attrs) {
+			$(element).blur(function () { alert(1); });
 			scope.value = '';
 			scope.search = '';
 			if (typeof attrs.placeholder != 'undefined') 
@@ -263,17 +264,6 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
-}]).directive('prettySelect', [function () {
-	return {
-		restrict: 'E',
-		transclude: true,
-		templateUrl: '/angular/directives/select.php',
-		link: function (scope, element, attrs) {
-			$select = $(element).find('select');
-			console.log($select.children());
-			console.log(element.find('option'));
-		}
-	};
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
 		if (typeof text != 'string') 

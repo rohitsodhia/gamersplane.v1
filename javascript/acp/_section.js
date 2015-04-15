@@ -330,11 +330,12 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		updateGenres();
 	}
 }).controller('acp_links', function ($scope, $http, $sce) {
+	$scope.levels = ['link', 'affiliate', 'partner'];
 	$scope.data = {};
 	$scope.data.new = {'level': 'link'};
 });
 
-app.directive('linkEdit', function () {
+/*app.directive('linkEdit', function () {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/acp/links.php',
@@ -346,4 +347,4 @@ app.directive('linkEdit', function () {
 //			$('select').prettySelect();
 		}
 	}
-});
+});*/
