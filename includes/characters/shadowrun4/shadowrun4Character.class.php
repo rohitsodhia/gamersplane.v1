@@ -24,7 +24,7 @@
 
 		public function setStat($stat, $value = 0) {
 			if (array_key_exists($stat, $this->stats)) {
-				$value = intval($value);
+				$value = floatval($value);
 				if ($value > 0) 
 					$this->stats[$stat] = $value;
 			} else return false;

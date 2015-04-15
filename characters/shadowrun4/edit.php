@@ -19,7 +19,7 @@
 <?		} ?>
 							<div class="tr">
 								<label for="<?=$short?>" class="textLabel"><?=$stat?>:</label>
-								<input type="text" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="2">
+								<input type="text" name="stats[<?=$short?>]" value="<?=$this->getStat($short)?>" maxlength="3">
 							</div>
 <?	} ?>
 						</div>
