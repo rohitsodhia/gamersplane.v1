@@ -169,7 +169,7 @@
 					<div class="postPoint point<?=$postSide == 'Right'?'Left':'Right'?>"></div>
 					<header class="postHeader">
 						<div class="postedOn convertTZ"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
-						<div class="subject"><a href="?p=<?=$post->postID?>"><?=strlen($post->title)?printReady($post->title):'&nbsp'?></a></div>
+						<div class="subject"><a href="?p=<?=$post->postID?>#<?=$post->postID?>"><?=strlen($post->title)?printReady($post->title):'&nbsp'?></a></div>
 					</header>
 <?
 			echo "\t\t\t\t\t<div class=\"post\">\n";
