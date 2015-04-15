@@ -19,7 +19,8 @@
 					$currentUser->updateUsermeta('showPubGames', '1');
 					$currentUser->setMetaAutoload('showPubGames', '1');
 				}
-			}
+			} else 
+				$showPubGames = 1;
 
 			$this->currentForum = intval($forumID);
 			if ($this->currentForum < 0) { header('Location: /forums/'); exit; }
