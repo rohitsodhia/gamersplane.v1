@@ -4,7 +4,6 @@
 			global $loggedIn, $pathOptions;
 			if (!$loggedIn) exit;
 
-
 			if ($pathOptions[0] == 'list' && (!isset($_POST['type']) || in_array($_POST['type'], array('link', 'affiliate', 'partner')))) 
 				$this->getLinks(isset($_POST['type'])?$_POST['type']:null);
 			else 

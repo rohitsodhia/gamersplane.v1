@@ -1,4 +1,4 @@
-				<form method="post" enctype="multipart/form-data">
+				<form method="post" enctype="multipart/form-data" ng-class="{ editing: 'editing' }">
 					<input type="hidden" name="mongoID" ng-bind="data.mongoID">
 					<div class="preview">
 						<img src="/images/links/{{data.image}}">
@@ -11,10 +11,8 @@
 						<input type="file" ng-model="data.image" ng-disabled="data.length != 0" class="image">
 					</div>
 					<div class="level">
-						<div class="display">{{data.level}}</div>
-						<pretty-select><select ng-model="data.level">
-							<option ng-repeat="level in levels" value="{{level}}">{{level.capitalizeFirstLetter()}}</option>
-						</select></pretty-select>
+						<div ng-if="!new" class="display">{{data.level}}</div>
+						<combobox data="levels" value="data.level" search="search" default="Link" strict></combobox>
 					</div>
 					<div class="actions">
 						<div>

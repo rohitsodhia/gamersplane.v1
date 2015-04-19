@@ -53,7 +53,7 @@
 	$_POST = (array) json_decode(file_get_contents("php://input"));
 	$loggedIn = User::checkLogin(false);
 
-	if(file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {
+	if (file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {
 		require(FILEROOT.'/'.$pathAction.'.class.php');
 		$controller = new $pathAction();
 	}

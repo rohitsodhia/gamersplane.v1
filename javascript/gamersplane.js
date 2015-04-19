@@ -174,15 +174,17 @@ app.config(function ($httpProvider) {
 			'value': '=value'
 		},
 		link: function (scope, element, attrs) {
-			$(element).blur(function () { alert(1); });
-			scope.value = '';
-			scope.search = '';
+			scope.strict = typeof attrs.strict != 'undefined'?true:false;
+			scope.value = typeof attrs.default != 'undefined'?attrs.default:'';
+			scope.search = typeof attrs.default != 'undefined'?attrs.default:'';
 			if (typeof attrs.placeholder != 'undefined') 
 				element.find('input').attr('placeholder', attrs.placeholder);
 			scope.showDropdown = false;
+			scope.hasFocus = false;
 			$combobox = element.children('.combobox');
 			$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
 			$combobox.children('.dropdown').css('height', $combobox.outerHeight());
+			$input = $combobox.children('input');
 			if (typeof scope.data == 'undefined') 
 				scope.data = [];
 			var oldIndex = currentIndex = -1;
@@ -190,10 +192,13 @@ app.config(function ($httpProvider) {
 			scope.toggleDropdown = function ($event) {
 				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) 
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) {
 					scope.showDropdown = scope.showDropdown?false:true;
+					scope.hasFocus = scope.showDropdown?true:false;
+				}
 			};
 			scope.revealDropdown = function () {
+				scope.hasFocus = true;
 				scope.value = '';
 				for (key in scope.data) 
 					if (scope.search == scope.data[key].value) 
@@ -215,8 +220,28 @@ app.config(function ($httpProvider) {
 			};
 			$('html').click(function () {
 				scope.hideDropdown();
+				scope.hasFocus = false;
 				scope.$apply();
 			});
+
+			scope.$watch(function (scope) { return scope.hasFocus; }, function (newVal, oldVal) {
+				if (newVal) 
+					$input.focus();
+				else 
+					scope.validateResults();
+			});
+			scope.validateResults = function () {
+				if (!scope.strict || scope.search.length == 0) 
+					return true;
+				else {
+					filterResults = $filter('filter')(scope.data, scope.search);
+					if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
+						scope.search = filterResults[0].value;
+						return true;
+					} else 
+						scope.search = '';
+				}
+			};
 
 			scope.navigateResults = function ($event) {
 				if ($event.keyCode == 13) {
@@ -257,6 +282,7 @@ app.config(function ($httpProvider) {
 			scope.setBox = function (set) {
 				scope.value = set.id;
 				scope.search = set.value;
+				scope.hasFocus = false;
 			};
 			scope.setSelected = function (set, $event) {
 				element.find('.results .selected').removeClass('selected');

@@ -299,7 +299,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			$scope.edit.basics = [];
 		if (typeof $scope.edit.newBasic == 'undefined' || $scope.edit.newBasic.text.length == 0 || $scope.edit.newBasic.site.length == 0) 
 			return false;
-		console.log($scope.edit.newBasic);
 		$scope.edit.basics.push($scope.edit.newBasic);
 		$scope.edit.newBasic = { 'text': '', 'site': '' };
 	}
@@ -330,21 +329,39 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		updateGenres();
 	}
 }).controller('acp_links', function ($scope, $http, $sce) {
-	$scope.levels = ['link', 'affiliate', 'partner'];
-	$scope.data = {};
-	$scope.data.new = {'level': 'link'};
-});
+	function getLinks() {
+		$http.post(API_HOST + '/links/list/', {}).success(function (data) {
+			$scope.links = data.links;
+/*			$scope.combobox.systems = new Array();
+			for (key in $scope.systems) {
+				if ($scope.systems[key].shortName != 'custom') 
+					$scope.combobox.systems.push({ 'id': $scope.systems[key].shortName, 'value': $scope.systems[key].fullName });
+			}
+			$scope.combobox.systems.push({ 'id': 'custom', 'value': 'Custom' });*/
+		});
+	}
 
-/*app.directive('linkEdit', function () {
+	$scope.links = {};
+	$scope.newLink = { 'level': 'link' };
+	getLinks();
+}).directive('linksEdit', ['$filter', function ($filter) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/acp/links.php',
 		scope: {
-			'data': '=data'
+			'data': '=data',
 		},
 		link: function (scope, element, attrs) {
-			scope.levels = ['link', 'affiliate', 'partner'];
-//			$('select').prettySelect();
+			scope.levels = [
+				{ 'id': 'link', 'value': 'Link'},
+				{ 'id': 'affiliate', 'value': 'Affiliate'},
+				{ 'id': 'partner', 'value': 'Partner'},
+			];
+			if (typeof attrs.new != 'undefined') {
+				scope.new = true;
+				scope.editing = true;
+			} else 
+				scope.new = false;
 		}
 	}
-});*/
+}]);
