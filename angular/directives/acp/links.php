@@ -6,9 +6,9 @@
 						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small"></button>
 					</div>
 					<div class="link">
-						<input type="text" ng-model="data.title" ng-disabled="data.length != 0" class="title placeholder" data-placeholder="Title">
-						<input type="text" ng-model="data.url" ng-disabled="data.length != 0" class="url placeholder" data-placeholder="URL">
-						<input type="file" ng-model="data.image" ng-disabled="data.length != 0" class="image">
+						<input type="text" ng-model="data.title" ng-disabled="!new" class="title placeholder" data-placeholder="Title">
+						<input type="text" ng-model="data.url" ng-disabled="!new" class="url placeholder" data-placeholder="URL">
+						<input type="file" ng-model="data.image" ng-disabled="!new" class="image">
 					</div>
 					<div class="level">
 						<div ng-if="!new" class="display">{{data.level}}</div>

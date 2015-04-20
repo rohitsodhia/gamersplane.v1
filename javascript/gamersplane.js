@@ -175,8 +175,18 @@ app.config(function ($httpProvider) {
 		},
 		link: function (scope, element, attrs) {
 			scope.strict = typeof attrs.strict != 'undefined'?true:false;
-			scope.value = typeof attrs.default != 'undefined'?attrs.default:'';
-			scope.search = typeof attrs.default != 'undefined'?attrs.default:'';
+			var bypassFilter = true;
+			scope.value = '';
+			scope.search = '';
+			if (typeof attrs.default != 'undefined') {
+				scope.search = attrs.default;
+				$(scope.data).each(function (key, value) {
+					if (value.value == scope.search) 
+						scope.value = value.id;
+				});
+				if (scope.value == '') 
+					scope.search = '';
+			}
 			if (typeof attrs.placeholder != 'undefined') 
 				element.find('input').attr('placeholder', attrs.placeholder);
 			scope.showDropdown = false;
@@ -192,7 +202,7 @@ app.config(function ($httpProvider) {
 			scope.toggleDropdown = function ($event) {
 				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) {
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.filterData).length) {
 					scope.showDropdown = scope.showDropdown?false:true;
 					scope.hasFocus = scope.showDropdown?true:false;
 				}
@@ -205,7 +215,7 @@ app.config(function ($httpProvider) {
 						scope.value = scope.data[key].id;
 				if (scope.value.length == 0) 
 					scope.value = scope.search;
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.search).length) {
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.filterData).length) {
 					oldIndex = currentIndex = -1;
 					scope.showDropdown = true;
 				} else {
@@ -217,6 +227,7 @@ app.config(function ($httpProvider) {
 			scope.hideDropdown = function () {
 				element.find('.selected').removeClass('selected');
 				scope.showDropdown = false;
+				bypassFilter = true;
 			};
 			$('html').click(function () {
 				scope.hideDropdown();
@@ -224,30 +235,44 @@ app.config(function ($httpProvider) {
 				scope.$apply();
 			});
 
+			scope.filterData = function (set) {
+				if (set.value.indexOf(scope.search) >= 0 || bypassFilter) 
+					return true;
+				else 
+					return false;
+			};
+
 			scope.$watch(function (scope) { return scope.hasFocus; }, function (newVal, oldVal) {
 				if (newVal) 
 					$input.focus();
-				else 
-					scope.validateResults();
-			});
-			scope.validateResults = function () {
-				if (!scope.strict || scope.search.length == 0) 
-					return true;
 				else {
-					filterResults = $filter('filter')(scope.data, scope.search);
-					if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
-						scope.search = filterResults[0].value;
-						return true;
-					} else 
-						scope.search = '';
+					if (scope.strict && scope.search.length > 0) {
+						bypassHold = bypassFilter;
+						bypassFilter = false;
+						filterResults = $filter('filter')(scope.data, scope.filterData);
+						if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
+							scope.search = filterResults[0].value;
+							scope.value = filterResults[0].id;
+						} else {
+							scope.search = '';
+							scope.value = '';
+						}
+						bypassFilter = bypassHold;
+					}
 				}
-			};
+			});
 
 			scope.navigateResults = function ($event) {
 				if ($event.keyCode == 13) {
-					var set = $($resultsWrapper).find('.selected').data('$scope')['set'];
-					scope.setBox(set);
-				} else {
+					$selected = element.find('.results').find('.selected');
+					if ($selected.length == 0) {
+						$(scope.data).each(function (key, value) {
+							if (value.value == scope.search) 
+								scope.setBox(value);
+						});
+					} else 
+						scope.setBox($selected.data('$scope')['set']);
+				} else if ($event.keyCode == 38 || $event.keyCode == 40) {
 					$resultsWrapper = element.find('.results');
 					$results = $($resultsWrapper).children();
 					resultsHeight = $resultsWrapper.height();
@@ -276,13 +301,15 @@ app.config(function ($httpProvider) {
 
 					$($results[oldIndex]).removeClass('selected');
 					$($results[currentIndex]).addClass('selected');
-				}
+				} else 
+					bypassFilter = false;
 			};
 
 			scope.setBox = function (set) {
 				scope.value = set.id;
 				scope.search = set.value;
 				scope.hasFocus = false;
+				bypassFilter = true;
 			};
 			scope.setSelected = function (set, $event) {
 				element.find('.results .selected').removeClass('selected');
