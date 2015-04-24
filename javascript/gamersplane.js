@@ -205,7 +205,7 @@ app.config(function ($httpProvider) {
 			scope.toggleDropdown = function ($event) {
 				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.filterData).length) {
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!bypassFilter || '') && scope.search).length) {
 					scope.showDropdown = scope.showDropdown?false:true;
 					scope.hasFocus = scope.showDropdown?true:false;
 				}
@@ -218,7 +218,7 @@ app.config(function ($httpProvider) {
 						scope.value = scope.data[key].id;
 				if (scope.value.length == 0) 
 					scope.value = scope.search;
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, scope.filterData).length) {
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!bypassFilter || '') && scope.search).length) {
 					oldIndex = currentIndex = -1;
 					scope.showDropdown = true;
 				} else {
@@ -243,7 +243,7 @@ app.config(function ($httpProvider) {
 					if (scope.strict && scope.search.length > 0) {
 						bypassHold = bypassFilter;
 						bypassFilter = false;
-						filterResults = $filter('filter')(scope.data, scope.filterData);
+						filterResults = $filter('filter')(scope.data, (!bypassFilter || '') && scope.search);
 						if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
 							scope.search = filterResults[0].value;
 							scope.value = filterResults[0].id;
