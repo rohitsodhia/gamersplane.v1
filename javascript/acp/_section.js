@@ -155,7 +155,7 @@ $(function () {
 		});
 	}
 
-	if ($('#page_acp_links').length) {
+/*	if ($('#page_acp_links').length) {
 		$('li > form').ajaxForm({
 			beforeSubmit: function (arr, $form) {
 				var error = false;
@@ -225,7 +225,7 @@ $(function () {
 			$(this).parent().siblings('button').show();
 			$(this).parent().hide();
 		});
-	}
+	}*/
 });
 
 controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
@@ -342,9 +342,9 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	}
 
 	$scope.links = {};
-	$scope.newLink = { 'level': 'link' };
+	$scope.newLink = {};
 	getLinks();
-}).directive('linksEdit', ['$filter', function ($filter) {
+}).directive('linksEdit', ['$filter', '$http', '$upload', function ($filter, $http, $upload) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/acp/links.php',
@@ -352,6 +352,9 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			'data': '=data',
 		},
 		link: function (scope, element, attrs) {
+			scope.editing = false;
+			scope.showEdit = false;
+			scope.showDelete = false;
 			scope.levels = [
 				{ 'id': 'link', 'value': 'Link'},
 				{ 'id': 'affiliate', 'value': 'Affiliate'},
@@ -360,8 +363,38 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			if (typeof attrs.new != 'undefined') {
 				scope.new = true;
 				scope.editing = true;
-			} else 
+				scope.data.level = 'Link';
+			} else {
 				scope.new = false;
+//				for (key in scope.levels) {
+//					if (scope.data.level == scope.levels[key].id) 
+//						scope.defaultLevel = scope.levels[key].value;
+//				};
+			}
+			scope.cb_value = '';
+			$('input[type="checkbox"]').prettyCheckbox();
+
+			scope.toggleEditing = function () {
+				scope.showEdit = !scope.showEdit;
+				scope.editing = !scope.editing;
+			}
+			scope.saveLink = function () {
+				console.log(scope.data);
+				data = JSON.parse(JSON.stringify(scope.data));
+				delete data.image;
+				$upload.upload({
+					'url': API_HOST + '/links/add/',
+					'file': scope.data.newImage,
+					'fields': data
+				}).success(function () {
+//					document.location.reload();
+				});
+			}
+			scope.deleteImage = function () {
+				$http.post(API_HOST + '/links/deleteImage/', { '_id': scope.data._id }).success(function (data) {
+					delete scope.data.image;
+				})
+			}
 		}
 	}
 }]);

@@ -1,33 +1,34 @@
-				<form method="post" enctype="multipart/form-data" ng-class="{ editing: 'editing' }">
-					<input type="hidden" name="mongoID" ng-bind="data.mongoID">
+				<form enctype="multipart/form-data" ng-class="{ editing: 'editing' }">
+					<input type="hidden" name="mongoID" ng-bind="data._id">
 					<div class="preview">
-						<img src="/images/links/{{data.image}}">
-						<img src="/images/spacer.gif">
-						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small"></button>
+						<img ng-if="!new && data.image" src="/images/links/{{data._id}}.{{data.image}}">
+						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small" ng-if="!new && data.image" ng-click="deleteImage()"></button>
 					</div>
 					<div class="link">
-						<input type="text" ng-model="data.title" ng-disabled="!new" class="title placeholder" data-placeholder="Title">
-						<input type="text" ng-model="data.url" ng-disabled="!new" class="url placeholder" data-placeholder="URL">
-						<input type="file" ng-model="data.image" ng-disabled="!new" class="image">
+						<input type="text" ng-model="data.title" ng-disabled="!new && !editing" class="title placeholder" data-placeholder="Title">
+						<input type="text" ng-model="data.url" ng-disabled="!new && !editing" class="url placeholder" data-placeholder="URL">
+						<div class="image"><input type="file" ng-file-select ng-model="data.newImage" ng-disabled="!new && !editing"></div>
 					</div>
-					<div class="level">
-						<div ng-if="!new" class="display">{{data.level}}</div>
-						<combobox data="levels" value="data.level" search="search" default="Link" strict></combobox>
+					<div class="type">
+						<div ng-show="!new && !editing">{{data.level}}</div>
+						<combobox ng-show="new || editing" data="levels" value="cb_value" search="data.level" strict></combobox>
+						<div class="tr"><input type="checkbox" id="rpga_{{data._id}}" ng-model="data.network.rpga"> <label for="rpga_{{data._id}}">The RPG Academy Network</div>
 					</div>
 					<div class="actions">
-						<div>
-							<button type="submit" name="action" value="edit" class="action_edit sprite pencil"></button>
-							<div class="confirmEdit hideDiv">
-								<button type="submit" name="action" value="save" class="action_edit_save sprite check green"></button>
-								<button type="submit" name="action" value="cancelEdit" class="action_edit_cancel sprite cross"></button>
+						<div ng-if="!new">
+							<button type="submit" name="action" value="edit" class="action_edit sprite pencil" ng-show="!showEdit" ng-click="toggleEditing()"></button>
+							<div ng-show="showEdit" class="confirmEdit">
+								<button type="submit" name="action" value="save" class="action_edit_save sprite check green" ng-click="saveLink()"></button>
+								<button type="submit" name="action" value="cancelEdit" class="action_edit_cancel sprite cross" ng-click="toggleEditing()"></button>
 							</div>
 						</div>
-						<div>
-							<button type="submit" name="action" value="deleteCheck" class="action_delete sprite cross"></button>
-							<div class="confirmDelete hideDiv">
+						<div ng-if="!new">
+							<button type="submit" name="action" value="deleteCheck" class="action_delete sprite cross" ng-show="!showDelete" ng-click="showDelete = !showDelete"></button>
+							<div ng-show="showDelete" class="confirmDelete">
 								<button type="submit" name="action" value="delete" class="action_delete_confirm sprite check"></button>
-								<button type="submit" name="action" value="cancelDelete" class="action_delete_cancel sprite cross"></button>
+								<button type="submit" name="action" value="cancelDelete" class="action_delete_cancel sprite cross" ng-click="showDelete = !showDelete"></button>
 							</div>
 						</div>
+						<button ng-if="new" type="submit" name="action" value="save" class="action_save sprite check green" ng-click="saveLink()"></button>
 					</div>
 				</form>

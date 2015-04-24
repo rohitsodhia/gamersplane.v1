@@ -1,11 +1,17 @@
 <?
 	class links {
+		public $levels = array('Link', 'Affiliate', 'Partner');
+
 		function __construct() {
 			global $loggedIn, $pathOptions;
 			if (!$loggedIn) exit;
 
 			if ($pathOptions[0] == 'list' && (!isset($_POST['type']) || in_array($_POST['type'], array('link', 'affiliate', 'partner')))) 
 				$this->getLinks(isset($_POST['type'])?$_POST['type']:null);
+			elseif ($pathOptions[0] == 'add') 
+				$this->addLink();
+			elseif ($pathOptions[0] == 'deleteImage') 
+				$this->deleteImage();
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -21,113 +27,118 @@
 			$numLinks = $mongo->links->find($search, array('_id' => 1))->count();
 			$linksResults = $mongo->links->find($search)->sort(array('title' => 1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
 			$links = array();
-			foreach ($linksResults as $link) 
+			foreach ($linksResults as $link) {
+				$link['_id'] = $link['_id']->{'$id'};
 				$links[] = $link;
+			}
 			displayJSON(array('type' => $type, 'links' => $links, 'totalCount' => $numLinks));
 		}
 
-		public function displayPM($pmID) {
-			require_once(FILEROOT.'/../javascript/markItUp/markitup.bbcode-parser.php');
-			global $mongo, $currentUser;
-
-			$pmID = intval($pmID);
-			$includeSelfHistory = isset($_POST['includeSelfHistory']) && $_POST['includeSelfHistory']?true:false;
-
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID, 'recipients.deleted' => false))));
-			if ($pm === null) displayJSON(array('noPM' => true));
-			else {
-				$pm['title'] = printReady($pm['title']);
-				$pm['message'] = BBCode2Html(printReady($pm['message']));
-				$pm['allowDelete'] = true;
-				$history = $pm['history'];
-				if ($pm['sender']['userID'] == $currentUser->userID) {
-					foreach ($pm['recipients'] as $recipient) 
-						if ($recipient['read'] && !$recipient['deleted']) 
-							$pm['allowDelete'] = false;
-				} elseif (isset($_POST['markRead']) && $_POST['markRead']) 
-					$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.read' => true)));
-				if (sizeof($history) || $includeSelfHistory) {
-					$pm['history'] = array();
-					if ($includeSelfHistory) 
-						$pm['history'][] = array(
-							'pmID' => $pm['pmID'],
-							'sender' => $pm['sender'],
-							'recipients' => $pm['recipients'],
-							'title' => $pm['title'],
-							'message' => $pm['message'],
-							'datestamp' => $pm['datestamp'],
-							'replyTo' => $pm['replyTo'],
-						);
-					if (is_array($history)) {
-						foreach ($history as $pmID) {
-							$hPM = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
-							$hPM['title'] = printReady($hPM['title']);
-							$hPM['message'] = BBCode2Html(printReady($hPM['message']));
-							$pm['history'][] = $hPM;
-							if (sizeof($pm['history']) == 10) 
-								break;
+		private function uploadLogo($_id, $logoFile) {
+			if ($logoFile['error'] == 0 && $logoFile['size'] > 15 && $logoFile['size'] < 1048576) {
+				$logoExt = trim(end(explode('.', strtolower($logoFile['name']))));
+				if ($logoExt == 'jpeg') 
+					$logoExt = 'jpg';
+				if (in_array($logoExt, array('jpg', 'gif', 'png'))) {
+					$maxWidth = 300;
+					$maxHeight = 300;
+					
+					list($imgWidth, $imgHeight, $imgType) = getimagesize($logoFile['tmp_name']);
+					if ($imgWidth >= $maxWidth && $imgHeight >= $maxHeight) {
+						if (image_type_to_mime_type($imgType) == 'image/jpeg' || image_type_to_mime_type($imgType) == 'image/pjpeg') 
+							$tempImg = imagecreatefromjpeg($logoFile['tmp_name']);
+						elseif (image_type_to_mime_type($imgType) == 'image/gif') 
+							$tempImg = imagecreatefromgif($logoFile['tmp_name']);
+						elseif (image_type_to_mime_type($imgType) == 'image/png') 
+							$tempImg = imagecreatefrompng($logoFile['tmp_name']);
+						
+						$xRatio = $maxWidth / $imgWidth;
+						$yRatio = $maxHeight / $imgHeight;
+						
+						if ($imgWidth <= $maxWidth && $imgHeight <= $maxHeight) {
+							$finalWidth = $imgWidth;
+							$finalHeight = $imgHeight;
+						} elseif (($xRatio * $imgHeight) < $maxHeight) {
+							$finalWidth = $maxWidth;
+							$finalHeight = ceil($xRatio * $imgHeight);
+						} else {
+							$finalWidth = ceil($yRatio * $imgWidth);
+							$finalHeight = $maxHeight;
 						}
+						
+						$tempColor = imagecreatetruecolor($finalWidth, $finalHeight);
+						imagealphablending($tempColor, false);
+						imagesavealpha($tempColor,true);
+						imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
+
+						$destination = FILEROOT.'/../images/links/'.$_id.'.'.$logoExt;
+						foreach (glob(FILEROOT.'/../images/links/'.$_id.'.*') as $oldFile) 
+							unlink($oldFile);
+						if ($logoExt == 'jpg') 
+							imagejpeg($tempColor, $destination, 100);
+						elseif ($logoExt == 'gif') 
+							imagegif($tempColor, $destination);
+						elseif ($logoExt == 'png') 
+							imagepng($tempColor, $destination, 0);
+						imagedestroy($tempImg);
+						imagedestroy($tempColor);
+
+						return $logoExt;
 					}
+				} elseif ($logoExt == 'svg') {
+					foreach (glob(FILEROOT.'/../images/links/'.$_id.'.*') as $oldFile) 
+						unlink($oldFile);
+					move_uploaded_file($logoFile['tmp_name'], FILEROOT."/../images/links/{$_id}.svg");
+
+					return 'svg';
 				}
-				displayJSON($pm);
 			}
+			return null;
 		}
 
-		public function checkAllowed($pmID) {
-			global $mongo, $currentUser;
+		public function addLink() {
+			global $mongo;
 
-			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipient.userID' => $currentUser->userID, 'deleted' => false))));
-			displayJSON(array('allowed' => $pm?true:false));
-		}
-
-		public function sendPM() {
-			global $mysql, $mongo, $currentUser;
-
-			$sender = (object) array('userID' => $currentUser->userID, 'username' => $currentUser->username);
-			$recipient = sanitizeString(preg_replace('/[^\w.]/', '', $_POST['username']));
-			$recipient = $mysql->query("SELECT userID, username FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
-			$recipient->userID = (int) $recipient->userID;
-			$recipient->read = false;
-			$recipient->deleted = false;
-			$replyTo = intval($_POST['replyTo']) > 0?intval($_POST['replyTo']):null;
-			if ($sender->userID == $recipient->userID) 
-				displayJSON(array('mailingSelf' => true));
-			else {
-				$history = null;
-				if ($replyTo) {
-					$parent = $mongo->pms->findOne(array('pmID' => $replyTo));
-					$history = array($replyTo);
-					if ($parent['history']) 
-						$history = array_merge($history, $parent['history']);
-				}
-				$mongo->pms->insert(array('pmID' => mongo_getNextSequence('pmID'), 'sender' => $sender, 'recipients' => array($recipient), 'title' => sanitizeString($_POST['title']), 'message' => sanitizeString($_POST['message']), 'datestamp' => date('Y-m-d H:i:s'), 'replyTo' => $replyTo, 'history' => $history));
-				displayJSON(array('sent' => true));
+			$data = array();
+			if (isset($_POST['_id'])) 
+				$data['_id'] = new MongoId($_POST['_id']);
+			else
+				$data['_id'] = new MongoId();
+			$data['title'] = $_POST['title'];
+			$data['url'] = $_POST['url'];
+			if (!strlen($data['title']) || !strlen($data['url'])) 
+				displayJSON(array('failed' => 'incomplete'), true);
+			$data['level'] = $_POST['level'];
+			if (!in_array($data['level'], array_keys($this->levels))) 
+				$data['level'] = 'Link';
+			if (isset($_FILES['file'])) {
+				$ext = $this->uploadLogo($data['_id'], $_FILES['file']);
+				if ($ext) 
+					$data['image'] = $ext;
 			}
-		}
+			$data['network'] = array();
+			var_dump($_POST['network']);
+			if (isset($_POST['network']['rpga'])) 
+				$data['network']['rpga'] = true;
+			if (!isset($_POST['_id'])) {
+				$data['random'] = $mongo->execute('Math.random()');
+				$data['random'] = $data['random']['retval'];
 
-		public function deletePM($pmID) {
-			global $mongo, $currentUser;
-
-			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
-			if ($pm === null) 
-				displayJSON(array('noMatch' => true));
-			elseif ($pm['sender']['userID'] == $currentUser->userID) {
-				$allowDelete = true;
-				foreach ($pm['recipients'] as $recipient) 
-					if ($recipient['read'] && !$recipient['deleted']) 
-						$allowDelete = false;
-
-				if ($allowDelete) 
-					$mongo->pms->remove(array('pmID' => $pmID));
-
-				displayJSON(array('deleted' => true));
+				$mongo->links->insert($data);
 			} else {
-				$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.deleted' => true)));
-
-				displayJSON(array('deleted' => true));
+				$mongoID = $data['_id'];
+				unset($data['_id']);
+				$mongo->links->update(array('_id' => new MongoId($mongoID)), array('$set' => $data));
 			}
+
+			displayJSON(array('success' => 1));
+		}
+
+		public function deleteImage() {
+			global $mongo;
+			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $oldFile) 
+				unlink($oldFile);
+			$mongo->links->update(array('_id' => new MongoId($_POST['_id'])), array('$unset' => array('image' => '')));
 		}
 	}
 ?>

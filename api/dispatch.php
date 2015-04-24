@@ -50,7 +50,8 @@
 	}
 
 	global $loggedIn;
-	$_POST = (array) json_decode(file_get_contents("php://input"));
+	if (sizeof($_POST) == 0) 
+		$_POST = (array) json_decode(file_get_contents("php://input"));
 	$loggedIn = User::checkLogin(false);
 
 	if (file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {

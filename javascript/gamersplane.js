@@ -155,7 +155,7 @@ $(function() {
 	else var curPage = $('body > div').attr('id').substring(5);
 });
 
-var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize']);
+var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'angularFileUpload']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }).directive('paginate', function () {
@@ -171,33 +171,36 @@ app.config(function ($httpProvider) {
 		scope: {
 			'data': '=data',
 			'search': '=search',
-			'value': '=value'
+			'value': '=value',
 		},
 		link: function (scope, element, attrs) {
 			scope.strict = typeof attrs.strict != 'undefined'?true:false;
 			var bypassFilter = true;
 			scope.value = '';
-			scope.search = '';
-			if (typeof attrs.default != 'undefined') {
-				scope.search = attrs.default;
-				$(scope.data).each(function (key, value) {
-					if (value.value == scope.search) 
-						scope.value = value.id;
-				});
-				if (scope.value == '') 
+			var setupFinished = scope.$watch('data', function (newVal, oldVal) {
+				if (scope.search != '') {
+					$(scope.data).each(function (key, value) {
+						if (value.value == scope.search) 
+							scope.value = value.id;
+					});
+					if (scope.value == '') 
+						scope.search = '';
+				} else
 					scope.search = '';
-			}
-			if (typeof attrs.placeholder != 'undefined') 
-				element.find('input').attr('placeholder', attrs.placeholder);
-			scope.showDropdown = false;
-			scope.hasFocus = false;
-			$combobox = element.children('.combobox');
-			$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
-			$combobox.children('.dropdown').css('height', $combobox.outerHeight());
-			$input = $combobox.children('input');
-			if (typeof scope.data == 'undefined') 
-				scope.data = [];
-			var oldIndex = currentIndex = -1;
+				if (typeof attrs.placeholder != 'undefined') 
+					element.find('input').attr('placeholder', attrs.placeholder);
+				scope.showDropdown = false;
+				scope.hasFocus = false;
+				$combobox = element.children('.combobox');
+				$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
+				$combobox.children('.dropdown').css('height', $combobox.outerHeight());
+				$input = $combobox.children('input');
+				if (typeof scope.data == 'undefined') 
+					scope.data = [];
+				var oldIndex = currentIndex = -1;
+
+				setupFinished();
+			});
 
 			scope.toggleDropdown = function ($event) {
 				oldIndex = currentIndex = -1;
@@ -242,10 +245,8 @@ app.config(function ($httpProvider) {
 					return false;
 			};
 
-			scope.$watch(function (scope) { return scope.hasFocus; }, function (newVal, oldVal) {
-				if (newVal) 
-					$input.focus();
-				else {
+			scope.$watch('hasFocus', function (newVal, oldVal) {
+				if (!newVal) {
 					if (scope.strict && scope.search.length > 0) {
 						bypassHold = bypassFilter;
 						bypassFilter = false;
@@ -310,6 +311,7 @@ app.config(function ($httpProvider) {
 				scope.search = set.value;
 				scope.hasFocus = false;
 				bypassFilter = true;
+				scope.hideDropdown();
 			};
 			scope.setSelected = function (set, $event) {
 				element.find('.results .selected').removeClass('selected');

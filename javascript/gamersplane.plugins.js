@@ -126,11 +126,17 @@ $.fn.autocomplete = function (pathOption, sendData) {
 
 $.fn.prettyCheckbox = function () {
 	$(this).each(function () {
-		$(this).wrap('<div class="prettyCheckbox"></div>');
-		if ($(this).is(':checked')) $(this).parent().addClass('checked');
-		if ($(this).data('disabled') == 'disabled') $(this).parent().addClass('disabled');
-	}).hide().change(function (e) {
-		$(this).parent().toggleClass('checked');
+		var $checkbox = $(this);
+		if ($checkbox.parent('div.prettyCheckbox').length == 0) {
+			$checkbox.wrap('<div class="prettyCheckbox"></div>');
+			if ($checkbox.is(':checked')) 
+				$checkbox.parent().addClass('checked');
+			if ($checkbox.data('disabled') == 'disabled') 
+				$checkbox.parent().addClass('disabled');
+			$checkbox.change(function (e) {
+				$checkbox.parent().toggleClass('checked');
+			})
+		}
 	});
 };
 
