@@ -238,13 +238,6 @@ app.config(function ($httpProvider) {
 				scope.$apply();
 			});
 
-			scope.filterData = function (set) {
-				if (set.value.indexOf(scope.search) >= 0 || bypassFilter) 
-					return true;
-				else 
-					return false;
-			};
-
 			scope.$watch('hasFocus', function (newVal, oldVal) {
 				if (!newVal) {
 					if (scope.strict && scope.search.length > 0) {
