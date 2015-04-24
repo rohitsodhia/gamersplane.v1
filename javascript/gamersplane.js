@@ -175,7 +175,7 @@ app.config(function ($httpProvider) {
 		},
 		link: function (scope, element, attrs) {
 			scope.strict = typeof attrs.strict != 'undefined'?true:false;
-			var bypassFilter = true;
+			scope.bypassFilter = true;
 			scope.value = '';
 			var setupFinished = scope.$watch('data', function (newVal, oldVal) {
 				if (scope.search != '') {
@@ -203,9 +203,10 @@ app.config(function ($httpProvider) {
 			});
 
 			scope.toggleDropdown = function ($event) {
+				console.log($filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search));
 				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!bypassFilter || '') && scope.search).length) {
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
 					scope.showDropdown = scope.showDropdown?false:true;
 					scope.hasFocus = scope.showDropdown?true:false;
 				}
@@ -218,7 +219,7 @@ app.config(function ($httpProvider) {
 						scope.value = scope.data[key].id;
 				if (scope.value.length == 0) 
 					scope.value = scope.search;
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!bypassFilter || '') && scope.search).length) {
+				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
 					oldIndex = currentIndex = -1;
 					scope.showDropdown = true;
 				} else {
@@ -230,7 +231,7 @@ app.config(function ($httpProvider) {
 			scope.hideDropdown = function () {
 				element.find('.selected').removeClass('selected');
 				scope.showDropdown = false;
-				bypassFilter = true;
+				scope.bypassFilter = true;
 			};
 			$('html').click(function () {
 				scope.hideDropdown();
@@ -241,9 +242,9 @@ app.config(function ($httpProvider) {
 			scope.$watch('hasFocus', function (newVal, oldVal) {
 				if (!newVal) {
 					if (scope.strict && scope.search.length > 0) {
-						bypassHold = bypassFilter;
-						bypassFilter = false;
-						filterResults = $filter('filter')(scope.data, (!bypassFilter || '') && scope.search);
+						bypassHold = scope.bypassFilter;
+						scope.bypassFilter = false;
+						filterResults = $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search);
 						if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
 							scope.search = filterResults[0].value;
 							scope.value = filterResults[0].id;
@@ -251,7 +252,7 @@ app.config(function ($httpProvider) {
 							scope.search = '';
 							scope.value = '';
 						}
-						bypassFilter = bypassHold;
+						scope.bypassFilter = bypassHold;
 					}
 				}
 			});
@@ -296,14 +297,14 @@ app.config(function ($httpProvider) {
 					$($results[oldIndex]).removeClass('selected');
 					$($results[currentIndex]).addClass('selected');
 				} else 
-					bypassFilter = false;
+					scope.bypassFilter = false;
 			};
 
 			scope.setBox = function (set) {
 				scope.value = set.id;
 				scope.search = set.value;
 				scope.hasFocus = false;
-				bypassFilter = true;
+				scope.bypassFilter = true;
 				scope.hideDropdown();
 			};
 			scope.setSelected = function (set, $event) {
