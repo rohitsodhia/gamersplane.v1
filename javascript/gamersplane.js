@@ -332,17 +332,6 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
-}]).directive('equalizeHeights', [function () {
-	return {
-		restrict: 'A',
-		scope: {
-			'maxHeight': '=equalizeHeights'
-		},
-		link: function (scope, element, attrs) {
-			if (element.outerHeight() > scope.maxHeight) 
-				scope.maxHeight = element.outerHeight();
-		}
-	}
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
 		if (typeof text != 'string') 
