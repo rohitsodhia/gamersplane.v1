@@ -128,7 +128,6 @@
 					$data['networks'][] = $key;
 			$data['categories'] = array();
 			$_POST['categories'] = json_decode(html_entity_decode($_POST['categories']));
-			var_dump($_POST);
 			foreach ($_POST['categories'] as $key => $value) 
 				if ($value) 
 					$data['categories'][] = $key;
