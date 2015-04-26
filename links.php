@@ -33,7 +33,12 @@
 		</div>
 		<ul id="links" class="clearfix">
 			<li ng-repeat="link in links | filter: { level: 'Link' } | intersect: 'categories':filter | orderBy: 'sortName'" equalize-heights="maxHeight.links">
-				<div class="image"><a href="{{link.url}}" target="_blank"><img src="/images/links/{{link._id}}.{{link.image}}"></a></div>
+				<div class="image" ng-class="{ 'noImg': !link.image }">
+					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
+						<p ng-if="!link.image">No Image</p>
+						<img ng-if="link.image" src="/images/links/{{link._id}}.{{link.image}}">
+					</a>
+				</div>
 				<p><a href="{{link.url}}" target="_blank">{{link.title}}</a></p>
 			</li>
 		</ul>
