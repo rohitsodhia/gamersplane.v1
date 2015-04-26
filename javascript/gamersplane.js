@@ -20,7 +20,7 @@ $.cssHooks.backgroundColor = {
 
 $(function() {
 	$('select').prettySelect();
-//	$('input[type="checkbox"]').prettyCheckbox();
+	$('input[type="checkbox"]').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 
 	$('.loginLink').colorbox();
