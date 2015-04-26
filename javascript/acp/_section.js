@@ -388,9 +388,13 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 					'file': scope.data.newImage,
 					'fields': data
 				}).success(function (data) {
-					if (data.image) 
-						scope.data.image = data.image;
-					scope.toggleEditing();
+					if (scope.new) 
+						document.location.reload();
+					else {
+						if (data.image) 
+							scope.data.image = data.image;
+						scope.toggleEditing();
+					}
 				});
 			}
 			scope.deleteImage = function () {
