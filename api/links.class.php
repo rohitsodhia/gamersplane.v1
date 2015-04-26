@@ -143,7 +143,7 @@
 				$mongo->links->update(array('_id' => new MongoId($mongoID)), array('$set' => $data));
 			}
 
-			displayJSON(array('success' => 1));
+			displayJSON(array('success' => 1, 'image' => $data['image']));
 		}
 
 		public function deleteImage() {

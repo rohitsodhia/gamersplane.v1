@@ -388,8 +388,10 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 					'url': API_HOST + '/links/save/',
 					'file': scope.data.newImage,
 					'fields': data
-				}).success(function () {
-//					document.location.reload();
+				}).success(function (data) {
+					if (data.image) 
+						scope.data.image = data.image;
+					scope.toggleEditing();
 				});
 			}
 			scope.deleteImage = function () {

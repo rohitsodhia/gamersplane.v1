@@ -7,7 +7,7 @@
 					<div class="link">
 						<input type="text" ng-model="data.title" ng-disabled="!new && !editing" class="title placeholder" data-placeholder="Title">
 						<input type="text" ng-model="data.url" ng-disabled="!new && !editing" class="url placeholder" data-placeholder="URL">
-						<div class="image"><input type="file" ng-file-select ng-model="data.newImage" ng-disabled="!new && !editing"></div>
+						<div class="image" ng-hide="!new && !editing"><input type="file" ng-file-select ng-model="data.newImage"></div>
 					</div>
 					<div class="type">
 						<div ng-show="!new && !editing">{{data.level}}</div>
