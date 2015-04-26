@@ -491,11 +491,15 @@ div.prettySelect > div {
 
 .prettyCheckbox {
 	background: url('../images/checkbox.png') top left no-repeat;
-}
 
-.prettyCheckbox.disabled {
-	background-position: top right;
-	cursor: default;
+	&.disabled {
+		background-position: top right;
+		cursor: default;
+	}
+
+	input[type="checkbox"] {
+		display: none;
+	}
 }
 
 .prettyRadio {
@@ -2213,7 +2217,7 @@ div.forumIcon.newPosts.locked {
 		text-align: left;
 	}
 
-	#affiliates {
+	#partners {
 		.widgetBody {
 			margin-top: 1em;
 			text-align: center;
@@ -2549,4 +2553,77 @@ div.forumIcon.newPosts.locked {
 		font-weight: bold;
 		text-align: center;
 	} 
+}
+
+/* --------------------------------------------*/
+
+#page_links {
+	ul {
+		width: 900px;
+		margin: 0 auto;
+		list-style: none;
+	}
+
+	li {
+		float: left;
+		.borderBox;
+		padding: 10px;
+	}
+
+	.image {
+		margin: 0 auto 10px;
+		text-align: center;
+	}
+
+	img {
+		vertical-align: middle;
+	}
+
+	p {
+		text-align: center;
+	}
+
+	#partners {
+		li {
+			width: 225px;
+		}
+
+		.image {
+			height: 200px;
+			width: 200px;
+			line-height: 200px;
+		}
+
+		img {
+			max-height: 200px;
+			max-width: 200px;
+		}
+
+		p {
+			font-size: 1.4em;
+			line-height: 1.2em;
+		}
+	}
+
+	.network {
+		li {
+			width: 180px;
+		}
+
+		.image {
+			height: 160px;
+			width: 160px;
+			line-height: 160px;
+		}
+
+		img {
+			max-height: 160px;
+			max-width: 160px;
+		}
+
+		p {
+			font-size: 1.2em;
+			line-height: 1.2em;
+		}
+	}
 }

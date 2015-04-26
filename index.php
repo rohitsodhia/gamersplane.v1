@@ -95,17 +95,17 @@
 				</div>
 			</div>
 
-			<div id="affiliates" class="homeWidget">
-				<h3 class="headerbar">Affiliates</h3>
+			<div id="partners" class="homeWidget">
+				<h3 class="headerbar">Partners</h3>
 <?
 	$rand = $mongo->execute('Math.random()');
-	$affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$gte' => $rand['retval'])));
-	if ($affiliate == null) 
-		$affiliate = $mongo->links->findOne(array('level' => 2, 'random' => array('$lte' => $rand['retval'])));
+	$partner = $mongo->links->findOne(array('level' => 'Partner', 'random' => array('$gte' => $rand['retval'])));
+	if ($partner == null) 
+		$partner = $mongo->links->findOne(array('level' => 'Partner', 'random' => array('$lte' => $rand['retval'])));
 ?>
 				<div class="widgetBody">
-					<a href="<?=$affiliate['url']?>" target="_blank"><img src="/images/links/<?=$affiliate['_id']?>.<?=$affiliate['image']?>"></a>
-					<p><a href="<?=$affiliate['url']?>" target="_blank"><?=$affiliate['title']?></a></p>
+					<a href="<?=$partner['url']?>" target="_blank"><img src="/images/links/<?=$partner['_id']?>.<?=$partner['image']?>"></a>
+					<p><a href="<?=$partner['url']?>" target="_blank"><?=$partner['title']?></a></p>
 				</div>
 			</div>
 		</div>

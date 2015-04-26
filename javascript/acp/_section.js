@@ -331,13 +331,14 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 }).controller('acp_links', function ($scope, $http, $sce) {
 	function getLinks() {
 		$http.post(API_HOST + '/links/list/', {}).success(function (data) {
-			$scope.links = data.links;
-/*			$scope.combobox.systems = new Array();
-			for (key in $scope.systems) {
-				if ($scope.systems[key].shortName != 'custom') 
-					$scope.combobox.systems.push({ 'id': $scope.systems[key].shortName, 'value': $scope.systems[key].fullName });
-			}
-			$scope.combobox.systems.push({ 'id': 'custom', 'value': 'Custom' });*/
+			$scope.links = [];
+			$(data.links).each(function (key, value) {
+				networks = value.network;
+				value.network = {};
+				for (nKey in networks) 
+					value.network[networks[nKey]] = true
+				$scope.links.push(value);
+			})
 		});
 	}
 
@@ -364,6 +365,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				scope.new = true;
 				scope.editing = true;
 				scope.data.level = 'Link';
+				scope.data.network = { 'rpga': false };
 			} else {
 				scope.new = false;
 //				for (key in scope.levels) {
@@ -372,7 +374,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 //				};
 			}
 			scope.cb_value = '';
-			$('input[type="checkbox"]').prettyCheckbox();
 
 			scope.toggleEditing = function () {
 				scope.showEdit = !scope.showEdit;
@@ -383,16 +384,21 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				data = JSON.parse(JSON.stringify(scope.data));
 				delete data.image;
 				$upload.upload({
-					'url': API_HOST + '/links/add/',
+					'url': API_HOST + '/links/save/',
 					'file': scope.data.newImage,
 					'fields': data
 				}).success(function () {
-//					document.location.reload();
+					document.location.reload();
 				});
 			}
 			scope.deleteImage = function () {
 				$http.post(API_HOST + '/links/deleteImage/', { '_id': scope.data._id }).success(function (data) {
 					delete scope.data.image;
+				})
+			}
+			scope.deleteLink = function () {
+				$http.post(API_HOST + '/links/deleteLink/', { '_id': scope.data._id }).success(function (data) {
+					document.location.reload();
 				})
 			}
 		}

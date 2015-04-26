@@ -1,4 +1,4 @@
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<div class="sideWidget left">
 			<h2>Filter</h2>
 			<form>

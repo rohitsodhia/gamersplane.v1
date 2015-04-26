@@ -292,26 +292,33 @@
 	}
 
 	.mainColumn > ul {
-		margin-top: 20px;
 		list-style: none;
-	}
 
-	.preview, .preview img {
-		height: 60px;
-		width: 60px;
+		li {
+			margin-top: 20px;
+		}
 	}
 
 	.preview {
 		position: relative;
+		height: 60px;
+		width: 60px;
 		border: 1px solid #000;
 		background: #FFF;
-	}
+		line-height: 60px;
 
-	.preview button {
-		display: none;
-		position: absolute;
-		bottom: -8px;
-		right: -8px;
+		img {
+			max-height: 60px;
+			max-width: 60px;
+			vertical-align: middle;
+		}
+
+		button {
+			display: none;
+			position: absolute;
+			bottom: -8px;
+			right: -8px;
+		}
 	}
 
 	.link, .link input {

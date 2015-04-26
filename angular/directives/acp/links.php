@@ -12,7 +12,7 @@
 					<div class="type">
 						<div ng-show="!new && !editing">{{data.level}}</div>
 						<combobox ng-show="new || editing" data="levels" value="cb_value" search="data.level" strict></combobox>
-						<div class="tr"><input type="checkbox" id="rpga_{{data._id}}" ng-model="data.network.rpga"> <label for="rpga_{{data._id}}">The RPG Academy Network</div>
+						<div class="tr" ng-show="data.network.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.network.rpga" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</div>
 					</div>
 					<div class="actions">
 						<div ng-if="!new">
@@ -25,7 +25,7 @@
 						<div ng-if="!new">
 							<button type="submit" name="action" value="deleteCheck" class="action_delete sprite cross" ng-show="!showDelete" ng-click="showDelete = !showDelete"></button>
 							<div ng-show="showDelete" class="confirmDelete">
-								<button type="submit" name="action" value="delete" class="action_delete_confirm sprite check"></button>
+								<button type="submit" name="action" value="delete" class="action_delete_confirm sprite check" ng-click="deleteLink()"></button>
 								<button type="submit" name="action" value="cancelDelete" class="action_delete_cancel sprite cross" ng-click="showDelete = !showDelete"></button>
 							</div>
 						</div>

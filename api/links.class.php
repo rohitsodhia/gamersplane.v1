@@ -6,22 +6,26 @@
 			global $loggedIn, $pathOptions;
 			if (!$loggedIn) exit;
 
-			if ($pathOptions[0] == 'list' && (!isset($_POST['type']) || in_array($_POST['type'], array('link', 'affiliate', 'partner')))) 
-				$this->getLinks(isset($_POST['type'])?$_POST['type']:null);
-			elseif ($pathOptions[0] == 'add') 
-				$this->addLink();
+			if ($pathOptions[0] == 'list') 
+				$this->getLinks();
+			elseif ($pathOptions[0] == 'save') 
+				$this->saveLink();
 			elseif ($pathOptions[0] == 'deleteImage') 
 				$this->deleteImage();
+			elseif ($pathOptions[0] == 'deleteLink') 
+				$this->deleteLink();
 			else 
 				displayJSON(array('failed' => true));
 		}
 
-		public function getLinks($type) {
+		public function getLinks() {
 			global $mongo, $currentUser;
 
 			$search = array();
-			if ($type != null) 
-				$search = array('type' => $type);
+			if (isset($_POST['level']) && in_array($_POST['level'], array('Link', 'Affiliate', 'Partner'))) 
+				$search['level'] = $_POST['level'];
+			if (isset($_POST['network'])) 
+				$search['network'] = $_POST['network'];
 
 			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
 			$numLinks = $mongo->links->find($search, array('_id' => 1))->count();
@@ -44,7 +48,7 @@
 					$maxHeight = 300;
 					
 					list($imgWidth, $imgHeight, $imgType) = getimagesize($logoFile['tmp_name']);
-					if ($imgWidth >= $maxWidth && $imgHeight >= $maxHeight) {
+					if ($imgWidth >= $maxWidth || $imgHeight >= $maxHeight) {
 						if (image_type_to_mime_type($imgType) == 'image/jpeg' || image_type_to_mime_type($imgType) == 'image/pjpeg') 
 							$tempImg = imagecreatefromjpeg($logoFile['tmp_name']);
 						elseif (image_type_to_mime_type($imgType) == 'image/gif') 
@@ -96,7 +100,7 @@
 			return null;
 		}
 
-		public function addLink() {
+		public function saveLink() {
 			global $mongo;
 
 			$data = array();
@@ -105,6 +109,7 @@
 			else
 				$data['_id'] = new MongoId();
 			$data['title'] = $_POST['title'];
+			$data['sortName'] = strtolower($data['title']);
 			$data['url'] = $_POST['url'];
 			if (!strlen($data['title']) || !strlen($data['url'])) 
 				displayJSON(array('failed' => 'incomplete'), true);
@@ -117,9 +122,9 @@
 					$data['image'] = $ext;
 			}
 			$data['network'] = array();
-			var_dump($_POST['network']);
-			if (isset($_POST['network']['rpga'])) 
-				$data['network']['rpga'] = true;
+			$_POST['network'] = json_decode(html_entity_decode($_POST['network']));
+			if (isset($_POST['network']->rpga) && $_POST['network']->rpga) 
+				$data['network'][] = 'rpga';
 			if (!isset($_POST['_id'])) {
 				$data['random'] = $mongo->execute('Math.random()');
 				$data['random'] = $data['random']['retval'];
@@ -139,6 +144,13 @@
 			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $oldFile) 
 				unlink($oldFile);
 			$mongo->links->update(array('_id' => new MongoId($_POST['_id'])), array('$unset' => array('image' => '')));
+		}
+
+		public function deleteLink() {
+			global $mongo;
+			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $file) 
+				unlink($file);
+			$mongo->links->remove(array('_id' => new MongoId($_POST['_id'])));
 		}
 	}
 ?>

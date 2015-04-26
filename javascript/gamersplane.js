@@ -20,7 +20,7 @@ $.cssHooks.backgroundColor = {
 
 $(function() {
 	$('select').prettySelect();
-	$('input[type="checkbox"]').prettyCheckbox();
+//	$('input[type="checkbox"]').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 
 	$('.loginLink').colorbox();
@@ -203,7 +203,6 @@ app.config(function ($httpProvider) {
 			});
 
 			scope.toggleDropdown = function ($event) {
-				console.log($filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search));
 				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
 				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
@@ -311,6 +310,37 @@ app.config(function ($httpProvider) {
 				element.find('.results .selected').removeClass('selected');
 				$($event.currentTarget).addClass('selected');
 			}
+		}
+	}
+}]).directive('prettyCheckbox', [function () {
+	return {
+		restrict: 'E',
+		templateUrl: '/angular/directives/prettyCheckbox.php',
+		scope: {
+			'checkbox': '=checkbox'
+		},
+		link: function (scope, element, attrs) {
+			scope.checkbox = scope.checkbox?true:false;
+			if (typeof attrs['eleid'] == 'string') 
+				scope.inputID = attrs['eleid'];
+			else 
+				scope.inputID = '';
+
+			scope.toggleCB = function ($event) {
+				$event.stopPropagation();
+				scope.checkbox = !scope.checkbox;
+			}
+		}
+	}
+}]).directive('equalizeHeights', [function () {
+	return {
+		restrict: 'A',
+		scope: {
+			'maxHeight': '=equalizeHeights'
+		},
+		link: function (scope, element, attrs) {
+			if (element.outerHeight() > scope.maxHeight) 
+				scope.maxHeight = element.outerHeight();
 		}
 	}
 }]).filter('trustHTML', ['$sce', function($sce){

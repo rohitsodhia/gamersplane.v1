@@ -90,6 +90,7 @@
 <?		if ($loggedIn) { ?>
 			<li><a href="/gamersList/">The Gamers</a></li>
 <?		} ?>
+			<li><a href="/links/">Links</a></li>
 		</ul>
 		<ul id="mainMenu_right">
 			<li><a href="/faqs/" class="first">FAQs</a></li>
