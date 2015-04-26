@@ -26,8 +26,10 @@
 
 		<h2 class="headerbar hbDark">Links</h2>
 		<div class="controls">
-			<pretty-checkbox eleid="blog_{{link._id}}" checkbox="filter.blog"></pretty-checkbox> <label for="blog_{{data._id}}">Blog</label>
-			<pretty-checkbox eleid="podcast_{{link._id}}" checkbox="filter.podcast"></pretty-checkbox> <label for="podcast_{{data._id}}">Podcast</label>
+			<div ng-repeat="category in categories">
+				<pretty-checkbox eleid="{{category.slug}}_{{link._id}}" checkbox="filter[category.slug]"></pretty-checkbox>
+				<label for="{{category.slug}}_{{data._id}}">{{category.label}}</label>
+			</div>
 		</div>
 		<ul id="links" class="clearfix">
 			<li ng-repeat="link in links | filter: { level: 'Link' } | intersect: 'categories':filter | orderBy: 'sortName'" equalize-heights="maxHeight.links">

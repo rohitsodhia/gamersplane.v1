@@ -1,23 +1,24 @@
 				<form enctype="multipart/form-data" ng-class="{ editing: 'editing' }">
 					<input type="hidden" name="mongoID" ng-bind="data._id">
-					<div class="preview">
-						<img ng-if="!new && data.image" src="/images/links/{{data._id}}.{{data.image}}">
-						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small" ng-if="!new && data.image" ng-click="deleteImage()"></button>
+					<div class="preview" ng-if="!new">
+						<img ng-if="data.image" src="/images/links/{{data._id}}.{{data.image}}">
+						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small" ng-if="data.image" ng-click="deleteImage()"></button>
 					</div>
-					<div class="link">
-						<input type="text" ng-model="data.title" ng-disabled="!new && !editing" class="title placeholder" data-placeholder="Title">
-						<input type="text" ng-model="data.url" ng-disabled="!new && !editing" class="url placeholder" data-placeholder="URL">
-						<div class="image" ng-hide="!new && !editing"><input type="file" ng-file-select ng-model="data.newImage"></div>
-					</div>
-					<div class="type">
-						<div ng-show="!new && !editing">{{data.level}}</div>
-						<combobox ng-show="new || editing" data="levels" value="cb_value" search="data.level" strict></combobox>
+					<div class="details">
+						<div class="link">
+							<input type="text" ng-model="data.title" ng-disabled="!new && !editing" class="title placeholder" data-placeholder="Title">
+							<input type="text" ng-model="data.url" ng-disabled="!new && !editing" class="url placeholder" data-placeholder="URL">
+							<div class="image" ng-hide="!new && !editing"><input type="file" ng-file-select ng-model="data.newImage"></div>
+						</div>
+						<div class="type">
+							<div ng-show="!new && !editing">{{data.level}}</div>
+							<combobox ng-show="new || editing" data="levels" value="cb_value" search="data.level" strict></combobox>
 
-						<div class="tr" ng-show="data.networks.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.networks.rpga" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</label></div>
-
-						<div class="tr" ng-show="data.categories.blog || editing"><pretty-checkbox eleid="blog_{{data._id}}" checkbox="data.categories.blog" ng-show="editing"></pretty-checkbox> <label for="blog_{{data._id}}">Blog</label></div>
-
-						<div class="tr" ng-show="data.categories.podcast || editing"><pretty-checkbox eleid="podcast_{{data._id}}" checkbox="data.categories.podcast" ng-show="editing"></pretty-checkbox> <label for="podcast_{{data._id}}">Podcast</label></div>
+							<div class="tr" ng-show="data.networks.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.networks.rpga" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</label></div>
+						</div>
+						<div class="categories">
+							<div ng-repeat="category in categories" ng-show="data.categories[category.slug] || editing"><pretty-checkbox eleid="{{category.slug}}_{{data._id}}" checkbox="data.categories[category.slug]" ng-show="editing"></pretty-checkbox> <label for="{{category.slug}}_{{data._id}}">{{category.label}}</label></div>
+						</div>
 					</div>
 					<div class="actions">
 						<div ng-if="!new">

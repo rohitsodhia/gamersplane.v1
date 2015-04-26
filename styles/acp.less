@@ -277,7 +277,7 @@
 }
 
 #page_acp_links {
-	form > * {
+	form > *, .details > * {
 		display: inline-block;
 		margin-right: 10px;
 		vertical-align: top;
@@ -327,6 +327,27 @@
 
 	.url, .image {
 		margin-top: .5em;
+	}
+
+	.type {
+		width: 210px;
+	}
+
+	.details {
+		width: 485px;
+	}
+
+	.categories {
+		margin-top: 10px;
+
+		& > div {
+			display: inline-block;
+			margin-right: 10px;
+		}
+	}
+
+	.actions {
+		margin-right: 0;
 	}
 
 	input[disabled] {

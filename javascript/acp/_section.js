@@ -365,12 +365,18 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				{ 'id': 'affiliate', 'value': 'Affiliate'},
 				{ 'id': 'partner', 'value': 'Partner'},
 			];
+			scope.categories = [
+				{ 'slug': 'blog', 'label': 'Blog' },
+				{ 'slug': 'podcast', 'label': 'Podcast' },
+				{ 'slug': 'videocast', 'label': 'Videocast' },
+				{ 'slug': 'liveplay', 'label': 'Liveplay' }
+			];
 			if (typeof attrs.new != 'undefined') {
 				scope.new = true;
 				scope.editing = true;
 				scope.data.level = 'Link';
 				scope.data.networks = { 'rpga': false };
-				scope.data.categories = { 'blog': false, 'podcast': false };
+				scope.data.categories = { 'blog': false, 'podcast': false, 'videocast': false, 'liveplay': false };
 			} else {
 				scope.new = false;
 			}

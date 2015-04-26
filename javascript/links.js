@@ -15,8 +15,13 @@ controllers.controller('links', function ($scope, $http, $sce, $filter) {
 		$scope.pagination.current = 1;
 	$scope.showPagination = true;
 	$scope.links = [];
-	$scope.filter = { 'blog': true, 'podcast': true };
-	$scope.numSystems = 0;
+	$scope.categories = [
+		{ 'slug': 'blog', 'label': 'Blog' },
+		{ 'slug': 'podcast', 'label': 'Podcast' },
+		{ 'slug': 'videocast', 'label': 'Videocast' },
+		{ 'slug': 'liveplay', 'label': 'Liveplay' }
+	];
+	$scope.filter = { 'blog': true, 'podcast': true, 'videocast': true, 'liveplay': true };
 
 	$scope.maxHeight = {
 		'partners': 0,
