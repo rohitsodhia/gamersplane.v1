@@ -15,7 +15,7 @@
 				<paginate class="tr"></paginate>
 			</div>
 			<div id="systems">
-				<div class="system clearfix" ng-repeat="system in systems | filter:{ fullName: filter.search } | paginateItems:10:(pagination.current - 1) * 10">
+				<div class="system clearfix" ng-repeat="system in systems | filter:{ fullName: filter.search } | paginateItems: 10:(pagination.current - 1) * 10">
 					<div class="logoWrapper"><div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div></div>
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>

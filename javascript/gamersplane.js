@@ -363,5 +363,18 @@ app.config(function ($httpProvider) {
 		}
 		return output;
 	}
+}).filter('intersect', function () {
+	return function (input, field, compareTo) {
+		output = [];
+		for (key in input) {
+			for (iKey in compareTo) {
+				if (compareTo[iKey] && input[key][field].indexOf(iKey) >= 0) {
+					output.push(input[key]);
+					break;
+				}
+			}
+		}
+		return output;
+	}
 });
 var controllers = angular.module('controllers', []);

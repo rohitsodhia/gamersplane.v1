@@ -333,10 +333,14 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		$http.post(API_HOST + '/links/list/', {}).success(function (data) {
 			$scope.links = [];
 			$(data.links).each(function (key, value) {
-				networks = value.network;
-				value.network = {};
+				networks = value.networks;
+				value.networks = {};
 				for (nKey in networks) 
-					value.network[networks[nKey]] = true
+					value.networks[networks[nKey]] = true
+				categories = value.categories;
+				value.categories = {};
+				for (nKey in categories) 
+					value.categories[categories[nKey]] = true
 				$scope.links.push(value);
 			})
 		});
@@ -365,13 +369,10 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				scope.new = true;
 				scope.editing = true;
 				scope.data.level = 'Link';
-				scope.data.network = { 'rpga': false };
+				scope.data.networks = { 'rpga': false };
+				scope.data.categories = { 'blog': false, 'podcast': false };
 			} else {
 				scope.new = false;
-//				for (key in scope.levels) {
-//					if (scope.data.level == scope.levels[key].id) 
-//						scope.defaultLevel = scope.levels[key].value;
-//				};
 			}
 			scope.cb_value = '';
 

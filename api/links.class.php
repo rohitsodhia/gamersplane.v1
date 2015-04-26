@@ -121,10 +121,18 @@
 				if ($ext) 
 					$data['image'] = $ext;
 			}
-			$data['network'] = array();
-			$_POST['network'] = json_decode(html_entity_decode($_POST['network']));
-			if (isset($_POST['network']->rpga) && $_POST['network']->rpga) 
-				$data['network'][] = 'rpga';
+			$data['networks'] = array();
+			$_POST['networks'] = json_decode(html_entity_decode($_POST['networks']));
+			foreach ($_POST['networks'] as $key => $value) 
+				if ($value) 
+					$data['networks'][] = $key;
+			$data['categories'] = array();
+			$_POST['categories'] = json_decode(html_entity_decode($_POST['categories']));
+			var_dump($_POST);
+			foreach ($_POST['categories'] as $key => $value) 
+				if ($value) 
+					$data['categories'][] = $key;
+
 			if (!isset($_POST['_id'])) {
 				$data['random'] = $mongo->execute('Math.random()');
 				$data['random'] = $data['random']['retval'];

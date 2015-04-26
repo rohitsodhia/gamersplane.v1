@@ -15,11 +15,13 @@ controllers.controller('links', function ($scope, $http, $sce, $filter) {
 		$scope.pagination.current = 1;
 	$scope.showPagination = true;
 	$scope.links = [];
-	$scope.filter = { search: '' };
+	$scope.filter = { 'blog': true, 'podcast': true };
 	$scope.numSystems = 0;
 
 	$scope.maxHeight = {
 		'partners': 0,
-		'rpgan': 0
+		'rpgan': 0,
+		'affiliates': 0,
+		'links': 0
 	}
 });

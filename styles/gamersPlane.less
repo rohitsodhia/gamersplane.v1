@@ -2558,9 +2558,12 @@ div.forumIcon.newPosts.locked {
 /* --------------------------------------------*/
 
 #page_links {
-	ul {
+	ul, .controls {
 		width: 900px;
 		margin: 0 auto;
+	}
+
+	ul {
 		list-style: none;
 	}
 
@@ -2605,7 +2608,7 @@ div.forumIcon.newPosts.locked {
 		}
 	}
 
-	.network {
+	.network, #affiliates {
 		li {
 			width: 180px;
 		}
@@ -2624,6 +2627,35 @@ div.forumIcon.newPosts.locked {
 		p {
 			font-size: 1.2em;
 			line-height: 1.2em;
+		}
+	}
+
+	#links {
+		li {
+			width: 150px;
+		}
+
+		.image {
+			height: 130px;
+			width: 130px;
+			line-height: 130px;
+		}
+
+		img {
+			max-height: 130px;
+			max-width: 130px;
+		}
+
+		p {
+			font-size: 1em;
+			line-height: 1.2em;
+		}
+	}
+
+	.controls {
+		label {
+			display: inline-block;
+			margin-right: 15px;
 		}
 	}
 }
