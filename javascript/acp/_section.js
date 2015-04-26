@@ -381,7 +381,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				scope.editing = !scope.editing;
 			}
 			scope.saveLink = function () {
-				console.log(scope.data);
 				data = JSON.parse(JSON.stringify(scope.data));
 				delete data.image;
 				$upload.upload({
