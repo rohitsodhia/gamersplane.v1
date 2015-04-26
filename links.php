@@ -18,7 +18,7 @@
 
 		<h2 class="headerbar hbDark">Affiliates</h2>
 		<ul id="affiliates" class="clearfix">
-			<li ng-repeat="link in links | filter: { level: 'Affiliate' } | orderBy: 'sortName'" equalize-heights="maxHeight.affiliates" style="height: {{maxHeight.affiliates}}px">
+			<li ng-repeat="link in links | filter: { level: 'Affiliate', networks: '!rpga' } | orderBy: 'sortName'" equalize-heights="maxHeight.affiliates" style="height: {{maxHeight.affiliates}}px">
 				<div class="image"><a href="{{link.url}}" target="_blank"><img src="/images/links/{{link._id}}.{{link.image}}"></a></div>
 				<p><a href="{{link.url}}" target="_blank">{{link.title}}</a></p>
 			</li>
