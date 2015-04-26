@@ -389,7 +389,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 					'file': scope.data.newImage,
 					'fields': data
 				}).success(function () {
-					document.location.reload();
+//					document.location.reload();
 				});
 			}
 			scope.deleteImage = function () {

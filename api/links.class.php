@@ -39,8 +39,9 @@
 		}
 
 		private function uploadLogo($_id, $logoFile) {
-			if ($logoFile['error'] == 0 && $logoFile['size'] > 15 && $logoFile['size'] < 1048576) {
+			if ($logoFile['error'] == 0 && $logoFile['size'] > 15 && $logoFile['size'] < 2097152) {
 				$logoExt = trim(end(explode('.', strtolower($logoFile['name']))));
+				echo $logoExt;
 				if ($logoExt == 'jpeg') 
 					$logoExt = 'jpg';
 				if (in_array($logoExt, array('jpg', 'gif', 'png'))) {
