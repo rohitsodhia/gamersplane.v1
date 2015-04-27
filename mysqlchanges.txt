@@ -1,2 +1,1 @@
-UPDATE dispatch SET ngController = 'acp_links' WHERE pageID = 'acp_links';
-INSERT INTO dispatch SET url = 'links/', pageID = 'links', ngController = 'links', file = 'links.php', title = 'Links', loginReq = 0;
+INSERT INTO dispatch SET url = 'register/resendActivation', pageID = 'resendActivation', file = 'register/resendActivation.php', title = 'Resend Activation Email', loginReq = 0;
