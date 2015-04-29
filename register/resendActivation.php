@@ -1,5 +1,25 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?
+	$formErrors->getErrors('resendActivation');
+	require_once(FILEROOT.'/header.php');
+?>
 		<h1 class="headerbar">Resend Activation Email</h1>
-		<p>An email has been sent to you with instructions on how to activate your account.</p>
-		<p>Please make sure <strong>contact@gamersplane.com</strong> is whitelisted on your email account. If you do not recieve an email in your inbox, please check your spam folder. If you still haven't gotten a mail, you can try <a href="/register/resendActivation/">resending an activation email</a>.</p>
+		<div class="hbMargined">
+<?	if ($formErrors->checkError('alreadyActivated')) { ?>
+		<ul class="alertBox_error">
+			<li>Your account is already activated!</li>
+		</ul>
+<?	} elseif ($_GET['sent'] || $formErrors->checkError('noAccount')) { ?>
+		<ul class="alertBox_success">
+			<li>An email has been sent to you with instructions on how to activate your account.</li>
+		</ul>
+<?	} ?>
+			<p>Please make sure <strong>contact@gamersplane.com</strong> is whitelisted on your email account. If you do not recieve an email in your inbox, please check your spam folder.</p>
+			<form method="post" action="/register/process/resendActivation/">
+				<div class="tr">
+					<label for="email">Email:</label>
+					<input id="email" type="text" name="email">
+				</div>
+				<div id="submitDiv"><button type="submit" name="resend" value="resend" class="fancyButton">Submit</button></div>
+			</form>
+		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

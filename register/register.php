@@ -1,7 +1,7 @@
 <?
 	if ($loggedIn) { header('Location: /'); exit; }
+	require_once(FILEROOT.'/header.php');
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Registration</h1>
 
 		<form method="post" action="/register/process/register/">
