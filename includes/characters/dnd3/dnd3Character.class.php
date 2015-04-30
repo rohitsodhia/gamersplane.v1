@@ -289,24 +289,27 @@
 		}
 
 		public function save() {
-			global $mysql;
 			$data = $_POST;
 
 			if (!isset($data['create'])) {
 				$this->setName($data['name']);
 				$this->setRace($data['race']);
 				$this->setSize($data['size']);
-				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
+				foreach ($data['class'] as $key => $value) 
+					if (strlen($value) && (int) $data['level'][$key] > 0) 
+						$data['classes'][$value] = $data['level'][$key];
 				$this->setClasses($data['classes']);
 				$this->setAlignment($data['alignment']);
 
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['stats'] as $stat => $value) 
+					$this->setStat($stat, $value);
 				foreach ($data['saves'] as $save => $values) {
 					foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
 				}
 				$this->setHP('total', $data['hp']['total']);
 				$this->setDamageReduction($data['damageReduction']);
-				foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
+				foreach ($data['ac'] as $key => $value) 
+					$this->setAC($key, $value);
 				$this->setInitiative('stat', $data['initiative']['stat']);
 				$this->setInitiative('misc', $data['initiative']['misc']);
 				$this->setAttackBonus('base', $data['attackBonus']['base']);
@@ -316,20 +319,22 @@
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					$this->addSkill($skillInfo);
-				} }
+				if (sizeof($data['skills'])) 
+					foreach ($data['skills'] as $skillInfo) 
+						$this->addSkill($skillInfo);
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					$this->addFeat($featInfo);
-				} }
+				if (sizeof($data['feats'])) 
+					foreach ($data['feats'] as $featInfo) 
+						$this->addFeat($featInfo);
 
 				$this->clearVar('weapons');
-				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
+				foreach ($data['weapons'] as $weapon) 
+					$this->addWeapon($weapon);
 
 				$this->clearVar('armor');
-				foreach ($data['armor'] as $armor) $this->addArmor($armor);
+				foreach ($data['armor'] as $armor) 
+					$this->addArmor($armor);
 
 				$this->setItems($data['items']);
 				$this->setSpells($data['spells']);

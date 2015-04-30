@@ -112,8 +112,11 @@
 			$this->notes = sanitizeString($notes);
 		}
 
-		public function getNotes() {
-			return $this->notes;
+		public function getNotes($pr = false) {
+			if ($pr) 
+				return printReady($this->notes);
+			else 
+				return $this->notes;
 		}
 
 		public function getForumTop($postAuthor) {
