@@ -122,7 +122,7 @@
 				<div id="submitChar">
 					<h2 class="headerbar hbDark">Submit a Character</h2>
 <?
-			if ($playerApprovedChars < $gameInfo['charsPerPlayer']) {
+			if ($playerApprovedChars < $gameInfo['charsPerPlayer'] || $isGM) {
 				$readyChars = $mysql->query("SELECT characterID, label FROM characters WHERE userID = '{$currentUser->userID}' AND system = '{$gameInfo['system']}' AND ISNULL(gameID)");
 				if ($readyChars->rowCount()) {
 ?>
