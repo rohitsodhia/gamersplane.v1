@@ -7,7 +7,7 @@
 		$message .= 'Please do not respond to this email, as it will be ignored';
 		$mailSent = false;
 		do {
-			mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
+			$mailSent = mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
 		} while (!$mailSent);
 	}
 ?>
