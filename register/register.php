@@ -10,6 +10,7 @@
 				There was a problem with your registration. Please see the errors below and try again.
 			</div>
 <? } ?>
+			<div id="resendActivation" class="tr">If you've previously registered but never recieved your activation mail, try <a href="/register/resendActivation/">resending your activation email</a>.</div>
 			<div class="tr inputTR">
 				<label class="textLabel">Username</label>
 				<input id="username" type="text" name="username" maxlength="24" value="<?=$username?>" tabindex="<?=tabOrder()?>" class="textfield">
