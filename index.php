@@ -2,7 +2,8 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 
 	require_once(FILEROOT.'/header.php');
-	require_once(FILEROOT.'/topNotifications.php');
+	if ($loggedIn) 
+		require_once(FILEROOT.'/topNotifications.php');
 ?>
 		<div class="clearfix">
 			<div id="announcements">
