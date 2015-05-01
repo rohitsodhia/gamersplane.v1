@@ -12,6 +12,7 @@
 
 	$gameID = false;
 	$isGM = false;
+	$gms = array();
 	if ($threadManager->isGameForum()) {
 		$gameID = $threadManager->getForumProperty('gameID');
 		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();

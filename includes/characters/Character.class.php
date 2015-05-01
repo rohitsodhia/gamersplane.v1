@@ -119,7 +119,7 @@
 				return $this->notes;
 		}
 
-		public function getForumTop($postAuthor) {
+		public function getForumTop($postAuthor, $isGM) {
 			global $currentUser;
 			
 			if ($this->checkPermissions($currentUser->userID) == 'edit') {
@@ -128,7 +128,7 @@
 <?			} else { ?>
 					<p class="charName"><?=$this->name?></p>
 <?			} ?>
-					<p class="posterName"><a href="/user/<?=$postAuthor->userID?>/" class="username"><?=$postAuthor->username?></a></p>
+					<p class="posterName"><a href="/user/<?=$postAuthor->userID?>/" class="username"><?=$postAuthor->username?></a><?=$isGM?' <img src="/images/gm_icon.png">':''?></p>
 <?
 		}
 
