@@ -43,19 +43,15 @@
 					<a id="mapControls_left_body" href="" class="mapControls_left">&nbsp;</a>
 				</div>
 				<div id="mapSidebar_content" class="clearfix">
-					<div class="clearfix"><div id="mapSidebar_contentControls" class="wingDiv sectionControls" data-ratio=".8">
-						<div class="wingDivContent">
-							<select class="prettySelect">
-								<option value="info">Info</option>
-								<option value="box">Box</option>
-								<option value="history">History</option>
-<? if ($isGM) { ?>
-								<option value="mapOptions">Map Options</option>
-<? } ?>
-							</select>
-						</div>
-						<div class="wing dlWing"></div>
-						<div class="wing drWing"></div>
+					<div class="clearfix"><div id="mapSidebar_contentControls" class="trapezoid sectionControls" data-ratio=".8">
+						<select class="prettySelect">
+							<option value="info">Info</option>
+							<option value="box">Box</option>
+							<option value="history">History</option>
+<?	if ($isGM) { ?>
+							<option value="mapOptions">Map Options</option>
+<?	} ?>
+						</select>
 					</div></div>
 					<div id="sidebarIconHolder"></div>
 					<div id="mapSidebar_contentContainer" style="height: <?=$maxMapWindow['height'] - 92?>px;">
