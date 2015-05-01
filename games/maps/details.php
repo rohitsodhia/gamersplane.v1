@@ -8,7 +8,7 @@
 
 	if ($action == 'edit') {
 		$mapID = intval($pathOptions[2]);
-		$mapDetails = $mysql->query("SELECT name, columns, rows, visible FROM maps WHERE gameID = $gameID AND mapID = $mapID");
+		$mapDetails = $mysql->query("SELECT name, cols, rows, visible FROM maps WHERE gameID = $gameID AND mapID = $mapID");
 		$mapDetails = $mapDetails->fetch();
 	}
 ?>
@@ -26,7 +26,7 @@
 			</div>
 			<div id="mapSize" class="tr clearfix">
 				<label class="textLabel">Map Size:</label>
-				<input type="text" name="rows" value="<?=$mapDetails['rows']?>" class="alignCenter"> Rows x <input type="text" name="columns" value="<?=$mapDetails['columns']?>" class="alignCenter"> Columns
+				<input type="text" name="rows" value="<?=$mapDetails['rows']?>" class="alignCenter"> Rows x <input type="text" name="columns" value="<?=$mapDetails['cols']?>" class="alignCenter"> Columns
 			</div>
 			<div class="tr clearfix">
 				<label>Visible?</label>
