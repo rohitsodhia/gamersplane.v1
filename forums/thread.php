@@ -16,8 +16,9 @@
 		$gameID = $threadManager->getForumProperty('gameID');
 		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
 
-		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
-		if ($gmCheck->rowCount()) 
+		$gms = $mysql->query("SELECT userID FROM players WHERE gameID = 1 and isGM = 1");
+		$gms = $gmCheck->fetchAll(PDO::FETCH_COLUMN);
+		if (in_array($currentUser->userID, $gms)) 
 			$isGM = true;
 
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
@@ -167,7 +168,7 @@
 				$character->getForumTop($post->author);
 			} else {
 ?>
-					<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=$isGM?' <img src="/images/gm_icon.png">':''?></p>
+					<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=in_array($post->author->userID, $gms)?' <img src="/images/gm_icon.png">':''?></p>
 <?			} ?>
 				</div>
 				<div class="postContent">
