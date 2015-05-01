@@ -375,32 +375,44 @@
 		}
 	}
 
-	.postAsChar .posterDetails .avatar {
-		margin-top: 20px;
+	.postAsChar {
+		.posterDetails {
+			.avatar {
+				margin-top: 20px;
+			}
+
+			.userAvatar {
+				position: absolute;
+
+				img {
+					max-width: 40px;
+					max-height: 40px;
+				}
+			}
+		}
 	}
 
-	.postAsChar .posterDetails .avatar .userAvatar {
-		position: absolute;
+	.posterDetails {
+		.posterName, .charName {
+			font-size: 1.1em;
+			font-weight: bold;
+			text-align: center;
+		}
+
+		& > * {
+			vertical-align: middle;
+		}
 	}
 
-	.postAsChar .posterDetails .avatar .userAvatar img {
-		max-width: 40px;
-		max-height: 40px;
-	}
+	.postAsChar .posterDetails {
+		.posterName {
+			margin-top: .2em;
+			font-size: .85em;
+		}
 
-	.posterDetails .posterName, .posterDetails .charName {
-		font-size: 1.1em;
-		font-weight: bold;
-		text-align: center;
-	}
-
-	.postAsChar .posterDetails .posterName {
-		margin-top: .2em;
-		font-size: .85em;
-	}
-
-	.postAsChar .posterDetails .charName {
-		margin-bottom: .2em;
+		.charName {
+			margin-bottom: .2em;
+		}
 	}
 
 	.postContent {
