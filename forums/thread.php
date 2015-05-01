@@ -165,7 +165,7 @@
 <?
 			if ($postAsChar) {
 				$character->load();
-				$character->getForumTop($post->author);
+				$character->getForumTop($post->author, in_array($post->author->userID, $gms));
 			} else {
 ?>
 					<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=in_array($post->author->userID, $gms)?' <img src="/images/gm_icon.png">':''?></p>
