@@ -17,7 +17,8 @@
 		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
 
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
-		if ($gmCheck->rowCount()) $isGM = true;
+		if ($gmCheck->rowCount()) 
+			$isGM = true;
 
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = $systems->systemClassName($system).'Character';
@@ -53,22 +54,21 @@
 						<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
 						<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread" class="<?=$lock?>"></button>
 					</form>
-<? } ?>
+<?	} ?>
 <?	if ($threadManager->getPermissions('write')) { ?>
 					<a href="/forums/post/<?=$threadID?>/" class="fancyButton">Reply</a>
 <?	} ?>
 				</div>
 			</div>
-<?
-	if ($threadManager->getPoll()) {
-?>
+<?	if ($threadManager->getPoll()) { ?>
 			<form id="poll" method="post" action="/forums/process/vote/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($threadManager->getPollProperty('question'))?></p>
 <? 
 		$castVotes = $threadManager->getVotesCast();
 		$allowVote = sizeof($castVotes) && $threadManager->getPollProperty('allowRevoting') || sizeof($castVotes) == 0;
-		if ($allowVote) echo "				<p>You may select ".($threadManager->getPollProperty('optionsPerUser') > 1?'up to ':'')."<b>".$threadManager->getPollProperty('optionsPerUser')."</b> option".($threadManager->getPollProperty('optionsPerUser') > 1?'s':'').".</p>\n";
+		if ($allowVote) 
+			echo "				<p>You may select ".($threadManager->getPollProperty('optionsPerUser') > 1?'up to ':'')."<b>".$threadManager->getPollProperty('optionsPerUser')."</b> option".($threadManager->getPollProperty('optionsPerUser') > 1?'s':'').".</p>\n";
 
 		$totalVotes = $threadManager->getVoteTotal();
 		$highestVotes = $threadManager->getVoteMax();
@@ -78,8 +78,10 @@
 		foreach ($threadManager->getPollProperty('options') as $pollOptionID => $option) {
 			echo "					<li class=\"clearfix\">\n";
 			if ($allowVote) {
-				if ($threadManager->getPollProperty('optionsPerUser') == 1) echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
-				else echo "						<div class=\"poll_input\"><input type=\"checkbox\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
+				if ($threadManager->getPollProperty('optionsPerUser') == 1) 
+					echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
+				else 
+					echo "						<div class=\"poll_input\"><input type=\"checkbox\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
 			}
 			echo "						<div class=\"poll_option\">".printReady($option->option)."</div>\n";
 			if (sizeof($castVotes)) {
@@ -98,9 +100,12 @@
 	
 	$postCount = 1;
 	$forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
-	if ($loggedIn) $forumOptions['postSide'] = $currentUser->postSide;
-	if ($forumOptions['postSide'] == 'r') $postSide = 'Right';
-	else $postSide = 'Left';
+	if ($loggedIn) 
+		$forumOptions['postSide'] = $currentUser->postSide;
+	if ($forumOptions['postSide'] == 'r') 
+		$postSide = 'Right';
+	else 
+		$postSide = 'Left';
 	
 	$characters = array();
 	$newPostMarked = false;
@@ -114,8 +119,10 @@
 				if (isset($characters[$post->getPostAs()]) || $characters[$post->getPostAs()] = new $charClass($post->getPostAs())) {
 					$postAsChar = true;
 					$character = $characters[$post->getPostAs()];
-				} else $postAsChar = false;
-			} else $postAsChar = false;
+				} else 
+					$postAsChar = false;
+			} else 
+				$postAsChar = false;
 ?>
 			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
 				<a name="p<?=$post->getPostID()?>"></a>
@@ -124,9 +131,7 @@
 				$newPostMarked = true;
 ?>
 				<a name="newPost"></a>
-<?
-			}
-?>
+<?			} ?>
 				<div class="posterDetails">
 					<div class="avatar"><div>
 <?
@@ -162,7 +167,7 @@
 				$character->getForumTop($post->author);
 			} else {
 ?>
-					<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a></p>
+					<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=$isGM?' <img src="/images/gm_icon.png">':''?></p>
 <?			} ?>
 				</div>
 				<div class="postContent">
@@ -188,9 +193,7 @@
 						<div class="rollInfo">
 <?					$roll->showHTML($showAll); ?>
 						</div>
-<?
-				}
-?>
+<?				} ?>
 					</div>
 <?
 	 		}
