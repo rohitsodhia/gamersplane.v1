@@ -16,7 +16,7 @@
 		$gameID = $threadManager->getForumProperty('gameID');
 		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
 
-		$gms = $mysql->query("SELECT userID FROM players WHERE gameID = 1 and isGM = 1");
+		$gms = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} and isGM = 1");
 		$gms = $gms->fetchAll(PDO::FETCH_COLUMN);
 		if (in_array($currentUser->userID, $gms)) 
 			$isGM = true;
