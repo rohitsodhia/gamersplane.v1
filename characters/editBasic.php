@@ -15,7 +15,7 @@
 		
 		<form method="post" action="/characters/process/editBasic/">
 			<p><label for="label" class="leftLabel">Label:</label> <input id="label" type="text" name="label" maxlength="50" value="<?=$basicInfo['label']?>" class="medText"></p>
-			<p><label class="leftLabel">Type:</label> <select id="type" name="charType">
+			<p><label class="leftLabel">Type:</label> <select id="charType" name="charType">
 <?
 	foreach ($charTypes as $charType) 
 		echo "\t\t\t\t<option value=\"{$charType}\"".($basicInfo['charType'] == $charType?' selected="selected"':'').">{$charType}</option>\n";

@@ -284,24 +284,33 @@
 			$this->items = sanitizeString($items);
 		}
 
-		public function getItems() {
-			return $this->items;
+		public function getItems($pr = false) {
+			$items = $this->items;
+			if ($pr) 
+				$items = printReady($items);
+			return $items;
 		}
 
 		public function setMotivations($motivations) {
 			$this->motivations = sanitizeString($motivations);
 		}
 
-		public function getMotivations() {
-			return $this->motivations;
+		public function getMotivations($pr = false) {
+			$motivations = $this->motivations;
+			if ($pr) 
+				$motivations = printReady($motivations);
+			return $motivations;
 		}
 
 		public function setObligations($obligations) {
 			$this->obligations = sanitizeString($obligations);
 		}
 
-		public function getObligations() {
-			return $this->obligations;
+		public function getObligations($pr = false) {
+			$obligations = $this->obligations;
+			if ($pr) 
+				$obligations = printReady($obligations);
+			return $obligations;
 		}
 
 		public function save() {
