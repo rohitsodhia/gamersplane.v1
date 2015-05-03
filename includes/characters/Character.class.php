@@ -113,10 +113,10 @@
 		}
 
 		public function getNotes($pr = false) {
+			$notes = $this->notes;
 			if ($pr) 
-				return printReady($this->notes);
-			else 
-				return $this->notes;
+				$notes = printReady($notes);
+			return $notes;
 		}
 
 		public function getForumTop($postAuthor, $isGM) {
