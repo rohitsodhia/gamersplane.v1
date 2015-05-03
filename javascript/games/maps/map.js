@@ -30,7 +30,11 @@ $(function() {
 		$addCRForm = $('#addCR form'),
 		$mapTiles = $('.mapTile'),
 		$tileOptions = $('#tileOptions > div'),
-		$saveMap = $('#ww_saveMap');
+		$saveMap = $('#ww_saveMap'),
+		isGM = false;
+
+	if ($sb_contentContainer.children('#mapSidebar_content_mapOptions').length) 
+		isGM = true;
 
 	$('#infoEdit').colorbox();
 
@@ -38,14 +42,15 @@ $(function() {
 		section = $(this).val();
 		$('#mapSidebar_contentContainer > div').hide();
 		$('#mapSidebar_content_' + section).show().find('select').prettySelect('updateOptions');
-		if (section == 'mapOptions') toggleMapEdit(true);
-		else toggleMapEdit(false);
+		if (section == 'mapOptions') 
+			toggleMapEdit(true);
+		else 
+			toggleMapEdit(false);
 	});
 
-	$('#mapSidebar_contentContainer > div').not('#mapSidebar_content_mapOptions, #sidebarIconHolder').hide();
+	$('#mapSidebar_contentContainer > div').not('#mapSidebar_content_box, #sidebarIconHolder').hide();
 	$iconForm.find('.editDiv').hide();
 	$iconForm.hide();
-	$addCRForm.hide();
 	
 	$('#addIcon').click(function (e) {
 		if ($iconID.val() != 0) {
@@ -194,16 +199,16 @@ $(function() {
 		if ($(link).hasClass('mapControls_up')) {
 			var topPos = $map.css('top');
 			topPos = parseInt(topPos.substring(0, topPos.length - 2));
-			if (numRows - Math.abs(topPos / 40) != maxRows) {
-				$map.css('top', (topPos - 40) + 'px');
-				$rowHeaderDivs.css('top', (topPos - 40) + 'px');
+			if (topPos != 0) {
+				$map.css('top', (topPos + 40) + 'px');
+				$rowHeaderDivs.css('top', (topPos + 40) + 'px');
 			}
 		} else if ($(link).hasClass('mapControls_down')) {
 			var topPos = $map.css('top');
 			topPos = parseInt(topPos.substring(0, topPos.length - 2));
-			if (topPos != 0) {
-				$map.css('top', (topPos + 40) + 'px');
-				$rowHeaderDivs.css('top', (topPos + 40) + 'px');
+			if (numRows - Math.abs(topPos / 40) != maxRows) {
+				$map.css('top', (topPos - 40) + 'px');
+				$rowHeaderDivs.css('top', (topPos - 40) + 'px');
 			}
 		} else if ($(link).hasClass('mapControls_right')) {
 			var leftPos = $map.css('left');

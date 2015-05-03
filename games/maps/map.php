@@ -1,7 +1,7 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
-	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = {$gameID} AND m.gameID = p.gameID AND p.userID = {$currentUser->userID} AND m.mapID = {$mapID}");
+	$playerCheck = $mysql->query("SELECT p.isGM FROM maps m, players p WHERE m.gameID = {$gameID} AND m.gameID = p.gameID AND p.userID = {$currentUser->userID} AND m.mapID = {$mapID} AND m.deleted = 0");
 	if (!$playerCheck->rowCount()) { header('Location: /403'); exit; }
 	else 
 		$isGM = $playerCheck->fetchColumn();
@@ -46,7 +46,7 @@
 					<div class="clearfix"><div id="mapSidebar_contentControls" class="trapezoid sectionControls" data-ratio=".8">
 						<select class="prettySelect">
 							<option value="info">Info</option>
-							<option value="box">Box</option>
+							<option value="box" selected="selected">Box</option>
 							<option value="history">History</option>
 <?	if ($isGM) { ?>
 							<option value="mapOptions">Map Options</option>
@@ -110,10 +110,9 @@
 						<div id="mapSidebar_content_mapOptions">
 							<div id="staticMapOptions">
 								<div id="addCR">
-									<a href="">Add Row/Column</a>
+									Add
 									<form method="post" action="/games/process/maps/addCR">
 										<input id="mapID" type="hidden" name="mapID" value="<?=$mapID?>">
-										<div class="textLabel">Add</div>
 										<div class="psWrapper"><select id="addType" name="addType"><option value="c"<?=$_SESSION['lastSet'] == 'c'?' selected="selected"':''?>>column</option><option value="r"<?=$_SESSION['lastSet'] == 'r'?' selected="selected"':''?>>row</option></select></div>
 										<div class="psWrapper"><select id="addLoc" name="addLoc"><option value="a">after</option><option value="b">before</option></select></div>
 										<div class="psWrapper"><select id="addPos" name="addPos"></select></div>
@@ -180,7 +179,7 @@
 				</div></div>
 				<div id="mapIconHolder"></div>
 				<div id="mapWindow" style="width: <?=$maxMapWindow['width']?>px; height: <?=$maxMapWindow['height']?>px">
-					<div id="map" style="width: <?=$mapSize['width']?>px; height: <?=$mapSize['height']?>px">
+					<div id="map" style="width: <?=$mapSize['width']?>px; height: <?=$mapSize['height']?>px; top: 0px; left: 0px;">
 <?
 	$count = 0;
 	$bg = '';

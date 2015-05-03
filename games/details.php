@@ -251,7 +251,7 @@
 				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
 				<div class="hbdMargined">
 <?
-		$mapList = $mysql->query('SELECT mapID, name, rows, cols, visible FROM maps WHERE gameID = '.$gameID);
+		$mapList = $mysql->query("SELECT mapID, name, rows, cols, visible FROM maps WHERE gameID = {$gameID} AND deleted = 0");
 		
 		if ($mapList->rowCount()) {
 ?>

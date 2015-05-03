@@ -1,2 +1,1 @@
-INSERT INTO dispatch SET url = 'register/resendActivation', pageID = 'resendActivation', file = 'register/resendActivation.php', title = 'Resend Activation Email', loginReq = 0;
-INSERT INTO dispatch SET url = 'register/process/resendActivation', file = 'register/process/resendActivation.php', loginReq = 0;
+alter table maps add deleted bool not null;
