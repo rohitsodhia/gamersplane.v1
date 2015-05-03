@@ -1,52 +1,61 @@
-$.fn.autocomplete = function (pathOption, sendData) {
-	function search(pathOption, sendData, $resultsDiv) {
-		$.post(pathOption, sendData, function (data) {
-			if (data.length > 0) {
-				$inputBox.parent().addClass('open');
-				$resultsDiv.html(data).slideDown();
-			} else {
+(function ($) {
+	$.fn.autocomplete = function (pathOption, sendData) {
+		function search(pathOption, sendData, $autocompleteWrapper) {
+			$.post(pathOption, sendData, function (data) {
+				console.log($autocompleteWrapper);
+				if (data.length > 0) {
+					$autocompleteWrapper.addClass('open');
+					$autocompleteWrapper.find('.autocompleteResults').html(data).slideDown();
+				} else {
+					$autocompleteWrapper.find('.autocompleteResults').slideUp(function () { $autocompleteWrapper.removeClass('open'); });
+				}
+			});
+		}
+
+		$(this).each(init);
+
+		function init() {
+			var $inputBox = $(this), onWrapper = false, searchTimeout;
+			if ($inputBox.parent().hasClass('autocompleteWrapper')) return $inputBox.parent();
+			$inputBox.attr('autocomplete', 'off');
+			$inputBox.wrap('<div class="autocompleteWrapper"></div>');
+			if ($inputBox.attr('id') && $inputBox.attr('id').length) $inputBox.parent().attr('id', $inputBox.attr('id') + 'Wrapper');
+			var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
+			$inputBox.keyup(function () {
+				$resultsDiv = $(this).parent().find('.autocompleteResults');
+				if ($resultsDiv.parent().css('top') == '-1px') $resultsDiv.parent().css('top', ($inputBox.outerHeight(false) - 1) + 'px');
+				if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
+					$.extend(sendData, { search: $(this).val() });
+					clearTimeout(searchTimeout);
+					searchTimeout = setTimeout(function () { search(pathOption, sendData, $inputBox.parent()); }, 500);
+				} else {
+					$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
+				}
+			}).blur(function () {
+				if (onWrapper == false) {
+					$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
+				}
+			}).focus(function () {
+				if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) {
+					$inputBox.addClass('open');
+					$resultsDiv.slideDown();
+				}
+			}).keypress(function (e) {
+				if (e.which == 13) e.preventDefault();
+			});
+			
+			$resultsDiv.on('click', 'a', function (e) {
+				console.log($inputBox);
+				$inputBox.val($(this).text());
 				$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
-			}
-		});
-	}
 
-	var $inputBox = $(this), onWrapper = false, searchTimeout;
-	if ($inputBox.parent().hasClass('autocompleteWrapper')) return $inputBox.parent();
-	$inputBox.attr('autocomplete', 'off');
-	$inputBox.wrap('<div class="autocompleteWrapper"></div>');
-	if ($inputBox.attr('id') && $inputBox.attr('id').length) $inputBox.parent().attr('id', $inputBox.attr('id') + 'Wrapper');
-	var $resultsDiv = $('<div class="autocompleteResultsWrapper"><div class="autocompleteResults"></div></div>').css({ top: ($inputBox.outerHeight(false) - 1) + 'px', left: 0, width: $inputBox.outerWidth(false) + 'px' }).appendTo($inputBox.parent()).find('.autocompleteResults');
-	$inputBox.keyup(function () {
-		if ($resultsDiv.parent().css('top') == '-1px') $resultsDiv.parent().css('top', ($inputBox.outerHeight(false) - 1) + 'px');
-		if ($(this).val().length >= 3 && $(this).val() != $(this).data('placeholder')) {
-			$.extend(sendData, { search: $(this).val() });
-			clearTimeout(searchTimeout);
-			searchTimeout = setTimeout(function () { search(pathOption, sendData, $resultsDiv); }, 500);
-		} else {
-			$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
-		}
-	}).blur(function () {
-		if (onWrapper == false) {
-			$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
-		}
-	}).focus(function () {
-		if ($resultsDiv.find('a').size() > 0 && $(this).val().length >= 3) {
-			$inputBox.addClass('open');
-			$resultsDiv.slideDown();
-		}
-	}).keypress(function (e) {
-		if (e.which == 13) e.preventDefault();
-	});
-	
-	$resultsDiv.on('click', 'a', function (e) {
-		$inputBox.val($(this).text());
-		$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
+				e.preventDefault();
+			}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
 
-		e.preventDefault();
-	}).mouseenter(function () { onWrapper = true; }).mouseleave(function () { onWrapper = false; });
-
-	return $inputBox.parent();
-};
+			return $inputBox.parent();
+		}
+	};
+}(jQuery));
 
 (function ($) {
 	$.fn.prettySelect = function (options) {

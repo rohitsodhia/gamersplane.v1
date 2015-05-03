@@ -22,6 +22,8 @@ $(function() {
 		});
 
 		nextTalentCount = $('#talentList .talent').length + 1;
-		$('.talent_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'talent', characterID: characterID, system: system });
+		$('.talent_name').placeholder().each(function () {
+			$(this).autocomplete('/characters/ajax/autocomplete/', { type: 'talent', characterID: characterID, system: system });
+		});
 	}
 });
