@@ -45,7 +45,6 @@
 			});
 			
 			$resultsDiv.on('click', 'a', function (e) {
-				console.log($inputBox);
 				$inputBox.val($(this).text());
 				$resultsDiv.slideUp(function () { $inputBox.parent().removeClass('open'); });
 
@@ -83,14 +82,16 @@
 					$prettySelectOptions = $prettySelect.find('.prettySelectOptions'),
 					numOptions = $prettySelect.find('option').length;
 
-					if (numOptions > 8) {
+					if (numOptions > 8) 
 						$prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * 5 + 1).addClass('showScroll');
-						console.log('more than 8');
-					} else $prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions + 1);
+					else 
+						$prettySelectOptions.height($prettySelect.find('.prettySelectLongest').outerHeight() * numOptions + 1);
 					$prettySelectOptions.width($(this).parent().outerWidth() - 2).show();
 					$prettySelect.addClass('open');
 				});
 				$prettySelectOptions.on('click', 'li', function () {
+					if ($(this).hasClass('disabled')) 
+						return;
 					$parent = $(this).closest('div.prettySelect');
 					$parent.removeClass('open');
 					$parent.find('.prettySelectOptions').hide();
@@ -120,7 +121,10 @@
 			$prettySelect.find('option').each(function () {
 				if ($(this).val() == $select.val()) current = $(this).text();
 				if ($(this).text().length > longest.length) longest = $(this).text();
-				$('<li>').data('value', $(this).val()).text($(this).text()).appendTo($prettySelect.find('.prettySelectOptions'));
+				$li = $('<li>').data('value', $(this).val()).text($(this).text());
+				if ($(this).attr('disabled')) 
+					$li.addClass('disabled');
+				$li.appendTo($prettySelect.find('.prettySelectOptions'));
 			});
 			if (current == '') current = $select.find('option:first').text();
 			$prettySelectLongest.text(longest);

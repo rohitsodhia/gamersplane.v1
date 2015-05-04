@@ -74,7 +74,8 @@
 		}
 
 		public function getAccessableForums($validForums = null) {
-			if ($validForums == null) $validForums = array();
+			if ($validForums == null) 
+				$validForums = array();
 
 			$forums = array();
 			foreach ($this->forums as $forum) {
@@ -90,8 +91,10 @@
 				return array();
 			$forum = $this->forums[$forumID];
 			foreach ($forum->getChildren() as $childID) {
-				if (!in_array($childID, $forums) && (!$read || ($read && $this->forums[$childID]->getPermissions('read')))) $forums[] = $childID;
-				$forums = array_merge($forums, $this->getAllChildren($childID));
+				if (!in_array($childID, $forums) && (!$read || ($read && $this->forums[$childID]->getPermissions('read')))) 
+					$forums[] = $childID;
+				$children = $this->getAllChildren($childID);
+				$forums = array_merge($forums, $children);
 			}
 			return $forums;
 		}

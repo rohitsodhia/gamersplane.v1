@@ -465,10 +465,10 @@ div.prettySelect > div {
 	overflow: auto;
 	margin: 0;
 	list-style: none;
-}
 
-.prettySelectOptions.showScroll {
-	overflow-y: scroll;
+	&.showScroll {
+		overflow-y: scroll;
+	}
 }
 
 .prettySelectCurrent, .prettySelectLongest, .prettySelectDropdown, .prettySelectOptions li {
@@ -476,8 +476,18 @@ div.prettySelect > div {
 	cursor: pointer;
 }
 
-.prettySelectOptions li:hover {
-	background: #99C;
+.prettySelectOptions {
+	li:hover {
+		background: #99C;
+	}
+
+	.disabled {
+		color: #999;
+
+		&:hover {
+			background: none;
+		}
+	}
 }
 
 .prettyCheckbox, .prettyRadio {
