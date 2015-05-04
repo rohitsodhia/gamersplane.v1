@@ -8,7 +8,7 @@
 				<option value="<?=$forumID?>"<?=$forum->getPermissions('admin') === true?'':' disabled="disabled"'?>><?=str_repeat('-', $indent)?><?=$forum->title?></option>
 <?
 		foreach ($forum->getChildren() as $cForumID) 
-			showOptions($cForumID, $indent++);
+			showOptions($cForumID, $indent + 1);
 	}
 
 	addPackage('forum');
@@ -34,10 +34,10 @@
 			<form method="post" action="/forums/process/moveThread/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<select name="forumID">
-<?	showOptions(0); ?>
+<?	showOptions($startForum); ?>
 				</select>
 				<div class="tr">
-					<button type="submit" name="add" class="fancyButton">Button</button>
+					<button type="submit" name="add" class="fancyButton">Move</button>
 					<button type="submit" name="cancel" class="fancyButton">Cancel</button>
 				</div>
 			</form>
