@@ -10,10 +10,10 @@ $(function() {
 		}).on('click', '#addTalent', function (e) {
 			e.preventDefault();
 
+			nextTalentCount += 1;
 			$.post('/characters/ajax/sweote/addTalent/', { key: nextTalentCount }, function (data) {
 				$newTalent = $(data);
 				$newTalent.appendTo('#talentList').find('.talent_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'talent', characterID: characterID, system: system }).find('input').focus();
-				nextTalentCount += 1;
 			});
 		}).on('click', '.talent_notesLink', function(e) {
 			e.preventDefault();
@@ -21,7 +21,7 @@ $(function() {
 			$(this).siblings('textarea').slideToggle();
 		});
 
-		nextTalentCount = $('#talentList .talent').length + 1;
+		nextTalentCount = $('#talentList .talent').length;
 		$('.talent_name').placeholder().each(function () {
 			$(this).autocomplete('/characters/ajax/autocomplete/', { type: 'talent', characterID: characterID, system: system });
 		});
