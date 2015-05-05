@@ -114,7 +114,7 @@
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText">
 								<span class="skill_stat"><select name="skills[<?=$key?>][stat]">
 <?	foreach (sweote_consts::getStatNames() as $short => $stat) { ?>
-									<option value="<?=$short?>"><?=$stat?></option>
+									<option value="<?=$short?>"<?=$skillInfo['stat'] == $short?' selected="selected"':''?>><?=$stat?></option>
 <?	} ?>
 								</select></span>
 								<input type="text" name="skills[<?=$key?>][rank]" value="<?=$skillInfo['rank']?>" class="skill_rank shortNum lrBuffer">
