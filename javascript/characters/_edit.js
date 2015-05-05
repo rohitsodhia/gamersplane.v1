@@ -67,14 +67,14 @@ $(function () {
 		}).on('click', '#addSkill', function (e) {
 			e.preventDefault();
 
+			nextSkillCount += 1;
 			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
 				$newSkill = $(data);
 				$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
-				nextSkillCount += 1;
 			});
 		});
 
-		nextSkillCount = $('#skillList .skill').length + 1;
+		nextSkillCount = $('#skillList .skill').length;
 		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 
 		addCSSRule('.skill_stat', 'width: ' + ($('.skill .skill_stat').eq(0).outerWidth(true)) + 'px; text-align: center;');

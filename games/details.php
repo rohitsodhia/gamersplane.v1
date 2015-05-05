@@ -155,6 +155,7 @@
 				<div id="applyToGame">
 					<h2 class="headerbar hbDark">Join Game</h2>
 					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
+					<p class="hbdMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="<?='/games/'.$gameID.'/leaveGame/'.$currentUser->userID?>" class="leaveGame">withdraw</a> from the game.</p>
 				</div>
 			</div>
 <?
