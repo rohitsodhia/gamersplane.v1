@@ -7,10 +7,10 @@ $(function() {
 	});
 	$('#addAction').click(function (e) {
 		var actionName = $('#actionForm input').val();
+		nextActionCount += 1;
 		$.post('/characters/ajax/marvel/addAction/', { key: nextActionCount }, function (data) {
 			$action = $(data);
 			$action.hide().appendTo('#actions .hbdMargined').slideDown();
-			nextActionCount += 1;
 		});
 		
 		e.preventDefault();
@@ -23,10 +23,10 @@ $(function() {
 	});
 	$('#addModifier').click(function (e) {
 		var modifierName = $('#modifierForm input').val();
+		nextModifierCount += 1;
 		$.post('/characters/ajax/marvel/addModifier/', { key: nextModifierCount }, function (data) {
 			$modifier = $(data);
 			$modifier.hide().appendTo('#modifiers .hbdMargined').slideDown();
-			nextModifierCount += 1;
 		});
 		
 		e.preventDefault();
@@ -39,9 +39,9 @@ $(function() {
 		e.preventDefault();
 	});
 	$('#addChallenge').click(function (e) {
+		nextChallengeCount += 1;
 		$.post('/characters/ajax/marvel/addChallenge/', { key: nextChallengeCount }, function (data) {
 			$(data).hide().appendTo('#challenges .hbdMargined').slideDown();
-			nextChallengeCount += 1;
 		});
 		
 		e.preventDefault();

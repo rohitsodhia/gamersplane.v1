@@ -7,10 +7,10 @@ $(function() {
 	}).on('click', '#addSpell', function (e) {
 		e.preventDefault();
 
+		nextSpellCount += 1;
 		$.post('/characters/ajax/addItemized/', { system: system, type: 'spell', key: nextSpellCount }, function (data) {
 			$newSpell = $(data);
 			$newSpell.appendTo('#spellList').prettify().find('.spell_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'spell', characterID: characterID, system: system }).find('input').focus();
-			nextSpellCount += 1;
 		});
 	}).on('click', '.spell_notesLink', function(e) {
 		e.preventDefault();
@@ -18,6 +18,6 @@ $(function() {
 		$(this).siblings('textarea').slideToggle();
 	});
 
-	nextSpellCount = $('#spellList .spell').length + 1;
+	nextSpellCount = $('#spellList .spell').length;
 	$('.spell_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'spell', characterID: characterID, system: system });
 });

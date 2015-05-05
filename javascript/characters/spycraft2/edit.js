@@ -9,10 +9,10 @@ $(function() {
 	}).on('click', '#addFocus', function (e) {
 		e.preventDefault();
 
+		nextFocusCount += 1;
 		$.post('/characters/ajax/spycraft2/addFocus/', { key: nextFocusCount }, function (data) {
 			$newFocus = $(data);
 			$newFocus.appendTo('#focusList').prettify().find('.focus_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'focus', characterID: characterID, system: system }).find('input').focus();
-			nextFocusCount += 1;
 		});
 	}).on('click', '.focus_notesLink', function(e) {
 		e.preventDefault();
@@ -20,6 +20,6 @@ $(function() {
 		$(this).siblings('textarea').slideToggle();
 	});
 
-	nextFocusCount = $('#focusList .focus').length + 1;
+	nextFocusCount = $('#focusList .focus').length;
 	$('.focus_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'focus', characterID: characterID, system: system });
 });

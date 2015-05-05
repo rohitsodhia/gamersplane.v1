@@ -37,8 +37,10 @@ $(function() {
 		$surgeVal.text(Math.floor(hp / 4));
 	});
 
+	var attackCount = $('.attackBonusSet').size();
 	$('#addAttack').click(function (e) {
-		$.post('/characters/ajax/dnd4/addAttack', { count: $('.attackBonusSet').size() + 1 }, function (data) {
+		attackCount++;
+		$.post('/characters/ajax/dnd4/addAttack', { count: attackCount }, function (data) {
 			$(data).hide().appendTo('#attacks .hbdMargined').slideDown();
 		});
 		
