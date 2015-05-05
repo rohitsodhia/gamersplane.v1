@@ -13,6 +13,11 @@
 	$fixedMenu = FALSE;
 
 	$dispatchInfo404 = array('url' => '/404', 'pageID' => '404', 'file' => 'errors/404.php', 'title' => 'Not Found');
+
+	$stylesToAdd = array();
+	$styleVersions = json_decode(file_get_contents(FILEROOT.'/styles/versions.json'), true);
+	$JSToAdd = array();
+	$jsVersions = json_decode(file_get_contents(FILEROOT.'/javascript/versions.json'), true);
 	
 	$permissionTypes = array('read' => 'Read', 'write' => 'Write', 'editPost' => 'Edit Post', 'deletePost' => 'Delete Post', 'createThread' => 'Create Thread', 'deleteThread' => 'Delete Thread', 'addRolls' => 'Add Rolls', 'addDraws' => 'Add Draws', 'moderate' => 'Moderate');
 

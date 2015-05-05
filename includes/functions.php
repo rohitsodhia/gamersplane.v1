@@ -9,6 +9,26 @@
 		include_once(FILEROOT."/includes/packages/{$package}.package.php");
 	}
 
+	function addStyle($script, $priority = 10) {
+		global $stylesToAdd, $styleVersions;
+		if (!is_array($stylesToAdd[$priority])) 
+			$stylesToAdd[$priority] = array();
+		$version = isset($styleVersions[$script])?$styleVersions[$script]:'1.0.0';
+		$stylesToAdd[$priority][] = $script.'?v='.$version;
+	}
+
+	function getStyleVersion($script) {
+		global $styleVersions;
+		$version = isset($styleVersions[$script])?$styleVersions[$script]:'1.0.0';
+		return $version;
+	}
+
+	function getJSVersion($script) {
+		global $jsVersions;
+		$version = isset($jsVersions[$script])?$jsVersions[$script]:'1.0.0';
+		return $version;
+	}
+
 	function randomAlphaNum($length) {
 		$validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$randomStr = "";
