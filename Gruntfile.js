@@ -39,18 +39,6 @@ module.exports = function(grunt) {
 					dest: 'styles/',
 					ext: '.css'
 				}]
-			},
-			cssmerge: {
-				files: [{
-					expand: true,
-					cwd: 'styles/',
-					src: ['reset.css', 'gamersplane.css'],
-					dest: 'styles/',
-					ext: '.css'
-				}]
-				files: {
-					'gamersplane.merge.css': ['reset.css', 'gamersplane.css']
-				}
 			}
 		},
 		clean: {
