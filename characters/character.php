@@ -18,6 +18,8 @@
 			}
 		}
 	} else { header('Location: /404/'); exit; }
+
+	$dispatchInfo['title'] = $character->getLabel().' - '.$dispatchInfo['title']
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>

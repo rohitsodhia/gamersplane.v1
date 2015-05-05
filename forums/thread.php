@@ -26,6 +26,8 @@
 		$charClass = $systems->systemClassName($system).'Character';
 	} else 
 		$fixedGameMenu = false;
+
+	$dispatchInfo['title'] = $threadManager->getThreadProperty('title').' - '.$dispatchInfo['title']
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$threadManager->getThreadProperty('title')?></h1>

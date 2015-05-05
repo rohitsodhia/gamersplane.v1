@@ -1,7 +1,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Gamers Plane<?=strlen($dispatchInfo['title'])?' - '.$dispatchInfo['title']:''?></title>
-
 	<link href="/images/favicon.ico" rel="shortcut icon">
+	<title><?=strlen($dispatchInfo['title'])?$dispatchInfo['title'].' - ':''?>Gamers Plane</title>
 
 	<meta property="og:site_name" content="Gamers' Plane">
 	<meta property="og:type" content="website">

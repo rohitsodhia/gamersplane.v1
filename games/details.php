@@ -27,6 +27,8 @@
 		$characters[$character['userID']][] = $character;
 	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = 1");
 	$playerApprovedChars = $playerApprovedChars->fetchColumn();
+
+	$dispatchInfo['title'] = $gameInfo['title'].' - '.$dispatchInfo['title']
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Game Details<?=$gameInfo['isGM']?' <a href="/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>

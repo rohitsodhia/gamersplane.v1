@@ -9,9 +9,13 @@
 	if ($forumManager->getForumProperty($forumID, 'gameID')) {
 		$gameID = $forumManager->getForumProperty($forumID, 'gameID');
 		$fixedGameMenu = true;
-	} else $gameID = false;
+	} else
+		$gameID = false;
+
+	if ($forumID) 
+		$dispatchInfo['title'] = $forumManager->getForumProperty($forumID, 'title').' - '.$dispatchInfo['title']
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumManager->getForumProperty($forumID, 'title'):'s'?></h1>
 
 		<div id="topLinks" class="clearfix hbMargined">
@@ -41,11 +45,11 @@
 				
 		<div id="forumLinks">
 			<div id="forumOptions">
-<? if ($loggedIn) { ?>
+<?	if ($loggedIn) { ?>
 				<a href="/forums/process/read/<?=$forumID?>/">Mark Forum As Read</a>
-<? } ?>
+<?	} ?>
 			</div>
 <?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page']); ?>
 			<br class="clear">
 		</div>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>
