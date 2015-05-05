@@ -1,5 +1,5 @@
 $(function () {
-	$('#changeStatus, .actionLinks a, #newMap, .mapActions a, #newDeck, .deckActions a').colorbox();
+	$('#changeStatus, #withdrawFromGame, .actionLinks a, #newMap, .mapActions a, #newDeck, .deckActions a').colorbox();
 	$('#toggleForumVisibility').click(function (e) {
 		e.preventDefault();
 
@@ -10,5 +10,5 @@ $(function () {
 			$forumVis.siblings('span').text(status == 'Public'?'Private':'Public');
 			$forumVis.text('[ Make game ' + (status == 'Public'?'Public':'Private') + ' ]');
 		});
-	})
+	});
 });

@@ -4,9 +4,9 @@
 		$playerID = intval($_POST['playerID']);
 		
 		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} and isGM = 1");
-		$playerCheck = $mysql->query("SELECT u.userID, u.username, g.title, g.forumID, p.isGM FROM users u, games g, players p WHERE g.gameID = $gameID AND p.gameID = g.gameID AND p.userID = $playerID AND u.userID = p.userID AND p.primaryGM IS NULL AND p.approved = 1");
+		$playerCheck = $mysql->query("SELECT g.forumID FROM players p INNER JOIN games g ON p.gameID = g.gameID WHERE g.gameID = {$gameID} AND p.userID = {$playerID} AND p.primaryGM IS NULL");
 
-		list($playerID, $playerName, $title, $forumID, $isGM) = $playerCheck->fetch(PDO::FETCH_NUM);
+		$forumID = $playerCheck->fetchColumn();
 
 		if ($playerCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) echo 'No player';
