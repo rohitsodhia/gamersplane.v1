@@ -27,6 +27,8 @@
 	} else 
 		$fixedGameMenu = false;
 
+	$threadManager->setPage();
+
 	$dispatchInfo['title'] = $threadManager->getThreadProperty('title').' - '.$dispatchInfo['title']
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>

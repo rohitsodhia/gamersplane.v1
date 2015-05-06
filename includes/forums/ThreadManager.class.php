@@ -75,9 +75,7 @@
 				return $this->getThreadProperty('lastRead');
 		}
 
-		public function getPosts() {
-			global $mysql;
-
+		public function setPage() {
 			if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$this->threadID} AND postID <= ".$this->getThreadLastRead());
 				$numPrevPosts = $numPrevPosts->fetchColumn() + 1;
@@ -90,6 +88,10 @@
 			} else 
 				$page = intval($_GET['page']);
 			$this->page = intval($page) > 0?intval($page):1;
+		}
+
+		public function getPosts() {
+			global $mysql;
 
 			return $this->thread->getPosts($this->page);
 		}

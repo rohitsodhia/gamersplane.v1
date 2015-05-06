@@ -1,1 +1,1 @@
-alter table maps add deleted bool not null;
+ALTER TABLE dispatch ADD description TEXT AFTER title;
