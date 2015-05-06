@@ -83,7 +83,7 @@
 	} else 
 		$fixedGameMenu = false;
 
-	$rollsAllowed = ($threadManager->getPermissions('addRolls') && $threadManager->getThreadProperty('allowRolls') || $threadManager->getPermissions('moderate'))?true:false;
+	$rollsAllowed = $threadManager->getThreadProperty('allowRolls')?true:false;
 	$drawsAllowed = false;
 	if ($gameID && $threadManager->getPermissions('addDraws')) {
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = 1");
