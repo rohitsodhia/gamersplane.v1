@@ -285,8 +285,10 @@
 				<div class="tr">
 					<div class="td icon"><div class="forumIcon<?=$thread->getStates('sticky')?' sticky':''?><?=$thread->getStates('locked')?' locked':''?><?=$thread->newPosts($maxRead)?' newPosts':''?>" title="<?=$thread->newPosts($maxRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($maxRead)?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
-						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost" title="<?=$thread->newPosts($maxRead)?'View new posts':'Last post'?>" alt="<?=$thread->newPosts($maxRead)?'View new posts':'Last post'?>" class="<?=$thread->newPosts($maxRead)?'newPostIcon':'lastPostIcon'?>"></a>
+<?				if ($thread->newPosts($maxRead)) { ?>
+						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost" title="View new posts" alt="View new posts" class="newPostIcon"></a>
 <?
+				}
 				if ($thread->numPosts > PAGINATE_PER_PAGE) {
 ?>
 						<div class="paginateDiv">
@@ -302,7 +304,7 @@
 					echo "\t\t\t\t\t\t</div>\n";
 				}
 ?>
-						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a><br>
+						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a><? if (!$thread->newPosts($maxRead)) { ?> <a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost" title="Last post" alt="Last post" class="lastPostIcon"></a><? } ?><br>
 						<span class="threadAuthor">by <a href="/ucp/<?=$thread->authorID?>/" class="username"><?=$thread->authorUsername?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$thread->postCount?></div>

@@ -69,8 +69,10 @@
 				<div class="tr">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
-						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost" title="<?=$forumIcon == 'new'?'View new posts':'Last post'?>" alt="<?=$forumIcon == 'new'?'View new posts':'Last post'?>" class="<?=$forumIcon == 'new'?'newPostIcon':'lastPostIcon'?>"></a>
+<?				if ($forumIcon == 'new') { ?>
+						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost" title="View new posts" alt="View new posts" class="newPostIcon"></a>
 <?
+				}
 				if ($result->postCount > PAGINATE_PER_PAGE) {
 					$url = "/forums/thread/{$result->threadID}/";
 					$numPages = ceil($result->postCount / PAGINATE_PER_PAGE);
@@ -91,7 +93,7 @@
 ?>
 						</div>
 <?				} ?>
-						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><br>
+						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><? if ($forumIcon != 'new') { ?> <a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost" title="Last post" alt="Last post" class="lastPostIcon"></a><? } ?><br>
 						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$result->postCount?></div>
