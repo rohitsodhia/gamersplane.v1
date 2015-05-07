@@ -69,10 +69,8 @@
 				<div class="tr">
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
-<?				if ($forumIcon == 'new') { ?>
-						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost" title="<?=$forumIcon == 'new'?'View new posts':'Last post'?>" alt="<?=$forumIcon == 'new'?'View new posts':'Last post'?>" class="<?=$forumIcon == 'new'?'newPostIcon':'lastPostIcon'?>"></a>
 <?
-				}
 				if ($result->postCount > PAGINATE_PER_PAGE) {
 					$url = "/forums/thread/{$result->threadID}/";
 					$numPages = ceil($result->postCount / PAGINATE_PER_PAGE);

@@ -285,10 +285,8 @@
 				<div class="tr">
 					<div class="td icon"><div class="forumIcon<?=$thread->getStates('sticky')?' sticky':''?><?=$thread->getStates('locked')?' locked':''?><?=$thread->newPosts($maxRead)?' newPosts':''?>" title="<?=$thread->newPosts($maxRead)?'New':'No new'?> posts in thread" alt="<?=$thread->newPosts($maxRead)?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
-<?				if ($thread->newPosts($maxRead)) { ?>
-						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost" title="<?=$thread->newPosts($maxRead)?'View new posts':'Last post'?>" alt="<?=$thread->newPosts($maxRead)?'View new posts':'Last post'?>" class="<?=$thread->newPosts($maxRead)?'newPostIcon':'lastPostIcon'?>"></a>
 <?
-				}
 				if ($thread->numPosts > PAGINATE_PER_PAGE) {
 ?>
 						<div class="paginateDiv">
