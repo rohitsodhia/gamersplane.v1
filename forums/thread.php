@@ -29,7 +29,7 @@
 	$threadManager->getPosts();
 
 	$dispatchInfo['title'] = $threadManager->getThreadProperty('title').' | '.$dispatchInfo['title'];
-	$dispatchInfo['description'] = substr($threadManager->getKeyPost()->message, 0, 100);
+	$dispatchInfo['description'] = $threadManager->getKeyPost()->message;
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=$threadManager->getThreadProperty('title')?></h1>

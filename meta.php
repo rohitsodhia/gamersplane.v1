@@ -1,12 +1,14 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link href="/images/favicon.ico" rel="shortcut icon">
 	<title><?=strlen($dispatchInfo['title'])?$dispatchInfo['title'].' | ':''?>Gamers Plane</title>
-<?	$defaultDesc = "Gamers' Plane is a pen and paper RPG play-by-post site and community. Including tools like integrated dice, character library, and more, Gamers' Plane is a great place to get into a game online, or organize your live ones."; ?>
-	<meta name="description" content="<?=strlen($dispatchInfo['description'])?$dispatchInfo['description']:$defaultDesc?>">
+<?
+	$dispatchInfo['description'] = strlen($dispatchInfo['description'])?substr($dispatchInfo['description'], 0, 155):"A pen and paper RPG play-by-post site and community, Gamers' Plane is a great place to play games online or organize your live ones.";
+?>
+	<meta name="description" content="<?=?$dispatchInfo['description']?>">
 
 	<meta property="og:site_name" content="Gamers' Plane">
 	<meta property="og:type" content="website">
-	<meta property="og:description" content="<?=strlen($dispatchInfo['description'])?$dispatchInfo['description']:$defaultDesc?>">
+	<meta property="og:description" content="<?=?$dispatchInfo['description']?>">
 	<meta property="og:image" content="http://gamersplane.com/images/logo.jpg">
 
 	<meta http-equiv="cache-control" content="max-age=0">
