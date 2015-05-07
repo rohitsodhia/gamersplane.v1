@@ -6,9 +6,9 @@
 	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
-		$dispatchInfo['title'] = 'Edit '.$character->getLabel().' | '.$dispatchInfo['title'];
 		if ($character = new $charClass($characterID)) {
 			$character->load();
+			$dispatchInfo['title'] = 'Edit '.$character->getLabel().' | '.$dispatchInfo['title'];
 			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions == 'edit') {
 				$noChar = false;
