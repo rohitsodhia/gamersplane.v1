@@ -7,7 +7,7 @@
 	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
-		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Feat Notes';
+		$dispatchInfo['title'] = $character->getLabel().' Feat Notes | '.$dispatchInfo['title'];
 		if ($character = new $charClass($characterID)) {
 			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions) {

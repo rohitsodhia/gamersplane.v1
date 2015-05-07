@@ -76,11 +76,13 @@
 		}
 
 		public function setPage() {
+			global $mysql;
+
 			if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$this->threadID} AND postID <= ".$this->getThreadLastRead());
 				$numPrevPosts = $numPrevPosts->fetchColumn() + 1;
 				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
-			} elseif (isset($_GET['p'])) {
+			} elseif (isset($_GET['p']) && intval($_GET['p'])) {
 				$post = intval($_GET['p']);
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");
 				$numPrevPosts = $numPrevPosts->fetchColumn();
@@ -94,6 +96,28 @@
 			global $mysql;
 
 			return $this->thread->getPosts($this->page);
+		}
+
+		public function getKeyPost() {
+			global $mysql;
+
+			$posts = $this->thread->getPosts($this->page);
+			$checkFor = '';
+			if (isset($_GET['view']) && $_GET['view'] == 'newPost') 
+				$checkFor = 'newPost';
+			elseif (isset($_GET['p']) && intval($_GET['p'])) 
+				$checkFor = intval($_GET['p']);
+			elseif ($this->page != 1) 
+				return $mysql->query("SELECT message FROM posts WHERE postID = {$this->thread->firstPostID}")->fetch();
+			else 
+				return $posts[$this->thread->firstPostID];
+
+			foreach ($posts as $post) {
+				if ($checkFor == 'newPost' && ($post->getPostID() > $this->getThreadLastRead() || $this->thread->getLastPost('postID') == $post->getPostID())) 
+					return $post;
+				elseif ($post->getPostID == $checkFor) 
+					return $post;
+			}
 		}
 
 		public function updatePostCount() {

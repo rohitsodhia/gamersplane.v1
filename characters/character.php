@@ -6,7 +6,7 @@
 	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
-		$dispatchInfo['title'] = $systems->getFullName(SYSTEM).' Character Sheet';
+		$dispatchInfo['title'] = $character->getLabel().' | '.$dispatchInfo['title'];
 		if ($character = new $charClass($characterID)) {
 			$character->load();
 			$charPermissions = $character->checkPermissions($currentUser->userID);
@@ -18,8 +18,6 @@
 			}
 		}
 	} else { header('Location: /404/'); exit; }
-
-	$dispatchInfo['title'] = $character->getLabel().' - '.$dispatchInfo['title']
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Character Sheet</h1>

@@ -96,21 +96,26 @@
 
 		public function newPosts($markedRead) {
 			global $loggedIn;
-			if (!$loggedIn) return false;
+			if (!$loggedIn) 
+				return false;
 
-			if ($this->lastPost->postID > $this->lastRead && $this->lastPost->postID > $markedRead) return true;
-			else return false;
+			if ($this->lastPost->postID > $this->lastRead && $this->lastPost->postID > $markedRead) 
+				return true;
+			else 
+				return false;
 		}
 
 		public function getPosts($page) {
-			if (sizeof($this->posts)) return $this->posts;
+			if (sizeof($this->posts)) 
+				return $this->posts;
 
 			global $loggedIn, $currentUser, $mysql;
 
 			if ($page > ceil($this->postCount / PAGINATE_PER_PAGE)) $page = ceil($this->postCount / PAGINATE_PER_PAGE);
 			$start = ($page - 1) * PAGINATE_PER_PAGE;
 			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".PAGINATE_PER_PAGE);
-			foreach ($posts as $post) $this->posts[$post['postID']] = new Post($post);
+			foreach ($posts as $post) 
+				$this->posts[$post['postID']] = new Post($post);
 
 			$rolls = $mysql->query("SELECT postID, rollID, type, reason, roll, indivRolls, results, visibility, extras FROM rolls WHERE postID IN (".implode(',', array_keys($this->posts)).") ORDER BY rollID");
 			foreach ($rolls as $rollInfo) 
@@ -124,7 +129,8 @@
 		}
 
 		public function getPoll() {
-			if (in_array('poll', $this->loaded)) return true;
+			if (in_array('poll', $this->loaded)) 
+				return true;
 			try {
 				$this->poll = new ForumPoll($this->threadID);
 				$this->loaded[] = 'poll';

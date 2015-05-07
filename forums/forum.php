@@ -13,7 +13,7 @@
 		$gameID = false;
 
 	if ($forumID) 
-		$dispatchInfo['title'] = $forumManager->getForumProperty($forumID, 'title').' - '.$dispatchInfo['title']
+		$dispatchInfo['title'] = $forumManager->getForumProperty($forumID, 'title').' | '.$dispatchInfo['title'];
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumManager->getForumProperty($forumID, 'title'):'s'?></h1>
