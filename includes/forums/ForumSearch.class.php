@@ -70,7 +70,7 @@
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
-						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost" title="View new posts" alt="View new posts" class="newPostIcon"></a>
+						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 				}
 				if ($result->postCount > PAGINATE_PER_PAGE) {
@@ -93,7 +93,7 @@
 ?>
 						</div>
 <?				} ?>
-						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><? if ($forumIcon != 'new') { ?> <a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost" title="Last post" alt="Last post" class="lastPostIcon"></a><? } ?><br>
+						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><? if ($forumIcon != 'new') { ?> <a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a><? } ?><br>
 						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$result->postCount?></div>
