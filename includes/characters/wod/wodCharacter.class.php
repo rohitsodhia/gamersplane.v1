@@ -98,11 +98,14 @@
 
 			if (!isset($data['create'])) {
 				$this->setName($data['name']);
-				foreach ($data['attributes'] as $attribute => $value) $this->setAttribute($attribute, $value);
-				foreach ($data['skills'] as $skill => $value) $this->setSkill($skill, $value);
+				foreach ($data['attributes'] as $attribute => $value) 
+					$this->setAttribute($attribute, $value);
+				foreach ($data['skills'] as $skill => $value) 
+					$this->setSkill($skill, $value);
 				$this->setMerits($data['merits']);
 				$this->setFlaws($data['flaws']);
-				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
+				foreach ($data['traits'] as $trait => $value) 
+					$this->setTrait($trait, $value);
 				$this->setWeapons($data['weapons']);
 				$this->setEquipment($data['equipment']);
 				$this->setNotes($data['notes']);

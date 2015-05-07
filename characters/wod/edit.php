@@ -66,37 +66,37 @@
 								<div class="clearfix">
 									<div id="health" class="alignCenter">
 										<h3>Health</h3>
-										<input type="text" name="health" maxlength="2" value="<?=$this->getTrait('health')?>">
+										<input type="text" name="traits[health]" maxlength="2" value="<?=$this->getTrait('health')?>">
 									</div>
 									<div id="willpower" class="alignCenter">
 										<h3>Willpower</h3>
-										<input type="text" name="willpower" maxlength="2" value="<?=$this->getTrait('willpower')?>">
+										<input type="text" name="traits[willpower]" maxlength="2" value="<?=$this->getTrait('willpower')?>">
 									</div>
 									<div id="morality" class="alignCenter">
 										<h3>Morality</h3>
-										<input type="text" name="morality" maxlength="2" value="<?=$this->getTrait('morality')?>">
+										<input type="text" name="traits[morality]" maxlength="2" value="<?=$this->getTrait('morality')?>">
 									</div>
 								</div>
 								
 								<div class="tr marginTop">
 									<label class="textLabel">Size</label>
-									<input type="text" name="size" maxlength="2" value="<?=$this->getTrait('size')?>">
+									<input type="text" name="traits[size]" maxlength="2" value="<?=$this->getTrait('size')?>">
 								</div>
 								<div class="tr">
 									<label class="textLabel">Speed</label>
-									<input type="text" name="speed" maxlength="2" value="<?=$this->getTrait('speed')?>">
+									<input type="text" name="traits[speed]" maxlength="2" value="<?=$this->getTrait('speed')?>">
 								</div>
 								<div class="tr">
 									<label class="textLabel">Initiative Mod</label>
-									<input type="text" name="initiativeMod" maxlength="2" value="<?=$this->getTrait('initiativeMod')?>">
+									<input type="text" name="traits[initiativeMod]" maxlength="2" value="<?=$this->getTrait('initiativeMod')?>">
 								</div>
 								<div class="tr">
 									<label class="textLabel">Defense</label>
-									<input type="text" name="defense" maxlength="2" value="<?=$this->getTrait('defense')?>">
+									<input type="text" name="traits[defense]" maxlength="2" value="<?=$this->getTrait('defense')?>">
 								</div>
 								<div class="tr">
 									<label class="textLabel">Armor</label>
-									<input type="text" name="armor" maxlength="2" value="<?=$this->getTrait('armor')?>">
+									<input type="text" name="traits[armor]" maxlength="2" value="<?=$this->getTrait('armor')?>">
 								</div>
 							</div>
 						</div>
