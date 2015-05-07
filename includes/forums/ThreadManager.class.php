@@ -82,6 +82,9 @@
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$this->threadID} AND postID <= ".$this->getThreadLastRead());
 				$numPrevPosts = $numPrevPosts->fetchColumn() + 1;
 				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
+			} elseif (isset($_GET['view']) && $_GET['view'] == 'lastPost') {
+				$numPrevPosts = $this->getThreadProperty('postCount');
+				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
 			} elseif (isset($_GET['p']) && intval($_GET['p'])) {
 				$post = intval($_GET['p']);
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");

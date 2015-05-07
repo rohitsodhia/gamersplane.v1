@@ -93,7 +93,7 @@
 ?>
 						</div>
 <?				} ?>
-						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><? if ($forumIcon != 'new') { ?> <a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a><? } ?><br>
+						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a> <a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a><br>
 						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$result->postCount?></div>

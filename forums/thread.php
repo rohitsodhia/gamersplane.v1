@@ -137,6 +137,11 @@
 				$newPostMarked = true;
 ?>
 				<a name="newPost"></a>
+<?
+			}
+			if ($threadManager->thread->getLastPost('postID') == $post->getPostID()) {
+?>
+				<a name="lastPost"></a>
 <?			} ?>
 				<div class="posterDetails">
 					<div class="avatar"><div>

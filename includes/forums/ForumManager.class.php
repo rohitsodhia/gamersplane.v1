@@ -304,7 +304,7 @@
 					echo "\t\t\t\t\t\t</div>\n";
 				}
 ?>
-						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a><? if (!$thread->newPosts($maxRead)) { ?> <a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a><? } ?><br>
+						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a> <a href="/forums/thread/<?=$thread->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a><br>
 						<span class="threadAuthor">by <a href="/ucp/<?=$thread->authorID?>/" class="username"><?=$thread->authorUsername?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$thread->postCount?></div>
