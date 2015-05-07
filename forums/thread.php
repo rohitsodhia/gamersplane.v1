@@ -8,8 +8,6 @@
 	$threadManager = new ThreadManager($threadID);
 	if ($threadManager->getPermissions('read') == false) { header('Location: /403'); exit; }
 
-	$threadManager->getPosts();
-
 	$gameID = false;
 	$isGM = false;
 	$gms = array();
@@ -28,6 +26,7 @@
 		$fixedGameMenu = false;
 
 	$threadManager->setPage();
+	$threadManager->getPosts();
 
 	$dispatchInfo['title'] = $threadManager->getThreadProperty('title').' | '.$dispatchInfo['title'];
 	$dispatchInfo['description'] = substr($threadManager->getKeyPost()->message, 0, 100);
