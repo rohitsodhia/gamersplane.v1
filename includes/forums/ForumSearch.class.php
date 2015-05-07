@@ -70,7 +70,7 @@
 					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
-						<a href="/forums/thread/<?=$results->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?
 				}
 				if ($result->postCount > PAGINATE_PER_PAGE) {
