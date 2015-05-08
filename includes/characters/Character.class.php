@@ -18,10 +18,13 @@
 			global $currentUser;
 
 			$this->characterID = intval($characterID);
-			if ($userID == null) $this->userID = $currentUser->userID;
-			else $this->userID = $userID;
+			if ($userID == null) 
+				$this->userID = $currentUser->userID;
+			else 
+				$this->userID = $userID;
 
-			foreach ($this->bodyClasses as $bodyClass) addBodyClass($bodyClass);
+			foreach ($this->bodyClasses as $bodyClass) 
+				addBodyClass($bodyClass);
 		}
 
 		public function clearVar($var) {

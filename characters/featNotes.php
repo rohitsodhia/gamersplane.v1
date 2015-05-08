@@ -7,8 +7,8 @@
 	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
-		$dispatchInfo['title'] = $character->getLabel().' Feat Notes | '.$dispatchInfo['title'];
 		if ($character = new $charClass($characterID)) {
+//			$dispatchInfo['title'] = $character->getLabel().' Feat Notes | '.$dispatchInfo['title'];
 			$charPermissions = $character->checkPermissions($currentUser->userID);
 			if ($charPermissions) {
 				$featInfo = $mysql->query("SELECT fl.name, f.notes FROM ".SYSTEM."_feats f INNER JOIN featsList fl USING (featID) WHERE f.featID = $featID AND f.characterID = $characterID");
