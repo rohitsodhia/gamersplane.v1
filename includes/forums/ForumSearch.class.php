@@ -77,13 +77,13 @@
 				if ($result->postCount > PAGINATE_PER_PAGE) {
 					$url = "/forums/thread/{$result->threadID}/";
 					$numPages = ceil($result->postCount / PAGINATE_PER_PAGE);
-					if ($numPages <= 4) { for ($count = 1; $count <= $numPages; $count++) {
+					if ($numPages <= 3) { for ($count = 1; $count <= $numPages; $count++) {
 ?>
 							<a href="<?=$url?>?page=<?=$count?>"><?=$count?></a>
 <?					} } else { ?>
 							<a href="<?=$url?>?page=1">1</a>
 							<div>...</div>
-<?						for ($count = ($numPages - 2); $count <= $numPages; $count++) { ?>
+<?						for ($count = ($numPages - 1); $count <= $numPages; $count++) { ?>
 							<a href="<?=$url?>?page=<?=$count?>"><?=$count?></a>
 <?
 						}
