@@ -295,7 +295,7 @@
 					$numPages = ceil($thread->postCount / PAGINATE_PER_PAGE);
 					if ($numPages <= 4) { for ($count = 1; $count <= $numPages; $count++) {
 ?>
-							<a href="<?=$url?>?page=<?=$count?>">$count</a>
+							<a href="<?=$url?>?page=<?=$count?>"><?=$count?></a>
 <?
 					} } else {
 ?>
