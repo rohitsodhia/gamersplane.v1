@@ -287,24 +287,30 @@
 					<div class="td threadInfo">
 <?				if ($thread->newPosts($maxRead)) { ?>
 						<a href="/forums/thread/<?=$thread->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
-<?
-				}
-				if ($thread->numPosts > PAGINATE_PER_PAGE) {
-?>
+<?				} ?>
 						<div class="paginateDiv">
 <?
+				if ($thread->numPosts > PAGINATE_PER_PAGE) { 
 					$url = '/forums/thread/'.$thread->threadID.'/';
 					$numPages = ceil($thread->numPosts / PAGINATE_PER_PAGE);
-					if ($numPages <= 4) for ($count = 1; $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
-					else {
-						echo "\t\t\t\t\t\t\t<a href=\"$url?page=1\">1</a>\n";
-						echo "\t\t\t\t\t\t\t<div>...</div>\n";
-						for ($count = ($numPages - 2); $count <= $numPages; $count++) echo "\t\t\t\t\t\t\t<a href=\"$url?page=$count\">$count</a>\n";
+					if ($numPages <= 4) { for ($count = 1; $count <= $numPages; $count++) {
+?>
+							<a href="<?=$url?>?page=<?=$count?>">$count</a>
+<?
+					} } else {
+?>
+							<a href="<?=$url?>?page=1">1</a>
+							<div>...</div>
+<?						for ($count = ($numPages - 1); $count <= $numPages; $count++) { ?>
+							<a href="<?=$url?>?page=<?=$count?>"><?=$count?></a>
+<?
+						}
 					}
-					echo "\t\t\t\t\t\t</div>\n";
 				}
 ?>
-						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a> <a href="/forums/thread/<?=$thread->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a><br>
+							<a href="/forums/thread/<?=$thread->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
+						</div>
+						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a><br>
 						<span class="threadAuthor">by <a href="/ucp/<?=$thread->authorID?>/" class="username"><?=$thread->authorUsername?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$thread->postCount?></div>
