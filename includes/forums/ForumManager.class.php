@@ -290,9 +290,9 @@
 <?				} ?>
 						<div class="paginateDiv">
 <?
-				if ($thread->numPosts > PAGINATE_PER_PAGE) { 
+				if ($thread->postCount > PAGINATE_PER_PAGE) { 
 					$url = '/forums/thread/'.$thread->threadID.'/';
-					$numPages = ceil($thread->numPosts / PAGINATE_PER_PAGE);
+					$numPages = ceil($thread->postCount / PAGINATE_PER_PAGE);
 					if ($numPages <= 4) { for ($count = 1; $count <= $numPages; $count++) {
 ?>
 							<a href="<?=$url?>?page=<?=$count?>">$count</a>
