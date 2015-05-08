@@ -19,7 +19,8 @@ controllers.controller('links', function ($scope, $http, $sce, $filter) {
 		{ 'slug': 'blog', 'label': 'Blog' },
 		{ 'slug': 'podcast', 'label': 'Podcast' },
 		{ 'slug': 'videocast', 'label': 'Videocast' },
-		{ 'slug': 'liveplay', 'label': 'Liveplay' }
+		{ 'slug': 'liveplay', 'label': 'Liveplay' },
+		{ 'slug': 'accessories', 'label': 'Accessories' }
 	];
 	$scope.filter = { 'blog': true, 'podcast': true, 'videocast': true, 'liveplay': true };
 

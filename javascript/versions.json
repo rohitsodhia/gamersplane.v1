@@ -1,5 +1,7 @@
 {
 	"/javascript/characters/_edit.js": "1.0.1",
 	"/javascript/characters/sweote/edit.js": "1.0.1",
-	"/javascript/games/details.js": "1.0.1"
+	"/javascript/games/details.js": "1.0.1",
+	"/javascript/acp/_section.js": "1.0.1",
+	"/javascript/links.js": "1.0.1"
 }

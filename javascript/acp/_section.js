@@ -297,7 +297,8 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				{ 'slug': 'blog', 'label': 'Blog' },
 				{ 'slug': 'podcast', 'label': 'Podcast' },
 				{ 'slug': 'videocast', 'label': 'Videocast' },
-				{ 'slug': 'liveplay', 'label': 'Liveplay' }
+				{ 'slug': 'liveplay', 'label': 'Liveplay' },
+				{ 'slug': 'accessories', 'label': 'Accessories' }
 			];
 			if (typeof attrs.new != 'undefined') {
 				scope.new = true;
