@@ -90,18 +90,37 @@
 					echo '</div>';
 				}
 				if ($this->visibility == 0 || $showAll) {
-					echo '<p>';
-					if ($this->visibility != 0) echo '<span class="hidden">';
-					if ($this->totals['success']) $totalString .= $this->totals['success'].' Success'.($this->totals['success'] > 1?'es':'').', ';
-					if ($this->totals['advantage']) $totalString .= $this->totals['advantage'].' Advantage, ';
-					if ($this->totals['triumph']) $totalString .= $this->totals['triumph'].' Triumph, ';
-					if ($this->totals['failure']) $totalString .= $this->totals['failure'].' Failure'.($this->totals['failure'] > 1?'s':'').', ';
-					if ($this->totals['threat']) $totalString .= $this->totals['threat'].' Threat, ';
-					if ($this->totals['dispair']) $totalString .= $this->totals['dispair'].' Dispair, ';
-					if ($this->totals['whiteDot']) $totalString .= $this->totals['whiteDot'].' White Force Point'.($this->totals['whiteDot'] > 1?'s':'').', ';
-					if ($this->totals['blackDot']) $totalString .= $this->totals['blackDot'].' Black Force Point'.($this->totals['blackDot'] > 1?'s':'').', ';
+					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
+					if ($this->totals['success']) 
+						$totalString .= $this->totals['success'].' Success, ';
+					if ($this->totals['advantage']) 
+						$totalString .= $this->totals['advantage'].' Advantage, ';
+					if ($this->totals['triumph']) 
+						$totalString .= $this->totals['triumph'].' Triumph, ';
+					if ($this->totals['failure']) 
+						$totalString .= $this->totals['failure'].' Failure, ';
+					if ($this->totals['threat']) 
+						$totalString .= $this->totals['threat'].' Threat, ';
+					if ($this->totals['dispair']) 
+						$totalString .= $this->totals['dispair'].' Dispair, ';
+					if ($this->totals['whiteDot']) 
+						$totalString .= $this->totals['whiteDot'].' White Force Point'.($this->totals['whiteDot'] > 1?'s':'').', ';
+					if ($this->totals['blackDot']) 
+						$totalString .= $this->totals['blackDot'].' Black Force Point'.($this->totals['blackDot'] > 1?'s':'').', ';
 					echo substr($totalString, 0, -2);
-					if ($this->visibility != 0) echo '</span>';
+					echo '</p>';
+					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
+					$totalString = '';
+					if ($this->totals['success'] != $this->totals['failure']) 
+						$totalString .= abs($this->totals['success'] - $this->totals['failure']).' '.($this->totals['success'] > $this->totals['failure']?'Success':'Failure').', ';
+					if ($this->totals['advantage'] != $this->totals['threat']) 
+						$totalString .= abs($this->totals['advantage'] - $this->totals['threat']).' '.($this->totals['advantage'] > $this->totals['Threat']?'Advantage':'Threat').', ';
+					if ($this->totals['threat']) 
+						$totalString .= $this->totals['threat'].' Threat, ';
+					if ($this->totals['dispair']) 
+						$totalString .= $this->totals['dispair'].' Dispair, ';
+					if (strlen($totalString)) 
+						echo '<strong>Total:</strong> '.substr($totalString, 0, -2);
 					echo '</p>';
 				}
 				echo '</div>';
