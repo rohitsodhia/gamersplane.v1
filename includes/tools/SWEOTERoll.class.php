@@ -115,8 +115,8 @@
 						$totalString .= abs($this->totals['success'] - $this->totals['failure']).' '.($this->totals['success'] > $this->totals['failure']?'Success':'Failure').', ';
 					if ($this->totals['advantage'] != $this->totals['threat']) 
 						$totalString .= abs($this->totals['advantage'] - $this->totals['threat']).' '.($this->totals['advantage'] > $this->totals['Threat']?'Advantage':'Threat').', ';
-					if ($this->totals['threat']) 
-						$totalString .= $this->totals['threat'].' Threat, ';
+					if ($this->totals['triumph']) 
+						$totalString .= $this->totals['triumph'].' Triumph, ';
 					if ($this->totals['dispair']) 
 						$totalString .= $this->totals['dispair'].' Dispair, ';
 					if (strlen($totalString)) 
