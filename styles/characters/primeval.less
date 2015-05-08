@@ -3,91 +3,13 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#nameDiv label {
-	display: block;
-	float: left;
-	width: 110px;
-	text-align: right;
-	margin-right: 10px;
-}
+#basicInfo {
+	& > * {
+		margin-right: 10px;
+	}
 
-#nameDiv input {
-	width: 200px;
-}
-
-h2 {
-	margin-bottom: .3em;
-}
-
-#primaryStatsCol {
-	float: left;
-	width: 440px;
-	margin-left: 65px;
-}
-
-#primaryStatsCol .tr {
-	margin: 0 0 8px;
-}
-
-#primaryStatsCol .twoCol {
-	float: left;
-	width: 180px;
-}
-
-#primaryStatsCol .leftCol {
-	margin-right: 30px;
-}
-
-#secondaryStatsCol {
-	float: right;
-	width: 300px;
-	margin-right: 65px;
-}
-
-#primaryStatsCol label, #secondaryStatsCol label {
-	display: block;
-	float: left;
-}
-
-#primaryStatsCol label {
-	width: 130px;
-}
-
-#secondaryStatsCol label {
-	width: 200px;
-}
-
-#primaryStatsCol input, #secondaryStatsCol input {
-	width: 30px;
-	margin: 0 6px;
-	text-align: center; 
-}
-
-.twoCol {
-	float: left;
-	width: 465px;
-}
-
-.twoCol h2, #charInfoDiv h2 {
-	margin-top: 1em;
-}
-
-.twoCol textarea {
-	width: 465px;
-	height: 8.6em;
-}
-
-#page_characterSheet_edit #notes {
-	width: 912px;
-	height: 19.7em;
-}
-
-.leftCol {
-	margin-right: 20px;
-}
-
-#submitDiv {
-	clear: both;
-	text-align: center;
-	margin-top: 1em;
+	label {
+		display: inline-block;
+		text-align: right;
+	}
 }
