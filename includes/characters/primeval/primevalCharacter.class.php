@@ -11,15 +11,33 @@
 			'strength' => array('starting' => 0, 'current' => 0)
 		);
 		protected $storyPoints = 0;
-		protected $skills = array();
-		protected $traits = array();
+		protected $skills = array(
+			'Athletics' => array('value' => 0, 'subskills' => array()),
+			'Animal Handling' => array('value' => 0, 'subskills' => array()),
+			'Convince' => array('value' => 0, 'subskills' => array()),
+			'Craft' => array('value' => 0, 'subskills' => array()),
+			'Fighting' => array('value' => 0, 'subskills' => array()),
+			'Knowledge' => array('value' => 0, 'subskills' => array()),
+			'Marksman' => array('value' => 0, 'subskills' => array()),
+			'Medicine' => array('value' => 0, 'subskills' => array()),
+			'Science' => array('value' => 0, 'subskills' => array()),
+			'Subterfuge' => array('value' => 0, 'subskills' => array()),
+			'Survival' => array('value' => 0, 'subskills' => array()),
+			'Technology' => array('value' => 0, 'subskills' => array()),
+			'Transport' => array('value' => 0, 'subskills' => array())
+		);
+		protected $talents = array();
 		protected $equipment = '';
+
+		public function getAttributeNames() {
+			return array_keys($this->attributes);
+		}
 
 		public function setAttributes($attribute, $key, $value = '') {
 			if (array_key_exists($attribute,$this->attributes) && in_array($key, array('starting', 'current'))) {
 				$value = intval($value);
 				if ($value >= 0) 
-					$this->attributes[$attribute] = $value;
+					$this->attributes[$attribute][$key] = $value;
 			} else 
 				return false;
 		}
@@ -47,46 +65,78 @@
 			return $this->storyPoints;
 		}
 
-		public static function skillEditFormat($key = 1, $skillInfo = null) {
+		public static function skillEditFormat($key = 1, $subskillOf = 'replace', $skillInfo = null) {
 			if ($skillInfo == null) 
-				$skillInfo = array('name' => '', 'notes' => '');
+				$skillInfo = array('name' => '', 'value' => '');
 ?>
-							<div class="skill tr clearfix">
-								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="name placeholder" data-placeholder="Skill">
-								<a href="" class="notesLink">Notes</a>
-								<a href="" class="remove sprite cross"></a>
-								<textarea name="skills[<?=$key?>][notes]"><?=$skillInfo['notes']?></textarea>
-							</div>
+									<div class="subskill">
+										<input type="text" name="skills[<?=$subskillOf?>][subskills][<?=$key?>][name]"  class="name placeholder" data-placeholder="Skill" value="<?=$skillInfo['name']?>">
+										<input id="<?=$skillInfo['name']?>" type="text" name="skills[<?=$subskillOf?>][subskills][<?=$key?>][value]" value="<?=$skillInfo['value']?>">
+									</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				$this->skillEditFormat($key + 1, $skill);
-			} } else $this->skillEditFormat();
+			foreach ($this->skills as $skill => $skillData) {
+?>
+							<div class="skillSet">
+								<div class="skill">
+									<label for="<?=$skill?>" class="textLabel"><?=$skill?></label>
+									<input id="<?=$skill?>" type="text" name="skills[<?=$skill?>][value]" value="<?=$skillData['value']?>">
+								</div>
+								<a href="" class="addItem" data-type="<?=$skill?>">[ Add Subskill ]</a>
+								<div class="subskills">
+<?
+				if (sizeof($skillData['subskills'])) {
+					$key = 1;
+					foreach ($skillData['subskills'] as $subskill) 
+						$this->skillEditFormat($key++, $skill, $subskill);
+				}
+?>
+								</div>
+							</div>
+<?
+			}
 		}
 
 		public function displaySkills() {
-			if ($this->skills) { foreach ($this->skills as $skill) { ?>
-					<div class="skill tr clearfix">
-						<span class="name"><?=$skill['name']?></span>
-<?	if (strlen($skill['notes'])) { ?>
-						<a href="" class="notesLink">Notes</a>
-						<div class="notes"><?=$skill['notes']?></div>
-<?	} ?>
+			foreach ($this->skills as $skill => $skillData) {
+?>
+					<div class="skillSet">
+						<div class="skill">
+							<div class="name"><?=$skill?></div>
+							<div class="value"><?=$skillData['value']?></div>
+						</div>
+						<div class="subskills">
+<?
+				if (sizeof($skillData['subskills'])) {
+					foreach ($skillData['subskills'] as $subskill) {
+?>
+							<div class="subskill">
+								<div class="name"><?=$subskill['name']?></div>
+								<div class="value"><?=$subskill['value']?></div>
+							</div>
+<?
+					}
+				}
+?>
+						</div>
 					</div>
 <?
-			} } else 
-				echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
+			}
 		}
 		
-		public function addSkill($skill) {
-			if (strlen($skill['name'])) {
-				newItemized('skill', $skill['name'], $this::SYSTEM);
-				foreach ($skill as $key => $value) 
-					$skill[$key] = sanitizeString($value);
-				$this->skills[] = $skill;
-			}
+		public function addSkill($name, $skillData) {
+			$skill = array('value' => intval($skillData['value']));
+			if (sizeof($skillData['subskills'])) { foreach ($skillData['subskills'] as $subskill) {
+				if (strlen($subskill['name'])) {
+					newItemized('skill', $subskill['name'], $this::SYSTEM);
+					$subskill['name'] = sanitizeString($subskill['name']);
+					$subskill['value'] = intval($subskill['value']);
+					$skill['subskills'][] = $subskill;
+				}
+			} }
+			$this->skills[$name] = $skill;
 		}
 
 		public static function talentEditFormat($key = 1, $talentInfo = null) {
@@ -111,7 +161,7 @@
 		public function displayTalents() {
 			if ($this->talents) { foreach ($this->talents as $talent) { ?>
 					<div class="talent tr clearfix">
-						<span class="name"><?=$talent['name']?></span>
+						<div class="name"><?=$talent['name']?></div>
 <?	if (strlen($talent['notes'])) { ?>
 						<a href="" class="notesLink">Notes</a>
 						<div class="notes"><?=$talent['notes']?></div>
@@ -135,8 +185,11 @@
 			$this->equipment = sanitizeString($equipment);
 		}
 
-		public function getEquipment() {
-			return $this->equipment;
+		public function getEquipment($pr = false) {
+			$equipment = $this->equipment;
+			if ($pr) 
+				$equipment = printReady($equipment);
+			return $equipment;
 		}
 
 		public function save() {
@@ -152,13 +205,13 @@
 
 				$this->clearVar('skills');
 				if (sizeof($data['skills'])) 
-					foreach ($data['skills'] as $skillInfo) 
-						$this->addSkill($skillInfo);
+					foreach ($data['skills'] as $skillName => $skillInfo) 
+						$this->addSkill($skillName, $skillInfo);
 
-				$this->clearVar('traits');
-				if (sizeof($data['traits'])) 
-					foreach ($data['traits'] as $traitInfo) 
-						$this->addTrait($traitInfo);
+				$this->clearVar('talents');
+				if (sizeof($data['talents'])) 
+					foreach ($data['talents'] as $talentInfo) 
+						$this->addTalent($talentInfo);
 
 				$this->setEquipment($data['equipment']);
 				$this->setNotes($data['notes']);

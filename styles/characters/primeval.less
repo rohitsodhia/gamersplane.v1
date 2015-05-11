@@ -5,11 +5,155 @@
 
 #basicInfo {
 	& > * {
-		margin-right: 10px;
+		display: inline-block;
 	}
 
 	label {
-		display: inline-block;
-		text-align: right;
+		font-size: 1em;
+		line-height: 1.2em;
+	}
+
+	input, div {
+		margin-right: 10px;
+	}
+}
+
+.twoCol {
+	float: left;
+	width: 49%;
+	margin-left: 2%;
+
+	&.first {
+		margin-left: 0;
+	}
+}
+
+#attributes {
+	float: left;
+	width: 250px;
+	margin-left: 0;
+
+	.tr {
+		& > * {
+			display: inline-block;
+		}
+
+		div {
+			width: 50px;
+			text-align: center;
+		}
+	}
+
+	label, .labelTR .spacer {
+		width: 90px;
+	}
+
+	.labelTR {
+		& > * {
+			font-size: .8em;
+			line-height: 1.1em;
+		}
+	}
+}
+
+#skills, #talents {
+	float: left;
+	width: 310px;
+	margin-left: 15px;
+}
+
+#skills {
+	label {
+		font-size: 1em;
+		line-height: 1.2em;
+	}
+
+	.skillSet {
+		margin-bottom: .5em;
+
+		label {
+			width: 215px;
+		}
+		& > a {
+			font-size: .8em;
+			line-height: 1em;
+		}
+	}
+
+	.subskills {
+		margin-left: 15px;
+	}
+
+	.subskill {
+		margin-top: .5em;
+	}
+
+	input.name {
+		width: 200px;
+	}
+}
+
+#page_characterSheet {
+	#skills {
+		.name, .value {
+			display: inline-block;
+		}
+
+		.name {
+			width: 225px;
+		}
+
+		.subskill {
+			.name {
+				width: 210px;
+			}
+		}
+
+		.value {
+			width: 30px;
+			text-align: center;
+		}
+	}
+}
+
+#talents {
+	input {
+		width: 190px;
+	}
+
+	.notesLink {
+		margin: 0 5px;
+		font-size: .8em;
+		line-height: 1em;
+	}
+
+	textarea {
+		display: none;
+		width: 100%;
+		height: 4.6em;
+		margin-top: .5em;
+	}
+}
+
+#page_characterSheet {
+	#talents {
+		.name {
+			display: inline-block;
+			width: 215px;
+		}
+
+		.notes {
+			padding: 4px;
+			border: 1px solid #888;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}
+	}
+}
+
+.twoCol {
+	textarea {
+		height: 10.6em;
 	}
 }

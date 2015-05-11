@@ -7,14 +7,16 @@ function setupItemized($list) {
 		e.preventDefault();
 
 		$(this).parent().remove();
-		if ($('.item').length == 0) $list.find('.addItem').click();
+		if ($('.item').length == 0) 
+			$list.find('.addItem').click();
 	}).on('click', 'a.addItem', function (e) {
 		e.preventDefault();
+		$link = $(this);
 
 		itemizationFunctions[$list.attr('id')]['count'] += 1;
 		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: 'n' + itemizationFunctions[$list.attr('id')]['count'] }, function (data) {
 			$newItem = $(data);
-			itemizationFunctions[$list.attr('id')]['newItem']($newItem);
+			itemizationFunctions[$list.attr('id')]['newItem']($newItem, $link);
 		});
 	});
 
