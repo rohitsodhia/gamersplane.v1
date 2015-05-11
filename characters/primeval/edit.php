@@ -29,10 +29,15 @@
 <?	$this->showSkillsEdit(); ?>
 						</div>
 					</div>
-					<div id="talents" class="triCol itemizedList" data-type="talent">
-						<h2 class="headerbar hbDark">Talents <a id="addTalent" href="" class="addItem">[ Add Talent ]</a></h2>
-						<div id="talentsList" class="hbdMargined">
-<?	$this->showTalentsEdit(); ?>
+					<div id="traits" class="triCol itemizedList" data-type="trait">
+						<h2 class="headerbar hbDark">Traits</h2>
+						<div class="hbdMargined">
+<?	foreach (array('good', 'bad', 'special') as $type) { ?>
+							<div id="traits_<?=$type?>" class="itemList">
+								<h3><?=ucwords($type)?> <a href="" class="addItem" data-type="<?=$type?>">[ Add Trait ]</a></h3>
+<?	$this->showTraitsEdit($type); ?>
+							</div>
+<?	} ?>
 						</div>
 					</div>
 				</div>

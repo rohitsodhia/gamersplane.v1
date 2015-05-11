@@ -26,7 +26,7 @@
 			'Technology' => array('value' => 0, 'subskills' => array()),
 			'Transport' => array('value' => 0, 'subskills' => array())
 		);
-		protected $talents = array();
+		protected $traits = array();
 		protected $equipment = '';
 
 		public function getAttributeNames() {
@@ -139,45 +139,47 @@
 			$this->skills[$name] = $skill;
 		}
 
-		public static function talentEditFormat($key = 1, $talentInfo = null) {
-			if ($talentInfo == null) 
-				$talentInfo = array('name' => '', 'notes' => '');
+		public static function traitEditFormat($key = 1, $type = 'replace', $traitInfo = null) {
+			if ($traitInfo == null) 
+				$traitInfo = array('name' => '', 'notes' => '');
 ?>
-							<div class="talent tr clearfix">
-								<input type="text" name="talents[<?=$key?>][name]" value="<?=$talentInfo['name']?>" class="name placeholder" data-placeholder="Talent">
+							<div class="trait tr clearfix">
+								<input type="text" name="traits[<?=$type?>][<?=$key?>][name]" value="<?=$traitInfo['name']?>" class="name placeholder" data-placeholder="Trait">
 								<a href="" class="notesLink">Notes</a>
 								<a href="" class="remove sprite cross"></a>
-								<textarea name="talents[<?=$key?>][notes]"><?=$talentInfo['notes']?></textarea>
+								<textarea name="traits[<?=$type?>][<?=$key?>][notes]"><?=$traitInfo['notes']?></textarea>
 							</div>
 <?
 		}
 
-		public function showTalentsEdit() {
-			if (sizeof($this->talents)) { foreach ($this->talents as $key => $talent) {
-				$this->talentEditFormat($key + 1, $talent);
-			} } else $this->talentEditFormat();
+		public function showTraitsEdit($type) {
+			if (sizeof($this->traits[$type])) 
+				foreach ($this->traits[$type] as $key => $trait) 
+					$this->traitEditFormat($key + 1, $type, $trait);
+			else 
+				$this->traitEditFormat(1, $type);
 		}
 
-		public function displayTalents() {
-			if ($this->talents) { foreach ($this->talents as $talent) { ?>
-					<div class="talent tr clearfix">
-						<div class="name"><?=$talent['name']?></div>
-<?	if (strlen($talent['notes'])) { ?>
+		public function displayTraits($type) {
+			if ($this->traits[$type]) { foreach ($this->traits[$type] as $trait) { ?>
+					<div class="trait tr clearfix">
+						<div class="name"><?=$trait['name']?></div>
+<?	if (strlen($trait['notes'])) { ?>
 						<a href="" class="notesLink">Notes</a>
-						<div class="notes"><?=$talent['notes']?></div>
+						<div class="notes"><?=$trait['notes']?></div>
 <?	} ?>
 					</div>
 <?
 			} } else 
-				echo "\t\t\t\t\t<p id=\"noTalents\">This character currently has no talents.</p>\n";
+				echo "\t\t\t\t\t<p id=\"noTraits\">This character has no {$type} traits.</p>\n";
 		}
 		
-		public function addTalent($talent) {
-			if (strlen($talent['name'])) {
-				newItemized('talent', $talent['name'], $this::SYSTEM);
-				foreach ($talent as $key => $value) 
-					$talent[$key] = sanitizeString($value);
-				$this->talents[] = $talent;
+		public function addTrait($type, $trait) {
+			if (strlen($trait['name'])) {
+				newItemized('trait', $trait['name'], $this::SYSTEM);
+				foreach ($trait as $key => $value) 
+					$trait[$key] = sanitizeString($value);
+				$this->traits[$type][] = $trait;
 			}
 		}
 
@@ -208,10 +210,11 @@
 					foreach ($data['skills'] as $skillName => $skillInfo) 
 						$this->addSkill($skillName, $skillInfo);
 
-				$this->clearVar('talents');
-				if (sizeof($data['talents'])) 
-					foreach ($data['talents'] as $talentInfo) 
-						$this->addTalent($talentInfo);
+				$this->clearVar('traits');
+				if (sizeof($data['traits'])) 
+					foreach ($data['traits'] as $type => $traits) 
+						foreach ($traits as $traitInfo) 
+							$this->addTrait($type, $traitInfo);
 
 				$this->setEquipment($data['equipment']);
 				$this->setNotes($data['notes']);
