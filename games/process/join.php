@@ -10,7 +10,19 @@
 		if ($numApprovedPlayers < $numPlayers) {
 			$mysql->query("INSERT INTO players (gameID, userID) VALUES ($gameID, {$currentUser->userID})");
 			addGameHistory($gameID, 'playerApplied');
+
+			$emailDetails = new stdClass();
+			$emailDetails->action = 'User Applied';
+			$emailDetails->gameInfo = $mysql->query("SELECT gameID, title, system FROM games WHERE gameID = {$gameID}")->fetch(PDO::FETCH_OBJ);
+			$emailDetails->message = "<a href=\"http://gamersplane.com/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> has applied to your game.";
+			ob_start();
+			include('gmEmail.php');
+			$email = ob_get_contents();
+			ob_end_clean();
+			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN players p ON u.userID = p.userID AND p.isGM = 1 WHERE g.gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
+			mail(implode(', ', $gmEmails), "Game Activity: {$emailDetails->action}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 		}
-		header('Location: /games/'.$gameID);
-	} else header('Location: /403');
+		header("Location: /games/{$gameID}");
+	} else 
+		header('Location: /403');
 ?>

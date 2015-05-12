@@ -65,8 +65,7 @@
 			}
 
 			if ($avatarExt == '') $avatarExt = null;
-			$user->updateUsermeta('avatarExt', $avatarExt);
-			$user->setMetaAutoload('avatarExt', 1);
+			$user->updateUsermeta('avatarExt', $avatarExt, true);
 		}
 
 		$user->updateUsermeta('showAvatars', isset($_POST['showAvatars'])?1:0);
@@ -83,7 +82,9 @@
 		$user->updateUsermeta('twitter', sanitizeString($_POST['twitter']));
 		$user->updateUsermeta('stream', sanitizeString($_POST['stream']));
 		$user->updateUsermeta('games', sanitizeString($_POST['games']));
+		$user->updateUsermeta('pmMail', intval($_POST['pmMail'])?1:0);
 		$user->updateUsermeta('newGameMail', intval($_POST['newGameMail'])?1:0);
+		$user->updateUsermeta('gmMail', intval($_POST['gmMail'])?1:0);
 
 		$errors = '?';
 		$oldPass = $_POST['oldPass'];

@@ -110,7 +110,9 @@
 
 			$sender = (object) array('userID' => $currentUser->userID, 'username' => $currentUser->username);
 			$recipient = sanitizeString(preg_replace('/[^\w.]/', '', $_POST['username']));
-			$recipient = $mysql->query("SELECT userID, username FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
+			$recipient = $mysql->query("SELECT userID, username, email FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
+			$recipEmail = $recipient->email;
+			unset($recipient->email);
 			$recipient->userID = (int) $recipient->userID;
 			$recipient->read = false;
 			$recipient->deleted = false;
@@ -127,6 +129,12 @@
 				}
 				$mongo->pms->insert(array('pmID' => mongo_getNextSequence('pmID'), 'sender' => $sender, 'recipients' => array($recipient), 'title' => sanitizeString($_POST['title']), 'message' => sanitizeString($_POST['message']), 'datestamp' => date('Y-m-d H:i:s'), 'replyTo' => $replyTo, 'history' => $history));
 				displayJSON(array('sent' => true));
+
+				ob_start();
+				include('emails/pmEmail.php');
+				$email = ob_get_contents();
+				ob_end_clean();
+				mail($recipEmail, "New PM", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 			}
 		}
 
