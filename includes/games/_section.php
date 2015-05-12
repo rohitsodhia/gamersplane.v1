@@ -1,3 +1,3 @@
 <?
-	if ($pathOptions[1] == 'maps') require('maps/Icon.class.php');
+	$status_names = array('o' => 'Open', 'p' => 'Private', 'c' => 'Closed');
 ?>

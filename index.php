@@ -66,8 +66,10 @@
 				<h3 class="headerbar">Latest Games</h3>
 				<div class="widgetBody">
 <?
-	if ($loggedIn) $latestGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = {$currentUser->userID} WHERE g.retired = 0 AND c.characterID IS NULL AND g.open = 1 ORDER BY gameID DESC LIMIT 5");
-	else $latestGames = $mysql->query('SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired = 0 AND g.open = 1 ORDER BY gameID DESC LIMIT 5');
+	if ($loggedIn) 
+		$latestGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = {$currentUser->userID} WHERE g.retired = 0 AND c.characterID IS NULL AND g.status = 'o' ORDER BY gameID DESC LIMIT 5");
+	else 
+		$latestGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired = 0 AND g.status = 'o' ORDER BY gameID DESC LIMIT 5");
 	$first = true;
 	foreach ($latestGames as $gameInfo) {
 		$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);

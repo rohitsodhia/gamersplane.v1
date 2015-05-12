@@ -1,14 +1,15 @@
 <?
-	if ($pathOptions[0] == 'new') $display = 'new';
-	else $display = 'edit';
+	if ($pathOptions[0] == 'new') 
+		$display = 'new';
+	else 
+		$display = 'edit';
 
 	if ($display == 'edit') {
 		$gameID = intval($pathOptions[0]);
-		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.system, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$currentUser->userID);
+		$gameDetails = $mysql->query('SELECT g.gameID, g.title, g.system, g.gmID, g.postFrequency, g.numPlayers, g.description, g.charGenInfo, g.status FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = '.$gameID.' AND gms.userID = '.$currentUser->userID);
 		if ($gameDetails->rowCount() == 0) { header('Location: /403'); exit; }
 		else {
 			$gameDetails = $gameDetails->fetch();
-			foreach ($gameDetails as $key => $value) $$key = $value;
 		}
 	}
 
@@ -23,7 +24,11 @@
 		}
 	}
 
-	if (isset($postFrequency)) list($timesPer, $perPeriod) = explode('/', $postFrequency);
+	if (isset($gameDetails['postFrequency'])) {
+		$postFrequency = array('timesPer' => 0, 'perPeriod' => 0);
+		list($postFrequency['timesPer'], $postFrequency['perPeriod']) = explode('/', $gameDetails['postFrequency']);
+		$gameDetails['postFrequency'] = $postFrequency;
+	}
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 <?	if ($display == 'new') { ?>
@@ -52,22 +57,36 @@
 				Seems like there were some problems:
 				<ul>
 <?
-	if ($errors['invalidTitle']) { echo "\t\t\t\t\t<li>Seems like there's something wrong with your game's title.</li>\n"; }
-	if ($errors['repeatTitle']) { echo "\t\t\t\t\t<li>Someone else already has a game by this name.</li>\n"; }
-	if ($errors['invalidSystem']) { echo "\t\t\t\t\t<li>You didn't select a system!</li>\n"; }
-	if ($errors['invalidNumPlayers']) { echo "\t\t\t\t\t<li>You need at least 2 players in a game.</li>\n"; }
+	if ($errors['invalidTitle']) 
+		echo "\t\t\t\t\t<li>Seems like there's something wrong with your game's title.</li>\n";
+	if ($errors['repeatTitle']) 
+		echo "\t\t\t\t\t<li>Someone else already has a game by this name.</li>\n";
+	if ($errors['invalidSystem']) 
+		echo "\t\t\t\t\t<li>You didn't select a system!</li>\n";
+	if ($errors['invalidNumPlayers']) 
+		echo "\t\t\t\t\t<li>You need at least 2 players in a game.</li>\n";
 ?>
 				</ul>
 			</div>
 <?	} ?>
-			
+
 			<form method="post" action="/games/process/<?=$display?>">
 <?	if ($display == 'edit') { ?>
 				<input type="hidden" name="gameID" value="<?=$gameID?>">
 <?	} ?>
 				<div class="tr">
+					<label>Status</label>
+					<div id="statuses">
+						<div class="vAlignMiddle">
+<?	foreach (array('open', 'private', 'closed') as $status) { ?>
+							<input id="status_<?=$status?>" type="radio" name="status" value="<?=substr($status, 0, 1)?>"<?=substr($status, 0, 1) == $gameDetails['status'] || ($display == 'new' && $status == 'open')?' checked="checked"':''?>> <label for="status_<?=$status?>"><?=ucwords($status)?></label>
+<?	} ?>
+						</div>
+					</div>
+				</div>
+				<div class="tr">
 					<label>Title</label>
-					<input type="text" name="title" value="<?=$title?>" maxlength="50">
+					<input type="text" name="title" value="<?=$gameDetails['title']?>" maxlength="50">
 				</div>
 <?	if ($display == 'new') { ?>
 				<div class="tr">
@@ -83,27 +102,27 @@
 <?	} ?>
 				<div class="tr">
 					<label>Post Frequency</label>
-					<input id="timesPer" type="text" name="timesPer" value="<?=$timesPer?$timesPer:1?>" maxlength="2"> time(s) per 
+					<input id="timesPer" type="text" name="timesPer" value="<?=$display == 'edit'?$gameDetails['postFrequency']['timesPer']:1?>" maxlength="2"> time(s) per 
 					<select name="perPeriod">
-						<option value="d"<?=($perPeriod == 'd')?' selected="selected"':''?>>Day</option>
-						<option value="w"<?=($perPeriod == 'w')?' selected="selected"':''?>>Week</option>
+						<option value="d"<?=($gameDetails['postFrequency']['perPeriod'] == 'd')?' selected="selected"':''?>>Day</option>
+						<option value="w"<?=($gameDetails['postFrequency']['perPeriod'] == 'w')?' selected="selected"':''?>>Week</option>
 					</select>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>
-					<input id="numPlayers" type="text" name="numPlayers" value="<?=$numPlayers?$numPlayers:2?>" maxlength="2">
+					<input id="numPlayers" type="text" name="numPlayers" value="<?=$display == 'edit'?$gameDetails['numPlayers']:2?>" maxlength="2">
 				</div>
 				<div class="tr">
 					<label>Number of Characters per Player</label>
-					<input id="charsPerPlayer" type="text" name="charsPerPlayer" value="<?=$charsPerPlayer?$charsPerPlayer:1?>" maxlength="1">
+					<input id="charsPerPlayer" type="text" name="charsPerPlayer" value="<?=$display == 'edit'?$gameDetails['charsPerPlayer']:1?>" maxlength="1">
 				</div>
 				<div class="tr textareaRow">
 					<label>Description</label>
-					<textarea name="description"><?=$description?></textarea>
+					<textarea name="description"><?=$gameDetails['description']?></textarea>
 				</div>
 				<div class="tr textareaRow">
 					<label>Character Generation Info</label>
-					<textarea name="charGenInfo"><?=$charGenInfo?></textarea>
+					<textarea name="charGenInfo"><?=$gameDetails['charGenInfo']?></textarea>
 				</div>
 				
 				<div id="submitDiv"><button type="submit" name="<?=$display == 'new'?'create':'save'?>" class="fancyButton"><?=$display == 'new'?'Create':'Save'?></button></div>

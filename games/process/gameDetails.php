@@ -5,6 +5,7 @@
 		unset($_SESSION['errorTime']);
 		
 		$gameID = intval($_POST['gameID']);
+		$details['status'] = in_array($_POST['status'], array('o', 'p', 'c'))?$_POST['status']:'o';
 		$details['title'] = sanitizeString($_POST['title']);
 		if ($systems->verifySystem($_POST['system'])) 
 			$details['system'] = $_POST['system'];
@@ -37,13 +38,14 @@
 			else 
 				header('Location: /games/new?failed=1');
 		} elseif (isset($_POST['save'])) {
-			$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, charsPerPlayer = :charsPerPlayer, description = :description, charGenInfo = :charGenInfo WHERE gameID = :gameID');
+			$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, charsPerPlayer = :charsPerPlayer, description = :description, charGenInfo = :charGenInfo, status = :status WHERE gameID = :gameID');
 			$updateGame->bindValue(':title', $details['title']);
 			$updateGame->bindValue(':postFrequency', $details['postFrequency']);
 			$updateGame->bindValue(':numPlayers', $details['numPlayers']);
 			$updateGame->bindValue(':charsPerPlayer', $details['charsPerPlayer']);
 			$updateGame->bindValue(':description', $details['description']);
 			$updateGame->bindValue(':charGenInfo', $details['charGenInfo']);
+			$updateGame->bindValue(':status', $details['status']);
 			$updateGame->bindValue(':gameID', $gameID);
 			$updateGame->execute();
 			$updateForums = $mysql->prepare('UPDATE forums, forums_groups, games SET forums.title = :title, forums_groups.name = :title WHERE forums.forumID = games.forumID AND forums_groups.groupID = games.groupID AND games.gameID = :gameID');
@@ -59,7 +61,7 @@
 			$details['start'] = $details['created'];
 
 			$system = $details['system'];
-			$addGame = $mysql->prepare('INSERT INTO games (title, system, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :system, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, -1, -1)');
+			$addGame = $mysql->prepare('INSERT INTO games (title, system, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID, status) VALUES (:title, :system, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, -1, -1, :status)');
 			$addGame->bindParam('title', $details['title']);
 			$addGame->bindParam('system', $details['system']);
 			$addGame->bindParam('gmID', $details['gmID']);
@@ -69,6 +71,7 @@
 			$addGame->bindParam('numPlayers', $details['numPlayers']);
 			$addGame->bindParam('description', $details['description']);
 			$addGame->bindParam('charGenInfo', $details['charGenInfo']);
+			$addGame->bindParam('status', $details['status']);
 			$addGame->execute();
 			$gameID = $mysql->lastInsertId();
 			
