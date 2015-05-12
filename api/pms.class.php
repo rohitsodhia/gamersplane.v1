@@ -130,11 +130,13 @@
 				$mongo->pms->insert(array('pmID' => mongo_getNextSequence('pmID'), 'sender' => $sender, 'recipients' => array($recipient), 'title' => sanitizeString($_POST['title']), 'message' => sanitizeString($_POST['message']), 'datestamp' => date('Y-m-d H:i:s'), 'replyTo' => $replyTo, 'history' => $history));
 				displayJSON(array('sent' => true));
 
-				ob_start();
-				include('emails/pmEmail.php');
-				$email = ob_get_contents();
-				ob_end_clean();
-				mail($recipEmail, "New PM", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+				if ($currentUser->getUsermeta('pmMail')) {
+					ob_start();
+					include('emails/pmEmail.php');
+					$email = ob_get_contents();
+					ob_end_clean();
+					mail($recipEmail, "New PM", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+				}
 			}
 		}
 
