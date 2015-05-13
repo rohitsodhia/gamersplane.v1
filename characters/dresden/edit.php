@@ -6,7 +6,7 @@
 				</div>
 				<div id="fpStats" class="tr">
 					<label for="powerLevel" class="textLabel">Power Level</label>
-					<input id="powerLevel" type="text" name="powerLevel" maxlength="2" value="<?=$this->getPowerLevel()?>" class="width4 alignLeft">
+					<input id="powerLevel" type="text" name="powerLevel" value="<?=$this->getPowerLevel()?>" class="width4 alignLeft">
 					<label for="fatePoints" class="textLabel">Fate Points</label>
 					<input id="fatePoints" type="text" name="fatePoints[current]" maxlength="2" value="<?=$this->getFatePoints('current')?>">
 					<label for="refresh" class="textLabel">Refresh</label>
