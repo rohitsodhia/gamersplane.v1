@@ -1,2 +1,9 @@
 ALTER TABLE games CHANGE COLUMN open status varchar(1) NOT NULL DEFAULT 'o' AFTER logForumID;
 UPDATE games SET status = IF(status = '1', 'o', 'c');
+
+CREATE TABLE gameInvites (
+	gameID int not null,
+	invitedID int not null,
+	invitedOn datetime,
+	PRIMARY KEY (gameID, invitedID)
+) ENGINE = MyISAM;

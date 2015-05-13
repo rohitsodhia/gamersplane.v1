@@ -83,9 +83,13 @@ function skewElement() {
 		'-ms-transform'     : 'skew(' + skewDeg + 'deg)',
 		'-o-transform'      : 'skew(' + skewDeg + 'deg)',
 		'transform'         : 'skew(' + skewDeg + 'deg)',
-		'margin-left'       : Math.ceil(skewedOut) + 'px',
-		'margin-right'      : Math.ceil(skewedOut) + 'px'
+//		'margin-left'       : Math.ceil(skewedOut) + 'px',
+//		'margin-right'      : Math.ceil(skewedOut) + 'px'
 	}).data('skewedOut', skewedOut);
+	if (parseInt($element.css('margin-left').slice(0, -2)) < Math.ceil(skewedOut)) 
+		$element.css('margin-left', Math.ceil(skewedOut) + 'px');
+	if (parseInt($element.css('margin-right').slice(0, -2)) < Math.ceil(skewedOut)) 
+		$element.css('margin-right', Math.ceil(skewedOut) + 'px');
 	$skewDiv.css({
 		'-webkit-transform' : 'skew(' + (skewDeg * -1) + 'deg)',
 		'-moz-transform'    : 'skew(' + (skewDeg * -1) + 'deg)',

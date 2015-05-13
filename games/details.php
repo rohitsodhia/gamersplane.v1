@@ -182,6 +182,15 @@
 			
 			<div<?=$hasRightCol?' class="leftCol"':''?>>
 				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
+<?	if ($isGM) { ?>
+				<div id="invites" class="hbdMargined">
+					<form method="/games/process/invite/">
+						<label>Invite player to game:</label>
+						<input type="text" name="player">
+						<button type="submit" name="invite" class="fancyButton">Invite</button>
+					</form>
+				</div>
+<?	} ?>
 				<ul id="playersInGame" class="hbdMargined hbAttachedList">
 <?	foreach ($approvedPlayers as $playerInfo) { ?>
 					<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
