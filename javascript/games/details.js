@@ -1,5 +1,5 @@
 $(function () {
-	$('#changeStatus, #withdrawFromGame, .actionLinks a, #newMap, .mapActions a, #newDeck, .deckActions a').colorbox();
+	$('#withdrawFromGame, .actionLinks a, #newMap, .mapActions a, #newDeck, .deckActions a').colorbox();
 	$('#toggleForumVisibility').click(function (e) {
 		e.preventDefault();
 
