@@ -2,7 +2,7 @@
 		<h1 class="headerbar">Links</h1>
 		<h2 class="headerbar hbDark">Partners</h2>
 		<ul id="partners" class="clearfix">
-			<li ng-repeat="link in links | filter: { level: 'Partner' } | orderBy: 'sortName'" equalize-heights="maxHeight.partners">
+			<li ng-repeat="link in links.partners | orderBy: 'sortName'" equalize-heights="maxHeight.partners">
 				<div class="image" ng-class="{ 'noImg': !link.image }">
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
 						<p ng-if="!link.image">No Image</p>
@@ -16,7 +16,7 @@
 
 		<h2 class="headerbar hbDark">The RPG Academy Network</h2>
 		<ul id="rpgan" class="clearfix network">
-			<li ng-repeat="link in links | filter: { networks: 'rpga' } | orderBy: 'sortName'" equalize-heights="maxHeight.rpgan">
+			<li ng-repeat="link in links.rpgan | orderBy: 'sortName'" equalize-heights="maxHeight.rpgan">
 				<div class="image" ng-class="{ 'noImg': !link.image }">
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
 						<p ng-if="!link.image">No Image</p>
@@ -30,7 +30,7 @@
 
 		<h2 class="headerbar hbDark">Affiliates</h2>
 		<ul id="affiliates" class="clearfix">
-			<li ng-repeat="link in links | filter: { level: 'Affiliate', networks: '!rpga' } | orderBy: 'sortName'" equalize-heights="maxHeight.affiliates">
+			<li ng-repeat="link in links.affiliates | filter: { networks: '!rpga' } | orderBy: 'sortName'" equalize-heights="maxHeight.affiliates">
 				<div class="image" ng-class="{ 'noImg': !link.image }">
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
 						<p ng-if="!link.image">No Image</p>
@@ -50,7 +50,7 @@
 			</div>
 		</div>
 		<ul id="links" class="clearfix">
-			<li ng-repeat="link in links | filter: { level: 'Link' } | intersect: 'categories':filter | orderBy: 'sortName'" equalize-heights="maxHeight.links">
+			<li ng-repeat="link in links.links | intersect: 'categories':filter | orderBy: 'sortName'" equalize-heights="maxHeight.links">
 				<div class="image" ng-class="{ 'noImg': !link.image }">
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
 						<p ng-if="!link.image">No Image</p>
