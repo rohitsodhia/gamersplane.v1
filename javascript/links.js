@@ -23,7 +23,7 @@ controllers.controller('links', function ($scope, $http, $sce, $filter) {
 		{ 'slug': 'dev', 'label': 'Devs' },
 		{ 'slug': 'accessories', 'label': 'Accessories' }
 	];
-	$scope.filter = { 'blog': true, 'podcast': true, 'videocast': true, 'liveplay': true, 'accessories': true };
+	$scope.filter = { 'blog': true, 'podcast': true, 'videocast': true, 'liveplay': true, 'dev': true, 'accessories': true };
 
 	$scope.maxHeight = {
 		'partners': 0,
