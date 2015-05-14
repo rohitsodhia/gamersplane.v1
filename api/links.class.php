@@ -131,11 +131,6 @@
 			foreach ($_POST['categories'] as $key => $value) 
 				if ($value) 
 					$data['categories'][] = $key;
-			$data['flags'] = array();
-			$_POST['flags'] = json_decode(html_entity_decode($_POST['flags']));
-			foreach ($_POST['flags'] as $key => $value) 
-				if ($value) 
-					$data['flags'][] = $key;
 
 			if (!isset($_POST['_id'])) {
 				$data['random'] = $mongo->execute('Math.random()');

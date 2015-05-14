@@ -323,9 +323,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				{ 'slug': 'dev', 'label': 'Devs' },
 				{ 'slug': 'accessories', 'label': 'Accessories' }
 			];
-			scope.flags = [
-				{ 'slug': 'content', 'label': 'Content Warning' }
-			];
 			if (typeof attrs.new != 'undefined') {
 				scope.new = true;
 				scope.editing = true;
