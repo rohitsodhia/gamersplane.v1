@@ -18,7 +18,7 @@
 		<tr><td style="padding:0 10px;border-color:#111;border-style:solid;border-width:0 1px 0 1px">
 			<h1 style="background-color:#C60;color:#FFF;margin:.3em auto; width: 538px;"><img src="<?=$pathBase?>/images/emails/text/New_PM.jpg" alt="New PM"></h1>
 			<p><a href="http://gamersplane.com/user/<?=$sender->userID?>/" class="username"><?=$sender->username?></a> has sent you a new PM!</p>
-			<p style="margin: 15px 20px;"><?=$printReady(sanitizeString($_POST['message']))?></p>
+			<p style="margin: 15px 20px;"><?=printReady(sanitizeString($_POST['message']))?></p>
 			<p>See and reply to this message in your <a href="http://gamersplane.com/pms/">PM inbox</a>.</p>
 			<p style="text-align: right;">- The Gamers Plane Team</p>
 			<p style="font-size: .8em; margin-top: 2em;">If you'd like to stop recieving emails about pms, please head to your <a href="http://gamersplane.com/ucp/">user control panel</a> and change the option labeled as "Recieve new pm emails?" to "No".</p>
