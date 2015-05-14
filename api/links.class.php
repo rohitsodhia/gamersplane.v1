@@ -24,8 +24,8 @@
 			$search = array();
 			if (isset($_POST['level']) && in_array($_POST['level'], array('Link', 'Affiliate', 'Partner'))) 
 				$search['level'] = $_POST['level'];
-			if (isset($_POST['network'])) 
-				$search['network'] = $_POST['network'];
+			if (isset($_POST['networks'])) 
+				$search['networks'] = $_POST['networks'];
 
 			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
 			$numLinks = $mongo->links->find($search, array('_id' => 1))->count();
@@ -131,11 +131,6 @@
 			foreach ($_POST['categories'] as $key => $value) 
 				if ($value) 
 					$data['categories'][] = $key;
-			$data['flags'] = array();
-			$_POST['flags'] = json_decode(html_entity_decode($_POST['flags']));
-			foreach ($_POST['flags'] as $key => $value) 
-				if ($value) 
-					$data['flags'][] = $key;
 
 			if (!isset($_POST['_id'])) {
 				$data['random'] = $mongo->execute('Math.random()');
