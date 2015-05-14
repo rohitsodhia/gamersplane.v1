@@ -260,8 +260,8 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	function getLinks(page) {
 		if (typeof page == 'undefined') 
 			page = 1;
+		$scope.links = [];
 		$http.post(API_HOST + '/links/list/', { page: page }).success(function (data) {
-			$scope.links = [];
 			$(data.links).each(function (key, value) {
 				networks = value.networks;
 				value.networks = {};
