@@ -37,6 +37,7 @@
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
 						<p ng-if="!link.image">No Image</p>
 						<img ng-if="link.image" src="/images/links/{{link._id}}.{{link.image}}">
+						<img ng-if="link.flags.indexOf('content') > -1" src="/images/warning.png" title="Content Warning" alt="Content Warning" class="warning">
 					</a>
 				</div>
 				<p><a href="{{link.url}}" target="_blank">{{link.title}}</a></p>

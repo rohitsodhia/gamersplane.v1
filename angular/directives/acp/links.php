@@ -19,6 +19,9 @@
 						<div class="categories">
 							<div ng-repeat="category in categories" ng-show="data.categories[category.slug] || editing"><pretty-checkbox eleid="{{category.slug}}_{{data._id}}" checkbox="data.categories[category.slug]" ng-show="editing"></pretty-checkbox> <label for="{{category.slug}}_{{data._id}}">{{category.label}}</label></div>
 						</div>
+						<div class="flags">
+							<div ng-repeat="flag in flags" ng-show="data.flags[flag.slug] || editing"><pretty-checkbox eleid="{{flag.slug}}_{{data._id}}" checkbox="data.flags[flag.slug]" ng-show="editing"></pretty-checkbox> <label for="{{flag.slug}}_{{data._id}}">{{flag.label}}</label></div>
+						</div>
 					</div>
 					<div class="actions">
 						<div ng-if="!new">
