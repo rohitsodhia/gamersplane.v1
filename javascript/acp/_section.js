@@ -257,8 +257,10 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		updateGenres();
 	}
 }).controller('acp_links', function ($scope, $http, $sce) {
-	function getLinks() {
-		$http.post(API_HOST + '/links/list/', {}).success(function (data) {
+	function getLinks(page) {
+		if (typeof page == 'undefined') 
+			page = 1;
+		$http.post(API_HOST + '/links/list/', { page: page }).success(function (data) {
 			$scope.links = [];
 			$(data.links).each(function (key, value) {
 				networks = value.networks;
@@ -271,12 +273,32 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 					value.categories[categories[nKey]] = true
 				$scope.links.push(value);
 			})
+
+			$scope.pagination.numItems = Math.ceil(data.totalCount / 20);
+			$scope.pagination.pages = new Array();
+			for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
+				$scope.pagination.pages.push(count);
+			}
 		});
 	}
+	$scope.pagination = {};
+	if ($.urlParam('page')) 
+		$scope.pagination.current = parseInt($.urlParam('page'));
+	else 
+		$scope.pagination.current = 1;
+	$scope.showPagination = true;
 
 	$scope.links = {};
 	$scope.newLink = {};
 	getLinks();
+
+	$scope.changePage = function (page) {
+		page = parseInt(page);
+		if (page < 0 && page > $scope.pagination.numItems) 
+			page = 1;
+		$scope.pagination.current = page;
+		getLinks(page);
+	}
 }).directive('linksEdit', ['$filter', '$http', '$upload', function ($filter, $http, $upload) {
 	return {
 		restrict: 'E',
