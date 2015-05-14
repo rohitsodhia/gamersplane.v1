@@ -16,8 +16,7 @@
 				$showPubGames = $currentUser->showPubGames;
 				if ($showPubGames === null) {
 					$showPubGames = 1;
-					$currentUser->updateUsermeta('showPubGames', '1');
-					$currentUser->setMetaAutoload('showPubGames', '1');
+					$currentUser->updateUsermeta('showPubGames', '1', true);
 				}
 			} else 
 				$showPubGames = 1;

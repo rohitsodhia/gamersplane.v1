@@ -2613,8 +2613,15 @@ div.forumIcon.newPosts.locked {
 	}
 
 	.image {
+		position: relative;
 		margin: 0 auto 10px;
 		text-align: center;
+
+		.warning {
+			position: absolute;
+			bottom: -8px;
+			right: -12px;
+		}
 	}
 
 	img {
@@ -2659,6 +2666,25 @@ div.forumIcon.newPosts.locked {
 			height: 160px;
 			width: 160px;
 			line-height: 160px;
+		}
+
+		a.noImg {
+			display: inline-block;
+			.borderBox;
+			height: 160px;
+			width: 160px;
+			line-height: 160px;
+			border: 1px solid #000;
+			.border-radius;
+
+			p {
+				display: inline-block;
+				margin: 0 auto;
+				color: #000;
+				font-weight: bold;
+				font-size: 1.2em;
+				line-height: 1.3em;
+			}
 		}
 
 		img {

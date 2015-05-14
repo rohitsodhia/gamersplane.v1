@@ -93,8 +93,16 @@
 					<div><input id="games" type="text" name="games" value="<?=printReady($user->games)?>"></div>
 				</div>
 				<div class="tr">
+					<label>Recieve PM emails?</label>
+					<div><input type="radio" name="pmMail" value="1"<?=$user->pmMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="pmMail" value="0"<?=$user->pmMail == 0?' checked="checked"':''?>> No</div>
+				</div>
+				<div class="tr">
 					<label>Recieve new game emails?</label>
 					<div><input type="radio" name="newGameMail" value="1"<?=$user->newGameMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="newGameMail" value="0"<?=$user->newGameMail == 0?' checked="checked"':''?>> No</div>
+				</div>
+				<div class="tr">
+					<label>Recieve GM emails? (Approvals)</label>
+					<div><input type="radio" name="gmMail" value="1"<?=$user->gmMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="gmMail" value="0"<?=$user->gmMail == 0?' checked="checked"':''?>> No</div>
 				</div>
 				<div class="tr submitDiv">
 					<button type="submit" name="submit" class="fancyButton">Save</button>

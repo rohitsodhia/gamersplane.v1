@@ -16,7 +16,8 @@
 		public function __construct($userDetail = null) {
 			global $mysql;
 
-			if ($userDetail == null) return false;
+			if ($userDetail == null) 
+				return false;
 
 			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn FROM users WHERE ".(strpos($userDetail, '@')?'email':'userID')." = :userDetail LIMIT 1");
 			$userInfo->bindParam(':userDetail', $userDetail);
@@ -107,8 +108,10 @@
 			$addUser->execute();
 
 			$this->userID = $mysql->lastInsertId();
-			if ($this->userID) return $this->userID;
-			else return false;
+			if ($this->userID) 
+				return $this->userID;
+			else 
+				return false;
 		}
 
 		public function activated() {
@@ -118,8 +121,10 @@
 		public function validate($password) {
 			if ($this->userID !== null) {
 				if (hash('sha256', PVAR.$password.$this->salt) == $this->password) return true;
-				else return false;
-			} else return false;
+				else 
+					return false;
+			} else 
+				return false;
 		}
 
 		public function updatePassword($password) {
@@ -149,7 +154,8 @@
 			$metaValue->execute();
 
 			$this->usermeta[$metaKey] = $metaValue->rowCount()?$metaValue->fetchColumn():null;
-			if (is_string($this->usermeta[$metaKey]) && strlen($this->usermeta[$metaKey]) > 4 && substr($this->usermeta[$metaKey], 0, 2) == 'a:') $this->usermeta[$metaKey] = unserialize($this->usermeta[$metaKey]);
+			if (is_string($this->usermeta[$metaKey]) && strlen($this->usermeta[$metaKey]) > 4 && substr($this->usermeta[$metaKey], 0, 2) == 'a:') 
+				$this->usermeta[$metaKey] = unserialize($this->usermeta[$metaKey]);
 
 			return $this->usermeta[$metaKey];
 		}
@@ -159,36 +165,31 @@
 
 			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 0");
 			foreach ($metaValues as $metas) {
-				if (is_string($metas['metaKey']) && strlen($metas['metaKey']) > 4 && substr($metas['metaKey'], 0, 2) == 'a:') $metas['metaKey'] = unserialize($metas['metaKey']);
+				if (is_string($metas['metaKey']) && strlen($metas['metaKey']) > 4 && substr($metas['metaKey'], 0, 2) == 'a:') 
+					$metas['metaKey'] = unserialize($metas['metaKey']);
 				$this->usermeta[$metas['metaKey']] = $metas['metaValue'];
 			}
 
 			return true;
 		}
 
-		public function updateUsermeta($metaKey, $metaValue) {
+		public function updateUsermeta($metaKey, $metaValue, $autoload = false) {
 			global $mysql;
 
 			if ($metaValue !== null && $metaValue !== '') {
-				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue ON DUPLICATE KEY UPDATE metaValue = :metaValue");
+				$autoload = $autoload === true?1:0;
+				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue");
 				$updateUsermeta->bindValue(':metaKey', $metaKey);
-				if (is_array($metaValue)) $metaValue = serialize($metaValue);
+				if (is_array($metaValue)) 
+					$metaValue = serialize($metaValue);
 				$updateUsermeta->bindValue(':metaValue', $metaValue);
 				$updateUsermeta->execute();
 
 				$this->usermeta[$metaKey] = $metaValue;
-			} else $this->deleteUsermeta($metaKey);
+			} else 
+				$this->deleteUsermeta($metaKey);
 
 			return true;
-		}
-
-		public function setMetaAutoload($metaKey, $autoload = 0) {
-			global $mysql;
-			
-			if ($autoload != 1) $autoload = 0;
-			$updateAutoload = $mysql->prepare("UPDATE usermeta SET autoload = {$autoload} WHERE userID = {$this->userID} AND metaKey = :metaKey");
-			$updateAutoload->bindValue(':metaKey', $metaKey);
-			$updateAutoload->execute();
 		}
 
 		public function deleteUsermeta($metaKey) {
@@ -200,17 +201,22 @@
 		}
 
 		static function getAvatar($userID, $ext = 'jpg', $exists = false) {
-			if (file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}")) return $exists?true:"/ucp/avatars/{$userID}.{$ext}";
-			else return $exists?false:'/ucp/avatars/avatar.png';
+			if (file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}")) 
+				return $exists?true:"/ucp/avatars/{$userID}.{$ext}";
+			else 
+				return $exists?false:'/ucp/avatars/avatar.png';
 		}
 
 		public function checkACP($role = null, $redirect = true) {
-			if ($role == null && sizeof($this->acpPermissions)) return true;
+			if ($role == null && sizeof($this->acpPermissions)) 
+				return true;
 			elseif (strlen($role)) {
-				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)))) return false;
+				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)))) 
+					return false;
 				elseif ($this->acpPermissions == null) { header('Location: /'); exit; }
 				elseif (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)) { header('Location: /acp/'); exit; }
-				else return true;
+				else 
+					return true;
 			}
 		}
 	}

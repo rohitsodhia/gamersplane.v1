@@ -10,15 +10,14 @@
 		$currentUser = new User($userID);
 		$mysql->query("UPDATE users SET activatedOn = NOW() WHERE userID = {$userID}");
 		$mysql->query("INSERT INTO forums_groupMemberships (userID, groupID) VALUES ({$userID}, 1)");
-		$currentUser->updateUsermeta('enableFilter', 1);
-		$currentUser->setMetaAutoload('enableFilter', 1);
-		$currentUser->updateUsermeta('showAvatars', 1);
-		$currentUser->setMetaAutoload('showAvatars', 1);
+		$currentUser->updateUsermeta('enableFilter', 1, true);
+		$currentUser->updateUsermeta('showAvatars', 1, true);
+		$currentUser->updateUsermeta('pmMail', 1);
 		$currentUser->updateUsermeta('newGameMail', 1);
-		$currentUser->updateUsermeta('postSide', 'r');
-		$currentUser->setMetaAutoload('postSide', 1);
-		$currentUser->updateUsermeta('showPubGames', 1);
-		$currentUser->setMetaAutoload('showPubGames', 1);
+		$currentUser->updateUsermeta('gmMail', 1);
+		$currentUser->updateUsermeta('postSide', 'r', true);
+		$currentUser->updateUsermeta('showPubGames', 1, true);
+		$currentUser->updateUsermeta('showPubGames', 1, true);
 
 		addUserHistory($userID, 'activated');
 

@@ -25,17 +25,24 @@
 		public function setStat($stat, $sub, $value = '') {
 			if ($sub != 'dice' && $sub != 'skills') return false;
 
-			if (array_key_exists($stat, $this->stats)) $this->stats[$stat][$sub] = intval($value);
-			else return false;
+			if (array_key_exists($stat, $this->stats)) 
+				$this->stats[$stat][$sub] = sanitizeString($value);
+			else 
+				return false;
 		}
 		
 		public function getStats($stat = null, $sub = null) {
-			if ($stat == null) return $this->stats;
-			elseif (array_key_exists($stat, $this->stats) && $sub == null) return $this->stats[$stat];
+			if ($stat == null) 
+				return $this->stats;
+			elseif (array_key_exists($stat, $this->stats) && $sub == null) 
+				return $this->stats[$stat];
 			elseif (array_key_exists($stat, $this->stats)) {
-				if ($sub != 'dice' && $sub != 'skills') return false;
-				else return $this->stats[$stat][$sub];
-			} else return false;
+				if ($sub != 'dice' && $sub != 'skills') 
+					return false;
+				else 
+					return $this->stats[$stat][$sub];
+			} else 
+				return false;
 		}
 
 		public function setEdgesHindrances($edgesHindrances) {
@@ -55,14 +62,19 @@
 		}
 
 		public function setWounds($region, $value) {
-			if (array_key_exists($region, $this->wounds)) $this->wounds[$region] = intval($value);
-			else return false;
+			if (array_key_exists($region, $this->wounds)) 
+				$this->wounds[$region] = intval($value);
+			else 
+				return false;
 		}
 
 		public function getWounds($region) {
-			if ($region == null) return $this->wounds;
-			elseif (array_key_exists($region, $this->wounds)) return $this->wounds[$region];
-			else return false;
+			if ($region == null) 
+				return $this->wounds;
+			elseif (array_key_exists($region, $this->wounds)) 
+				return $this->wounds[$region];
+			else 
+				return false;
 		}
 
 		public function setWind($wind) {
@@ -106,9 +118,10 @@
 					$this->setStat($stat, 'dice', $value['numDice'].'d'.$value['typeDice']);
 					$this->setStat($stat, 'skills', $value['skills']);
 				}
-				$this->setEdgesHindrances($data['edgesHindrances']);
+				$this->setEdgesHindrances($data['edge_hind']);
 				$this->setNightmare($data['nightmare']);
-				foreach ($data['wounds'] as $region => $value) $this->setWounds($region, $value);
+				foreach ($data['wounds'] as $region => $value) 
+					$this->setWounds($region, $value);
 				$this->setWind($data['wind']);
 				$this->setWeapons($data['weapons']);
 				$this->setArcane($data['arcane']);
