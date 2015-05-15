@@ -282,7 +282,7 @@
 		</div>
 
 <?
-	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) {
+	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 		$characters = array();
 		if ($gameID) {
 			require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
