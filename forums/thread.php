@@ -66,7 +66,7 @@
 <?	} ?>
 				</div>
 			</div>
-<?	if ($threadManager->getPoll()) { ?>
+<?	if (!$threadManager->getThreadProperty('locked') && $threadManager->getPoll()) { ?>
 			<form id="poll" method="post" action="/forums/process/vote/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($threadManager->getPollProperty('question'))?></p>
