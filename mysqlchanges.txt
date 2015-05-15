@@ -1,3 +1,4 @@
+UPDATE dispatch SET ngController = 'games_details' WHERE file = 'games/details.php';
 ALTER TABLE games CHANGE COLUMN open status varchar(1) NOT NULL DEFAULT 'o' AFTER logForumID;
 UPDATE games SET status = IF(status = '1', 'o', 'c');
 

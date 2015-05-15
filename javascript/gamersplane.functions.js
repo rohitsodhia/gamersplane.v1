@@ -14,13 +14,11 @@ String.prototype.capitalizeFirstLetter = function() {
 
 function getPathElements() {
 	pathElements = window.location.pathname.split('/');
-	var cleanArray = new Array();
-	for (key in pathElements) {
-		if (pathElements[key]) 
-			cleanArray.push(pathElements[key]);
-	}
+	for (key in pathElements) 
+		if (pathElements[key].length == 0) 
+			pathElements.splice(key, 1);
 
-	return cleanArray;
+	return pathElements;
 }
 
 function decToB26(num) {

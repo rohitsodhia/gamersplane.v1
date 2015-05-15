@@ -5,6 +5,8 @@
 
 			if ($pathOptions[0] == 'search') 
 				$this->search();
+			elseif ($pathOptions[0] == 'getCurrentUser') 
+				$this->getCurrentUser();
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -28,6 +30,22 @@
 			} else {
 //				$valid = $mysql->query("SELECT userID, username, email FROM users WHERE username LIKE '%{$search}%'");
 			}
+		}
+
+		public function getCurrentUser() {
+			global $currentUser;
+
+			$cleanUser = array(
+				'userID' => $currentUser->userID,
+				'username' => $currentUser->username,
+				'email' => $currentUser->email,
+				'joinDate' => $currentUser->joinDate,
+				'activatedOn' => $currentUser->activatedOn,
+				'timezone' => $currentUser->timezone,
+				'usermeta' => $currentUser->usermeta,
+				'acpPermissions' => $currentUser->acpPermissions
+			);
+			return displayJSON($cleanUser);
 		}
 	}
 ?>

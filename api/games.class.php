@@ -19,32 +19,26 @@
 		}
 
 		public function details($gameID) {
-			global $mongo, $currentUser;
+			global $mysql, $mongo, $currentUser;
 
-			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.groupID, g.status, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
-			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
-			$numPMs = $mongo->pms->find($search, array('_id' => 1))->count();
-			$pmsResults = $mongo->pms->find($search)->sort(array('datestamp' => -1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
-			$pms = array();
-			foreach ($pmsResults as $pm) {
-				$pm['read'] = true;
-				if ($box == 'inbox') {
-					$pm['allowDelete'] = true;
-					foreach ($pm['recipients'] as $recipient) 
-						if ($recipient['userID'] == $currentUser->userID) 
-							$pm['read'] = $recipient['read'];
-				} else {
-					$pm['allowDelete'] = true;
-					foreach ($pm['recipients'] as $recipient) {
-						if ($recipient['read']) {
-							$pm['allowDelete'] = false;
-							break;
-						}
-					}
-				}
-				$pms[] = $pm;
-			}
-			displayJSON(array('box' => $box, 'pms' => $pms, 'totalCount' => $numPMs));
+			$gameID = intval($gameID);
+			if (!$gameID) 
+				displayJSON(array('failed' => true));
+			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.groupID, g.status, u.username FROM games g INNER JOIN users u ON g.gmID = u.userID WHERE g.gameID = $gameID");
+			if (!$gameInfo->rowCount()) 
+				displayJSON(array('failed' => true, 'noGame' => true));
+			$gameInfo = $gameInfo->fetch();
+			$gameInfo['title'] = printReady($gameInfo['title']);
+			$system = $mongo->systems->findOne(array('id' => $gameInfo['system']), array('name' => 1));
+			$gameInfo['system'] = array('_id' => $gameInfo['system'], 'name' => $system['name']);
+			$gameInfo['gm'] = array('userID' => $gameInfo['gmID'], 'username' => $gameInfo['gmUsername']);
+			unset($gameInfo['gmID'], $gameInfo['gmUsername']);
+			$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
+			$gameInfo['description'] = printReady($gameInfo['description']);
+			$gameInfo['charGenInfo'] = printReady($gameInfo['charGenInfo']);
+			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID}")->fetchAll();
+			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID}")->fetchAll();
+			displayJSON(array('details' => $gameInfo, 'players' => $players, 'characters' => $characters));
 		}
 
 		public function displayPM($pmID) {

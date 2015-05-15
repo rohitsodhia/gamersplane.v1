@@ -158,6 +158,16 @@ $(function() {
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'angularFileUpload']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
+}).factory('currentUser', function ($http) {
+	var factory = {};
+
+	factory.getUser = function () {
+		$http.post(API_HOST + '/users/getCurrentUser/').success(function (data) {
+			factory.user = data;
+		});
+	}
+
+	return factory;
 }).directive('paginate', function () {
 	return {
 		restrict: 'E',
