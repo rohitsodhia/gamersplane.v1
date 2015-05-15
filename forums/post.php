@@ -15,7 +15,7 @@
 
 		if ($post->getAuthor('userID') != $currentUser->userID && !$threadManager->getPermissions('moderate')) 
 			$noChat = true;
-		elseif ($threadManager->getThreadProperty('locked') && !$threadManager->getPermissions('moderate')) 
+		elseif ($threadManager->getThreadProperty('states[locked]') && !$threadManager->getPermissions('moderate')) 
 			$noChat = true;
 		elseif (!$threadManager->getPermissions('write')) 
 			$noChat = true;
@@ -33,7 +33,7 @@
 			$threadManager = new ThreadManager($threadID);
 			$post = new Post();
 
-			if ($threadManager->getThreadProperty('locked') || !$threadManager->getPermissions('write')) 
+			if ($threadManager->getThreadProperty('states[locked]') || !$threadManager->getPermissions('write')) 
 				$noChat = true;
 			else {
 				if (isset($_SESSION['message'])) {
@@ -197,7 +197,7 @@
 <?
 		}
 		if ($threadManager->getPermissions('moderate')) {
-			$locked = $threadManager->getThreadProperty('locked');
+			$locked = $threadManager->getThreadProperty('states[locked]');
 			if ($fillVars) 
 				$locked = $fillVars['locked'];
 ?>

@@ -66,7 +66,7 @@
 <?	} ?>
 				</div>
 			</div>
-<?	if (!$threadManager->getThreadProperty('locked') && $threadManager->getPoll()) { ?>
+<?	if (!$threadManager->getThreadProperty('states[locked]') && $threadManager->getPoll()) { ?>
 			<form id="poll" method="post" action="/forums/process/vote/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($threadManager->getPollProperty('question'))?></p>
@@ -247,7 +247,7 @@
 				<div class="postActions">
 <?
 			if ($threadManager->getPermissions('write')) echo "						<a href=\"/forums/post/{$threadID}/?quote={$post->postID}\">Quote</a>\n";
-			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('locked')) || $threadManager->getPermissions('moderate')) {
+			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) echo "					<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('deletePost') && $post->postID != $threadManager->getThreadProperty('firstPostID') || $threadManager->getPermissions('deleteThread') && $post->postID == $threadManager->getThreadProperty('firstPostID')) echo "					<a href=\"/forums/delete/{$post->postID}/\" class=\"deletePost\">Delete</a>\n";
 			}
@@ -282,7 +282,7 @@
 		</div>
 
 <?
-	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('locked')) {
+	if ($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) {
 		$characters = array();
 		if ($gameID) {
 			require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
@@ -321,7 +321,7 @@
 			</div>
 		</form>
 <?
-	} elseif ($threadManager->getThreadProperty('locked')) echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
+	} elseif ($threadManager->getThreadProperty('states[locked]')) echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
 	else echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
 
 	$threadManager->updateLastRead($lastPostID);
