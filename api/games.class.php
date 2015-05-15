@@ -6,9 +6,9 @@
 
 			if ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
-/*			elseif ($pathOptions[0] == 'allowed' && intval($_POST['pmID'])) 
-				$this->checkAllowed($_POST['pmID']);
-			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
+			elseif ($pathOptions[0] == 'invite' && intval($_POST['user'])) 
+				$this->invite($_POST['user']);
+/*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
 				$this->displayPM($_POST['pmID']);
 			elseif ($pathOptions[0] == 'send') 
 				$this->sendPM();
@@ -19,6 +19,7 @@
 		}
 
 		public function details($gameID) {
+			require_once(FILEROOT.'/../javascript/markItUp/markitup.bbcode-parser.php');
 			global $mysql, $mongo, $currentUser;
 
 			$gameID = intval($gameID);
@@ -41,8 +42,7 @@
 			displayJSON(array('details' => $gameInfo, 'players' => $players, 'characters' => $characters));
 		}
 
-		public function displayPM($pmID) {
-			require_once(FILEROOT.'/../javascript/markItUp/markitup.bbcode-parser.php');
+		public function invite($user) {
 			global $mongo, $currentUser;
 
 			$pmID = intval($pmID);
