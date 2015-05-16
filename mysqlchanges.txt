@@ -4,6 +4,6 @@ UPDATE games SET status = IF(status = '1', 'o', 'c');
 CREATE TABLE gameInvites (
 	gameID int not null,
 	invitedID int not null,
-	invitedOn datetime,
+	invitedOn datetime DEFAULT NOW(),
 	PRIMARY KEY (gameID, invitedID)
 ) ENGINE = MyISAM;

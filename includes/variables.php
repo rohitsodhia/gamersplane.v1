@@ -1,5 +1,6 @@
 <?
 	define('FILEROOT', $_SERVER['DOCUMENT_ROOT']);
+	define('API_HOST', 'http://api.'.$_SERVER['HTTP_HOST']);
 
 	define('PVAR', 'xU3Fh9XLo21mlHuk6H31');
 	define('MODAL', (isset($_GET['modal']) && $_GET['modal'] == 1) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')?TRUE:FALSE);

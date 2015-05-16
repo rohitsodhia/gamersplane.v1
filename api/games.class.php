@@ -6,8 +6,8 @@
 
 			if ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
-			elseif ($pathOptions[0] == 'invite' && intval($_POST['user'])) 
-				$this->invite($_POST['user']);
+			elseif ($pathOptions[0] == 'invite' && intval($_POST['gameID']) && strlen($_POST['user'])) 
+				$this->invite($_POST['gameID'], $_POST['user']);
 /*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
 				$this->displayPM($_POST['pmID']);
 			elseif ($pathOptions[0] == 'send') 
@@ -42,50 +42,28 @@
 			displayJSON(array('details' => $gameInfo, 'players' => $players, 'characters' => $characters));
 		}
 
-		public function invite($user) {
-			global $mongo, $currentUser;
+		public function invite($gameID, $user) {
+			global $mysql, $currentUser;
 
-			$pmID = intval($pmID);
-			$includeSelfHistory = isset($_POST['includeSelfHistory']) && $_POST['includeSelfHistory']?true:false;
-
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID, 'recipients.deleted' => false))));
-			if ($pm === null) displayJSON(array('noPM' => true));
-			else {
-				$pm['title'] = printReady($pm['title']);
-				$pm['message'] = BBCode2Html(printReady($pm['message']));
-				$pm['allowDelete'] = true;
-				$history = $pm['history'];
-				if ($pm['sender']['userID'] == $currentUser->userID) {
-					foreach ($pm['recipients'] as $recipient) 
-						if ($recipient['read'] && !$recipient['deleted']) 
-							$pm['allowDelete'] = false;
-				} elseif (isset($_POST['markRead']) && $_POST['markRead']) 
-					$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.read' => true)));
-				if (sizeof($history) || $includeSelfHistory) {
-					$pm['history'] = array();
-					if ($includeSelfHistory) 
-						$pm['history'][] = array(
-							'pmID' => $pm['pmID'],
-							'sender' => $pm['sender'],
-							'recipients' => $pm['recipients'],
-							'title' => $pm['title'],
-							'message' => $pm['message'],
-							'datestamp' => $pm['datestamp'],
-							'replyTo' => $pm['replyTo'],
-						);
-					if (is_array($history)) {
-						foreach ($history as $pmID) {
-							$hPM = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
-							$hPM['title'] = printReady($hPM['title']);
-							$hPM['message'] = BBCode2Html(printReady($hPM['message']));
-							$pm['history'][] = $hPM;
-							if (sizeof($pm['history']) == 10) 
-								break;
-						}
-					}
-				}
-				displayJSON($pm);
-			}
+			$gameID = intval($gameID);
+			$isGM = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID} AND gameID = {$gameID}");
+			if ($isGM->rowCount()) {
+				$userCheck = $mysql->prepare("SELECT userID, username, email FROM users WHERE username = :username LIMIT 1");
+				$userCheck->execute(array(':username' => $user));
+				if ($userCheck->rowCount() == 1) {
+					$user = $userCheck->fetch();
+					$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, invitedID = {$user['userID']}");
+					$gameInfo = $mysql->query("SELECT g.title, g.system, s.fullName FROM games g INNER JOIN systems s ON g.system = s.shortName WHERE g.gameID = {$gameID}")->fetch();
+					ob_start();
+					include('emails/gameInviteEmail.php');
+					$email = ob_get_contents();
+					ob_end_clean();
+					@mail($user['email'], "Game Invite", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+					displayJSON(array('success' => true, 'user' => $user));
+				} else 
+					displayJSON(array('failed' => true, 'errors' => array('invalidUser')));
+			} else 
+				displayJSON(array('failed' => true, 'errors' => 'notGM'));
 		}
 
 		public function checkAllowed($pmID) {

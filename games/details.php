@@ -5,7 +5,7 @@
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 
-	$postFrequency = explode('/', $gameInfo['postFrequency']);
+	$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
 	$isGM = $gameInfo['isGM']?true:false;
 	
 	if (!$isGM) {
@@ -76,7 +76,7 @@
 			</div>
 			<div class="tr clearfix">
 				<label>Post Frequency</label>
-				<div><?=$postFrequency[0].' post'.($postFrequency[0] == 1?'':'s').' per '.($postFrequency[1] == 'd'?'day':'week')?></div>
+				<div><?=$gameInfo['postFrequency'][0].' post'.($gameInfo['postFrequency'][0] == 1?'':'s').' per '.($gameInfo['postFrequency'][1] == 'd'?'day':'week')?></div>
 			</div>
 			<div class="tr clearfix">
 				<label>Number of Players</label>
@@ -184,9 +184,10 @@
 				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
 <?	if ($isGM) { ?>
 				<div id="invites" class="hbdMargined">
-					<form method="/games/process/invite/">
+					<form id="invite" method="post" action="<?=API_HOST?>/games/invite/">
 						<label>Invite player to game:</label>
-						<input type="text" name="player">
+						<input type="hidden" name="gameID" value="<?=$gameID?>">
+						<input type="text" name="user">
 						<button type="submit" name="invite" class="fancyButton">Invite</button>
 					</form>
 				</div>

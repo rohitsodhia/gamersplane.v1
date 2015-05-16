@@ -11,6 +11,25 @@ $(function () {
 			$forumVis.text('[ Make game ' + (status == 'Public'?'Public':'Private') + ' ]');
 		});
 	});
+
+	$('#invite').submit(function (e) {
+		e.preventDefault();
+
+		gameID = $(this).find('input[name=gameID]').val();
+		user = $(this).find('input[name=user]').val();
+
+		$.ajax({
+			method: 'POST',
+			url: API_HOST + '/games/invite/',
+			data: { gameID: gameID, user: user },
+			xhrFields: {
+				withCredentials: true
+			},
+			success: function (data) {
+				console.log(data);
+			}
+		});
+	});
 });
 /*controllers.controller('games_details', function ($scope, $http, $sce, $filter, currentUser) {
 	pathElements = getPathElements();
