@@ -10,6 +10,12 @@
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 
+		if ($_POST['threadID']) {
+			$threadID = intval($_POST['threadID']);
+			$threadManager = new ThreadManager($threadID);
+			if (!$threadManager->getPermissions('write') || ($locked && $threadManager->getPermissions('moderate'))) { header('Location: /forums/'.$forumID.'/'); exit; }
+		}
+
 		if ($_POST['edit']) {
 			$postID = intval($_POST['edit']);
 			$post = new Post($postID);
@@ -127,9 +133,7 @@
 				$postID = $threadManager->saveThread($post);
 		} elseif ($_POST['threadID']) {
 			$threadID = intval($_POST['threadID']);
-			$threadManager = new ThreadManager($threadID);
-			if (!$threadManager->getPermissions('write') || $locked) { header('Location: /forums/'.$forumID.'/'); exit; }
-			
+
 			$post->setThreadID($threadID);
 			if (strlen($post->getTitle()) == 0) 
 				$title = 'Re: '.$threadManager->getThreadProperty('title');
