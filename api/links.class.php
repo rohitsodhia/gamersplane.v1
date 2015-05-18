@@ -4,7 +4,6 @@
 
 		function __construct() {
 			global $loggedIn, $pathOptions;
-			if (!$loggedIn) exit;
 
 			if ($pathOptions[0] == 'list') 
 				$this->getLinks();
@@ -101,7 +100,8 @@
 		}
 
 		public function saveLink() {
-			global $mongo;
+			global $loggedIn, $mongo;
+			if (!$loggedIn) exit;
 
 			$data = array();
 			if (isset($_POST['_id'])) 
@@ -147,14 +147,18 @@
 		}
 
 		public function deleteImage() {
-			global $mongo;
+			global $loggedIn, $mongo;
+			if (!$loggedIn) exit;
+
 			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $oldFile) 
 				unlink($oldFile);
 			$mongo->links->update(array('_id' => new MongoId($_POST['_id'])), array('$unset' => array('image' => '')));
 		}
 
 		public function deleteLink() {
-			global $mongo;
+			global $loggedIn, $mongo;
+			if (!$loggedIn) exit;
+
 			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $file) 
 				unlink($file);
 			$mongo->links->remove(array('_id' => new MongoId($_POST['_id'])));
