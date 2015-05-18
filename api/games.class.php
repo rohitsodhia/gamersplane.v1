@@ -2,7 +2,6 @@
 	class games {
 		function __construct() {
 			global $loggedIn, $pathOptions;
-			if (!$loggedIn) exit;
 
 			if ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
@@ -25,21 +24,42 @@
 			$gameID = intval($gameID);
 			if (!$gameID) 
 				displayJSON(array('failed' => true));
-			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.groupID, g.status, u.username FROM games g INNER JOIN users u ON g.gmID = u.userID WHERE g.gameID = $gameID");
+			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = $gameID");
 			if (!$gameInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'noGame' => true));
 			$gameInfo = $gameInfo->fetch();
+			$gameInfo['gameID'] = (int) $gameInfo['gameID'];
 			$gameInfo['title'] = printReady($gameInfo['title']);
-			$system = $mongo->systems->findOne(array('id' => $gameInfo['system']), array('name' => 1));
+			$system = $mongo->systems->findOne(array('_id' => $gameInfo['system']), array('name' => 1));
 			$gameInfo['system'] = array('_id' => $gameInfo['system'], 'name' => $system['name']);
 			$gameInfo['gm'] = array('userID' => $gameInfo['gmID'], 'username' => $gameInfo['gmUsername']);
 			unset($gameInfo['gmID'], $gameInfo['gmUsername']);
+			$gameInfo['created'] = date('F j, Y g:i a', strtotime($gameInfo['created']));
 			$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
-			$gameInfo['description'] = printReady($gameInfo['description']);
-			$gameInfo['charGenInfo'] = printReady($gameInfo['charGenInfo']);
-			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID}")->fetchAll();
-			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID}")->fetchAll();
-			displayJSON(array('details' => $gameInfo, 'players' => $players, 'characters' => $characters));
+			$gameInfo['postFrequency'][0] = (int) $gameInfo['postFrequency'][0];
+			$gameInfo['postFrequency'][1] = $gameInfo['postFrequency'][1] == 'd'?'day':'week';
+			$gameInfo['numPlayers'] = (int) $gameInfo['numPlayers'];
+			$gameInfo['charsPerPlayer'] = (int) $gameInfo['charsPerPlayer'];
+			$gameInfo['description'] = strlen($gameInfo['description'])?printReady($gameInfo['description']):'None Provided';
+			$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo'])?printReady($gameInfo['charGenInfo']):'None Provided';
+			$gameInfo['forumID'] = (int) $gameInfo['forumID'];
+			$gameInfo['readPermissions'] = (bool) $gameInfo['readPermissions'];
+			$gameInfo['groupID'] = (int) $gameInfo['groupID'];
+			$gameStatus = array('o' => 'Open', 'p' => 'Private', 'c' => 'Closed');
+			$gameInfo['status'] = $gameStatus[$gameInfo['status']];
+			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID}")->fetchAll(PDO::FETCH_GROUP);
+			$gameInfo['approvedPlayers'] = 0;
+			array_walk($players, function (&$player, $key) {
+				$player = array_merge(array('userID' => $key), $player[0], array('characters' => array()));
+				$player['approved'] = $player['approved']?true:false;
+				$player['isGM'] = $player['isGM']?true:false;
+				if ($player['approved']) 
+					$gameInfo['approvedPlayers']++;
+			});
+			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID}");
+			foreach ($characters as $character) 
+				$players[$character['userID']]['characters'][] = $character;
+			displayJSON(array('details' => $gameInfo, 'players' => $players));
 		}
 
 		public function invite($gameID, $user) {

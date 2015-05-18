@@ -1,7 +1,7 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	
-	$gameInfo = $mysql->query("SELECT g.gameID, g.status, g.title, g.system, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
+/*	$gameInfo = $mysql->query("SELECT g.gameID, g.status, g.title, g.system, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
 
@@ -26,14 +26,18 @@
 	foreach ($mysql->query('SELECT characterID, userID, label, approved FROM characters WHERE gameID = '.$gameID) as $character) 
 		$characters[$character['userID']][] = $character;
 	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = 1");
-	$playerApprovedChars = $playerApprovedChars->fetchColumn();
+	$playerApprovedChars = $playerApprovedChars->fetchColumn();*/
+
+	$gameInfo = $mysql->query("SELECT g.title, g.description FROM games g WHERE g.gameID = $gameID");
+	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
+	$gameInfo = $gameInfo->fetch();
 
 	$dispatchInfo['title'] = $gameInfo['title'];
 	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. ".($gameInfo['description']?$gameInfo['description']:'No description provided.');
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Game Details<?=$gameInfo['isGM']?' <a href="/games/'.$gameInfo['gameID'].'/edit">[ EDIT ]</a>':''?></h1>
-		
+		<h1 class="headerbar">Game Details <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
+
 <?	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
 		<div class="alertBox_error"><ul>
 <?
@@ -52,132 +56,106 @@
 		</ul></div>
 <?	} ?>
 		
-		<input id="gameID" type="hidden" value="<?=$gameInfo['gameID']?>">
 		<div id="details">
 			<div class="tr clearfix">
 				<label>Game Status</label>
-				<div><?=$status_names[$gameInfo['status']]?></div>
+				<div>{{details.status}}</div>
 			</div>
 			<div class="tr clearfix">
 				<label>Game Title</label>
-				<div><?=printReady($gameInfo['title'])?></div>
+				<div>{{details.title}}</div>
 			</div>
 			<div class="tr clearfix">
 				<label>System</label>
-				<div><?=printReady($systems->getFullName($gameInfo['system']))?></div>
+				<div ng-bind-html="details.system.name | trustHTML"></div>
 			</div>
 			<div class="tr clearfix">
 				<label>Game Master</label>
-				<div><a href="<?='/user/'.$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+				<div><a href="/user/{{details.gm.userID}}" class="username">{{details.gm.username}}</a></div>
 			</div>
 			<div class="tr clearfix">
 				<label>Created</label>
-				<div class="convertTZ"><?=date('F j, Y g:i a', strtotime($gameInfo['created']))?></div>
+				<div>{{details.created}}</div>
 			</div>
 			<div class="tr clearfix">
 				<label>Post Frequency</label>
-				<div><?=$gameInfo['postFrequency'][0].' post'.($gameInfo['postFrequency'][0] == 1?'':'s').' per '.($gameInfo['postFrequency'][1] == 'd'?'day':'week')?></div>
+				<div>{{details.postFrequency[0]}} post<span ng-if="details.postFrequency[0] > 1">s</span> per {{details.postFrequency[1]}}</div>
 			</div>
 			<div class="tr clearfix">
 				<label>Number of Players</label>
-				<div><?=($approvedPlayers->rowCount() - 1).' / '.$gameInfo['numPlayers']?></div>
+				<div>{{details.playersInGame}} / {{details.numPlayers}}</div>
 			</div>
 			<div class="tr clearfix">
 				<label>Number of Characters per Player</label>
-				<div><?=$gameInfo['charsPerPlayer']?></div>
+				<div>{{details.charsPerPlayer}}</div>
 			</div>
 			<div class="tr textareaRow clearfix">
 				<label>Description</label>
-				<div><?=$gameInfo['description']?printReady($gameInfo['description']):'None Provided'?></div>
+				<div>{{details.description}}</div>
 			</div>
 			<div class="tr textareaRow clearfix">
 				<label>Character Generation Info</label>
-				<div><?=$gameInfo['charGenInfo']?printReady($gameInfo['charGenInfo']):'None Provided'?></div>
+				<div>{{details.charGenInfo}}</div>
 			</div>
-<?
-	$forumStatus = $mysql->query('SELECT `read` FROM forums_permissions_general WHERE forumID = '.$gameInfo['forumID']);
-	$forumStatus = $forumStatus->fetchColumn();
-?>
 			<div class="tr clearfix">
 				<label>Game Forums are:</label>
-<?	if ($gameInfo['primaryGM']) { ?>
-				<div><span><?=$forumStatus == 1?'Public':'Private'?></span> <a id="toggleForumVisibility" href="">[ Make game <?=$forumStatus != 1?'Public':'Private'?> ]</a></div>
-<?	} else { ?>
-				<div><?=$forumStatus == 1?'Public':'Private'?></div>
-<?	} ?>
+				<div>{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isPrimaryGM" href="">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
 			</div>
 		</div>
 
-<?
-	if ($loggedIn) {
-		$hasRightCol = false;
-?>
-		<div id="playerDetails" class="clearfix">
-<?
-		if ($inGame && $approved) {
-			$hasRightCol = true;
-?>
-			<div class="rightCol">
-				<div id="submitChar">
-					<h2 class="headerbar hbDark">Submit a Character</h2>
-<?
-			if ($playerApprovedChars < $gameInfo['charsPerPlayer'] || $isGM) {
-				$readyChars = $mysql->query("SELECT characterID, label FROM characters WHERE userID = '{$currentUser->userID}' AND system = '{$gameInfo['system']}' AND ISNULL(gameID)");
-				if ($readyChars->rowCount()) {
-?>
-					<form method="post" action="/games/process/addCharacter/" class="hbdMargined">
-						<input type="hidden" name="gameID" value="<?=$gameID?>">
-						<select name="characterID">
-<?					foreach ($readyChars as $charInfo) { ?>
-							<option value="<?=$charInfo['characterID']?>"><?=$charInfo['label']?></option>
-<?					} ?>
-						</select>
-						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
-					</form>
-<?	 			} else { ?>
-					<p class="hbdMargined notice">You have no characters you can submit at this time</p>
-<?
-	 			}
-	 		} else {
-?>
-					<p class="hbdMargined notice">You cannot submit any more characters to this game</p>
-<?			} ?>
+		<div ng-if="loggedIn" id="playerDetails" class="clearfix">
+			<div ng-if="!inGame && details.numPlayers <= details.playersInGame" class="rightCol">
+				<div id="applyToGame">
+					<h2 class="headerbar hbDark" skew-element>Game Full</h2>
+					<p class="hbdMargined notice">This game is currently full</p>
 				</div>
 			</div>
-<?
-		} elseif ($inGame && !$approved) {
-			$hasRightCol = true;
-?>
-			<div class="rightCol">
+			<div ng-if="!inGame && details.numPlayers > details.playersInGame" class="rightCol">
+				<div id="applyToGame">
+					<h2 class="headerbar hbDark" skew-element>Join Game</h2>
+					<form method="post" action="/games/process/join/" class="alignCenter">
+						<input type="hidden" name="gameID" value="<?=$gameID?>">
+						<button type="submit" name="apply" class="fancyButton" skew-element>Apply to Game</button>
+					</form>
+				</div>
+			</div>
+			<div ng-if="inGame && !approved" class="rightCol">
 				<div id="applyToGame">
 					<h2 class="headerbar hbDark">Join Game</h2>
 					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
 					<p class="hbdMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="<?='/games/'.$gameID.'/leaveGame/'.$currentUser->userID?>" class="leaveGame">withdraw</a> from the game.</p>
 				</div>
 			</div>
+			<div ng-if="inGame && approved" class="rightCol">
+				<h2 class="headerbar hbDark" skew-element skewed-out="skewedOut.hb.submitChar">Submit a Character</h2>
+				<div ng-if="characters.length && (isGM || players[currentUser.userID].characters.length < details.charPerPlayer)" id="submitChar">
+					<form ng-if="" method="post" action="/games/process/addCharacter/" class="hbdMargined">
+						<input type="hidden" name="gameID" value="{{gameID}}">
+						<select name="characterID">
+							<option ng-repeat="character in characters" value="{{character.characterID}}">{{character.label}}</option>
+						</select>
+						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
+					</form>
+					<p ng-if="!characters.length" class="hbdMargined notice">You have no characters you can submit at this time</p>
+				</div>
+				<div ng-if="characters.length == 0 || players[currentUser.userID].characters.length >= details.charsPerPlayer">
+					<p skew-margined="skewedOut.hb.submitChar" class="hbdMargined notice">You cannot submit any more characters to this game</p>
+				</div>
+			</div>
+		</div>
+<? /*
+<?
+		} elseif ($inGame && !$approved) {
+			$hasRightCol = true;
+?>
 <?
 		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers'] && $gameInfo['status'] == 'o') {
 			$hasRightCol = true;
 ?>
-			<div class="rightCol">
-				<div id="applyToGame">
-					<h2 class="headerbar hbDark">Join Game</h2>
-					<form method="post" action="/games/process/join/" class="alignCenter">
-						<input type="hidden" name="gameID" value="<?=$gameID?>">
-						<button type="submit" name="apply" class="fancyButton">Apply to Game</button>
-					</form>
-				</div>
-			</div>
 <?
 		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 == $gameInfo['numPlayers']) {
 			$hasRightCol = true;
 ?>
-			<div class="rightCol">
-				<div id="applyToGame">
-					<h2 class="headerbar hbDark">Game Full</h2>
-					<p class="hbdMargined notice">This game is currently full</p>
-				</div>
-			</div>
 <?		} ?>
 			
 			<div<?=$hasRightCol?' class="leftCol"':''?>>
@@ -342,6 +320,6 @@
 		</div>
 <?
 	} else echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="/login" class="loginLink">Login</a> or <a href="/register" class="last">Register</a> to join!</div>'."\n";
-
+*/
 ?>
 <?	require_once(FILEROOT.'/footer.php'); ?>

@@ -33,19 +33,23 @@
 		}
 
 		public function getCurrentUser() {
-			global $currentUser;
+			global $loggedIn, $currentUser;
 
-			$cleanUser = array(
-				'userID' => $currentUser->userID,
-				'username' => $currentUser->username,
-				'email' => $currentUser->email,
-				'joinDate' => $currentUser->joinDate,
-				'activatedOn' => $currentUser->activatedOn,
-				'timezone' => $currentUser->timezone,
-				'usermeta' => $currentUser->usermeta,
-				'acpPermissions' => $currentUser->acpPermissions
-			);
-			return displayJSON($cleanUser);
+			if (!$loggedIn) 
+				displayJSON(array('loggedOut' => false));
+			else {
+				$cleanUser = array(
+					'userID' => $currentUser->userID,
+					'username' => $currentUser->username,
+					'email' => $currentUser->email,
+					'joinDate' => $currentUser->joinDate,
+					'activatedOn' => $currentUser->activatedOn,
+					'timezone' => $currentUser->timezone,
+					'usermeta' => $currentUser->usermeta,
+					'acpPermissions' => $currentUser->acpPermissions
+				);
+				displayJSON($cleanUser);
+			}
 		}
 	}
 ?>

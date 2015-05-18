@@ -159,15 +159,66 @@ var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }).factory('currentUser', function ($http) {
-	var factory = {};
-
-	factory.getUser = function () {
-		$http.post(API_HOST + '/users/getCurrentUser/').success(function (data) {
-			factory.user = data;
-		});
+	return $http.post(API_HOST + '/users/getCurrentUser/').success(function (data) {
+		if (data.loggedOut) 
+			return null;
+		else 
+			return data;
+	});
+}).directive('skewElement', function () {
+	return {
+		restrict: 'A',
+		scope: {
+			'skewedOut': '=skewedOut'
+		},
+		link: function (scope, element, attrs) {
+			$element = $(element);
+			var skewDeg = 0;
+			if (attrs.skewElement != '') 
+				skewDeg = parseInt(attrs.skewElement);
+			if (skewDeg == 0)
+				skewDeg = -30;
+			$skewDiv = $element.wrapInner('<div></div>').children('div');
+			skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
+			scope.skewedOut = skewedOut;
+			$element.css({
+				'-webkit-transform' : 'skew(' + skewDeg + 'deg)',
+				'-moz-transform'    : 'skew(' + skewDeg + 'deg)',
+				'-ms-transform'     : 'skew(' + skewDeg + 'deg)',
+				'-o-transform'      : 'skew(' + skewDeg + 'deg)',
+				'transform'         : 'skew(' + skewDeg + 'deg)',
+			});
+			if (parseInt($element.css('margin-left').slice(0, -2)) < Math.ceil(skewedOut)) 
+				$element.css('margin-left', Math.ceil(skewedOut) + 'px');
+			if (parseInt($element.css('margin-right').slice(0, -2)) < Math.ceil(skewedOut)) 
+				$element.css('margin-right', Math.ceil(skewedOut) + 'px');
+			$skewDiv.css({
+				'-webkit-transform' : 'skew(' + (skewDeg * -1) + 'deg)',
+				'-moz-transform'    : 'skew(' + (skewDeg * -1) + 'deg)',
+				'-ms-transform'     : 'skew(' + (skewDeg * -1) + 'deg)',
+				'-o-transform'      : 'skew(' + (skewDeg * -1) + 'deg)',
+				'transform'         : 'skew(' + (skewDeg * -1) + 'deg)',
+				'margin-left'       : Math.ceil(skewedOut) + 'px',
+				'margin-right'      : Math.ceil(skewedOut) + 'px'
+			});
+		}
 	}
-
-	return factory;
+}).directive('skewMargined', function () {
+	return {
+		restrict: 'A',
+		scope: {
+			'skewMargined': '=skewMargined'
+		},
+		link: function (scope, element, attrs) {
+			$element = $(element);
+			if (typeof scope.skewMargined == 'undefined') 
+				scope.skewMargined = 0;
+			skewMargin = parseFloat(scope.skewMargined) * 2;
+			console.log(skewMargined);
+			if (element.localName == 'p') 
+				$element.css({ 'margin-left': Math.ceil(skewMargin) + 'px', 'margin-right': Math.ceil(skewMargin) + 'px' });
+		}
+	}
 }).directive('paginate', function () {
 	return {
 		restrict: 'E',
@@ -374,6 +425,14 @@ app.config(function ($httpProvider) {
 			}
 		}
 		return output;
+	}
+}).filter('convertTZ', function () {
+	return function (dtString, parseString, displayString) {
+		parseString = typeof parseString !== 'undefined'?parseString:'MMM D, YYYY h:mm a';
+		displayString = typeof displayString !== 'undefined'?displayString:'MMM D, YYYY h:mm a';
+
+		utcDT = moment.utc(dtString, parseString);
+		return utcDT.local().format(displayString);
 	}
 });
 var controllers = angular.module('controllers', []);

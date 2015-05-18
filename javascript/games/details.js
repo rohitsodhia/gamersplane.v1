@@ -12,7 +12,7 @@ $(function () {
 		});
 	});
 
-	$('#invite').submit(function (e) {
+/*	$('#invite').submit(function (e) {
 		e.preventDefault();
 
 		gameID = $(this).find('input[name=gameID]').val();
@@ -29,19 +29,40 @@ $(function () {
 				console.log(data);
 			}
 		});
+	});*/
+});
+controllers.controller('games_details', function ($scope, $http, $sce, $filter, currentUser) {
+	pathElements = getPathElements();
+	currentUser.then(function (currentUser) {
+		currentUser = currentUser.data;
+		$scope.skewedOut = {};
+		$scope.loggedIn = currentUser?true:false;
+		$scope.currentUser = currentUser;
+		$scope.gameID = pathElements[1];
+		$scope.inGame = false;
+		$scope.approved = false;
+		$scope.isGM = false;
+		$scope.isPrimaryGM = false;
+		$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
+			$scope.details = data.details;
+			$scope.players = data.players;
+			$scope.details.playersInGame = $($scope.players).size() - 1;
+			for (key in $scope.players) {
+				if (currentUser && $scope.players[key].userID == currentUser.userID) {
+					$scope.inGame = true;
+					$scope.approved = $scope.players[currentUser.userID].approved?true:false;
+					if ($scope.players[key].isGM) 
+						$scope.isGM = true;
+				}
+			}
+			if (currentUser && $scope.details.gm.userID == currentUser.userID) 
+				$scope.isPrimaryGM = true;
+
+			if ($scope.inGame && $scope.approved && ($scope.isGM || $scope.players[currentUser.userID].characters.length < $scope.details.charPerPlayer)) {
+				$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'] }).success(function (data) {
+					$scope.characters = data.characters;
+				});
+			}
+		});
 	});
 });
-/*controllers.controller('games_details', function ($scope, $http, $sce, $filter, currentUser) {
-	pathElements = getPathElements();
-	currentUser.getUser();
-	$http.post(API_HOST + '/games/details/', { gameID: pathElements[1] }).success(function (data) {
-		$scope.details = data.details;
-		$scope.players = data.players;
-		$scope.characters = data.characters;
-		for (key in $scope.players) {
-			if ($scope.players[key].userID == currentUser.user.userID && $scope.players[key].isGM) 
-				$scope.isGM = true;
-		}
-	});
-	$scope.isGM = false;
-});*/

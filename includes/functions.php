@@ -32,7 +32,7 @@
 	function randomAlphaNum($length) {
 		$validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$randomStr = "";
-		for ($count = 0; $count < $length; $count++) $randomStr .= $validChars[rand(0, strlen($validChars) - 1)];
+		for ($count = 0; $count < $length; $count++) $randomStr .= $validChars[mt_rand(0, strlen($validChars) - 1)];
 		
 		return $randomStr;
 	}
