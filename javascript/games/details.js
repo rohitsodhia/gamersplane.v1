@@ -43,6 +43,8 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		$scope.approved = false;
 		$scope.isGM = false;
 		$scope.isPrimaryGM = false;
+		$scope.combobox = {};
+		$scope.combobox.search = { 'characters': '' };
 		$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
 			$scope.details = data.details;
 			$scope.players = data.players;
@@ -61,6 +63,9 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			if ($scope.inGame && $scope.approved && ($scope.isGM || $scope.players[currentUser.userID].characters.length < $scope.details.charPerPlayer)) {
 				$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'] }).success(function (data) {
 					$scope.characters = data.characters;
+					$scope.combobox.characters = [];
+					for (key in $scope.characters) 
+						$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
 				});
 			}
 		});

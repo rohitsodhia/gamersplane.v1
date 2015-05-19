@@ -28,7 +28,7 @@
 				$characters->bindValue(':system', $_POST['system']);
 			$characters->execute();
 
-			displayJSON(array('characters' => $characters));
+			displayJSON(array('characters' => $characters->fetchAll()));
 		}
 	}
 ?>

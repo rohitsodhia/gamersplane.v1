@@ -127,85 +127,54 @@
 				</div>
 			</div>
 			<div ng-if="inGame && approved" class="rightCol">
-				<h2 class="headerbar hbDark" skew-element skewed-out="skewedOut.hb.submitChar">Submit a Character</h2>
-				<div ng-if="characters.length && (isGM || players[currentUser.userID].characters.length < details.charPerPlayer)" id="submitChar">
-					<form ng-if="" method="post" action="/games/process/addCharacter/" class="hbdMargined">
-						<input type="hidden" name="gameID" value="{{gameID}}">
-						<select name="characterID">
-							<option ng-repeat="character in characters" value="{{character.characterID}}">{{character.label}}</option>
-						</select>
-						<div><button type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
-					</form>
-					<p ng-if="!characters.length" class="hbdMargined notice">You have no characters you can submit at this time</p>
-				</div>
-				<div ng-if="characters.length == 0 || players[currentUser.userID].characters.length >= details.charsPerPlayer">
-					<p skew-margined="skewedOut.hb.submitChar" class="hbdMargined notice">You cannot submit any more characters to this game</p>
-				</div>
+				<h2 class="headerbar hbDark" skew-element>Submit a Character</h2>
+				<form ng-if="characters.length && (isGM || players[currentUser.userID].characters.length < details.charPerPlayer)" id="submitChar" method="post" action="/games/process/addCharacter/" hb-margined>
+					<input type="hidden" name="gameID" value="{{gameID}}">
+					<combobox data="combobox.characters" value="subChar" search="combobox.search.characters" placeholder="Character" strict></combobox>
+					<div><button skew-element type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
+				</form>
+				<p ng-if="players[currentUser.userID].characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
+				<p ng-if="characters.length == 0 && players[currentUser.userID].characters.length < details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
 			</div>
-		</div>
-<? /*
-<?
-		} elseif ($inGame && !$approved) {
-			$hasRightCol = true;
-?>
-<?
-		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 < $gameInfo['numPlayers'] && $gameInfo['status'] == 'o') {
-			$hasRightCol = true;
-?>
-<?
-		} elseif (!$inGame && $loggedIn && $approvedPlayers->rowCount() - 1 == $gameInfo['numPlayers']) {
-			$hasRightCol = true;
-?>
-<?		} ?>
 			
-			<div<?=$hasRightCol?' class="leftCol"':''?>>
-				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
-<?	if ($isGM) { ?>
-				<div id="invites" class="hbdMargined">
+			<div ng-class="{ 'leftCol': loggedIn }">
+				<h2 class="headerbar hbDark hb_hasList" skew-element>Players in Game</h2>
+				<ul id="playersInGame" class="hbAttachedList" hb-margined>
+					<li ng-repeat="player in players | filter: { approved: true }" id="userID_{{player.userID}}" ng-class="{ 'hasChars': player.characters > 0 }">
+						<div class="playerInfo clearfix">
+							<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
+							<div class="actionLinks">
+								<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.userID}}/" class="removePlayer">Remove player from Game</a>
+								<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" class="toggleGM">{{player.isGM?'Remove as GM':'Make'}} GM</a>
+								<a ng-if="player.userID == currentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" class="leaveGame">Leave Game</a>
+							</div>
+						</div>
+						<ul ng-if="player.characters.length" class="characters">
+							<li ng-repeat="character in player.characters" class="clearfix">
+								<div class="charLabel">
+									<a ng-if="isGM || player.userID == currentUser.userID" href="/characters/{{details.system['_id']}}/{{character.characterID}}/sheet/">{{character.label}}</a>
+									<div ng-if="!isGM && player.userID != currentUser.userID">{{character.label}}</div>
+								</div>
+								<div class="actionLinks">
+									<a ng-if="isGM && !character.approved" href="/games/{{gameID}}/approveChar/{{character.characterID}}/" class="approveChar">Approve Character</a>
+									<a ng-if="isGM" href="/games/{{gameID}}/removeChar/{{character.characterID}}/" class="removeChar">{{!character.approved?'Reject':'Remove'}} Character</a>
+									<a ng-if="!isGM && player.userID == currentUser.userID" href="/games/{{gameID}}/removeChar/{{character.characterID}}/" class="removeChar">Withdraw Character</a>
+								</div>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<div ng-if="isGM" id="invites" hb-margined>
 					<form id="invite" method="post" action="<?=API_HOST?>/games/invite/">
 						<label>Invite player to game:</label>
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
 						<input type="text" name="user">
-						<button type="submit" name="invite" class="fancyButton">Invite</button>
+						<button  skew-element type="submit" name="invite" class="fancyButton">Invite</button>
 					</form>
 				</div>
-<?	} ?>
-				<ul id="playersInGame" class="hbdMargined hbAttachedList">
-<?	foreach ($approvedPlayers as $playerInfo) { ?>
-					<li id="userID_<?=$playerInfo['userID']?>"<?=sizeof($characters[$playerInfo['userID']])?' class="hasChars"':''?>>
-						<div class="playerInfo clearfix">
-							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>/" class="username"><?=$playerInfo['username']?></a><?=$playerInfo['isGM']?' <img src="/images/gm_icon.png">':''?></div>
-							<div class="actionLinks">
-<?		if ($isGM && !$playerInfo['primaryGM']) { ?>
-								<a href="<?='/games/'.$gameID.'/removePlayer/'.$playerInfo['userID']?>/" class="removePlayer">Remove player from Game</a>
-								<a href="<?='/games/'.$gameID.'/toggleGM/'.$playerInfo['userID']?>/" class="toggleGM"><?=$playerInfo['isGM']?'Remove as GM':'Make GM'?></a>
-<?		} elseif ($playerInfo['userID'] == $currentUser->userID && !$playerInfo['primaryGM']) { ?>
-								<a href="<?='/games/'.$gameID.'/leaveGame/'.$playerInfo['userID']?>" class="leaveGame">Leave Game</a>
-<?		} ?>
-							</div>
-						</div>
-<?		if (sizeof($characters[$playerInfo['userID']])) { ?>
-						<ul class="characters">
-<?			foreach ($characters[$playerInfo['userID']] as $character) { ?>
-							<li class="clearfix">
-								<div class="charLabel"><?=(($isGM || $currentUser->userID == $playerInfo['userID'])?'<a href="/characters/'.$gameInfo['system'].'/'.$character['characterID'].'/sheet"':'<div').'>'.$character['label'].(($isGM || $currentUser->userID == $playerInfo['userID'])?"</a>\n":"</div>\n"); ?></div>
-								<div class="actionLinks">
-<?				if ($isGM && !$character['approved']) { ?>
-									<a href="<?='/games/'.$gameID.'/approveChar/'.$character['characterID']?>" class="approveChar">Approve Character</a>
-<?
-				}
-				if ($isGM || $character['userID'] == $currentUser->userID) {
-?>
-									<a href="<?='/games/'.$gameID.'/removeChar/'.$character['characterID']?>" class="removeChar"><?=$character['userID'] == $currentUser->userID?'Withdraw':(!$character['approved']?'Reject':'Remove')?> Character</a>
-<?				} ?>
-								</div>
-							</li>
-<?			} ?>
-						</ul>
-<?		} ?>
-					</li>
-<?	} ?>
-				</ul>
+			</div>
+		</div>
+<? /*
 
 <?
 	if ($isGM) {

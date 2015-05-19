@@ -168,9 +168,6 @@ app.config(function ($httpProvider) {
 }).directive('skewElement', function () {
 	return {
 		restrict: 'A',
-		scope: {
-			'skewedOut': '=skewedOut'
-		},
 		link: function (scope, element, attrs) {
 			$element = $(element);
 			var skewDeg = 0;
@@ -187,7 +184,7 @@ app.config(function ($httpProvider) {
 				'-ms-transform'     : 'skew(' + skewDeg + 'deg)',
 				'-o-transform'      : 'skew(' + skewDeg + 'deg)',
 				'transform'         : 'skew(' + skewDeg + 'deg)',
-			});
+			}).data('skewedOut', skewedOut);
 			if (parseInt($element.css('margin-left').slice(0, -2)) < Math.ceil(skewedOut)) 
 				$element.css('margin-left', Math.ceil(skewedOut) + 'px');
 			if (parseInt($element.css('margin-right').slice(0, -2)) < Math.ceil(skewedOut)) 
@@ -201,24 +198,28 @@ app.config(function ($httpProvider) {
 				'margin-left'       : Math.ceil(skewedOut) + 'px',
 				'margin-right'      : Math.ceil(skewedOut) + 'px'
 			});
+
+			if ($element.hasClass('headerbar')) {
+				hbdMargin = skewedOut * 2;
+				$element.siblings('.hbMargined:not(textarea)').add($element.find('.hbMargined:not(textarea)')).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px' });
+				$element.siblings('.hbdTopper').add($element.find('.hbdTopper')).css({ 'marginLeft': Math.round(hbdMargin) + 'px' });
+				$element.siblings('textarea.hbdMargined').add($element.siblings('textarea.hbdMargined')).each(function () {
+					tWidth = $(this).parent().width();
+					$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
+				});
+			}
 		}
 	}
-}).directive('skewMargined', function () {
+}).directive('hbMargined', function () {
 	return {
 		restrict: 'A',
-		scope: {
-			'skewMargined': '=skewMargined'
-		},
 		link: function (scope, element, attrs) {
 			$element = $(element);
-			if (typeof scope.skewMargined == 'undefined') 
-				scope.skewMargined = 0;
-			skewMargin = parseFloat(scope.skewMargined) * 2;
-			console.log(skewMargined);
-			if (element.localName == 'p') 
-				$element.css({ 'margin-left': Math.ceil(skewMargin) + 'px', 'margin-right': Math.ceil(skewMargin) + 'px' });
+			$headerbar = $(element).siblings('.headerbar');
+			skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
+			$element.css({ 'margin-left': skewedOut, 'margin-right': skewedOut });
 		}
-	}
+	};
 }).directive('paginate', function () {
 	return {
 		restrict: 'E',
@@ -277,7 +278,7 @@ app.config(function ($httpProvider) {
 				for (key in scope.data) 
 					if (scope.search == scope.data[key].value) 
 						scope.value = scope.data[key].id;
-				if (scope.value.length == 0) 
+				if (typeof scope.value != 'undefined' && scope.value.length == 0) 
 					scope.value = scope.search;
 				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
 					oldIndex = currentIndex = -1;
@@ -309,8 +310,19 @@ app.config(function ($httpProvider) {
 							scope.search = filterResults[0].value;
 							scope.value = filterResults[0].id;
 						} else {
-							scope.search = '';
-							scope.value = '';
+							noResults = true;
+							for (key in filterResults) {
+								if (filterResults[key].value == scope.search) {
+									noResults = false;
+									scope.search = filterResults[key].value;
+									scope.value = filterResults[key].id;
+									break
+								}
+							}
+							if (noResults) {
+								scope.search = '';
+								scope.value = '';
+							}
 						}
 						scope.bypassFilter = bypassHold;
 					}

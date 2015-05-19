@@ -47,18 +47,23 @@
 			$gameInfo['groupID'] = (int) $gameInfo['groupID'];
 			$gameStatus = array('o' => 'Open', 'p' => 'Private', 'c' => 'Closed');
 			$gameInfo['status'] = $gameStatus[$gameInfo['status']];
-			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID}")->fetchAll(PDO::FETCH_GROUP);
+			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM, p.primaryGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID} ORDER BY p.approved, u.username")->fetchAll(PDO::FETCH_GROUP);
 			$gameInfo['approvedPlayers'] = 0;
 			array_walk($players, function (&$player, $key) {
 				$player = array_merge(array('userID' => $key), $player[0], array('characters' => array()));
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
+				$player['primaryGM'] = $player['primaryGM']?true:false;
 				if ($player['approved']) 
 					$gameInfo['approvedPlayers']++;
 			});
-			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID}");
-			foreach ($characters as $character) 
+			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
+			foreach ($characters as $character) {
+				$character['characterID'] = (int) $character['characterid'];
+				$character['userID'] = (int) $character['userID'];
+				$character['approved'] = (bool) $character['approved'];
 				$players[$character['userID']]['characters'][] = $character;
+			}
 			displayJSON(array('details' => $gameInfo, 'players' => $players));
 		}
 
