@@ -128,13 +128,13 @@
 			</div>
 			<div ng-if="inGame && approved" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Submit a Character</h2>
-				<form ng-if="characters.length && (isGM || players[currentUser.userID].characters.length < details.charPerPlayer)" id="submitChar" method="post" action="/games/process/addCharacter/" hb-margined>
+				<form ng-if="characters.length" id="submitChar" method="post" action="/games/process/addCharacter/" hb-margined>
 					<input type="hidden" name="gameID" value="{{gameID}}">
 					<combobox data="combobox.characters" value="subChar" search="combobox.search.characters" placeholder="Character" strict></combobox>
 					<div><button skew-element type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 				</form>
-				<p ng-if="players[currentUser.userID].characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
-				<p ng-if="characters.length == 0 && players[currentUser.userID].characters.length < details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
+				<p ng-if="curPlayer.characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
+				<p ng-if="characters.length == 0 && curPlayer.characters.length < details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
 			</div>
 			
 			<div ng-class="{ 'leftCol': loggedIn }">
@@ -164,6 +164,7 @@
 						</ul>
 					</li>
 				</ul>
+
 				<div ng-if="isGM" id="invites" hb-margined>
 					<form id="invite" method="post" action="<?=API_HOST?>/games/invite/">
 						<label>Invite player to game:</label>
@@ -172,27 +173,22 @@
 						<button  skew-element type="submit" name="invite" class="fancyButton">Invite</button>
 					</form>
 				</div>
+
+				<div ng-if="">
+					<h2 id="waitingApproval" class="headerbar hbDark hb_hasList">Players awaiting approval</h2>
+					<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
+						<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
+							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
+							<div class="actionLinks">
+								<a href="<?='/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>/" class="approvePlayer">Approve Player</a>
+								<a href="<?='/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>/" class="rejectPlayer">Reject Player</a>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 <? /*
-
-<?
-	if ($isGM) {
-		$waitingPlayers = $mysql->query("SELECT u.userID, u.username FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 0 ORDER BY u.username ASC");
-		if ($waitingPlayers->rowCount()) {
-?>
-				<h2 id="waitingChars" class="headerbar hbDark hb_hasList">Players awaiting approval</h2>
-				<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
-<?			foreach ($waitingPlayers as $playerInfo) { ?>
-					<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
-						<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
-						<div class="actionLinks">
-							<a href="<?='/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>/" class="approvePlayer">Approve Player</a>
-							<a href="<?='/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>/" class="rejectPlayer">Reject Player</a>
-						</div>
-					</li>
-<?			} ?>
-				</ul>
 <?
 		}
 	}

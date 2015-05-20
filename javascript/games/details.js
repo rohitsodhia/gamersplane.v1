@@ -39,6 +39,10 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		$scope.loggedIn = currentUser?true:false;
 		$scope.currentUser = currentUser;
 		$scope.gameID = pathElements[1];
+		$scope.details = {};
+		$scope.players = [];
+		$scope.curPlayer = {};
+		$scope.characters = [];
 		$scope.inGame = false;
 		$scope.approved = false;
 		$scope.isGM = false;
@@ -48,26 +52,29 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
 			$scope.details = data.details;
 			$scope.players = data.players;
-			$scope.details.playersInGame = $($scope.players).size() - 1;
+			$scope.details.playersInGame = $scope.players.length - 1;
 			for (key in $scope.players) {
 				if (currentUser && $scope.players[key].userID == currentUser.userID) {
 					$scope.inGame = true;
-					$scope.approved = $scope.players[currentUser.userID].approved?true:false;
-					if ($scope.players[key].isGM) 
+					$scope.curPlayer = $scope.players[key];
+					$scope.approved = $scope.curPlayer.approved?true:false;
+					if ($scope.curPlayer.isGM) 
 						$scope.isGM = true;
+
+					if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charPerPlayer)) {
+						$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'] }).success(function (data) {
+							$scope.characters = data.characters;
+							$scope.combobox.characters = [];
+							for (key in $scope.characters) 
+								$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
+						});
+					}
 				}
 			}
 			if (currentUser && $scope.details.gm.userID == currentUser.userID) 
 				$scope.isPrimaryGM = true;
 
-			if ($scope.inGame && $scope.approved && ($scope.isGM || $scope.players[currentUser.userID].characters.length < $scope.details.charPerPlayer)) {
-				$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'] }).success(function (data) {
-					$scope.characters = data.characters;
-					$scope.combobox.characters = [];
-					for (key in $scope.characters) 
-						$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
-				});
-			}
+			console.log($filter('filter')($scope.players, { 'approved': true }));
 		});
 	});
 });
