@@ -28,7 +28,10 @@
 
 			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
 			$numLinks = $mongo->links->find($search, array('_id' => 1))->count();
-			$linksResults = $mongo->links->find($search)->sort(array('title' => 1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
+			if (isset($_POST['page'])) 
+				$linksResults = $mongo->links->find($search)->sort(array('title' => 1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
+			else 
+				$linksResults = $mongo->links->find($search)->sort(array('title' => 1));
 			$links = array();
 			foreach ($linksResults as $link) {
 				$link['_id'] = $link['_id']->{'$id'};
