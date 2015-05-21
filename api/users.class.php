@@ -36,7 +36,7 @@
 			global $loggedIn, $currentUser;
 
 			if (!$loggedIn) 
-				displayJSON(array('loggedOut' => false));
+				displayJSON(array('failed' => true, 'loggedOut' => true));
 			else {
 				$cleanUser = array(
 					'userID' => $currentUser->userID,

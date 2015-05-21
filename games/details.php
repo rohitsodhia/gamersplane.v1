@@ -103,30 +103,28 @@
 			</div>
 		</div>
 
-		<div ng-if="loggedIn" id="playerDetails" class="clearfix">
-			<div ng-if="!inGame && details.numPlayers <= details.playersInGame" class="rightCol">
-				<div id="applyToGame">
-					<h2 class="headerbar hbDark" skew-element>Game Full</h2>
-					<p class="hbdMargined notice">This game is currently full</p>
-				</div>
+		<div id="playerDetails" class="clearfix">
+			<div ng-if="loggedIn && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
+				<h2 class="headerbar hbDark" skew-element>Game Full</h2>
+				<p class="hbdMargined notice">This game is currently full</p>
 			</div>
-			<div ng-if="!inGame && details.numPlayers > details.playersInGame" class="rightCol">
-				<div id="applyToGame">
-					<h2 class="headerbar hbDark" skew-element>Join Game</h2>
-					<form method="post" action="/games/process/join/" class="alignCenter">
-						<input type="hidden" name="gameID" value="<?=$gameID?>">
-						<button type="submit" name="apply" class="fancyButton" skew-element>Apply to Game</button>
-					</form>
-				</div>
+			<div ng-if="loggedIn && !inGame && details.numPlayers > details.playersInGame" class="rightCol">
+				<h2 class="headerbar hbDark" skew-element>Join Game</h2>
+				<form ng-submit="applyToGame()" class="alignCenter">
+					<input type="hidden" name="gameID" value="<?=$gameID?>">
+					<button type="submit" name="apply" class="fancyButton" skew-element>Apply to Game</button>
+				</form>
 			</div>
-			<div ng-if="inGame && !approved" class="rightCol">
-				<div id="applyToGame">
-					<h2 class="headerbar hbDark">Join Game</h2>
-					<p class="hbdMargined notice">Your request to join this game is awaiting approval</p>
-					<p class="hbdMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="<?='/games/'.$gameID.'/leaveGame/'.$currentUser->userID?>" class="leaveGame">withdraw</a> from the game.</p>
-				</div>
+			<div ng-if="loggedIn && inGame && !approved" class="rightCol">
+				<h2 skew-element class="headerbar hbDark">Join Game</h2>
+				<p class="hbMargined notice">Your request to join this game is awaiting approval</p>
+				<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" ng-click="withdrawEarly = !withdrawEarly">withdraw</a> from the game.</p>
+				<form id="withdrawEarly" ng-submit="leaveGame()" ng-show="withdrawEarly" class="hbMargined">
+					<p>Are you sure you want to withdraw your application?</p>
+					<div class="alignCenter"><button skew-element type="text" name="withdraw" class="fancyButton">Withdraw</button></div>
+				</form>
 			</div>
-			<div ng-if="inGame && approved" class="rightCol">
+			<div ng-if="loggedIn && inGame && approved" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Submit a Character</h2>
 				<form ng-if="characters.length" id="submitChar" method="post" action="/games/process/addCharacter/" hb-margined>
 					<input type="hidden" name="gameID" value="{{gameID}}">
@@ -138,8 +136,8 @@
 			</div>
 			
 			<div ng-class="{ 'leftCol': loggedIn }">
-				<h2 class="headerbar hbDark hb_hasList" skew-element>Players in Game</h2>
-				<ul id="playersInGame" class="hbAttachedList" hb-margined>
+				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
+				<ul id="playersInGame" class="hbAttachedList hbMargined">
 					<li ng-repeat="player in players | filter: { approved: true }" id="userID_{{player.userID}}" ng-class="{ 'hasChars': player.characters > 0 }">
 						<div class="playerInfo clearfix">
 							<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>

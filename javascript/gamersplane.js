@@ -217,6 +217,7 @@ app.config(function ($httpProvider) {
 			$element = $(element);
 			$headerbar = $(element).siblings('.headerbar');
 			skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
+			console.log($element, $headerbar, skewedOut);
 			$element.css({ 'margin-left': skewedOut, 'margin-right': skewedOut });
 		}
 	};
@@ -254,8 +255,16 @@ app.config(function ($httpProvider) {
 				scope.showDropdown = false;
 				scope.hasFocus = false;
 				$combobox = element.children('.combobox');
-				$combobox.children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
+				$combobox.addClass('settingUp').children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
 				$combobox.children('.dropdown').css('height', $combobox.outerHeight());
+				maxWidth = 0;
+				$combobox.find('.results a').each(function () {
+					console.log($(this).outerWidth());
+					if ($(this).outerWidth() > maxWidth) 
+						maxWidth = $(this).outerWidth();
+				});
+				$combobox.find('input').width(maxWidth > 0?maxWidth:200);
+				$combobox.removeClass('settingUp');
 				$input = $combobox.children('input');
 				if (typeof scope.data == 'undefined') 
 					scope.data = [];

@@ -5,12 +5,12 @@
 
 			if ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
+			elseif ($pathOptions[0] == 'apply') 
+				$this->apply();
 			elseif ($pathOptions[0] == 'invite' && intval($_POST['gameID']) && strlen($_POST['user'])) 
 				$this->invite($_POST['gameID'], $_POST['user']);
 /*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
 				$this->displayPM($_POST['pmID']);
-			elseif ($pathOptions[0] == 'send') 
-				$this->sendPM();
 			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
 				$this->deletePM($_POST['pmID']);*/
 			else 
@@ -64,6 +64,21 @@
 				$players[$character['userID']]['characters'][] = $character;
 			}
 			displayJSON(array('details' => $gameInfo, 'players' => $players));
+		}
+
+		public function apply() {
+			global $loggedIn, $currentUser, $mysql;
+			if (!$loggedIn) 
+				displayJSON(array('failed' => true, 'loggedOut' => true), true);
+
+			$gameID = intval($_POST['gameID']);
+			list($numPlayers, $playerCount) = $mysql->query("SELECT g.numPlayers, COUNT(*) playerCount FROM games g INNER JOIN players p ON g.gameID = p.gameID WHERE g.gameID = {$gameID} AND p.approved = 0")->fetch(PDO::FETCH_NUM);
+			if ($numPlayers > $playerCount - 1) 
+				$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}");
+			else 
+				displayJSON(array('failed' => true, 'gameFull' => true));
+
+			displayJSON(array('success' => true));
 		}
 
 		public function invite($gameID, $user) {

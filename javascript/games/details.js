@@ -36,7 +36,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 	currentUser.then(function (currentUser) {
 		currentUser = currentUser.data;
 		$scope.skewedOut = {};
-		$scope.loggedIn = currentUser?true:false;
+		$scope.loggedIn = currentUser.loggedOut?false:true;
 		$scope.currentUser = currentUser;
 		$scope.gameID = pathElements[1];
 		$scope.details = {};
@@ -44,6 +44,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		$scope.curPlayer = {};
 		$scope.characters = [];
 		$scope.inGame = false;
+		$scope.withdrawEarly = false;
 		$scope.approved = false;
 		$scope.isGM = false;
 		$scope.isPrimaryGM = false;
@@ -73,8 +74,18 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			}
 			if (currentUser && $scope.details.gm.userID == currentUser.userID) 
 				$scope.isPrimaryGM = true;
-
-			console.log($filter('filter')($scope.players, { 'approved': true }));
 		});
+		
+		$scope.applyToGame = function () {
+			$http.post(API_HOST + '/games/apply/', { gameID: $scope.gameID }).success(function (data) {
+				if (data.success == true) 
+					$scope.inGame = true;
+			});
+		};
+
+		$scope.toggleEarlyWithdraw = function ($event) {
+			$('#withdrawEarly').slideToggle();
+//			$scope.withdrawEarly = !$scope.withdrawEarly;
+		};
 	});
 });
