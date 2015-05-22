@@ -3,34 +3,35 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#nameDiv label {
-	display: inline-block;
-	width: 70px;
-	text-align: right;
-	margin-right: 10px;
-}
+#nameDiv {
+	label {
+		display: inline-block;
+		width: 70px;
+		text-align: right;
+		margin-right: 10px;
+	}
 
-#nameDiv input {
-	width: 200px;
+	input {
+		width: 200px;
+	}
 }
 
 .triCol {
 	float: left;
 	width: 306px;
 	margin-right: 16px;
+
+	h3 {
+		text-decoration: none;
+	}
 }
 
 .lastTriCol {
 	margin-right: 0;
-}
 
-#page_characterSheet_edit textarea {
-	width: 100%;
-	height: 6.2em;
-}
-
-.triCol h3 {
-	text-decoration: none;
+	.skillTitle {
+		margin-top: .75em;
+	}
 }
 
 .statDiv {
@@ -39,68 +40,42 @@
 	padding-top: .75em;
 }
 
-#page_characterSheet .statDiv {
-	border-top: 1px solid #AAA;
-}
-
 .firstStatDiv {
 	margin-top: 0;
 	padding-top: 0;
 }
 
-#page_characterSheet .firstStatDiv {
-	border-top: none;
+#woundsDiv {
+	.indivWoundDiv {
+		margin-bottom: .5em;
+		text-align: center;
+	}
+
+	h3 {
+		margin: .5em 0;
+	}
+
+	.subTwoCol {
+		width: 153px;
+		float: left;
+	}
 }
 
-#page_characterSheet_edit .statDiv input {
-	width: 30px;
-	text-align: center;
-}
-
-.triCol .skillTitle {
-	margin-top: .75em;
-}
-
-#page_characterSheet_edit #edge_hind {
-	height: 20em;
-}
-
-#page_characterSheet_edit #nightmare {
-	height: 12.4em;
-}
-
-#woundsDiv .indivWoundDiv {
-	margin-bottom: .5em;
-	text-align: center;
-}
-
-#woundsDiv h3 {
-	margin: .5em 0;
-}
-
-#woundsDiv .indivWoundDiv input {
-	width: 60px;
-	text-align: center;
-}
-
-#woundsDiv .subTwoCol {
-	width: 153px;
-	float: left;
+#woundsDiv, #windDiv {
+	input {
+		width: 60px;
+		text-align: center;
+	}
 }
 
 #windDiv {
 	margin-top: .5em;
 	text-align: center;
-}
 
-#windDiv h3 {
-	display: inline;
-	margin-right: 10px;
-}
-
-#windDiv input {
-	width: 30px;
-	text-align: center;
+	input {
+		width: 60px;
+		text-align: center;
+	}
 }
 
 .twoCol {
@@ -118,21 +93,51 @@
 	margin-top: 1.5em;
 }
 
-#page_characterSheet_edit #weapons, #page_characterSheet_edit #arcane, #page_characterSheet_edit #equipment {
-	height: 10em;
+#page_characterSheet_edit {
+	textarea {
+		width: 100%;
+		height: 6.2em;
+	}
+
+	.statDiv input {
+		width: 30px;
+		text-align: center;
+	}
+
+	#edge_hind {
+		height: 20em;
+	}
+
+	#nightmare {
+		height: 12.4em;
+	}
+
+	#weapons, #arcane, #equipment {
+		height: 10em;
+	}
+
+	#equipment {
+		height: 25.4em;
+	}
+
+	#notes {
+		height: 24.8em;
+		width: 912px;
+	}
+
+	#submitDiv {
+		clear: both;
+		text-align: center;
+		margin-top: 1em;
+	}
 }
 
-#page_characterSheet_edit #equipment {
-	height: 25.4em;
-}
+#page_characterSheet {
+	.statDiv {
+		border-top: 1px solid #AAA;
+	}
 
-#page_characterSheet_edit #notes {
-	height: 24.8em;
-	width: 912px;
-}
-
-#page_characterSheet_edit #submitDiv {
-	clear: both;
-	text-align: center;
-	margin-top: 1em;
+	.firstStatDiv {
+		border-top: none;
+	}
 }
