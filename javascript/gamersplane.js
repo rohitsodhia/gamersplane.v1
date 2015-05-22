@@ -155,7 +155,7 @@ $(function() {
 	else var curPage = $('body > div').attr('id').substring(5);
 });
 
-var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'angularFileUpload']);
+var app = angular.module('gamersplane', ['controllers', 'ngAnimate', 'ngCookies', 'ngSanitize', 'angularFileUpload']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }).factory('currentUser', function ($http) {

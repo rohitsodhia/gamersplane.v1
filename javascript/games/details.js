@@ -84,8 +84,19 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		};
 
 		$scope.toggleEarlyWithdraw = function ($event) {
-			$('#withdrawEarly').slideToggle();
+//			$('#withdrawEarly').slideToggle();
 //			$scope.withdrawEarly = !$scope.withdrawEarly;
 		};
 	});
 });
+
+app.animation('#withdrawEarly', [function () {
+	return {
+/*		addClass: function (element, className, done) {
+			$(element).slideToggle();
+		},
+		removeClass: function (element, className, done) {
+			$(element).slideToggle();
+		}*/
+	}
+}]);

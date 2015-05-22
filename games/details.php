@@ -119,7 +119,7 @@
 				<h2 skew-element class="headerbar hbDark">Join Game</h2>
 				<p class="hbMargined notice">Your request to join this game is awaiting approval</p>
 				<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" ng-click="withdrawEarly = !withdrawEarly">withdraw</a> from the game.</p>
-				<form id="withdrawEarly" ng-submit="leaveGame()" ng-show="withdrawEarly" class="hbMargined">
+				<form id="withdrawEarly" ng-submit="leaveGame()" ng-show="withdrawEarly" class="hbMargined toggleSlide">
 					<p>Are you sure you want to withdraw your application?</p>
 					<div class="alignCenter"><button skew-element type="text" name="withdraw" class="fancyButton">Withdraw</button></div>
 				</form>
