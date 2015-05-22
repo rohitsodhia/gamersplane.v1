@@ -83,20 +83,8 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			});
 		};
 
-		$scope.toggleEarlyWithdraw = function ($event) {
-//			$('#withdrawEarly').slideToggle();
-//			$scope.withdrawEarly = !$scope.withdrawEarly;
+		$scope.withdrawEarly = function ($event) {
+			$.colorbox({ href: '/games/' + $scope.gameID + '/leaveGame/' + currentUser.userID + '/?modal=1' });
 		};
 	});
 });
-
-app.animation('#withdrawEarly', [function () {
-	return {
-/*		addClass: function (element, className, done) {
-			$(element).slideToggle();
-		},
-		removeClass: function (element, className, done) {
-			$(element).slideToggle();
-		}*/
-	}
-}]);
