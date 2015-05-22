@@ -33,7 +33,7 @@
 					</div>
 					<div class="triCol lastTriCol">
 						<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-						<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances?></textarea>
+						<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances()?></textarea>
 						
 						<h2 class="headerbar hbDark">Worst Nightmare</h2>
 						<textarea id="nightmare" name="nightmare" class="hbdMargined"><?=$this->getNightmare()?></textarea>

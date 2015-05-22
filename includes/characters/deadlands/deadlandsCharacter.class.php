@@ -126,6 +126,7 @@
 				$this->setWeapons($data['weapons']);
 				$this->setArcane($data['arcane']);
 				$this->setEquipment($data['equipment']);
+				$this->setNotes($data['notes']);
 			}
 
 			parent::save();

@@ -86,4 +86,4 @@
 			</div>
 			
 			<h2 class="headerbar hbDark">Background/Notes</h2>
-			<div class="hbdMargined"><?=printReady($this->getNotes)?></div>
+			<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
