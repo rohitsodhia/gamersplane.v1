@@ -7,8 +7,12 @@
 				$this->details($_POST['gameID']);
 			elseif ($pathOptions[0] == 'apply') 
 				$this->apply();
-			elseif ($pathOptions[0] == 'invite' && intval($_POST['gameID']) && strlen($_POST['user'])) 
+			elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user'])) 
 				$this->invite($_POST['gameID'], $_POST['user']);
+			elseif ($pathOptions[0] == 'invite' && ($pathOptions[1] == 'withdraw' || $pathOptions[1] == 'reject') && intval($_POST['gameID']) && strlen($_POST['userID'])) 
+				$this->removeInvite($_POST['gameID'], $_POST['userID']);
+			elseif ($pathOptions[0] == 'invite' && $pathOptions[1] == 'accept' && intval($_POST['gameID'])) 
+				$this->acceptInvite($_POST['gameID']);
 /*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
 				$this->displayPM($_POST['pmID']);
 			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
@@ -28,11 +32,12 @@
 			if (!$gameInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'noGame' => true));
 			$gameInfo = $gameInfo->fetch();
+			$isGM = $gameInfo['gmID'] == $currentUser->userID?true:false;
 			$gameInfo['gameID'] = (int) $gameInfo['gameID'];
 			$gameInfo['title'] = printReady($gameInfo['title']);
 			$system = $mongo->systems->findOne(array('_id' => $gameInfo['system']), array('name' => 1));
 			$gameInfo['system'] = array('_id' => $gameInfo['system'], 'name' => $system['name']);
-			$gameInfo['gm'] = array('userID' => $gameInfo['gmID'], 'username' => $gameInfo['gmUsername']);
+			$gameInfo['gm'] = array('userID' => (int) $gameInfo['gmID'], 'username' => $gameInfo['gmUsername']);
 			unset($gameInfo['gmID'], $gameInfo['gmUsername']);
 			$gameInfo['created'] = date('F j, Y g:i a', strtotime($gameInfo['created']));
 			$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
@@ -53,6 +58,7 @@
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
 				$player['primaryGM'] = $player['primaryGM']?true:false;
+				$player['characters'] = array();
 				if ($player['approved']) 
 					$gameInfo['approvedPlayers']++;
 			});
@@ -63,7 +69,11 @@
 				$character['approved'] = (bool) $character['approved'];
 				$players[$character['userID']]['characters'][] = $character;
 			}
-			displayJSON(array('details' => $gameInfo, 'players' => $players));
+			$invites = $mysql->query("SELECT u.userID, u.username FROM gameInvites i INNER JOIN users u ON i.invitedID = u.userID WHERE i.gameID = {$gameID}")->fetchAll();
+			array_walk($invites, function (&$invite, $key) {
+				$invite['userID'] = (int) $invite['userID'];
+			});
+			displayJSON(array('details' => $gameInfo, 'players' => $players, 'invites' => $invites));
 		}
 
 		public function apply() {
@@ -85,24 +95,61 @@
 			global $mysql, $currentUser;
 
 			$gameID = intval($gameID);
-			$isGM = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID} AND gameID = {$gameID}");
+			$isGM = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
 			if ($isGM->rowCount()) {
-				$userCheck = $mysql->prepare("SELECT userID, username, email FROM users WHERE username = :username LIMIT 1");
+				$userCheck = $mysql->prepare("SELECT u.userID, u.username, u.email, p.approved FROM users u LEFT JOIN players p ON u.userID = p.userID AND p.gameID = {$gameID} WHERE u.username = :username LIMIT 1");
 				$userCheck->execute(array(':username' => $user));
-				if ($userCheck->rowCount() == 1) {
-					$user = $userCheck->fetch();
+				if (!$userCheck->rowCount())
+					displayJSON(array('failed' => true, 'errors' => array('invalidUser')), true);
+				$user = $userCheck->fetch();
+				if ($user['approved']) 
+					displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')), true);
+				try {
 					$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, invitedID = {$user['userID']}");
-					$gameInfo = $mysql->query("SELECT g.title, g.system, s.fullName FROM games g INNER JOIN systems s ON g.system = s.shortName WHERE g.gameID = {$gameID}")->fetch();
-					ob_start();
-					include('emails/gameInviteEmail.php');
-					$email = ob_get_contents();
-					ob_end_clean();
-					@mail($user['email'], "Game Invite", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
-					displayJSON(array('success' => true, 'user' => $user));
-				} else 
-					displayJSON(array('failed' => true, 'errors' => array('invalidUser')));
+				} catch (Exception $e) {
+					displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'), true);
+				}
+				$gameInfo = $mysql->query("SELECT g.title, g.system, s.fullName FROM games g INNER JOIN systems s ON g.system = s.shortName WHERE g.gameID = {$gameID}")->fetch();
+				ob_start();
+				include('emails/gameInviteEmail.php');
+				$email = ob_get_contents();
+				ob_end_clean();
+				@mail($user['email'], "Game Invite", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+				addGameHistory($gameID, 'playerInvited', $currentUser->userID, 'NOW()', 'user', $user['userID']);
+				displayJSON(array('success' => true, 'user' => array('userID' => (int) $user['userID'], 'username' => $user['username'])));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => 'notGM'));
+		}
+
+		public function removeInvite($gameID, $userID) {
+			global $mysql, $currentUser;
+
+			$gameID = intval($gameID);
+			$userID = intval($userID);
+			$isGM = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID} AND gameID = {$gameID}");
+			if ($isGM->rowCount() || $currentUser->userID == $userID) {
+				$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND invitedID = {$userID}");
+				addGameHistory($gameID, 'inviteRemoved', $currentUser->userID, 'NOW()', 'user', $userID);
+				displayJSON(array('success' => true, 'userID' => (int) $userID));
+			} else 
+				displayJSON(array('failed' => true, 'errors' => 'noPermission'));
+		}
+
+		public function acceptInvite($gameID) {
+			global $mysql, $currentUser;
+
+			$gameID = intval($gameID);
+			$userID = (int) $currentUser->userID;
+			$validGame = $mysql->query("SELECT g.groupID FROM gameInvites i INNER JOIN games g ON i.gameID = g.gameID WHERE i.gameID = {$gameID} AND i.invitedID = {$userID}");
+			if ($validGame->rowCount()) {
+				$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$userID}, approved = 1");
+				$groupID = $validGame->fetchColumn();
+				$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$groupID}, userID = {$currentUser->userID}");
+				$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND invitedID = {$userID}");
+				addGameHistory($gameID, 'inviteAccepted', $currentUser->userID, 'NOW()', 'user', $playerID);
+				displayJSON(array('success' => true, 'userID' => (int) $userID));
+			} else 
+				displayJSON(array('failed' => true, 'errors' => 'noPermission'));
 		}
 
 		public function checkAllowed($pmID) {

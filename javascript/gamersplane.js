@@ -217,10 +217,22 @@ app.config(function ($httpProvider) {
 			$element = $(element);
 			$headerbar = $(element).siblings('.headerbar');
 			skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
-			console.log($element, $headerbar, skewedOut);
 			$element.css({ 'margin-left': skewedOut, 'margin-right': skewedOut });
 		}
 	};
+}).directive('colorbox', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			element = element[0];
+			if (element.localName != 'a') 
+				return;
+			$(element).click(function (e) {
+				e.preventDefault();
+				$.colorbox({ href: attrs.href + '?modal=1' });
+			});
+		}
+	}
 }).directive('paginate', function () {
 	return {
 		restrict: 'E',
@@ -240,6 +252,7 @@ app.config(function ($httpProvider) {
 			scope.strict = typeof attrs.strict != 'undefined'?true:false;
 			scope.bypassFilter = true;
 			scope.value = '';
+			scope.oWidth = 0;
 			var setupFinished = scope.$watch('data', function (newVal, oldVal) {
 				if (scope.search != '') {
 					$(scope.data).each(function (key, value) {
@@ -259,11 +272,10 @@ app.config(function ($httpProvider) {
 				$combobox.children('.dropdown').css('height', $combobox.outerHeight());
 				maxWidth = 0;
 				$combobox.find('.results a').each(function () {
-					console.log($(this).outerWidth());
 					if ($(this).outerWidth() > maxWidth) 
 						maxWidth = $(this).outerWidth();
 				});
-				$combobox.find('input').width(maxWidth > 0?maxWidth:200);
+//				$combobox.find('input').width(maxWidth > 0?maxWidth:200);
 				$combobox.removeClass('settingUp');
 				$input = $combobox.children('input');
 				if (typeof scope.data == 'undefined') 
@@ -392,6 +404,17 @@ app.config(function ($httpProvider) {
 				element.find('.results .selected').removeClass('selected');
 				$($event.currentTarget).addClass('selected');
 			}
+		}
+	}
+}]).directive('comboboxOption', [function () {
+	return {
+		restrict: 'A',
+		scope: {
+			'comboboxOption': '=cb'
+		},
+		link: function (scope, element, attrs) {
+			setTimeout(function () {
+			}, 1000);
 		}
 	}
 }]).directive('prettyCheckbox', [function () {

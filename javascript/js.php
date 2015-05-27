@@ -8,7 +8,6 @@
 <script type="text/javascript" src="/javascript/jquery-ui.min.js?v=<?=getJSVersion('/javascript/jquery-ui.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/jquery.colorbox-min.js?v=<?=getJSVersion('/javascript/jquery.colorbox-min.js')?>"></script>
 <script type="text/javascript" src="/javascript/jquery.form.js?v=<?=getJSVersion('/javascript/jquery.form.js')?>"></script>
-<?	if ($dispatchInfo['ngController']) { ?>
 <script type="text/javascript" src="/javascript/angular.min.js?v=<?=getJSVersion('/javascript/angular.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/angular-route.min.js?v=<?=getJSVersion('/javascript/angular-route.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/angular-cookies.min.js?v=<?=getJSVersion('/javascript/angular-cookies.min.js')?>"></script>
@@ -16,7 +15,6 @@
 <script type="text/javascript" src="/javascript/angular-animate.min.js?v=<?=getJSVersion('/javascript/angular-animate.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/angular-file-upload-shim.min.js?v=<?=getJSVersion('/javascript/angular-file-upload-shim.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/angular-file-upload.min.js?v=<?=getJSVersion('/javascript/angular-file-upload.min.js')?>"></script>
-<?	} ?>
 <?	if (in_array($pathAction, array('forums', 'pms'))) { ?>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js?v=<?=getJSVersion('/javascript/markItUp/jquery.markitup.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>

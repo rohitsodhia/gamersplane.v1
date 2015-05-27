@@ -36,6 +36,7 @@
 	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. ".($gameInfo['description']?$gameInfo['description']:'No description provided.');
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
+		<div>{{triggered}}</div>
 		<h1 class="headerbar">Game Details <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 
 <?	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
@@ -55,7 +56,6 @@
 ?>
 		</ul></div>
 <?	} ?>
-		
 		<div id="details">
 			<div class="tr clearfix">
 				<label>Game Status</label>
@@ -104,21 +104,29 @@
 		</div>
 
 		<div id="playerDetails" class="clearfix">
-			<div ng-if="loggedIn && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
+			<div ng-if="loggedIn && !pendingInvite && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Game Full</h2>
 				<p class="hbdMargined notice">This game is currently full</p>
 			</div>
-			<div ng-if="loggedIn && !inGame && details.numPlayers > details.playersInGame" class="rightCol">
+			<div ng-if="loggedIn && !pendingInvite && !inGame && details.numPlayers > details.playersInGame" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Join Game</h2>
 				<form ng-submit="applyToGame()" class="alignCenter">
 					<input type="hidden" name="gameID" value="<?=$gameID?>">
 					<button type="submit" name="apply" class="fancyButton" skew-element>Apply to Game</button>
 				</form>
 			</div>
-			<div ng-if="loggedIn && inGame && !approved" class="rightCol">
+			<div ng-if="loggedIn && !pendingInvite && inGame && !approved" class="rightCol">
 				<h2 skew-element class="headerbar hbDark">Join Game</h2>
 				<p class="hbMargined notice">Your request to join this game is awaiting approval</p>
-				<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" ng-click="withdrawEarly()">withdraw</a> from the game.</p>
+				<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="/games/{{gameID}}/leaveGame/{{currentUser.userID}}/" colorbox>withdraw</a> from the game.</p>
+			</div>
+			<div ng-if="loggedIn && pendingInvite" class="rightCol">
+				<h2 skew-element class="headerbar hbDark">Invite Pending</h2>
+				<p hb-margined>You've been invited to join this game!</p>
+				<div class="alignCenter">
+					<button skew-element type="submit" name="acceptInvite" class="fancyButton" ng-click="acceptInvite()">Join</button>
+					<button skew-element type="submit" name="declineInvite" class="fancyButton" ng-click="rejectInvite()">Decline</button>
+				</div>
 			</div>
 			<div ng-if="loggedIn && inGame && approved" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Submit a Character</h2>
@@ -128,7 +136,7 @@
 					<div><button skew-element type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 				</form>
 				<p ng-if="curPlayer.characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
-				<p ng-if="characters.length == 0 && curPlayer.characters.length < details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
+				<p ng-if="characters.length == 0 && curPlayer.characters.length < details.charsPerPlayer && !isGM" class="notice" hb-margined>You don't have any characters to submit</p>
 			</div>
 			
 			<div ng-class="{ 'leftCol': loggedIn }">
@@ -138,9 +146,9 @@
 						<div class="playerInfo clearfix">
 							<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
 							<div class="actionLinks">
-								<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.userID}}/" class="removePlayer">Remove player from Game</a>
-								<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" class="toggleGM">{{player.isGM?'Remove as GM':'Make'}} GM</a>
-								<a ng-if="player.userID == currentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" class="leaveGame">Leave Game</a>
+								<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.userID}}/" colorbox>Remove player</a>
+								<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
+								<a ng-if="player.userID == currentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" colorbox>Leave Game</a>
 							</div>
 						</div>
 						<ul ng-if="player.characters.length" class="characters">
@@ -159,23 +167,35 @@
 					</li>
 				</ul>
 
-				<div ng-if="isGM" id="invites" hb-margined>
-					<form id="invite" method="post" action="<?=API_HOST?>/games/invite/">
-						<label>Invite player to game:</label>
-						<input type="hidden" name="gameID" value="<?=$gameID?>">
-						<input type="text" name="user">
-						<button  skew-element type="submit" name="invite" class="fancyButton">Invite</button>
-					</form>
+				<div ng-if="isGM && playersAwaitingApproval">
+					<h2 class="headerbar hbDark hb_hasList" skew-element>Players Pending Approval</h2>
+					<ul id="playersInGame" class="hbAttachedList hbMargined">
+						<li ng-repeat="player in players | filter: { approved: false }" id="userID_{{player.userID}}">
+							<div class="playerInfo clearfix">
+								<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
+								<div class="actionLinks">
+									<a href="/games/{{gameID}}/approvePlayer/{{player.userID}}/" colorbox>Approve</a>
+									<a href="/games/{{gameID}}/rejectPlayer/{{player.userID}}/" colorbox>Reject</a>
+								</div>
+							</div>
+						</li>
+					</ul>
 				</div>
 
-				<div ng-if="">
-					<h2 id="waitingApproval" class="headerbar hbDark hb_hasList">Players awaiting approval</h2>
-					<ul id="waitingPlayers" class="hbAttachedList hbdMargined">
-						<li id="userID_<?=$playerInfo['userID']?>" class="playerInfo clearfix">
-							<div class="player"><a href="<?='/user/'.$playerInfo['userID']?>" class="username"><?=$playerInfo['username']?></a></div>
+				<form ng-if="isGM" id="invites" hb-margined ng-submit="inviteUser()">
+					<label>Invite player to game:</label>
+					<input type="text" name="user" ng-model="invites.user">
+					<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
+					<div class="error" ng-show="invites.errorMsg">{{invites.errorMsg}}</div>
+				</form>
+
+				<div ng-if="isGM && invites.waiting.length > 0">
+					<h2 skew-element class="headerbar hbDark hb_hasList">Invited</h2>
+					<ul class="hbAttachedList" hb-margined>
+						<li ng-repeat="invite in invites.waiting | orderBy: 'username'" class="playerInfo clearfix">
+							<div class="player"><a href="/user/{{invite.userID}}/?>" class="username">{{invite.username}}</a></div>
 							<div class="actionLinks">
-								<a href="<?='/games/'.$gameID.'/approvePlayer/'.$playerInfo['userID']?>/" class="approvePlayer">Approve Player</a>
-								<a href="<?='/games/'.$gameID.'/rejectPlayer/'.$playerInfo['userID']?>/" class="rejectPlayer">Reject Player</a>
+								<a href="" ng-click="withdrawInvite(invite)">Withdraw Invite</a>
 							</div>
 						</li>
 					</ul>
@@ -183,12 +203,6 @@
 			</div>
 		</div>
 <? /*
-<?
-		}
-	}
-?>
-			</div>
-		</div>
 
 		<div id="gameFeatures" class="clearfix">
 			<div id="maps" class="floatLeft">
