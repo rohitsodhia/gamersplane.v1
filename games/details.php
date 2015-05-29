@@ -1,33 +1,6 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	
-/*	$gameInfo = $mysql->query("SELECT g.gameID, g.status, g.title, g.system, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, g.gmID, u.username, gms.isGM IS NOT NULL isGM, gms.primaryGM IS NOT NULL primaryGM FROM games g INNER JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, isGM, primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID}) gms ON g.gameID = gms.gameID WHERE g.gameID = $gameID");
-	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
-	$gameInfo = $gameInfo->fetch();
-
-	$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
-	$isGM = $gameInfo['isGM']?true:false;
-	
-	if (!$isGM) {
-		$userCheck = $mysql->query('SELECT approved FROM players WHERE gameID = '.$gameInfo['gameID'].' AND userID = '.$currentUser->userID);
-		if ($userCheck->rowCount()) {
-			$inGame = true;
-			$approved = $userCheck->fetchColumn();
-		} else 
-			$inGame = false;
-	} else {
-		$inGame = true;
-		$approved = true;
-	}
-	
-	$approvedPlayers = $mysql->query("SELECT u.userID, u.username, p.isGM, p.primaryGM FROM users u, players p WHERE p.gameID = $gameID AND u.userID = p.userID AND p.approved = 1 ORDER BY u.username ASC");
-
-	$characters = array();
-	foreach ($mysql->query('SELECT characterID, userID, label, approved FROM characters WHERE gameID = '.$gameID) as $character) 
-		$characters[$character['userID']][] = $character;
-	$playerApprovedChars = $mysql->query("SELECT COUNT(characterID) numChars FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = 1");
-	$playerApprovedChars = $playerApprovedChars->fetchColumn();*/
-
 	$gameInfo = $mysql->query("SELECT g.title, g.description FROM games g WHERE g.gameID = $gameID");
 	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
 	$gameInfo = $gameInfo->fetch();
@@ -36,7 +9,6 @@
 	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. ".($gameInfo['description']?$gameInfo['description']:'No description provided.');
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<div>{{triggered}}</div>
 		<h1 class="headerbar">Game Details <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 
 <?	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
