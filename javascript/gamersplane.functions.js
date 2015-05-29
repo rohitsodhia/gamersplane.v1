@@ -21,6 +21,12 @@ function getPathElements() {
 	return pathElements;
 }
 
+function getModalAngularParent() {
+	var appElement = parent.document.querySelector('[ng-app=gamersplane]');
+	var $scope = parent.angular.element(appElement).scope();
+	return $scope;
+}
+
 function decToB26(num) {
 	var str = '';
 	var letterCode;

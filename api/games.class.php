@@ -19,8 +19,10 @@
 				$this->acceptInvite($_POST['gameID']);
 			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'submit' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
 				$this->submitCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
-			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'reject' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
-				$this->rejectCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
+			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'remove' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
+				$this->removeCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
+			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'approve' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
+				$this->approveCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
 /*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
 				$this->displayPM($_POST['pmID']);
 			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
@@ -36,7 +38,7 @@
 			$gameID = intval($gameID);
 			if (!$gameID) 
 				displayJSON(array('failed' => true));
-			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = $gameID");
+			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = {$gameID}");
 			if (!$gameInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'noGame' => true));
 			$gameInfo = $gameInfo->fetch();
@@ -67,16 +69,22 @@
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
 				$player['primaryGM'] = $player['primaryGM']?true:false;
-				$player['characters'] = array();
 				if ($player['approved']) 
 					$gameInfo['approvedPlayers']++;
 			});
 			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
+			$playerChars = array();
 			foreach ($characters as $character) {
 				$character['characterID'] = (int) $character['characterID'];
 				$character['userID'] = (int) $character['userID'];
 				$character['approved'] = (bool) $character['approved'];
-				$players[$character['userID']]['characters'][] = $character;
+				$playerChars[$character['userID']][] = $character;
+			}
+			foreach ($players as &$player) {
+				if (array_key_exists($player['userID'], $playerChars)) 
+					$player['characters'] = $playerChars[$player['userID']];
+				else 
+					$player['characters'] = array();
 			}
 			$invites = $mysql->query("SELECT u.userID, u.username FROM gameInvites i INNER JOIN users u ON i.invitedID = u.userID WHERE i.gameID = {$gameID}")->fetchAll();
 			if (sizeof($invites)) {
@@ -85,7 +93,17 @@
 				});
 			} else 
 				$invites = array();
-			displayJSON(array('details' => $gameInfo, 'players' => $players, 'invites' => $invites));
+			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short WHERE gameID = {$gameID}")->fetchAll();
+			if (sizeof($decks)) {
+				array_walk($decks, function (&$deck, $key) {
+					$deck['deckID'] = (int) $deck['deckID'];
+					$deck['type'] = array('short' => $deck['type'], 'name' => $deck['name']);
+					$deck['cardsRemaining'] = sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1;
+					unset($deck['name'], $deck['deck'], $deck['position']);
+				});
+			} else 
+				$decks = array();
+			displayJSON(array('details' => $gameInfo, 'players' => $players, 'invites' => $invites, 'decks' => $decks));
 		}
 
 		public function toggleForum($gameID) {
@@ -226,22 +244,38 @@
 				displayJSON(array('failed' => true));
 		}
 
-		public function rejectCharacter($gameID, $characterID) {
+		public function removeCharacter($gameID, $characterID) {
 			global $currentUser, $mysql;
 
-			$pendingAction = 'remove';
+			$pendingAction = 'removed';
 			$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
 			$charInfo = $mysql->query("SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, g.system FROM characters c INNER JOIN users u ON c.userID = u.userID INNER JOIN games g ON c.gameID = g.gameID WHERE c.characterID = {$characterID}");
 			if ($charInfo->rowCount() == 0 && $gmCheck->rowCount() == 0) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
 			$mysql->query("UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = {$characterID}");
 			$charInfo = $charInfo->fetch();
+			if ($currentUser->userID == $charInfo['userID']) 
+				$pendingAction = 'withdrawn';
 			if (!$charInfo['approved']) 
-				$pendingAction = 'rejecte';
-			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $currentUser->userID, 'NOW()', $currentUser->userID);
-			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $currentUser->userID, 'NOW()', 'character', $characterID);
+				$pendingAction = 'rejected';
+			addCharacterHistory($characterID, 'character'.ucwords($pendingAction), $currentUser->userID, 'NOW()', $currentUser->userID);
+			addGameHistory($gameID, 'character'.ucwords($pendingAction), $currentUser->userID, 'NOW()', 'character', $characterID);
 			
-			displayJSON(array('success' => true, 'action' => $pendingAction.'d', 'characterID' => $characterID));
+			displayJSON(array('success' => true, 'action' => $pendingAction, 'characterID' => $characterID));
+		}
+
+		public function approveCharacter($gameID, $characterID) {
+			global $currentUser, $mysql;
+
+			$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
+			$charInfo = $mysql->query("SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, g.system FROM characters c INNER JOIN users u ON c.userID = u.userID INNER JOIN games g ON c.gameID = g.gameID WHERE c.characterID = {$characterID}");
+			if ($charInfo->rowCount() == 0 && $gmCheck->rowCount() == 0) 
+				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
+			$mysql->query("UPDATE characters SET approved = 1 WHERE characterID = {$characterID}");
+			addCharacterHistory($characterID, 'characterApproved', $currentUser->userID, 'NOW()', $currentUser->userID);
+			addGameHistory($gameID, 'characterApproved', $currentUser->userID, 'NOW()', 'character', $characterID);
+			
+			displayJSON(array('success' => true, 'action' => 'characterApproved', 'characterID' => $characterID));
 		}
 	}
 ?>

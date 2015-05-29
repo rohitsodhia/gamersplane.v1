@@ -16,6 +16,9 @@
 	"/javascript/games/pendingPlayer.js": "1.1.0",
 	"/javascript/games/removePlayer.js": "1.1.0",
 	"/javascript/games/toggleGM.js": "1.1.0",
+	"/javascript/games/decks/delete.js": "1.1.0",
+	"/javascript/games/decks/details.js": "1.1.0",
+	"/javascript/games/decks/shuffle.js": "1.1.0",
 	"/javascript/acp/_section.js": "1.0.3",
 	"/javascript/links.js": "1.0.2"
 }

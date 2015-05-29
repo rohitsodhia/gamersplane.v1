@@ -11,14 +11,20 @@ $(function () {
 	});
 	$('form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
 		beforeSubmit: function (data) {
-			if ($('#deckLabel').val().length == 0) return false;
-			if ($('input[type="radio"]:checked').val().length == 0) return false;
+			if ($('#deckLabel').val().length == 0) 
+				return false;
+			if ($('input[type="radio"]:checked').val().length == 0) 
+				return false;
 
 			return true;
 		},
 		success: function (data) {
-			if (data == '1') {
-				parent.document.location.reload();
+			if (data.success) {
+				var appElement = parent.document.querySelector('[ng-app=gamersplane]');
+				var $scope = parent.angular.element(appElement).scope();
+				$scope.$apply(function() {
+					$scope.modalWatch = { action: data.action, deck: data.deck };
+				});
 			}
 		}
 	});

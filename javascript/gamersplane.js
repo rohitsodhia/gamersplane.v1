@@ -222,6 +222,16 @@ app.config(function ($httpProvider) {
 			$element.css({ 'margin-left': skewedOut, 'margin-right': skewedOut });
 		}
 	};
+}).directive('hbTopper', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			$element = $(element);
+			$headerbar = $(element).siblings('.headerbar');
+			skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
+			$element.css({ 'margin-left': skewedOut });
+		}
+	};
 }).directive('colorbox', function () {
 	return {
 		restrict: 'A',

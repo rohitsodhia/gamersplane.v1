@@ -1,6 +1,3 @@
-$(function () {
-	$('#withdrawFromGame, .actionLinks a, #newMap, .mapActions a, #newDeck, .deckActions a').colorbox();
-});
 controllers.controller('games_details', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
 	pathElements = getPathElements();
 	currentUser.then(function (currentUser) {
@@ -29,6 +26,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 				$scope.details = data.details;
 				$scope.players = data.players;
 				$scope.invites.waiting = data.invites;
+				$scope.decks = data.decks;
 				$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 				$scope.details.playersInGame = $scope.players.length - 1;
 				$scope.pendingInvite = $filter('filter')($scope.invites.waiting, { userID: currentUser.userID }).length  == 1?true:false;
@@ -83,44 +81,67 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			if (typeof newVal != 'object') 
 				return;
 
-
-			if (newVal.action == 'approvePlayer') {
-				setGameData();
-			} else if (newVal.action == 'rejectPlayer') {
-				for (key in $scope.players) {
-					if ($scope.players[key].userID == newVal.playerID) {
-						$scope.players.splice(key, 1);
-						break;
+			switch (newVal.action) {
+				case 'approvePlayer':
+					setGameData();
+					break;
+				case 'rejectPlayer':
+					for (key in $scope.players) {
+						if ($scope.players[key].userID == newVal.playerID) {
+							$scope.players.splice(key, 1);
+							break;
+						}
 					}
-				}
-				if (newVal.playerID == currentUser.userID) 
-					$scope.inGame = false;
-				$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
-			} else if (newVal.action == 'playerRemoved') {
-				for (key in $scope.players) {
-					if ($scope.players[key].userID == newVal.playerID) {
-						$scope.players.splice(key, 1);
+					if (newVal.playerID == currentUser.userID) 
 						$scope.inGame = false;
-						$scope.pendingInvite = false;
-						break;
+					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
+					break;
+				case 'playerRemoved':
+					for (key in $scope.players) {
+						if ($scope.players[key].userID == newVal.playerID) {
+							$scope.players.splice(key, 1);
+							$scope.inGame = false;
+							$scope.pendingInvite = false;
+							break;
+						}
 					}
-				}
-			} else if (newVal.action == 'playerLeft') {
-				for (key in $scope.players) {
-					if ($scope.players[key].userID == newVal.playerID) {
-						$scope.players.splice(key, 1);
-						break;
+					break;
+				case 'playerLeft':
+					for (key in $scope.players) {
+						if ($scope.players[key].userID == newVal.playerID) {
+							$scope.players.splice(key, 1);
+							break;
+						}
 					}
-				}
-				$scope.inGame = false;
-				$scope.pendingInvite = false;
-			} else if (newVal.action == 'toggleGM') {
-				for (key in $scope.players) {
-					if ($scope.players[key].userID == newVal.playerID) {
-						$scope.players[key].isGM = !$scope.players[key].isGM;
-						break;
+					$scope.inGame = false;
+					$scope.pendingInvite = false;
+					break;
+				case 'toggleGM':
+					for (key in $scope.players) {
+						if ($scope.players[key].userID == newVal.playerID) {
+							$scope.players[key].isGM = !$scope.players[key].isGM;
+							break;
+						}
 					}
-				}
+					break;
+				case 'createDeck':
+					$scope.decks.push(newVal.deck);
+					break;
+				case 'editDeck':
+					deck = $filter('filter')($scope.decks, { deckID: newVal.deck.deckID })[0];
+					index = $scope.decks.indexOf(deck);
+					$scope.decks[index] = newVal.deck;
+					break;
+				case 'shuffleDeck':
+					deck = $filter('filter')($scope.decks, { deckID: newVal.deckID })[0];
+					index = $scope.decks.indexOf(deck);
+					$scope.decks[index].cardsRemaining = newVal.deckSize;
+					break;
+				case 'deleteDeck':
+					deck = $filter('filter')($scope.decks, { deckID: newVal.deckID })[0];
+					index = $scope.decks.indexOf(deck);
+					$scope.decks.splice(index, 1);
+					break;
 			}
 
 			$.colorbox.close();
@@ -177,8 +198,8 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 				}
 			});
 		};
-		$scope.rejectCharacter = function (character) {
-			$http.post(API_HOST + '/games/characters/reject/', { 'gameID': $scope.gameID, 'characterID': character.characterID }).success(function (data) {
+		$scope.removeCharacter = function (character) {
+			$http.post(API_HOST + '/games/characters/remove/', { 'gameID': $scope.gameID, 'characterID': character.characterID }).success(function (data) {
 				if (data.success) {
 					for (pKey in $scope.players) {
 						if ($scope.players[pKey].userID == character.userID) {
@@ -191,9 +212,23 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 							break;
 						}
 					}
-//					setGameData();
 				}
 			});
-		}
+		};
+		$scope.approveCharacter = function (character) {
+			$http.post(API_HOST + '/games/characters/approve/', { 'gameID': $scope.gameID, 'characterID': character.characterID }).success(function (data) {
+				if (data.success) {
+					for (pKey in $scope.players) {
+						if ($scope.players[pKey].userID == character.userID) {
+							for (cKey in $scope.players[pKey].characters) {
+								if ($scope.players[pKey].characters[cKey].characterID == character.characterID) 
+									$scope.players[pKey].characters[cKey].approved = true;
+							}
+							break;
+						}
+					}
+				}
+			});
+		};
 	});
 });

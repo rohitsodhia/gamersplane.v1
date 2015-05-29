@@ -108,6 +108,11 @@
 				<h2 skew-element class="headerbar hbDark">Game Closed</h2>
 				<p class="notice">This game is closed</p>
 			</div>
+			<div ng-if="details.status && !loggedIn" class="rightCol">
+				<h2 skew-element class="headerbar hbDark">Join Game</h2>
+				<p class="alignCenter">Interested in this game?</p>
+				<p class="alignCenter"><a href="/login/" class="loginLink" colorbox>Login</a> or <a href="/register/" class="last">Register</a> to join!</p>
+			</div>
 			<div ng-if="details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Game Full</h2>
 				<p class="hbdMargined notice">This game is currently full</p>
@@ -143,7 +148,7 @@
 				<p ng-if="characters.length == 0 && curPlayer.characters.length < details.charsPerPlayer && !isGM" class="notice" hb-margined>You don't have any characters to submit</p>
 			</div>
 			
-			<div ng-class="{ 'leftCol': loggedIn }">
+			<div class="leftCol">
 				<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
 				<ul id="playersInGame" class="hbAttachedList hbMargined">
 					<li ng-repeat="player in players | filter: { approved: true }" id="userID_{{player.userID}}" ng-class="{ 'hasChars': player.characters > 0 }">
@@ -163,8 +168,8 @@
 								</div>
 								<div class="actionLinks">
 									<a ng-if="isGM && !character.approved" href="" ng-click="approveCharacter(character)">Approve Character</a>
-									<a ng-if="isGM" href="" ng-click="rejectCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
-									<a ng-if="!isGM && player.userID == currentUser.userID" href="/games/{{gameID}}/removeChar/{{character.characterID}}/" class="removeChar">Withdraw Character</a>
+									<a ng-if="isGM && player.userID != currentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
+									<a ng-if="!isGM || player.userID == currentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
 								</div>
 							</li>
 						</ul>
@@ -188,12 +193,6 @@
 
 				<div ng-if="isGM">
 					<h2 skew-element class="headerbar hbDark hb_hasList">Invited</h2>
-					<form id="invites" hb-margined ng-submit="inviteUser()">
-						<label>Invite player to game:</label>
-						<input type="text" name="user" ng-model="invites.user">
-						<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
-						<div class="error" ng-show="invites.errorMsg">{{invites.errorMsg}}</div>
-					</form>
 					<ul class="hbAttachedList" hb-margined>
 						<li ng-repeat="invite in invites.waiting | orderBy: 'username'" class="playerInfo clearfix">
 							<div class="player"><a href="/user/{{invite.userID}}/?>" class="username">{{invite.username}}</a></div>
@@ -202,17 +201,20 @@
 							</div>
 						</li>
 					</ul>
+					<form id="invites" hb-margined ng-submit="inviteUser()">
+						<label>Invite player to game:</label>
+						<input type="text" name="user" ng-model="invites.user">
+						<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
+						<div class="error" ng-show="invites.errorMsg">{{invites.errorMsg}}</div>
+					</form>
 				</div>
 			</div>
 		</div>
-<? /*
 
 		<div id="gameFeatures" class="clearfix">
-			<div id="maps" class="floatLeft">
-<?		if ($isGM) { ?>
-				<div class="clearfix hbdTopper"><a id="newMap" href="/games/<?=$gameID?>/maps/new" class="fancyButton smallButton">New Map</a></div>
-<?		} ?>
-				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Maps</h2>
+<? /*			<div id="maps" class="floatLeft">
+				<div ng-if="isGM" class="clearfix hbdTopper"><a id="newMap" href="/games/{{gameID}}/maps/new" class="fancyButton smallButton">New Map</a></div>
+				<h2 class="headerbar hbDark hb_hasList" ng-class="{ 'hb_hasButton': isGM }">Maps</h2>
 				<div class="hbdMargined">
 <?
 		$mapList = $mysql->query("SELECT mapID, name, rows, cols, visible FROM maps WHERE gameID = {$gameID} AND deleted = 0");
@@ -244,58 +246,30 @@
 			echo "					<p class=\"notice\">There are no maps available at this time</p>\n";
 ?>
 				</div>
-			</div>
-			<div id="decks" class="floatRight">
-<?		if ($isGM) { ?>
-				<div class="clearfix hbdTopper"><a id="newDeck" href="/games/<?=$gameID?>/decks/new" class="fancyButton smallButton">New Deck</a></div>
-<?		} ?>
-				<h2 class="headerbar hbDark<?=$isGM?' hb_hasButton':''?> hb_hasList">Decks</h2>
+			</div> */ ?>
+			<div id="decks"<? // class="floatRight" ?>>
+				<div ng-if="isGM" class="clearfix" hb-topper><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton" skew-element>New Deck</a></div>
+				<h2 class="headerbar hbDark hb_hasList" ng-class="{ 'hb_hasButton': isGM }">Decks</h2>
 				<div class="hbdMargined">
-<?
-		$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
-		$decks = $decks->fetchAll();
-		$temp = array();
-		foreach ($decks as $key => $value) $temp[$value['deckID']] = $value;
-		$decks = $temp;
-		
-		$deckTypes = array();
-		foreach ($mysql->query('SELECT short, name FROM deckTypes') as $deckType) $deckTypes[$deckType['short']] = $deckType['name'];
-
-		if (sizeof($decks)) {
-?>
-					<div class="tr clearfix headers">
+					<div ng-if="decks.length" class="tr clearfix headers">
 						<div class="deckLabel">Label</div>
 						<div class="deckRemaining">Cards Remaining</div>
 						<div class="deckActions">Actions</div>
 					</div>
-<?
-			foreach ($decks as $deckInfo) {
-				$cardsRemaining = sizeof(explode('~', $deckInfo['deck'])) - $deckInfo['position'] + 1;
-?>
-					<div class="tr clearfix">
+					<div ng-repeat="deck in decks" class="tr clearfix">
 						<div class="deckLabel">
-							<?=$deckInfo['label']?>
-							<div class="deckType"><?=$deckTypes[$deckInfo['type']]?></div>
+							{{deck.label}}
+							<div class="deckType">{{deck.type.name}}</div>
 						</div>
-						<div class="deckRemaining"><?=$cardsRemaining?></div>
-<?				if ($isGM) { ?>
-						<div class="deckActions">
-							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/edit/" title="Edit Deck" class="sprite editWheel"></a>
-							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/shuffle/" title="Shuffle Deck" class="sprite shuffle"></a>
-							<a href="/games/<?=$gameID?>/decks/<?=$deckInfo['deckID']?>/delete/" title="Delete Deck" class="sprite cross"></a>
+						<div class="deckRemaining">{{deck.cardsRemaining}}</div>
+						<div ng-if="isGM" class="deckActions">
+							<a href="/games/{{gameID}}/decks/{{deck.deckID}}/edit/" title="Edit Deck" class="sprite editWheel" colorbox></a>
+							<a href="/games/{{gameID}}/decks/{{deck.deckID}}/shuffle/" title="Shuffle Deck" class="sprite shuffle" colorbox></a>
+							<a href="/games/{{gameID}}/decks/{{deck.deckID}}/delete/" title="Delete Deck" class="sprite cross" colorbox></a>
 						</div>
-<?				} ?>
 					</div>
-<?
-			}
-			echo "				</div>\n";
-		} else echo "					<p class=\"notice\">There are no decks available at this time</p>\n";
-?>
+					<p ng-if="decks.length == 0" class="notice">There are no decks available at this time</p>
 				</div>
 			</div>
 		</div>
-<?
-	} else echo "		".'<div id="loggedOutNotice">Interested in this game? <a href="/login" class="loginLink">Login</a> or <a href="/register" class="last">Register</a> to join!</div>'."\n";
-*/
-?>
 <?	require_once(FILEROOT.'/footer.php'); ?>
