@@ -5,6 +5,10 @@
 
 			if ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
+			elseif ($pathOptions[0] == 'toggleGameStatus' && intval($_POST['gameID'])) 
+				$this->toggleGameStatus($_POST['gameID']);
+			elseif ($pathOptions[0] == 'toggleForum' && intval($_POST['gameID'])) 
+				$this->toggleForum($_POST['gameID']);
 			elseif ($pathOptions[0] == 'apply') 
 				$this->apply();
 			elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user'])) 
@@ -13,6 +17,10 @@
 				$this->removeInvite($_POST['gameID'], $_POST['userID']);
 			elseif ($pathOptions[0] == 'invite' && $pathOptions[1] == 'accept' && intval($_POST['gameID'])) 
 				$this->acceptInvite($_POST['gameID']);
+			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'submit' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
+				$this->submitCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
+			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'reject' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
+				$this->rejectCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
 /*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
 				$this->displayPM($_POST['pmID']);
 			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
@@ -51,10 +59,11 @@
 			$gameInfo['readPermissions'] = (bool) $gameInfo['readPermissions'];
 			$gameInfo['groupID'] = (int) $gameInfo['groupID'];
 			$gameStatus = array('o' => 'Open', 'p' => 'Private', 'c' => 'Closed');
-			$gameInfo['status'] = $gameStatus[$gameInfo['status']];
+			$gameInfo['status'] = (bool) $gameInfo['status'];
 			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM, p.primaryGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID} ORDER BY p.approved, u.username")->fetchAll();
 			$gameInfo['approvedPlayers'] = 0;
 			array_walk($players, function (&$player, $key) {
+				$player['userID'] = (int) $player['userID'];
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
 				$player['primaryGM'] = $player['primaryGM']?true:false;
@@ -64,16 +73,43 @@
 			});
 			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
 			foreach ($characters as $character) {
-				$character['characterID'] = (int) $character['characterid'];
+				$character['characterID'] = (int) $character['characterID'];
 				$character['userID'] = (int) $character['userID'];
 				$character['approved'] = (bool) $character['approved'];
 				$players[$character['userID']]['characters'][] = $character;
 			}
 			$invites = $mysql->query("SELECT u.userID, u.username FROM gameInvites i INNER JOIN users u ON i.invitedID = u.userID WHERE i.gameID = {$gameID}")->fetchAll();
-			array_walk($invites, function (&$invite, $key) {
-				$invite['userID'] = (int) $invite['userID'];
-			});
+			if (sizeof($invites)) {
+				array_walk($invites, function (&$invite, $key) {
+					$invite['userID'] = (int) $invite['userID'];
+				});
+			} else 
+				$invites = array();
 			displayJSON(array('details' => $gameInfo, 'players' => $players, 'invites' => $invites));
+		}
+
+		public function toggleForum($gameID) {
+			global $currentUser, $mysql;
+
+			$gameID = (int) $gameID;
+			$isGM = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
+			if ($isGM->rowCount()) {
+				$mysql->query("UPDATE games g, forums_permissions_general p SET p.read = p.read ^ 1, g.public = g.public ^ 1 WHERE g.gameID = $gameID AND g.forumID = p.forumID");
+				displayJSON(array('success' => true));
+			} else 
+				displayJSON(array('failed' => true, 'errors' => 'notGM'));
+		}
+
+		public function toggleGameStatus($gameID) {
+			global $currentUser, $mysql;
+
+			$gameID = (int) $gameID;
+			$isGM = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
+			if ($isGM->rowCount()) {
+				$mysql->query("UPDATE games SET status = !status WHERE gameID = {$gameID}");
+				displayJSON(array('success' => true));
+			} else 
+				displayJSON(array('failed' => true, 'errors' => 'notGM'));
 		}
 
 		public function apply() {
@@ -152,61 +188,60 @@
 				displayJSON(array('failed' => true, 'errors' => 'noPermission'));
 		}
 
-		public function checkAllowed($pmID) {
-			global $mongo, $currentUser;
+		public function submitCharacter($gameID, $characterID) {
+			global $currentUser, $mysql, $mongo;
 
-			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipient.userID' => $currentUser->userID, 'deleted' => false))));
-			displayJSON(array('allowed' => $pm?true:false));
-		}
+			$charInfo = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID}");
+			if (!$charInfo->rowCount()) 
+				displayJSON(array('failed' => true, 'errors' => array('notOwner')), true);
+			$charInfo = $charInfo->fetch();
+			$charInfo['characterID'] = (int) $charInfo['characterID'];
+			$charInfo['userID'] = (int) $charInfo['userID'];
+			$charInfo['approved'] = (bool) $charInfo['approved'];
 
-		public function sendPM() {
-			global $mysql, $mongo, $currentUser;
+			if (is_int($charInfo['gameID'])) 
+				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')), true);
+			elseif ($charInfo['gameID'] == 0) {
+				$mysql->query("UPDATE characters SET gameID = {$gameID} WHERE characterID = {$characterID}");
+				addCharacterHistory($characterID, 'charApplied', $currentUser->userID, 'NOW()', $gameID);
+				addGameHistory($gameID, 'charApplied', $currentUser->userID, 'NOW()', 'character', $characterID);
 
-			$sender = (object) array('userID' => $currentUser->userID, 'username' => $currentUser->username);
-			$recipient = sanitizeString(preg_replace('/[^\w.]/', '', $_POST['username']));
-			$recipient = $mysql->query("SELECT userID, username FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
-			$recipient->userID = (int) $recipient->userID;
-			$recipient->read = false;
-			$recipient->deleted = false;
-			$replyTo = intval($_POST['replyTo']) > 0?intval($_POST['replyTo']):null;
-			if ($sender->userID == $recipient->userID) 
-				displayJSON(array('mailingSelf' => true));
-			else {
-				$history = null;
-				if ($replyTo) {
-					$parent = $mongo->pms->findOne(array('pmID' => $replyTo));
-					$history = array($replyTo);
-					if ($parent['history']) 
-						$history = array_merge($history, $parent['history']);
+				$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN players p ON u.userID = p.userID AND p.isGM = 1 LEFT JOIN usermeta m ON u.userID = m.userID WHERE p.gameID = {$gameID} AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
+				if (sizeof($gmEmails)) {
+					$charDetails = $mongo->characters->findOne(array('characterID' => $characterID), array('name' => 1));
+					$emailDetails = new stdClass();
+					$emailDetails->action = 'Character Added';
+					$emailDetails->gameInfo = $mysql->query("SELECT gameID, title, system FROM games WHERE gameID = {$gameID}")->fetch(PDO::FETCH_OBJ);
+					$charLabel = strlen($charDetails['name'])?$charDetails['name']:$charInfo['label'];
+					$emailDetails->message = "<a href=\"http://gamersplane.com/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"http://gamersplane.com/characters/{$characterID}/\">{$charLabel}</a>.";
+					ob_start();
+					include('gmEmail.php');
+					$email = ob_get_contents();
+					ob_end_clean();
+					@mail(implode(', ', $gmEmails), "Game Activity: {$emailDetails->action}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 				}
-				$mongo->pms->insert(array('pmID' => mongo_getNextSequence('pmID'), 'sender' => $sender, 'recipients' => array($recipient), 'title' => sanitizeString($_POST['title']), 'message' => sanitizeString($_POST['message']), 'datestamp' => date('Y-m-d H:i:s'), 'replyTo' => $replyTo, 'history' => $history));
-				displayJSON(array('sent' => true));
-			}
+
+				displayJSON(array('success' => true, 'character' => $charInfo));
+			} else 
+				displayJSON(array('failed' => true));
 		}
 
-		public function deletePM($pmID) {
-			global $mongo, $currentUser;
+		public function rejectCharacter($gameID, $characterID) {
+			global $currentUser, $mysql;
 
-			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID))));
-			if ($pm === null) 
-				displayJSON(array('noMatch' => true));
-			elseif ($pm['sender']['userID'] == $currentUser->userID) {
-				$allowDelete = true;
-				foreach ($pm['recipients'] as $recipient) 
-					if ($recipient['read'] && !$recipient['deleted']) 
-						$allowDelete = false;
-
-				if ($allowDelete) 
-					$mongo->pms->remove(array('pmID' => $pmID));
-
-				displayJSON(array('deleted' => true));
-			} else {
-				$mongo->pms->update(array('pmID' => $pmID, 'recipients.userID' => $currentUser->userID), array('$set' => array('recipients.$.deleted' => true)));
-
-				displayJSON(array('deleted' => true));
-			}
+			$pendingAction = 'remove';
+			$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
+			$charInfo = $mysql->query("SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, g.system FROM characters c INNER JOIN users u ON c.userID = u.userID INNER JOIN games g ON c.gameID = g.gameID WHERE c.characterID = {$characterID}");
+			if ($charInfo->rowCount() == 0 && $gmCheck->rowCount() == 0) 
+				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
+			$mysql->query("UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = {$characterID}");
+			$charInfo = $charInfo->fetch();
+			if (!$charInfo['approved']) 
+				$pendingAction = 'rejecte';
+			addCharacterHistory($characterID, 'character'.ucwords($pendingAction).'d', $currentUser->userID, 'NOW()', $currentUser->userID);
+			addGameHistory($gameID, 'character'.ucwords($pendingAction).'d', $currentUser->userID, 'NOW()', 'character', $characterID);
+			
+			displayJSON(array('success' => true, 'action' => $pendingAction.'d', 'characterID' => $characterID));
 		}
 	}
 ?>

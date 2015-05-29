@@ -1,35 +1,5 @@
 $(function () {
 	$('#withdrawFromGame, .actionLinks a, #newMap, .mapActions a, #newDeck, .deckActions a').colorbox();
-	$('#toggleForumVisibility').click(function (e) {
-		e.preventDefault();
-
-		$forumVis = $(this);
-
-		$.post('/games/process/toggleForumVisibility/', { gameID: $('#gameID').val() }, function () {
-			status = $forumVis.siblings('span').text();
-			$forumVis.siblings('span').text(status == 'Public'?'Private':'Public');
-			$forumVis.text('[ Make game ' + (status == 'Public'?'Public':'Private') + ' ]');
-		});
-	});
-
-/*	$('#invite').submit(function (e) {
-		e.preventDefault();
-
-		gameID = $(this).find('input[name=gameID]').val();
-		user = $(this).find('input[name=user]').val();
-
-		$.ajax({
-			method: 'POST',
-			url: API_HOST + '/games/invite/',
-			data: { gameID: gameID, user: user },
-			xhrFields: {
-				withCredentials: true
-			},
-			success: function (data) {
-				console.log(data);
-			}
-		});
-	});*/
 });
 controllers.controller('games_details', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
 	pathElements = getPathElements();
@@ -75,9 +45,12 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 								$scope.characters = data.characters;
 								$scope.combobox.characters = [];
 								for (key in $scope.characters) 
-									$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
+									if (!$filter('filter')($scope.curPlayer.characters, { 'characterID': $scope.characters[key].characterID }).length)
+										$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
+								$scope.combobox.characters = $filter('orderBy')($scope.combobox.characters, 'value');
 							});
 						}
+						break;
 					}
 				}
 				if (currentUser && $scope.details.gm.userID == currentUser.userID) 
@@ -86,12 +59,72 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		};
 		setGameData();
 
+		$scope.toggleGameStatus = function () {
+			$http.post(API_HOST + '/games/toggleGameStatus/', { gameID: $scope.gameID }).success(function (data) {
+				if (data.success) 
+					$scope.details.status = !$scope.details.status;
+			});
+		};
+		$scope.toggleForum = function () {
+			$http.post(API_HOST + '/games/toggleForum/', { gameID: $scope.gameID }).success(function (data) {
+				if (data.success) 
+					$scope.details.readPermissions = !$scope.details.readPermissions;
+			});
+		};
+
 		$scope.applyToGame = function () {
 			$http.post(API_HOST + '/games/apply/', { gameID: $scope.gameID }).success(function (data) {
 				if (data.success == true) 
 					$scope.inGame = true;
 			});
 		};
+
+		$scope.$watch('modalWatch', function (newVal, oldVal) {
+			if (typeof newVal != 'object') 
+				return;
+
+
+			if (newVal.action == 'approvePlayer') {
+				setGameData();
+			} else if (newVal.action == 'rejectPlayer') {
+				for (key in $scope.players) {
+					if ($scope.players[key].userID == newVal.playerID) {
+						$scope.players.splice(key, 1);
+						break;
+					}
+				}
+				if (newVal.playerID == currentUser.userID) 
+					$scope.inGame = false;
+				$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
+			} else if (newVal.action == 'playerRemoved') {
+				for (key in $scope.players) {
+					if ($scope.players[key].userID == newVal.playerID) {
+						$scope.players.splice(key, 1);
+						$scope.inGame = false;
+						$scope.pendingInvite = false;
+						break;
+					}
+				}
+			} else if (newVal.action == 'playerLeft') {
+				for (key in $scope.players) {
+					if ($scope.players[key].userID == newVal.playerID) {
+						$scope.players.splice(key, 1);
+						break;
+					}
+				}
+				$scope.inGame = false;
+				$scope.pendingInvite = false;
+			} else if (newVal.action == 'toggleGM') {
+				for (key in $scope.players) {
+					if ($scope.players[key].userID == newVal.playerID) {
+						$scope.players[key].isGM = !$scope.players[key].isGM;
+						break;
+					}
+				}
+			}
+
+			$.colorbox.close();
+		});
 
 		$scope.invites = { user: '', errorMsg: null, waiting: [] };
 		$scope.inviteUser = function () {
@@ -130,5 +163,37 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 				}
 			});
 		};
+
+		$scope.submitChar = { characterID: null };
+		$scope.submitCharacter = function () {
+			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.characterID }).success(function (data) {
+				if (data.success) {
+					for (pKey in $scope.players) {
+						if ($scope.players[pKey].userID == currentUser.userID) {
+							$scope.players[pKey].characters.push(data.character);
+							break;
+						}
+					}
+				}
+			});
+		};
+		$scope.rejectCharacter = function (character) {
+			$http.post(API_HOST + '/games/characters/reject/', { 'gameID': $scope.gameID, 'characterID': character.characterID }).success(function (data) {
+				if (data.success) {
+					for (pKey in $scope.players) {
+						if ($scope.players[pKey].userID == character.userID) {
+							for (cKey in $scope.players[pKey].characters) {
+								if ($scope.players[pKey].characters[cKey].characterID == character.characterID) 
+									character = $scope.players[pKey].characters.splice(cKey, 1);
+							}
+							$scope.combobox.characters.push({ 'id': character[0].characterID, 'value': character[0].label });
+							$scope.combobox.characters = $filter('orderBy')($scope.combobox.characters, 'value');
+							break;
+						}
+					}
+//					setGameData();
+				}
+			});
+		}
 	});
 });

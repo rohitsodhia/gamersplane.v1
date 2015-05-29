@@ -170,12 +170,14 @@ app.config(function ($httpProvider) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 			$element = $(element);
+			if ($element.children('div.skewedDiv').length) 
+				return;
 			var skewDeg = 0;
 			if (attrs.skewElement != '') 
 				skewDeg = parseInt(attrs.skewElement);
 			if (skewDeg == 0)
 				skewDeg = -30;
-			$skewDiv = $element.wrapInner('<div></div>').children('div');
+			$skewDiv = $element.wrapInner('<div class="skewedDiv"></div>').children('div');
 			skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
 			scope.skewedOut = skewedOut;
 			$element.css({

@@ -152,6 +152,13 @@
 		return true;
 	}
 
+	function displayJSON($data, $exit = false) {
+		header('Content-Type: application/json');
+		echo json_encode($data);
+		if ($exit) 
+			exit;
+	}
+
 /*	Session Functions */
 	function startSession() {
 		session_start();

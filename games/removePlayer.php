@@ -7,7 +7,7 @@
 
 	list($playerID, $playerName, $title, $isGM) = $playerCheck->fetch(PDO::FETCH_NUM);
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Remove Player from Game</h1>
 		
 		<p class="hbMargined">Are you sure you want to remove <a href="/user/<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> from "<a href="<?='/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
@@ -17,4 +17,4 @@
 			<input type="hidden" name="playerID" value="<?=$playerID?>">
 			<button type="submit" name="remove" class="fancyButton">Remove</button>
 		</form>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

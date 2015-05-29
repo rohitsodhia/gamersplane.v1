@@ -335,11 +335,7 @@
 	}*/
 
 	.hasChars {
-		padding-bottom: 4px;
-	}
-
-	.hasChars:hover {
-		padding-bottom: 3px;
+		padding-bottom: 6px;
 	}
 
 	.hasChars .playerInfo {
@@ -368,21 +364,27 @@
 		background: #EEE;
 	}
 
-	#playersInGame > li:hover .characters {
-		background: #DDD;
-	}
+	#playersInGame {
+		& > li:hover {
+			.characters {
+				background: #DDD;
 
-	#playersInGame .characters li {
-		padding: 6px 0;
-		border-top: 1px solid #CCC;
-	}
+				li {
+					border-color: #BBB;
+				}
+			}
+		}
 
-	#playersInGame .characters li:first-child {
-		border-top: none;
-	}
+		.characters {
+			li {
+				padding: 6px 0;
+				border-top: 1px solid #CCC;
+			}
 
-	#playersInGame > li:hover .characters li {
-		border-color: #BBB;
+			li:first-child {
+				border-top: none;
+			}
+		}
 	}
 
 	.charLabel {

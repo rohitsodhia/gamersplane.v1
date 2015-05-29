@@ -69,11 +69,13 @@ function addCSSRule(selector, rules, index) {
 
 function skewElement() {
 	$element = $(this);
+	if ($element.children('div.skewedDiv').length) 
+		return;
 	if (typeof $element.data('skew') != 'undefined') 
 		skewDeg = parseInt($element.data('skew'));
 	else 
 		skewDeg = -30;
-	$skewDiv = $element.wrapInner('<div></div>').children('div');
+	$skewDiv = $element.wrapInner('<div class="skewedDiv"></div>').children('div');
 	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
 	$element.css({
 		'-webkit-transform' : 'skew(' + skewDeg + 'deg)',

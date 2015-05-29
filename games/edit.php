@@ -75,16 +75,6 @@
 				<input type="hidden" name="gameID" value="<?=$gameID?>">
 <?	} ?>
 				<div class="tr">
-					<label>Status</label>
-					<div id="statuses">
-						<div class="vAlignMiddle">
-<?	foreach (array('open', 'private', 'closed') as $status) { ?>
-							<input id="status_<?=$status?>" type="radio" name="status" value="<?=substr($status, 0, 1)?>"<?=substr($status, 0, 1) == $gameDetails['status'] || ($display == 'new' && $status == 'open')?' checked="checked"':''?>> <label for="status_<?=$status?>"><?=ucwords($status)?></label>
-<?	} ?>
-						</div>
-					</div>
-				</div>
-				<div class="tr">
 					<label>Title</label>
 					<input type="text" name="title" value="<?=$gameDetails['title']?>" maxlength="50">
 				</div>
