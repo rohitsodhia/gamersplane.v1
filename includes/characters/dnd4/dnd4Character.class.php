@@ -251,7 +251,7 @@
 							<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer addStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 							<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 <?			foreach (d20Character_consts::getStatNames() as $short => $stat) { ?>
-								<option value="<?=$short?>"<=$skillInfo['stat'] == $short?' selected="selected"':''?>><?=ucfirst($short)?></option>
+								<option value="<?=$short?>"<=$skillInfo['stat'] == $short?' selected="selected"':''?><?=ucfirst($short)?></option>
 <?			} ?>
 							</select></span>
 							<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
@@ -303,10 +303,10 @@
 			}
 		}
 
-		public function addPower($name, $type) {
+		public function addPower($power, $type) {
 			if (strlen($power)) {
-				newItemized('dnd4_power', $name, $this::SYSTEM);
-				$this->powers[$type][] = $name;
+				newItemized('dnd4_power', $power, $this::SYSTEM);
+				$this->powers[$type][] = $power;
 			}
 		}
 
@@ -361,23 +361,24 @@
 				$this->setPassiveSenses('perception', $data['passiveSenses']['perception']);
 
 				$this->clearVar('attacks');
-				foreach ($data['attacks'] as $attack) $this->addAttack($attack);
+				foreach ($data['attacks'] as $attack) 
+					$this->addAttack($attack);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					$this->addSkill($skillInfo);
-				} }
+				if (sizeof($data['skills'])) 
+					foreach ($data['skills'] as $skillInfo) 
+						$this->addSkill($skillInfo);
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					$this->addFeat($featInfo);
-				} }
+				if (sizeof($data['feats'])) 
+					foreach ($data['feats'] as $featInfo) 
+						$this->addFeat($featInfo);
 
 				foreach (array('atwill', 'encounter', 'daily') as $type) {
 					$this->powers[$type] = array();
-					if (isset($data['powers'][$type])) { foreach ($data['powers'][$type] as $power) {
-						$this->addPower($power, $type);
-					} }
+					if (isset($data['powers'][$type])) 
+						foreach ($data['powers'][$type] as $power) 
+							$this->addPower($power, $type);
 				}
 
 				$this->setWeapons($data['weapons']);

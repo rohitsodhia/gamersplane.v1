@@ -69,11 +69,11 @@ $(function () {
 		}).on('click', '#addSkill', function (e) {
 			e.preventDefault();
 
-			nextSkillCount += 1;
 			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
 				$newSkill = $(data);
 				$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
 			});
+			nextSkillCount += 1;
 		});
 
 		nextSkillCount = $('#skillList .skill').length;
@@ -96,8 +96,8 @@ $(function () {
 			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
 				$newFeat = $(data);
 				$newFeat.appendTo('#featList').find('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system }).find('input').focus();
-				nextFeatCount += 1;
 			});
+			nextFeatCount += 1;
 		}).on('click', '.feat_notesLink', function(e) {
 			e.preventDefault();
 

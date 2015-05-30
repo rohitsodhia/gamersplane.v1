@@ -17,21 +17,31 @@
 	float: left;
 }
 
-#page_characterSheet #stats {
-	margin-top: 0;
-}
+#page_characterSheet {
+	#stats {
+		margin-top: 0;
 
-#page_characterSheet #stats .dataTR {
-	margin-bottom: 0;
+		.dataTR {
+			margin-bottom: 0;
+
+			.stat {
+				border-right: 1px solid #555;
+				border-left: 1px solid #555;
+			}
+		}
+	}
+
+	#saves {
+		margin-top: 0;
+
+		.dataTR {
+			margin-bottom: 0;
+		}
+	}
 }
 
 #page_characterSheet_edit #stats .tr div {
 	display: inline-block;
-}
-
-#page_characterSheet #stats .dataTR .stat {
-	border-right: 1px solid #555;
-	border-left: 1px solid #555;
 }
 
 #saves, #init {
@@ -39,20 +49,14 @@
 	margin: 1.5em 0 0 70px;
 }
 
-#page_characterSheet #saves {
-	margin-top: 0;
-}
+#saves {
+	.labelTR label {
+		text-align: center;
+	}
 
-#page_characterSheet #saves .dataTR {
-	margin-bottom: 0;
-}
-
-#saves .labelTR label {
-	text-align: center;
-}
-
-#saves label.leftLabel, #saves .fillerBlock {
-	width: 75px;
+	label.leftLabel, .fillerBlock {
+		width: 75px;
+	}
 }
 
 #page_characterSheet_edit #saves span {
@@ -69,12 +73,16 @@
 	display: inline-block;
 }
 
-#page_characterSheet_edit #hpCol, #page_characterSheet_edit #attacks {
-	margin-top: 1.5em;
+#page_characterSheet_edit {
+	#hpCol, #attacks {
+		margin-top: 1.5em;
+	}
 }
 
-#page_characterSheet #hpCol, #page_characterSheet #attacks {
-	margin-top: 2.5em;
+#page_characterSheet {
+	#hpCol, #attacks {
+		margin-top: 2.5em;
+	}
 }
 
 #hpCol {
@@ -83,10 +91,10 @@
 
 #movement {
 	margin: 1.5em 0 0 15px;
-}
 
-#movement label.first {
-	margin-left: 70px;
+	label.first {
+		margin-left: 70px;
+	}
 }
 
 #actionPoints {
@@ -95,39 +103,41 @@
 
 #passiveSenses {
 	margin: 2em 0 0 10px;
-}
 
-#passiveSenses .tr .leftLabel, #passiveSenses .labelFiller {
-	width: 150px;
+	.tr .leftLabel, .labelFiller {
+		width: 150px;
+	}
 }
 
 #attacks {
 	float: left;
 	width: 485px;
 	margin-left: 60px;
-}
 
-#attacks .attackBonusSet {
-	margin-top: 1em;
-}
+	.attackBonusSet {
+		margin-top: 1em;
 
-#attacks .attackBonusSet:first-of-type {
-	margin-top: 0;
+		&:first-of-type {
+			margin-top: 0;
+		}
+	}
 }
 
 #page_characterSheet #attacks .tr div {
 	display: inline-block;
 }
 
-#attacks span {
-	display: inline-block;
-	width: 40px;
-	text-align: center;
-}
+#attacks {
+	span {
+		display: inline-block;
+		width: 40px;
+		text-align: center;
+	}
 
-#attacks .ability {
-	width: 366px;
-	text-align: left;
+	.ability {
+		width: 366px;
+		text-align: left;
+	}
 }
 
 #skills, #feats {
@@ -156,28 +166,28 @@
 	float: left;
 	width: 32.3%;
 	margin-left: 1.5%;
-}
 
-.powerCol.first {
-	margin-left: 0;
-}
+	&.first {
+		margin-left: 0;
+	}
 
-.powerCol h3 {
-	text-align: center;
+	h3 {
+		text-align: center;
+	}
 }
 
 .power {
 	padding-top: 0;
-}
 
-.power > * {
-	display: inline-block;
-	vertical-align: middle;
-}
+	& > * {
+		display: inline-block;
+		vertical-align: middle;
+	}
 
-.power .power_name {
-	width: 255px;
-	text-align: left;
+	.power_name {
+		width: 255px;
+		text-align: left;
+	}
 }
 
 #items textarea {
