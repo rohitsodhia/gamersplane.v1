@@ -5,6 +5,15 @@
 */
 
 /* General Functions */
+	function utf8ize($input) {
+		if (is_array($input)) {
+			foreach ($input as $key => $value) 
+				$input[$key] = utf8ize($value);
+		} else if (is_string ($input)) 
+			return utf8_encode($input);
+		return $input;
+	}
+
 	function displayJSON($data, $exit = false) {
 		header('Content-Type: application/json');
 		echo json_encode($data);
