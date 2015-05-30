@@ -8,7 +8,7 @@
 					<input type="text" name="race" value="<?=$this->getRace()?>" class="medText lrBuffer">
 					<select name="alignment" class="lrBuffer">
 <?	foreach (dnd4_consts::getAlignments() as $alignShort => $alignment) { ?>
-						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
+						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignment?' selected="selected"':''?>><?=$alignment?></option>
 <?	} ?>
 					</select>
 				</div>
