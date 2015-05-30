@@ -60,7 +60,7 @@
 			$gameInfo['forumID'] = (int) $gameInfo['forumID'];
 			$gameInfo['readPermissions'] = (bool) $gameInfo['readPermissions'];
 			$gameInfo['groupID'] = (int) $gameInfo['groupID'];
-			$gameStatus = array('o' => 'Open', 'p' => 'Private', 'c' => 'Closed');
+			$gameStatus = array('Closed', 'Open');
 			$gameInfo['status'] = (bool) $gameInfo['status'];
 			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM, p.primaryGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID} ORDER BY p.approved, u.username")->fetchAll();
 			$gameInfo['approvedPlayers'] = 0;
