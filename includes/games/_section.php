@@ -1,3 +1,3 @@
 <?
-	$status_names = array('o' => 'Open', 'p' => 'Private', 'c' => 'Closed');
+	$status_names = array('Closed', 'Open');
 ?>

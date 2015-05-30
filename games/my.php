@@ -39,7 +39,7 @@
 		foreach ($games as $info) {
 ?>
 					<li class="gamePlaying">
-						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['status'] == 'o'?'':' ('.$status_names[$info['status']].')')?></a>
+						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
 						<div class="systemType"><?=$info['system']?></div>
 						<div class="gmInfo"><a href="/user/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
 					</li>
@@ -64,7 +64,7 @@
 		foreach ($games as $info) {
 ?>
 					<li class="gameRunning">
-						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['status'] == 'o'?'':' ('.$status_names[$info['status']].')')?></a>
+						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
 						<div class="systemType"><?=$info['system']?></div>
 					</li>
 <?
