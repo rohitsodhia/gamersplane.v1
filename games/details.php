@@ -63,14 +63,14 @@
 			</div>
 			<div class="tr textareaRow clearfix">
 				<label>Description</label>
-				<div>{{details.description}}</div>
+				<div ng-bind-html="details.description | trustHTML"></div>
 			</div>
 			<div class="tr textareaRow clearfix">
 				<label>Character Generation Info</label>
-				<div>{{details.charGenInfo}}</div>
+				<div ng-bind-html="details.charGenInfo | trustHTML"></div>
 			</div>
 			<div class="tr clearfix">
-				<label>Game Forums are:</label>
+				<label>Game Forums are</label>
 				<div>{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isPrimaryGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
 			</div>
 		</div>
@@ -141,7 +141,7 @@
 								<div class="actionLinks">
 									<a ng-if="isGM && !character.approved" href="" ng-click="approveCharacter(character)">Approve Character</a>
 									<a ng-if="isGM && player.userID != currentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
-									<a ng-if="!isGM || player.userID == currentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
+									<a ng-if="player.userID == currentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
 								</div>
 							</li>
 						</ul>
