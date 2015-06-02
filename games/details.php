@@ -117,7 +117,7 @@
 					<div><button skew-element type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 				</form>
 				<p ng-if="curPlayer.characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
-				<p ng-if="characters.length == 0 && curPlayer.characters.length < details.charsPerPlayer && !isGM" class="notice" hb-margined>You don't have any characters to submit</p>
+				<p ng-if="characters.length == 0" class="notice" hb-margined>You don't have any characters to submit</p>
 			</div>
 			
 			<div class="leftCol">
