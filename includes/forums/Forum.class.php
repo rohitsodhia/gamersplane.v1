@@ -55,7 +55,8 @@
 		}
 
 		public function __get($key) {
-			if (isset($this->$key)) return $this->$key;
+			if (isset($this->$key)) 
+				return $this->$key;
 		}
 
 		public function getForumID() {
@@ -63,13 +64,17 @@
 		}
 
 		public function getTitle($pr = false) {
-			if ($pr) return printReady($this->title);
-			else return $this->title;
+			if ($pr) 
+				return printReady($this->title);
+			else 
+				return $this->title;
 		}
 
 		public function getDescription($pr = false) {
-			if ($pr) return printReady($this->description);
-			else return $this->description;
+			if ($pr) 
+				return printReady($this->description);
+			else 
+				return $this->description;
 		}
 
 		public function getType() {

@@ -170,6 +170,7 @@ app.config(function ($httpProvider) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 			$element = $(element);
+			console.log(attrs);
 			if ($element.children('div.skewedDiv').length) 
 				return;
 			var skewDeg = 0;

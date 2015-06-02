@@ -3,6 +3,8 @@
 		function __construct() {
 			global $pathOptions;
 
+			addPackage('forum');
+
 			if ($pathOptions[0] == 'acp') {
 				require(FILEROOT.'/forumACP.class.php');
 				$subcontroller = new forumACP();

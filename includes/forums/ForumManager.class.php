@@ -323,31 +323,9 @@
 		</div>\n";
 		}
 
-		public function displayAdminSidelist($forumID = 0, $currentForum = 0) {
-			if (!isset($this->forums[$forumID])) return null;
-
-			$forum = $this->forums[$forumID];
-			$classes = array();
-			if ($forum->getPermissions('admin')) 
-				$classes[] = 'adminLink';
-			if ($forumID == $currentForum) 
-				$classes[] = 'currentForum';
-			echo '<li'.(sizeof($classes)?' class="'.implode(' ', $classes).'"':'').">\n";
-			if ($forum->getPermissions('admin')) 
-				echo "<a href=\"/forums/acp/{$forumID}/\">{$forum->getTitle(true)}</a>\n";
-			else
-				echo "<div>{$forum->getTitle(true)}</div>\n";
-
-			if (sizeof($forum->getChildren())) {
-				echo "<ul>\n";
-				foreach ($forum->getChildren() as $childID)
-					$this->displayAdminSidelist($childID, $currentForum);
-				echo "</ul>\n";
-			}
-		}
-
-		public function api_getAdminForums($forumID = 0, $currentForum = 0) {
-			if (!isset($this->forums[$forumID])) return null;
+		public function getAdminForums($forumID = 0, $currentForum = 0) {
+			if (!isset($this->forums[$forumID])) 
+				return null;
 
 			$forum = $this->forums[$forumID];
 			$details = array(
@@ -360,7 +338,7 @@
 				$details['admin'] = false;
 			if (sizeof($forum->getChildren())) 
 				foreach ($forum->getChildren() as $childID) 
-					if ($child = $this->api_getAdminForums($childID, $currentForum)) 
+					if ($child = $this->getAdminForums($childID, $currentForum)) 
 						$details['children'][] = $child;
 		}
 	}

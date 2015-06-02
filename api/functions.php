@@ -5,6 +5,10 @@
 */
 
 /* General Functions */
+	function addPackage($package) {
+		include_once(FILEROOT."/includes/packages/{$package}.package.php");
+	}
+
 	function utf8ize($input) {
 		if (is_array($input)) {
 			foreach ($input as $key => $value) 
