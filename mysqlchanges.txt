@@ -1,6 +1,0 @@
-CREATE TABLE gameInvites (
-	gameID int not null,
-	invitedID int not null,
-	invitedOn datetime DEFAULT NOW(),
-	PRIMARY KEY (gameID, invitedID)
-) ENGINE = MyISAM;

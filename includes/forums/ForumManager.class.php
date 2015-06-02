@@ -345,5 +345,23 @@
 				echo "</ul>\n";
 			}
 		}
+
+		public function api_getAdminForums($forumID = 0, $currentForum = 0) {
+			if (!isset($this->forums[$forumID])) return null;
+
+			$forum = $this->forums[$forumID];
+			$details = array(
+				'forumID' => (int) $forumID,
+				'title' => $forum->getTitle(true),
+				'admin' => true,
+				'children' => array()
+			);
+			if (!$forum->getPermissions('admin')) 
+				$details['admin'] = false;
+			if (sizeof($forum->getChildren())) 
+				foreach ($forum->getChildren() as $childID) 
+					if ($child = $this->api_getAdminForums($childID, $currentForum)) 
+						$details['children'][] = $child;
+		}
 	}
 ?>
