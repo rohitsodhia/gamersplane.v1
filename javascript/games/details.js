@@ -39,7 +39,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 							$scope.isGM = true;
 
 						if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charPerPlayer)) {
-							$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'] }).success(function (data) {
+							$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'], 'noGame': true }).success(function (data) {
 								$scope.characters = data.characters;
 								$scope.combobox.characters = [];
 								for (key in $scope.characters) 
