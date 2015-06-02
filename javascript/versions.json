@@ -11,7 +11,7 @@
 	"/javascript/gamersplane.functions.js": "1.0.2",
 	"/javascript/characters/_edit.js": "1.0.3",
 	"/javascript/characters/sweote/edit.js": "1.0.1",
-	"/javascript/games/details.js": "1.1.0",
+	"/javascript/games/details.js": "1.1.1",
 	"/javascript/games/leaveGame.js": "1.1.0",
 	"/javascript/games/pendingPlayer.js": "1.1.0",
 	"/javascript/games/removePlayer.js": "1.1.0",
