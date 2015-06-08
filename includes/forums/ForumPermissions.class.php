@@ -72,16 +72,14 @@
 						unset($rawPermission[0]['pType']);
 						$rawPermissions[$key] = $rawPermission[0];
 					} else {
-						$toStore = 0;
+						$rawPermissions[$key] = $bTemplate;
 						foreach ($rawPermission as $sKey => $indivPermission) {
-							if ($indivPermission['pType'] == 'user') {
-								$toStore = $sKey;
-								break;
-							} elseif ($indivPermission['pType'] == 'group') 
-								$toStore = $sKey;
+							foreach ($indivPermission as $permission => $setAt) {
+								$setAt = (int) $setAt;
+								if ($permission != 'pType' && abs($setAt) > abs($rawPermissions[$key][$permission])) 
+									$rawPermissions[$key][$permission] = $setAt;
+							}
 						}
-						unset($rawPermission[$toStore]['pType']);
-						$rawPermissions[$key] = $rawPermission[$toStore];
 					}
 				}
 
