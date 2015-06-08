@@ -51,7 +51,7 @@
 		}
 
 		public function displayPM($pmID) {
-			require_once(FILEROOT.'/../javascript/markItUp/markitup.bbcode-parser.php');
+			require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 			global $mongo, $currentUser;
 
 			$pmID = intval($pmID);

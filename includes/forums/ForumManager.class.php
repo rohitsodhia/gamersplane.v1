@@ -25,7 +25,8 @@
 			if ($this->currentForum < 0) { header('Location: /forums/'); exit; }
 
 			$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
-			foreach ($forumsR as $forum) $this->forumsData[$forum['forumID']] = $forum;
+			foreach ($forumsR as $forum) 
+				$this->forumsData[$forum['forumID']] = $forum;
 			if (($this->currentForum == 0 || $this->currentForum == 2) && bindec($options&$this::NO_CHILDREN) == 0) {
 				if ($showPubGames) {
 					$publicGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games g ON f.gameID = g.gameID AND g.public = 1 LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
@@ -114,7 +115,9 @@
 		public function displayForum() {
 			global $loggedIn, $currentUser;
 
-			if (sizeof($this->forums[$this->currentForum]->children) == 0) return false;
+			if (sizeof($this->forums[$this->currentForum]->children) == 0) 
+				return false;
+
 
 			$tableOpen = false;
 			$lastType = 'f';
@@ -146,7 +149,8 @@
 <?
 					$tableOpen = true;
 				}
-				if ($this->forums[$childID]->forumType == 'f') $this->displayForumRow($childID);
+				if ($this->forums[$childID]->forumType == 'f') 
+					$this->displayForumRow($childID);
 				elseif (is_array($this->forums[$childID]->children))
 					foreach ($this->forums[$childID]->children as $cChildID) 
 						$this->displayForumRow($cChildID);

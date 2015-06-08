@@ -32,7 +32,7 @@
 		}
 
 		public function details($gameID) {
-			require_once(FILEROOT.'/../javascript/markItUp/markitup.bbcode-parser.php');
+			require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 			global $mysql, $mongo, $currentUser;
 
 			$gameID = intval($gameID);

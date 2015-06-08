@@ -6,7 +6,7 @@
 			addPackage('forum');
 
 			if ($pathOptions[0] == 'acp') {
-				require(FILEROOT.'/forumACP.class.php');
+				require(APIROOT.'/forumACP.class.php');
 				$subcontroller = new forumACP();
 			} elseif ($pathOptions[0] == 'save') 
 				$this->saveLink();
@@ -78,8 +78,8 @@
 						imagesavealpha($tempColor,true);
 						imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
 
-						$destination = FILEROOT.'/../images/links/'.$_id.'.'.$logoExt;
-						foreach (glob(FILEROOT.'/../images/links/'.$_id.'.*') as $oldFile) 
+						$destination = FILEROOT."/images/links/{$_id}.{$logoExt}";
+						foreach (glob(FILEROOT."/images/links/{$_id}.*") as $oldFile) 
 							unlink($oldFile);
 						if ($logoExt == 'jpg') 
 							imagejpeg($tempColor, $destination, 100);
@@ -93,9 +93,9 @@
 						return $logoExt;
 					}
 				} elseif ($logoExt == 'svg') {
-					foreach (glob(FILEROOT.'/../images/links/'.$_id.'.*') as $oldFile) 
+					foreach (glob(FILEROOT."/images/links/{$_id}.*") as $oldFile) 
 						unlink($oldFile);
-					move_uploaded_file($logoFile['tmp_name'], FILEROOT."/../images/links/{$_id}.svg");
+					move_uploaded_file($logoFile['tmp_name'], FILEROOT."/images/links/{$_id}.svg");
 
 					return 'svg';
 				}
@@ -154,7 +154,7 @@
 			global $loggedIn, $mongo;
 			if (!$loggedIn) exit;
 
-			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $oldFile) 
+			foreach (glob(FILEROOT."/images/links/{$_POST['_id']}.*") as $oldFile) 
 				unlink($oldFile);
 			$mongo->links->update(array('_id' => new MongoId($_POST['_id'])), array('$unset' => array('image' => '')));
 		}
@@ -163,7 +163,7 @@
 			global $loggedIn, $mongo;
 			if (!$loggedIn) exit;
 
-			foreach (glob(FILEROOT."/../images/links/{$_POST['_id']}.*") as $file) 
+			foreach (glob(FILEROOT."/images/links/{$_POST['_id']}.*") as $file) 
 				unlink($file);
 			$mongo->links->remove(array('_id' => new MongoId($_POST['_id'])));
 		}

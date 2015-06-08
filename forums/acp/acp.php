@@ -3,7 +3,7 @@
 
 	$forumID = intval($pathOptions[1]);
 
-	if (in_array($pathOptions[2], array('details', 'subforums', 'permissions'))) 
+/*	if (in_array($pathOptions[2], array('details', 'subforums', 'permissions'))) 
 		$section = $pathOptions[2];
 	elseif ($forumID == 0) 
 		$section = 'subforums';
@@ -13,10 +13,12 @@
 	$forumManager = new ForumManager(0, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
 	$forum = $forumManager->forums[$forumID];
 	if (!$forum->getPermissions('admin')) { header('Location: /forums/'); exit; }
+	*/
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Forum ACP - <?=$forumManager->getForumProperty($forumID, 'title')?></h1>
+		<h1 class="headerbar">Forum ACP - {{details.title}}</h1>
 		
+<? /*
 		<div id="topLinks">
 			<a href="<?='/forums/'.($forumID?$forumID:'')?>/">Return to forum</a>
 		</div>
@@ -194,4 +196,5 @@
 			</form>
 		</div>
 <?	} ?>
+<? */ ?>
 <?	require_once(FILEROOT.'/footer.php'); ?>

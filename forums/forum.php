@@ -21,7 +21,8 @@
 		<div id="topLinks" class="clearfix hbMargined">
 			<div class="floatRight alignRight">
 				<div><? 
-	if ($forumID == 0) echo '<a href="/forums/search/?search=latestPosts">Latest Posts</a>';
+	if ($forumID == 0) 
+		echo '<a href="/forums/search/?search=latestPosts">Latest Posts</a>';
 	elseif ($loggedIn) {
 		$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 'f' AND ID = {$forumID}");
 		echo '<a id="forumSub" href="/forums/process/subscribe/?forumID='.$forumID.'">'.($isSubbed->rowCount()?'Unsubscribe from':'Subscribe to').' forum</a>';

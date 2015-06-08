@@ -1,0 +1,1 @@
+UPDATE dispatch SET ngController = 'forums_acp' WHERE pageID = 'forumACP';
