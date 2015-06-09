@@ -5,8 +5,8 @@
 			if (!$loggedIn) 
 				displayJSON(array('failed' => true, 'errors' => array('loginRequired')), true);
 
-			if ($pathOptions[1] == 'details' && intval($_POST['forumID'])) 
-				$this->getDetails($_POST['forumID'], isset($_POST['full'])?true:false);
+			if ($pathOptions[1] == 'details' && isset($_POST['forumID'])) 
+				$this->getDetails(intval($_POST['forumID']), isset($_POST['full'])?true:false);
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -47,7 +47,7 @@
 			foreach ($permissions['user'] as $key => $permission) 
 				$permissions['user'][$key] = $this->castPermissions($permission, 4);
 
-			displayJSON(array('details' => $details, 'permissions' => $permissions));
+			displayJSON(array('list' => array($list), 'details' => $details, 'permissions' => $permissions));
 		}
 
 		private function castPermissions($permissions, $divideBy = 1) {

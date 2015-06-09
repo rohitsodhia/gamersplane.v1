@@ -1018,6 +1018,17 @@
 					color: #C00;
 				}
 			}
+
+			&.notAdmin {
+				& > a {
+					cursor: default;
+					color: inherit;
+
+					&:hover {
+						text-decoration: none;
+					}
+				}
+			}
 		}
 
 		ul {
@@ -1026,11 +1037,11 @@
 				position: absolute;
 				left: -10px;
 				top: 2px;
-				color: #777;
+				color: #FFF;
 			}
 
-			li.adminLink:before {
-				color: #FFF;
+			li.notAdmin:before {
+				color: #777;
 			}
 
 			li.currentForum:before {

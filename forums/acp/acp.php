@@ -17,40 +17,39 @@
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Forum ACP - {{details.title}}</h1>
-		
-<? /*
+
 		<div id="topLinks">
-			<a href="<?='/forums/'.($forumID?$forumID:'')?>/">Return to forum</a>
+			<a href="/forums/{{forumID}}{{forumID != 0?'/':''}}">Return to forum</a>
 		</div>
-		
+
+<script type="text/ng-template" id="forumList">
+<li ng-class="{ 'notAdmin': !forum.admin, 'currentForum': forum.forumID == forumID }">
+	<a href="">{{forum.title}}</a>
+	<ul ng-if="forum.children.length">
+		<li ng-repeat="forum in forum.children" ng-include="'forumList'"></li>
+	</ul>
+</li>
+</script>
 		<div class="sideWidget left"><ul id="forums">
-<?	$forumManager->displayAdminSidelist(0, $forumID); ?>
+			<li ng-repeat="forum in list" ng-include="'forumList'"></li>
 		</ul></div>
 
 		<div class="mainColumn right">
 			<div class="clearfix"><div id="controls" class="trapezoid floatLeft" data-ratio=".8">
 				<div>
-<?	if ($forumID != 0) { ?>
-				<a id="ml_forumDetails" href="" class="section_details<?=$section == 'details'?' current':''?>">Details</a>
-<?	} ?>
-				<a id="ml_subforums" href="" class="section_subforums<?=$section == 'subforums'?' current':''?>">Subforums</a>
-<?	if ($forumID != 0) { ?>
-				<a id="ml_permissions" href="" class="section_permissions<?=$section == 'permissions'?' current':''?>">Permissions</a>
-<?	} ?>
+					<a ng-if="forumID != 0" id="ml_forumDetails" href="" class="section_details" ng-class="{ 'current': currentSection == 'details' }">Details</a>
+					<a id="ml_subforums" href="" class="section_subforums" ng-class="{ 'current': currentSection == 'subforums' }">Subforums</a>
+					<a ng-if="forumID != 0" id="ml_permissions" href="" class="section_permissions" ng-class="{ 'current': currentSection == 'permissions' }">Permissions</a>
 				</div>
 			</div></div>
 			<h2 class="headerbar hbDark">
-<?	if ($forumID != 0) { ?>
-				<span class="section_details<?=$section != 'details'?' hideDiv':''?>">Details</span>
-<?	} ?>
+				<span ng-if="forumID != 0" class="section_details<?=$section != 'details'?' hideDiv':''?>">Details</span>
 				<span class="section_subforums<?=$section != 'subforums'?' hideDiv':''?>">Subforums</span>
-<?	if ($forumID != 0) { ?>
-				<span class="section_permissions<?=$section != 'permissions'?' hideDiv':''?>">Permissions</span>
-<?	} ?>
+				<span ng-if="forumID != 0" class="section_permissions<?=$section != 'permissions'?' hideDiv':''?>">Permissions</span>
 			</h2>
-			
-<?	if ($forumID != 0) { ?>
-			<form id="details" method="post" action="/forums/process/acp/edit/" class="acpContent hbdMargined section_details<?=$pathOptions[2] == 'details' || !isset($pathOptions[2])?' current':''?>">
+
+<? /*
+			<form ng-if="forumID != 0" id="details" method="post" action="/forums/process/acp/edit/" class="acpContent hbdMargined section_details<?=$pathOptions[2] == 'details' || !isset($pathOptions[2])?' current':''?>">
 				<div class="tr">
 					<label class="textLabel">Forum title:</label>
 					<input type="text" name="title" maxlength="50" value="<?=$forum->getTitle(true)?>"<?=in_array($forumID, array(1, 2, 3)) || $forum->getParentID() == 2?' disabled="disabled"':''?>>
@@ -194,7 +193,6 @@
 				<input type="hidden" name="forumID" value="<?=$forumID?>">
 				<div class="tr alignCenter"><button type="submit" name="save" class="fancyButton" value="<?=$updateType?>">Save</button></div>
 			</form>
-		</div>
-<?	} ?>
 <? */ ?>
+		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

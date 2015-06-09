@@ -106,6 +106,10 @@
 			$this->children[$order] = $childID;
 		}
 
+		public function unsetChild($forumID) {
+			unset($this->children[array_search($forumID, $this->children)]);
+		}
+
 		public function getChildren() {
 			return $this->children;
 		}

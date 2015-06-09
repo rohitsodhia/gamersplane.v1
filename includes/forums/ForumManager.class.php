@@ -70,7 +70,11 @@
 		protected function pruneByPermissions($forumID = 0, $permission = 'read') {
 			foreach ($this->forums[$forumID]->children as $childID) 
 				$this->pruneByPermissions($childID, $permission);
-			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == 0) unset($this->forums[$forumID]);
+			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == false) {
+				$parentID = $this->forums[$forumID]->parentID;
+				unset($this->forums[$forumID]);
+				$this->forums[$parentID]->unsetChild($forumID);
+			}
 		}
 
 		public function getAccessableForums($validForums = null) {
@@ -340,10 +344,14 @@
 			);
 			if (!$forum->getPermissions('admin')) 
 				$details['admin'] = false;
-			if (sizeof($forum->getChildren())) 
+			if (sizeof($forum->getChildren())) {
 				foreach ($forum->getChildren() as $childID) 
 					if ($child = $this->getAdminForums($childID, $currentForum)) 
 						$details['children'][] = $child;
+			} elseif (!$details['admin']) 
+				return null;
+
+			return $details;
 		}
 	}
 ?>
