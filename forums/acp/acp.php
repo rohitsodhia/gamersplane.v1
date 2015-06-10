@@ -37,53 +37,41 @@
 		<div class="mainColumn right">
 			<div class="clearfix"><div id="controls" class="trapezoid floatLeft" data-ratio=".8">
 				<div>
-					<a ng-if="forumID != 0" id="ml_forumDetails" href="" class="section_details" ng-class="{ 'current': currentSection == 'details' }">Details</a>
-					<a id="ml_subforums" href="" class="section_subforums" ng-class="{ 'current': currentSection == 'subforums' }">Subforums</a>
-					<a ng-if="forumID != 0" id="ml_permissions" href="" class="section_permissions" ng-class="{ 'current': currentSection == 'permissions' }">Permissions</a>
+					<a ng-if="forumID != 0" id="ml_forumDetails" href="" class="section_details" ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a>
+					<a id="ml_subforums" href="" class="section_subforums" ng-class="{ 'current': currentSection == 'subforums' }" ng-click="setSection('subforums')">Subforums</a>
+					<a ng-if="forumID != 0" id="ml_permissions" href="" class="section_permissions" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
 				</div>
 			</div></div>
 			<h2 class="headerbar hbDark">
-				<span ng-if="forumID != 0" class="section_details<?=$section != 'details'?' hideDiv':''?>">Details</span>
-				<span class="section_subforums<?=$section != 'subforums'?' hideDiv':''?>">Subforums</span>
-				<span ng-if="forumID != 0" class="section_permissions<?=$section != 'permissions'?' hideDiv':''?>">Permissions</span>
+				<span ng-if="forumID != 0" ng-show="currentSection == 'details'" class="section_details">Details</span>
+				<span ng-show="currentSection == 'subforums'" class="section_subforums">Subforums</span>
+				<span ng-if="forumID != 0" ng-show="currentSection == 'permissions'" class="section_permissions">Permissions</span>
 			</h2>
 
-<? /*
-			<form ng-if="forumID != 0" id="details" method="post" action="/forums/process/acp/edit/" class="acpContent hbdMargined section_details<?=$pathOptions[2] == 'details' || !isset($pathOptions[2])?' current':''?>">
+			<form ng-if="forumID != 0" id="details" ng-show="currentSection == 'details'" class="acpContent hbdMargined section_details" ng-submit="saveDetails()">
 				<div class="tr">
 					<label class="textLabel">Forum title:</label>
-					<input type="text" name="title" maxlength="50" value="<?=$forum->getTitle(true)?>"<?=in_array($forumID, array(1, 2, 3)) || $forum->getParentID() == 2?' disabled="disabled"':''?>>
+					<input type="text" name="title" ng-model="details.title" maxlength="50" ng-disabled="[1, 2, 3].indexOf(forumID) != -1 || details.parentID == 2">
 				</div>
-<?		if ($forum->getType() == 'f') { ?>
-				<div class="tr">
+				<div ng-if="details.type == 'f'" class="tr">
 					<label class="textLabel">Forum description:</label>
-					<textarea name="description"><?=$forum->getDescription(true)?></textarea>
+					<textarea name="description" ng-model="details.description"></textarea>
 				</div>
-<?		} ?>
-				<input type="hidden" name="forumID" value="<?=$forumID?>">
-				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton">Update</button></div>
+				<input type="hidden" name="forumID" value="{{forumID}}">
+				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton" skew-element>Update</button></div>
 			</form>
-<?	} ?>
-			
-			<form id="subforums" method="post" action="/forums/process/acp/subforums/" class="acpContent hbdMargined section_subforums<?=$forumID == 0 || $pathOptions[2] == 'subforums'?' current':''?>">
-				<input type="hidden" name="forumID" value="<?=$forumID?>">
+
+			<form id="subforums" ng-show="currentSection == 'subforums'" class="acpContent hbdMargined section_subforums" ng-submit="saveSubforums()">
 				<div id="forumList">
-<?
-	foreach ($forum->getChildren() as $order => $childID) {
-		$cForum = $forumManager->forums[$childID];
-?>
-					<div class="tr">
-						<div class="buttonDiv"><?=($order > 1)?'<input type="image" name="moveUp_'.$childID.'" alt="Up" title="Up" class="sprite upArrow">':'&nbsp;'?></div>
-						<div class="buttonDiv"><?=($order < sizeof($forum->getChildren()) && sizeof($forum->getChildren()) > 1)?'<input type="image" name="moveDown_'.$childID.'" alt="Down" title="Down" class="sprite downArrow">':'&nbsp;'?></div>
-						<div class="buttonDiv"><a href="/forums/acp/<?=$childID?>/" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
-						<div class="buttonDiv"><a href="/forums/acp/<?=$childID?>/permissions/" alt="Permissions" title="Permissions" class="sprite permissions"></a></div>
-						<div class="buttonDiv"><?=!in_array($childID, array(1, 2, 3)) && $cForum->getParentID() != 2?'<a href="/forums/acp/'.$childID.'/deleteForum/" alt="Delete" title="Delete" class="sprite cross"></a>':'&nbsp;'?></div>
-						<div class="forumNames">(<?=strtoupper($cForum->getType())?>) <?=$cForum->getTitle(true)?></div>
+					<div ng-repeat="forum in details.children" class="tr">
+						<div class="buttonDiv"><input ng-if="!$first" type="image" name="moveUp_{{forum.forumID}}" alt="Up" title="Up" class="sprite upArrow"><span ng-if="$first">&nbsp;</span></div>
+						<div class="buttonDiv"><input ng-if="!$last" type="image" name="moveDown_{{forum.forumID}}" alt="Down" title="Down" class="sprite downArrow"><span ng-if="$last">&nbsp;</span></div>
+						<div class="buttonDiv"><a href="/forums/acp/{{forum.forumID}}/" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
+						<div class="buttonDiv"><a href="/forums/acp/{{forum.forumID}}/permissions/" alt="Permissions" title="Permissions" class="sprite permissions"></a></div>
+						<div class="buttonDiv"><a ng-if="[1, 2, 3].indexOf(forum.forumID) == -1 && forumID != 2" href="/forums/acp/{{forum.forumID}}/deleteForum/" alt="Delete" title="Delete" class="sprite cross"></a></div>
+						<div class="forumNames">({{forum.type.toUpperCase()}}) {{forum.title}}</div>
 					</div>
-<?
-	}
-	if (sizeof($forum->getChildren()) == 0) echo "\t\t\t\t\t<p>No subforums</p>\n";
-?>
+					<p ng-if="children.details.length == 0">No subforums</p>
 				</div>
 
 				<div id="newForum">
@@ -91,10 +79,11 @@
 						<label class="textLabel">New Forum</label>
 						<input type="text" name="newForum" maxlength="50">
 					</div>
-					<input type="hidden" name="forumID" value="<?=$forumID?>">
-					<div class="buttonPanel"><button type="submit" name="addForum" class="fancyButton">Add</button></div>
+					<input type="hidden" name="forumID" value="{{forumID}}">
+					<div class="buttonPanel"><button type="submit" name="addForum" class="fancyButton" skew-element>Add</button></div>
 				</div>
 			</form>
+<? /*
 
 <?	if ($forumID != 0) { ?>
 			<form id="permissions" method="post" action="/forums/process/acp/permissions/" class="acpContent hbdMargined section_permissions<?=$section == 'permissions'?' current':''?>">

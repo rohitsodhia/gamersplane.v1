@@ -22,9 +22,11 @@
 			$list = $forumManager->getAdminForums(0, $forumID);
 			$details = array(
 				'forumID' => (int) $forumID,
-				'isGameForum' => $forum->isGameForum(),
+				'isGameForum' => (bool) $forum->isGameForum(),
 				'title' => $forum->getTitle(true),
 				'description' => $forum->getDescription(),
+				'type' => $forum->getType(),
+				'parentID' => $forum->getParentID(),
 				'children' => array()
 			);
 			if (sizeof($forum->getChildren())) { foreach ($forum->getChildren() as $order => $childID) {
