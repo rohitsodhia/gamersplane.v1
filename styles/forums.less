@@ -1255,15 +1255,16 @@
 	}
 
 	#permissions .permissions {
-		display: none;
 		margin-left: 20px;
 	}
 
-	.permissionSet .tr {
-		padding-bottom: 0;
+	.permissionSet {
+		.tr {
+			padding-bottom: 0;
+		}
 	}
 
-	.permission_label, .permission_type {
+	.permission_label, .permission_type, .option {
 		display: inline-block;
 	}
 
@@ -1271,10 +1272,39 @@
 		width: 150px;
 	}
 
-	#updateDiv {
-		clear: both;
-		margin-top: 2.5em;
+	.option {
+		width: 90px;
+		margin-right: 10px;
+		padding: 5px 0;
+		border-width: 2px;
+		border-style: solid;
 		text-align: center;
+		opacity: .35;
+		cursor: pointer;
+
+		&.no {
+			background: #F66;
+			border-color: #900;
+		}
+
+		&.inherit {
+			background: #FFF;
+			border-color: #000;
+		}
+
+		&.yes {
+			background: #3C3;
+			border-color: #060;
+		}
+
+		&.selected {
+			opacity: 1;
+		}
+	}
+
+	.permissionSave {
+		margin-top: 10px;
+		margin-left: 255px;
 	}
 }
 

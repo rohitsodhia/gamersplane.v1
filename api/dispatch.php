@@ -6,6 +6,7 @@
 	require('functions.php');
 	define('APIROOT', $_SERVER['DOCUMENT_ROOT']);
 	define('FILEROOT', $_SERVER['DOCUMENT_ROOT'].'/..');
+	$permissionTypes = array('read' => 'Read', 'write' => 'Write', 'editPost' => 'Edit Post', 'deletePost' => 'Delete Post', 'createThread' => 'Create Thread', 'deleteThread' => 'Delete Thread', 'addRolls' => 'Add Rolls', 'addDraws' => 'Add Draws', 'moderate' => 'Moderate');
 	$ext = explode('.', $_SERVER['HTTP_HOST']);
 	$ext = end($ext);
 	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);

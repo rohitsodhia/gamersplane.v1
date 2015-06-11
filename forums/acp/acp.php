@@ -42,7 +42,7 @@
 					<a ng-if="forumID != 0" id="ml_permissions" href="" class="section_permissions" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
 				</div>
 			</div></div>
-			<h2 class="headerbar hbDark">
+			<h2 class="headerbar hbDark" skew-element>
 				<span ng-if="forumID != 0" ng-show="currentSection == 'details'" class="section_details">Details</span>
 				<span ng-show="currentSection == 'subforums'" class="section_subforums">Subforums</span>
 				<span ng-if="forumID != 0" ng-show="currentSection == 'permissions'" class="section_permissions">Permissions</span>
@@ -83,105 +83,23 @@
 					<div class="buttonPanel"><button type="submit" name="addForum" class="fancyButton" skew-element>Add</button></div>
 				</div>
 			</form>
-<? /*
 
-<?	if ($forumID != 0) { ?>
-			<form id="permissions" method="post" action="/forums/process/acp/permissions/" class="acpContent hbdMargined section_permissions<?=$section == 'permissions'?' current':''?>">
-<?
-	if (isset($_GET['edit']) && (($_GET['edit'] == 'general' && !$forum->isGameForum()) || (($_GET['edit'] == 'group' || $_GET['edit'] == 'user') && isset($_GET['id']))) || isset($_GET['new']) && in_array($_GET['new'], array('group', 'user'))) {
-		$pType = isset($_GET['edit'])?$_GET['edit']:$_GET['new'];
-		$typeID = isset($_GET['id'])?intval($_GET['id']):0;
-		$updateType = isset($_GET['new'])?'new':'edit';
-		if ($updateType == 'edit') {
-			$permissions = $mysql->query('SELECT * FROM forums_permissions_'.$pType.($pType != 'general'?'s':'').' WHERE forumID = '.$forumID.($pType != 'general'?" AND {$pType}ID = {$typeID}":''));
-			$permissions = $permissions->fetch();
-		}
-?>
-				<h2>Add <?=ucwords($pType)?> Permissions</h2>
-			
-<?		if (array_intersect(array_keys($_GET), array('invalidName', 'notInGame'))) { ?>
-				<div class="alertBox_error">
-<?
-			if (isset($_GET['invalidName'])) echo "\t\t\t\tThat {$pType} was not found\n";
-			if (isset($_GET['notInGame'])) echo "\t\t\t\tThat user is not in this game\n";
-?>
-				</div>
-<?		} ?>
-				
-				<form id="newPermission" method="post" action="/forums/process/acp/permissions/">
-					<input type="hidden" name="forumID" value="<?=$forumID?>">
-					<input type="hidden" name="type" value="<?=$pType?>">
-<?		if ($updateType == 'new' && ($pType == 'group' || $pType == 'user')) { ?>
-					<div class="tr">
-						<div class="permissions_label textLabel"><?=$pType == 'group'?'Group name':'Username'?></div>
-						<div class="permissionsType"><input type="text" name="typeName"></div>
-					</div>
-<?
-		} else {
-			if ($pType == 'group' || $pType == 'user') echo "\t\t\t\t\t<input type=\"hidden\" name=\"typeID\" value=\"$typeID\">\n";
-			foreach ($permissionTypes as $type => $title) { if (!($title == 'Moderate' && $pType == 'general')) {
-?>
-					<div class="tr">
-						<div class="permissions_label textLabel"><?=$title?></div>
-						<div class="permissionsType">
-							<select name="permissions[<?=$type?>]">
-								<option value="1"<?=$permissions[$type] == 1?' selected="selected"':''?>>Yes</option>
-								<option value="0"<?=$permissions[$type] == 0?' selected="selected"':''?>>Don't Care</option>
-								<option value="-1"<?=$permissions[$type] == -1?' selected="selected"':''?>>No</option>
-							</select>
-						</div>
-					</div>
-<?
-			} }
-		}
-?>
-				<hr>
-<?	} ?>
-				
-<?	if (isset($_GET['success'])) { ?>
-				<div class="alertBox_success">
-					Permission saved
-				</div>
-				
-<?	} ?>
+			<form ng-if="forumID != 0" id="permissions" ng-show="currentSection == 'permissions'" class="acpContent hbdMargined section_permissions">
 				<div id="permissions_general">
 					<h3>General</h3>
-<?
-	$permissions = $mysql->query("SELECT `read`, `write`, editPost, deletePost, createThread, deleteThread, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}");
-	$permissions = $permissions->fetch();
-	if (!$forum->isGameForum()) permissionSet('general', 'General', $permissions);
-?>
+					<div ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 				</div>
 				
 				<div id="permissions_groups">
 					<h3 class="gapAbove">Groups</h3>
-<?
-	$gPermissions = $mysql->query('SELECT g.groupID, g.name, g.gameGroup, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_groups p, forums_groups g WHERE p.forumID = '.$forumID.' AND p.groupID = g.groupID');
-	if ($gPermissions->rowCount()) { foreach ($gPermissions as $permission) {
-		permissionSet('group', $permission['name'], $permission, $forumID, $permission['groupID'], $permission['gameGroup']);
-	} } else echo "\t\t\t\t\t<div class=\"tr\">No group level permissions for this forum.</div>\n";
-	if (!$forum->isGameForum()) {
-?>
+					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/group" class="newPermission">Add Group Permission</a></div>
-<?	} ?>
 				</div>
 				
 				<div id="permissions_users">
 					<h3 class="gapAbove">User</h3>
-	
-<?
-	$uPermissions = $mysql->query("SELECT u.userID, u.username, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_users p, users u WHERE p.forumID = {$forumID} AND p.userID = u.userID");
-	if ($uPermissions->rowCount()) { foreach ($uPermissions as $permission) {
-		permissionSet('user', $permission['username'], $permission, $forumID, $permission['userID']);
-	} } else echo "\t\t\t\t\t<div class=\"tr\">No user level permissions for this forum.</div>\n";
-	if (!$forum->isGameForum()) {
-?>
+					<div ng-repeat="permission in permissions.user" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/user" class="newPermission">Add User Permission</a></div>
-<?	} ?>
-				</div>
-				<input type="hidden" name="forumID" value="<?=$forumID?>">
-				<div class="tr alignCenter"><button type="submit" name="save" class="fancyButton" value="<?=$updateType?>">Save</button></div>
 			</form>
-<? */ ?>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
