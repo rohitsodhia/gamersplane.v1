@@ -123,7 +123,7 @@ function adjustSkewMargins() {
 
 function trapezoidify() {
 	$element = $(this);
-	$element.wrapInner('<div class="contents"></div>').prepend('<div class="shape"></div>');
+	$element.wrapInner('<div class="shape"></div>');
 	if (typeof $element.data('skew') != 'undefined') 
 		skewDeg = parseInt($element.data('skew'));
 	else 
@@ -133,12 +133,7 @@ function trapezoidify() {
 	else 
 		direction = 'down';
 	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
-	$element.children('.contents').css({
-		'margin-left'         : sideBorderWidth + 'px',
-		'margin-right'        : sideBorderWidth + 'px'
-	});
 	$element.children('.shape').css({
-		'width'               : ($element.width() - sideBorderWidth * 2) + 'px',
 		'border-left-width'   : sideBorderWidth + 'px',
 		'border-right-width'  : sideBorderWidth + 'px',
 	});

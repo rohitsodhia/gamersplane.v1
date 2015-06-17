@@ -83,7 +83,7 @@
 			$mysql->query('UPDATE forums SET heritage = "'.$heritage.'" WHERE forumID = '.$forumID);
 			$details['forumID'] = $forumID;
 			
-			$addForumGroup = $mysql->prepare('INSERT INTO forums_groups (name, ownerID, gameGroup) VALUES (:title, '.$currentUser->userID.', 1)');
+			$addForumGroup = $mysql->prepare("INSERT INTO forums_groups (name, ownerID, gameID) VALUES (:title, {$currentUser->userID}, {$gameID})");
 			$addForumGroup->execute(array('title' => $details['title']));
 			$groupID = $mysql->lastInsertId();
 			$details['groupID'] = $groupID;

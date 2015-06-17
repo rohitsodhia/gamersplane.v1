@@ -24,7 +24,7 @@
 
 <script type="text/ng-template" id="forumList">
 <li ng-class="{ 'notAdmin': !forum.admin, 'currentForum': forum.forumID == forumID }">
-	<a href="">{{forum.title}}</a>
+	<a href="" ng-click="changeForum(forum.forumID, forum.admin)">{{forum.title}}</a>
 	<ul ng-if="forum.children.length">
 		<li ng-repeat="forum in forum.children" ng-include="'forumList'"></li>
 	</ul>
@@ -37,18 +37,20 @@
 		<div class="mainColumn right">
 			<div class="clearfix"><div id="controls" class="trapezoid floatLeft" data-ratio=".8">
 				<div>
-					<a ng-if="forumID != 0" id="ml_forumDetails" href="" class="section_details" ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a>
-					<a id="ml_subforums" href="" class="section_subforums" ng-class="{ 'current': currentSection == 'subforums' }" ng-click="setSection('subforums')">Subforums</a>
-					<a ng-if="forumID != 0" id="ml_permissions" href="" class="section_permissions" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
+					<a ng-if="forumID != 0" id="ml_forumDetails" href=""  ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a>
+					<a id="ml_subforums" href="" ng-class="{ 'current': currentSection == 'subforums' }" ng-click="setSection('subforums')">Subforums</a>
+					<a ng-if="forumID != 0" id="ml_permissions" href="" ng-class="{ 'current': currentSection == 'groups' }" ng-click="setSection('groups')">Groups</a>
+					<a ng-if="details.isGameForum" href="" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
 				</div>
 			</div></div>
-			<h2 class="headerbar hbDark" skew-element>
+			<h2 class="headerbar hbDark" skew-element ng-class="{ 'hb_hasList': currentSection == 'groups' }">
 				<span ng-if="forumID != 0" ng-show="currentSection == 'details'" class="section_details">Details</span>
 				<span ng-show="currentSection == 'subforums'" class="section_subforums">Subforums</span>
+				<span ng-if="details.isGameForum" ng-show="currentSection == 'groups'">Groups</span>
 				<span ng-if="forumID != 0" ng-show="currentSection == 'permissions'" class="section_permissions">Permissions</span>
 			</h2>
 
-			<form ng-if="forumID != 0" id="details" ng-show="currentSection == 'details'" class="acpContent hbdMargined section_details" ng-submit="saveDetails()">
+			<form ng-if="forumID != 0" id="details" ng-show="currentSection == 'details'" class="acpContent hbMargined section_details" ng-submit="saveDetails()" hb-margined>
 				<div class="tr">
 					<label class="textLabel">Forum title:</label>
 					<input type="text" name="title" ng-model="details.title" maxlength="50" ng-disabled="[1, 2, 3].indexOf(forumID) != -1 || details.parentID == 2">
@@ -61,7 +63,7 @@
 				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton" skew-element>Update</button></div>
 			</form>
 
-			<form id="subforums" ng-show="currentSection == 'subforums'" class="acpContent hbdMargined section_subforums" ng-submit="saveSubforums()">
+			<form id="subforums" ng-show="currentSection == 'subforums'" class="acpContent hbMargined section_subforums" ng-submit="saveSubforums()" hb-margined>
 				<div id="forumList">
 					<div ng-repeat="forum in details.children" class="tr">
 						<div class="buttonDiv"><input ng-if="!$first" type="image" name="moveUp_{{forum.forumID}}" alt="Up" title="Up" class="sprite upArrow"><span ng-if="$first">&nbsp;</span></div>
@@ -84,8 +86,27 @@
 				</div>
 			</form>
 
-			<form ng-if="forumID != 0" id="permissions" ng-show="currentSection == 'permissions'" class="acpContent hbdMargined section_permissions">
-				<div id="permissions_general">
+			<div ng-if="details.isGameForum" ng-show="currentSection == 'groups'" class="acpContent hbMargined" hb-margined>
+				<ul id="groups" class="hbAttachedList">
+					<li ng-repeat="(key, group) in details.gameDetails.groups">
+						<div ng-show="editingGroup != group.groupID">
+							<span class="groupName">{{group.name}}</span> <span ng-if="details.gameDetails.groupID != group.groupID"><a href="" ng-click="editGroup(group.groupID, key)">[ Edit ]</a><a ng-if="confirmGroupDelete != group.groupID" href="" ng-click="deleteGroup(group.groupID)">[ Delete ]</a><span ng-if="confirmGroupDelete == group.groupID"><a href="" ng-click="confirmDelete(group.groupID, key)">[ Confirm ]</a><a href="" ng-click="cancelDelete()" class="cancelDelete">[ Cancel ]</a></span></span> <span ng-if="details.gameDetails.groupID == group.groupID">(Main Group)</span>
+						</div>
+						<form ng-show="editingGroup == group.groupID" ng-submit="saveGroup(group.groupID, key)">
+							<input type="text" ng-model="details.gameDetails.groups[key].name">
+							<button type="submit" name="action" value="save" class="action_edit_save sprite check green"></button>
+							<button type="submit" name="action" value="cancelEdit" class="action_edit_cancel sprite cross" ng-click="cancelEditing(key)"></button>
+						</form>
+					</li>
+				</ul>
+
+				<form id="newGroup" ng-if="details.gameDetails.groups.length < 5" ng-submit="createGroup()">
+					Create a new group: <input type="text" ng-model="newGroup.name"> <button type="submit" class="fancyButton smallButton" skew-element>Create</button>
+				</form>
+			</div>
+
+			<div ng-if="forumID != 0" id="permissions" ng-show="currentSection == 'permissions'" class="acpContent hbMargined section_permissions" hb-margined>
+				<div ng-if="!details.isGameForum" id="permissions_general">
 					<h3>General</h3>
 					<div ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 				</div>
@@ -93,13 +114,20 @@
 				<div id="permissions_groups">
 					<h3 class="gapAbove">Groups</h3>
 					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
-					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/group" class="newPermission">Add Group Permission</a></div>
+					<form ng-if="details.isGameForum && combobox.groups.length" class="newPermission" ng-submit="addGroupPermission()">
+						Add permission for <combobox data="combobox.groups" value="cb_groups" search="newGroupPermission.groupID" strict></combobox>
+					</form>
 				</div>
 				
 				<div id="permissions_users">
 					<h3 class="gapAbove">User</h3>
 					<div ng-repeat="permission in permissions.user" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
-					<div class="tr"><a href="/forums/acp/<?=$forumID?>/newPermission/user" class="newPermission">Add User Permission</a></div>
-			</form>
+					<div ng-if="details.isGameForum">
+						<div ng-repeat="player in details.gameDetails.players">
+							{{player.username}} <a href="">[ {{player.permissionSet?'Edit':'Create'}} ]</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
