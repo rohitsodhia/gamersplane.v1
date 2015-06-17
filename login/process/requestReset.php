@@ -7,7 +7,6 @@
 		if ($userCheck->rowCount()) {
 			$user = new User($email);
 			$validationStr = substr(md5($email.substr($user->password, 3).$user->activatedOn), 4, 13);
-			echo "http://gamersplane.com/login/resetPass/?email={$email}&validate={$validationStr}"; exit;
 			$body = "Gamers Plane Password Reset
 
 ---------------------------------------------------
