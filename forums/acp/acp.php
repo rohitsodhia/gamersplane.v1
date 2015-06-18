@@ -50,7 +50,7 @@
 				<span ng-if="forumID != 0" ng-show="currentSection == 'permissions'" class="section_permissions">Permissions</span>
 			</h2>
 
-			<form ng-if="forumID != 0" id="details" ng-show="currentSection == 'details'" class="acpContent hbMargined section_details" ng-submit="saveDetails()" hb-margined>
+			<form ng-if="forumID != 0" id="details"  ng-class="{ 'currentSection': currentSection == 'details', 'hideSection': currentSection != 'details' }" class="hbMargined" ng-submit="saveDetails()" hb-margined>
 				<div class="tr">
 					<label class="textLabel">Forum title:</label>
 					<input type="text" name="title" ng-model="details.title" maxlength="50" ng-disabled="[1, 2, 3].indexOf(forumID) != -1 || details.parentID == 2">
@@ -63,7 +63,7 @@
 				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton" skew-element>Update</button></div>
 			</form>
 
-			<form id="subforums" ng-show="currentSection == 'subforums'" class="acpContent hbMargined section_subforums" ng-submit="saveSubforums()" hb-margined>
+			<div id="subforums"  ng-class="{ 'currentSection': currentSection == 'subforums', 'hideSection': currentSection != 'subforums' }" class="hbMargined" hb-margined>
 				<div id="forumList">
 					<div ng-repeat="forum in details.children" class="tr">
 						<div class="buttonDiv"><input ng-if="!$first" type="image" name="moveUp_{{forum.forumID}}" alt="Up" title="Up" class="sprite upArrow"><span ng-if="$first">&nbsp;</span></div>
@@ -84,9 +84,9 @@
 					<input type="hidden" name="forumID" value="{{forumID}}">
 					<div class="buttonPanel"><button type="submit" name="addForum" class="fancyButton" skew-element>Add</button></div>
 				</div>
-			</form>
+			</div>
 
-			<div ng-if="details.isGameForum" ng-show="currentSection == 'groups'" class="acpContent hbMargined" hb-margined>
+			<div ng-if="details.isGameForum"  ng-class="{ 'currentSection': currentSection == 'groups', 'hideSection': currentSection != 'groups' }" class="hbMargined" hb-margined>
 				<ul id="groups" class="hbAttachedList">
 					<li ng-repeat="(key, group) in details.gameDetails.groups">
 						<div ng-show="editingGroup != group.groupID">
@@ -105,7 +105,7 @@
 				</form>
 			</div>
 
-			<div ng-if="forumID != 0" id="permissions" ng-class="{ 'currentSection': currentSection == 'permissions', 'hideSection': currentSection != 'permissions' }" class="acpContent hbMargined section_permissions" hb-margined>
+			<div ng-if="forumID != 0" id="permissions" ng-class="{ 'currentSection': currentSection == 'permissions', 'hideSection': currentSection != 'permissions' }" class="hbMargined" hb-margined>
 				<div ng-if="!details.isGameForum" id="permissions_general">
 					<h3>General</h3>
 					<div ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
