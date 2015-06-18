@@ -73,6 +73,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 		$scope.combobox = {};
 		$scope.combobox.search = { 'groups': '' };
 		$scope.cb_groups = '';
+		$scope.renderedDirectives = { 'groups': false };
 		$scope.newGroupPermission = { 'groupID': null };
 		$scope.newGroup = { 'name': '' };
 		$scope.editingGroup = null;

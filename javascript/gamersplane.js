@@ -280,15 +280,6 @@ app.config(function ($httpProvider) {
 				scope.showDropdown = false;
 				scope.hasFocus = false;
 				$combobox = element.children('.combobox');
-				$combobox.addClass('settingUp').children('.results').css({ 'top': $combobox.outerHeight(), 'width': $combobox.outerWidth() });
-				$combobox.children('.dropdown').css('height', $combobox.outerHeight());
-				maxWidth = 0;
-				$combobox.find('.results a').each(function () {
-					if ($(this).outerWidth() > maxWidth) 
-						maxWidth = $(this).outerWidth();
-				});
-//				$combobox.find('input').width(maxWidth > 0?maxWidth:200);
-				$combobox.removeClass('settingUp');
 				$input = $combobox.children('input');
 				if (typeof scope.data == 'undefined') 
 					scope.data = [];

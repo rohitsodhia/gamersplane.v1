@@ -105,7 +105,7 @@
 				</form>
 			</div>
 
-			<div ng-if="forumID != 0" id="permissions" ng-show="currentSection == 'permissions'" class="acpContent hbMargined section_permissions" hb-margined>
+			<div ng-if="forumID != 0" id="permissions" ng-class="{ 'currentSection': currentSection == 'permissions', 'hideSection': currentSection != 'permissions' }" class="acpContent hbMargined section_permissions" hb-margined>
 				<div ng-if="!details.isGameForum" id="permissions_general">
 					<h3>General</h3>
 					<div ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
@@ -115,7 +115,7 @@
 					<h3 class="gapAbove">Groups</h3>
 					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<form ng-if="details.isGameForum && combobox.groups.length" class="newPermission" ng-submit="addGroupPermission()">
-						Add permission for <combobox data="combobox.groups" value="cb_groups" search="newGroupPermission.groupID" strict></combobox>
+						Add permission for <combobox data="combobox.groups" value="cb_groups" search="newGroupPermission.groupID" strict></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
 					</form>
 				</div>
 				
