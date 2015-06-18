@@ -21,6 +21,7 @@
 			<li>No promoting commercial products not sanctioned by GP.</li>
 			<li>Any actions meant to harm GP, its server, or its content, or actions meant to circumvent its security are prohibited.</li>
 		</ol>
+		<p>I'm sad I have to actually put this as a rule, but if you join Gamers' Plane just to promote material on other play-by-post sites, I will just go ahead and ban your account. I don't mind people talking about other sites, if you're an active participant here. But coming here just to get people away from here is crass and rude.</p>
 		
 		<hr>
 		<h2>Rules for specific forums</h2>
