@@ -246,7 +246,7 @@
 							<div class="spell clearfix tr">
 								<input type="text" name="spells[<?=$key?>][name]" value="<?=$spellInfo['name']?>" class="spell_name placeholder" data-placeholder="Spell Name">
 								<span class="spell_stat"><select name="spells[<?=$key?>][stat]">
-<?			foreach (array('int', 'wis', 'cha') as $stat) { ?>
+<?			foreach (array_keys(d20Character_consts::getStatNames()) as $stat) { ?>
 									<option value="<?=$stat?>"<?=$spellInfo['stat'] == $stat?' selected="selected"':''?>><?=ucfirst($stat)?></option>
 <?			} ?>
 								</select></span>
@@ -266,7 +266,7 @@
 		public function displaySpells() {
 			if ($this->spells) { foreach ($this->spells as $spell) { ?>
 					<div class="spell tr clearfix">
-						<span class="spell_name"><?=$spell['name']?></span>
+						<span class="spell_name"><?=$spell['name']?> (<?=ucwords($spell['stat'])?>)</span>
 						<span class="spell_ab shortNum"><?=showSign($this->getStatMod($spell['stat'], false) + $this->getProfBonus())?></span>
 						<span class="spell_save shortNum"><?=showSign($this->getStatMod($spell['stat'], false) + $this->getProfBonus() + 8)?></span>
 <?	if (strlen($spell['notes'])) { ?>
