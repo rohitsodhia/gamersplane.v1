@@ -211,9 +211,9 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	$scope.addGenre = function () {
 		if (typeof $scope.edit.genres == 'undefined') 
 			$scope.edit.genres = [];
-		if ($scope.newGenre.length == 0) 
+		if ($scope.newGenre.value.length == 0) 
 			return;
-		$scope.edit.genres.push($scope.newGenre);
+		$scope.edit.genres.push($scope.newGenre.value);
 		updateGenres();
 	}
 	$scope.removeGenre = function (genre) {
@@ -252,7 +252,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	}
 
 	$scope.loadSystem = function () {
-		$scope.showEdit($scope.systemSearch);
+		$scope.showEdit($scope.systemSearch.value);
 		$scope.combobox.search = { 'systems': '', 'genres': '' };
 		updateGenres();
 	}

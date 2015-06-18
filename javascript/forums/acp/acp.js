@@ -1,12 +1,5 @@
 $(function () {
 	$('a.sprite.cross, a.newPermission, a.permission_delete').colorbox();
-	$('a.permission_edit').click(function (e) {
-		e.preventDefault();
-
-		$permissions = $(this).parent().parent().children('.permissions');
-		$('#permissions .permissions').not($permissions).hide();
-		$permissions.toggle();
-	});
 });
 
 controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
@@ -148,7 +141,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			});
 		};
 		$scope.addGroupPermission = function () {
-			console.log(combobox);
+			console.log($scope.newGroupPermission);
 		}
 	});
 });

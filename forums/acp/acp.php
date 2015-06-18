@@ -100,7 +100,7 @@
 					</li>
 				</ul>
 
-				<form id="newGroup" ng-if="details.gameDetails.groups.length < 5" ng-submit="createGroup()">
+				<form id="newGroup" ng-if="details.gameDetails.groups.length < 5" ng-submit="addGroupPermission()">
 					Create a new group: <input type="text" ng-model="newGroup.name"> <button type="submit" class="fancyButton smallButton" skew-element>Create</button>
 				</form>
 			</div>

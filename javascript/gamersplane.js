@@ -398,7 +398,7 @@ app.config(function ($httpProvider) {
 
 			scope.setBox = function (set) {
 				scope.value = set.id;
-				scope.search = set.value;
+				scope.search = copyObject(set);
 				scope.hasFocus = false;
 				scope.bypassFilter = true;
 				scope.hideDropdown();
