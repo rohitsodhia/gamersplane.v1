@@ -27,8 +27,12 @@
 			if (isset($_POST['system'])) 
 				$characters->bindValue(':system', $_POST['system']);
 			$characters->execute();
+			$characters = $characters->fetchAll();
+			array_walk($characters, function (&$character, $key) {
+				$character['characterID'] = (int) $character['characterID'];
+			});
 
-			displayJSON(array('characters' => $characters->fetchAll()));
+			displayJSON(array('characters' => $characters));
 		}
 	}
 ?>

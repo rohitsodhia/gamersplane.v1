@@ -115,7 +115,7 @@
 			$data['sortName'] = strtolower($data['title']);
 			$data['url'] = $_POST['url'];
 			if (!strlen($data['title']) || !strlen($data['url'])) 
-				displayJSON(array('failed' => 'incomplete'), true);
+				displayJSON(array('failed' => 'incomplete'));
 			$data['level'] = $_POST['level'];
 			if (!in_array($data['level'], array_keys($this->levels))) 
 				$data['level'] = 'Link';

@@ -18,7 +18,7 @@
 		return $input;
 	}
 
-	function displayJSON($data, $exit = false) {
+	function displayJSON($data, $exit = true) {
 		header('Content-Type: application/json');
 		echo json_encode(utf8ize($data));
 		if ($exit) 

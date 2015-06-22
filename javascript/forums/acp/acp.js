@@ -5,7 +5,7 @@ $(function () {
 controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
-		$scope.forumID = pathElements[2];
+		$scope.forumID = parseInt(pathElements[2]);
 		$scope.currentSection = 'details';
 		$scope.list = {};
 		$scope.details = {};
@@ -65,9 +65,9 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 
 		$scope.combobox = {};
 		$scope.combobox.search = { 'groups': '' };
+		$scope.combobox.values = { 'groups': {} };
 		$scope.cb_groups = '';
 		$scope.renderedDirectives = { 'groups': false };
-		$scope.newGroupPermission = { 'groupID': null };
 		$scope.newGroup = { 'name': '' };
 		$scope.editingGroup = null;
 		$scope.confirmGroupDelete = null;
@@ -110,7 +110,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 		$scope.confirmDelete = function (groupID, key) {
 			$http.post(API_HOST + '/forums/acp/deleteGroup/', { 'groupID': groupID }).success(function (data) {
 				if (data.success) 
-					delete $scope.details.gameDetails.groups[key]
+					$scope.details.gameDetails.groups.splice(key, 1);
 				$scope.confirmGroupDelete = null;
 			});
 		}
@@ -140,8 +140,71 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 					$scope.editingPermission = null;
 			});
 		};
+		$scope.deletePermission = function (permission) {
+			$http.post(API_HOST + '/forums/acp/deletePermission/', { 'type': permission.type, 'forumID': $scope.forumID, 'typeID': permission.id }).success(function (data) {
+				if (data.success) {
+					permissions = $scope.permissions[permission.type];
+					type = permission.type;
+					if (type == 'user') 
+						type = 'player';
+					for (key in permissions) {
+						if (permissions[key].id == permission.id) {
+							permissions.splice(key, 1);
+							if (permission.type == 'group') 
+								$scope.combobox.groups.push({ 'id': permission.id, 'value': permission.name });
+							break;
+						}
+					}
+					if (permission.type != 'general') {
+						details = $scope.details.gameDetails[type + 's'];
+						for (key in details) {
+							if (permission.userID == details[key].id) {
+								details[key].permissionSet = false;
+								break;
+							}
+						}
+					}
+				}
+			});
+		};
 		$scope.addGroupPermission = function () {
-			console.log($scope.newGroupPermission);
+			if ($scope.combobox.values.groups != {}) {
+				$http.post(API_HOST + '/forums/acp/addPermission/', { 'type': 'group', 'forumID': $scope.forumID, 'typeID': $scope.combobox.values.groups.id }).success(function (data) {
+					if (data.success) {
+						groupID = $scope.combobox.values.groups.id;
+						for (key in $scope.details.gameDetails.groups) {
+							if ($scope.details.gameDetails.groups[key].groupID == groupID) {
+								$scope.details.gameDetails.groups[key].permissionSet = true;
+								break;
+							}
+						}
+						data.newPermission.name = $scope.combobox.values.groups.value;
+						data.newPermission.ref = 'group_' + $scope.combobox.values.groups.id;
+						$scope.permissions.group.push(data.newPermission);
+						for (key in $scope.combobox.groups) 
+							if ($scope.combobox.groups[key].id == groupID) 
+								$scope.combobox.groups.splice(key, 1);
+					}
+				})
+			}
+		}
+		$scope.addUserPermission = function (user) {
+			if (user.userID) {
+				$http.post(API_HOST + '/forums/acp/addPermission/', { 'type': 'user', 'forumID': $scope.forumID, 'typeID': user.userID }).success(function (data) {
+					if (data.success) {
+						details = $scope.details.gameDetails.players;
+						for (key in details) {
+							if (details[key].userID == user.userID) {
+								details[key].permissionSet = true;
+								break;
+							}
+						}
+						data.newPermission.name = user.username;
+						data.newPermission.ref = 'user_' + user.userID;
+						$scope.permissions.user.push(data.newPermission);
+					}
+				})
+			}
 		}
 	});
 });

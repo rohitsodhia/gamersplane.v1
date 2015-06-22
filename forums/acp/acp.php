@@ -65,7 +65,7 @@
 
 			<div id="subforums"  ng-class="{ 'currentSection': currentSection == 'subforums', 'hideSection': currentSection != 'subforums' }" class="hbMargined" hb-margined>
 				<div id="forumList">
-					<div ng-repeat="forum in details.children" class="tr">
+					<div ng-repeat="forum in details.children | orderBy: +order" class="tr">
 						<div class="buttonDiv"><input ng-if="!$first" type="image" name="moveUp_{{forum.forumID}}" alt="Up" title="Up" class="sprite upArrow"><span ng-if="$first">&nbsp;</span></div>
 						<div class="buttonDiv"><input ng-if="!$last" type="image" name="moveDown_{{forum.forumID}}" alt="Down" title="Down" class="sprite downArrow"><span ng-if="$last">&nbsp;</span></div>
 						<div class="buttonDiv"><a href="/forums/acp/{{forum.forumID}}/" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
@@ -115,7 +115,7 @@
 					<h3 class="gapAbove">Groups</h3>
 					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<form ng-if="details.isGameForum && combobox.groups.length" class="newPermission" ng-submit="addGroupPermission()">
-						Add permission for <combobox data="combobox.groups" value="cb_groups" search="newGroupPermission.groupID" strict></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
+						Add permission for <combobox data="combobox.groups" value="combobox.values.groups" search="combobox.search.groups" strict></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
 					</form>
 				</div>
 				
@@ -123,8 +123,8 @@
 					<h3 class="gapAbove">User</h3>
 					<div ng-repeat="permission in permissions.user" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<div ng-if="details.isGameForum">
-						<div ng-repeat="player in details.gameDetails.players">
-							{{player.username}} <a href="">[ {{player.permissionSet?'Edit':'Create'}} ]</a>
+						<div ng-repeat="player in details.gameDetails.players | filter: { 'permissionSet': false }">
+							{{player.username}} <a href="" ng-click="addUserPermission(player)">[ {{player.permissionSet?'Edit':'Create'}} ]</a>
 						</div>
 					</div>
 				</div>

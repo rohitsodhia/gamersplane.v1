@@ -326,21 +326,22 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			if (typeof attrs.new != 'undefined') {
 				scope.new = true;
 				scope.editing = true;
-				scope.data.level = 'Link';
+				scope.data.level = { id: 'link', value: 'Link' };
 				scope.data.networks = { 'rpga': false };
 				scope.data.categories = { 'blog': false, 'podcast': false, 'videocast': false, 'liveplay': false };
 			} else {
 				scope.new = false;
 			}
-			scope.cb_value = '';
+			scope.cb_value = {};
 
 			scope.toggleEditing = function () {
 				scope.showEdit = !scope.showEdit;
 				scope.editing = !scope.editing;
 			}
 			scope.saveLink = function () {
-				data = JSON.parse(JSON.stringify(scope.data));
+				data = copyObject(scope.data);
 				delete data.image;
+				data.level = data.level.value;
 				$upload.upload({
 					'url': API_HOST + '/links/save/',
 					'file': scope.data.newImage,

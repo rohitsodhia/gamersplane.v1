@@ -263,15 +263,15 @@ app.config(function ($httpProvider) {
 		link: function (scope, element, attrs) {
 			scope.strict = typeof attrs.strict != 'undefined'?true:false;
 			scope.bypassFilter = true;
-			scope.value = '';
+			scope.value = {};
 			scope.oWidth = 0;
 			var setupFinished = scope.$watch('data', function (newVal, oldVal) {
 				if (scope.search != '') {
 					$(scope.data).each(function (key, value) {
 						if (value.value == scope.search) 
-							scope.value = value.id;
+							scope.value = value;
 					});
-					if (scope.value == '') 
+					if (scope.value == {}) 
 						scope.search = '';
 				} else
 					scope.search = '';
@@ -298,12 +298,12 @@ app.config(function ($httpProvider) {
 			};
 			scope.revealDropdown = function () {
 				scope.hasFocus = true;
-				scope.value = '';
+				scope.value = {};
 				for (key in scope.data) 
 					if (scope.search == scope.data[key].value) 
-						scope.value = scope.data[key].id;
+						scope.value = scope.data[key];
 				if (typeof scope.value != 'undefined' && scope.value.length == 0) 
-					scope.value = scope.search;
+					scope.value.value = scope.search;
 				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
 					oldIndex = currentIndex = -1;
 					scope.showDropdown = true;
@@ -327,28 +327,25 @@ app.config(function ($httpProvider) {
 			scope.$watch('hasFocus', function (newVal, oldVal) {
 				if (!newVal) {
 					if (scope.strict && scope.search.length > 0) {
-						bypassHold = scope.bypassFilter;
-						scope.bypassFilter = false;
-						filterResults = $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search);
+						filterResults = $filter('filter')(scope.data, { 'value':  scope.search }, true);
 						if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
 							scope.search = filterResults[0].value;
-							scope.value = filterResults[0].id;
+							scope.value = filterResults[0];
 						} else {
 							noResults = true;
 							for (key in filterResults) {
 								if (filterResults[key].value == scope.search) {
 									noResults = false;
 									scope.search = filterResults[key].value;
-									scope.value = filterResults[key].id;
-									break
+									scope.value = filterResults[key];
+									break;
 								}
 							}
 							if (noResults) {
 								scope.search = '';
-								scope.value = '';
+								scope.value = {};
 							}
 						}
-						scope.bypassFilter = bypassHold;
 					}
 				}
 			});
@@ -397,8 +394,8 @@ app.config(function ($httpProvider) {
 			};
 
 			scope.setBox = function (set) {
-				scope.value = set.id;
-				scope.search = copyObject(set);
+				scope.value = copyObject(set);
+				scope.search = set.value;
 				scope.hasFocus = false;
 				scope.bypassFilter = true;
 				scope.hideDropdown();
