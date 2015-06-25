@@ -1191,24 +1191,33 @@
 
 	#categories, #subforums {
 		.tr {
-			margin-left: 10px;
+			& > * {
+				vertical-align: middle;
+			}
 		}
 
 		.buttonDiv {
-			width: 30px;
+			display: inline-block;
+			width: 24px;
 			text-align: center;
-			float: left;
+		}
+
+		.deleteConfirm {
+			margin: .5em 0;
+			padding: 6px 10px;
+			border: 1px solid #900;
+			background-color: #EAA;
 		}
 	}
 
 	#categories .catNames, #subforums .forumNames {
+		display: inline-block;
+		margin-left: 10px;
 		padding: 2px 0;
-		margin-left: 160px;
 	}
 
 	#subforums {
 		.editLinks {
-			float: left;
 			padding: 4px 10px 0;
 		}
 
@@ -1224,30 +1233,18 @@
 	#newForum {
 		margin-top: 1em;
 
+		& > * {
+			margin-right: 10px;
+			vertical-align: middle;
+		}
+
 		label {
+			display: inline-block;
 			font-weight: bold;
-			float: left;
-			width: 100px;
 		}
 
 		input {
 			width: 300px;
-		}
-
-		.buttonPanel {
-			margin-top: .5em;
-			margin-left: 95px;
-		}
-
-		#newPermission {
-			label {
-				width: 150px;
-				float: left;
-			}
-
-			button {
-				margin-left: 150px;
-			}
 		}
 	}
 

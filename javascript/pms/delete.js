@@ -2,7 +2,8 @@ controllers.controller('pmDelete', function ($scope, $cookies, $http) {
 	pathElements = getPathElements();
 
 	$http.post(API_HOST + '/pms/allowed/', { pmID: pathElements[2] }).success(function (data) {
-		if (!data.allowed) parent.document.location = '/pms/';
+		if (!data.allowed) 
+			parent.document.location = '/pms/';
 		$scope.pmID = pathElements[2];
 		$scope.formData = {};
 	});

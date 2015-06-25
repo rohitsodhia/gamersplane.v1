@@ -24,7 +24,7 @@
 
 <script type="text/ng-template" id="forumList">
 <li ng-class="{ 'notAdmin': !forum.admin, 'currentForum': forum.forumID == forumID }">
-	<a href="" ng-click="changeForum(forum.forumID, forum.admin)">{{forum.title}}</a>
+	<a href="" ng-click="getForumDetails(forum.forumID)">{{forum.title}}</a>
 	<ul ng-if="forum.children.length">
 		<li ng-repeat="forum in forum.children" ng-include="'forumList'"></li>
 	</ul>
@@ -37,7 +37,7 @@
 		<div class="mainColumn right">
 			<div class="clearfix"><div id="controls" class="trapezoid floatLeft" data-ratio=".8">
 				<div>
-					<a ng-if="forumID != 0" id="ml_forumDetails" href=""  ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a>
+					<a ng-if="forumID != 0 && details.parentID != 2" href=""  ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a>
 					<a id="ml_subforums" href="" ng-class="{ 'current': currentSection == 'subforums' }" ng-click="setSection('subforums')">Subforums</a>
 					<a ng-if="forumID != 0" id="ml_permissions" href="" ng-class="{ 'current': currentSection == 'groups' }" ng-click="setSection('groups')">Groups</a>
 					<a ng-if="details.isGameForum" href="" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
@@ -51,39 +51,46 @@
 			</h2>
 
 			<form ng-if="forumID != 0" id="details"  ng-class="{ 'currentSection': currentSection == 'details', 'hideSection': currentSection != 'details' }" class="hbMargined" ng-submit="saveDetails()" hb-margined>
+				<div ng-show="saveError" class="alertBox_error">
+					There was a problem saving the forum details. Make sure you have a title.
+				</div>
 				<div class="tr">
 					<label class="textLabel">Forum title:</label>
-					<input type="text" name="title" ng-model="details.title" maxlength="50" ng-disabled="[1, 2, 3].indexOf(forumID) != -1 || details.parentID == 2">
+					<input type="text" name="title" ng-model="editDetails.title" maxlength="50" ng-disabled="[1, 2, 3].indexOf(forumID) != -1 || details.parentID == 2">
 				</div>
 				<div ng-if="details.type == 'f'" class="tr">
 					<label class="textLabel">Forum description:</label>
-					<textarea name="description" ng-model="details.description"></textarea>
+					<textarea name="description" ng-model="editDetails.description"></textarea>
 				</div>
-				<input type="hidden" name="forumID" value="{{forumID}}">
 				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton" skew-element>Update</button></div>
 			</form>
 
 			<div id="subforums"  ng-class="{ 'currentSection': currentSection == 'subforums', 'hideSection': currentSection != 'subforums' }" class="hbMargined" hb-margined>
 				<div id="forumList">
-					<div ng-repeat="forum in details.children | orderBy: +order" class="tr">
-						<div class="buttonDiv"><input ng-if="!$first" type="image" name="moveUp_{{forum.forumID}}" alt="Up" title="Up" class="sprite upArrow"><span ng-if="$first">&nbsp;</span></div>
-						<div class="buttonDiv"><input ng-if="!$last" type="image" name="moveDown_{{forum.forumID}}" alt="Down" title="Down" class="sprite downArrow"><span ng-if="$last">&nbsp;</span></div>
-						<div class="buttonDiv"><a href="/forums/acp/{{forum.forumID}}/" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
-						<div class="buttonDiv"><a href="/forums/acp/{{forum.forumID}}/permissions/" alt="Permissions" title="Permissions" class="sprite permissions"></a></div>
-						<div class="buttonDiv"><a ng-if="[1, 2, 3].indexOf(forum.forumID) == -1 && forumID != 2" href="/forums/acp/{{forum.forumID}}/deleteForum/" alt="Delete" title="Delete" class="sprite cross"></a></div>
+					<div ng-repeat="(key, forum) in details.children | orderBy: 'order'" class="tr">
+						<div class="buttonDiv"><a ng-if="!$first" href="" ng-click="changeOrder('up', forum)" alt="Up" title="Up" class="sprite upArrow"></a><span ng-if="$first">&nbsp;</span></div>
+						<div class="buttonDiv"><a ng-if="!$last" href="" ng-click="changeOrder('down', forum)" alt="Down" title="Down" class="sprite downArrow"></a><span ng-if="$last">&nbsp;</span></div>
+						<div class="buttonDiv"><a href="" ng-click="getForumDetails(forum.forumID, 'details')" alt="Edit" title="Edit" class="sprite editWheel"></a></div>
+						<div class="buttonDiv"><a href="" ng-click="getForumDetails(forum.forumID, 'permissions')" alt="Permissions" title="Permissions" class="sprite permissions"></a></div>
+						<div class="buttonDiv"><a ng-if="[1, 2, 3].indexOf(forum.forumID) == -1 && forumID != 2" href="" ng-click="toggleForumDelete(forum.forumID)" alt="Delete" title="Delete" class="sprite cross"></a></div>
 						<div class="forumNames">({{forum.type.toUpperCase()}}) {{forum.title}}</div>
+						<div ng-show="showForumDelete == forum.forumID" class="deleteConfirm">
+							<p>Are you sure you want to delete <strong>{{forum.title}}</strong>? This cannot be reversed!</p>
+							<p>This will delete all threads, posts, and relating content in this forum, as well as in any subforums and the subforums themselves.</p>
+							<div class="buttonPanel alignCenter">
+								<button type="submit" name="delete" class="fancyButton smallButton" skew-element ng-click="confirmForumDelete(forum, key)">Delete</button>
+								<button type="submit" name="cancel" class="fancyButton smallButton" skew-element ng-click="cancelForumDelete()">Cancel</button>
+							</div>
+						</div>
 					</div>
 					<p ng-if="children.details.length == 0">No subforums</p>
 				</div>
 
-				<div id="newForum">
-					<div class="tr">
-						<label class="textLabel">New Forum</label>
-						<input type="text" name="newForum" maxlength="50">
-					</div>
-					<input type="hidden" name="forumID" value="{{forumID}}">
-					<div class="buttonPanel"><button type="submit" name="addForum" class="fancyButton" skew-element>Add</button></div>
-				</div>
+				<form id="newForum" ng-submit="createForum()">
+					<label>New Forum</label>
+					<input type="text" name="newForum" ng-model="newForum.name" maxlength="50">
+					<button type="submit" name="addForum" class="fancyButton" skew-element>Add</button>
+				</form>
 			</div>
 
 			<div ng-if="details.isGameForum"  ng-class="{ 'currentSection': currentSection == 'groups', 'hideSection': currentSection != 'groups' }" class="hbMargined" hb-margined>
@@ -126,6 +133,9 @@
 						<div ng-repeat="player in details.gameDetails.players | filter: { 'permissionSet': false }">
 							{{player.username}} <a href="" ng-click="addUserPermission(player)">[ {{player.permissionSet?'Edit':'Create'}} ]</a>
 						</div>
+						<p ng-if="details.gameDetails.players.length == 0">
+							There are currently no players in this game.
+						</p>
 					</div>
 				</div>
 			</div>

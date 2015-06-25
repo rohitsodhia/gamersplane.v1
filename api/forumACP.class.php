@@ -7,6 +7,14 @@
 
 			if ($pathOptions[1] == 'details' && isset($_POST['forumID'])) 
 				$this->getDetails(intval($_POST['forumID']), isset($_POST['full'])?true:false);
+			elseif ($pathOptions[1] == 'updateForum' && isset($_POST['forumID'])) 
+				$this->updateForum(intval($_POST['forumID']), isset($_POST['full'])?true:false);
+			elseif ($pathOptions[1] == 'changeOrder' && isset($_POST['forumID'], $_POST['direction'])) 
+				$this->changeOrder(intval($_POST['forumID']), $_POST['direction']);
+			elseif ($pathOptions[1] == 'deleteForum' && isset($_POST['forumID'])) 
+				$this->deleteForum(intval($_POST['forumID']));
+			elseif ($pathOptions[1] == 'createForum' && isset($_POST['parentID'], $_POST['name'])) 
+				$this->createForum((int) $_POST['parentID'], $_POST['name']);
 			elseif ($pathOptions[1] == 'createGroup' && isset($_POST['forumID'], $_POST['name'])) 
 				$this->createGroup(intval($_POST['forumID']), $_POST['name']);
 			elseif ($pathOptions[1] == 'editGroup' && isset($_POST['groupID'], $_POST['name'])) 
@@ -79,8 +87,9 @@
 				$permissions['group'][$key]['ref'] = 'group_'.$permission['id'];
 				$pGroups[] = $permission['id'];
 			}
-			foreach ($details['gameDetails']['groups'] as &$group) 
-				$group['permissionSet'] = in_array($group['groupID'], $pGroups)?true:false;
+			if ($details['isGameForum']) 
+				foreach ($details['gameDetails']['groups'] as &$group) 
+					$group['permissionSet'] = in_array($group['groupID'], $pGroups)?true:false;
 			$permissions['user'] = $mysql->query("SELECT 'user' as `type`, u.userID as id, u.username name, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_users p INNER JOIN users u ON p.userID = u.userID WHERE p.forumID = {$forumID}")->fetchAll();
 			$pUsers = array();
 			foreach ($permissions['user'] as $key => $permission) {
@@ -88,10 +97,11 @@
 				$permissions['user'][$key]['ref'] = 'user_'.$permission['id'];
 				$pUsers[] = $permission['id'];
 			}
-			foreach ($details['gameDetails']['players'] as &$player) 
-				$player['permissionSet'] = in_array($player['userID'], $pUsers)?true:false;
+			if ($details['isGameForum']) 
+				foreach ($details['gameDetails']['players'] as &$player) 
+					$player['permissionSet'] = in_array($player['userID'], $pUsers)?true:false;
 
-			displayJSON(array('list' => array($list), 'details' => $details, 'permissions' => $permissions));
+			displayJSON(array('success' => true, 'list' => array($list), 'details' => $details, 'permissions' => $permissions));
 		}
 
 		private function castPermissions($permissions, $divideBy = 1) {
@@ -104,6 +114,87 @@
 					$value = (bool) $value;
 			}
 			return $permissions;
+		}
+
+		public function updateForum($forumID) {
+			global $currentUser, $mysql;
+
+			$title = sanitizeString($_POST['title']);
+			$desc = sanitizeString($_POST['desc']);
+
+			$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+			$forum = $forumManager->forums[$forumID];
+			if ($forum == null || !$forum->getPermissions('admin')) 
+				displayJSON(array('failed' => true, 'errors' => array('noPermissions')));
+
+			if ($forum->parentID == 2) 
+				displayJSON(array('failed' => true, 'errors' => array('gameForum')));
+
+			$updateForum = $mysql->prepare("UPDATE forums SET ".($forum->parentID != 2?'title = :title, ':'')."description = :description WHERE forumID = {$forumID} LIMIT 1");
+			if ($forum->parentID != 2) 
+				$updateForum->bindValue(':title', $title);
+			$updateForum->bindValue(':description', $description);
+			$updateForum->execute();
+
+			if ($updateForum->rowCount()) 
+				displayJSON(array('success' => true));
+			else 
+				displayJSON(array('failed' => true));
+		}
+
+		public function changeOrder($forumID, $direction) {
+			global $currentUser, $mysql;
+
+			if (!in_array($direction, array('up', 'down'))) 
+				displayJSON(array('failed' => true, 'errors' => array('invalidDirection')));
+
+			$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+			$forum = $forumManager->forums[$forumID];
+			$parent = $forumManager->forums[$forum->parentID];
+			if ($forum == null || $parent == null || !$parent->getPermissions('admin')) 
+				displayJSON(array('failed' => true, 'errors' => array('noPermissions')));
+
+			if (($direction == 'up' && $forum->order == 1) || ($direction == 'down' && $forum->order == $parent->childCount)) 
+				displayJSON(array('failed' => true, 'errors' => array('invalidReorder')));
+			$curPos = $newPos = $forum->order;
+			$newPos += $direction == 'up'?-1:1;
+			$mysql->query("UPDATE forums SET `order` = {$curPos} WHERE parentID = {$parent->forumID} AND `order` = {$newPos}");
+			$mysql->query("UPDATE forums SET `order` = {$newPos} WHERE forumID = {$forumID}");
+			displayJSON(array('success' => true));
+		}
+
+		public function deleteForum($forumID) {
+			global $currentUser, $mysql;
+
+			$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+			$forum = $forumManager->forums[$forumID];
+			if ($forum == null || !$forum->getPermissions('admin')) 
+				displayJSON(array('failed' => true, 'errors' => array('noPermissions')));
+
+			$forum->deleteForum();
+			displayJSON(array('success' => true));
+		}
+
+		public function createForum($parentID, $name) {
+			global $currentUser, $mysql;
+
+			if (strlen($name) < 3) 
+				displayJSON(array('failed' => true, 'errors' => ('shortName')));
+
+			$forumManager = new ForumManager($parentID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+			$forum = $forumManager->forums[$parentID];
+			if ($forum == null || !$forum->getPermissions('admin')) 
+				displayJSON(array('failed' => true, 'errors' => array('noPermissions')));
+
+			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, {$parentID}, '".time()."', :order, ".($forum->isGameForum()?$forum->gameID:'NULL').')');
+			$addForum->bindValue(':title', sanitizeString($name));
+			$addForum->bindValue(':order', intval($forum->childCount) + 1);
+			$addForum->execute();
+			$forumID = (int) $mysql->lastInsertId();
+			$mysql->query('UPDATE forums SET heritage = "'.$forum->getHeritage(true).'-'.sql_forumIDPad($forumID).'" WHERE forumID = '.$forumID);
+			$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES ('.$forumID.')');
+
+			displayJSON(array('success' => true, 'forum' => array('forumID' => $forumID, 'order' => $forum->childCount + 1, 'type' => 'f', 'title' => $name)));
 		}
 
 		public function createGroup($forumID, $name) {

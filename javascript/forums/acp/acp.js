@@ -9,6 +9,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 		$scope.currentSection = 'details';
 		$scope.list = {};
 		$scope.details = {};
+		$scope.editDetails = {};
 		$scope.permissions = {};
 		$scope.permissionTypes = [
 			{ 'key': 'read', 'label': 'Read' },
@@ -31,18 +32,24 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			else if ($scope.details.isGameForum && section == 'groups') 
 				$scope.currentSection = 'groups';
 		};
-		function getForumDetails(forumID) {
+		$scope.getForumDetails = function (forumID, newSection) {
 			$http.post(API_HOST + '/forums/acp/details/', { forumID: forumID }).success(function (data) {
-				if (data.failed) {
+				if (data.failed && $scope.details == {}) 
 					document.location = '/forums/';
-				} else {
-					if ($scope.currentSection == null && data.details.isGameForum) 
-						$scope.currentSection = 'groups';
-					if ($scope.forumID != forumID)
-						$scope.currentSection = 'details';
+				else if (data.success) {
+					if (typeof newSection == 'undefined' || ['details', 'subforums', 'groups', 'permissions'].indexOf(newSection) == -1) {
+//						if ($scope.currentSection == null && data.details.isGameForum) 
+//							$scope.currentSection = 'groups';
+						if ($scope.forumID != forumID && data.details.parentID != 2)
+							$scope.currentSection = 'details';
+						else if ($scope.forumID != forumID) 
+							$scope.currentSection = 'subforums';
+					} else 
+						$scope.currentSection = newSection;
 					$scope.forumID = forumID;
 					$scope.list = data.list;
 					$scope.details = data.details;
+					$scope.editDetails = { 'title': data.details.title, 'description': data.details.description };
 					$scope.permissions = data.permissions;
 
 					$scope.combobox.groups = []
@@ -52,15 +59,58 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 				}
 			});
 		}
-		$scope.changeForum = function (forumID, isAdmin) {
-			if (!isAdmin) 
-				return;
-			getForumDetails(forumID);		
-		}
-		getForumDetails($scope.forumID);
+		$scope.getForumDetails($scope.forumID);
 
+		$scope.saveError = false;
 		$scope.saveDetails = function () {
-			console.log($scope.details);
+			if ($scope.editDetails.title.length >= 3 && ($scope.details.title != $scope.editDetails.title || $scope.details.description != $scope.editDetails.description)) {
+				$http.post(API_HOST + '/forums/acp/updateForum/', { 'forumID': $scope.forumID, 'title': $scope.editDetails.title, 'desc': $scope.editDetails.description }).success(function (data) {
+					if (data.success) {
+						$scope.details.title = $scope.editDetails.title;
+						$scope.details.description = $scope.editDetails.description;
+						$scope.saveError = false;
+					} else 
+						$scope.saveError = true;
+				});
+			}
+		};
+
+		$scope.showForumDelete = null;
+		$scope.changeOrder = function (direction, forum) {
+			if ((direction == 'up' && forum.order == 1) || (direction == 'down' && forum.order == $scope.details.children.length) || ['up', 'down'].indexOf(direction) == -1) 
+				return;
+
+			$http.post(API_HOST + '/forums/acp/changeOrder/', { 'forumID': forum.forumID, 'direction': direction }).success(function (data) {
+				if (data.success) {
+					curPos = newPos = forum.order;
+					newPos += direction == 'up'?-1:1;
+					switchForum = $filter('filter')($scope.details.children, { 'order': newPos }, true)[0];
+					forum.order = newPos;
+					switchForum.order = curPos;
+				}
+			});
+		};
+		$scope.toggleForumDelete = function (forumID) {
+			$scope.showForumDelete = $scope.showForumDelete != forumID?forumID:null;
+		};
+		$scope.cancelForumDelete = function () {
+			$scope.showForumDelete = null;
+		};
+		$scope.confirmForumDelete = function (forum, key) {
+			$http.post(API_HOST + '/forums/acp/deleteForum/', { 'forumID': forum.forumID }).success(function (data) {
+				if (data.success) 
+					$scope.details.children.splice(key, 1);
+			})
+		};
+		$scope.newForum = { 'name': '' };
+		$scope.createForum = function () {
+			console.log($scope.newForum);
+			if ($scope.newForum.name.length < 3) 
+				return;
+			$http.post(API_HOST + '/forums/acp/createForum/', { 'parentID': $scope.forumID, 'name': $scope.newForum.name }).success(function (data) {
+				if (data.success) 
+					$scope.details.children.push(data.forum);
+			});
 		};
 
 		$scope.combobox = {};
