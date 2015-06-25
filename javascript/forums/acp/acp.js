@@ -53,9 +53,10 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 					$scope.permissions = data.permissions;
 
 					$scope.combobox.groups = []
-					for (key in $scope.details.gameDetails.groups) 
-						if (!$scope.details.gameDetails.groups[key].permissionSet)
-							$scope.combobox.groups.push({ 'id': $scope.details.gameDetails.groups[key].groupID, 'value': $scope.details.gameDetails.groups[key].name });
+					if ($scope.details.gameDetails) 
+						for (key in $scope.details.gameDetails.groups) 
+							if (!$scope.details.gameDetails.groups[key].permissionSet)
+								$scope.combobox.groups.push({ 'id': $scope.details.gameDetails.groups[key].groupID, 'value': $scope.details.gameDetails.groups[key].name });
 				}
 			});
 		}
