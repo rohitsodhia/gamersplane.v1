@@ -5,7 +5,7 @@ $(function () {
 controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
-		$scope.forumID = parseInt(pathElements[2]);
+		$scope.forumID = pathElements[2]?parseInt(pathElements[2]):0;
 		$scope.currentSection = 'details';
 		$scope.list = {};
 		$scope.details = {};
