@@ -42,7 +42,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 //							$scope.currentSection = 'groups';
 						if ($scope.forumID != forumID && data.details.parentID != 2)
 							$scope.currentSection = 'details';
-						else if ($scope.forumID != forumID) 
+						else 
 							$scope.currentSection = 'subforums';
 					} else 
 						$scope.currentSection = newSection;
