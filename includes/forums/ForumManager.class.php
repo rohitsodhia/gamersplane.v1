@@ -73,7 +73,8 @@
 			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == false) {
 				$parentID = $this->forums[$forumID]->parentID;
 				unset($this->forums[$forumID]);
-				$this->forums[$parentID]->unsetChild($forumID);
+				if (isset($this->forums[$parentID])) 
+					$this->forums[$parentID]->unsetChild($forumID);
 			}
 		}
 
