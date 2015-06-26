@@ -9,14 +9,19 @@
 		protected $spells = '';
 
 		public function setSanity($key, $value) {
-			if (in_array($key, array_keys($this->sanity))) $this->sanity[$key] = intval($value);
-			else return false;
+			if (in_array($key, array_keys($this->sanity))) 
+				$this->sanity[$key] = intval($value);
+			else 
+				return false;
 		}
 
 		public function getSanity($key = null) {
-			if (in_array($key, array_keys($this->sanity))) return $this->sanity[$key];
-			elseif ($key == null) return $this->sanity;
-			else return false;
+			if (in_array($key, array_keys($this->sanity))) 
+				return $this->sanity[$key];
+			elseif ($key == null) 
+				return $this->sanity;
+			else 
+				return false;
 		}
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
@@ -34,7 +39,7 @@
 								</select></span>
 								<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 								<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-								<a href="" class="skill_remove sprite cross lrBuffer"></a>
+								<a href="" class="remove sprite cross lrBuffer"></a>
 							</div>
 <?
 		}
@@ -69,8 +74,10 @@
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
+			foreach ($this->weapons as $weaponInfo) 
+				$this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) while ($weaponNum < $min) 
+				$this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
@@ -169,18 +176,22 @@
 
 			if (!isset($data['create'])) {
 				$this->setName($data['name']);
-				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
+				foreach ($data['class'] as $key => $value) 
+					if (strlen($value) && (int) $data['level'][$key] > 0) 
+						$data['classes'][$value] = $data['level'][$key];
 				$this->setClasses($data['classes']);
 
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-				foreach ($data['saves'] as $save => $values) {
-					foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
-				}
+				foreach ($data['stats'] as $stat => $value) 
+					$this->setStat($stat, $value);
+				foreach ($data['saves'] as $save => $values) 
+					foreach ($values as $sub => $value) 
+						$this->setSave($save, $sub, $value);
 				$this->setHP('total', $data['hp']['total']);
 				$this->setHP('subdual', $data['hp']['subdual']);
 				$this->setSanity('max', $data['sanity']['max']);
 				$this->setSanity('current', $data['sanity']['current']);
-				foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
+				foreach ($data['ac'] as $key => $value) 
+					$this->setAC($key, $value);
 				$this->setSpeed($data['speed']);
 				$this->setInitiative('stat', $data['initiative']['stat']);
 				$this->setInitiative('misc', $data['initiative']['misc']);
@@ -191,17 +202,18 @@
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					$this->addSkill($skillInfo);
-				} }
+				if (sizeof($data['skills'])) 
+					foreach ($data['skills'] as $skillInfo) 
+						$this->addSkill($skillInfo);
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					$this->addFeat($featInfo);
-				} }
+				if (sizeof($data['feats'])) 
+					foreach ($data['feats'] as $featInfo) 
+						$this->addFeat($featInfo);
 
 				$this->clearVar('weapons');
-				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
+				foreach ($data['weapons'] as $weapon) 
+					$this->addWeapon($weapon);
 
 				$this->setItems($data['items']);
 				$this->setSpells($data['spells']);

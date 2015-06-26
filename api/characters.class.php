@@ -23,12 +23,16 @@
 				displayJSON(array('failed' => true, 'notLoggedIn' => true), true);
 
 			$userID = $currentUser->userID;
-			$characters = $mysql->prepare("SELECT characterID, label, charType, system, gameID, approved FROM characters WHERE userID = {$userID}".(isset($_POST['system'])?' AND system = :system':''));
+			$characters = $mysql->prepare("SELECT characterID, label, charType, system, gameID, approved FROM characters WHERE userID = {$userID}".(isset($_POST['system'])?' AND system = :system':'').(isset($_POST['noGame'])?' AND gameID IS NULL':''));
 			if (isset($_POST['system'])) 
 				$characters->bindValue(':system', $_POST['system']);
 			$characters->execute();
+			$characters = $characters->fetchAll();
+			array_walk($characters, function (&$character, $key) {
+				$character['characterID'] = (int) $character['characterID'];
+			});
 
-			displayJSON(array('characters' => $characters->fetchAll()));
+			displayJSON(array('characters' => $characters));
 		}
 	}
 ?>

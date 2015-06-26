@@ -6,6 +6,7 @@
 		protected $forumType;
 		protected $parentID;
 		protected $heritage;
+		protected $childCount;
 		protected $order;
 		protected $gameID = null;
 		protected $threadCount;
@@ -47,7 +48,7 @@
 				$this->$key = $value;
 			elseif ($key == 'forumType' && in_array(strtolower($value), array('f', 'c'))) 
 				$this->forumType = strtolower($value);
-			elseif (in_array($key, array('parentID', 'order', 'threadCount', 'postCount', 'markedRead'))) 
+			elseif (in_array($key, array('parentID', 'childCount', 'order', 'threadCount', 'postCount', 'markedRead'))) 
 				$this->$key = intval($value);
 			elseif ($key == 'newPosts') 
 				$this->newPosts = $value?true:false;
@@ -55,7 +56,8 @@
 		}
 
 		public function __get($key) {
-			if (isset($this->$key)) return $this->$key;
+			if (isset($this->$key)) 
+				return $this->$key;
 		}
 
 		public function getForumID() {
@@ -63,13 +65,17 @@
 		}
 
 		public function getTitle($pr = false) {
-			if ($pr) return printReady($this->title);
-			else return $this->title;
+			if ($pr) 
+				return printReady($this->title);
+			else 
+				return $this->title;
 		}
 
 		public function getDescription($pr = false) {
-			if ($pr) return printReady($this->description);
-			else return $this->description;
+			if ($pr) 
+				return printReady($this->description);
+			else 
+				return $this->description;
 		}
 
 		public function getType() {
@@ -101,6 +107,10 @@
 			$this->children[$order] = $childID;
 		}
 
+		public function unsetChild($forumID) {
+			unset($this->children[array_search($forumID, $this->children)]);
+		}
+
 		public function getChildren() {
 			return $this->children;
 		}
@@ -130,6 +140,12 @@
 			$threads = $mysql->query("SELECT t.threadID, t.locked, t.sticky, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.forumID = {$this->forumID} ORDER BY t.sticky DESC, lp.datePosted DESC LIMIT {$offset}, ".PAGINATE_PER_PAGE);
 			foreach ($threads as $thread) 
 				$this->threads[] = new Thread($thread);
+		}
+
+		public function deleteForum() {
+			global $mysql;
+
+			$mysql->query("DELETE f, c, t, p, po, popt, pv, pge, pgr, pu, rdf, rdt, r, d FROM forums f INNER JOIN forums c ON c.heritage LIKE CONCAT(f.heritage, '%') LEFT JOIN threads t ON c.forumID = t.forumID LEFT JOIN posts p ON t.threadID = p.threadID LEFT JOIN forums_polls po ON t.threadID = po.threadID LEFT JOIN forums_pollOptions popt ON t.threadID = popt.threadID LEFT JOIN forums_pollVotes pv ON popt.pollOptionID = pv.pollOptionID LEFT JOIN forums_permissions_general pge ON c.forumID = pge.forumID LEFT JOIN forums_permissions_groups pgr ON c.forumID = pgr.forumID LEFT JOIN forums_permissions_users pu ON c.forumID = pu.forumID LEFT JOIN forums_readData_forums rdf ON c.forumID = rdf.forumID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID LEFT JOIN rolls r ON p.postID = r.postID LEFT JOIN deckDraws d ON p.postID = d.postID WHERE f.forumID = {$this->forumID}");
 		}
 	}
 ?>

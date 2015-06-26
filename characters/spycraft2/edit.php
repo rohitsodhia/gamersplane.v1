@@ -202,8 +202,8 @@
 					</div>
 				</div>
 				
-				<div id="skills">
-					<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+				<div id="skills" data-type="skill">
+					<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 					<div class="hbdMargined">
 						<div class="tr labelTR">
 							<label class="medText skill_name">Skill</label>
@@ -227,8 +227,8 @@
 <?	$this->showFocusesEdit(); ?>
 						</div>
 					</div>
-					<div id="feats">
-						<h2 class="headerbar hbDark">Feats/Abilities <a id="addSkill" href="">[ Add Feat/Ability ]</a></h2>
+					<div id="feats" data-type="feat">
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addSkill" href="" class="addItem">[ Add Feat/Ability ]</a></h2>
 						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>

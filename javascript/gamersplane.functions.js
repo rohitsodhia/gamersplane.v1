@@ -12,6 +12,10 @@ String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+function copyObject(val) {
+	return JSON.parse(JSON.stringify(val));
+}
+
 function getPathElements() {
 	pathElements = window.location.pathname.split('/');
 	for (key in pathElements) 
@@ -41,7 +45,8 @@ function decToB26(num) {
 
 function b26ToDec(str) {
 	var num = 0;
-	for (var count = 0; count < str.length; count++) num += (str[str.length - 1 - count].charCodeAt() - 96) * Math.pow(26, count);
+	for (var count = 0; count < str.length; count++) 
+		num += (str[str.length - 1 - count].charCodeAt() - 96) * Math.pow(26, count);
 	
 	return num;
 }
@@ -56,8 +61,10 @@ function hex(x) {
 }
 
 function showSign(val) {
-	if (val >= 0) return '+' + val;
-	else return val;
+	if (val >= 0) 
+		return '+' + val;
+	else 
+		return val;
 }
 
 function convertTZ(dtString, parseString, displayString) {
@@ -69,8 +76,10 @@ function convertTZ(dtString, parseString, displayString) {
 }
 
 function addCSSRule(selector, rules, index) {
-	if ('insertRule' in jsCSSSheet) jsCSSSheet.insertRule(selector + "{" + rules + "}", index);
-	else if ('addRule' in jsCSSSheet) jsCSSSheet.addRule(selector, rules, index);
+	if ('insertRule' in jsCSSSheet) 
+		jsCSSSheet.insertRule(selector + "{" + rules + "}", index);
+	else if ('addRule' in jsCSSSheet) 
+		jsCSSSheet.addRule(selector, rules, index);
 }
 
 function skewElement() {
@@ -123,7 +132,7 @@ function adjustSkewMargins() {
 
 function trapezoidify() {
 	$element = $(this);
-	$element.wrapInner('<div class="contents"></div>').prepend('<div class="shape"></div>');
+	$element.wrapInner('<div class="content"></div>').prepend('<div class="leftWing"></div><div class="rightWing"></div>');
 	if (typeof $element.data('skew') != 'undefined') 
 		skewDeg = parseInt($element.data('skew'));
 	else 
@@ -133,19 +142,20 @@ function trapezoidify() {
 	else 
 		direction = 'down';
 	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
-	$element.children('.contents').css({
-		'margin-left'         : sideBorderWidth + 'px',
-		'margin-right'        : sideBorderWidth + 'px'
+	$element.children('.content').css({
+		'margin-left'   : sideBorderWidth + 'px',
+		'margin-right'  : sideBorderWidth + 'px',
 	});
-	$element.children('.shape').css({
-		'width'               : ($element.width() - sideBorderWidth * 2) + 'px',
-		'border-left-width'   : sideBorderWidth + 'px',
-		'border-right-width'  : sideBorderWidth + 'px',
+	$element.children('.leftWing').css({
+		'border-left-width' : sideBorderWidth + 'px',
+	});
+	$element.children('.rightWing').css({
+		'border-right-width' : sideBorderWidth + 'px',
 	});
 	if (direction == 'down') 
-		$element.children('.shape').css('border-bottom-width', $element.outerHeight() + 'px');
+		$element.children('.leftWing, .rightWing').css('border-bottom-width', $element.outerHeight() + 'px');
 	else 
-		$element.children('.shape').css('border-top-width', $element.outerHeight() + 'px');
+		$element.children('.leftWing, .rightWing').css('border-top-width', $element.outerHeight() + 'px');
 }
 
 function fm_rollDice(dice, rerollAces) {
@@ -170,16 +180,25 @@ function sumRow() {
 		var classes = $indivTotal.attr('class').split(/\s+/);
 		var finalTotal = inputTotal;
 		$.each(classes, function (index, item) {
-			if (item.substring(3, 7) == 'Stat') finalTotal += statBonus[item.split('_')[1]];
-			else if (item.substring(3, 6) == 'Int') finalTotal += parseInt(item.split('_')[1]);
-			else if (item.substring(3, 6) == 'BAB') finalTotal += parseInt($('#bab').val());
-			else if (item.substring(0, 7) == 'addSize') finalTotal += size;
-			else if (item.substring(0, 7) == 'subSize') finalTotal -= size;
-			else if (item.substring(3, 8) == 'Level') finalTotal += level;
-			else if (item.substring(3, 5) == 'HL') finalTotal += Math.floor(level / 2);
+			if (item.substring(3, 7) == 'Stat') 
+				finalTotal += statBonus[item.split('_')[1]];
+			else if (item.substring(3, 6) == 'Int') 
+				finalTotal += parseInt(item.split('_')[1]);
+			else if (item.substring(3, 6) == 'BAB') 
+				finalTotal += parseInt($('#bab').val());
+			else if (item.substring(0, 7) == 'addSize') 
+				finalTotal += size;
+			else if (item.substring(0, 7) == 'subSize') 
+				finalTotal -= size;
+			else if (item.substring(3, 8) == 'Level') 
+				finalTotal += level;
+			else if (item.substring(3, 5) == 'HL') 
+				finalTotal += Math.floor(level / 2);
 		});
 
-		if ($indivTotal.hasClass('noSign')) $indivTotal.text(finalTotal);
-		else $indivTotal.text(showSign(finalTotal));
+		if ($indivTotal.hasClass('noSign')) 
+			$indivTotal.text(finalTotal);
+		else 
+			$indivTotal.text(showSign(finalTotal));
 	});
 }

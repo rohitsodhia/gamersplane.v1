@@ -1,0 +1,16 @@
+<div class="permissionSet tr">
+	<div class="clearfix">
+		<div class="permission_label">{{permission.type != 'general'?permission.name:'General'}}</div>
+		<a href="" ng-click="togglePermissionsEdit(permission)">[ Edit ]</a>
+		<a ng-if="!(permission.type == 'general' || (permission.gameGroup && permission.id == details.gameDetails.groupID))" href="" ng-click="deletePermission(permission)">[ Delete ]</a>
+	</div>
+	<div ng-show="editingPermission == permission.ref" class="permissions">
+		<div ng-repeat="pType in permissionTypes" ng-if="!(permission.type == 'general' && pType.key == 'moderate') && !(permission.type == 'group' && permission.id == details.gameDetails.groupID && forumID == details.gameDetails.forumID && ['read', 'write', 'editPost'].indexOf(pType.key) != -1)" class="tr clearfix">
+			<div class="permission_type textLabel">{{pType.label}}</div>
+			<div class="option yes" ng-class="{ 'selected': permission[pType.key] > 0 }" ng-click="changePermission(permission.ref, pType.key, 1)">Yes</div>
+			<div class="option inherit" ng-class="{ 'selected': permission[pType.key] == 0 }" ng-click="changePermission(permission.ref, pType.key, 0)">Inherit</div>
+			<div class="option no" ng-class="{ 'selected': permission[pType.key] < 0 }" ng-click="changePermission(permission.ref, pType.key, -1)">No</div>
+		</div>
+		<div class="permissionSave"><button type="submit" class="fancyButton" ng-click="savePermission(permission)" skew-element>Save</button></div>
+	</div>
+</div>

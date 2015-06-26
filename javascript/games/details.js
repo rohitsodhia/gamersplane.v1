@@ -23,36 +23,39 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 
 		setGameData = function () {
 			$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
-				$scope.details = data.details;
-				$scope.players = data.players;
-				$scope.invites.waiting = data.invites;
-				$scope.decks = data.decks;
-				$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
-				$scope.details.playersInGame = $scope.players.length - 1;
-				$scope.pendingInvite = $filter('filter')($scope.invites.waiting, { userID: currentUser.userID }).length  == 1?true:false;
-				for (key in $scope.players) {
-					if (currentUser && $scope.players[key].userID == currentUser.userID) {
-						$scope.inGame = true;
-						$scope.curPlayer = $scope.players[key];
-						$scope.approved = $scope.curPlayer.approved?true:false;
-						if ($scope.curPlayer.isGM) 
-							$scope.isGM = true;
+				if (data.success) {
+					$scope.details = data.details;
+					$scope.players = data.players;
+					$scope.invites.waiting = data.invites;
+					$scope.decks = data.decks;
+					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
+					$scope.details.playersInGame = $scope.players.length - 1;
+					$scope.pendingInvite = $filter('filter')($scope.invites.waiting, { userID: currentUser.userID }).length  == 1?true:false;
+					for (key in $scope.players) {
+						if (currentUser && $scope.players[key].userID == currentUser.userID) {
+							$scope.inGame = true;
+							$scope.curPlayer = $scope.players[key];
+							$scope.approved = $scope.curPlayer.approved?true:false;
+							if ($scope.curPlayer.isGM) 
+								$scope.isGM = true;
 
-						if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charPerPlayer)) {
-							$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'] }).success(function (data) {
-								$scope.characters = data.characters;
-								$scope.combobox.characters = [];
-								for (key in $scope.characters) 
-									if (!$filter('filter')($scope.curPlayer.characters, { 'characterID': $scope.characters[key].characterID }).length)
-										$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
-								$scope.combobox.characters = $filter('orderBy')($scope.combobox.characters, 'value');
-							});
+							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
+								$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'], 'noGame': true }).success(function (data) {
+									$scope.characters = data.characters;
+									$scope.combobox.characters = [];
+									for (key in $scope.characters) 
+										if (!$filter('filter')($scope.curPlayer.characters, { 'characterID': $scope.characters[key].characterID }).length)
+											$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
+									$scope.combobox.characters = $filter('orderBy')($scope.combobox.characters, 'value');
+								});
+							}
+							break;
 						}
-						break;
 					}
-				}
-				if (currentUser && $scope.details.gm.userID == currentUser.userID) 
-					$scope.isPrimaryGM = true;
+					if (currentUser && $scope.details.gm.userID == currentUser.userID) 
+						$scope.isPrimaryGM = true;
+				} //else 
+//					document.location = '/games/';
 			});
 		};
 		setGameData();
@@ -187,8 +190,12 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 
 		$scope.submitChar = { characterID: null };
 		$scope.submitCharacter = function () {
-			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.characterID }).success(function (data) {
+			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.character.id }).success(function (data) {
 				if (data.success) {
+					$scope.combobox.search.characters = '';
+					for(key in $scope.combobox.characters) 
+						if ($scope.combobox.characters[key].id == $scope.submitChar.character.id) 
+							delete $scope.combobox.characters[key]
 					for (pKey in $scope.players) {
 						if ($scope.players[pKey].userID == currentUser.userID) {
 							$scope.players[pKey].characters.push(data.character);

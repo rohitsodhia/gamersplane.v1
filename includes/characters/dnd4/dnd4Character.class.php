@@ -256,7 +256,7 @@
 							</select></span>
 							<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 							<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-							<a href="" class="skill_remove sprite cross lrBuffer"></a>
+							<a href="" class="remove sprite cross lrBuffer"></a>
 						</div>
 <?
 		}

@@ -1,13 +1,14 @@
 <?
-	class links {
-		public $levels = array('Link', 'Affiliate', 'Partner');
-
+	class forums {
 		function __construct() {
-			global $loggedIn, $pathOptions;
+			global $pathOptions;
 
-			if ($pathOptions[0] == 'list') 
-				$this->getLinks();
-			elseif ($pathOptions[0] == 'save') 
+			addPackage('forum');
+
+			if ($pathOptions[0] == 'acp') {
+				require(APIROOT.'/forumACP.class.php');
+				$subcontroller = new forumACP();
+			} elseif ($pathOptions[0] == 'save') 
 				$this->saveLink();
 			elseif ($pathOptions[0] == 'deleteImage') 
 				$this->deleteImage();
@@ -77,8 +78,8 @@
 						imagesavealpha($tempColor,true);
 						imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
 
-						$destination = FILEROOT.'/images/links/'.$_id.'.'.$logoExt;
-						foreach (glob(FILEROOT.'/images/links/'.$_id.'.*') as $oldFile) 
+						$destination = FILEROOT."/images/links/{$_id}.{$logoExt}";
+						foreach (glob(FILEROOT."/images/links/{$_id}.*") as $oldFile) 
 							unlink($oldFile);
 						if ($logoExt == 'jpg') 
 							imagejpeg($tempColor, $destination, 100);
@@ -92,7 +93,7 @@
 						return $logoExt;
 					}
 				} elseif ($logoExt == 'svg') {
-					foreach (glob(FILEROOT.'/images/links/'.$_id.'.*') as $oldFile) 
+					foreach (glob(FILEROOT."/images/links/{$_id}.*") as $oldFile) 
 						unlink($oldFile);
 					move_uploaded_file($logoFile['tmp_name'], FILEROOT."/images/links/{$_id}.svg");
 

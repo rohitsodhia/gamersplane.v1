@@ -2,7 +2,7 @@
 		<h1 class="headerbar">Dice Roller</h1>
 		
 		<div id="roller">
-			<div class="clearfix"><div id="controls" class="sectionControls" data-ratio=".8">
+			<div class="clearfix"><div class="sectionControls" data-ratio=".8">
 				<div class="trapezoid">
 					<select class="prettySelect">
 						<option value="basic">Basic Dice</option>

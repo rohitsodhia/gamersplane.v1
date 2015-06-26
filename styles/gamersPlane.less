@@ -216,25 +216,29 @@ h3.headerbar {
 	line-height: 1.3em;
 }
 
-.headerbar > div {
-	padding: 0 8px;
+.headerbar {
+	& > div {
+		padding: 0 8px;
+	}
+
+	a, a:visited, a:active {
+		color: #FFF;
+	}
+
+	a:hover {
+		color: #FFF;
+		font-style: italic;
+	}
 }
 
-.headerbar a, .headerbar a:visited, .headerbar a:active {
-	color: #FFF;
-}
+h1, h2, h3, h4 {
+	&.hb_hasButton {
+		margin-top: 0;
+	}
 
-.headerbar a:hover {
-	color: #FFF;
-	font-style: italic;
-}
-
-h1.hb_hasButton, h2.hb_hasButton, h3.hb_hasButton, h4.hb_hasButton {
-	margin-top: 0;
-}
-
-h1.hb_hasList, h2.hb_hasList, h3.hb_hasList, h4.hb_hasList {
-	margin-bottom: 0;
+	&.hb_hasList {
+		margin-bottom: 0;
+	}
 }
 
 sup {
@@ -298,17 +302,11 @@ a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redTrapezoid {
 	color: #FFF;
 }
 
-.redTrapezoid {
-	background: none;
-
-	.shape {
-		border-bottom-color: #800;
+.fancyButton.smallButton {
+	&, &:visited, &:active {
+		font-size: 1.3em;
+		line-height: 1.2em;
 	}
-}
-
-a.fancyButton.smallButton {
-	font-size: 1.3em;
-	line-height: 1.2em;
 }
 
 .hbTopper .fancyButton, .hbdTopper .fancyButton {
@@ -552,15 +550,17 @@ div.prettySelect > div {
 		position: absolute;
 		top: 0;
 		right: 0;
-		background: url('../images/dropdown_arrow_red.png') center center no-repeat;
+		height: 100%;
 		width: 24px;
+		background: url('../images/dropdown_arrow_red.png') center center no-repeat;
 	}
 
 	.results {
 		position: absolute;
-		top: 0;
+		top: 100%;
 		left: 0;
 		max-height: 115px;
+		width: 100%;
 		.borderBox;
 		overflow-y: auto;
 		background-color: #FFF;
@@ -574,7 +574,7 @@ div.prettySelect > div {
 		}
 
 		a:hover, a.selected {
-			background: #EEE;
+			background: #EDD;
 		}
 	}
 
@@ -613,39 +613,59 @@ div.prettySelect > div {
 /* ----------------------------------------------------------------------------------------------*/
 
 .trapezoid {
-	position: relative;
-	
-	.shape {
-		position: absolute;
-		top: 0;
-		left: 0;
+	.content {
+		background-color: #222;
+	}
+
+	.leftWing, .rightWing {
 		border-style: solid;
+	}
+
+	.leftWing {
+		float: left;
 		border-left-color: transparent;
+	}
+
+	.rightWing {
+		float: right;
 		border-right-color: transparent;
-		z-index: 0;
 	}
 
-	&.facingUp .shape {
-		border-bottom-color: #222;
+	&.facingUp {
+		.leftWing, .rightWing {
+			border-top-color: #222;
+		}
 	}
 
-	&.facingDown .shape {
-		border-bottom-color: #222;
+	&.facingDown {
+		.leftWing, .rightWing {
+			border-bottom-color: #222;
+		}
 	}
 
-	.contents {
-		position: relative;
-		z-index: 1;
+	&.redTrapezoid {
+		background: none;
+
+		.content {
+			background-color: #800;
+		}
+
+		.leftWing, .rightWing {
+			border-bottom-color: #800;
+		}
 	}
 }
 
 /* ----------------------------------------------------------------------------------------------*/
 
 .sectionControls {
-	position: relative;
 	float: right;
 
-	.shape {
+	.content {
+		background-color: #222;
+	}
+
+	.leftWing, .rightWing {
 		border-bottom-color: #222;
 	}
 

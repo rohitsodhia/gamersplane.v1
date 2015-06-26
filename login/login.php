@@ -24,7 +24,7 @@
 			<form method="post" action="/login/process/login/" class="hbMargined">
 				<div class="tr">
 					<label>Username/Email</label>
-					<input id="user" type="text" name="user" maxlength="24" tabindex="3">
+					<input id="user" type="text" name="user" tabindex="3">
 				</div>
 				<div class="tr">
 					<label>Password</label>

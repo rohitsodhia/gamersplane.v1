@@ -51,29 +51,34 @@
 		}
 
 		public static function skillEditFormat($key = null, $skillInfo = null, $statBonus = null) {
-			if ($key == null) $key = 1;
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
-			if ($skillInfo['stat'] == null || $statBonus == null) $statBonus = 0;
+			if ($key == null) 
+				$key = 1;
+			if ($skillInfo == null) 
+				$skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
+			if ($skillInfo['stat'] == null || $statBonus == null) 
+				$statBonus = 0;
 ?>
 							<div class="skill clearfix sumRow">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
 								<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer total addStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 								<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 <?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "								<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+	foreach (d20Character_consts::getStatNames() as $short => $stat) 
+		echo "								<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
 ?>
 								</select></span>
 								<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 								<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-								<a href="" class="skill_remove sprite cross lrBuffer"></a>
+								<a href="" class="remove sprite cross lrBuffer"></a>
 							</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
-			} } else $this->skillEditFormat();
+			if (sizeof($this->skills)) 
+				foreach ($this->skills as $key => $skill) 
+					$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
+			else $this->skillEditFormat();
 		}
 
 		public function displaySkills() {
@@ -100,9 +105,13 @@
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			if (!is_array($this->weapons)) $this->weapons = (array) $this->weapons;
-			foreach ($this->weapons as $weaponInfo) $this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) while ($weaponNum < $min) $this->weaponEditFormat($weaponNum++);
+			if (!is_array($this->weapons)) 
+				$this->weapons = (array) $this->weapons;
+			foreach ($this->weapons as $weaponInfo) 
+				$this->weaponEditFormat($weaponNum++, $weaponInfo);
+			if ($weaponNum < $min) 
+				while ($weaponNum < $min) 
+					$this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
@@ -199,7 +208,8 @@
 		}
 
 		public function armorEditFormat($armorNum, $armorInfo = array()) {
-			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) $armorInfo = array();
+			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) 
+				$armorInfo = array();
 ?>
 						<div class="armor<?=$armorNum == 1?' first':''?>">
 							<div class="tr labelTR armor_firstRow">

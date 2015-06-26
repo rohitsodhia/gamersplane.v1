@@ -2,8 +2,11 @@
 	require('../includes/connect.php');
 	define('PVAR', 'xU3Fh9XLo21mlHuk6H31');
 	define('PAGINATE_PER_PAGE', 20);
+	define('HERITAGE_PAD', 4);
 	require('functions.php');
-	define('FILEROOT', $_SERVER['DOCUMENT_ROOT']);
+	define('APIROOT', $_SERVER['DOCUMENT_ROOT']);
+	define('FILEROOT', $_SERVER['DOCUMENT_ROOT'].'/..');
+	$permissionTypes = array('read' => 'Read', 'write' => 'Write', 'editPost' => 'Edit Post', 'deletePost' => 'Delete Post', 'createThread' => 'Create Thread', 'deleteThread' => 'Delete Thread', 'addRolls' => 'Add Rolls', 'addDraws' => 'Add Draws', 'moderate' => 'Moderate');
 	$ext = explode('.', $_SERVER['HTTP_HOST']);
 	$ext = end($ext);
 	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);
@@ -54,8 +57,8 @@
 		$_POST = (array) json_decode(file_get_contents("php://input"));
 	$loggedIn = User::checkLogin(false);
 
-	if (file_exists(FILEROOT.'/'.$pathAction.'.class.php')) {
-		require(FILEROOT.'/'.$pathAction.'.class.php');
+	if (file_exists(APIROOT.'/'.$pathAction.'.class.php')) {
+		require(APIROOT.'/'.$pathAction.'.class.php');
 		$controller = new $pathAction();
 	}
 

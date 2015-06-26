@@ -24,8 +24,9 @@
 			$this->currentForum = intval($forumID);
 			if ($this->currentForum < 0) { header('Location: /forums/'); exit; }
 
-			$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
-			foreach ($forumsR as $forum) $this->forumsData[$forum['forumID']] = $forum;
+			$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
+			foreach ($forumsR as $forum) 
+				$this->forumsData[$forum['forumID']] = $forum;
 			if (($this->currentForum == 0 || $this->currentForum == 2) && bindec($options&$this::NO_CHILDREN) == 0) {
 				if ($showPubGames) {
 					$publicGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games g ON f.gameID = g.gameID AND g.public = 1 LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
@@ -69,7 +70,11 @@
 		protected function pruneByPermissions($forumID = 0, $permission = 'read') {
 			foreach ($this->forums[$forumID]->children as $childID) 
 				$this->pruneByPermissions($childID, $permission);
-			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == 0) unset($this->forums[$forumID]);
+			if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == false) {
+				$parentID = $this->forums[$forumID]->parentID;
+				unset($this->forums[$forumID]);
+				$this->forums[$parentID]->unsetChild($forumID);
+			}
 		}
 
 		public function getAccessableForums($validForums = null) {
@@ -114,7 +119,9 @@
 		public function displayForum() {
 			global $loggedIn, $currentUser;
 
-			if (sizeof($this->forums[$this->currentForum]->children) == 0) return false;
+			if (sizeof($this->forums[$this->currentForum]->children) == 0) 
+				return false;
+
 
 			$tableOpen = false;
 			$lastType = 'f';
@@ -146,7 +153,8 @@
 <?
 					$tableOpen = true;
 				}
-				if ($this->forums[$childID]->forumType == 'f') $this->displayForumRow($childID);
+				if ($this->forums[$childID]->forumType == 'f') 
+					$this->displayForumRow($childID);
 				elseif (is_array($this->forums[$childID]->children))
 					foreach ($this->forums[$childID]->children as $cChildID) 
 						$this->displayForumRow($cChildID);
@@ -310,11 +318,11 @@
 							<a href="/forums/thread/<?=$thread->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
 						</div>
 						<a href="/forums/thread/<?=$thread->threadID?>/"><?=$thread->title?></a><br>
-						<span class="threadAuthor">by <a href="/ucp/<?=$thread->authorID?>/" class="username"><?=$thread->authorUsername?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->datePosted))?></span></span>
+						<span class="threadAuthor">by <a href="/user/<?=$thread->authorID?>/" class="username"><?=$thread->authorUsername?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$thread->postCount?></div>
 					<div class="td lastPost">
-						<a href="/ucp/<?=$thread->lastPost->authorID?>" class="username"><?=$thread->lastPost->username?></a><br><span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->lastPost->datePosted))?></span>
+						<a href="/user/<?=$thread->lastPost->authorID?>" class="username"><?=$thread->lastPost->username?></a><br><span class="convertTZ"><?=date('M j, Y g:i a', strtotime($thread->lastPost->datePosted))?></span>
 					</div>
 				</div>
 <?
@@ -323,27 +331,27 @@
 		</div>\n";
 		}
 
-		public function displayAdminSidelist($forumID = 0, $currentForum = 0) {
-			if (!isset($this->forums[$forumID])) return null;
+		public function getAdminForums($forumID = 0, $currentForum = 0) {
+			if (!isset($this->forums[$forumID])) 
+				return null;
 
 			$forum = $this->forums[$forumID];
-			$classes = array();
-			if ($forum->getPermissions('admin')) 
-				$classes[] = 'adminLink';
-			if ($forumID == $currentForum) 
-				$classes[] = 'currentForum';
-			echo '<li'.(sizeof($classes)?' class="'.implode(' ', $classes).'"':'').">\n";
-			if ($forum->getPermissions('admin')) 
-				echo "<a href=\"/forums/acp/{$forumID}/\">{$forum->getTitle(true)}</a>\n";
-			else
-				echo "<div>{$forum->getTitle(true)}</div>\n";
-
+			$details = array(
+				'forumID' => (int) $forumID,
+				'title' => $forum->getTitle(true),
+				'admin' => true,
+				'children' => array()
+			);
+			if (!$forum->getPermissions('admin')) 
+				$details['admin'] = false;
 			if (sizeof($forum->getChildren())) {
-				echo "<ul>\n";
-				foreach ($forum->getChildren() as $childID)
-					$this->displayAdminSidelist($childID, $currentForum);
-				echo "</ul>\n";
-			}
+				foreach ($forum->getChildren() as $childID) 
+					if ($child = $this->getAdminForums($childID, $currentForum)) 
+						$details['children'][] = $child;
+			} elseif (!$details['admin']) 
+				return null;
+
+			return $details;
 		}
 	}
 ?>

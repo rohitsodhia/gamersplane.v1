@@ -23,13 +23,11 @@
 		<h1 class="headerbar">Character Sheet</h1>
 <?	if (!$noChar) { ?>
 		<div class="clearfix"><div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
-			<div>
 <?		if ($charPermissions == 'edit') { ?>
-				<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit/" class="sprite pencil"></a>
+			<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit/" class="sprite pencil"></a>
 <?		} else { ?>
-				<a href="/" class="favoriteChar sprite tassel off" title="Favorite" alt="Favorite"></a>
+			<a href="/" class="favoriteChar sprite tassel off" title="Favorite"	 alt="Favorite"></a>
 <?		} ?>
-			</div>
 		</div></div>
 <?	} ?>
 <?	if (file_exists(FILEROOT.'/images/logos/'.SYSTEM.'.png')) { ?>

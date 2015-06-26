@@ -5,6 +5,10 @@
 */
 
 /* General Functions */
+	function addPackage($package) {
+		include_once(FILEROOT."/includes/packages/{$package}.package.php");
+	}
+
 	function utf8ize($input) {
 		if (is_array($input)) {
 			foreach ($input as $key => $value) 
@@ -14,7 +18,7 @@
 		return $input;
 	}
 
-	function displayJSON($data, $exit = false) {
+	function displayJSON($data, $exit = true) {
 		header('Content-Type: application/json');
 		echo json_encode(utf8ize($data));
 		if ($exit) 

@@ -32,7 +32,7 @@
 		}
 
 		public function details($gameID) {
-			require_once(FILEROOT.'/../javascript/markItUp/markitup.bbcode-parser.php');
+			require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 			global $mysql, $mongo, $currentUser;
 
 			$gameID = intval($gameID);
@@ -103,7 +103,7 @@
 				});
 			} else 
 				$decks = array();
-			displayJSON(array('details' => $gameInfo, 'players' => $players, 'invites' => $invites, 'decks' => $decks));
+			displayJSON(array('success' => true, 'details' => $gameInfo, 'players' => $players, 'invites' => $invites, 'decks' => $decks));
 		}
 
 		public function toggleForum($gameID) {
@@ -133,7 +133,7 @@
 		public function apply() {
 			global $loggedIn, $currentUser, $mysql;
 			if (!$loggedIn) 
-				displayJSON(array('failed' => true, 'loggedOut' => true), true);
+				displayJSON(array('failed' => true, 'loggedOut' => true));
 
 			$gameID = intval($_POST['gameID']);
 			list($numPlayers, $playerCount) = $mysql->query("SELECT g.numPlayers, COUNT(*) playerCount FROM games g INNER JOIN players p ON g.gameID = p.gameID WHERE g.gameID = {$gameID} AND p.approved = 0")->fetch(PDO::FETCH_NUM);
@@ -154,14 +154,14 @@
 				$userCheck = $mysql->prepare("SELECT u.userID, u.username, u.email, p.approved FROM users u LEFT JOIN players p ON u.userID = p.userID AND p.gameID = {$gameID} WHERE u.username = :username LIMIT 1");
 				$userCheck->execute(array(':username' => $user));
 				if (!$userCheck->rowCount())
-					displayJSON(array('failed' => true, 'errors' => array('invalidUser')), true);
+					displayJSON(array('failed' => true, 'errors' => array('invalidUser')));
 				$user = $userCheck->fetch();
 				if ($user['approved']) 
-					displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')), true);
+					displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
 				try {
 					$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, invitedID = {$user['userID']}");
 				} catch (Exception $e) {
-					displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'), true);
+					displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'));
 				}
 				$gameInfo = $mysql->query("SELECT g.title, g.system, s.fullName FROM games g INNER JOIN systems s ON g.system = s.shortName WHERE g.gameID = {$gameID}")->fetch();
 				ob_start();
@@ -211,14 +211,14 @@
 
 			$charInfo = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID}");
 			if (!$charInfo->rowCount()) 
-				displayJSON(array('failed' => true, 'errors' => array('notOwner')), true);
+				displayJSON(array('failed' => true, 'errors' => array('notOwner')));
 			$charInfo = $charInfo->fetch();
 			$charInfo['characterID'] = (int) $charInfo['characterID'];
 			$charInfo['userID'] = (int) $charInfo['userID'];
 			$charInfo['approved'] = (bool) $charInfo['approved'];
 
 			if (is_int($charInfo['gameID'])) 
-				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')), true);
+				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
 			elseif ($charInfo['gameID'] == 0) {
 				$mysql->query("UPDATE characters SET gameID = {$gameID} WHERE characterID = {$characterID}");
 				addCharacterHistory($characterID, 'charApplied', $currentUser->userID, 'NOW()', $gameID);
