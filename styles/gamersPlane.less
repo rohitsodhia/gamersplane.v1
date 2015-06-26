@@ -302,14 +302,6 @@ a.fancyButton, a.fancyButton:visited, a.fancyButton:active, .redTrapezoid {
 	color: #FFF;
 }
 
-.redTrapezoid {
-	background: none;
-
-	.shape {
-		border-bottom-color: #800;
-	}
-}
-
 .fancyButton.smallButton {
 	&, &:visited, &:active {
 		font-size: 1.3em;
@@ -621,31 +613,59 @@ div.prettySelect > div {
 /* ----------------------------------------------------------------------------------------------*/
 
 .trapezoid {
-	position: relative;
-	
-	.shape {
+	.content {
+		background-color: #222;
+	}
+
+	.leftWing, .rightWing {
 		border-style: solid;
+	}
+
+	.leftWing {
+		float: left;
 		border-left-color: transparent;
+	}
+
+	.rightWing {
+		float: right;
 		border-right-color: transparent;
-		z-index: 0;
 	}
 
-	&.facingUp .shape {
-		border-bottom-color: #222;
+	&.facingUp {
+		.leftWing, .rightWing {
+			border-top-color: #222;
+		}
 	}
 
-	&.facingDown .shape {
-		border-bottom-color: #222;
+	&.facingDown {
+		.leftWing, .rightWing {
+			border-bottom-color: #222;
+		}
+	}
+
+	&.redTrapezoid {
+		background: none;
+
+		.content {
+			background-color: #800;
+		}
+
+		.leftWing, .rightWing {
+			border-bottom-color: #800;
+		}
 	}
 }
 
 /* ----------------------------------------------------------------------------------------------*/
 
 .sectionControls {
-	position: relative;
 	float: right;
 
-	.shape {
+	.content {
+		background-color: #222;
+	}
+
+	.leftWing, .rightWing {
 		border-bottom-color: #222;
 	}
 

@@ -132,7 +132,7 @@ function adjustSkewMargins() {
 
 function trapezoidify() {
 	$element = $(this);
-	$element.wrapInner('<div class="shape"></div>');
+	$element.wrapInner('<div class="content"></div>').prepend('<div class="leftWing"></div><div class="rightWing"></div>');
 	if (typeof $element.data('skew') != 'undefined') 
 		skewDeg = parseInt($element.data('skew'));
 	else 
@@ -142,14 +142,20 @@ function trapezoidify() {
 	else 
 		direction = 'down';
 	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
-	$element.children('.shape').css({
-		'border-left-width'   : sideBorderWidth + 'px',
-		'border-right-width'  : sideBorderWidth + 'px',
+	$element.children('.content').css({
+		'margin-left'   : sideBorderWidth + 'px',
+		'margin-right'  : sideBorderWidth + 'px',
+	});
+	$element.children('.leftWing').css({
+		'border-left-width' : sideBorderWidth + 'px',
+	});
+	$element.children('.rightWing').css({
+		'border-right-width' : sideBorderWidth + 'px',
 	});
 	if (direction == 'down') 
-		$element.children('.shape').css('border-bottom-width', $element.outerHeight() + 'px');
+		$element.children('.leftWing, .rightWing').css('border-bottom-width', $element.outerHeight() + 'px');
 	else 
-		$element.children('.shape').css('border-top-width', $element.outerHeight() + 'px');
+		$element.children('.leftWing, .rightWing').css('border-top-width', $element.outerHeight() + 'px');
 }
 
 function fm_rollDice(dice, rerollAces) {

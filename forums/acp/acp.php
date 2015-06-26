@@ -35,13 +35,11 @@
 		</ul></div>
 
 		<div class="mainColumn right">
-			<div class="clearfix"><div id="controls" class="trapezoid floatLeft" data-ratio=".8">
-				<div>
-					<a ng-if="forumID != 0 && details.parentID != 2" href=""  ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a>
-					<a id="ml_subforums" href="" ng-class="{ 'current': currentSection == 'subforums' }" ng-click="setSection('subforums')">Subforums</a>
-					<a ng-if="forumID != 0" id="ml_permissions" href="" ng-class="{ 'current': currentSection == 'groups' }" ng-click="setSection('groups')">Groups</a>
-					<a ng-if="details.isGameForum" href="" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
-				</div>
+			<div class="clearfix"><div class="trapezoid sectionControls floatLeft" data-ratio=".8">
+				<a ng-if="forumID != 0 && details.parentID != 2" href=""  ng-class="{ 'current': currentSection == 'details' }" ng-click="setSection('details')">Details</a
+				><a id="ml_subforums" href="" ng-class="{ 'current': currentSection == 'subforums' }" ng-click="setSection('subforums')">Subforums</a
+				><a ng-if="forumID != 0" id="ml_permissions" href="" ng-class="{ 'current': currentSection == 'groups' }" ng-click="setSection('groups')">Groups</a
+				><a ng-if="details.isGameForum" href="" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
 			</div></div>
 			<h2 class="headerbar hbDark" skew-element ng-class="{ 'hb_hasList': currentSection == 'groups' }">
 				<span ng-if="forumID != 0" ng-show="currentSection == 'details'" class="section_details">Details</span>

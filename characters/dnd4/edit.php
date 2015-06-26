@@ -212,7 +212,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="feats" class="floatRight" datay-type="feat">
+					<div id="feats" class="floatRight" data-type="feat">
 						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="" class="addItem">[ Add Feat/Ability ]</a></h2>
 						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>

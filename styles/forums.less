@@ -74,7 +74,7 @@
 		font-size: 1.8em;
 		line-height: 1.2em;
 
-		.contents {
+		.content {
 			padding: 2px 4px;
 		}
 	}
@@ -675,10 +675,6 @@
 	}
 
 	.sectionControls {
-		.shape {
-			border-bottom-color: #222;
-		}
-
 		a {
 			float: left;
 		}
@@ -1078,16 +1074,19 @@
 		}
 	}
 
-	#controls {
+	.sectionControls {
 		float: right;
 
-		.shape {
+		.content {
+			background-color: #222;
+		}
+
+		.leftWing, .rightWing {
 			border-bottom-color: #222;
 		}
 
 		a {
-			display: block;
-			float: left;
+			display: inline-block;
 			padding: .3em 15px;
 			color: #FDD;
 			background: #522;
