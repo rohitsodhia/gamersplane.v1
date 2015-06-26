@@ -102,7 +102,7 @@
 						<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
 						<input type="text" name="skills[<?=$key?>][error]" value="<?=$skillInfo['error']?>" class="skill_error medNum lrBuffer dontAdd">
 						<input type="text" name="skills[<?=$key?>][threat]" value="<?=$skillInfo['threat']?>" class="skill_threat medNum lrBuffer dontAdd">
-						<a href="" class="skill_remove sprite cross lrBuffer"></a>
+						<a href="" class="remove sprite cross lrBuffer"></a>
 					</div>
 <?
 		}

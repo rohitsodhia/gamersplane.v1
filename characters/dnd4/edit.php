@@ -197,8 +197,8 @@
 				</div>
 				
 				<div class="clearfix">
-					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+					<div id="skills" class="floatLeft" data-type="skill">
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
@@ -212,8 +212,8 @@
 							</div>
 						</div>
 					</div>
-					<div id="feats" class="floatRight">
-						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+					<div id="feats" class="floatRight" datay-type="feat">
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="" class="addItem">[ Add Feat/Ability ]</a></h2>
 						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>

@@ -201,10 +201,10 @@
 			if ($featInfo == null) 
 				$featInfo = array('name' => '', 'notes' => '');
 ?>
-							<div class="feat clearfix">
+							<div class="feat item clearfix">
 								<input type="text" name="feats[<?=$key?>][name]" value="<?=$featInfo['name']?>" class="feat_name placeholder" data-placeholder="Feat">
-								<a href="" class="feat_notesLink">Notes</a>
-								<a href="" class="feat_remove sprite cross"></a>
+								<a href="" class="notesLink">Notes</a>
+								<a href="" class="remove sprite cross"></a>
 								<textarea name="feats[<?=$key?>][notes]"><?=$featInfo['notes']?></textarea>
 							</div>
 <?

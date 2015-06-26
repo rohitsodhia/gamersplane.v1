@@ -91,8 +91,8 @@
 							<input type="text" name="speed" value="<?=$this->getSpeed()?>">
 						</div>
 					</div>
-					<div id="skills">
-						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+					<div id="skills" data-type="skill">
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
 							<div class="tr labelTR">
 								<label class="shortNum alignCenter lfBuffer">Prof?</label>
@@ -104,8 +104,8 @@
 							</div>
 						</div>
 					</div>
-					<div id="feats">
-						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+					<div id="feats" data-type="feat">
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="" class="addItem">[ Add Feat/Ability ]</a></h2>
 						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>

@@ -209,8 +209,8 @@
 					</div>
 				</div>
 				
-				<div id="skills" class="floatLeft">
-					<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+				<div id="skills" class="floatLeft" data-type="skills">
+					<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 					<div class="hbdMargined">
 						<div class="tr labelTR">
 							<label class="medText skill_name">Skill</label>

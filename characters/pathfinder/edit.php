@@ -38,7 +38,7 @@
 					</div>
 					<select id="alignment" name="alignment" class="lrBuffer">
 <?	foreach (pathfinder_consts::getAlignments() as $alignShort => $alignment) { ?>
-						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignShort?' selected="selected"':''?>><?=$alignment?></option>
+						<option value="<?=$alignShort?>"<?=$this->getAlignment() == $alignment?' selected="selected"':''?>><?=$alignment?></option>
 <?	} ?>
 					</select>
 				</div>
@@ -224,8 +224,8 @@
 				</div>
 				
 				<div class="clearfix">
-					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+					<div id="skills" class="floatLeft" data-type="skill">
+						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
@@ -239,8 +239,8 @@
 							</div>
 						</div>
 					</div>
-					<div id="feats" class="floatRight">
-						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="">[ Add Feat/Ability ]</a></h2>
+					<div id="feats" class="floatRight" data-type="feat">
+						<h2 class="headerbar hbDark">Feats/Abilities <a id="addFeat" href="" class="addItem">[ Add Feat/Ability ]</a></h2>
 						<div id="featList" class="hbdMargined">
 <?	$this->showFeatsEdit(); ?>
 						</div>
@@ -248,14 +248,14 @@
 				</div>
 				
 				<div class="clearfix">
-					<div id="weapons" class="floatLeft">
-						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
+					<div id="weapons" class="floatLeft" data-type="weapon">
+						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="" class="addItem">[ Add Weapon ]</a></h2>
 						<div>
 <?	$this->showWeaponsEdit(2); ?>
 						</div>
 					</div>
-					<div id="armor" class="floatRight">
-						<h2 class="headerbar hbDark">Armor <a id="addArmor" href="">[ Add Armor ]</a></h2>
+					<div id="armor" class="floatRight" data-type="armor">
+						<h2 class="headerbar hbDark">Armor <a id="addArmor" href="" class="addItem">[ Add Armor ]</a></h2>
 						<div>
 <?	$this->showArmorEdit(1); ?>
 						</div>

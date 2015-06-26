@@ -7,7 +7,7 @@ function setupItemized($list) {
 		e.preventDefault();
 
 		$(this).parent().remove();
-		if ($('.item').length == 0) 
+		if ($list.find('.item').length == 0) 
 			$list.find('.addItem').click();
 	}).on('click', 'a.addItem', function (e) {
 		e.preventDefault();
@@ -59,65 +59,54 @@ $(function () {
 	});
 
 	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
-		var nextSkillCount = 1;
-
-		$('#skills').on('click', '.skill_remove, .remove', function (e) {
-			e.preventDefault();
-
-			$(this).parent().remove();
-			if ($('.skill').length == 0) $('#addSkill').click();
-		}).on('click', '#addSkill', function (e) {
-			e.preventDefault();
-
-			$.post('/characters/ajax/addSkill/', { system: system, key: nextSkillCount }, function (data) {
-				$newSkill = $(data);
-				$newSkill.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
-			});
-			nextSkillCount += 1;
-		});
-
-		nextSkillCount = $('#skillList .skill').length;
+		itemizationFunctions['skills'] = {
+			newItem: function ($newItem) {
+				$newItem.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
+			},
+			init: function ($list) {
+				$list.find('input').placeholder();
+			}
+		}
+		setupItemized($('#skills'));
 		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 
 		addCSSRule('.skill_stat', 'width: ' + ($('.skill .skill_stat').eq(0).outerWidth(true)) + 'px; text-align: center;');
 	}
 
 	if ($('#feats').length) {
-		var nextFeatCount = 1;
+		itemizationFunctions['feats'] = {
+			newItem: function ($newItem) {
+				$newItem.appendTo('#featList').find('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system }).find('input').focus();
+			},
+			init: function ($list) {
+				$list.find('input').placeholder();
+			}
+		}
+		setupItemized($('#feats'));
 
-		$('#feats').on('click', '.feat_remove', function (e) {
-			e.preventDefault();
-
-			$(this).parent().remove();
-			if ($('.feat').size() == 0) $('#addFeat').click();
-		}).on('click', '#addFeat', function (e) {
-			e.preventDefault();
-
-			$.post('/characters/ajax/addFeat/', { system: system, key: nextFeatCount }, function (data) {
-				$newFeat = $(data);
-				$newFeat.appendTo('#featList').find('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system }).find('input').focus();
-			});
-			nextFeatCount += 1;
-		}).on('click', '.feat_notesLink', function(e) {
+		$('#feats').on('click', '.notesLink', function(e) {
 			e.preventDefault();
 
 			$(this).siblings('textarea').slideToggle();
-		});
-
-		nextFeatCount = $('#featList .feat').length + 1;
-		$('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system });
+		}).find('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system });
 	}
 
-	if ($('#addWeapon').length) { $('#addWeapon').click(function (e) {
-		e.preventDefault();
+	if ($('#addWeapon').length) {
+		var weaponCount = $('div.weapon').length;
+		$('#addWeapon').click(function (e) {
+			e.preventDefault();
 
-		$.post('/characters/ajax/addWeapon/', { system: system, weaponNum: $('.weapon').size() + 1 }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
-	}); }
-	if ($('#addArmor').length) { $('#addArmor').click(function (e) {
-		e.preventDefault();
+			$.post('/characters/ajax/addWeapon/', { system: system, weaponNum: ++weaponCount }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+		});
+	}
+	if ($('#addArmor').length) {
+		var armorCount = $('div.armor').length;
+		$('#addArmor').click(function (e) {
+			e.preventDefault();
 
-		$.post('/characters/ajax/addArmor/', { system: system, armorNum: $('.armor').size() + 1 }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
-	}); }
+			$.post('/characters/ajax/addArmor/', { system: system, armorNum: ++armorCount }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
+		});
+	}
 
 	$('#weapons, #armor').on('click', '.remove', function (e) {
 		$(this).parent().parent().remove();

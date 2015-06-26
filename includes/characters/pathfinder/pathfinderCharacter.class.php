@@ -39,7 +39,7 @@
 		}
 
 		public function setAlignment($value) {
-			if (pathfinder_consts::getAlignments($value) && $value != NULL) 
+			if ($value != null && pathfinder_consts::getAlignments($value)) 
 				$this->alignment = $value;
 		}
 
@@ -129,7 +129,7 @@
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) 
 				$statBonus = 0;
 ?>
-							<div class="skill clearfix sumRow">
+							<div class="skill item clearfix sumRow">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
 								<span id="skillTotal_<?=$key?>" class="skill_total textLabel lrBuffer totaladdStat_<?=$skillInfo['stat']?> shortNum"><?=showSign($statBonus + $skillInfo['ranks'] + $skillInfo['misc'])?></span>
 								<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
@@ -139,15 +139,17 @@
 								</select></span>
 								<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
 								<input type="text" name="skills[<?=$key?>][misc]" value="<?=$skillInfo['misc']?>" class="skill_misc shortNum lrBuffer">
-								<a href="" class="skill_remove sprite cross lrBuffer"></a>
+								<a href="" class="remove sprite cross lrBuffer"></a>
 							</div>
 <?
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
+			if (sizeof($this->skills)) 
+				foreach ($this->skills as $key => $skill) 
 				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
-			} } else $this->skillEditFormat();
+			else 
+				$this->skillEditFormat();
 		}
 
 		public function displaySkills() {
