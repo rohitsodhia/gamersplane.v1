@@ -8,7 +8,11 @@
 		<ul class="alertBox_error">
 			<li>Your account is already activated!</li>
 		</ul>
-<?	} elseif ($_GET['sent'] || $formErrors->checkError('noAccount')) { ?>
+<?	} elseif ($formErrors->checkError('noAccount')) { ?>
+		<ul class="alertBox_error">
+			<li>We couldn't find an inactive account with the email address you entered.</li>
+		</ul>
+<?	} elseif ($_GET['sent']) { ?>
 		<ul class="alertBox_success">
 			<li>An email has been sent to you with instructions on how to activate your account.</li>
 		</ul>
