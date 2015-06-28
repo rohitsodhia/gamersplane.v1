@@ -21,7 +21,7 @@
 			<form method="post" action="/register/process/resendActivation/">
 				<div class="tr">
 					<label for="email">Email:</label>
-					<input id="email" type="text" name="email" value="<?=isset($_GET['email']?$_GET['email']:''?>">
+					<input id="email" type="text" name="email" value="<?=isset($_GET['email'])?$_GET['email']:''?>">
 				</div>
 				<div id="submitDiv"><button type="submit" name="resend" value="resend" class="fancyButton">Submit</button></div>
 			</form>
