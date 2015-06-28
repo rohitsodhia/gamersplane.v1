@@ -9,7 +9,8 @@
 
 		<div class="mainColumn right">
 			<h1 class="headerbar">Manage Music</h1>
-			<form id="editMusicMaster" method="post" action="/acp/process/manageMusic/" class="attachForm">
+			<a id="addMusic" href="/tools/music/add/" class="fancyButton smallButton">Add Music</a>
+			<form method="post" action="/acp/process/manageMusic/" class="attachForm">
 				<input type="hidden" name="action" value="edit">
 				<input id="mongoID" type="hidden" name="mongoID" value="">
 				<div class="pRow">
@@ -53,16 +54,12 @@
 				<div class="pRow"><button type="submit" name="add" class="fancyButton">Add FAQ</button></div>
 			</form>
 			<ul class="prettyList">
-<?
-	$result = $mongo->music->find()->sort(array('approved' => 1, 'genres' => 1, 'title' => 1));
-	foreach ($result as $song) {
-?>
-				<li<?=!$song['approved']?' class="unapproved"':''?> data-id="<?=$song['_id']?>">
+				<li ng-repeat="song in music" ng-class="{ 'unapproved': !song.approved }">
 					<div class="songDetails">
 						<div class="clearfix">
-							<a href="<?=$song['url']?>" target="_blank" class="song"><?=$song['title']?><?=$song['lyrics']?'<img src="/images/tools/quote.png" title="Has Lyrics" alt="Has Lyrics">':''?></a>
+							<a href="{{song.url}}" target="_blank" class="song">{{song.title}}<img src="/images/tools/quote.png" ng-if="song.lyrics" title="Has Lyrics" alt="Has Lyrics"></a>
 							<div class="manageSong">
-								<a href="" class="toggleApproval"><?=$song['approved']?'Unapprove':'Approve'?></a>
+								<a ng-click="toggleApproval(song)" href="" class="toggleApproval">{{song.approved?'Una':'A'}}pprove</a>
 								<a href="" class="delete">Delete</a>
 								<span class="confirmDelete">(
 									<a href="" class="confirm">Confirm</a>
@@ -71,13 +68,11 @@
 								<a href="" class="edit">Edit</a>
 							</div>
 						</div>
-						<div class="genres"><?=implode(', ', $song['genres'])?></div>
-<?		if (strlen($song['notes'])) { ?>
-						<div class="notes"><?=printReady($song['notes'])?></div>
-<?		} ?>
+						<div class="genres">{{song.genres.join(', ')}}</div>
+						<div ng-if="song.notes.length" class="notes">{{song.notes}}</div>
 					</div>
 				</li>
-<?	} ?>
 			</ul>
+			<paginate class="tr"></paginate>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

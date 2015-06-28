@@ -1,4 +1,1 @@
-UPDATE dispatch SET ngController = 'forums_acp' WHERE pageID = 'forumACP';
-ALTER TABLE forums_groups ADD COLUMN gameID int;
-UPDATE forums_groups f LEFT JOIN games g ON f.groupID = g.groupID SET f.gameID = g.gameID;
-ALTER TABLE forums_groups DROP COLUMN gameGroup;
+UPDATE dispatch SET ngController = 'acp_music' WHERE pageID = 'acp_music';

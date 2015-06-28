@@ -368,4 +368,35 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			}
 		}
 	}
-}]);
+}]).controller('acp_music', function ($scope, $http, $sce) {
+	$scope.currentPage = 1;
+	$scope.music = [];
+	$scope.pagination = {};
+	if ($.urlParam('page')) 
+		$scope.pagination.current = parseInt($.urlParam('page'));
+	else 
+		$scope.pagination.current = 1;
+	$scope.showPagination = true;
+	function loadMusic() {
+		$http.post(API_HOST + '/music/get/', { 'page': $scope.currentPage }).success(function (data) {
+			if (data.success) {
+				$scope.music = data.music;
+
+				$scope.pagination.numItems = Math.ceil(data.count / 10);
+				$scope.pagination.pages = new Array();
+				for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
+					$scope.pagination.pages.push(count);
+				}
+			}
+		});
+	}
+	loadMusic();
+
+	$scope.toggleApproval = function (song) {
+		console.log(song);
+		$http.post(API_HOST + '/music/toggleApproval/', { 'id': song.id, approved: song.approved }).success(function (data) {
+			if (data.success) 
+				song.approved = !song.approved;
+		})
+	}
+});
