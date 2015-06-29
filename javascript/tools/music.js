@@ -19,3 +19,18 @@ $(function () {
 		}).height(tallest);
 	})
 });
+
+app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) {
+	return {
+		restrict: 'E',
+		templateUrl: '/angular/templates/tools/musicForm.html',
+		scope: {
+			'data': '=data',
+			'submit': '=submit'
+		},
+		link: function (scope, element, attrs) {
+			scope.genres = { 'horrorsurvival': 'Horror/Survival', 'wildwest': 'Wild West', 'fantasty': 'Fantasy', 'modern': 'Modern', 'epic': 'Epic', 'cyberpunk': 'Cyberpunk', 'espionage': 'Espionage', 'scifi': 'Sci-fi' };
+			scope.submit();
+		}
+	}
+}]);
