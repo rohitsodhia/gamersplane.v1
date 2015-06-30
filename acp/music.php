@@ -12,7 +12,7 @@
 		<div class="mainColumn right">
 			<h1 class="headerbar">Manage Music</h1>
 			<a id="addMusic" href="/tools/music/add/" class="fancyButton smallButton">Add Music</a>
-			<music-form submit="testFunc()"></music-form>
+			<music-form data="newSong" submit="testFunc()"></music-form>
 			<ul class="prettyList">
 				<li ng-repeat="song in music" ng-class="{ 'unapproved': !song.approved }">
 					<div class="songDetails">

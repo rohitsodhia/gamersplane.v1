@@ -437,6 +437,25 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
+}]).directive('prettyRadio', [function () {
+	return {
+		restrict: 'E',
+		templateUrl: '/angular/directives/prettyRadio.php',
+		scope: {
+			'radio': '=radio',
+			'rValue': '=rValue'
+		},
+		link: function (scope, element, attrs) {
+			if (typeof attrs['eleid'] == 'string') 
+				scope.inputID = attrs['eleid'];
+			else 
+				scope.inputID = '';
+
+			scope.setRadio = function () {
+				scope.radio = scope.rValue;
+			}
+		}
+	}
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
 		if (typeof text != 'string') 

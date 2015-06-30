@@ -13,8 +13,8 @@
 	<div id="noTitle" class="alert hideDiv">Title is required.</div>
 	<div class="pRow">
 		<label>Has lyrics?</label>
-		<input id="hasLyrics" type="radio" name="lyrics" value="yes"> <label for="hasLyrics" class="radioLabel">Yes</label>
-		<input id="noLyrics" type="radio" name="lyrics" value="no"> <label for="noLyrics" class="radioLabel">No</label>
+		<pretty-radio eleid="hasLyrics" radio="data.hasLyrics" r-value="'yes'"></pretty-radio> <label for="hasLyrics" class="radioLabel">Yes</label>
+		<pretty-radio eleid="noLyrics" radio="data.hasLyrics" r-value="'no'"></pretty-radio> <label for="noLyrics" class="radioLabel">No</label>
 	</div>
 	<div id="noTitle" class="alert hideDiv">Title is required.</div>
 	<div class="pRow">
@@ -23,14 +23,13 @@
 	</div>
 	<div id="genres" class="pRow">
 		<div ng-repeat="(clean, genre) in genres">
-			<input id="<?=$cleanType?>" type="checkbox" name="genre[<?=$type?>]">
-			<label for="<?=$cleanType?>"><?=$type?></label>
+			<pretty-checkbox eleid="{{clean}}" checkbox="data.genres[clean]"></pretty-checkbox>
+			<label for="{{clean}}">{{genre}}</label>
 		</div>
 	</div>
 	<div id="notesRow" class="pRow">
 		<label for="notes">Notes:</label>
 		<textarea id="notes" name="notes"></textarea>
 	</div>
-	<input type="hidden" name="modal" value="1">
-	<div class="pRow"><button type="submit" name="add" class="fancyButton">Add FAQ</button></div>
+	<div class="pRow"><button type="submit" name="add" class="fancyButton" skew-element>Add FAQ</button></div>
 </form>

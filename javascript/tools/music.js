@@ -20,6 +20,7 @@ $(function () {
 	})
 });
 
+var musicGenres = { 'horrorsurvival': 'Horror/Survival', 'wildwest': 'Wild West', 'fantasy': 'Fantasy', 'modern': 'Modern', 'epic': 'Epic', 'cyberpunk': 'Cyberpunk', 'espionage': 'Espionage', 'scifi': 'Sci-fi' };
 app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) {
 	return {
 		restrict: 'E',
@@ -29,8 +30,12 @@ app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) 
 			'submit': '=submit'
 		},
 		link: function (scope, element, attrs) {
-			scope.genres = { 'horrorsurvival': 'Horror/Survival', 'wildwest': 'Wild West', 'fantasty': 'Fantasy', 'modern': 'Modern', 'epic': 'Epic', 'cyberpunk': 'Cyberpunk', 'espionage': 'Espionage', 'scifi': 'Sci-fi' };
-			scope.submit();
+			scope.genres = musicGenres;
+			scope.data.hasLyrics = 'no';
+			for (clean in musicGenres) 
+				scope.data.genres[clean] = scope.data.genres[clean]?true:false;
+			scope.data.genres.fantasy = true;
+//			scope.submit();
 		}
 	}
 }]);

@@ -369,8 +369,8 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		}
 	}
 }]).controller('acp_music', function ($scope, $http, $sce) {
-	$scope.currentPage = 1;
 	$scope.music = [];
+	$scope.newSong = { 'url': '', 'title': '', 'hasLyrics': 'no', 'genres': {}, 'notes': '' };
 	$scope.pagination = {};
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
@@ -378,7 +378,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		$scope.pagination.current = 1;
 	$scope.showPagination = true;
 	function loadMusic() {
-		$http.post(API_HOST + '/music/get/', { 'page': $scope.currentPage }).success(function (data) {
+		$http.post(API_HOST + '/music/get/', { 'page': $scope.pagination.current }).success(function (data) {
 			if (data.success) {
 				$scope.music = data.music;
 
@@ -393,7 +393,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	loadMusic();
 
 	$scope.toggleApproval = function (song) {
-		console.log(song);
 		$http.post(API_HOST + '/music/toggleApproval/', { 'id': song.id, approved: song.approved }).success(function (data) {
 			if (data.success) 
 				song.approved = !song.approved;
