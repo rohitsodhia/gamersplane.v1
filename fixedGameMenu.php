@@ -100,7 +100,7 @@
 		}
 		if ($gameID && $pathAction != 'forums' && ($gameInfo['approved'] || $gameInfo['public'])) {
 ?>
-			<li><a href="/forums/{$gameInfo['forumID']}/" target="_blank" class="menuLink">Forum</a></li>
+			<li><a href="/forums/<?=$gameInfo['forumID']?>/" target="_blank" class="menuLink">Forum</a></li>
 <?		} ?>
 	</ul>
 </div></div>
