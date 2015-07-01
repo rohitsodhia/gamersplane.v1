@@ -1,1 +1,1 @@
-<div class="prettyCheckbox" ng-click="toggleCB($event)" ng-class="{ 'checked': checkbox }"><input id="{{inputID}}" type="checkbox" ng-model="checkbox"></div>
+<div class="prettyCheckbox" ng-click="toggleCB($event)" ng-class="{ 'checked': checkbox }"></div>

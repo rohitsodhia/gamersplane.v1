@@ -30,11 +30,14 @@ app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) 
 			'save': '=save'
 		},
 		link: function (scope, element, attrs) {
+			scope.submitted = true;
+			scope.errors = { 'duplicate': false, 'invalidURL': false }
 			scope.genres = musicGenres;
 			scope.data.hasLyrics = 'no';
 			for (clean in musicGenres) 
 				scope.data.genres[clean] = scope.data.genres[clean]?true:false;
-			scope.data.genres.fantasy = true;
+
+			scope.$watch(function () { return scope.data.genres; }, function (newVal) { console.log(newVal); }, true);
 		}
 	}
 }]);

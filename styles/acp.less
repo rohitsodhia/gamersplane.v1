@@ -174,6 +174,10 @@
 			width: 80px;
 		}
 
+		.indentAlert {
+			margin-left: 90px;
+		}
+
 		input[type="text"] {
 			width: 350px;
 		}
@@ -184,17 +188,19 @@
 			}
 		}
 
-		#genres > div > * {
-			display: inline-block;
-			vertical-align: middle;
-		}
+		#genres {
+			& > label {
+				width: 150px;
 
-		#genres > label {
-			width: 150px;
-		}
+				& > * {
+					display: inline-block;
+					vertical-align: middle;
+				}
+			}
 
-		#genres label {
-			width: auto;
+			.labelText {
+				width: auto;
+			}
 		}
 
 		#notesRow > * {

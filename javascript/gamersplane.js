@@ -426,14 +426,21 @@ app.config(function ($httpProvider) {
 		},
 		link: function (scope, element, attrs) {
 			scope.checkbox = scope.checkbox?true:false;
-			if (typeof attrs['eleid'] == 'string') 
-				scope.inputID = attrs['eleid'];
-			else 
-				scope.inputID = '';
+			var label;
+			label = $(element).closest('label');
+			if (!label.length && typeof attrs['eleid'] == 'string' && attrs['eleid']) {
+				element.attr('id', attrs['eleid']);
+				label = $('label[for=' + attrs['eleid'] + ']');
+			}
+			if (label.length) 
+				label.click(function () { scope.toggleCB(); });
 
 			scope.toggleCB = function ($event) {
-				$event.stopPropagation();
+				if ($event) 
+					$event.stopPropagation();
+				console.log(scope.checkbox);
 				scope.checkbox = !scope.checkbox;
+				console.log(scope.checkbox);
 			}
 		}
 	}
