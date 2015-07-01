@@ -11,7 +11,7 @@
 							<div class="image" ng-hide="!new && !editing"><input type="file" ng-file-select ng-model="data.newImage"></div>
 						</div>
 						<div class="type">
-							<div ng-show="!new && !editing">{{data.level}}</div>
+							<div ng-show="!new && !editing">{{data.level.value}}</div>
 							<combobox ng-show="new || editing" data="levels" value="cb_value" search="data.level.value" strict></combobox>
 
 							<div class="tr" ng-show="data.networks.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.networks.rpga" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</label></div>

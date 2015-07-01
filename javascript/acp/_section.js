@@ -263,6 +263,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		$scope.links = [];
 		$http.post(API_HOST + '/links/list/', { page: page }).success(function (data) {
 			$(data.links).each(function (key, value) {
+				value.level = { 'id': value.level.toLowerCase(), 'value': value.level }
 				networks = value.networks;
 				value.networks = {};
 				for (nKey in networks) 
@@ -307,6 +308,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			'data': '=data',
 		},
 		link: function (scope, element, attrs) {
+			console.log(scope.data.level);
 			scope.editing = false;
 			scope.showEdit = false;
 			scope.showDelete = false;
