@@ -8,7 +8,7 @@
 	elseif ($_POST['orderBy'] == 'name_d') 
 		$order = 'g.title DESC';
 	elseif ($_POST['orderBy'] == 'system') 
-		$order = 's.fullName';
+		$order = 'g.system';
 
 	if (isset($_POST['filterSystem']) && sizeof($_POST['filterSystem']) != $_POST['numSystems']) 
 		$fSystems = '"'.implode('", "', $_POST['filterSystem']).'"';
