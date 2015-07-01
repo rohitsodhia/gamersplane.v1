@@ -397,5 +397,9 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			if (data.success) 
 				song.approved = !song.approved;
 		})
+	};
+
+	$scope.testFunc = function () {
+		console.log($scope.newSong);
 	}
 });

@@ -27,7 +27,7 @@ app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) 
 		templateUrl: '/angular/templates/tools/musicForm.html',
 		scope: {
 			'data': '=data',
-			'submit': '=submit'
+			'save': '=save'
 		},
 		link: function (scope, element, attrs) {
 			scope.genres = musicGenres;
@@ -35,7 +35,6 @@ app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) 
 			for (clean in musicGenres) 
 				scope.data.genres[clean] = scope.data.genres[clean]?true:false;
 			scope.data.genres.fantasy = true;
-//			scope.submit();
 		}
 	}
 }]);
