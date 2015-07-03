@@ -276,7 +276,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			})
 
 			$scope.pagination.numItems = Math.ceil(data.totalCount / 20);
-			$scope.pagination.pages = new Array();
+			$scope.pagination.pages = [];
 			for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
 				$scope.pagination.pages.push(count);
 			}
@@ -308,7 +308,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			'data': '=data',
 		},
 		link: function (scope, element, attrs) {
-			console.log(scope.data.level);
 			scope.editing = false;
 			scope.showEdit = false;
 			scope.showDelete = false;
@@ -372,7 +371,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 	}
 }]).controller('acp_music', function ($scope, $http, $sce) {
 	$scope.music = [];
-	$scope.newSong = { 'url': '', 'title': '', 'hasLyrics': 'no', 'genres': {}, 'notes': '' };
+	$scope.newSong = { 'url': '', 'title': '', 'hasLyrics': 'no', 'genres': [], 'notes': '' };
 	$scope.pagination = {};
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
@@ -401,7 +400,4 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		})
 	};
 
-	$scope.testFunc = function () {
-		console.log($scope.newSong);
-	}
 });

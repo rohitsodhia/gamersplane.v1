@@ -7,6 +7,8 @@
 				$this->getMusic();
 			elseif ($pathOptions[0] == 'toggleApproval' && isset($_POST['id']) && isset($_POST['approved'])) 
 				$this->toggleApproval($_POST['id'], (bool) $_POST['approved']);
+			elseif ($pathOptions[0] == 'addSong') 
+				$this->addSong();
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -40,6 +42,74 @@
 				displayJSON(array('success' => true));
 			else 
 				displayJSON(array('failed' => true));
+		}
+
+		public function addSong() {
+			global $currentUser, $mongo;
+
+			$url = sanitizeString($_POST['url']);
+			$title = sanitizeString($_POST['title']);
+			$lyrics = $_POST['lyrics']?true:false;
+			$genres = $_POST['genres'];
+			$notes = $_POST['notes'];
+
+			$update = false;
+			if (isset($_POST['mongoID'])) {
+				$update = true;
+				$mongoID = $_POST['mongoID'];
+			}
+
+			$errors = array();
+			if (strlen($url) == 0) 
+				$errors[] = 'noURL';
+			else {
+				preg_match('#https?://(?:www\.)?(.*?)\.([\w\.]*)(?:/.*)?#', $url, $matches);
+				$domain = $matches[1].'.'.$matches[2];
+				if (!in_array($domain, array('youtube.com', 'soundcloud.com'))) 
+					$errors[] = 'invalidURL';
+				elseif (!$update) {
+					$duplicates = $mongo->music->findOne(array('url' => $url));
+					if ($duplicates != null) 
+						$errors[] = 'dupURL';
+				}
+			}
+			if (strlen($title) == 0) 
+				$errors[] = 'noTitle';
+			if (sizeof($genres) == 0) 
+				$errors[] = 'noGenres';
+
+			if (sizeof($errors)) 
+				displayJSON(array('failed' => true, 'errors' => $errors));
+			else {
+				if (!$update) {
+					$mongo->music->insert(array(
+						'userID' => $currentUser->userID,
+						'username' => $currentUser->username,
+						'url' => $url,
+						'title' => $title,
+						'lyrics' => $lyrics,
+						'genres' => $genres,
+						'notes' => $notes,
+						'approved' => false
+					));
+					@mail('contact@gamersplane.com', 'New Music', "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title", 'From: noone@gamersplane.com');
+				} else 
+					$mongo->music->update(array('_id' => new MongoId($mongoID)), array('$set' => array(
+						'url' => $url,
+						'title' => $title,
+						'lyrics' => $lyrics,
+						'genres' => $genres,
+						'notes' => $notes,
+					)));
+
+				displayJSON(array('success' => true, 'data' => array(
+					'url' => $url,
+					'title' => $title,
+					'lyrics' => $lyrics,
+					'genres' => $genres,
+					'notes' => $notes,
+				)));
+			}
 		}
 	}
 ?>

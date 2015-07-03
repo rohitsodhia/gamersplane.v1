@@ -422,25 +422,45 @@ app.config(function ($httpProvider) {
 		restrict: 'E',
 		templateUrl: '/angular/directives/prettyCheckbox.php',
 		scope: {
-			'checkbox': '=checkbox'
+			'checkbox': '=checkbox',
+			'linkedArray': '=linkedArray'
 		},
 		link: function (scope, element, attrs) {
 			scope.checkbox = scope.checkbox?true:false;
-			var label;
+			scope.eleid = typeof attrs['eleid'] == 'string' && attrs['eleid']?attrs['eleid']:'';
+			var label = null, wrapperLabel = false;
 			label = $(element).closest('label');
 			if (!label.length && typeof attrs['eleid'] == 'string' && attrs['eleid']) {
-				element.attr('id', attrs['eleid']);
+//				element.attr('id', attrs['eleid']);
 				label = $('label[for=' + attrs['eleid'] + ']');
-			}
+			} else 
+				wrapperLabel = true;
 			if (label.length) 
-				label.click(function () { scope.toggleCB(); });
+				label.click(function (e) {
+					e.preventDefault();
+					scope.toggleCB();
+					scope.$apply();
+				});
 
 			scope.toggleCB = function ($event) {
-				if ($event) 
+				if (wrapperLabel && $event) 
+					return;
+				else if ($event) 
 					$event.stopPropagation();
-				console.log(scope.checkbox);
 				scope.checkbox = !scope.checkbox;
-				console.log(scope.checkbox);
+			};
+
+			if (typeof scope.linkedArray != 'undefined' && typeof attrs['linkedKey'] != 'undefined') {
+				scope.linkedKey = attrs['linkedKey'];
+				scope.$watch(function () { return scope.checkbox; }, function (val) {
+					if (val) 
+						scope.linkedArray.push(scope.linkedKey);
+					else {
+						key = scope.linkedArray.indexOf(scope.linkedKey);
+						if (key > -1) 
+							scope.linkedArray.splice(key, 1);
+					}
+				});
 			}
 		}
 	}

@@ -18,21 +18,21 @@
 	<div class="pRow">
 		<div class="spaceText">Has lyrics?</div>
 		<label class="radioLabel">
-			<pretty-radio radio="data.hasLyrics" r-value="'yes'"></pretty-radio>
+			<pretty-radio radio="data.hasLyrics" r-value="true"></pretty-radio>
 			<div class="labelText">Yes</div>
 		</label>
 		<label class="radioLabel">
-			<pretty-radio radio="data.hasLyrics" r-value="'no'"></pretty-radio>
+			<pretty-radio radio="data.hasLyrics" r-value="false"></pretty-radio>
 			<div class="labelText">No</div>
 		</label>
 	</div>
 	<div class="pRow">
 		<div>Genres:</div>
-		<div ng-show="submitted && !(data.genres | filter: { $: true})" class="alert">At least one genre must be selected.</div>
+		<div ng-show="submitted && !data.genres.length" class="alert">At least one genre must be selected.</div>
 	</div>
 	<div id="genres" class="pRow">
-		<label ng-repeat="(clean, genre) in genres">
-			<pretty-checkbox checkbox="data.genres[clean]"></pretty-checkbox>
+		<label ng-repeat="(genre, value) in genres">
+			<pretty-checkbox checkbox="genres[genre]" linked-array="data.genres" linked-key="{{genre}}"></pretty-checkbox>
 			<div class="labelText">{{genre}}</div>
 		</label>
 	</div>

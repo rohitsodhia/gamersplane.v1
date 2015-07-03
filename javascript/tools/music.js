@@ -20,24 +20,39 @@ $(function () {
 	})
 });
 
-var musicGenres = { 'horrorsurvival': 'Horror/Survival', 'wildwest': 'Wild West', 'fantasy': 'Fantasy', 'modern': 'Modern', 'epic': 'Epic', 'cyberpunk': 'Cyberpunk', 'espionage': 'Espionage', 'scifi': 'Sci-fi' };
-app.directive('musicForm', ['$filter', '$timeout', function ($filter, $timeout) {
+app.directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $filter, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/templates/tools/musicForm.html',
 		scope: {
-			'data': '=data',
-			'save': '=save'
+			'data': '=data'
 		},
 		link: function (scope, element, attrs) {
-			scope.submitted = true;
+			scope.submitted = false;
 			scope.errors = { 'duplicate': false, 'invalidURL': false }
-			scope.genres = musicGenres;
-			scope.data.hasLyrics = 'no';
-			for (clean in musicGenres) 
-				scope.data.genres[clean] = scope.data.genres[clean]?true:false;
+			scope.genres = {
+				'Horror/Survival': false, 
+				'Wild West': false, 
+				'Fantasy': false, 
+				'Modern': false, 
+				'Epic': false, 
+				'Cyberpunk': false, 
+				'Espionage': false, 
+				'Sci-fi': false
+			};
+			scope.data.hasLyrics = false;
 
-			scope.$watch(function () { return scope.data.genres; }, function (newVal) { console.log(newVal); }, true);
+			scope.$watch(function () { return scope.data.genres; }, function () {});
+
+			scope.save = function () {
+				if (scope.data.url.length == 0 || scope.data.title.length == 0 || scope.data.genres.length == 0) 
+					scope.submitted = true;
+				else {
+					$http.post(API_HOST + '/music/addSong/', scope.data).success(function (data) {
+						console.log(data);
+					});
+				}
+			};
 		}
 	}
 }]);
