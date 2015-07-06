@@ -21,5 +21,6 @@
 	"/javascript/games/decks/delete.js": "1.1.0",
 	"/javascript/games/decks/details.js": "1.1.0",
 	"/javascript/games/decks/shuffle.js": "1.1.0",
-	"/javascript/links.js": "1.0.2"
+	"/javascript/links.js": "1.0.2",
+	"/javascript/tools/dice.js": "1.0.1"
 }

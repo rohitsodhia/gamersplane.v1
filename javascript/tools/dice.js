@@ -1,6 +1,6 @@
 $(function() {
 	var currentlyShown = 'basic';
-	$('#controls select').change(function (e) {
+	$('div.sectionControls select').change(function (e) {
 		e.preventDefault();
 
 		switchTo = $(this).val();
