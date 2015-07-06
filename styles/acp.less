@@ -227,23 +227,25 @@
 
 	.song {
 		width: 350px;
-	}
 
-	.song img {
-		vertical-align: middle;
-		margin-left: 5px;
+		img {
+			vertical-align: middle;
+			margin-left: 5px;
+		}
 	}
 
 	.confirmDelete {
 		display: none;
 	}
 
-	.manageSong a {
-		margin-right: 10px;
-	}
+	.manageSong {
+		a {
+			margin-right: 10px;
 
-	.manageSong a.deny {
-		margin-right: 0;
+			&.deny {
+				margin-right: 0;
+			}
+		}
 	}
 
 	.genres, .notes {
@@ -272,22 +274,24 @@
 		form {
 			margin-top: .5em;
 			margin-left: 250px;
+
+			& > * {
+				vertical-align: middle;
+			}
 		}
 
-		form > * {
-			vertical-align: middle;
-		}
+		.info {
+			& > * {
+				display: inline-block;
+			}
 
-		.info > * {
-			display: inline-block;
-		}
+			& > a {
+				width: 250px;
+			}
 
-		.info > a {
-			width: 250px;
-		}
-
-		.info a {
-			margin-right: 10px;
+			a {
+				margin-right: 10px;
+			}
 		}
 	}
 }
