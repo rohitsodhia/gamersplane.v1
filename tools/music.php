@@ -1,12 +1,11 @@
 <?
-	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">Music and Clips</h1>
 
 		<div id="info" class="hbMargined">
 			<p>Taking a tabletop game to another level is as simple as setting the mood. Eerie winds blowing through a forest, upbeat tempos when the group catches the boss, light techno as the runners make way way through the tunnels. Add that extra depth that puts players at ease or off tilt.</p>
-			<p>If you're looking for that little edge to bring your game over the top, find it here! If you know a song or audio clip that works perfectly in a game, share it with everyone else. We're currently only accepting YouTube and SoundCloud links. If you have another service you think we should be using, just <a href="/contact/">get in touch</a>.</p>
+			<p>If you're looking for that little edge to bring your game over the top, find it here! If you know a song or audio clip that works perfectly in a game, share it with everyone else. We're currently only accepting YouTube and SoundCloud links. If you have another service you think we should be using, <a href="/contact/">get in touch</a>.</p>
 		</div>
 
 		<div class="sideWidget left">
@@ -14,18 +13,12 @@
 			<form method="get">
 				<h3>Genre</h3>
 				<ul class="clearfix">
-<?
-	$filter = array();
-	foreach (Music_consts::getGenres() as $type) {
-		$cleanType = preg_replace('/[^A-Za-z]/', '', $type);
-		$selectedGenre = isset($_GET['filter'], $_GET['genres']) && array_key_exists($type, $_GET['genres']) !== false?true:false;
-?>
-					<li><input id="genre_<?=$cleanType?>" type="checkbox" name="genres[<?=$type?>]"<?=$selectedGenre?' checked="checked"':''?>> <label for="genre_<?=$cleanType?>"><?=$type?></label>
-<?
-		if ($selectedGenre) $filter['genres']['$in'][] = $type;
-	}
-	if (sizeof(Music_consts::getGenres()) == sizeof($filter['genres']['$in'])) unset($filter['genres']);
-?>
+					<li ng-repeat="genre in genres">
+						<label>
+							<pretty-checkbox linked-array="filter.genres" linked-key="{{genre}}"></pretty-checkbox>
+							<div class="labelText">{{genre}}</div>
+						</label>
+					</li>
 				</ul>
 				<h3>Lyrics?</h3>
 				<ul class="clearfix">

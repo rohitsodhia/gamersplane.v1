@@ -14,10 +14,10 @@
 							<div ng-show="!new && !editing">{{data.level.value}}</div>
 							<combobox ng-show="new || editing" data="levels" value="cb_value" search="data.level.value" strict></combobox>
 
-							<div class="tr" ng-show="data.networks.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.networks.rpga" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</label></div>
+							<div class="tr" ng-show="data.networks.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.networks" value="'rpga'" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</label></div>
 						</div>
 						<div class="categories">
-							<div ng-repeat="category in categories" ng-show="data.categories[category.slug] || editing"><pretty-checkbox eleid="{{category.slug}}_{{data._id}}" checkbox="data.categories[category.slug]" ng-show="editing"></pretty-checkbox> <label for="{{category.slug}}_{{data._id}}">{{category.label}}</label></div>
+							<div ng-repeat="category in categories" ng-show="data.categories.indexOf(category) != -1 || editing"><pretty-checkbox eleid="{{category}}_{{data._id}}" checkbox="data.categories" value="category" ng-show="editing"></pretty-checkbox> <label for="{{category}}_{{data._id}}">{{category}}</label></div>
 						</div>
 					</div>
 					<div class="actions">

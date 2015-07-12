@@ -2,45 +2,59 @@
 	<div class="pRow">
 		<label class="spaceText">
 			<div class="labelText">URL:</div>
-			<input type="text" ng-model="data.url">
+			<input type="text" ng-model="formValues.url">
 		</label>
 	</div>
-	<div ng-show="submitted && data.url.length == 0" class="alert indentAlert">URL is required.</div>
+	<div ng-show="submitted && formValues.url.length == 0" class="alert indentAlert">URL is required.</div>
 	<div ng-show="errors.duplicate" class="alert indentAlert">This song is already in our system.</div>
 	<div ng-show="errors.invalidURL" class="alert indentAlert">This URL isn't one we currently accept.</div>
 	<div class="pRow">
 		<label class="spaceText">
 			<div class="labelText">Title:</div>
-			<input type="text" ng-model="data.title">
+			<input type="text" ng-model="formValues.title">
 		</label>
 	</div>
-	<div ng-show="submitted && data.title.length == 0" class="alert indentAlert">Title is required.</div>
+	<div ng-show="submitted && formValues.title.length == 0" class="alert indentAlert">Title is required.</div>
 	<div class="pRow">
 		<div class="spaceText">Has lyrics?</div>
 		<label class="radioLabel">
-			<pretty-radio radio="data.hasLyrics" r-value="true"></pretty-radio>
+			<pretty-radio radio="formValues.lyrics" r-value="true"></pretty-radio>
 			<div class="labelText">Yes</div>
 		</label>
 		<label class="radioLabel">
-			<pretty-radio radio="data.hasLyrics" r-value="false"></pretty-radio>
+			<pretty-radio radio="formValues.lyrics" r-value="false"></pretty-radio>
 			<div class="labelText">No</div>
 		</label>
 	</div>
 	<div class="pRow">
 		<div>Genres:</div>
-		<div ng-show="submitted && !data.genres.length" class="alert">At least one genre must be selected.</div>
+		<div ng-show="submitted && !formValues.genres.length" class="alert">At least one genre must be selected.</div>
 	</div>
 	<div id="genres" class="pRow">
 		<label ng-repeat="(genre, value) in genres">
-			<pretty-checkbox checkbox="genres[genre]" linked-array="data.genres" linked-key="{{genre}}"></pretty-checkbox>
+			<pretty-checkbox checkbox="genres[genre]" linked-array="formValues.genres" linked-key="{{genre}}"></pretty-checkbox>
 			<div class="labelText">{{genre}}</div>
+		</label>
+	</div>
+	<div class="pRow">
+		<div class="spaceText">Battlebards?</div>
+		<label class="radioLabel">
+			<pretty-radio radio="formValues.battlebards" r-value="true"></pretty-radio>
+			<div class="labelText">Yes</div>
+		</label>
+		<label class="radioLabel">
+			<pretty-radio radio="formValues.battlebards" r-value="false"></pretty-radio>
+			<div class="labelText">No</div>
 		</label>
 	</div>
 	<div id="notesRow" class="pRow">
 		<label class="spaceText">
 			<div class="labelText">Notes:</div>
-			<textarea ng-model="data.notes"></textarea>
+			<textarea ng-model="formValues.notes"></textarea>
 		</label>
 	</div>
-	<div class="pRow"><button type="submit" ng-click="save()" class="fancyButton" skew-element>Add FAQ</button></div>
+	<div class="pRow buttonRow">
+		<button type="submit" ng-click="save()" class="fancyButton" skew-element>{{formValues.id?'Save':'Add'}}</button>
+		<button type="submit" ng-click="cancel()" class="fancyButton" skew-element>Cancel</button>
+	</div>
 </form>

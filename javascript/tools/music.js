@@ -20,7 +20,13 @@ $(function () {
 	})
 });
 
-app.directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $filter, $timeout) {
+var musicGenres = [ 'Horror/Survival', 'Wild West', 'Fantasy', 'Modern', 'Epic', 'Cyberpunk', 'Espionage', 'Sci-fi' ];
+app.controller('music', function ($scope, $http, $sce, $timeout) {
+	scope.genres = copyObject(musicGenres);
+	for (key in musicGenres) 
+		scope.genresCB[musicGenres[key]] = false;
+	scope.filter = [];
+}).directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $filter, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/templates/tools/musicForm.html',
@@ -28,31 +34,43 @@ app.directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $fi
 			'data': '=data'
 		},
 		link: function (scope, element, attrs) {
+			scope.formValues = copyObject(scope.data);
 			scope.submitted = false;
 			scope.errors = { 'duplicate': false, 'invalidURL': false }
-			scope.genres = {
-				'Horror/Survival': false, 
-				'Wild West': false, 
-				'Fantasy': false, 
-				'Modern': false, 
-				'Epic': false, 
-				'Cyberpunk': false, 
-				'Espionage': false, 
-				'Sci-fi': false
-			};
-			scope.data.hasLyrics = false;
-
-			scope.$watch(function () { return scope.data.genres; }, function () {});
+			scope.genres = {};
+			for (key in musicGenres) 
+				scope.genres[musicGenres[key]] = false;
+			if (scope.formValues.genres.length) 
+				for (key in scope.formValues.genres) 
+					scope.genres[scope.formValues.genres[key]] = true;
+			else 
+				scope.formValues.lyrics = false;
 
 			scope.save = function () {
-				if (scope.data.url.length == 0 || scope.data.title.length == 0 || scope.data.genres.length == 0) 
+				if (scope.formValues.url.length == 0 || scope.formValues.title.length == 0 || scope.formValues.genres.length == 0) 
 					scope.submitted = true;
 				else {
-					$http.post(API_HOST + '/music/addSong/', scope.data).success(function (data) {
-						console.log(data);
+					$http.post(API_HOST + '/music/saveSong/', scope.formValues).success(function (data) {
+						if (data.success) {
+							scope.data = copyObject(data.song);
+							if (!scope.formValues.id) 
+								scope.$emit('addNew');
+							scope.$emit('closeSongEdit');
+						}
 					});
 				}
 			};
+			scope.cancel = function () {
+				scope.$emit('closeSongEdit');
+			};
+
+			scope.$on('resetSongForm', function (event, id) {
+				if ((id == 'new' && scope.formValues.id == undefined) || id == scope.formValues.id) {
+					scope.formValues = copyObject(scope.data);
+					for (key in musicGenres) 
+						scope.genres[musicGenres[key]] = false;
+				}
+			});
 		}
 	}
 }]);

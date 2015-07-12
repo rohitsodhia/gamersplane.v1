@@ -7,8 +7,8 @@
 				$this->getMusic();
 			elseif ($pathOptions[0] == 'toggleApproval' && isset($_POST['id']) && isset($_POST['approved'])) 
 				$this->toggleApproval($_POST['id'], (bool) $_POST['approved']);
-			elseif ($pathOptions[0] == 'addSong') 
-				$this->addSong();
+			elseif ($pathOptions[0] == 'saveSong') 
+				$this->saveSong();
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -19,7 +19,7 @@
 			$page = intval($_POST['page']) && (int) $_POST['page'] >= 1?(int) $_POST['page']:1;
 
 			$count = $mongo->music->count();
-			$songs = $mongo->music->find()->sort(array('approved' => 1, 'genres' => 1, 'title' => 1))->skip(10 * ($page - 1))->limit(10);
+			$songs = $mongo->music->find()->sort(array('approved' => 1, 'title' => 1))->skip(10 * ($page - 1))->limit(10);
 			$music = array();
 			foreach ($songs as $song) {
 				$song['id'] = $song['_id']->{'$id'};
@@ -44,19 +44,20 @@
 				displayJSON(array('failed' => true));
 		}
 
-		public function addSong() {
+		public function saveSong() {
 			global $currentUser, $mongo;
 
 			$url = sanitizeString($_POST['url']);
 			$title = sanitizeString($_POST['title']);
 			$lyrics = $_POST['lyrics']?true:false;
 			$genres = $_POST['genres'];
+			$battlebards = $_POST['battlebards']?true:false;
 			$notes = $_POST['notes'];
 
 			$update = false;
-			if (isset($_POST['mongoID'])) {
+			if (isset($_POST['id'])) {
 				$update = true;
-				$mongoID = $_POST['mongoID'];
+				$mongoID = $_POST['id'];
 			}
 
 			$errors = array();
@@ -82,15 +83,20 @@
 				displayJSON(array('failed' => true, 'errors' => $errors));
 			else {
 				if (!$update) {
+					$mongoID = new MongoId();
 					$mongo->music->insert(array(
-						'userID' => $currentUser->userID,
-						'username' => $currentUser->username,
+						'_id' => $mongoID,
+						'user' => array(
+							'userID' => $currentUser->userID,
+							'username' => $currentUser->username
+						),
 						'url' => $url,
 						'title' => $title,
 						'lyrics' => $lyrics,
 						'genres' => $genres,
+						'battlebards' => $battlebards,
 						'notes' => $notes,
-						'approved' => false
+						'approved' => $currentUser->checkACP('music', false)?true:false
 					));
 					@mail('contact@gamersplane.com', 'New Music', "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title", 'From: noone@gamersplane.com');
 				} else 
@@ -99,16 +105,16 @@
 						'title' => $title,
 						'lyrics' => $lyrics,
 						'genres' => $genres,
+						'battlebards' => $battlebards,
 						'notes' => $notes,
 					)));
 
-				displayJSON(array('success' => true, 'data' => array(
-					'url' => $url,
-					'title' => $title,
-					'lyrics' => $lyrics,
-					'genres' => $genres,
-					'notes' => $notes,
-				)));
+				$song = $mongo->music->findOne(array('_id' => new MongoId($mongoID)));
+				if ($song) {
+					$song['id'] = $song['_id']->{'$id'};
+					unset($song['_id']);
+					displayJSON(array('success' => true, 'song' => $song));
+				}
 			}
 		}
 	}

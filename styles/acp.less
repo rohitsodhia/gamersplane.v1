@@ -165,9 +165,14 @@
 		border-radius: 6px;
 		background: #EEE;
 
-		.pRow > * {
-			display: inline-block;
-			vertical-align: middle;
+		.pRow {
+			& > * {
+				display: inline-block;
+			}
+
+			* {
+				vertical-align: middle;
+			}
 		}
 
 		label.spaceText .labelText, div.spaceText {
@@ -212,13 +217,17 @@
 			height: 6.1em;
 		}
 
-		button {
+		.buttonRow {
 			margin-left: 90px;
 		}
 	}
 
 	.unapproved {
 		background-color: #FFB;
+	}
+
+	ul.prettyList {
+		margin-top: 10px
 	}
 
 	.songDetails > div > * {
@@ -248,7 +257,7 @@
 		}
 	}
 
-	.genres, .notes {
+	.submittedBy, .genres, .notes {
 		margin-top: .5em;
 		margin-left: 20px;
 	}

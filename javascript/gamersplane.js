@@ -155,7 +155,7 @@ $(function() {
 	else var curPage = $('body > div').attr('id').substring(5);
 });
 
-var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'angularFileUpload']);
+var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }).factory('currentUser', function ($http) {
@@ -423,11 +423,14 @@ app.config(function ($httpProvider) {
 		templateUrl: '/angular/directives/prettyCheckbox.php',
 		scope: {
 			'checkbox': '=checkbox',
-			'linkedArray': '=linkedArray'
+			'cbValue': '=value'
 		},
 		link: function (scope, element, attrs) {
-			scope.checkbox = scope.checkbox?true:false;
+			scope.cbm = false;
+			if (scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) 
+				scope.cbm = true;
 			scope.eleid = typeof attrs['eleid'] == 'string' && attrs['eleid']?attrs['eleid']:'';
+//			element.attr('id', '');
 			var label = null, wrapperLabel = false;
 			label = $(element).closest('label');
 			if (!label.length && typeof attrs['eleid'] == 'string' && attrs['eleid']) {
@@ -438,7 +441,8 @@ app.config(function ($httpProvider) {
 			if (label.length) 
 				label.click(function (e) {
 					e.preventDefault();
-					scope.toggleCB();
+					if (wrapperLabel) 
+						scope.toggleCB();
 					scope.$apply();
 				});
 
@@ -447,21 +451,22 @@ app.config(function ($httpProvider) {
 					return;
 				else if ($event) 
 					$event.stopPropagation();
-				scope.checkbox = !scope.checkbox;
+				scope.cbm = !scope.cbm;
 			};
 
-			if (typeof scope.linkedArray != 'undefined' && typeof attrs['linkedKey'] != 'undefined') {
-				scope.linkedKey = attrs['linkedKey'];
-				scope.$watch(function () { return scope.checkbox; }, function (val) {
-					if (val) 
-						scope.linkedArray.push(scope.linkedKey);
-					else {
-						key = scope.linkedArray.indexOf(scope.linkedKey);
+			scope.$watch(function () { return scope.cbm; }, function (val) {
+				val = val?true:false;
+				if (scope.checkbox instanceof Array) {
+					if (val && scope.checkbox.indexOf(scope.cbValue) == -1) 
+						scope.checkbox.push(scope.cbValue);
+					else if (!val) {
+						key = scope.checkbox.indexOf(scope.cbValue);
 						if (key > -1) 
-							scope.linkedArray.splice(key, 1);
+							scope.checkbox.splice(key, 1);
 					}
-				});
-			}
+				} else 
+					scope.checkbox = val;
+			});
 		}
 	}
 }]).directive('prettyRadio', [function () {
@@ -505,10 +510,12 @@ app.config(function ($httpProvider) {
 	}
 }).filter('intersect', function () {
 	return function (input, field, compareTo) {
+		if (compareTo.length == 0) 
+			return input;
 		output = [];
 		for (key in input) {
 			for (iKey in compareTo) {
-				if (compareTo[iKey] && input[key][field].indexOf(iKey) >= 0) {
+				if (input[key][field].indexOf(compareTo[iKey]) >= 0) {
 					output.push(input[key]);
 					break;
 				}
