@@ -143,10 +143,15 @@ td, th {
 
 label {
 	display: block;
-}
 
-label[for] {
-	cursor: pointer;
+	label[for] {
+		cursor: pointer;
+	}
+
+	div.labelText {
+		display: inline-block;
+		cursor: pointer;
+	}
 }
 
 ul {
@@ -498,6 +503,10 @@ div.prettySelect > div {
 	width: 13px;
 	margin: 0 3px;
 	cursor: pointer;
+
+	input {
+		display: none;
+	}
 }
 
 .prettyCheckbox {
@@ -506,10 +515,6 @@ div.prettySelect > div {
 	&.disabled {
 		background-position: top right;
 		cursor: default;
-	}
-
-	input[type="checkbox"] {
-		display: none;
 	}
 }
 

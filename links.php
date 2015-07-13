@@ -43,8 +43,8 @@
 		<h2 class="headerbar hbDark">Links</h2>
 		<div class="controls">
 			<div ng-repeat="category in categories">
-				<pretty-checkbox eleid="{{category.slug}}_{{link._id}}" checkbox="filter[category.slug]"></pretty-checkbox>
-				<label for="{{category.slug}}_{{data._id}}">{{category.label}}</label>
+				<pretty-checkbox eleid="{{category}}" checkbox="filter" value="category"></pretty-checkbox>
+				<label for="{{category}}">{{category}}</label>
 			</div>
 		</div>
 		<ul id="links" class="clearfix">

@@ -33,11 +33,17 @@
 			else 
 				$linksResults = $mongo->links->find($search)->sort(array('title' => 1));
 			$links = array();
-			foreach ($linksResults as $link) {
-				$link['_id'] = $link['_id']->{'$id'};
+			foreach ($linksResults as $rawLink) {
+				$link['_id'] = $rawLink['_id']->{'$id'};
+				$link['title'] = $rawLink['title'];
+				$link['url'] = $rawLink['url'];
+				$link['level'] = $rawLink['level'];
+				$link['networks'] = is_array($rawLink['networks'])?$rawLink['networks']:array();
+				$link['categories'] = is_array($rawLink['categories'])?$rawLink['categories']:array();
+				$link['image'] = $rawLink['image'];
 				$links[] = $link;
 			}
-			displayJSON(array('type' => $type, 'links' => $links, 'totalCount' => $numLinks));
+			displayJSON(array('links' => $links, 'totalCount' => $numLinks));
 		}
 
 		private function uploadLogo($_id, $logoFile) {
@@ -107,6 +113,7 @@
 			if (!$loggedIn) exit;
 
 			$data = array();
+			$errors = array();
 			if (isset($_POST['_id'])) 
 				$data['_id'] = new MongoId($_POST['_id']);
 			else
@@ -124,16 +131,8 @@
 				if ($ext) 
 					$data['image'] = $ext;
 			}
-			$data['networks'] = array();
-			$_POST['networks'] = json_decode(html_entity_decode($_POST['networks']));
-			foreach ($_POST['networks'] as $key => $value) 
-				if ($value) 
-					$data['networks'][] = $key;
-			$data['categories'] = array();
-			$_POST['categories'] = json_decode(html_entity_decode($_POST['categories']));
-			foreach ($_POST['categories'] as $key => $value) 
-				if ($value) 
-					$data['categories'][] = $key;
+			$data['networks'] = sizeof($_POST['networks'])?$_POST['networks']:array();
+			$data['categories'] = sizeof($_POST['categories'])?$_POST['categories']:array();
 
 			if (!isset($_POST['_id'])) {
 				$data['random'] = $mongo->execute('Math.random()');
@@ -146,7 +145,7 @@
 				$mongo->links->update(array('_id' => new MongoId($mongoID)), array('$set' => $data));
 			}
 
-			displayJSON(array('success' => 1, 'image' => $data['image']));
+			displayJSON(array('success' => true, 'image' => $data['image']));
 		}
 
 		public function deleteImage() {

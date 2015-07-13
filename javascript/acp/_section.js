@@ -257,26 +257,16 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		updateGenres();
 	}
 }).controller('acp_links', function ($scope, $http, $sce) {
-	function getLinks(page) {
-		if (typeof page == 'undefined') 
-			page = 1;
+	function getLinks() {
 		$scope.links = [];
-		$http.post(API_HOST + '/links/list/', { page: page }).success(function (data) {
+		$http.post(API_HOST + '/links/list/', { 'page': $scope.pagination.current }).success(function (data) {
 			$(data.links).each(function (key, value) {
 				value.level = { 'id': value.level.toLowerCase(), 'value': value.level }
-				networks = value.networks;
-				value.networks = {};
-				for (nKey in networks) 
-					value.networks[networks[nKey]] = true
-				categories = value.categories;
-				value.categories = {};
-				for (nKey in categories) 
-					value.categories[categories[nKey]] = true
 				$scope.links.push(value);
 			})
 
 			$scope.pagination.numItems = Math.ceil(data.totalCount / 20);
-			$scope.pagination.pages = new Array();
+			$scope.pagination.pages = [];
 			for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
 				$scope.pagination.pages.push(count);
 			}
@@ -300,7 +290,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		$scope.pagination.current = page;
 		getLinks(page);
 	}
-}).directive('linksEdit', ['$filter', '$http', '$upload', function ($filter, $http, $upload) {
+}).directive('linksEdit', ['$filter', '$http', 'Upload', function ($filter, $http, Upload) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/acp/links.php',
@@ -308,7 +298,6 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			'data': '=data',
 		},
 		link: function (scope, element, attrs) {
-			console.log(scope.data.level);
 			scope.editing = false;
 			scope.showEdit = false;
 			scope.showDelete = false;
@@ -317,23 +306,19 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				{ 'id': 'affiliate', 'value': 'Affiliate'},
 				{ 'id': 'partner', 'value': 'Partner'},
 			];
-			scope.categories = [
-				{ 'slug': 'blog', 'label': 'Blog' },
-				{ 'slug': 'podcast', 'label': 'Podcast' },
-				{ 'slug': 'videocast', 'label': 'Videocast' },
-				{ 'slug': 'liveplay', 'label': 'Liveplay' },
-				{ 'slug': 'dev', 'label': 'Devs' },
-				{ 'slug': 'accessories', 'label': 'Accessories' }
-			];
+			scope.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
 			if (typeof attrs.new != 'undefined') {
 				scope.new = true;
 				scope.editing = true;
-				scope.data.level = { id: 'link', value: 'Link' };
-				scope.data.networks = { 'rpga': false };
-				scope.data.categories = { 'blog': false, 'podcast': false, 'videocast': false, 'liveplay': false };
-			} else {
+				scope.data = {
+					'title': '',
+					'url': '',
+					'level': { id: 'link', value: 'Link' },
+					'networks': [],
+					'categories': []
+				};
+			} else 
 				scope.new = false;
-			}
 			scope.cb_value = {};
 
 			scope.toggleEditing = function () {
@@ -344,10 +329,11 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 				data = copyObject(scope.data);
 				delete data.image;
 				data.level = data.level.value;
-				$upload.upload({
+				Upload.upload({
 					'url': API_HOST + '/links/save/',
 					'file': scope.data.newImage,
-					'fields': data
+					'fields': data,
+					'sendFieldsAs': 'form'
 				}).success(function (data) {
 					if (scope.new) 
 						document.location.reload();
@@ -370,4 +356,58 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			}
 		}
 	}
-}]);
+}]).controller('acp_music', function ($scope, $http, $sce) {
+	$scope.music = [];
+	$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
+	$scope.pagination = {};
+	if ($.urlParam('page')) 
+		$scope.pagination.current = parseInt($.urlParam('page'));
+	else 
+		$scope.pagination.current = 1;
+	$scope.showPagination = true;
+	function loadMusic() {
+		$http.post(API_HOST + '/music/get/', { 'page': $scope.pagination.current }).success(function (data) {
+			if (data.success) {
+				$scope.music = data.music;
+
+				$scope.pagination.numItems = Math.ceil(data.count / 10);
+				$scope.pagination.pages = new Array();
+				for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
+					$scope.pagination.pages.push(count);
+				}
+			}
+		});
+	}
+	loadMusic();
+	$scope.changePage = function (page) {
+		page = parseInt(page);
+		if (page < 0 && page > $scope.pagination.numItems) 
+			page = 1;
+		$scope.pagination.current = page;
+		loadMusic();
+	}
+
+	$scope.showEdit = null;
+	$scope.addSong = function () {
+		$scope.showEdit = 'new';
+		$scope.$broadcast('resetSongForm', 'new');
+	};
+	$scope.editSong = function (id) {
+		$scope.showEdit = $scope.showEdit != id?id:null;
+		if ($scope.showEdit != null) 
+			$scope.$broadcast('resetSongForm', id);
+	};
+	$scope.toggleApproval = function (song) {
+		$http.post(API_HOST + '/music/toggleApproval/', { 'id': song._id, approved: song.approved }).success(function (data) {
+			if (data.success) 
+				song.approved = !song.approved;
+		})
+	};
+	$scope.$on('closeSongEdit', function (event) {
+		$scope.showEdit = null;
+	});
+	$scope.$on('addNew', function (event) {
+		loadMusic();
+		$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
+	});
+});

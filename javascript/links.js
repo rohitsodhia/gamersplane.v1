@@ -5,19 +5,9 @@ controllers.controller('links', function ($scope, $http, $sce, $filter) {
 		$scope.links.rpgan = $filter('filter')(data.links, { 'networks': 'rpga' });
 		$scope.links.affiliates = $filter('filter')(data.links, { 'level': 'Affiliate' });
 		$scope.links.links = $filter('filter')(data.links, { 'level': 'Link' });
-		console.log(data.links);
 	});
-	$scope.categories = [
-		{ 'slug': 'blog', 'label': 'Blog' },
-		{ 'slug': 'podcast', 'label': 'Podcast' },
-		{ 'slug': 'videocast', 'label': 'Videocast' },
-		{ 'slug': 'liveplay', 'label': 'Liveplay' },
-		{ 'slug': 'dev', 'label': 'Devs' },
-		{ 'slug': 'accessories', 'label': 'Accessories' }
-	];
-	$scope.filter = {};
-	for (key in $scope.categories) 
-		$scope.filter[$scope.categories[key].slug] = true;
+	$scope.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
+	$scope.filter = [];
 
 	$scope.maxHeight = {
 		'partners': 0,

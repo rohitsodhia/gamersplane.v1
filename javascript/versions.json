@@ -2,14 +2,14 @@
 	"/javascript/angular.min.js": "1.3.14",
 	"/javascript/angular-animate.min.js": "1.3.14",
 	"/javascript/angular-cookies.min.js": "1.3.14",
-	"/javascript/angular-file-upload.min.js": "3.3.3",
-	"/javascript/angular-file-upload-shim.min.js": "3.3.3",
+	"/javascript/angular-file-upload.min.js": "5.0.9",
+	"/javascript/angular-file-upload-shim.min.js": "5.0.9",
 	"/javascript/angular-route.min.js": "1.3.14",
 	"/javascript/angular-sanitize.min.js": "1.3.14",
 	"/javascript/html5shiv.js": "3.6.2pre",
-	"/javascript/gamersplane.js": "1.0.2",
+	"/javascript/gamersplane.js": "1.1.0",
 	"/javascript/gamersplane.functions.js": "1.0.5",
-	"/javascript/acp/_section.js": "1.0.4",
+	"/javascript/acp/_section.js": "1.1.1",
 	"/javascript/forums/acp/acp.js": "1.1.0",
 	"/javascript/characters/_edit.js": "1.0.3",
 	"/javascript/characters/sweote/edit.js": "1.0.1",
@@ -21,6 +21,6 @@
 	"/javascript/games/decks/delete.js": "1.1.0",
 	"/javascript/games/decks/details.js": "1.1.0",
 	"/javascript/games/decks/shuffle.js": "1.1.0",
-	"/javascript/links.js": "1.0.2",
-	"/javascript/tools/dice.js": "1.0.1"
+	"/javascript/links.js": "1.1.0",
+	"/javascript/tools/music.js": "1.1.0"
 }

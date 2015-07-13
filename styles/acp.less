@@ -3,18 +3,20 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#acpMenu ul, #page_acp ul {
-	margin-left: 0;
-	list-style: none;
+#acpMenu, #page_acp {
+	ul {
+		margin-left: 0;
+		list-style: none;
+	}
 }
 
 #acpMenu {
 	li {
 		margin-top: .3em;
-	}
 
-	li:first-of-type {
-		margin-top: 0;
+		&:first-of-type {
+			margin-top: 0;
+		}
 	}
 
 	a, a:visited, a:active {
@@ -138,12 +140,14 @@
 		display: none;
 	}
 
-	.editing .display {
-		display: none;
-	}
+	.editing {
+		.display {
+			display: none;
+		}
 
-	.editing .inputs {
-		display: block;
+		.inputs {
+			display: block;
+		}
 	}
 
 	.inputs .question input {
@@ -165,33 +169,50 @@
 		border-radius: 6px;
 		background: #EEE;
 
-		.pRow > * {
-			display: inline-block;
-			vertical-align: middle;
+		.pRow {
+			& > * {
+				display: inline-block;
+			}
+
+			* {
+				vertical-align: middle;
+			}
 		}
 
-		label {
+		label.spaceText .labelText, div.spaceText {
 			width: 80px;
+		}
+
+		.indentAlert {
+			margin-left: 90px;
 		}
 
 		input[type="text"] {
 			width: 350px;
 		}
 
-		#genres > div > * {
-			display: inline-block;
-			vertical-align: middle;
+		.radioLabel {
+			div.labelText {
+				width: 40px;
+			}
 		}
 
-		#genres > div {
-			width: 150px;
+		#genres {
+			& > label {
+				width: 160px;
+
+				& > * {
+					display: inline-block;
+					vertical-align: middle;
+				}
+			}
+
+			.labelText {
+				width: auto;
+			}
 		}
 
-		#genres label {
-			width: auto;
-		}
-
-		#notesRow > * {
+		#notesRow * {
 			vertical-align: top;
 		}
 
@@ -199,10 +220,18 @@
 			width: 350px;
 			height: 6.1em;
 		}
+
+		.buttonRow {
+			margin-left: 90px;
+		}
 	}
 
 	.unapproved {
 		background-color: #FFB;
+	}
+
+	ul.prettyList {
+		margin-top: 10px
 	}
 
 	.songDetails > div > * {
@@ -211,26 +240,28 @@
 
 	.song {
 		width: 350px;
-	}
 
-	.song img {
-		vertical-align: middle;
-		margin-left: 5px;
+		img {
+			vertical-align: middle;
+			margin-left: 5px;
+		}
 	}
 
 	.confirmDelete {
 		display: none;
 	}
 
-	.manageSong a {
-		margin-right: 10px;
+	.manageSong {
+		a {
+			margin-right: 10px;
+
+			&.deny {
+				margin-right: 0;
+			}
+		}
 	}
 
-	.manageSong a.deny {
-		margin-right: 0;
-	}
-
-	.genres, .notes {
+	.submittedBy, .genres, .notes {
 		margin-top: .5em;
 		margin-left: 20px;
 	}
@@ -256,22 +287,24 @@
 		form {
 			margin-top: .5em;
 			margin-left: 250px;
+
+			& > * {
+				vertical-align: middle;
+			}
 		}
 
-		form > * {
-			vertical-align: middle;
-		}
+		.info {
+			& > * {
+				display: inline-block;
+			}
 
-		.info > * {
-			display: inline-block;
-		}
+			& > a {
+				width: 250px;
+			}
 
-		.info > a {
-			width: 250px;
-		}
-
-		.info a {
-			margin-right: 10px;
+			a {
+				margin-right: 10px;
+			}
 		}
 	}
 }
