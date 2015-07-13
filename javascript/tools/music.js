@@ -17,14 +17,14 @@ app.controller('music', function ($scope, $http, $sce, $timeout, currentUser) {
 		$scope.showPagination = true;
 		initialLoad = true;
 		$scope.loadMusic = function () {
+
+			if (!initialLoad) 
+				$scope.pagination.current = 1;
+			else 
+				initialLoad = false;
 			$http.post(API_HOST + '/music/get/', { 'page': $scope.pagination.current, 'filter': $scope.filter }).success(function (data) {
 				if (data.success) {
 					$scope.music = data.music;
-
-					if (!initialLoad) 
-						$scope.pagination.current = 1;
-					else 
-						initialLoad = false;
 					$scope.pagination.numItems = Math.ceil(data.count / 10);
 					$scope.pagination.pages = new Array();
 					for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
