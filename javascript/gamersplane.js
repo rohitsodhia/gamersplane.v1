@@ -488,6 +488,19 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
+}]).directive('equalizeColumns', ['$timeout', function ($timeout) {
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			$timeout(function () {
+				var tallest = 0;
+				element.children().each(function () {
+					if ($(this).height() > tallest) 
+						tallest = $(this).height();
+				}).height(tallest);
+			}, 1);
+		}
+	}
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
 		if (typeof text != 'string') 

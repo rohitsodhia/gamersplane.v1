@@ -10,57 +10,39 @@
 
 		<div class="sideWidget left">
 			<h2>Filter</h2>
-			<form method="get">
+			<form ng-submit="loadMusic()">
 				<h3>Genre</h3>
 				<ul class="clearfix">
-					<li ng-repeat="genre in genres">
-						<label>
-							<pretty-checkbox linked-array="filter.genres" linked-key="{{genre}}"></pretty-checkbox>
-							<div class="labelText">{{genre}}</div>
-						</label>
-					</li>
+					<li ng-repeat="genre in genres"><label>
+						<pretty-checkbox checkbox="filter.genres" value="genre"></pretty-checkbox>
+						<div class="labelText">{{genre}}</div>
+					</label></li>
 				</ul>
 				<h3>Lyrics?</h3>
 				<ul class="clearfix">
-					<li><input id="hasLyrics" type="checkbox" name="lyrics[has]"<?=isset($_GET['filter'], $_GET['lyrics']['has'])?' checked="checked"':''?>> <label for="hasLyrics">Has Lyrics</label></li>
-					<li><input id="noLyrics" type="checkbox" name="lyrics[none]"<?=isset($_GET['filter'], $_GET['lyrics']['none'])?' checked="checked"':''?>> <label for="noLyrics">No Lyrics</label></li>
+					<li><label>
+						<pretty-checkbox checkbox="filter.lyrics" value="'hasLyrics'"></pretty-checkbox> <div class="labelText">Has Lyrics</div>
+					</label></li>
+					<li><label>
+						<pretty-checkbox checkbox="filter.lyrics" value="'noLyrics'"></pretty-checkbox> <div class="labelText">No Lyrics</div>
+					</label></li>
 				</ul>
-				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
+				<div class="alignCenter"><button class="fancyButton" skew-element>Filter</button></div>
 			</form>
 		</div>
 		<div class="mainColumn right">
-<?	if ($loggedIn) { ?>
-			<a id="addMusic" href="/tools/music/add/" class="fancyButton smallButton">Add Music</a>
-<?	} ?>
-<?
-	if (!isset($_GET['filter'], $_GET['lyrics']['has'], $_GET['lyrics']['none'])) {
-		if (isset($_GET['filter'], $_GET['lyrics']['has'])) 
-			$filter['lyrics'] = true;
-		elseif (isset($_GET['filter'], $_GET['lyrics']['none'])) 
-			$filter['lyrics'] = false;
-	}
-	$result = $mongo->music->find(array_merge($filter, array('approved' => true)))->sort(array('genres' => 1, 'title' => 1));
-	if (sizeof($result)) {
-?>
+			<a ng-if="loggedIn" class="fancyButton smallButton" ng-click="toggleAddSong()" skew-element>Add Music</a>
+			<music-form ng-if="addSong" data="newSong"></music-form>
+			<div ng-show="songSubmitted" class="alertBox_success">Song submitted!</div>
 			<ul class="hbAttachedList">
-<?		foreach ($result as $song) { ?>
-				<li<?=!$song['approved']?' class="unapproved"':''?> data-id="<?=$song['_id']?>">
-					<div class="clearfix">
-						<a href="<?=$song['url']?>" target="_blank" class="song"><?=$song['title']?><?=$song['lyrics']?'<img src="/images/tools/quote.png" title="Has Lyrics" alt="Has Lyrics">':''?></a
-						><div class="genres"><?=implode(', ', $song['genres'])?></div>
+				<li ng-repeat="song in music | orderBy: 'title'">
+					<div class="clearfix" equalize-columns>
+						<a href="{{song.url}}" target="_blank" class="song">{{song.title}}<img ng-if="song.lyrics" src="/images/tools/quote.png" title="Has Lyrics" alt="Has Lyrics"><img ng-if="song.battlebards" src="/images/tools/battlebards_mini.png" title="Battlebards Clip" alt="Battlebards Clip"></a
+						><div class="genres">{{song.genres.join(', ')}}</div>
 					</div>
-<?			if (strlen($song['notes'])) { ?>
-					<div class="notes"><?=printReady($song['notes'])?></div>
-<?			} ?>
-<?			if ($manageMusic) { ?>
-					<div class="manageSong">
-						<div><button type="submit" class="toggleApproval"><?=$song['approved']?'Unapprove':'Approve'?></button></div>
-						<div><button type="submit" class="reject">Reject</button></div>
-					</div>
-<?			} ?>
+					<div ng-if="song.notes" class="notes">{{song.notes}}</div>
 				</li>
-<?		} ?>
 			</ul>
-<?	} ?>
+			<paginate class="tr"></paginate>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

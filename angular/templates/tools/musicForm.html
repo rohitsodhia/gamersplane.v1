@@ -32,7 +32,7 @@
 	</div>
 	<div id="genres" class="pRow">
 		<label ng-repeat="(genre, value) in genres">
-			<pretty-checkbox checkbox="genres[genre]" linked-array="formValues.genres" linked-key="{{genre}}"></pretty-checkbox>
+			<pretty-checkbox checkbox="formValues.genres" value="genre"></pretty-checkbox>
 			<div class="labelText">{{genre}}</div>
 		</label>
 	</div>
@@ -54,7 +54,7 @@
 		</label>
 	</div>
 	<div class="pRow buttonRow">
-		<button type="submit" ng-click="save()" class="fancyButton" skew-element>{{formValues.id?'Save':'Add'}}</button>
+		<button type="submit" ng-click="save()" class="fancyButton" skew-element>{{formValues._id?'Save':'Add'}}</button>
 		<button type="submit" ng-click="cancel()" class="fancyButton" skew-element>Cancel</button>
 	</div>
 </form>

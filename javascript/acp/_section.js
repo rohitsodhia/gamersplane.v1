@@ -257,11 +257,9 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 		updateGenres();
 	}
 }).controller('acp_links', function ($scope, $http, $sce) {
-	function getLinks(page) {
-		if (typeof page == 'undefined') 
-			page = 1;
+	function getLinks() {
 		$scope.links = [];
-		$http.post(API_HOST + '/links/list/', { page: page }).success(function (data) {
+		$http.post(API_HOST + '/links/list/', { 'page': $scope.pagination.current }).success(function (data) {
 			$(data.links).each(function (key, value) {
 				value.level = { 'id': value.level.toLowerCase(), 'value': value.level }
 				$scope.links.push(value);
@@ -400,7 +398,7 @@ controllers.controller('acp_systems', function ($scope, $http, $sce, $timeout) {
 			$scope.$broadcast('resetSongForm', id);
 	};
 	$scope.toggleApproval = function (song) {
-		$http.post(API_HOST + '/music/toggleApproval/', { 'id': song.id, approved: song.approved }).success(function (data) {
+		$http.post(API_HOST + '/music/toggleApproval/', { 'id': song._id, approved: song.approved }).success(function (data) {
 			if (data.success) 
 				song.approved = !song.approved;
 		})

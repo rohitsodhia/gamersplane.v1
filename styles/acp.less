@@ -3,18 +3,20 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-#acpMenu ul, #page_acp ul {
-	margin-left: 0;
-	list-style: none;
+#acpMenu, #page_acp {
+	ul {
+		margin-left: 0;
+		list-style: none;
+	}
 }
 
 #acpMenu {
 	li {
 		margin-top: .3em;
-	}
 
-	li:first-of-type {
-		margin-top: 0;
+		&:first-of-type {
+			margin-top: 0;
+		}
 	}
 
 	a, a:visited, a:active {
@@ -138,12 +140,14 @@
 		display: none;
 	}
 
-	.editing .display {
-		display: none;
-	}
+	.editing {
+		.display {
+			display: none;
+		}
 
-	.editing .inputs {
-		display: block;
+		.inputs {
+			display: block;
+		}
 	}
 
 	.inputs .question input {

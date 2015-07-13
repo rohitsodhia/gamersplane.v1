@@ -5,8 +5,8 @@
 
 			if ($pathOptions[0] == 'get') 
 				$this->getMusic();
-			elseif ($pathOptions[0] == 'toggleApproval' && isset($_POST['id']) && isset($_POST['approved'])) 
-				$this->toggleApproval($_POST['id'], (bool) $_POST['approved']);
+			elseif ($pathOptions[0] == 'toggleApproval' && isset($_POST['_id']) && isset($_POST['approved'])) 
+				$this->toggleApproval($_POST['_id'], (bool) $_POST['approved']);
 			elseif ($pathOptions[0] == 'saveSong') 
 				$this->saveSong();
 			else 
@@ -18,12 +18,27 @@
 
 			$page = intval($_POST['page']) && (int) $_POST['page'] >= 1?(int) $_POST['page']:1;
 
-			$count = $mongo->music->count();
-			$songs = $mongo->music->find()->sort(array('approved' => 1, 'title' => 1))->skip(10 * ($page - 1))->limit(10);
+			$filter = isset($_POST['filter'])?(array) $_POST['filter']:array();
+			if (sizeof($filter) && sizeof($filter['genres'])) 
+				$filter['genres'] = array('$in' => $filter['genres']);
+			elseif (sizeof($filter) && sizeof($filter['genres']) == 0) 
+				unset($filter['genres']);
+			if (sizeof($filter) && sizeof($filter['lyrics']) == 1) 
+				$filter['lyrics'] = array_search('hasLyrics', $filter['lyrics']) !== false?true:false;
+			elseif ((sizeof($filter) && sizeof($filter['lyrics']) == 2) || sizeof($filter['lyrics']) == 0) 
+				unset($filter['lyrics']);
+
+			$count = $mongo->music->count($filter);
+			$songs = $mongo->music->find($filter)->sort(array('approved' => 1, 'title' => 1))->skip(10 * ($page - 1))->limit(10);
 			$music = array();
-			foreach ($songs as $song) {
-				$song['id'] = $song['_id']->{'$id'};
-				unset($song['_id']);
+			foreach ($songs as $rawSong) {
+				$song['_id'] = $rawSong['_id']->{'$id'};
+				$song['url'] = $rawSong['url'];
+				$song['title'] = $rawSong['title'];
+				$song['lyrics'] = $rawSong['lyrics']?true:false;
+				$song['genres'] = is_array($rawSong['genres'])?$rawSong['genres']:array();
+				$song['battlebards'] = $rawSong['battlebards']?true:false;
+				$song['notes'] = strlen($rawSong['notes'])?printReady($rawSong['notes']):null;
 				$music[] = $song;
 			}
 
@@ -55,9 +70,9 @@
 			$notes = $_POST['notes'];
 
 			$update = false;
-			if (isset($_POST['id'])) {
+			if (isset($_POST['_id'])) {
 				$update = true;
-				$mongoID = $_POST['id'];
+				$mongoID = $_POST['_id'];
 			}
 
 			$errors = array();
