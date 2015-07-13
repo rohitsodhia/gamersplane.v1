@@ -55,7 +55,7 @@
 			</div>
 			<div class="tr clearfix">
 				<label>Number of Players</label>
-				<div>{{details.playersInGame}} / {{details.numPlayers}}</div>
+				<div>{{details.approvedPlayers - 1}} / {{details.numPlayers}}</div>
 			</div>
 			<div class="tr clearfix">
 				<label>Number of Characters per Player</label>

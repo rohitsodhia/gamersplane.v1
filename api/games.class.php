@@ -64,14 +64,14 @@
 			$gameInfo['status'] = (bool) $gameInfo['status'];
 			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM, p.primaryGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID} ORDER BY p.approved, u.username")->fetchAll();
 			$gameInfo['approvedPlayers'] = 0;
-			array_walk($players, function (&$player, $key) {
+			foreach ($players as &$player) {
 				$player['userID'] = (int) $player['userID'];
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
 				$player['primaryGM'] = $player['primaryGM']?true:false;
 				if ($player['approved']) 
 					$gameInfo['approvedPlayers']++;
-			});
+			}
 			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
 			$playerChars = array();
 			foreach ($characters as $character) {
