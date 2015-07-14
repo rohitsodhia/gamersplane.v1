@@ -436,20 +436,19 @@ app.config(function ($httpProvider) {
 			if (!label.length && typeof attrs['eleid'] == 'string' && attrs['eleid']) {
 //				element.attr('id', attrs['eleid']);
 				label = $('label[for=' + attrs['eleid'] + ']');
-			} else 
+			} else if (label.length) 
 				wrapperLabel = true;
 			if (label.length) 
 				label.click(function (e) {
 					e.preventDefault();
-					if (wrapperLabel) 
-						scope.toggleCB();
+					scope.toggleCB();
 					scope.$apply();
 				});
 
 			scope.toggleCB = function ($event) {
 				if (wrapperLabel && $event) 
 					return;
-				else if ($event) 
+				else if ($event && label.length == 0) 
 					$event.stopPropagation();
 				scope.cbm = !scope.cbm;
 			};
