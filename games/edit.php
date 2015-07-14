@@ -36,7 +36,7 @@
 		<div class="sideWidget">
 			<h2>LFGs</h2>
 			<div class="widgetBody">
-				<p>Players are currently looking to play...</p>
+				<p>Players want to play (top 10)...</p>
 				<ul>
 <?
 	$lfgSummaries = $mysql->query('SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system ORDER BY numPlayers DESC LIMIT 10')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
