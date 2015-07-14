@@ -39,7 +39,7 @@
 				<p>Players are currently looking to play...</p>
 				<ul>
 <?
-	$lfgSummaries = $mysql->query('SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system ORDER BY numPlayers DESC')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+	$lfgSummaries = $mysql->query('SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system ORDER BY numPlayers DESC LIMIT 10')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 	foreach ($lfgSummaries as $system => $numLFGs) 
 		echo "\t\t\t\t\t<li>{$systems->getFullName($system)} - {$numLFGs[0]['numPlayers']}</li>\n";
 ?>
