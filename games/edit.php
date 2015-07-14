@@ -39,7 +39,7 @@
 				<p>Players are currently looking to play...</p>
 				<ul>
 <?
-	$lfgSummaries = $mysql->query('SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+	$lfgSummaries = $mysql->query('SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system ORDER BY numPlayers DESC')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 	array_walk($lfgSummaries, function (&$value, $key) { $value = $value[0]['numPlayers']; });
 	foreach ($systems->getAllSystems(true) as $slug => $system) 
 		if (array_key_exists($slug, $lfgSummaries)) 
