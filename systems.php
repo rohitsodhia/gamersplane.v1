@@ -16,7 +16,10 @@
 			</div>
 			<div id="systems">
 				<div class="system clearfix" ng-repeat="system in systems | filter:{ fullName: filter.search } | paginateItems: 10:(pagination.current - 1) * 10">
-					<div class="logoWrapper"><div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div></div>
+					<div class="leftCol">
+						<div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div>
+						<p><a href="/games/list/?filter=filter&filterSystem%5B%5D={{system.shortName}}" target="_blank">Find games</a> | <a href="/games/new/?system={{system.shortName}}" target="_blank">Start a game</a></p>
+					</div>
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>
 						<div class="tr publisher" ng-if="system.publisher.name.length">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>

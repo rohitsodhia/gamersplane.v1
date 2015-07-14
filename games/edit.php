@@ -29,8 +29,9 @@
 		list($postFrequency['timesPer'], $postFrequency['perPeriod']) = explode('/', $gameDetails['postFrequency']);
 		$gameDetails['postFrequency'] = $postFrequency;
 	}
+
+	require_once(FILEROOT.'/header.php');
 ?>
-<?	require_once(FILEROOT.'/header.php'); ?>
 <?	if ($display == 'new') { ?>
 		<div class="sideWidget">
 			<h2>LFGs</h2>
@@ -84,7 +85,7 @@
 					<select name="system">
 						<option value="">Select One</option>
 <?		foreach ($systems->getAllSystems(true) as $slug => $system) { ?>
-						<option value="<?=$slug?>"><?=$system?></option>
+						<option value="<?=$slug?>"<?=$slug == $_GET['system']?' selected="selected"':''?>><?=$system?></option>
 <?		} ?>
 						<option value="custom">Custom</option>
 					</select>

@@ -427,7 +427,7 @@ app.config(function ($httpProvider) {
 		},
 		link: function (scope, element, attrs) {
 			scope.cbm = false;
-			if (scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) 
+			if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox) 
 				scope.cbm = true;
 			scope.eleid = typeof attrs['eleid'] == 'string' && attrs['eleid']?attrs['eleid']:'';
 //			element.attr('id', '');
