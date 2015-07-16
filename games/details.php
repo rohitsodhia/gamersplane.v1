@@ -30,48 +30,60 @@
 <?	} ?>
 		<div id="details">
 			<div class="tr clearfix">
-				<label>Game Status</label>
-				<div>{{details.status?'Open':'Closed'}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status ? 'Close' : 'Open'}} Game ]</a></div>
+				<div class="labelCol"><label>Game Status</label></div>
+				<div class="infoCol">{{details.status?'Open':'Closed'}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status ? 'Close' : 'Open'}} Game ]</a></div>
 			</div>
 			<div class="tr clearfix">
-				<label>Game Title</label>
-				<div>{{details.title}}</div>
+				<div class="labelCol"><label>Game Title</label></div>
+				<div class="infoCol">{{details.title}}</div>
 			</div>
 			<div class="tr clearfix">
-				<label>System</label>
+				<div class="labelCol"><label>System</label></div>
 				<div ng-bind-html="details.system.name | trustHTML"></div>
 			</div>
 			<div class="tr clearfix">
-				<label>Game Master</label>
-				<div><a href="/user/{{details.gm.userID}}" class="username">{{details.gm.username}}</a></div>
+				<div class="labelCol"><label>Game Master</label></div>
+				<div class="infoCol"><a href="/user/{{details.gm.userID}}" class="username">{{details.gm.username}}</a></div>
 			</div>
 			<div class="tr clearfix">
-				<label>Created</label>
-				<div>{{details.created}}</div>
+				<div class="labelCol"><label>Created</label></div>
+				<div class="infoCol">{{details.created}}</div>
 			</div>
 			<div class="tr clearfix">
-				<label>Post Frequency</label>
-				<div>{{details.postFrequency[0]}} post<span ng-if="details.postFrequency[0] > 1">s</span> per {{details.postFrequency[1]}}</div>
+				<div class="labelCol"><label>Post Frequency</label></div>
+				<div class="infoCol">{{details.postFrequency[0]}} post<span ng-if="details.postFrequency[0] > 1">s</span> per {{details.postFrequency[1]}}</div>
 			</div>
 			<div class="tr clearfix">
-				<label>Number of Players</label>
-				<div>{{details.approvedPlayers - 1}} / {{details.numPlayers}}</div>
+				<div class="labelCol"><label>Number of Players</label></div>
+				<div class="infoCol">{{details.approvedPlayers - 1}} / {{details.numPlayers}}</div>
 			</div>
 			<div class="tr clearfix">
-				<label>Number of Characters per Player</label>
-				<div>{{details.charsPerPlayer}}</div>
+				<div class="labelCol"><label>Number of Characters per Player</label></div>
+				<div class="infoCol">{{details.charsPerPlayer}}</div>
 			</div>
 			<div class="tr textareaRow clearfix">
-				<label>Description</label>
+				<div class="labelCol"><label>Description</label></div>
 				<div ng-bind-html="details.description | trustHTML"></div>
 			</div>
 			<div class="tr textareaRow clearfix">
-				<label>Character Generation Info</label>
+				<div class="labelCol"><label>Character Generation Info</label></div>
 				<div ng-bind-html="details.charGenInfo | trustHTML"></div>
 			</div>
 			<div class="tr clearfix">
-				<label>Game Forums are</label>
-				<div>{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isPrimaryGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
+				<div class="labelCol"><label>Game Forums are</label></div>
+				<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isPrimaryGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
+			</div>
+			<div ng-if="isPrimaryGM" id="deleteGame" class="tr clearfix">
+				<div class="labelCol"><label>Retire Game</label></div>
+				<div class="infoCol"><a href="" ng-click="toggleRetireConfirm()">I want to close and retire this game!</a></div>
+			</div>
+			<div ng-if="isPrimaryGM" class="slideToggle" ng-show="displayRetireConfirm">
+				<div class="infoCol shiftRight">
+					<div>Are you sure you want to retire this game? All characters in the game will be removed and you will no longer be able to access the game. Gamers' Plane admins may choose to make the game forums public, at their discretion.</div>
+					<p>
+						<button type="submit" ng-click="confirmRetire()" class="fancyButton smallButton" skew-element>Retire</button>
+						<button type="submit" ng-click="toggleRetireConfirm()" class="fancyButton smallButton" skew-element>Cancel</button>
+				</div>
 			</div>
 		</div>
 

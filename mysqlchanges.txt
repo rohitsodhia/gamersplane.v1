@@ -1,3 +1,2 @@
-UPDATE dispatch SET ngController = 'acp_music' WHERE pageID = 'acp_music';
-UPDATE dispatch SET ngController = 'music' WHERE pageID = 'music';
-DELETE FROM dispatch WHERE url LIKE '%music%' AND ngController IS NULL;
+ALTER TABLE `games` MODIFY COLUMN `retired` datetime NULL AFTER `public`;
+UPDATE games SET retired = NULL;

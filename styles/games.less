@@ -3,6 +3,13 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+.border-radius(@radius: 6px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+
 #page_myGames {
 	#gamesPlaying {
 		margin-bottom: 1.5em;
@@ -261,17 +268,35 @@
 			vertical-align: top;
 		}
 
-		label {
+		.labelCol {
 			width: 320px;
 			margin-right: 10px;
+			text-align: right;
+		}
+
+		label {
+			display: inline-block;
 			font-size: .9em;
 			text-transform: uppercase;
-			text-align: right;
 			font-weight: bold;
 		}
 
-		.tr > div {
+		.infoCol {
 			width: 590px;
+
+			&.shiftRight {
+				margin-left: 330px;
+			}
+		}
+	}
+
+	#deleteGame {
+		label {
+			padding: 4px 6px;
+			color: #EEE;
+			font-weight: 400;
+			background-color: #900;
+			.border-radius();
 		}
 	}
 

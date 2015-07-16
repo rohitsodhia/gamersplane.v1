@@ -73,6 +73,16 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			});
 		};
 
+		$scope.displayRetireConfirm = false;
+		$scope.toggleRetireConfirm = function () {
+			$scope.displayRetireConfirm = !$scope.displayRetireConfirm;
+		}
+		$scope.confirmRetire = function () {
+			$http.post(API_HOST + '/games/retire/', { 'gameID': $scope.details.gameID }).success(function (data) {
+			});
+		}
+
+
 		$scope.applyToGame = function () {
 			$http.post(API_HOST + '/games/apply/', { gameID: $scope.gameID }).success(function (data) {
 				if (data.success == true) 
@@ -239,3 +249,15 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		};
 	});
 });
+
+app.animation('.slideToggle', ['$timeout', function ($timeout) {
+	$timeout(function () { $('.slideToggle.ng-hide').hide(); }, 1);
+	return {
+		addClass: function (element, className, done) {
+			element.slideUp();
+		}, 
+		removeClass: function (element, className, done) {
+			element.slideDown();
+		}
+	}
+}]);

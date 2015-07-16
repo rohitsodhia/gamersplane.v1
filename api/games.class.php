@@ -9,6 +9,8 @@
 				$this->toggleGameStatus($_POST['gameID']);
 			elseif ($pathOptions[0] == 'toggleForum' && intval($_POST['gameID'])) 
 				$this->toggleForum($_POST['gameID']);
+			elseif ($pathOptions[0] == 'retire' && intval($_POST['gameID'])) 
+				$this->retire($_POST['gameID']);
 			elseif ($pathOptions[0] == 'apply') 
 				$this->apply();
 			elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user'])) 
@@ -130,6 +132,27 @@
 				displayJSON(array('failed' => true, 'errors' => 'notGM'));
 		}
 
+		public function retire($gameID) {
+			global $currentUser, $mysql;
+
+			$gameID = (int) $gameID;
+			list($gmID, $groupID) = $mysql->query("SELECT gmID, grouPID FROM games WHERE gameID = {$gameID}")->fetch(PDO::FETCH_NUM);
+			$gmID = (int) $gmID;
+			$groupID = (int) $groupID;
+			if ($currentUser->userID == $gmID) {
+//				$mysql->query("UPDATE games SET retired = NOW() WHERE gameID = {$gameID}");
+				$chars = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID}");
+//				while ($characterID = (int) $chars->fetchColumn()) 
+//					addCharacterHistory($characterID, 'gameRetired', $currentUser->userID);
+//				$mysql->query("UPDATE characters SET gameID = NULL WHERE gameID = {$gameID}");
+				$groups = $mysql->query("DELETE p FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE p.gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
+				foreach ($groups as $group)
+				$forums = $mysql->query("SELECT forumID FROM forums WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
+				displayJSON(array('success' => true));
+			} else 
+				displayJSON(array('failed' => true, 'errors' => array('notGM')));
+		}
+
 		public function apply() {
 			global $loggedIn, $currentUser, $mysql;
 			if (!$loggedIn) 
@@ -209,6 +232,10 @@
 		public function submitCharacter($gameID, $characterID) {
 			global $currentUser, $mysql, $mongo;
 
+			$player = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = 1");
+			if ($player->rowCount() == 0) 
+				displayJSON(array('failed' => true, 'errors' => array('notPlayer')));
+			$isGM = $player->fetchColumn()?true:false;
 			$charInfo = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID}");
 			if (!$charInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'errors' => array('notOwner')));
@@ -220,9 +247,13 @@
 			if (is_int($charInfo['gameID'])) 
 				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
 			elseif ($charInfo['gameID'] == 0) {
-				$mysql->query("UPDATE characters SET gameID = {$gameID} WHERE characterID = {$characterID}");
+				$mysql->query("UPDATE characters SET gameID = {$gameID}".($isGM?', approved = 1':'')." WHERE characterID = {$characterID}");
 				addCharacterHistory($characterID, 'charApplied', $currentUser->userID, 'NOW()', $gameID);
 				addGameHistory($gameID, 'charApplied', $currentUser->userID, 'NOW()', 'character', $characterID);
+				if ($isGM) {
+					addCharacterHistory($characterID, 'characterApproved', $currentUser->userID, 'NOW()', $currentUser->userID);
+					addGameHistory($gameID, 'characterApproved', $currentUser->userID, 'NOW()', 'character', $characterID);
+				}
 
 				$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN players p ON u.userID = p.userID AND p.isGM = 1 LEFT JOIN usermeta m ON u.userID = m.userID WHERE p.gameID = {$gameID} AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 				if (sizeof($gmEmails)) {
@@ -239,7 +270,7 @@
 					@mail(implode(', ', $gmEmails), "Game Activity: {$emailDetails->action}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 				}
 
-				displayJSON(array('success' => true, 'character' => $charInfo));
+				displayJSON(array('success' => true, 'character' => $charInfo, 'approved' => $isGM));
 			} else 
 				displayJSON(array('failed' => true));
 		}
