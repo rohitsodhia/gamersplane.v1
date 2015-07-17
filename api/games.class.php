@@ -136,18 +136,17 @@
 			global $currentUser, $mysql;
 
 			$gameID = (int) $gameID;
-			list($gmID, $groupID) = $mysql->query("SELECT gmID, grouPID FROM games WHERE gameID = {$gameID}")->fetch(PDO::FETCH_NUM);
+			$gmID = $mysql->query("SELECT gmID FROM games WHERE gameID = {$gameID}")->fetchColumn();
 			$gmID = (int) $gmID;
-			$groupID = (int) $groupID;
 			if ($currentUser->userID == $gmID) {
 //				$mysql->query("UPDATE games SET retired = NOW() WHERE gameID = {$gameID}");
 				$chars = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID}");
 //				while ($characterID = (int) $chars->fetchColumn()) 
 //					addCharacterHistory($characterID, 'gameRetired', $currentUser->userID);
 //				$mysql->query("UPDATE characters SET gameID = NULL WHERE gameID = {$gameID}");
-				$groups = $mysql->query("DELETE p FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE p.gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
-				foreach ($groups as $group)
+//				$groups = $mysql->query("DELETE p FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE g.gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
 				$forums = $mysql->query("SELECT forumID FROM forums WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
+				var_dump($forums);
 				displayJSON(array('success' => true));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('notGM')));
