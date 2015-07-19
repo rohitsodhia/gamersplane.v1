@@ -7,15 +7,17 @@
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
 		if ($character = new $charClass($characterID)) {
-			$character->load();
-			$dispatchInfo['title'] = $character->getLabel().' | '.$dispatchInfo['title'];
-			$charPermissions = $character->checkPermissions($currentUser->userID);
-			if ($charPermissions) {
-				$noChar = false;
-				if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
-				$addJSFiles[] = 'characters/_sheet.js';
-				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
-			}
+			$active = $character->load();
+			if ($active) {
+				$dispatchInfo['title'] = $character->getLabel().' | '.$dispatchInfo['title'];
+				$charPermissions = $character->checkPermissions($currentUser->userID);
+				if ($charPermissions) {
+					$noChar = false;
+					if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+					$addJSFiles[] = 'characters/_sheet.js';
+					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
+				}
+			} else { header('Location: /characters/my/'); exit; }
 		}
 	} else { header('Location: /404/'); exit; }
 ?>

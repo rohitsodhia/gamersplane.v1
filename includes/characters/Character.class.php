@@ -159,12 +159,17 @@
 		}
 
 		public function load() {
-			global $mongo;
+			global $mysql, $mongo;
 
-			$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
-			foreach ($result as $key => $value) 
-				if (!in_array($key, $this->mongoIgnore['load'])) 
-					$this->$key = $value;
+			$retired = $mysql->query("SELECT retired FROM characters WHERE characterID = {$this->characterID} AND retired IS NULL");
+			if ($retired->rowCount()) {
+				$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
+				foreach ($result as $key => $value) 
+					if (!in_array($key, $this->mongoIgnore['load'])) 
+						$this->$key = $value;
+				return true;
+			} else 
+				return false;
 		}
 
 		public function delete() {

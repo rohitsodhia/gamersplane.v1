@@ -7,15 +7,17 @@
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
 		$charClass = $systems->systemClassName(SYSTEM).'Character';
 		if ($character = new $charClass($characterID)) {
-			$character->load();
-			$dispatchInfo['title'] = 'Edit '.$character->getLabel().' | '.$dispatchInfo['title'];
-			$charPermissions = $character->checkPermissions($currentUser->userID);
-			if ($charPermissions == 'edit') {
-				$noChar = false;
-				$addJSFiles[] = 'characters/_edit.js';
-				if (is_subclass_of($character, 'd20Character')) $addJSFiles[] = 'characters/_d20Character.js';
-				if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
-			}
+			$active = $character->load();
+			if ($active) {
+				$dispatchInfo['title'] = 'Edit '.$character->getLabel().' | '.$dispatchInfo['title'];
+				$charPermissions = $character->checkPermissions($currentUser->userID);
+				if ($charPermissions == 'edit') {
+					$noChar = false;
+					$addJSFiles[] = 'characters/_edit.js';
+					if (is_subclass_of($character, 'd20Character')) $addJSFiles[] = 'characters/_d20Character.js';
+					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
+				}
+			} else { header('Location: /characters/my/'); exit; }
 		}
 	} else { header('Location: /404/'); exit; }
 ?>
