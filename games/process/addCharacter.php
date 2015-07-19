@@ -3,7 +3,7 @@
 		$gameID = intval($_POST['gameID']);
 		$characterID = intval($_POST['characterID']);
 
-		$charInfo = $mysql->query("SELECT gameID, label FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID}")->fetch();
+		$charInfo = $mysql->query("SELECT gameID, label FROM characters WHERE retired IS NULL AND characterID = {$characterID} AND userID = {$currentUser->userID}")->fetch();
 		
 		if (is_int($charInfo['gameID'])) 
 			header('Location: /403/');

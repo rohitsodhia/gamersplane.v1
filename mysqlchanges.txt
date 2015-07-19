@@ -1,2 +1,4 @@
 ALTER TABLE `games` MODIFY COLUMN `retired` datetime NULL AFTER `public`;
 UPDATE games SET retired = NULL;
+ALTER TABLE `characters` MODIFY COLUMN `retired`  date NULL AFTER `approved`;
+UPDATE characters SET retired = NULL;

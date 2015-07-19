@@ -50,7 +50,7 @@
 			<li>
 				<a href="/characters/my/">Characters</a>
 <?
-			$header_characters = $mysql->query("SELECT characterID, label, system FROM characters WHERE userID = {$currentUser->userID} ORDER BY label");
+			$header_characters = $mysql->query("SELECT characterID, label, system FROM characters WHERE retired IS NULL AND userID = {$currentUser->userID} ORDER BY label");
 			if ($header_characters->rowCount()) {
 				echo "				<ul>\n";
 				$count = 0;

@@ -7,7 +7,7 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Delete Character</h1>
 		
-		<p class="alignCenter">Are you sure you wanna delete <a href="/characters/<?=$charInfo['system']?>/<?=$characterID?>" target="_parent"><?=$charInfo['label']?></a>?</p>
+		<p class="alignCenter">Are you sure you wanna delete <a href="/characters/<?=$charInfo['system']?>/<?=$characterID?>/" target="_parent"><?=$charInfo['label']?></a>?</p>
 		<p class="alignCenter">This cannot be reversed!</p>
 		
 		<form method="post" action="/characters/process/delete/" class="alignCenter">

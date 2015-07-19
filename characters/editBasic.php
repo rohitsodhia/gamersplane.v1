@@ -1,6 +1,6 @@
 <?
 	$characterID = intval($pathOptions[1]);
-	$basicInfo = $mysql->query("SELECT label, charType FROM characters WHERE userID = {$currentUser->userID} AND characterID = {$characterID}");
+	$basicInfo = $mysql->query("SELECT label, charType FROM characters WHERE retired IS NULL AND userID = {$currentUser->userID} AND characterID = {$characterID}");
 	if ($basicInfo->rowCount() == 0) { header('Location: /403'); }
 	$basicInfo = $basicInfo->fetch();
 ?>

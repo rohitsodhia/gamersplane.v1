@@ -170,10 +170,8 @@
 		public function delete() {
 			global $currentUser, $mysql, $mongo;
 
-			$mysql->query("DELETE FROM characters WHERE characterID = {$this->characterID}");
-			foreach ($this->linkedTables as $table) 
-				$mysql->query('DELETE FROM '.$this::SYSTEM.'_'.$table.' WHERE characterID = '.$this->characterID);
-			$mongo->characters->remove(array('characterID' => $this->characterID));
+			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0, retired = NOW() WHERE characterID = {$this->characterID}");
+			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('retired' => true)));
 			
 			addCharacterHistory($this->characterID, 'charDeleted', $currentUser->userID, 'NOW()');
 		}

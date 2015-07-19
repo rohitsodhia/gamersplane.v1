@@ -3,7 +3,7 @@
 		$characterID = intval($_POST['characterID']);
 		$label = sanitizeString($_POST['label']);
 		$charType = in_array($_POST['charType'], $charTypes)?$_POST['charType']:'PC';
-		$labelCheck = $mysql->query("SELECT label, charType FROM characters WHERE userID = {$currentUser->userID} AND characterID = $characterID");
+		$labelCheck = $mysql->query("SELECT label, charType FROM characters WHERE retired IS NULL AND userID = {$currentUser->userID} AND characterID = $characterID");
 		
 		if ($labelCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) 

@@ -186,7 +186,7 @@
 		global $mysql;
 
 		$characterID = intval($characterID);
-		$system = $mysql->query('SELECT system FROM characters WHERE characterID = '.$characterID);
+		$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}");
 
 		if ($system->rowCount()) 
 			return $system->fetchColumn();

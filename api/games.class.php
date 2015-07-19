@@ -243,7 +243,7 @@
 			if ($player->rowCount() == 0) 
 				displayJSON(array('failed' => true, 'errors' => array('notPlayer')));
 			$isGM = $player->fetchColumn()?true:false;
-			$charInfo = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID}");
+			$charInfo = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE retired IS NULL AND characterID = {$characterID} AND userID = {$currentUser->userID}");
 			if (!$charInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'errors' => array('notOwner')));
 			$charInfo = $charInfo->fetch();
@@ -306,7 +306,7 @@
 			global $currentUser, $mysql;
 
 			$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
-			$charInfo = $mysql->query("SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, g.system FROM characters c INNER JOIN users u ON c.userID = u.userID INNER JOIN games g ON c.gameID = g.gameID WHERE c.characterID = {$characterID}");
+			$charInfo = $mysql->query("SELECT c.label, c.userID, u.username, g.title, g.charsPerPlayer, g.system FROM characters c INNER JOIN users u ON c.userID = u.userID INNER JOIN games g ON c.gameID = g.gameID WHERE c.retired IS NULL AND c.characterID = {$characterID}");
 			if ($charInfo->rowCount() == 0 && $gmCheck->rowCount() == 0) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
 			$mysql->query("UPDATE characters SET approved = 1 WHERE characterID = {$characterID}");
