@@ -1,7 +1,5 @@
 
-<?
-	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) {
-?>
+<?	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?
 		if ($gameID) {
@@ -9,7 +7,6 @@
 			$gameInfo = $gameInfo->fetch();
 ?>
 	<ul class="rightCol">
-<!--		<li><a href="<?='/chat/'.$gameID?>" class="menuLink">Chat</a></li>-->
 		<li><a href="<?='/games/'.$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
 <?		} ?>

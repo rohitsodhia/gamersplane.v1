@@ -40,11 +40,11 @@
 			$gameID = intval($gameID);
 			if (!$gameID) 
 				displayJSON(array('failed' => true));
-			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = {$gameID}");
+			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status, g.retired FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = {$gameID}");
 			if (!$gameInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'noGame' => true));
 			$gameInfo = $gameInfo->fetch();
-			$isGM = $gameInfo['gmID'] == $currentUser->userID?true:false;
+			$isGM = $gameInfo['gmID'] == $currentUser->userID && $gameInfo['retired'] == null?true:false;
 			$gameInfo['gameID'] = (int) $gameInfo['gameID'];
 			$gameInfo['title'] = printReady($gameInfo['title']);
 			$system = $mongo->systems->findOne(array('_id' => $gameInfo['system']), array('name' => 1));
@@ -112,7 +112,7 @@
 			global $currentUser, $mysql;
 
 			$gameID = (int) $gameID;
-			$isGM = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
+			$isGM = $mysql->query("SELECT p.isGM FROM players p INNER JOIN games g ON p.gameID = g.gameID WHERE p.userID = {$currentUser->userID} AND p.gameID = {$gameID} AND g.retired IS NULL");
 			if ($isGM->rowCount()) {
 				$mysql->query("UPDATE games g, forums_permissions_general p SET p.read = p.read ^ 1, g.public = g.public ^ 1 WHERE g.gameID = $gameID AND g.forumID = p.forumID");
 				displayJSON(array('success' => true));
@@ -124,7 +124,7 @@
 			global $currentUser, $mysql;
 
 			$gameID = (int) $gameID;
-			$isGM = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
+			$isGM = $mysql->query("SELECT p.isGM FROM players p INNER JOIN games g ON p.gameID = g.gameID WHERE p.userID = {$currentUser->userID} AND p.gameID = {$gameID} AND g.retired IS NULL");
 			if ($isGM->rowCount()) {
 				$mysql->query("UPDATE games SET status = !status WHERE gameID = {$gameID}");
 				displayJSON(array('success' => true));
@@ -136,17 +136,25 @@
 			global $currentUser, $mysql;
 
 			$gameID = (int) $gameID;
-			$gmID = $mysql->query("SELECT gmID FROM games WHERE gameID = {$gameID}")->fetchColumn();
+			list($gmID, $forumID, $public) = $mysql->query("SELECT gmID, forumID, public FROM games WHERE gameID = {$gameID}")->fetch(PDO::FETCH_NUM);
 			$gmID = (int) $gmID;
+			$forumID = (int) $forumID;
 			if ($currentUser->userID == $gmID) {
-//				$mysql->query("UPDATE games SET retired = NOW() WHERE gameID = {$gameID}");
+				$mysql->query("UPDATE games SET retired = NOW(), status = 0 WHERE gameID = {$gameID}");
 				$chars = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID}");
-//				while ($characterID = (int) $chars->fetchColumn()) 
-//					addCharacterHistory($characterID, 'gameRetired', $currentUser->userID);
-//				$mysql->query("UPDATE characters SET gameID = NULL WHERE gameID = {$gameID}");
-//				$groups = $mysql->query("DELETE p FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE g.gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
+				while ($characterID = (int) $chars->fetchColumn()) 
+					addCharacterHistory($characterID, 'gameRetired', $currentUser->userID);
+				$mysql->query("UPDATE characters SET gameID = NULL WHERE gameID = {$gameID}");
+				$groups = $mysql->query("DELETE p FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE g.gameID = {$gameID}");
 				$forums = $mysql->query("SELECT forumID FROM forums WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
-				var_dump($forums);
+				$mysql->query("DELETE FROM forums_permissions_users WHERE forumID IN (".implode(', ', $forums).")");
+				$mysql->query("DELETE FROM forumAdmins WHERE forumID IN (".implode(', ', $forums).")");
+				$mysql->query("DELETE FROM forums_permissions_general WHERE forumID IN (".implode(', ', $forums).") AND forumID != {$forumID}");
+				foreach ($forums as $cForumID) 
+					if ($cForumID != $forumID) 
+						$mysql->query("INSERT INTO forums_permissions_general SET forumID = {$cForumID}");
+				$mysql->query("UPDATE forums_permissions_general SET `read` = {$public}, `write` = 0, `editPost` = 0, `deletePost` = 0, `createThread` = 0, `deleteThread` = 0, `addPoll` = 0, `addRolls` = -1, `addDraws` = -1, `moderate` = -1 WHERE forumID = {$forumID}");
+				addGameHistory($gameID, 'retired');
 				displayJSON(array('success' => true));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('notGM')));
@@ -158,7 +166,7 @@
 				displayJSON(array('failed' => true, 'loggedOut' => true));
 
 			$gameID = intval($_POST['gameID']);
-			list($numPlayers, $playerCount) = $mysql->query("SELECT g.numPlayers, COUNT(*) playerCount FROM games g INNER JOIN players p ON g.gameID = p.gameID WHERE g.gameID = {$gameID} AND p.approved = 0")->fetch(PDO::FETCH_NUM);
+			list($numPlayers, $playerCount) = $mysql->query("SELECT g.numPlayers, COUNT(*) playerCount FROM games g INNER JOIN players p ON g.gameID = p.gameID WHERE g.gameID = {$gameID} AND p.approved = 0 AND g.retired IS NULL")->fetch(PDO::FETCH_NUM);
 			if ($numPlayers > $playerCount - 1) 
 				$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}");
 			else 
@@ -171,7 +179,7 @@
 			global $mysql, $currentUser;
 
 			$gameID = intval($gameID);
-			$isGM = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
+			$isGM = $mysql->query("SELECT p.isGM FROM players p INNER JOIN games g ON p.gameID = g.gameID WHERE p.userID = {$currentUser->userID} AND p.gameID = {$gameID} AND g.retired IS NULL");
 			if ($isGM->rowCount()) {
 				$userCheck = $mysql->prepare("SELECT u.userID, u.username, u.email, p.approved FROM users u LEFT JOIN players p ON u.userID = p.userID AND p.gameID = {$gameID} WHERE u.username = :username LIMIT 1");
 				$userCheck->execute(array(':username' => $user));
@@ -216,7 +224,7 @@
 
 			$gameID = intval($gameID);
 			$userID = (int) $currentUser->userID;
-			$validGame = $mysql->query("SELECT g.groupID FROM gameInvites i INNER JOIN games g ON i.gameID = g.gameID WHERE i.gameID = {$gameID} AND i.invitedID = {$userID}");
+			$validGame = $mysql->query("SELECT g.groupID FROM gameInvites i INNER JOIN games g ON i.gameID = g.gameID WHERE i.gameID = {$gameID} AND i.invitedID = {$userID} AND g.retired IS NULL");
 			if ($validGame->rowCount()) {
 				$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$userID}, approved = 1");
 				$groupID = $validGame->fetchColumn();

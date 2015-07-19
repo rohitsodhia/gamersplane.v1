@@ -28,6 +28,9 @@
 ?>
 		</ul></div>
 <?	} ?>
+		<div ng-if="details.retired" id="gameRetired">
+			This game has been retired! That means it's no longer being run.
+		</div>
 		<div id="details">
 			<div class="tr clearfix">
 				<div class="labelCol"><label>Game Status</label></div>
@@ -88,32 +91,32 @@
 		</div>
 
 		<div id="playerDetails" class="clearfix">
-			<div ng-if="!details.status && !pendingInvite && !inGame" class="rightCol">
+			<div ng-if="!details.retired && !details.status && !pendingInvite && !inGame" class="rightCol">
 				<h2 skew-element class="headerbar hbDark">Game Closed</h2>
 				<p class="notice">This game is closed</p>
 			</div>
-			<div ng-if="details.status && !loggedIn" class="rightCol">
+			<div ng-if="!details.retired && details.status && !loggedIn" class="rightCol">
 				<h2 skew-element class="headerbar hbDark">Join Game</h2>
 				<p class="alignCenter">Interested in this game?</p>
 				<p class="alignCenter"><a href="/login/" class="loginLink" colorbox>Login</a> or <a href="/register/" class="last">Register</a> to join!</p>
 			</div>
-			<div ng-if="details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
+			<div ng-if="!details.retired && details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Game Full</h2>
 				<p class="hbdMargined notice">This game is currently full</p>
 			</div>
-			<div ng-if="details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.playersInGame" class="rightCol">
+			<div ng-if="!details.retired && details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.playersInGame" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Join Game</h2>
 				<form ng-submit="applyToGame()" class="alignCenter">
 					<input type="hidden" name="gameID" value="<?=$gameID?>">
 					<button type="submit" name="apply" class="fancyButton" skew-element>Apply to Game</button>
 				</form>
 			</div>
-			<div ng-if="loggedIn && !pendingInvite && inGame && !approved" class="rightCol">
+			<div ng-if="!details.retired && loggedIn && !pendingInvite && inGame && !approved" class="rightCol">
 				<h2 skew-element class="headerbar hbDark">Join Game</h2>
 				<p class="hbMargined notice">Your request to join this game is awaiting approval</p>
 				<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="/games/{{gameID}}/leaveGame/{{currentUser.userID}}/" colorbox>withdraw</a> from the game.</p>
 			</div>
-			<div ng-if="loggedIn && pendingInvite" class="rightCol">
+			<div ng-if="!details.retired && loggedIn && pendingInvite" class="rightCol">
 				<h2 skew-element class="headerbar hbDark">Invite Pending</h2>
 				<p hb-margined>You've been invited to join this game!</p>
 				<div class="alignCenter">
@@ -121,7 +124,7 @@
 					<button skew-element type="submit" name="declineInvite" class="fancyButton" ng-click="rejectInvite()">Decline</button>
 				</div>
 			</div>
-			<div ng-if="loggedIn && inGame && approved" class="rightCol">
+			<div ng-if="!details.retired && loggedIn && inGame && approved" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Submit a Character</h2>
 				<form ng-if="characters.length && (curPlayer.characters.length < details.charsPerPlayer || isGM)" id="submitChar" method="post" ng-submit="submitCharacter()" hb-margined>
 					<input type="hidden" name="gameID" value="{{gameID}}">
@@ -160,7 +163,7 @@
 					</li>
 				</ul>
 
-				<div ng-if="isGM && playersAwaitingApproval">
+				<div ng-if="!details.retired && isGM && playersAwaitingApproval">
 					<h2 class="headerbar hbDark hb_hasList" skew-element>Players Pending Approval</h2>
 					<ul id="playersInGame" class="hbAttachedList hbMargined">
 						<li ng-repeat="player in players | filter: { approved: false }" id="userID_{{player.userID}}">
@@ -175,7 +178,7 @@
 					</ul>
 				</div>
 
-				<div ng-if="isGM">
+				<div ng-if="!details.retired && isGM">
 					<h2 skew-element class="headerbar hbDark hb_hasList">Invited</h2>
 					<ul class="hbAttachedList" hb-margined>
 						<li ng-repeat="invite in invites.waiting | orderBy: 'username'" class="playerInfo clearfix">
@@ -232,7 +235,7 @@
 				</div>
 			</div> */ ?>
 			<div id="decks"<? // class="floatRight" ?>>
-				<div ng-if="isGM" class="clearfix" hb-topper><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton" skew-element>New Deck</a></div>
+				<div ng-if="!details.retired && isGM" class="clearfix" hb-topper><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton" skew-element>New Deck</a></div>
 				<h2 class="headerbar hbDark hb_hasList" ng-class="{ 'hb_hasButton': isGM }">Decks</h2>
 				<div class="hbdMargined">
 					<div ng-if="decks.length" class="tr clearfix headers">

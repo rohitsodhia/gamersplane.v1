@@ -52,7 +52,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 							break;
 						}
 					}
-					if (currentUser && $scope.details.gm.userID == currentUser.userID) 
+					if (currentUser && $scope.details.gm.userID == currentUser.userID && $scope.details.retired == null) 
 						$scope.isPrimaryGM = true;
 				} //else 
 //					document.location = '/games/';
@@ -79,6 +79,8 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		}
 		$scope.confirmRetire = function () {
 			$http.post(API_HOST + '/games/retire/', { 'gameID': $scope.details.gameID }).success(function (data) {
+				if (data.success) 
+					document.location = '/games/?gameRetired=' + $scope.details.gameID;
 			});
 		}
 

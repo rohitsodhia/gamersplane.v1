@@ -69,7 +69,7 @@
 			<li>
 				<a href="/games/">Games</a>
 <?
-			$header_games = $mysql->query('SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = '.intval($currentUser->userID).' AND p.gameID = g.gameID ORDER BY g.title');
+			$header_games = $mysql->query("SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = {$currentUser->userID} AND p.gameID = g.gameID AND g.retired IS NULL ORDER BY g.title");
 			if ($header_games->rowCount()) {
 				echo "				<ul>\n";
 				$count = 0;
