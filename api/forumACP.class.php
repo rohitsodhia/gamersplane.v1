@@ -133,7 +133,7 @@
 			$updateForum = $mysql->prepare("UPDATE forums SET ".($forum->parentID != 2?'title = :title, ':'')."description = :description WHERE forumID = {$forumID} LIMIT 1");
 			if ($forum->parentID != 2) 
 				$updateForum->bindValue(':title', $title);
-			$updateForum->bindValue(':description', $description);
+			$updateForum->bindValue(':description', $desc);
 			$updateForum->execute();
 
 			if ($updateForum->rowCount()) 
