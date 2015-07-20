@@ -2179,80 +2179,84 @@ div.forumIcon.newPosts.locked {
 }
 
 #page_home {
-	.sideWidget .loggedOut {
-		font-family: OstrichSans;
-		font-size: 2em;
-		line-height: 1.2em;
-		text-align: center;
-	}
+	.sideWidget {
+		.loggedOut {
+			font-family: OstrichSans;
+			font-size: 2em;
+			line-height: 1.2em;
+			text-align: center;
+		}
 
-	.sideWidget .loggedOut a, .sideWidget .noGames a {
-		display: block;
-		width: 95px;
-		margin-top: 10px;
-		border: 1px solid #B00;
-		background: #CCC;
-		font-family: AgencyFB;
-		line-height: 1.2em;
-		text-align: center;
-		color: #B00;
-	}
+		.loggedOut, .noGames {
+			a {
+				display: block;
+				width: 95px;
+				margin-top: 10px;
+				border: 1px solid #B00;
+				background: #CCC;
+				font-family: AgencyFB;
+				line-height: 1.2em;
+				text-align: center;
+				color: #B00;
+			}
+		}
 
-	.sideWidget .login {
-		float: left;
-		margin-left: 10px;
-	}
+		.login {
+			float: left;
+			margin-left: 10px;
+		}
 
-	.sideWidget .register {
-		float: right;
-		margin-right: 10px;
-	}
+		.register {
+			float: right;
+			margin-right: 10px;
+		}
 
-	.sideWidget .gameInfo {
-		border-top-color: #555;
-	}
+		.gameInfo {
+			border-top-color: #555;
+		}
 
-	.sideWidget .noGames {
-		padding-bottom: .5em;
-	}
+		.noGames {
+			padding-bottom: .5em;
 
-	.sideWidget .noGames p {
-		margin: 0;
-		padding: .5em 0;
-		text-align: center;
-	}
+			p {
+				margin: 0;
+				padding: .5em 0;
+				text-align: center;
+			}
 
-	.sideWidget .noGameLink {
-		text-align: center;
-	}
+			a {
+				width: 125px;
+				margin: .3em auto 0;
+				font-size: 2em;
+				line-height: 1.2em;
+			}
+		}
 
-	.sideWidget .noGames a {
-		width: 125px;
-		margin: .3em auto 0;
-		font-size: 2em;
-		line-height: 1.2em;
+		.noGameLink {
+			text-align: center;
+		}
 	}
 
 	.homeWidget {
 		float: left;
 		width: 310px;
 		margin-left: 10px;
-	}
 
-	.homeWidget:first-child {
-		margin-left: 0;
+		&:first-child {
+			margin-left: 0;
+		}
+
+		h3 {
+			margin-bottom: 0;
+		}
+
+		hr {
+			margin: .2em 0;
+		}
 	}
 
 	.widgetBody {
 		margin: 0 15px;
-	}
-
-	.homeWidget h3 {
-		margin-bottom: 0;
-	}
-
-	.homeWidget hr {
-		margin: .2em 0;
 	}
 
 	.gameInfo, .post {

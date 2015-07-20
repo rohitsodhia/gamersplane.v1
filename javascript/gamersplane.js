@@ -502,6 +502,7 @@ app.config(function ($httpProvider) {
 	}
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
+		console.log(text);
 		if (typeof text != 'string') 
 			text = '';
 		return $sce.trustAsHtml(text);

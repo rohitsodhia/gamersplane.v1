@@ -7,6 +7,7 @@
 		protected $email;
 		protected $joinDate;
 		protected $activatedOn;
+		protected $lastActivity;
 		protected $timezone;
 		protected $usermeta = array();
 		protected $acpPermissions = null;
@@ -19,7 +20,7 @@
 			if ($userDetail == null) 
 				return false;
 
-			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn FROM users WHERE ".(strpos($userDetail, '@')?'email':'userID')." = :userDetail LIMIT 1");
+			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn, lastActivity FROM users WHERE ".(strpos($userDetail, '@')?'email':'userID')." = :userDetail LIMIT 1");
 			$userInfo->bindParam(':userDetail', $userDetail);
 			$userInfo->execute();
 			if ($userInfo->rowCount()) {
@@ -218,6 +219,24 @@
 				else 
 					return true;
 			}
+		}
+
+		static public function inactive($lastActivity, $returnImg = true) {
+			$diff = time() - strtotime($lastActivity);
+			$diff = floor($diff / (60 * 60 * 24));
+			if ($diff < 14) 
+				return false;
+			$diffStr = 'Inactive for';
+			if ($diff <= 30) 
+				$diffStr .= ' '.($diff - 1).' days';
+			else {
+				$diff = floor($diff / 30);
+				if ($diff < 12) 
+					$diffStr .= ' '.$diff.' months';
+				else 
+					$diffStr .= 'ever!';
+			}
+			return $returnImg?"<img src=\"/images/sleeping.png\" title=\"{$diffStr}\" alt=\"{$diffStr}\">":$diffStr;
 		}
 	}
 ?>

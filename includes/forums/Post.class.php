@@ -22,7 +22,7 @@
 			if ((int) $loadData == $loadData) {
 				global $mysql;
 
-				$loadData = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.postID = {$loadData}")->fetch();
+				$loadData = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, u.lastActivity, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.postID = {$loadData}")->fetch();
 			}
 			if (is_array($loadData)) {
 				foreach (get_object_vars($this) as $key => $value) {
@@ -34,6 +34,7 @@
 				$this->author->userID = $loadData['userID'];
 				$this->author->username = $loadData['username'];
 				$this->author->avatarExt = $loadData['avatarExt'];
+				$this->author->lastActivity = $loadData['lastActivity'];
 			}
 		}
 

@@ -37,17 +37,18 @@
 		$orderBy = 'g.title DESC';
 	elseif (isset($_GET['filter']) && $_GET['orderBy'] == 'system') 
 		$orderBy = 's.fullName ASC';
-	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username FROM games g INNER JOIN systems s ON g.system = s.shortName LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.status = 1".(isset($_GET['filter'])?' AND g.system IN ("'.implode('", "', $_GET['filterSystem']).'")':'')." ORDER BY $orderBy");
+	$games = $mysql->query("SELECT g.gameID, g.title, s.fullName system, g.gmID, u.username, u.lastActive FROM games g INNER JOIN systems s ON g.system = s.shortName LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.status = 1".(isset($_GET['filter'])?' AND g.system IN ("'.implode('", "', $_GET['filterSystem']).'")':'')." ORDER BY $orderBy");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>
 				<li class="clearfix">
 					<a href="/games/<?=$gameInfo['gameID']?>/" class="gameTitle"><?=$gameInfo['title']?></a>
 					<div class="systemType"><?=$gameInfo['system']?></div>
-					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></div>
+					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a><?=User::inactive($gameInfo['lastActivity'])?></div>
 				</li>
 <?
-	} } else echo "\t\t\t\t<li id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new/\">make one</a>?</li>\n";
+	} } else 
+		echo "\t\t\t\t<li id=\"noResults\">Doesn't seem like any games are available at this time.<br>Maybe you should <a href=\"/games/new/\">make one</a>?</li>\n";
 ?>
 			</ul>
 		</div>

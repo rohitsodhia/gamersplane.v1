@@ -22,14 +22,14 @@
 		$search = implode(' OR ', $search);
 	}
 	
-	$games = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username FROM games g LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.status = 1".($fSystems?" AND g.system IN ($fSystems)":'').(isset($search)?" AND ($search)":'')." AND g.retired IS NOT NULL ORDER BY $order");
+	$games = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, u.lastActivity FROM games g LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.status = 1".($fSystems?" AND g.system IN ($fSystems)":'').(isset($search)?" AND ($search)":'')." AND g.retired IS NOT NULL ORDER BY $order");
 	
 	if ($games->rowCount()) { foreach ($games as $gameInfo) {
 ?>
 				<li class="clearfix">
 					<a href="/games/<?=$gameInfo['gameID']?>" class="gameTitle"><?=$gameInfo['title']?></a>
 					<div class="systemType"><?=$systems->getFullName($gameInfo['system'])?></div>
-					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a></div>
+					<div class="gmLink"><a href="/user/<?=$gameInfo['gmID']?>" class="username"><?=$gameInfo['username']?></a><?=User::inactive($gameInfo['lastActivity'])?></div>
 				</li>
 <?
 	} } else 

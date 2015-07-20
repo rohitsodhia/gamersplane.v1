@@ -40,7 +40,7 @@
 			$gameID = intval($gameID);
 			if (!$gameID) 
 				displayJSON(array('failed' => true));
-			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status, g.retired FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = {$gameID}");
+			$gameInfo = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username gmUsername, u.lastActivity, g.created, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.forumID, p.`read` readPermissions, g.groupID, g.status, g.retired FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN forums_permissions_general p ON g.forumID = p.forumID WHERE g.gameID = {$gameID}");
 			if (!$gameInfo->rowCount()) 
 				displayJSON(array('failed' => true, 'noGame' => true));
 			$gameInfo = $gameInfo->fetch();
@@ -49,8 +49,9 @@
 			$gameInfo['title'] = printReady($gameInfo['title']);
 			$system = $mongo->systems->findOne(array('_id' => $gameInfo['system']), array('name' => 1));
 			$gameInfo['system'] = array('_id' => $gameInfo['system'], 'name' => $system['name']);
-			$gameInfo['gm'] = array('userID' => (int) $gameInfo['gmID'], 'username' => $gameInfo['gmUsername']);
-			unset($gameInfo['gmID'], $gameInfo['gmUsername']);
+			require_once(FILEROOT.'/includes/User.class.php');
+			$gameInfo['gm'] = array('userID' => (int) $gameInfo['gmID'], 'username' => $gameInfo['gmUsername'], 'inactive' => User::inactive($gameInfo['lastActivity']));
+			unset($gameInfo['gmID'], $gameInfo['gmUsername'], $gameInfo['lastActivity']);
 			$gameInfo['created'] = date('F j, Y g:i a', strtotime($gameInfo['created']));
 			$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
 			$gameInfo['postFrequency'][0] = (int) $gameInfo['postFrequency'][0];

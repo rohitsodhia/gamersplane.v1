@@ -16,10 +16,10 @@
 ?>
 			<li<?=$count % 5 == 0?' class="last"':''?>>
 				<div class="onlineIndicator <?=$userInfo['online']?'online':'offline'?>"></div>
-				<a href="<?='/user/'.$userInfo['userID']?>" class="avatar">
+				<a href="/user/<?=$userInfo['userID']?>/" class="avatar">
 					<img src="<?=User::getAvatar($user->userID, $user->avatarExt)?>">
 				</a>
-				<p><a href="<?='/user/'.$userInfo['userID']?>"><?=$user->username?></a></p>
+				<p><a href="/user/<?=$userInfo['userID']?>/"><?=$user->username?></a><?=User::inactive($user->lastActivity)?></p>
 			</li>
 <?	} ?>
 		</ul>

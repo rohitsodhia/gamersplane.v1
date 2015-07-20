@@ -21,8 +21,14 @@
 						<div class="title">Member Since</div>
 						<div class="convertTZ"><?=date('F j, Y g:i A', strtotime($user->joinDate))?></div>
 					</div>
+<?	if (User::inactive($user->lastActivity, false)) { ?>
+					<div class="tr">
+						<div class="title">Inactive</div>
+						<div><?=User::inactive($user->lastActivity, false)?></div>
+					</div>
+<?	} ?>
 <?	if ($user->gender != '') { ?>
-					
+
 					<div class="tr">
 						<div class="title">Gender</div>
 						<div><?=$user->gender == 'm'?'Male':'Female'?></div>
