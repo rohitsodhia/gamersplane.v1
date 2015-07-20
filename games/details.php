@@ -66,11 +66,11 @@
 			</div>
 			<div class="tr textareaRow clearfix">
 				<div class="labelCol"><label>Description</label></div>
-				<div ng-bind-html="details.description | trustHTML"></div>
+				<div class="infoCol" ng-bind-html="details.description | trustHTML"></div>
 			</div>
 			<div class="tr textareaRow clearfix">
 				<div class="labelCol"><label>Character Generation Info</label></div>
-				<div ng-bind-html="details.charGenInfo | trustHTML"></div>
+				<div class="infoCol" ng-bind-html="details.charGenInfo | trustHTML"></div>
 			</div>
 			<div class="tr clearfix">
 				<div class="labelCol"><label>Game Forums are</label></div>
