@@ -113,7 +113,7 @@
 
 			if ($page > ceil($this->postCount / PAGINATE_PER_PAGE)) $page = ceil($this->postCount / PAGINATE_PER_PAGE);
 			$start = ($page - 1) * PAGINATE_PER_PAGE;
-			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".PAGINATE_PER_PAGE);
+			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, u.lastActivity, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".PAGINATE_PER_PAGE);
 			foreach ($posts as $post) 
 				$this->posts[$post['postID']] = new Post($post);
 
