@@ -1,4 +1,2 @@
-ALTER TABLE `games` MODIFY COLUMN `retired` datetime NULL AFTER `public`;
-UPDATE games SET retired = NULL;
-ALTER TABLE `characters` MODIFY COLUMN `retired`  date NULL AFTER `approved`;
-UPDATE characters SET retired = NULL;
+ALTER TABLE systems ADD angular bool NOT NULL DEFAULT 1;
+UPDATE systems SET angular = 0;

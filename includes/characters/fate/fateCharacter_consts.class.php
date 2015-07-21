@@ -1,5 +1,5 @@
 <?
-	class savageworlds_consts {
+	class fate_consts {
 		private static $ladder = array(-2 => 'Terrible', 'Poor', 'Mediocre', 'Average', 'Fair', 'Good', 'Great', 'Superb', 'Fantastic', 'Epic', 'Legendary'); 
 
 		public static function getLadder($rating = null) {
