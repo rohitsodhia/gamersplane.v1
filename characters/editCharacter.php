@@ -9,7 +9,7 @@
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
-				$angular = $mysql->query('SELECT angular FROM systems WHERE shortName = "'.SYSTEM.'"')->fetchColumn()?true:false;
+				$angular = $mysql->query("SELECT angular FROM systems WHERE shortName = '".SYSTEM."' LIMIT 1")->fetchColumn();
 				if ($angular) 
 					$dispatchInfo['ngController'] = 'editCharacter_'.SYSTEM;
 				$dispatchInfo['title'] = 'Edit '.$character->getLabel().' | '.$dispatchInfo['title'];
@@ -17,10 +17,8 @@
 				if ($charPermissions == 'edit') {
 					$noChar = false;
 					$addJSFiles[] = 'characters/_edit.js';
-					if (is_subclass_of($character, 'd20Character')) 
-						$addJSFiles[] = 'characters/_d20Character.js';
-					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) 
-						$addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
+					if (is_subclass_of($character, 'd20Character')) $addJSFiles[] = 'characters/_d20Character.js';
+					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/edit.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/edit.js';
 				}
 			} else { header('Location: /characters/my/'); exit; }
 		}

@@ -120,3 +120,11 @@ $(function () {
 		});
 	});
 });
+
+app.service('character', function ($http) {
+	this.load = function (characterID) {
+		$http.post(API_HOST + '/character/load/', { 'characterID': characterID }, function (data) {
+			return data;
+		});
+	}
+});

@@ -1,5 +1,5 @@
 <?
-	class fateaccelerated_consts {
+	class fae_consts {
 		private static $approaches = array('careful', 'clever', 'flashy', 'forceful', 'quick', 'sneaky'); 
 
 		public static function getApproaches() {
