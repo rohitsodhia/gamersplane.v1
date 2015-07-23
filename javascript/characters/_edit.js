@@ -127,35 +127,33 @@ app.service('character', ['$http', function ($http) {
 			return data;
 		});
 	}
-}]).directive('setupItemized', ['$timeout', '$templateRequest', '$compile', function ($timeout, $templateRequest, $compile) {
+}]).directive('addItemized', [function () {
 	return {
-		restrict: 'E',
+		restrict: 'A',
 		scope: {
-			'character': '=',
-			'list': '=',
+			'list': '=addItemized',
 			'blank': '='
 		},
 		link: function (scope, element, attrs) {
-			var getSystem = scope.$watch(function () { return scope.character; }, function (val) {
-				if (typeof val != 'undefined' && typeof val.system != 'undefined' && val.system.length > 1) 
-					$templateRequest('/angular/templates/characters/' + val.system + '/setupItemized.html').then(function(template) {
-						$compile(element.html(template).contents())(scope);
-					});
-			});
-/*			if (system.length > 1) 
-				scope.templateURL = '/angular/templates/characters/' + system + '/setupItemized.html';
-			attrs.$observe('system', function (system) {
-				scope.templateURL = '/angular/templates/characters/' + system + '/setupItemized.html';
-			});*/
-			scope.addItem = function () {
-				scope.list.push(scope.blank);
-			}
-			scope.$watch(function () { return scope.list; }, function (val) { console.log(val); }, true);
-			element.on('click', '.remove', function (e) {
+			element.click(function (e) {
 				e.preventDefault();
-				scope.list.splice($(this).data('key'), 1);
+				scope.list.push(scope.blank);
 				scope.$apply();
-			})
+			});
+		}
+	}
+}]).directive('removeItemized', [function () {
+	return {
+		restrict: 'A',
+		scope: {
+			'list': '=removeItemized',
+			'blank': '=',
+			'key': '=iKey'
+		},
+		link: function (scope, element, attrs) {
+			scope.list.splice(scope.key, 1);
+			if (scope.list.length == 0) 
+				scope.list.push(scope.blank);
 		}
 	}
 }]);

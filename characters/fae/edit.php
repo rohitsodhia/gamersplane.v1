@@ -18,7 +18,21 @@
 				<div class="clearfix">
 					<div class="mainColumn">
 						<div class="clearfix">
-							<setup-itemized character="character" list="character.aspects" blank="''"></setup-itemized>
+							<div id="aspects">
+								<h2 class="headerbar hbDark">Aspects <a href="" add-itemized="character.aspects" blank="''">[ Add Aspect ]</a></h2>
+								<div id="aspectList" class="hbdMargined">
+									<div class="aspect item tr clearfix">
+										<input type="text" ng-model="character.highConcept" class="aspectName width5 alignLeft" placeholder="High Concept">
+									</div>
+									<div class="aspect item tr clearfix">
+										<input type="text" ng-model="character.trouble" class="aspectName width5 alignLeft" placeholder="Trouble">
+									</div>
+									<div ng-repeat="(key, aspect) in character.aspects track by $index" class="aspect item tr clearfix">
+										<input type="text" ng-model="aspect" class="aspectName width5 alignLeft" placeholder="Aspect Name">
+										<a href="" class="sprite cross" remove-itemized="character.aspects" i-key="key" blank="''"></a>
+									</div>
+								</div>
+							</div>
 							<div id="stunts">
 								<h2 class="headerbar hbDark">Stunts <a href="" class="addItem">[ Add Stunt ]</a></h2>
 								<div id="stuntsList" class="hbdMargined">
