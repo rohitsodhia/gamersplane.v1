@@ -33,7 +33,7 @@
 <?	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <?	} else { ?>
-		<form method="post" action="/characters/process/editCharacter/">
+		<form method="post"<?=$angular?' ng-submit="save()"':' action="/characters/process/editCharacter/"'?>>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">
 			

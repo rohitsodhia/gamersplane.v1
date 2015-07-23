@@ -406,17 +406,6 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
-}]).directive('comboboxOption', [function () {
-	return {
-		restrict: 'A',
-		scope: {
-			'comboboxOption': '=cb'
-		},
-		link: function (scope, element, attrs) {
-			setTimeout(function () {
-			}, 1000);
-		}
-	}
 }]).directive('prettyCheckbox', [function () {
 	return {
 		restrict: 'E',
@@ -498,6 +487,33 @@ app.config(function ($httpProvider) {
 						tallest = $(this).height();
 				}).height(tallest);
 			}, 1);
+		}
+	}
+}]).directive('ngPlaceholder', [function () {
+	return {
+		restrict: 'A',
+		scope: {},
+		link: function (scope, element, attrs) {
+			var placeholder = attrs['ngPlaceholder'];
+			if (typeof placeholder == 'string' && placeholder.length) {
+				element.blur(function () {
+					var $input = $(this);
+					if ($input.val() == '' || $input.val() == placeholder) 
+						$input.addClass('default');
+					$input.val(function () { return placeholder == ''?placeholder:$input.val(); }).focus(function () {
+						if ($input.val() == placeholder || $input.val() == '') 
+							$input.val('').removeClass('default');
+					}).blur(function () {
+						if ($input.val() == '') 
+							$input.val(placeholder).addClass('default');
+					}).change(function () {
+						if ($input.val() != placeholder) 
+							$input.removeClass('default');
+						else if ($input.val() == placeholder) 
+							$input.addClass('default');
+					});
+				}).blur();
+			}
 		}
 	}
 }]).filter('trustHTML', ['$sce', function($sce){

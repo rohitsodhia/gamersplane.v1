@@ -1,7 +1,16 @@
-controllers.controller('editCharacter_fateaccelerated', function ($scope, $http, $sce, $timeout, currentUser) {
+controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $timeout, currentUser) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
-		console.log(pathElements);
+		$scope.character = {};
+		$http.post(API_HOST + '/characters/load/', { 'characterID': pathElements[2] }).success(function (data) {
+			$scope.character = copyObject(data);
+			if ($scope.character.aspects.length == 0) 
+				$scope.character.aspects.push('as');
+		});
+
+		$scope.save = function () {
+			console.log($scope.character);
+		}
 	});
 });
 /*
@@ -62,3 +71,4 @@ $(function() {
 		$track.parent().find('input[type="hidden"]').val(numBoxes);
 	});
 });
+*/

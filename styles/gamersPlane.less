@@ -923,46 +923,73 @@ html[xmlns] .clearfix {
 
 .fauxColumns {
 	position: relative;
+
+	.topCap {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.bottomCap {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+	}
 }
 
-.fauxColumns .topCap {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-.fauxColumns .bottomCap {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-}
-
-input[type="text"].placeholder {
-	text-align: left;
-}
-
-.placeholder.default {
+.placeholder_f {
 	color: #777;
 	font-style: italic;
+}
+
+input[type="text"] {
+	&.placeholder {
+		text-align: left;
+
+		&.default {
+			.placeholder_f;
+		}
+	}
+
+}
+
+input[type="text"]::-webkit-input-placeholder {
+	.placeholder_f;
+}
+
+input[type="text"]:-moz-placeholder {
+	.placeholder_f;
+}
+
+input[type="text"]::-moz-placeholder {
+	.placeholder_f;
+}
+
+input[type="text"]:-ms-input-placeholder {
+	.placeholder_f;
+}
+
+input[type="text"]::input-placeholder {
+	.placeholder_f;
 }
 
 .mainColumn {
 	float: left;
 	width: 675px;
-}
 
-.mainColumn.right {
-	float: right;
+	&.right {
+		float: right;
+	}
 }
 
 .sidebar {
 	float: right;
 	width: 250px;
-}
 
-.sidebar.left {
-	float: left;
-	margin-right: 0;
+	&.left {
+		float: left;
+		margin-right: 0;
+	}
 }
 
 .hbAttachedList, .prettyList {

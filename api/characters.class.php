@@ -7,9 +7,9 @@
 				$this->library();
 			elseif ($pathOptions[0] == 'my') 
 				$this->my();
-/*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
-				$this->displayPM($_POST['pmID']);
-			elseif ($pathOptions[0] == 'send') 
+			elseif ($pathOptions[0] == 'load' && intval($_POST['characterID'])) 
+				$this->loadCharacter($_POST['characterID']);
+/*			elseif ($pathOptions[0] == 'send') 
 				$this->sendPM();
 			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
 				$this->deletePM($_POST['pmID']);*/
@@ -33,6 +33,28 @@
 			});
 
 			displayJSON(array('characters' => $characters));
+		}
+
+		public function loadCharacter($characterID) {
+			global $mysql, $mongo;
+
+			$characterID = (int) $characterID;
+			if ($characterID <= 0) 
+				return false;
+
+			$retired = $mysql->query("SELECT retired FROM characters WHERE characterID = {$characterID} AND retired IS NULL");
+			if ($retired->rowCount()) {
+				$result = $mongo->characters->findOne(array('characterID' => $characterID));
+				displayJSON($result);
+				return true;
+//				$func = $result->
+//				$this->{}_load
+			} else 
+				return false;
+		}
+
+		public function fae_load($data) {
+
 		}
 	}
 ?>
