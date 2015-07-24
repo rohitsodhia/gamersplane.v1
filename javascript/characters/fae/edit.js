@@ -2,11 +2,20 @@ controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $time
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
 		$scope.character = {};
+		$scope.blanks = {
+			'aspects': { 'value': '' }
+		};
 		$http.post(API_HOST + '/characters/load/', { 'characterID': pathElements[2] }).success(function (data) {
 			$scope.character = copyObject(data);
+			for (key in $scope.character.aspects) 
+				$scope.character.aspects[key] = { 'value': $scope.character.aspects[key] };
 			if ($scope.character.aspects.length == 0) 
-				$scope.character.aspects.push('as');
+				$scope.character.aspects.push($scope.blanks.aspects);
 		});
+
+		$scope.addItem = function () {
+			console.log('test');
+		}
 
 		$scope.save = function () {
 			console.log($scope.character);

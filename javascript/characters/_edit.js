@@ -127,33 +127,4 @@ app.service('character', ['$http', function ($http) {
 			return data;
 		});
 	}
-}]).directive('addItemized', [function () {
-	return {
-		restrict: 'A',
-		scope: {
-			'list': '=addItemized',
-			'blank': '='
-		},
-		link: function (scope, element, attrs) {
-			element.click(function (e) {
-				e.preventDefault();
-				scope.list.push(scope.blank);
-				scope.$apply();
-			});
-		}
-	}
-}]).directive('removeItemized', [function () {
-	return {
-		restrict: 'A',
-		scope: {
-			'list': '=removeItemized',
-			'blank': '=',
-			'key': '=iKey'
-		},
-		link: function (scope, element, attrs) {
-			scope.list.splice(scope.key, 1);
-			if (scope.list.length == 0) 
-				scope.list.push(scope.blank);
-		}
-	}
 }]);

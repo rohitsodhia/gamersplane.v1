@@ -19,17 +19,17 @@
 					<div class="mainColumn">
 						<div class="clearfix">
 							<div id="aspects">
-								<h2 class="headerbar hbDark">Aspects <a href="" add-itemized="character.aspects" blank="''">[ Add Aspect ]</a></h2>
-								<div id="aspectList" class="hbdMargined">
+								<h2 class="headerbar hbDark" skew-element>Aspects <a href="" ng-click="character.aspects.push(blanks.aspects)">[ Add Aspect ]</a></h2>
+								<div id="aspectList" class="hbMargined">
 									<div class="aspect item tr clearfix">
 										<input type="text" ng-model="character.highConcept" class="aspectName width5 alignLeft" placeholder="High Concept">
 									</div>
 									<div class="aspect item tr clearfix">
 										<input type="text" ng-model="character.trouble" class="aspectName width5 alignLeft" placeholder="Trouble">
 									</div>
-									<div ng-repeat="(key, aspect) in character.aspects track by $index" class="aspect item tr clearfix">
-										<input type="text" ng-model="aspect" class="aspectName width5 alignLeft" placeholder="Aspect Name">
-										<a href="" class="sprite cross" remove-itemized="character.aspects" i-key="key" blank="''"></a>
+									<div ng-repeat="aspect in character.aspects track by $index" class="aspect item tr clearfix">
+										<input type="text" ng-model="aspect.value" class="aspectName width5 alignLeft" placeholder="Aspect Name">
+										<a href="" class="remove sprite cross" ng-click="character.aspects.splice($index, 1)"></a>
 									</div>
 								</div>
 							</div>
