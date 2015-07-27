@@ -270,6 +270,8 @@
 					$emailDetails->action = 'Character Added';
 					$emailDetails->gameInfo = $mysql->query("SELECT gameID, title, system FROM games WHERE gameID = {$gameID}")->fetch(PDO::FETCH_OBJ);
 					$charLabel = strlen($charDetails['name'])?$charDetails['name']:$charInfo['label'];
+					require_once(FILEROOT.'/includes/Systems.class.php');
+					$systems = Systems::getInstance();
 					$emailDetails->message = "<a href=\"http://gamersplane.com/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"http://gamersplane.com/characters/{$characterID}/\">{$charLabel}</a>.";
 					ob_start();
 					include('gmEmail.php');
