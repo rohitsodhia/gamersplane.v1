@@ -1,22 +1,25 @@
-controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $timeout, currentUser) {
+controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $timeout, currentUser, range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
+		$scope.range = range.get;
 		$scope.character = {};
 		$scope.blanks = {
-			'aspects': { 'value': '' }
+			'aspects': { 'name': '' },
+			'stunts': { 'name': '' }
 		};
 		$http.post(API_HOST + '/characters/load/', { 'characterID': pathElements[2] }).success(function (data) {
 			$scope.character = copyObject(data);
 			for (key in $scope.character.aspects) 
 				$scope.character.aspects[key] = { 'value': $scope.character.aspects[key] };
-			if ($scope.character.aspects.length == 0) 
-				$scope.character.aspects.push($scope.blanks.aspects);
+			for (key in $scope.blanks) 
+				if ($scope.character[key].length == 0) 
+					$scope.character[key].push($scope.blanks[key]);
 		});
 
-		$scope.addItem = function () {
-			console.log('test');
+		$scope.setStress = function (stress) {
+			if (stress >= 0 && stress <= 3) 
+				$scope.character.stress = stress;
 		}
-
 		$scope.save = function () {
 			console.log($scope.character);
 		}

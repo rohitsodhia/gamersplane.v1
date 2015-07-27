@@ -16,43 +16,56 @@
 				</div>
 
 				<div class="clearfix">
-					<div class="mainColumn">
-						<div class="clearfix">
-							<div id="aspects">
-								<h2 class="headerbar hbDark" skew-element>Aspects <a href="" ng-click="character.aspects.push(blanks.aspects)">[ Add Aspect ]</a></h2>
-								<div id="aspectList" class="hbMargined">
-									<div class="aspect item tr clearfix">
-										<input type="text" ng-model="character.highConcept" class="aspectName width5 alignLeft" placeholder="High Concept">
-									</div>
-									<div class="aspect item tr clearfix">
-										<input type="text" ng-model="character.trouble" class="aspectName width5 alignLeft" placeholder="Trouble">
-									</div>
-									<div ng-repeat="aspect in character.aspects track by $index" class="aspect item tr clearfix">
-										<input type="text" ng-model="aspect.value" class="aspectName width5 alignLeft" placeholder="Aspect Name">
-										<a href="" class="remove sprite cross" ng-click="character.aspects.splice($index, 1)"></a>
-									</div>
+					<div class="clearfix">
+						<div id="aspects" class="floatLeft">
+							<h2 class="headerbar hbDark" skew-element>Aspects <a href="" ng-click="character.aspects.push(blanks.aspects)">[ Add Aspect ]</a></h2>
+							<div id="aspectList" class="hbMargined">
+								<div class="aspect item tr clearfix">
+									<input type="text" ng-model="character.highConcept" class="aspectName width5 alignLeft" placeholder="High Concept">
 								</div>
-							</div>
-							<div id="stunts">
-								<h2 class="headerbar hbDark">Stunts <a href="" class="addItem">[ Add Stunt ]</a></h2>
-								<div id="stuntsList" class="hbdMargined">
+								<div class="aspect item tr clearfix">
+									<input type="text" ng-model="character.trouble" class="aspectName width5 alignLeft" placeholder="Trouble">
+								</div>
+								<div ng-repeat="aspect in character.aspects track by $index" class="aspect item tr clearfix">
+									<input type="text" ng-model="aspect.name" class="aspectName width5 alignLeft" placeholder="Aspect Name">
+									<a href="" class="remove sprite cross" ng-click="character.aspects.splice($index, 1)"></a>
 								</div>
 							</div>
 						</div>
-						<div class="clearfix">
+						<div id="approaches" class="floatLeft">
+							<h2 class="headerbar hbDark" skew-element>Approaches</h2>
+							<div class="hbMargined hb-margined">
+								<label ng-repeat="(approach, value) in character.approaches" class="tr">
+									<div class="labelText">{{approach.capitalizeFirstLetter()}}</div>
+									<input type="text" ng-model="value">
+								</label>
+							</div>
+						</div>
+						<div id="stunts" class="floatLeft">
+							<h2 class="headerbar hbDark" skew-element>Stunts <a href="" ng-click="character.stunts.push(blanks.stunts)">[ Add Stunt ]</a></h2>
+							<div id="stuntsList" class="hbMargined" hb-margined>
+								<div ng-repeat="stunt in character.stunts track by $index" class="stunt item tr clearfix">
+									<input type="text" ng-model="stunt.name" class="stuntName width5 alignLeft" placeholder="Aspect Name">
+									<a href="" class="remove sprite cross" ng-click="character.stunts.splice($index, 1)"></a>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="sidebar">
-						<div id="stress">
-							<h2 class="headerbar hbDark">Stress</h2>
-							<div id="<?=$stressType?>Stress" class="hbdMargined">
+					<div class="clearfix">
+						<div class="sidebar">
+							<div id="stress">
+								<h2 class="headerbar hbDark">Stress</h2>
+								<div id="<?=$stressType?>Stress" class="hbdMargined">
+									<div ng-repeat="box in range(0, 3)" class="stressBox" ng-click="setStress(box)" ng-class="{ 'current': box == character.stress }">{{box}}</div>
+								</div>
+							</div>
+							<div id="consequences">
+								<h2 class="headerbar hbDark">Consequences</h2>
 							</div>
 						</div>
-						<div id="consequences">
-							<h2 class="headerbar hbDark">Consequences</h2>
+						<div id="notes">
+							<h2 class="headerbar hbDark">Background/Notes</h2>
+							<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
 						</div>
 					</div>
 				</div>
-				
-				<h2 class="headerbar hbDark">Background/Notes</h2>
-				<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>

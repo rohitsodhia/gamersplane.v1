@@ -165,6 +165,13 @@ app.config(function ($httpProvider) {
 		else 
 			return data;
 	});
+}).service('range', function () {
+	this.get = function (from, to) {
+		range = [];
+		for (count = from; count <= to; count++) 
+			range.push(count);
+		return range;
+	}
 }).directive('skewElement', function () {
 	return {
 		restrict: 'A',
@@ -518,7 +525,6 @@ app.config(function ($httpProvider) {
 	}
 }]).filter('trustHTML', ['$sce', function($sce){
 	return function(text) {
-		console.log(text);
 		if (typeof text != 'string') 
 			text = '';
 		return $sce.trustAsHtml(text);
