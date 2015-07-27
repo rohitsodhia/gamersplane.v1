@@ -127,4 +127,9 @@ app.service('character', ['$http', function ($http) {
 			return data;
 		});
 	}
+	this.save = function (characterID, character) {
+		$http.post(API_HOST + '/character/save/', { 'characterID': characterID, 'character': character }, function (data) {
+			return data;
+		});
+	}
 }]);

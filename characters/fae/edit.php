@@ -1,7 +1,7 @@
 				<div id="nameDiv" class="tr">
 					<label class="textLabel leftLabel">
 						<div class="labelText">Name</div>
-						<input id="name" type="text" maxlength="50" ng-model="character.name" class="width5 alignLeft" placeholder="Name">
+						<input id="name" type="text" maxlength="50" ng-model="character.name" class="width5 alignLeft">
 					</label>
 				</div>
 				<div id="fpStats" class="tr">
@@ -18,7 +18,7 @@
 				<div class="clearfix">
 					<div class="clearfix">
 						<div id="aspects" class="floatLeft">
-							<h2 class="headerbar hbDark" skew-element>Aspects <a href="" ng-click="character.aspects.push(blanks.aspects)">[ Add Aspect ]</a></h2>
+							<h2 class="headerbar hbDark" skew-element>Aspects <a href="" ng-click="addItem('aspects')">[ Add Aspect ]</a></h2>
 							<div id="aspectList" class="hbMargined">
 								<div class="aspect item tr clearfix">
 									<input type="text" ng-model="character.highConcept" class="aspectName width5 alignLeft" placeholder="High Concept">
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 						<div id="stunts" class="floatLeft">
-							<h2 class="headerbar hbDark" skew-element>Stunts <a href="" ng-click="character.stunts.push(blanks.stunts)">[ Add Stunt ]</a></h2>
+							<h2 class="headerbar hbDark" skew-element>Stunts <a href="" ng-click="addItem('stunts')">[ Add Stunt ]</a></h2>
 							<div id="stuntsList" class="hbMargined" hb-margined>
 								<div ng-repeat="stunt in character.stunts track by $index" class="stunt item tr clearfix">
 									<input type="text" ng-model="stunt.name" class="stuntName width5 alignLeft" placeholder="Aspect Name">
@@ -61,6 +61,9 @@
 							</div>
 							<div id="consequences">
 								<h2 class="headerbar hbDark">Consequences</h2>
+								<div class="hbdMargined">
+									<div ng-repeat="consequence in range(2, 6, 2)" class="tr">{{consequence}}: <input type="text" ng-model="character.consequences[consequence]" class="width4"></div>
+								</div>
 							</div>
 						</div>
 						<div id="notes">

@@ -13,16 +13,18 @@ controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $time
 				$scope.character.aspects[key] = { 'value': $scope.character.aspects[key] };
 			for (key in $scope.blanks) 
 				if ($scope.character[key].length == 0) 
-					$scope.character[key].push($scope.blanks[key]);
+					$scope.character[key].push(copyObject($scope.blanks[key]));
 		});
-
+		$scope.addItem = function (key) {
+			$scope.character[key].push(copyObject($scope.blanks[key]));
+		};
 		$scope.setStress = function (stress) {
 			if (stress >= 0 && stress <= 3) 
 				$scope.character.stress = stress;
-		}
+		};
 		$scope.save = function () {
 			console.log($scope.character);
-		}
+		};
 	});
 });
 /*

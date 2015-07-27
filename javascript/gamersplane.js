@@ -166,9 +166,12 @@ app.config(function ($httpProvider) {
 			return data;
 	});
 }).service('range', function () {
-	this.get = function (from, to) {
+	this.get = function (from, to, incBy) {
+		incBy = parseInt(incBy);
+		if (Math.round(incBy) != incBy || incBy == 0) 
+			incBy = 1;
 		range = [];
-		for (count = from; count <= to; count++) 
+		for (count = from; count <= to; count += incBy) 
 			range.push(count);
 		return range;
 	}
