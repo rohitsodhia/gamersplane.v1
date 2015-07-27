@@ -100,11 +100,11 @@
 				<p class="alignCenter">Interested in this game?</p>
 				<p class="alignCenter"><a href="/login/" class="loginLink" colorbox>Login</a> or <a href="/register/" class="last">Register</a> to join!</p>
 			</div>
-			<div ng-if="!details.retired && details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers <= details.playersInGame" class="rightCol">
+			<div ng-if="!details.retired && details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers <= details.approvedPlayers" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Game Full</h2>
 				<p class="hbdMargined notice">This game is currently full</p>
 			</div>
-			<div ng-if="!details.retired && details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.playersInGame" class="rightCol">
+			<div ng-if="!details.retired && details.status && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.approvedPlayers" class="rightCol">
 				<h2 class="headerbar hbDark" skew-element>Join Game</h2>
 				<form ng-submit="applyToGame()" class="alignCenter">
 					<input type="hidden" name="gameID" value="<?=$gameID?>">
