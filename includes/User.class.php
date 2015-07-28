@@ -25,7 +25,8 @@
 			$userInfo->execute();
 			if ($userInfo->rowCount()) {
 				$userInfo = $userInfo->fetch();
-				foreach ($userInfo as $key => $value) $this->$key = $value;
+				foreach ($userInfo as $key => $value) 
+					$this->$key = $value;
 				$this->userID = (int) $this->userID;
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
@@ -35,6 +36,11 @@
 					else 
 						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
+				if (!is_array($this->acpPermissions)) 
+					$this->acpPermissions = array();
+				$isForumAdmin = $mysql->query("SELECT userID FROM forumAdmins WHERE userID = {$this->userID} AND forumID = 0");
+				if ($isForumAdmin->rowCount()) 
+					$this->acpPermissions['forums'] = true;
 			} else 
 				return false;
 		}
@@ -90,10 +96,14 @@
 		}
 
 		public function __get($var) {
-			if (!in_array($var, $this->hiddenVars) && isset($this->$var)) return $this->$var;
-			elseif (array_key_exists($var, $this->usermeta)) return $this->usermeta[$var];
-			elseif ($var == 'userID') return 0;
-			else return null;
+			if (!in_array($var, $this->hiddenVars) && isset($this->$var)) 
+				return $this->$var;
+			elseif (array_key_exists($var, $this->usermeta)) 
+				return $this->usermeta[$var];
+			elseif ($var == 'userID') 
+				return 0;
+			else 
+				return null;
 		}
 
 		public function newUser($username, $password, $email) {

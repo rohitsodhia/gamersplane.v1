@@ -77,14 +77,19 @@
 		}
 
 		public function setMessage($value) {
-			$message = sanitizeString($value);
-			if ($message != $this->getMessage()) $this->modified = true;
+			global $currentUser;
+
+			$message = sanitizeString($value, $currentUser->checkACP('forums')?'!strip_tags':'');
+			if ($message != $this->getMessage()) 
+				$this->modified = true;
 			$this->message = $message;
 		}
 
 		public function getMessage($pr = false) {
-			if ($pr) return printReady($this->message);
-			else return $this->message;
+			if ($pr) 
+				return printReady($this->message);
+			else 
+				return $this->message;
 		}
 
 		public function getDatePosted($format = null) {

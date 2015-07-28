@@ -15,7 +15,7 @@
 				<h2 class="headerbar"><a href="/forums/thread/<?=$post->getThreadID()?>/"><?=$post->getTitle()?></a></h2>
 				<h4><span class="convertTZ"><?=$post->getDatePosted('F j, Y g:i a')?></span> by <a href="/user/<?=$post->getAuthor('userID')?>/" class="username"><?=$post->getAuthor('username')?></a></h4>
 				<hr>
-<?=BBCode2Html(filterString($post->getMessage(true)))?>
+<?=printReady(BBCode2Html(filterString($post->getMessage())))?>
 <?	if ($loggedIn) { ?>
 				<div class="readMore">To comment to this post or to read what others thought, please <a href="/forums/thread/<?=$post->getThreadID()?>/">click here</a>.</div>
 <?	} ?>
