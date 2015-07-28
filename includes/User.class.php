@@ -42,7 +42,8 @@
 
 		public static function checkLogin($redirect = true) {
 			global $currentUser;
-			if (!isset($currentUser)) $currentUser = new User();
+			if (!isset($currentUser)) 
+				$currentUser = new User();
 
 			$loginHash = $_COOKIE['loginHash'];
 			if (is_string($loginHash) && strlen($loginHash)) {
