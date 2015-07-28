@@ -1,4 +1,4 @@
-controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $timeout, currentUser, range) {
+controllers.controller('editCharacter_fae', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'range', function ($scope, $http, $sce, $timeout, currentUser, character, range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
 		$scope.range = range.get;
@@ -7,13 +7,14 @@ controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $time
 			'aspects': { 'name': '' },
 			'stunts': { 'name': '' }
 		};
-		$http.post(API_HOST + '/characters/load/', { 'characterID': pathElements[2] }).success(function (data) {
+		character.load(pathElements[2]).then(function (data) {
 			$scope.character = copyObject(data);
 			for (key in $scope.character.aspects) 
 				$scope.character.aspects[key] = { 'value': $scope.character.aspects[key] };
-			for (key in $scope.blanks) 
+			for (key in $scope.blanks) {
 				if ($scope.character[key].length == 0) 
 					$scope.character[key].push(copyObject($scope.blanks[key]));
+			}
 		});
 		$scope.addItem = function (key) {
 			$scope.character[key].push(copyObject($scope.blanks[key]));
@@ -26,7 +27,7 @@ controllers.controller('editCharacter_fae', function ($scope, $http, $sce, $time
 			console.log($scope.character);
 		};
 	});
-});
+}]);
 /*
 $(function() {
 	itemizationFunctions['aspects'] = {

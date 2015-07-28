@@ -9,6 +9,8 @@
 				$this->my();
 			elseif ($pathOptions[0] == 'load' && intval($_POST['characterID'])) 
 				$this->loadCharacter($_POST['characterID']);
+			elseif ($pathOptions[0] == 'save' && intval($_POST['characterID'])) 
+				$this->saveCharacter($_POST['characterID']);
 /*			elseif ($pathOptions[0] == 'send') 
 				$this->sendPM();
 			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
@@ -40,21 +42,45 @@
 
 			$characterID = (int) $characterID;
 			if ($characterID <= 0) 
-				return false;
+				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
 
 			$retired = $mysql->query("SELECT retired FROM characters WHERE characterID = {$characterID} AND retired IS NULL");
 			if ($retired->rowCount()) {
 				$result = $mongo->characters->findOne(array('characterID' => $characterID));
 				displayJSON($result);
 				return true;
-//				$func = $result->
-//				$this->{}_load
 			} else 
+				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
+		}
+
+		public function checkPermissions($userID = null) {
+			global $mysql;
+
+			if ($userID == null) 
+				$userID = $this->userID;
+			else 
+				$userID = intval($userID);
+
+			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = $userID OR p.userID = $userID)");
+			if ($charCheck->rowCount()) 
+				return 'edit';
+
+			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$this->characterID} AND inLibrary = 1");
+			if ($libraryCheck->rowCount()) 
+				return 'library';
+			else 
 				return false;
 		}
 
-		public function fae_load($data) {
+		public function saveCharacter($characterID) {
+			global $mysql, $mongo, $currentUser;
 
+			$characterID = (int) $characterID;
+			if ($characterID <= 0) 
+				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
+			$permission = $this->checkPermissions($currentUser->userID);
+			if ($permission != 'edit') 
+				displayJSON(array('failed' => true, 'errors' => array('noPermission')));
 		}
 	}
 ?>
