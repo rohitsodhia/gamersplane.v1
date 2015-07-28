@@ -75,10 +75,14 @@
 		}
 
 		$string = trim($string);
-		$string = strip_tags($string);
-		if (in_array('lower', $options)) $string = strtolower($string);
-		if (in_array('like_clean', $options)) $string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
-		if (in_array('rem_dup_spaces', $options)) $string = preg_replace('/\s+/', ' ', $string);
+		if (!in_array('!strip_tags', $options)) 
+			$string = strip_tags($string);
+		if (in_array('lower', $options)) 
+			$string = strtolower($string);
+		if (in_array('like_clean', $options)) 
+			$string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
+		if (in_array('rem_dup_spaces', $options)) 
+			$string = preg_replace('/\s+/', ' ', $string);
 
 		return $string;
 	}
