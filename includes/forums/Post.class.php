@@ -77,9 +77,10 @@
 		}
 
 		public function setMessage($value) {
-			global $currentUser;
+			global $mysql, $currentUser;
 
-			$message = sanitizeString($value, $currentUser->checkACP('forums')?'!strip_tags':'');
+			$isForumAdmin = $mysql->query("SELECT userID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID = 0");
+			$message = sanitizeString($value, $isForumAdmin->rowCount()?'!strip_tags':'');
 			if ($message != $this->getMessage()) 
 				$this->modified = true;
 			$this->message = $message;

@@ -36,18 +36,14 @@
 					else 
 						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
-				if (!is_array($this->acpPermissions)) 
-					$this->acpPermissions = array();
-				$isForumAdmin = $mysql->query("SELECT userID FROM forumAdmins WHERE userID = {$this->userID} AND forumID = 0");
-				if ($isForumAdmin->rowCount()) 
-					$this->acpPermissions['forums'] = true;
 			} else 
 				return false;
 		}
 
 		public static function checkLogin($redirect = true) {
 			global $currentUser;
-			if (!isset($currentUser)) $currentUser = new User();
+			if (!isset($currentUser)) 
+				$currentUser = new User();
 
 			$loginHash = $_COOKIE['loginHash'];
 			if (is_string($loginHash) && strlen($loginHash)) {
