@@ -36,11 +36,6 @@
 					else 
 						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
-				if (!is_array($this->acpPermissions)) 
-					$this->acpPermissions = array();
-				$isForumAdmin = $mysql->query("SELECT userID FROM forumAdmins WHERE userID = {$this->userID} AND forumID = 0");
-				if ($isForumAdmin->rowCount()) 
-					$this->acpPermissions['forums'] = true;
 			} else 
 				return false;
 		}
