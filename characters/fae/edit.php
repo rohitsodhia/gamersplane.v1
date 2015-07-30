@@ -37,7 +37,7 @@
 							<div class="hbMargined hb-margined">
 								<label ng-repeat="(approach, value) in character.approaches" class="tr">
 									<div class="labelText">{{approach.capitalizeFirstLetter()}}</div>
-									<input type="text" ng-model="value">
+									<input type="text" ng-model="character.approaches[approach]">
 								</label>
 							</div>
 						</div>
@@ -55,7 +55,7 @@
 						<div class="sidebar">
 							<div id="stress">
 								<h2 class="headerbar hbDark">Stress</h2>
-								<div id="<?=$stressType?>Stress" class="hbdMargined">
+								<div class="hbdMargined">
 									<div ng-repeat="box in range(0, 3)" class="stressBox" ng-click="setStress(box)" ng-class="{ 'current': box == character.stress }">{{box}}</div>
 								</div>
 							</div>
@@ -68,7 +68,7 @@
 						</div>
 						<div id="notes">
 							<h2 class="headerbar hbDark">Background/Notes</h2>
-							<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
+							<textarea id="notes" ng-model="character.notes" class="hbdMargined"></textarea>
 						</div>
 					</div>
 				</div>

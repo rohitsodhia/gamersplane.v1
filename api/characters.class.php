@@ -53,7 +53,7 @@
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
 		}
 
-		public function checkPermissions($userID = null) {
+		public function checkPermissions($characterID, $userID = null) {
 			global $mysql;
 
 			if ($userID == null) 
@@ -61,7 +61,7 @@
 			else 
 				$userID = intval($userID);
 
-			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = $userID OR p.userID = $userID)");
+			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$characterID} AND (c.userID = {$userID} OR p.userID = {$userID})");
 			if ($charCheck->rowCount()) 
 				return 'edit';
 
@@ -78,9 +78,23 @@
 			$characterID = (int) $characterID;
 			if ($characterID <= 0) 
 				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
-			$permission = $this->checkPermissions($currentUser->userID);
-			if ($permission != 'edit') 
-				displayJSON(array('failed' => true, 'errors' => array('noPermission')));
+			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}");
+			if ($system->rowCount() == 0) 
+				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
+			$system = $system->fetchColumn();
+
+			require_once(FILEROOT.'/includes/Systems.class.php');
+			$systems = Systems::getInstance();
+			addPackage($system.'Character');
+			$charClass = $systems->systemClassName($system).'Character';
+			if ($character = new $charClass($characterID)) {
+				$character->load();
+				$charPermissions = $character->checkPermissions($currentUser->userID);
+				if ($charPermissions == 'edit') {
+					$character->save();
+				} else 
+					displayJSON(array('failed' => true, 'errors' => array('noPermission')));
+			}
 		}
 	}
 ?>

@@ -10,7 +10,9 @@ controllers.controller('editCharacter_fae', ['$scope', '$http', '$sce', '$timeou
 		character.load(pathElements[2]).then(function (data) {
 			$scope.character = copyObject(data);
 			for (key in $scope.character.aspects) 
-				$scope.character.aspects[key] = { 'value': $scope.character.aspects[key] };
+				$scope.character.aspects[key] = { 'name': $scope.character.aspects[key] };
+			for (key in $scope.character.stunts) 
+				$scope.character.stunts[key] = { 'name': $scope.character.stunts[key] };
 			for (key in $scope.blanks) {
 				if ($scope.character[key].length == 0) 
 					$scope.character[key].push(copyObject($scope.blanks[key]));
@@ -24,7 +26,10 @@ controllers.controller('editCharacter_fae', ['$scope', '$http', '$sce', '$timeou
 				$scope.character.stress = stress;
 		};
 		$scope.save = function () {
-			console.log($scope.character);
+			character.save($scope.character.characterID, $scope.character).then(function (data) {
+				if (data.saved) 
+					window.location = '/characters/' + $scope.character.system + '/' + data.characterID;
+			});
 		};
 	});
 }]);

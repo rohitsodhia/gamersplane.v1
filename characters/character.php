@@ -9,11 +9,15 @@
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
+				$angular = $mysql->query("SELECT angular FROM systems WHERE shortName = '".SYSTEM."' LIMIT 1")->fetchColumn();
+				if ($angular) 
+					$dispatchInfo['ngController'] = 'viewCharacter_'.SYSTEM;
 				$dispatchInfo['title'] = $character->getLabel().' | '.$dispatchInfo['title'];
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
 					$noChar = false;
-					if ($charPermissions == 'library') $mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+					if ($charPermissions == 'library') 
+						$mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 					$addJSFiles[] = 'characters/_sheet.js';
 					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
 				}

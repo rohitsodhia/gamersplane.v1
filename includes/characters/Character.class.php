@@ -156,6 +156,8 @@
 				$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => true));
 			} catch (Exception $e) { var_dump($e); }
 			addCharacterHistory($this->characterID, 'charEdited');
+
+			displayJSON(array('saved' => true, 'characterID' => $this->characterID));
 		}
 
 		public function load() {

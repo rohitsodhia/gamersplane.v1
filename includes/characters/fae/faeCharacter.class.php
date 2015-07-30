@@ -52,8 +52,8 @@
 		}
 
 		public function addAspect($aspect) {
-			if (strlen($aspect)) 
-				$this->aspects[] = sanitizeString($aspect);
+			if (strlen($aspect->name)) 
+				$this->aspects[] = sanitizeString($aspect->name);
 		}
 
 		public function setApproaches($key, $value) {
@@ -73,11 +73,8 @@
 		}
 
 		public function addStunt($stunt) {
-			if (strlen($stunt['name'])) {
-				newItemized('stunt', $stunt['name'], $this::SYSTEM);
-				$stunt['name'] = sanitizeString($stunt['name']);
-				$stunt['notes'] = sanitizeString($stunt['notes']);
-				$this->stunts[] = $stunt;
+			if (strlen($stunt->name)) {
+				$this->stunts[] = sanitizeString($stunt->name);
 			}
 		}
 
@@ -107,36 +104,39 @@
 
 		public function save($bypass = false) {
 			global $mysql;
-			$data = $_POST;
+			if (isset($_POST['character'])) 
+				$data = $_POST['character'];
+			else 
+				$data = $_POST;
 			$system = $this::SYSTEM;
 
-			if (!isset($data['create']) && !$bypass) {
-				$this->setName($data['name']);
-				$this->setFatePoints('current', $data['fatePoints']['current']);
-				$this->setFatePoints('refresh', $data['fatePoints']['refresh']);
+			if (!isset($data->create) && !$bypass) {
+				$this->setName($data->name);
+				$this->setFatePoints('current', $data->fatePoints->current);
+				$this->setFatePoints('refresh', $data->fatePoints->refresh);
 
-				$this->setHighConcept($data['highConcept']);
-				$this->setTrouble($data['trouble']);
+				$this->setHighConcept($data->highConcept);
+				$this->setTrouble($data->trouble);
 				$this->clearVar('aspects');
-				if (sizeof($data['aspects'])) {
-					foreach ($data['aspects'] as $aspect) $this->addAspect($aspect);
-				}
+				if (sizeof($data->aspects)) 
+					foreach ($data->aspects as $aspect) 
+						$this->addAspect($aspect);
 
 				foreach (fae_consts::getApproaches() as $approach) 
-					$this->setApproaches($approach, isset($data['approaches'][$approaches]) && (int) $data['approaches'][$approaches] >= 0?(int) $data['approaches'][$approaches]:0);
+					$this->setApproaches($approach, isset($data->approaches->$approach) && (int) $data->approaches->$approach >= 0?(int) $data->approaches->$approach:0);
 
 				$this->clearVar('stunts');
-				if (sizeof($data['stunts'])) 
-					foreach ($data['stunts'] as $stuntInfo) 
+				if (sizeof($data->stunts)) 
+					foreach ($data->stunts as $stuntInfo) 
 						$this->addStunt($stuntInfo);
 
-				$this->setStress((int) $data['stress'] >= 0 && (int) $data['stress'] <= 3?(int) $data['stress']:0);
+				$this->setStress((int) $data->stress >= 0 && (int) $data->stress <= 3?(int) $data->stress:0);
 
 				$this->clearVar('consequences');
-				foreach ($data['consequences'] as $level => $consequence) 
+				foreach ($data->consequences as $level => $consequence) 
 					$this->setConsequences($level, $consequence);
 
-				$this->setNotes($data['notes']);
+				$this->setNotes($data->notes);
 			}
 
 			parent::save();

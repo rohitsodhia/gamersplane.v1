@@ -9,12 +9,17 @@ textarea {
 }
 
 #nameDiv, #fpStats {
-	.labelText {
+	.labelText, input {
 		margin-right: 10px;
 	}
+}
 
-	input {
-		margin-right: 10px;
+#page_characterSheet {
+	#nameDiv, #fpStats {
+		label, div {
+			display: inline-block;
+			margin-right: 10px;
+		}
 	}
 }
 
@@ -53,6 +58,23 @@ textarea {
 	.labelText {
 		display: inline-block;
 		width: 120px;
+	}
+}
+
+#page_characterSheet {
+	#approaches {
+		.tr div {
+			display: inline-block;
+		}
+
+		.labelText {
+			width: 140px;
+		}
+
+		.value {
+			width: 30px;
+			text-align: center;
+		}
 	}
 }
 
@@ -104,6 +126,12 @@ textarea {
 	&.current {
 		background: #FCC;
 		border-color: #A00;
+	}
+}
+
+#page_characterSheet {
+	.stressBox {
+		cursor: default;
 	}
 }
 
