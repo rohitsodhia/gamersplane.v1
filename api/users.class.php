@@ -1,14 +1,34 @@
 <?
 	class users {
+		const USERS_PER_PAGE = 25;
+
 		function __construct() {
 			global $pathOptions;
 
-			if ($pathOptions[0] == 'search') 
+			if ($pathOptions[0] == 'list') 
+				$this->list();
+			elseif ($pathOptions[0] == 'search') 
 				$this->search();
 			elseif ($pathOptions[0] == 'getCurrentUser') 
 				$this->getCurrentUser();
 			else 
 				displayJSON(array('failed' => true));
+		}
+
+		public function list() {
+			global $mysql;
+
+			$page = isset($_POST['page']) && intval($_POST['page']) > 0?intval($_POST['page']):1;
+			$total = $mysql->query("SELECT COUNT(userID) FROM users WHERE activatedOn IS NOT NULL")->fetchColumn();
+			$users = $mysql->query('SELECT userID, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users WHERE activatedOn IS NOT NULL ORDER BY online DESC, username LIMIT '.(($page - 1) * self::USERS_PER_PAGE).', '.self::USERS_PER_PAGE);
+			if (sizeof($users)) {
+				foreach ($users as &$user) {
+					$user['userID'] = (int) $user['userID'];
+					$user['online'] = (bool) $user['online'];
+				}
+				displayJSON(array('users' => $users, 'totalUsers' => (int) $total));
+			} else 
+				displayJSON(array('noUsers' => true));
 		}
 
 		public function search() {

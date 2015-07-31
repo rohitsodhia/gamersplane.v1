@@ -33,23 +33,22 @@
 					$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
 				}
 				$systems = array();
+				$custom = array();
 				foreach ($rSystems as $system) {
-					if ($system['_id'] == 'custom') 
-						continue;
-					$systems[] = (object) array(
+					$system = (object) array(
 						'shortName' => $system['_id'],
 						'fullName' => $system['name'],
 						'genres' => $system['genres'],
 						'publisher' => $system['publisher'],
 						'basics' => $system['basics']
 					);
+					if ($system->shortName != 'custom') 
+						$systems[] = $system;
+					else 
+						$custom = $system;
 				}
-				if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
-					$systems[] = (object) array(
-						'shortName' => 'custom',
-						'fullName' => 'Custom',
-						'publisher' => null
-					);
+				if (!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) 
+					$systems[] = $custom;
 				displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
 			}
 		}

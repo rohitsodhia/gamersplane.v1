@@ -258,8 +258,30 @@ app.config(function ($httpProvider) {
 }).directive('paginate', function () {
 	return {
 		restrict: 'E',
-		replace: true,
-		templateUrl: '/angular/directives/paginate.php'
+		templateUrl: '/angular/directives/paginate.php',
+		scope: {
+			'items': '=',
+			'data': '=',
+		},
+		link: function (scope, element, attrs) {
+			scope.itemsPerPage = parseInt(attrs['perPage']);
+			scope.numPages = 0;
+			console.log(scope);
+			scope.$watch(function () { return scope.data.numItems; }, function (val) {
+				scope.numPages = Math.ceil(scope.data.numItems / scope.itemsPerPage);
+				scope.pages = [];
+				for (count = scope.numPages - 2 > 0?scope.numPages - 2:1; count <= scope.numPages + 2 && count <= scope.numPages; count++) {
+					scope.pages.push(count);
+				}
+			});
+
+			scope.changePage = function (page) {
+				page = parseInt(page);
+				if (page < 0 && page > scope.data.numItems) 
+					page = 1;
+				scope.data.current = page;
+			}
+		}
 	}
 }).directive('combobox', ['$filter', '$timeout', function ($filter, $timeout) {
 	return {

@@ -18,7 +18,7 @@
 				<div class="system clearfix" ng-repeat="system in systems | filter:{ fullName: filter.search } | paginateItems: 10:(pagination.current - 1) * 10">
 					<div class="leftCol">
 						<div class="logo"><img src="/images/logos/{{system.shortName}}.png"></div>
-						<p><a href="/games/list/?filter=filter&filterSystem%5B%5D={{system.shortName}}" target="_blank">Find games</a> | <a href="/games/new/?system={{system.shortName}}" target="_blank">Start a game</a></p>
+						<p><a href="/games/list/?filter=filter&filterSystem%5B%5D={{system.shortName}}">Find games</a> | <a href="/games/new/?system={{system.shortName}}">Start a game</a></p>
 					</div>
 					<div class="info">
 						<h2 ng-bind-html="system.fullName"></h2>
@@ -32,6 +32,6 @@
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>
 			</div>
-			<div class="alignRight"><paginate class="tr"></paginate></div>
+			<div class="alignRight tr"><paginate items="systems" data="pagination" per-page="10"></paginate></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
