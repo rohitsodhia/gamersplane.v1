@@ -18,6 +18,7 @@
 		</ul>
 <?	} ?>
 			<p>Please make sure <strong>contact@gamersplane.com</strong> is whitelisted on your email account. If you do not recieve an email in your inbox, please check your spam folder.</p>
+			<p>If you don't recieve an email after trying this form, please <a href="mailto:contact@gamersplane.com">email us</a> and we'll help you out. Please try this form at least once.</p>
 			<form method="post" action="/register/process/resendActivation/">
 				<div class="tr">
 					<label for="email">Email:</label>
