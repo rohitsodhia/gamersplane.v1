@@ -12,7 +12,7 @@
 			<h1 class="headerbar">Systems on Gamers' Plane</h1>
 			<div class="alignRight">
 				<div id="numResults" ng-show="filter.search.length != 0"><strong>{{numSystems}}</strong> Systems Found</div>
-				<paginate class="tr"></paginate>
+				<div class="tr"><paginate items="systems" data="pagination" per-page="10"></paginate></div>
 			</div>
 			<div id="systems">
 				<div class="system clearfix" ng-repeat="system in systems | filter:{ fullName: filter.search } | paginateItems: 10:(pagination.current - 1) * 10">
