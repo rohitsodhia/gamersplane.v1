@@ -268,9 +268,8 @@ app.config(function ($httpProvider) {
 			scope.$watch(function () { return scope.data.numItems; }, function (val) {
 				scope.numPages = Math.ceil(scope.data.numItems / scope.data.itemsPerPage);
 				scope.pages = [];
-				for (count = scope.data.current > 2?scope.data.current - 2:1; count <= scope.data.current + 2 && count <= scope.numPages; count++) {
+				for (count = scope.data.current > 2?scope.data.current - 2:1; count <= scope.data.current + 2 && count <= scope.numPages; count++) 
 					scope.pages.push(count);
-				}
 			});
 
 			scope.changePage = function (page) {
@@ -278,6 +277,9 @@ app.config(function ($httpProvider) {
 				if (page < 0 && page > scope.data.numItems) 
 					page = 1;
 				scope.data.current = page;
+				scope.pages = [];
+				for (count = scope.data.current > 2?scope.data.current - 2:1; count <= scope.data.current + 2 && count <= scope.numPages; count++) 
+					scope.pages.push(count);
 				if (typeof scope.changeFunc == 'function') 
 					scope.changeFunc();
 			}
