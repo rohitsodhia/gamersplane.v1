@@ -30,7 +30,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 					$scope.decks = data.decks;
 					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 					$scope.details.playersInGame = $scope.players.length - 1;
-					$scope.pendingInvite = $filter('filter')($scope.invites.waiting, { userID: currentUser.userID }).length  == 1?true:false;
+					$scope.pendingInvite = $filter('filter')($scope.invites.waiting, { userID: currentUser.userID }, true).length  == 1?true:false;
 					for (key in $scope.players) {
 						if (currentUser && $scope.players[key].userID == currentUser.userID) {
 							$scope.inGame = true;
