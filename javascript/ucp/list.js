@@ -1,17 +1,22 @@
-app.directive('gamersList', ['$scope', '$http', function ($scope, $http) {
+app.controller('gamersList', ['$scope', '$http', '$sce', function ($scope, $http, $sce) {
 	$scope.users = {};
-	$http.post(API_HOST + '/users/list/', { page: $scope.pagination.current }).success(function (data) {
-
-		$scope.pagination.numItems = Math.ceil(data.totalUsers / 20);
-		$scope.pagination.pages = [];
-		for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
-			$scope.pagination.pages.push(count);
-		}
-	});
-	$scope.pagination = {};
+	$scope.loading = true;
+	$loadingSpinner = $('#loading');
+	$scope.getGamers = function () {
+		$loadingSpinner.show();
+		$http.post(API_HOST + '/users/gamersList/', { 'page': $scope.pagination.current, 'showInactive': $scope.showInactive }).success(function (data) {
+			$scope.users = data.users;
+			$scope.pagination.numItems = Math.ceil(data.totalUsers / $scope.pagination.itemsPerPage);
+			$loadingSpinner.hide();
+		});
+	}
+	$scope.pagination = { numItems: 0, itemsPerPage: 25 };
+	$scope.showInactive = false;
+	$scope.$watch(function () { return $scope.showInactive; }, function (val) {
+		$scope.getGamers();
+	})
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
 	else 
 		$scope.pagination.current = 1;
-	$scope.showPagination = true;
 }]);

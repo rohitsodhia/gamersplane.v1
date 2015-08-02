@@ -207,8 +207,20 @@
 			$deleteUsermeta->execute();
 		}
 
-		static function getAvatar($userID, $ext = 'jpg', $exists = false) {
-			if (file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}")) 
+		static function getAvatar($userID, $ext = false, $exists = false) {
+			$userID = (int) $userID;
+			if ($userID <= 0) 
+				return $exists?false:'/ucp/avatars/avatar.png';
+
+			if (!$ext) {
+				global $mysql;
+				$ext = $mysql->query("SELECT metaValue FROM userMeta WHERE userID = {$userID} AND metaKey = 'avatarExt'");
+				if ($ext->rowCount()) 
+					$ext = $ext->fetchColumn();
+				else 
+					$ext = false;
+			}
+			if ($ext !== false && file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}")) 
 				return $exists?true:"/ucp/avatars/{$userID}.{$ext}";
 			else 
 				return $exists?false:'/ucp/avatars/avatar.png';

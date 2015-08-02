@@ -260,15 +260,13 @@ app.config(function ($httpProvider) {
 		restrict: 'E',
 		templateUrl: '/angular/directives/paginate.php',
 		scope: {
-			'items': '=',
 			'data': '=',
+			'changeFunc': '='
 		},
 		link: function (scope, element, attrs) {
-			scope.itemsPerPage = parseInt(attrs['perPage']);
 			scope.numPages = 0;
-			console.log(scope);
 			scope.$watch(function () { return scope.data.numItems; }, function (val) {
-				scope.numPages = Math.ceil(scope.data.numItems / scope.itemsPerPage);
+				scope.numPages = Math.ceil(scope.data.numItems / scope.data.itemsPerPage);
 				scope.pages = [];
 				for (count = scope.numPages - 2 > 0?scope.numPages - 2:1; count <= scope.numPages + 2 && count <= scope.numPages; count++) {
 					scope.pages.push(count);
@@ -280,6 +278,8 @@ app.config(function ($httpProvider) {
 				if (page < 0 && page > scope.data.numItems) 
 					page = 1;
 				scope.data.current = page;
+				if (typeof scope.changeFunc == 'function') 
+					scope.changeFunc();
 			}
 		}
 	}
@@ -546,6 +546,26 @@ app.config(function ($httpProvider) {
 					});
 				}).blur();
 			}
+		}
+	}
+}]).directive('loadingSpinner', ['$timeout', function ($timeout) {
+	return {
+		restrict: 'E',
+		template: '<div class="loadingSpinner"><img src="/images/loading_back.png" class="background"><img src="/images/loading_fore.png" class="foreground"></div>',
+		link: function (scope, element, attrs) {
+			var foreground = element.find('.foreground');
+			var fadeTime = 2500, fadePause = 500;
+			scope.fadeIn = function () {
+				$timeout (function () {
+					foreground.fadeIn(fadeTime, scope.fadeOut);
+				}, fadePause);
+			}
+			scope.fadeOut = function () {
+				$timeout (function () {
+					foreground.fadeOut(fadeTime, scope.fadeIn);
+				}, fadePause);
+			}
+			scope.fadeIn();
 		}
 	}
 }]).filter('trustHTML', ['$sce', function($sce){

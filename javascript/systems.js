@@ -4,7 +4,7 @@ controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', functio
 		$scope.numSystems = data.numSystems;
 		$scope.pagination.numItems = data.numSystems;
 	});
-	$scope.pagination = { numItems: 0 };
+	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
 	else 

@@ -1,3 +1,1 @@
-ALTER TABLE systems ADD angular bool NOT NULL DEFAULT 1;
-UPDATE systems SET angular = 0;
-UPDATE dispatch SET ngController = 'characterSheet' WHERE title = 'Character Sheet';
+UPDATE dispatch SET ngController = 'gamersList' WHERE pageID = 'gamersList';
