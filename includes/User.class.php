@@ -214,7 +214,7 @@
 
 			if (!$ext) {
 				global $mysql;
-				$ext = $mysql->query("SELECT metaValue FROM userMeta WHERE userID = {$userID} AND metaKey = 'avatarExt'");
+				$ext = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'avatarExt'");
 				if ($ext->rowCount()) 
 					$ext = $ext->fetchColumn();
 				else 
