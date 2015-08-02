@@ -268,7 +268,7 @@ app.config(function ($httpProvider) {
 			scope.$watch(function () { return scope.data.numItems; }, function (val) {
 				scope.numPages = Math.ceil(scope.data.numItems / scope.data.itemsPerPage);
 				scope.pages = [];
-				for (count = scope.numPages - 2 > 0?scope.numPages - 2:1; count <= scope.numPages + 2 && count <= scope.numPages; count++) {
+				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++) {
 					scope.pages.push(count);
 				}
 			});
