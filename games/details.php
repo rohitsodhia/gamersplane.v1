@@ -60,7 +60,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Number of Players</label></div>
-					<div class="infoCol">{{details.approvedPlayers - 1}} / {{details.numPlayers}}</div>
+					<div class="infoCol">{{details.approvedPlayers}} / {{details.numPlayers}}</div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Number of Characters per Player</label></div>
