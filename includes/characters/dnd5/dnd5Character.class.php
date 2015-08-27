@@ -271,7 +271,7 @@
 						<span class="spell_save shortNum"><?=showSign($this->getStatMod($spell['stat'], false) + $this->getProfBonus() + 8)?></span>
 <?	if (strlen($spell['notes'])) { ?>
 						<a href="" class="spell_notesLink">Notes</a>
-						<div class="spell_notes"><?=$spell['notes']?></div>
+						<div class="spell_notes"><?=printReady($spell['notes'])?></div>
 <?	} ?>
 					</div>
 <?

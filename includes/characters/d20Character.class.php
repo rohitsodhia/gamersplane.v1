@@ -220,7 +220,7 @@
 						<span class="feat_name"><?=$feat['name']?></span>
 <?	if (strlen($feat['notes'])) { ?>
 						<a href="" class="feat_notesLink">Notes</a>
-						<div class="notes"><?=$feat['notes']?></div>
+						<div class="notes"><?=printReady($feat['notes'])?></div>
 <?	} ?>
 					</div>
 <?
