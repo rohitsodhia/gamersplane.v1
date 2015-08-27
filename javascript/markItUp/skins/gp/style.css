@@ -23,6 +23,7 @@
 .markItUpEditor {
 	display:block;
 	clear:both;
+	padding: 4px 5px;
 }
 .markItUpPreviewFrame	{
 	overflow:auto;
