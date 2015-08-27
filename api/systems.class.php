@@ -3,54 +3,66 @@
 		function __construct() {
 			global $pathOptions;
 
-			if ($pathOptions[0] == 'search') 
-				$this->search();
+			if ($pathOptions[0] == 'get') 
+				$this->get();
+			elseif ($pathOptions[0] == 'getGenres') 
+				$this->getGenres();
 			elseif ($pathOptions[0] == 'save') 
 				$this->save();
 			else 
 				displayJSON(array('failed' => true));
 		}
 
-		public function search() {
+		public function get() {
 			global $mongo;
 
-			if (isset($_POST['for']) && $_POST['for'] == 'genres') {
-				$genres = array();
-				$rSystem = $mongo->systems->find(array('genres' => array('$not' => array('$size' => 0))), array('_id' => -1, 'genres' => 1));
-				foreach ($rSystem as $system) 
-					foreach ($system['genres'] as $genre)
-						$genres[] = $genre;
-				displayJSON(array_unique($genres));
+			$search = array();
+			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
+				$search['_id'] = array('$ne' => 'custom');
+			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
+				$rSystems = $mongo->systems->findOne(array('_id' => $_POST['shortName']));
+				$rSystems = array($rSystems);
+				$numSystems = 1;
+			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
+				$numSystems = $mongo->systems->find(array(), array('_id' => 1))->count();
+				$rSystems = $mongo->systems->find()->sort(array('sortName' => 1));
 			} else {
-				$search = array();
-				if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
-					$search['_id'] = array('$ne' => 'custom');
 				$numSystems = $mongo->systems->find($search, array('_id' => 1))->count();
-				if (isset($_POST['getAll']) && $_POST['getAll']) 
-					$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1));
-				else {
-					$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
-					$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
-				}
-				$systems = array();
-				$custom = array();
-				foreach ($rSystems as $system) {
-					$system = (object) array(
-						'shortName' => $system['_id'],
-						'fullName' => $system['name'],
-						'genres' => $system['genres'],
-						'publisher' => $system['publisher'],
-						'basics' => $system['basics']
-					);
-					if ($system->shortName != 'custom') 
-						$systems[] = $system;
-					else 
-						$custom = $system;
-				}
-				if (!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) 
-					$systems[] = $custom;
-				displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
+				$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
+				$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
 			}
+			$systems = array();
+			$custom = array();
+			foreach ($rSystems as $system) {
+				$system = array(
+					'shortName' => $system['_id'],
+					'fullName' => $system['name']
+				);
+				if (!isset($_POST['basic']) || !$_POST['basic'])
+					$system = array_merge($system, array(
+						'genres' => $system['genres']?$system['genres']:array(),
+						'publisher' => $system['publisher']?$system['publisher']:array('name' => '', 'site' => ''),
+						'basics' => $system['basics']?$system['basics']:array()
+					));
+				if ($system['shortName'] != 'custom') 
+					$systems[] = $system;
+				else 
+					$custom = $system;
+			}
+			if ((!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) && sizeof($custom)) 
+				$systems[] = $custom;
+			displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
+		}
+
+		public function getGenres() {
+			global $mongo;
+
+			$genres = array();
+			$rSystem = $mongo->systems->find(array('genres' => array('$not' => array('$size' => 0))), array('_id' => -1, 'genres' => 1));
+			foreach ($rSystem as $system) 
+				foreach ($system['genres'] as $genre)
+					$genres[] = $genre;
+			displayJSON(array_unique($genres));
 		}
 
 		public function save() {

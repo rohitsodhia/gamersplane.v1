@@ -313,10 +313,10 @@
 			return $obligations;
 		}
 
-		public function save() {
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setSpecies($data['species']);
 				$this->setCareer($data['career']);

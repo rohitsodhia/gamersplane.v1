@@ -19,7 +19,7 @@
 				</div>
 				<div class="tr">
 					<label for="genres">Genres</label>
-					<combobox data="combobox.genres" value="newGenre" search="combobox.search.systems" placeholder="New Genre"></combobox> <a ng-click="addGenre()">[ + ]</a>
+					<combobox data="newGenre.data" value="newGenre.value"></combobox> <a ng-click="addGenre()">[ + ]</a>
 					<div id="genres" ng-show="edit.genres.length">
 						<a ng-repeat="genre in edit.genres | orderBy:genre" ng-click="removeGenre(genre)">{{genre}}{{$last?'':', '}}</a>
 					</div>
@@ -34,8 +34,8 @@
 				</div>
 				<div class="tr">
 					<label for="buyTheBasics">Buy the Basics</label>
-					<input id="buyTheBasics" type="text" ng-model="edit.newBasic.text"> <a ng-click="addBasic()">[ + ]</a>
-					<input id="buyTheBasics_site" type="text" ng-model="edit.newBasic.site">
+					<input id="buyTheBasics" type="text" placeholder="Basic Label" ng-model="edit.newBasic.text"> <a ng-click="addBasic()">[ + ]</a>
+					<input id="buyTheBasics_site" type="text" placeholder="Basic URL" ng-model="edit.newBasic.site">
 					<div id="basics" ng-show="edit.basics.length">
 						<a ng-repeat="basic in edit.basics" ng-click="removeBasic(basic)">{{basic.text}} / {{basic.site}}</a>
 					</div>
@@ -50,7 +50,7 @@
 			</form>
 
 			<form id="loadSystem" ng-submit="loadSystem()">
-				<combobox data="combobox.systems" value="systemSearch" search="combobox.search.genres" placeholder="System"></combobox>
+				<combobox data="selectSystem.data" value="selectSystem.value" placeholder="System"></combobox>
 				<button type="submit" class="fancyButton">Load</button>
 			</form>
 		</div>

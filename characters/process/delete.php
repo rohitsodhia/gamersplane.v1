@@ -4,16 +4,20 @@
 		define('SYSTEM', getCharacterClass($characterID));
 		if (SYSTEM) {
 			require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
-			$charClass = $systems->systemClassName(SYSTEM).'Character';
+			$charClass = Systems::systemClassName(SYSTEM).'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->delete();
 
-				if (isset($_POST['modal'])) echo 'deleted';
-				else header('Location: /characters/my?delete=1');
+				if (isset($_POST['modal'])) 
+					echo 'deleted';
+				else 
+					header('Location: /characters/my?delete=1');
 			}
 		}
 	} else {
-		if (isset($_POST['modal'])) echo 0;
-		else header('Location: /403/');
+		if (isset($_POST['modal'])) 
+			echo 0;
+		else 
+			header('Location: /403/');
 	}
 ?>

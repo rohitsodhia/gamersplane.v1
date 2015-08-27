@@ -35,6 +35,7 @@
 				$song['_id'] = $rawSong['_id']->{'$id'};
 				$song['url'] = $rawSong['url'];
 				$song['title'] = $rawSong['title'];
+				$song['approved'] = (bool) $rawSong['approved'];
 				$song['lyrics'] = $rawSong['lyrics']?true:false;
 				$song['genres'] = is_array($rawSong['genres'])?$rawSong['genres']:array();
 				$song['battlebards'] = $rawSong['battlebards']?true:false;

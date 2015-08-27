@@ -71,10 +71,10 @@
 			return $this->posessions;
 		}
 
-		public function save() {
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
 				$this->setQualities($data['qualities']);

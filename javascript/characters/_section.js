@@ -17,8 +17,13 @@ app.service('character', ['$http', '$q', function ($http, $q) {
 	this.loadBlanks = function (character, blanks) {
 		if (typeof blanks == 'undefined' || Object.keys(blanks).length == 0) 
 			return;
-		for (key in blanks) 
-			if (Object.keys(character[key]).length == 0) 
-				character[key].push(copyObject(blanks[key]));
+		for (key in blanks) {
+			if (key.indexOf('.') < 0) 
+				bArray = character[key];
+			else 
+				bArray = character[key.split('.')[0]][key.split('.')[1]];
+			if (typeof bArray != 'undefined' && Object.keys(bArray).length == 0) 
+				bArray.push(copyObject(bArray));
+		}
 	}
 }]);

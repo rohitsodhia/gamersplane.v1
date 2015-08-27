@@ -9,19 +9,19 @@
 <?	} ?>
 		<h1 class="headerbar">Private Messages - {{box}}</h1>
 		
-		<div id="controlsContainer" class="clearfix">
-			<a id="newPM" href="/pms/send/" class="fancyButton">New PM</a>
+		<div id="controlsContainer" class="hbTopper clearfix" hb-margined="dark">
+			<a href="/pms/send/" class="fancyButton" skew-element>New PM</a>
 			<div class="trapezoid sectionControls">
 				<a href="/pms/" class="borderBox" ng-class="{'current': box == 'Inbox'}" ng-click="switchBox($event, 'inbox')">Inbox</a
 				><a href="/pms/outbox" class="borderBox" ng-class="{'current': box == 'Outbox'}" ng-click="switchBox($event, 'outbox')">Outbox</a>
 			</div>
 		</div>
 		<div id="pms">
-			<div class="tr headerTR headerbar hbDark">
+			<div class="tr headerTR headerbar hbDark" skew-element>
 				<div class="delCol"></div>
 				<div class="info">Message</div>
 			</div>
-			<div id="pmList">
+			<div id="pmList" hb-margined>
 				<div ng-repeat="pm in pms" id="pm_{{pm.pmID}}" class="pm tr" ng-class="{'lastTR': $last, 'new': !pm.read}">
 					<div class="delCol"><a ng-if="pm.allowDelete" ng-click="delete(pm.pmID)" class="deletePM sprite cross"></a></div>
 					<div class="info">
@@ -35,6 +35,6 @@
 					</div>
 				</div>
 			</div>
+			<div class="tr" hb-margined><paginate data="pagination" change-func="getPMs" class="tr"></paginate><loading-spinner size="mini" pause="spinnerPause"></loading-spinner></div>
 		</div>
-		<paginate class="tr"></paginate>
 <?	require_once(FILEROOT.'/footer.php'); ?>

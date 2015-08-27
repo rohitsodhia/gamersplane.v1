@@ -1,4 +1,4 @@
-<?
+3<?
 	class dnd4Character extends d20Character {
 		const SYSTEM = 'dnd4';
 
@@ -334,11 +334,10 @@
 			return $this->items;
 		}
 
-		public function save() {
-			global $mysql;
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setRace($data['race']);
 				$this->setAlignment($data['alignment']);

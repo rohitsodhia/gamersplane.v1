@@ -12,16 +12,18 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		$scope.playersAwaitingApproval = false;
 		$scope.curPlayer = {};
 		$scope.characters = [];
+		$scope.availChars = [];
 		$scope.inGame = false;
 		$scope.withdrawEarly = false;
 		$scope.approved = false;
 		$scope.isGM = false;
 		$scope.isPrimaryGM = false;
 		$scope.combobox = {};
-		$scope.combobox.search = { 'characters': '' };
 		$scope.pendingInvite = false;
+		$loadingSpinner = $('#loading');
 
 		setGameData = function () {
+			$loadingSpinner.show();
 			$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
 				if (data.success) {
 					$scope.details = data.details;
@@ -42,11 +44,9 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
 								$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'], 'noGame': true }).success(function (data) {
 									$scope.characters = data.characters;
-									$scope.combobox.characters = [];
 									for (key in $scope.characters) 
-										if (!$filter('filter')($scope.curPlayer.characters, { 'characterID': $scope.characters[key].characterID }).length)
-											$scope.combobox.characters.push({ 'id': $scope.characters[key].characterID, 'value': $scope.characters[key].label });
-									$scope.combobox.characters = $filter('orderBy')($scope.combobox.characters, 'value');
+										$scope.availChars.push({ 'value': $scope.characters[key].characterID, 'display': $scope.characters[key].label });
+									$scope.availChars = $filter('orderBy')($scope.availChars, 'display');
 								});
 							}
 							break;
@@ -56,6 +56,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 						$scope.isPrimaryGM = true;
 				} //else 
 //					document.location = '/games/';
+				$loadingSpinner.hide();
 			});
 		};
 		setGameData();
@@ -202,7 +203,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 
 		$scope.submitChar = { characterID: null };
 		$scope.submitCharacter = function () {
-			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.character.id }).success(function (data) {
+			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.character.value }).success(function (data) {
 				if (data.success) {
 					$scope.combobox.search.characters = '';
 					for(key in $scope.combobox.characters) 

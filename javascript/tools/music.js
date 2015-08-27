@@ -4,43 +4,28 @@ app.controller('music', function ($scope, $http, $sce, $timeout, currentUser) {
 	currentUser.then(function (currentUser) {
 		$scope.loggedIn = currentUser.loggedOut?false:true;
 		$scope.genres = copyObject(musicGenres);
-		$scope.filter = { 'genres': [], 'lyrics': [] };
+		$scope.filter = { 'approved': true, 'genres': [], 'lyrics': [] };
 		$scope.music = [];
 		$scope.addSong = false;
-		$scope.toggleAddSong = function () { $scope.addSong = !$scope.addSong; };
-		$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
-		$scope.pagination = {};
+		$scope.pagination = { numItems: 0, itemsPerPage: 10 };
 		if ($.urlParam('page')) 
 			$scope.pagination.current = parseInt($.urlParam('page'));
 		else 
 			$scope.pagination.current = 1;
-		$scope.showPagination = true;
-		initialLoad = true;
+		$loadingSpinner = $('#loading');
+		$scope.toggleAddSong = function () { $scope.addSong = !$scope.addSong; };
+		$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
 		$scope.loadMusic = function () {
-
-			if (!initialLoad) 
-				$scope.pagination.current = 1;
-			else 
-				initialLoad = false;
+			$loadingSpinner.show();
 			$http.post(API_HOST + '/music/get/', { 'page': $scope.pagination.current, 'filter': $scope.filter }).success(function (data) {
 				if (data.success) {
 					$scope.music = data.music;
-					$scope.pagination.numItems = Math.ceil(data.count / 10);
-					$scope.pagination.pages = new Array();
-					for (count = $scope.pagination.numItems - 2 > 0?$scope.pagination.numItems - 2:1; count <= $scope.pagination.numItems + 2 && count <= $scope.pagination.numItems; count++) {
-						$scope.pagination.pages.push(count);
-					}
+					$scope.pagination.numItems = data.count;
+					$loadingSpinner.hide();
 				}
 			});
 		};
 		$scope.loadMusic();
-		$scope.changePage = function (page) {
-			page = parseInt(page);
-			if (page < 0 && page > $scope.pagination.numItems) 
-				page = 1;
-			$scope.pagination.current = page;
-			$scope.loadMusic();
-		};
 		$scope.songSubmitted = false;
 		$scope.$on('closeSongEdit', function (event) {
 			$scope.addSong = false;

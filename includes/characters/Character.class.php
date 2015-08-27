@@ -5,8 +5,9 @@
 		protected $userID ;
 		protected $characterID;
 		protected $label;
+		public static $charTypes = array('PC', 'NPC', 'Mob');
 		protected $charType = 'PC';
-		protected $inLibrary = false;
+		protected $library = array('inLibrary' => false, 'views' => 0);
 		protected $game = null;
 		protected $name;
 		protected $notes;
@@ -47,8 +48,7 @@
 		}
 
 		public function setCharType($charType) {
-			global $charTypes;
-			if (in_array($charType, $charTypes)) 
+			if (in_array($charType, self::$charTypes)) 
 				$this->charType = $charType;
 		}
 
@@ -140,6 +140,14 @@
 				return "/characters/avatars/{$this->characterID}.jpg".($showTS?'?'.time():'');
 			else 
 				return false;
+		}
+
+		public function get() {
+			$char = array();
+			foreach ($this as $key => $value) 
+				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) 
+					$char[$key] = $value;
+			return $char;
 		}
 
 		public function save() {

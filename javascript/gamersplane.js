@@ -165,7 +165,59 @@ app.config(function ($httpProvider) {
 		else 
 			return data;
 	});
-}).service('range', function () {
+}).service('systems', ['$http', '$q', function ($http, $q) {
+	this.get = function (params) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/systems/get/', params).success(function (data) { deferred.resolve(data) });
+		return deferred.promise;
+	}
+	this.getGenres = function () {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
+		return deferred.promise;
+	}
+}]).factory('characters', ['$http', '$q', function ($http, $q) {
+	return {
+		'getMy': function (library) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/characters/my/', { 'library': library }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'new': function (data) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/characters/new/', {
+				'label': data.label,
+				'system': data.system,
+				'charType': data.charType
+			}).success(function (data) { deferred.resolve(data) });
+			return deferred.promise;
+		},
+		'saveBasic': function (data) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/characters/saveBasic/', {
+				'characterID': data.characterID,
+				'label': data.label,
+				'charType': data.charType
+			}).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'toggleLibrary': function (characterID) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/characters/toggleLibrary/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'delete': function (data) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/characters/delete/', { 'characterID': data.characterID }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'toggleFavorite': function (characterID) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/characters/toggleFavorite/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		}
+	}
+}]).service('range', function () {
 	this.get = function (from, to, incBy) {
 		incBy = parseInt(incBy);
 		if (Math.round(incBy) != incBy || incBy == 0) 
@@ -220,19 +272,28 @@ app.config(function ($httpProvider) {
 					$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
 				});
 			}
+
+
 		}
 	}
-}).directive('hbMargined', function () {
+}).directive('hbMargined', ['$timeout', function ($timeout) {
 	return {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
-			$element = $(element);
-			$headerbar = $(element).siblings('.headerbar');
-			skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
-			$element.css({ 'margin-left': skewedOut, 'margin-right': skewedOut });
+			$timeout(function () {
+				$element = $(element);
+				if (attrs.hbMargined = 'dark') 
+					$headerbar = $('.headerbar.hbDark');
+				else 
+					$headerbar = $element.siblings('.headerbar');2
+				skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
+				$element.css('margin-left', skewedOut);
+				if (!$element.hasClass('hbTopper')) 
+					$element.css('margin-right', skewedOut);
+			});
 		}
 	};
-}).directive('hbTopper', function () {
+}]).directive('hbTopper', function () {
 	return {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
@@ -264,6 +325,8 @@ app.config(function ($httpProvider) {
 			'changeFunc': '='
 		},
 		link: function (scope, element, attrs) {
+			if (!isUndefined(attrs.class) && attrs.class.length) 
+				element.attr('class', (element.attr('class').length?element.attr('.class') + ' ':'') + attrs.class);
 			scope.numPages = 0;
 			scope.$watch(function () { return scope.data.numItems; }, function (val) {
 				scope.numPages = Math.ceil(scope.data.numItems / scope.data.itemsPerPage);
@@ -290,153 +353,169 @@ app.config(function ($httpProvider) {
 		restrict: 'E',
 		templateUrl: '/angular/directives/combobox.php',
 		scope: {
-			'data': '=data',
-			'search': '=search',
-			'value': '=value',
+			'data': '=',
+			'value': '=',
+			'search': '='
 		},
 		link: function (scope, element, attrs) {
-			scope.strict = typeof attrs.strict != 'undefined'?true:false;
+			scope.select = !isUndefined(attrs.select)?true:false;
 			scope.bypassFilter = true;
-			scope.value = {};
-			scope.oWidth = 0;
-			var setupFinished = scope.$watch('data', function (newVal, oldVal) {
-				if (scope.search != '') {
-					$(scope.data).each(function (key, value) {
-						if (value.value == scope.search) 
-							scope.value = value;
-					});
-					if (scope.value == {}) 
-						scope.search = '';
-				} else
-					scope.search = '';
-				if (typeof attrs.placeholder != 'undefined') 
+			scope.search = typeof scope.search == 'string'?scope.search:'';
+			scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
+			scope.showDropdown = false;
+			scope.hasFocus = false;
+			scope.curSelected = -1;
+			var $combobox = null,
+				$input = null;
+
+			function setValue() {
+				for (key in scope.data) 
+					if (scope.search.toLowerCase() == scope.data[key].display.toLowerCase()) {
+						scope.value = scope.data[key];
+						scope.search = scope.value.display;
+					}
+			}
+			scope.filterData = function () {
+				return $filter('filter')(scope.data, (!scope.bypassFilter || '') && { 'display': scope.search });
+			}
+			var setupFinished = scope.$watch(function () { return scope.data; }, function () {
+				if (isUndefined(scope.data) || (scope.data instanceof Array && scope.data.length == 0)) 
+					return;
+				for (key in scope.data) {
+					if (typeof scope.data[key] == 'string' && scope.data[key].length > 0) 
+						scope.data[key] = { 'value': scope.data[key], 'display': scope.data[key] };
+					else if (!isUndefined(scope.data[key].display) && scope.data[key].display.length && (isUndefined(scope.data[key].value) || scope.data[key].value.length == 0))
+						scope.data[key].value = scope.data[key].display;
+					else if (isUndefined(scope.data[key].display) || scope.data[key].display.length == 0) 
+						scope.data.splice(key, 1);
+
+					scope.data[key].value = decodeHTML(scope.data[key].value);
+					scope.data[key].display = decodeHTML(scope.data[key].display);
+				}
+				filterResults = $filter('filter')(scope.data, { 'value': scope.value.value }, true);
+				if (filterResults.length == 1) 
+					scope.search = scope.value.display;
+				else 
+					scope.value = { 'value': null, 'display': '' };
+				if (scope.select && scope.value.value == null && scope.value.display == '' ) {
+					scope.value = copyObject(scope.data[0]);
+					scope.search = scope.value.display;
+				}
+				if (!isUndefined(attrs.placeholder)) 
 					element.find('input').attr('placeholder', attrs.placeholder);
-				scope.showDropdown = false;
-				scope.hasFocus = false;
 				$combobox = element.children('.combobox');
 				$input = $combobox.children('input');
-				if (typeof scope.data == 'undefined') 
+				if (isUndefined(scope.data)) 
 					scope.data = [];
-				var oldIndex = currentIndex = -1;
 
 				setupFinished();
-			});
+			}, true);
 
 			scope.toggleDropdown = function ($event) {
-				oldIndex = currentIndex = -1;
 				$event.stopPropagation();
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
-					scope.showDropdown = scope.showDropdown?false:true;
-					scope.hasFocus = scope.showDropdown?true:false;
-				}
+				if (scope.filterData().length) 
+					scope.showDropdown = !scope.showDropdown;
 			};
-			scope.revealDropdown = function () {
-				scope.hasFocus = true;
-				scope.value = {};
-				for (key in scope.data) 
-					if (scope.search == scope.data[key].value) 
-						scope.value = scope.data[key];
-				if (typeof scope.value != 'undefined' && scope.value.length == 0) 
-					scope.value.value = scope.search;
-				if ((isNaN(scope.search) || scope.search.length == 0) && $filter('filter')(scope.data, (!scope.bypassFilter || '') && scope.search).length) {
-					oldIndex = currentIndex = -1;
-					scope.showDropdown = true;
+			scope.$watch(function () { return scope.showDropdown; }, function (val, oldVal) {
+				if (val == oldVal) 
+					return;
+				if (scope.showDropdown && scope.filterData().length) {
+					scope.hasFocus = true;
+					scope.curSelected = -1;
 				} else {
-					oldIndex = currentIndex = -1;
 					element.find('.selected').removeClass('selected');
-					scope.showDropdown = false;
+					scope.bypassFilter = true;
+					scope.hasFocus = false;
 				}
-			};
-			scope.hideDropdown = function () {
-				element.find('.selected').removeClass('selected');
-				scope.showDropdown = false;
-				scope.bypassFilter = true;
-			};
+			});
 			$('html').click(function () {
-				scope.hideDropdown();
-				scope.hasFocus = false;
+				scope.showDropdown = false;
 				scope.$apply();
 			});
 
 			scope.$watch('hasFocus', function (newVal, oldVal) {
 				if (!newVal) {
-					if (scope.strict && scope.search.length > 0) {
-						filterResults = $filter('filter')(scope.data, { 'value':  scope.search }, true);
-						if (filterResults.length == 1 && filterResults[0].value.toLowerCase() == scope.search.toLowerCase()) {
-							scope.search = filterResults[0].value;
+					if (scope.search.length != '') {
+						filterResults = $filter('filter')(scope.data, { 'display': scope.search }, true);
+						if (filterResults.length == 1 && filterResults[0].display.toLowerCase() == scope.search.toLowerCase()) {
+							scope.search = filterResults[0].display;
 							scope.value = filterResults[0];
-						} else {
+						} else if (scope.select) {
 							noResults = true;
 							for (key in filterResults) {
-								if (filterResults[key].value == scope.search) {
+								if (filterResults[key].display.toLowerCase() == scope.search.toLowerCase()) {
 									noResults = false;
-									scope.search = filterResults[key].value;
+									scope.search = filterResults[key].display;
 									scope.value = filterResults[key];
 									break;
 								}
 							}
 							if (noResults) {
-								scope.search = '';
-								scope.value = {};
+								if (scope.select) {
+									scope.value = copyObject(scope.data[0]);
+									scope.search = scope.value.display;
+								} else {
+									scope.search = '';
+									scope.value = { 'value': null, 'display': '' };
+								}
 							}
-						}
+						} else 
+							scope.value = { 'value': null, 'display': scope.search }
 					}
 				}
 			});
 
 			scope.navigateResults = function ($event) {
 				if ($event.keyCode == 13) {
-					$selected = element.find('.results').find('.selected');
-					if ($selected.length == 0) {
-						$(scope.data).each(function (key, value) {
-							if (value.value == scope.search) 
-								scope.setBox(value);
-						});
-					} else 
-						scope.setBox($selected.data('$scope')['set']);
+					if (scope.showDropdown) 
+						$event.preventDefault();
+					scope.value = { 'value': null, 'display': '' };
+					console.log(scope.curSelected);
+					if (scope.curSelected == -1) {
+						filterResults = $filter('filter')(scope.data, { 'display': scope.search }, true);
+						if (filterResults.length == 1) 
+							scope.setBox(filterResults);
+					} else {
+						filterResults = $filter('filter')(scope.data, { 'display': scope.search });
+						scope.setBox(filterResults[scope.curSelected]);
+					}
 				} else if ($event.keyCode == 38 || $event.keyCode == 40) {
+					if (!scope.showDropdown) 
+						scope.showDropdown = true;
 					$resultsWrapper = element.find('.results');
 					$results = $($resultsWrapper).children();
 					resultsHeight = $resultsWrapper.height();
-					$results.each(function (key, value) {
-						if ($(this).hasClass('selected')) {
-							oldIndex = currentIndex = key;
-						}
-					});
 
 					if ($event.keyCode == 40) 
-						currentIndex += 1;
+						scope.curSelected += 1;
 					else if ($event.keyCode == 38) 
-						currentIndex -= 1;
-					else 
-						return;
+						scope.curSelected -= 1;
+					console.log(scope.curSelected);
 
-					if (currentIndex < 0) 
-						currentIndex = $results.length - 1;
-					else if (currentIndex >= $results.length) 
-						currentIndex = 0;
+					if (scope.curSelected < 0) 
+						scope.curSelected = $results.length - 1;
+					else if (scope.curSelected >= $results.length) 
+						scope.curSelected = 0;
 
-					if ($results[currentIndex].offsetTop + $($results[currentIndex]).outerHeight() > $resultsWrapper.scrollTop() + resultsHeight) 
-						$resultsWrapper.scrollTop($results[currentIndex].offsetTop + $($results[currentIndex]).outerHeight() - resultsHeight);
-					else if ($results[currentIndex].offsetTop < $resultsWrapper.scrollTop()) 
-						$resultsWrapper.scrollTop($results[currentIndex].offsetTop);
-
-					$($results[oldIndex]).removeClass('selected');
-					$($results[currentIndex]).addClass('selected');
-				} else 
+					if ($results[scope.curSelected].offsetTop + $($results[scope.curSelected]).outerHeight() > $resultsWrapper.scrollTop() + resultsHeight) 
+						$resultsWrapper.scrollTop($results[scope.curSelected].offsetTop + $($results[scope.curSelected]).outerHeight() - resultsHeight);
+					else if ($results[scope.curSelected].offsetTop < $resultsWrapper.scrollTop()) 
+						$resultsWrapper.scrollTop($results[scope.curSelected].offsetTop);
+				} else if ($event.keyCode == 27) 
+					scope.showDropdown = false;
+				else 
 					scope.bypassFilter = false;
 			};
 
 			scope.setBox = function (set) {
 				scope.value = copyObject(set);
-				scope.search = set.value;
+				scope.search = set.display;
 				scope.hasFocus = false;
 				scope.bypassFilter = true;
-				scope.hideDropdown();
+				scope.showDropdown = false;
 			};
-			scope.setSelected = function (set, $event) {
-				element.find('.results .selected').removeClass('selected');
-				$($event.currentTarget).addClass('selected');
+			scope.setSelected = function (index) {
+				scope.curSelected = index;
 			}
 		}
 	}
@@ -463,13 +542,15 @@ app.config(function ($httpProvider) {
 				wrapperLabel = true;
 			if (label.length) 
 				label.click(function (e) {
-					e.preventDefault();
-					scope.toggleCB();
+					if (wrapperLabel) 
+						scope.toggleCB();
+					else 
+						e.preventDefault();
 					scope.$apply();
 				});
 
 			scope.toggleCB = function ($event) {
-				if (wrapperLabel && $event) 
+				if (!isUndefined($event) && (wrapperLabel || $event.currentTarget == 'html')) 
 					return;
 				else if ($event && label.length == 0) 
 					$event.stopPropagation();
@@ -554,20 +635,45 @@ app.config(function ($httpProvider) {
 	return {
 		restrict: 'E',
 		template: '<div class="loadingSpinner"><img src="/images/loading_back.png" class="background"><img src="/images/loading_fore.png" class="foreground"></div>',
+		scope: {
+			'pause': '='
+		},
 		link: function (scope, element, attrs) {
-			var foreground = element.find('.foreground');
-			var fadeTime = 2500, fadePause = 500;
+			if (!isUndefined(attrs.size)) 
+				element.children().addClass(attrs.size);
+			if (!isUndefined(attrs.overlay)) {
+				parentHeight = element.parent().height();
+				if (parentHeight > 200) 
+					element.children().css('top', '90px');
+			}
+			var foreground = element.find('.foreground'),
+				running = scope.pause,
+				fadeTime = 1750,
+				fadePause = 200;
 			scope.fadeIn = function () {
 				$timeout (function () {
-					foreground.fadeIn(fadeTime, scope.fadeOut);
+					if (!scope.pause) {
+						running = true;
+						foreground.fadeIn(fadeTime, scope.fadeOut);
+					} else 
+						running = false;
 				}, fadePause);
 			}
 			scope.fadeOut = function () {
 				$timeout (function () {
-					foreground.fadeOut(fadeTime, scope.fadeIn);
+					if (!scope.pause) {
+						running = true;
+						foreground.fadeOut(fadeTime, scope.fadeIn);
+					} else 
+						running = false;
 				}, fadePause);
 			}
-			scope.fadeIn();
+			if (!scope.pause)
+				scope.fadeIn();
+			scope.$watch(function () { return scope.pause; }, function () {
+				if (!scope.pause && !running) 
+					scope.fadeIn();
+			});
 		}
 	}
 }]).filter('trustHTML', ['$sce', function($sce){
@@ -607,8 +713,8 @@ app.config(function ($httpProvider) {
 	}
 }).filter('convertTZ', function () {
 	return function (dtString, parseString, displayString) {
-		parseString = typeof parseString !== 'undefined'?parseString:'MMM D, YYYY h:mm a';
-		displayString = typeof displayString !== 'undefined'?displayString:'MMM D, YYYY h:mm a';
+		parseString = !isUndefined(parseString)?parseString:'MMM D, YYYY h:mm a';
+		displayString = !isUndefined(displayString)?displayString:'MMM D, YYYY h:mm a';
 
 		utcDT = moment.utc(dtString, parseString);
 		return utcDT.local().format(displayString);

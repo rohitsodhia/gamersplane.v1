@@ -10,10 +10,10 @@
 			return $this->name;
 		}
 
-		public function save() {
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setNotes($_POST['charSheet']);
 			}

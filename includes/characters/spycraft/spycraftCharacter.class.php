@@ -318,11 +318,10 @@
 			return $this->items;
 		}
 
-		public function save() {
-			global $mysql;
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setCodename($data['codename']);
 				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];

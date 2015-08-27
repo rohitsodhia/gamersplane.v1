@@ -109,10 +109,10 @@
 			return $this->equipment;
 		}
 
-		public function save() {
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				foreach ($data['stats'] as $stat => $value) {
 					$this->setStat($stat, 'dice', $value['numDice'].'d'.$value['typeDice']);

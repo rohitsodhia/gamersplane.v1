@@ -1,5 +1,5 @@
 controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', function ($scope, $http, $sce, $filter, $timeout) {
-	$http.post(API_HOST + '/systems/search/', { getAll: true }).success(function (data) {
+	$http.post(API_HOST + '/systems/get/', { getAll: true }).success(function (data) {
 		$scope.systems = data.systems;
 		$scope.numSystems = data.numSystems;
 		$scope.pagination.numItems = data.numSystems;

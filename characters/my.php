@@ -18,86 +18,58 @@
 <?	} ?>
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
-<?
-	$characters = $mysql->query("SELECT c.*, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c INNER JOIN systems s ON c.system = s.shortName LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.retired IS NULL AND c.userID = {$currentUser->userID} ORDER BY s.fullName, c.charType, c.label");
-	
-	$noItems = false;
-	if ($characters->rowCount()) {
-		echo "\t\t\t<ul id=\"userChars\" class=\"hbdMargined hbAttachedList\">\n";
-		foreach ($characters as $info) {
-?>
-				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>/" class="label"><?=$info['label']?></a
-					><div class="charType"><?=$info['charType']?></div
-					><div class="systemType"><?=$systems->getFullName($info['system'])?></div
+			<ul ng-if="characters.length" id="userChars" class="hbMargined hbAttachedList" hb-margined>
+				<li ng-repeat="character in characters | orderBy: ['system.short', 'label']" class="clearfix character" ng-class="{ 'editing': character.characterID == editing.characterID }">
+					<div class="label"><a href="/characters/{{character.system.short}}/{{character.characterID}}/" ng-bind-html="character.label | trustHTML" ng-show="editing.characterID != character.characterID"></a><input type="text" ng-model="character.label" ng-show="editing.characterID == character.characterID"></div
+					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><combobox ng-show="editing.characterID == character.characterID" data="charTypes" value="editing.cCharType" select></combobox></div
+					><div class="systemType" ng-bind-html="character.system.name | trustHTML"></div
 					><div class="links">
-						<a href="/characters/editBasic/<?=$info['characterID']?>/" class="editBasic sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type"></a>
-						<a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>/edit/" class="editChar sprite pencil" title="Edit Character" alt="Edit Character"></a>
-						<a href="/characters/process/libraryToggle/<?=$info['characterID']?>/" class="libraryToggle sprite book<?=$info['inLibrary']?'':' off'?>" title="<?=$info['inLibrary']?'Remove from':'Add to'?> Library" alt="<?=$info['inLibrary']?'Remove from':'Add to'?> Library"></a>
-						<a href="/characters/delete/<?=$info['characterID']?>/" class="delete sprite cross" title="Delete Character" alt="Delete Character"></a>
+						<a class="sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type" ng-click="editBasic(character)" ng-show="editing.characterID != character.characterID"></a>
+						<span class="confirm clearfix" ng-show="editing.characterID == character.characterID">
+							<a class="sprite check green" title="Save" alt="Save" ng-click="saveEdit(character)"></a>
+							<a class="sprite cross" title="Cancel" alt="Cancel" ng-click="cancelEditing(character)"></a>
+						</span>
+						<a href="/characters/{{character.system.short}}/{{character.characterID}}/edit/" class="editChar sprite pencil" title="Edit Character" alt="Edit Character"></a>
+						<a class="sprite book" ng-class="{ 'off': !character.inLibrary }" title="{{character.inLibrary?'Remove from':'Add to'}} Library" alt="{{character.inLibrary?'Remove from':'Add to'}} Library" ng-click="toggleLibrary(character)"></a>
+						<a class="sprite cross" title="Delete Character" alt="Delete Character" ng-click="deleteChar(character)" ng-show="deleting != character.characterID"></a>
+						<span class="confirm clearfix" ng-show="deleting == character.characterID">
+							<a class="sprite check" title="Delete" alt="Delete" ng-click="confirmDelete(character)"></a>
+							<a class="sprite cross" title="Cancel" alt="Cancel" ng-click="cancelDeleting(character)"></a>
+						</span>
 					</div>
 				</li>
-<?
-		}
-		echo "\t\t\t</ul>\n";
-	} else 
-		$noItems = true;
-	echo "\t\t\t".'<div class="noItems'.($noItems == false?' hideDiv':'').'">It seems you don\'t have any characters yet. You might wanna get started!</div>'."\n";
-?>
+			</ul>
+			<div class="noItems" ng-if="characters.length == 0">It seems you don't have any characters yet. You might wanna get started!</div>
 		</div>
 
 		<div id="libraryFavorites">
 			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
-<?
-	$libraryItems = $mysql->query("SELECT c.*, u.username FROM characterLibrary_favorites f, characters c, systems s, users u WHERE c.retired IS NULL AND c.system = s.shortName AND c.userID = u.userID AND f.userID = {$currentUser->userID} AND f.characterID = c.characterID ORDER BY s.fullName, c.charType, c.label");
-	$noItems = false;
-	if ($libraryItems->rowCount()) {
-		echo "\t\t\t<ul id=\"libraryChars\" class=\"hbdMargined hbAttachedList\">\n";
-		foreach ($libraryItems as $info) {
-?>
-				<li id="char_<?=$info['characterID']?>" class="clearfix character">
-					<a href="/characters/library/unfavorite/<?=$info['characterID']?>" class="unfavorite sprite tassel" title="Unfavorite Character" alt="Unfavorite Character"></a
-					><a href="/characters/<?=$info['system']?>/<?=$info['characterID']?>" class="label"><?=$info['label']?></a
-					><div class="charType"><?=$info['charType']?></div
-					><div class="systemType"><?=$systems->getFullName($info['system'])?></div
-					><div class="owner"><a href="/ucp/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
+			<ul ng-if="library.length" id="libraryChars" class="hbMargined hbAttachedList" hb-margined>
+				<li ng-repeat="character in library| orderBy: ['system.short', 'user.username']" class="clearfix character">
+					<a class="sprite tassel" title="Unfavorite Character" alt="Unfavorite Character" ng-click="unfavorite(character)"></a
+					><a href="/characters/{{character.system.short}}/{{character.characterID}}" class="label" ng-bind-html="character.label | trustHTML"></a
+					><div class="charType">{{character.charType}}</div
+					><div class="systemType" ng-bind-html="character.system.name | trustHTML"></div
+					><div class="owner"><a href="/ucp/{{character.user.userID}}" class="username" ng-bind-html="character.user.username | trustHTML"></a></div>
 				</li>
-<?
-		}
-		echo "\t\t\t</ul>\n";
-	} else 
-		$noItems = true;
-	echo "\t\t\t".'<div class="noItems'.($noItems == false?' hideDiv':'').'">You don\'t have anything from the library favorited. Check out what you\'re missing!</div>'."\n";
-?>
+			</ul>
+			<div ng-if="library.length == 0" class="noItems">You don't have anything from the library favorited. Check out what you're missing!</div>
 		</div>
 
-		<form id="newChar" action="/characters/process/new/" method="post">
+		<form id="newChar" method="post" ng-submit="createChar()">
 			<h2 class="headerbar hbDark">New Character</h1>
 			<div class="tr">
 				<label class="textLabel">Label</label>
-				<input type="text" name="label" maxlength="50">
+				<input type="text" ng-model="newChar.label" maxlength="50">
 			</div>
 			<div class="tr">
 				<label class="textLabel">System</label>
-				<select name="system">
-					<option value="">Select One</option>
-<?
-	$allSystems = $systems->getAllSystems(true);
-	foreach ($allSystems as $slug => $name) {
-?>
-					<option value="<?=$slug?>"><?=printReady($name)?></option>
-<?	} ?>
-					<option value="custom">Custom</option>
-				</select>
+				<combobox data="systems" value="newChar.system" select></combobox>
 			</div>
 			<div class="tr">
 				<label class="textLabel">Type</label>
-				<select name="charType">
-<?	foreach ($charTypes as $charType) { ?>
-					<option value="<?=$charType?>"><?=$charType?></option>
-<?	} ?>
-				</select>
+				<combobox data="charTypes" value="newChar.charType" select></combobox>
 			</div>
 			<div class="tr buttonPanel"><button type="submit" name="create" class="fancyButton">Create</button></div>
 		</form>

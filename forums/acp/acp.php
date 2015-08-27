@@ -105,7 +105,7 @@
 					</li>
 				</ul>
 
-				<form id="newGroup" ng-if="details.gameDetails.groups.length < 5" ng-submit="addGroupPermission()">
+				<form id="newGroup" ng-if="details.gameDetails.groups.length < 5" ng-submit="createGroup()">
 					Create a new group: <input type="text" ng-model="newGroup.name"> <button type="submit" class="fancyButton smallButton" skew-element>Create</button>
 				</form>
 			</div>
@@ -119,8 +119,8 @@
 				<div id="permissions_groups">
 					<h3 class="gapAbove">Groups</h3>
 					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
-					<form ng-if="details.isGameForum && combobox.groups.length" class="newPermission" ng-submit="addGroupPermission()">
-						Add permission for <combobox data="combobox.groups" value="combobox.values.groups" search="combobox.search.groups" strict></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
+					<form ng-if="details.isGameForum && newGroupPermission.data.length" class="newPermission" ng-submit="addGroupPermission()">
+						Add permission for <combobox data="newGroupPermission.data" value="newGroupPermission.value" select></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
 					</form>
 				</div>
 				

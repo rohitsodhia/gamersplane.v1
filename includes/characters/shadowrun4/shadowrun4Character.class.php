@@ -119,11 +119,10 @@
 			return $this->items;
 		}
 
-		public function save() {
-			global $mysql;
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setMetatype($data['metatype']);
 				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);

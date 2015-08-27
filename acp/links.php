@@ -13,6 +13,6 @@
 					<links-edit data="link"></links-edit>
 				</li>
 			</ul>
-			<paginate class="tr"></paginate>
+			<paginate data="pagination" change-func="getLinks" class="tr"></paginate>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

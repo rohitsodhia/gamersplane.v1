@@ -15,12 +15,12 @@
 			<music-form data="newSong" ng-show="showEdit == 'new'"></music-form>
 			<ul class="prettyList">
 				<li ng-repeat="song in music | orderBy: ['+approved', '+title']" ng-class="{ 'unapproved': !song.approved }">
-					<div class="songDetails" ng-show="editing != song.id">
+					<div class="songDetails" ng-show="showEdit != song._id">
 						<div class="clearfix">
 							<a href="{{song.url}}" target="_blank" class="song">{{song.title}}<img src="/images/tools/quote.png" ng-if="song.lyrics" title="Has Lyrics" alt="Has Lyrics"><img src="/images/tools/battlebards_mini.png" ng-if="song.battlebards" title="Battlebards" alt="Battlebards"></a>
 							<div class="manageSong">
 								<a ng-click="toggleApproval(song)" href="" class="toggleApproval">{{song.approved?'Una':'A'}}pprove</a>
-								<a href="" ng-click="editSong(song.id)">Edit</a>
+								<a href="" ng-click="editSong(song._id)">Edit</a>
 								<a href="" class="delete">Delete</a>
 								<span class="confirmDelete">(
 									<a href="" class="confirm">Confirm</a>
@@ -32,9 +32,9 @@
 						<div class="genres">{{song.genres.join(', ')}}</div>
 						<div ng-if="song.notes.length" class="notes">{{song.notes}}</div>
 					</div>
-					<music-form data="song" ng-show="showEdit == song.id"></music-form>
+					<music-form data="song" ng-show="showEdit == song._id"></music-form>
 				</li>
 			</ul>
-			<paginate class="tr"></paginate>
+			<div class="tr"><paginate data="pagination" change-func="loadMusic"></paginate></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

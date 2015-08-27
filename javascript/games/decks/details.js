@@ -20,8 +20,7 @@ $(function () {
 		},
 		success: function (data) {
 			if (data.success) {
-				var appElement = parent.document.querySelector('[ng-app=gamersplane]');
-				var $scope = parent.angular.element(appElement).scope();
+				var $scope = getModalAngularParent();
 				$scope.$apply(function() {
 					$scope.modalWatch = { action: data.action, deck: data.deck };
 				});

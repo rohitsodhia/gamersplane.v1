@@ -34,15 +34,19 @@
 			<a ng-if="loggedIn" class="fancyButton smallButton" ng-click="toggleAddSong()" skew-element>Add Music</a>
 			<music-form ng-if="addSong" data="newSong"></music-form>
 			<div ng-show="songSubmitted" class="alertBox_success">Song submitted!</div>
-			<ul class="hbAttachedList">
-				<li ng-repeat="song in music | orderBy: 'title'">
-					<div class="clearfix" equalize-columns>
-						<a href="{{song.url}}" target="_blank" class="song">{{song.title}}<img ng-if="song.lyrics" src="/images/tools/quote.png" title="Has Lyrics" alt="Has Lyrics"><img ng-if="song.battlebards" src="/images/tools/battlebards_mini.png" title="Battlebards Clip" alt="Battlebards Clip"></a
-						><div class="genres">{{song.genres.join(', ')}}</div>
-					</div>
-					<div ng-if="song.notes" class="notes">{{song.notes}}</div>
-				</li>
-			</ul>
-			<paginate class="tr"></paginate>
+			<div>
+			<div class="relativeWrapper">
+				<div id="loading"><loading-spinner overlay></loading-spinner></div>
+				<ul class="hbAttachedList">
+					<li ng-repeat="song in music | orderBy: 'title'">
+						<div class="clearfix" equalize-columns>
+							<a href="{{song.url}}" target="_blank" class="song">{{song.title}}<img ng-if="song.lyrics" src="/images/tools/quote.png" title="Has Lyrics" alt="Has Lyrics"><img ng-if="song.battlebards" src="/images/tools/battlebards_mini.png" title="Battlebards Clip" alt="Battlebards Clip"></a
+							><div class="genres">{{song.genres.join(', ')}}</div>
+						</div>
+						<div ng-if="song.notes" class="notes">{{song.notes}}</div>
+					</li>
+				</ul>
+			</div>
+			<div class="tr"><paginate data="pagination" change-func="loadMusic"></paginate></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

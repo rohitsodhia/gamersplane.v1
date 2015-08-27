@@ -2,10 +2,11 @@
 	class pms {
 		function __construct() {
 			global $loggedIn, $pathOptions;
-			if (!$loggedIn) exit;
+			if (!$loggedIn) 
+				exit;
 
-			if ($pathOptions[0] == 'list' && in_array($_POST['box'], array('inbox', 'outbox'))) 
-				$this->displayBox($_POST['box']);
+			if ($pathOptions[0] == 'get') 
+				$this->get($_POST['box']);
 			elseif ($pathOptions[0] == 'allowed' && intval($_POST['pmID'])) 
 				$this->checkAllowed($_POST['pmID']);
 			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
@@ -18,14 +19,17 @@
 				displayJSON(array('failed' => true));
 		}
 
-		public function displayBox($box) {
+		public function get($box) {
 			global $mongo, $currentUser;
 
+			$box = strtolower($box);
+			if (!in_array($box, array('inbox', 'outbox'))) 
+				displayJSON(array('failed' => true, 'errors' => array('noBox')));
 			if ($box == 'inbox') 
 				$search = array('recipients.userID' => $currentUser->userID, 'recipients.deleted' => false);
 			else 
 				$search = array('sender.userID' => $currentUser->userID);
-			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
+			$page = isset($_POST['page']) && intval($_POST['page']) > 0?intval($_POST['page']):1;
 			$numPMs = $mongo->pms->find($search, array('_id' => 1))->count();
 			$pmsResults = $mongo->pms->find($search)->sort(array('datestamp' => -1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
 			$pms = array();
@@ -47,7 +51,7 @@
 				}
 				$pms[] = $pm;
 			}
-			displayJSON(array('box' => $box, 'pms' => $pms, 'totalCount' => $numPMs));
+			displayJSON(array('success' => true, 'box' => $box, 'pms' => $pms, 'totalCount' => $numPMs));
 		}
 
 		public function displayPM($pmID) {

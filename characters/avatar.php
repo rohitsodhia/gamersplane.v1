@@ -4,7 +4,7 @@
 	$charPermissions = false;
 	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
-		$charClass = $systems->systemClassName(SYSTEM).'Character';
+		$charClass = Systems::systemClassName(SYSTEM).'Character';
 		if ($character = new $charClass($characterID)) {
 			$character->load();
 			$dispatchInfo['title'] = 'Edit '.$character->getLabel().' Avatar | '.$dispatchInfo['title'];

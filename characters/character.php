@@ -5,7 +5,7 @@
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->verifySystem(SYSTEM)) {
 		require_once(FILEROOT."/includes/packages/".SYSTEM."Character.package.php");
-		$charClass = $systems->systemClassName(SYSTEM).'Character';
+		$charClass = Systems::systemClassName(SYSTEM).'Character';
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
@@ -16,10 +16,14 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
 					$noChar = false;
-					if ($charPermissions == 'library') 
+					if ($charPermissions == 'library') {
 						$mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
+						$mongo->characters->update(array('characterID' => $characterID), array('$inc' => array('library.views' => 1)));
+						$favorited = $mysql->query("SELECT updateDate FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID}")->rowCount();
+					}
 					$addJSFiles[] = 'characters/_sheet.js';
-					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) $addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
+					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) 
+						$addJSFiles[] = 'characters/'.SYSTEM.'/sheet.js';
 				}
 			} else { header('Location: /characters/my/'); exit; }
 		}
@@ -32,7 +36,7 @@
 <?		if ($charPermissions == 'edit') { ?>
 			<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit/" class="sprite pencil"></a>
 <?		} else { ?>
-			<a href="/" class="favoriteChar sprite tassel off" title="Favorite"	 alt="Favorite"></a>
+			<a href="/" class="favoriteChar sprite tassel<?=$favorited?'':' off'?>" title="Favorite" alt="Favorite"></a>
 <?		} ?>
 		</div></div>
 <?	} ?>

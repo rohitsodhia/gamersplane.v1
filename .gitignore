@@ -9,6 +9,7 @@ _backup/
 *.css
 *.pdf
 *.sql
+*.zip
 javascript/markItUp/sets/default/
 javascript/markItUp/skins/markitup/
 javascript/markItUp/skins/simple/
@@ -21,3 +22,4 @@ oneRunScripts/
 images/links/
 images/tools/dice/sweote/sweote/
 node_modules/
+mafia/

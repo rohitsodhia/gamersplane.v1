@@ -8,12 +8,28 @@ $.urlParam = function(name){
     }
 }
 
-String.prototype.capitalizeFirstLetter = function() {
+String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+function removeEle(from, element) {
+	var key = from.indexOf(element);
+	if (key >= 0) 
+		from.splice(key, 1);
 }
 
 function copyObject(val) {
 	return JSON.parse(JSON.stringify(val));
+}
+
+function isUndefined(val) {
+	return typeof val === 'undefined'?true:false;
+}
+
+function decodeHTML(html) {
+	var txt = document.createElement("textarea");
+	txt.innerHTML = html;
+	return txt.value;
 }
 
 function getPathElements() {
@@ -26,7 +42,7 @@ function getPathElements() {
 }
 
 function getModalAngularParent() {
-	var appElement = parent.document.querySelector('[ng-app=gamersplane]');
+	var appElement = parent.document.querySelector('[ng-app]');
 	var $scope = parent.angular.element(appElement).scope();
 	return $scope;
 }

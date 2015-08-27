@@ -110,7 +110,8 @@
 
 		public function saveLink() {
 			global $loggedIn, $mongo;
-			if (!$loggedIn) exit;
+			if (!$loggedIn) 
+				exit;
 
 			$data = array();
 			$errors = array();

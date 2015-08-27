@@ -22,6 +22,10 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			{ 'key': 'addDraws', 'label': 'Add Draws' },
 			{ 'key': 'moderate', 'label': 'Moderate' }
 		];
+		$scope.newGroupPermission = {
+			'data': [],
+			'value': {}
+		};
 		if (pathElements[3] != null && ['details', 'subforums', 'permissions'].indexOf(pathElements[3]) != -1) 
 			$scope.currentSection = pathElements[3];
 		else if (pathElements[3] == 'groups') 
@@ -37,30 +41,32 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 				if (data.failed && $scope.details == {}) 
 					document.location = '/forums/';
 				else if (data.success) {
-					if (typeof newSection == 'undefined' || ['details', 'subforums', 'groups', 'permissions'].indexOf(newSection) == -1) {
-//						if ($scope.currentSection == null && data.details.isGameForum) 
-//							$scope.currentSection = 'groups';
-						if ($scope.forumID != forumID && data.details.parentID != 2)
-							$scope.currentSection = 'details';
-						else 
-							$scope.currentSection = 'subforums';
-					} else 
+					if (typeof newSection == 'undefined' || ['details', 'subforums', 'groups', 'permissions'].indexOf(newSection) == -1) 
+						$scope.currentSection = 'details';
+					else 
 						$scope.currentSection = newSection;
+					if (data.details.parentID == 2 && $scope.currentSection == 'details') 
+						$scope.currentSection = 'subforums';
 					$scope.forumID = forumID;
 					$scope.list = data.list;
 					$scope.details = data.details;
 					$scope.editDetails = { 'title': data.details.title, 'description': data.details.description };
 					$scope.permissions = data.permissions;
-
-					$scope.combobox.groups = []
-					if ($scope.details.gameDetails) 
-						for (key in $scope.details.gameDetails.groups) 
-							if (!$scope.details.gameDetails.groups[key].permissionSet)
-								$scope.combobox.groups.push({ 'id': $scope.details.gameDetails.groups[key].groupID, 'value': $scope.details.gameDetails.groups[key].name });
 				}
 			});
 		}
-		$scope.getForumDetails($scope.forumID);
+		$scope.getForumDetails($scope.forumID, $scope.currentSection);
+		$scope.$watch(function () { return $scope.details.gameDetails; }, function (gameDetails) {
+			$scope.newGroupPermission.data = [];
+			if (gameDetails) {
+				for (key in gameDetails.groups) 
+					if (!gameDetails.groups[key].permissionSet) 
+						$scope.newGroupPermission.data.push({
+							'value': gameDetails.groups[key].groupID,
+							'display': gameDetails.groups[key].name
+						});
+			}
+		}, true);
 
 		$scope.saveError = false;
 		$scope.saveDetails = function () {
@@ -105,7 +111,6 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 		};
 		$scope.newForum = { 'name': '' };
 		$scope.createForum = function () {
-			console.log($scope.newForum);
 			if ($scope.newForum.name.length < 3) 
 				return;
 			$http.post(API_HOST + '/forums/acp/createForum/', { 'parentID': $scope.forumID, 'name': $scope.newForum.name }).success(function (data) {
@@ -114,9 +119,6 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			});
 		};
 
-		$scope.combobox = {};
-		$scope.combobox.search = { 'groups': '' };
-		$scope.combobox.values = { 'groups': {} };
 		$scope.cb_groups = '';
 		$scope.renderedDirectives = { 'groups': false };
 		$scope.newGroup = { 'name': '' };
@@ -201,8 +203,14 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 					for (key in permissions) {
 						if (permissions[key].id == permission.id) {
 							permissions.splice(key, 1);
-							if (permission.type == 'group') 
-								$scope.combobox.groups.push({ 'id': permission.id, 'value': permission.name });
+							if (permission.type == 'group') {
+								for (gKey in $scope.details.gameDetails.groups) {
+									if ($scope.details.gameDetails.groups[gKey].groupID == permission.id) {
+										$scope.details.gameDetails.groups[gKey].permissionSet = true;
+										break;
+									}
+								}
+							}
 							break;
 						}
 					}
@@ -219,26 +227,23 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			});
 		};
 		$scope.addGroupPermission = function () {
-			if ($scope.combobox.values.groups != {}) {
-				$http.post(API_HOST + '/forums/acp/addPermission/', { 'type': 'group', 'forumID': $scope.forumID, 'typeID': $scope.combobox.values.groups.id }).success(function (data) {
+			if ($scope.newGroupPermission.value.value != null) {
+				$http.post(API_HOST + '/forums/acp/addPermission/', { 'type': 'group', 'forumID': $scope.forumID, 'typeID': $scope.newGroupPermission.value.value }).success(function (data) {
 					if (data.success) {
-						groupID = $scope.combobox.values.groups.id;
+						groupID = $scope.newGroupPermission.value.value;
 						for (key in $scope.details.gameDetails.groups) {
 							if ($scope.details.gameDetails.groups[key].groupID == groupID) {
 								$scope.details.gameDetails.groups[key].permissionSet = true;
 								break;
 							}
 						}
-						data.newPermission.name = $scope.combobox.values.groups.value;
-						data.newPermission.ref = 'group_' + $scope.combobox.values.groups.id;
+						data.newPermission.name = $scope.newGroupPermission.value.display;
+						data.newPermission.ref = 'group_' + $scope.newGroupPermission.value.value;
 						$scope.permissions.group.push(data.newPermission);
-						for (key in $scope.combobox.groups) 
-							if ($scope.combobox.groups[key].id == groupID) 
-								$scope.combobox.groups.splice(key, 1);
 					}
-				})
+				});
 			}
-		}
+		};
 		$scope.addUserPermission = function (user) {
 			if (user.userID) {
 				$http.post(API_HOST + '/forums/acp/addPermission/', { 'type': 'user', 'forumID': $scope.forumID, 'typeID': user.userID }).success(function (data) {

@@ -3,6 +3,12 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+.border-radius(@radius: 6px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
 #page_myCharacters {
 	.alertBox_error {
 		padding-top: 8px;
@@ -13,20 +19,22 @@
 		margin-top: 0;
 	}
 
-	.hbAttachedList > li {
-		padding: 5px 8px;
-	}
+	.hbAttachedList {
+		& > li {
+			padding: 5px 8px;
 
-	.hbAttachedList > li:hover {
-		padding: 4px 7px;
-	}
+			&:hover {
+				padding: 4px 7px;
+			}
 
-	.hbAttachedList > li:first-child:hover {
-		padding: 5px 7px 4px;
-	}
+			&:first-child:hover {
+				padding: 5px 7px 4px;
+			}
+		}
 
-	.hbAttachedList li > * {
-		vertical-align: middle;
+		li > * {
+			vertical-align: middle;
+		}
 	}
 
 	.label, .charType, .systemType {
@@ -38,11 +46,24 @@
 	.label {
 		width: 200px;
 		padding-left: 5px;
+
+		input {
+			width: 205px;
+			text-align: left;
+		}
 	}
 
 	.charType {
 		width: 30px;
 		text-align: center;
+	}
+
+	.editing .charType {
+		width: 60px;
+
+		.combobox input {
+			width: 60px;
+		}
 	}
 
 	.systemType {
@@ -55,8 +76,19 @@
 		margin-left: 15px;
 	}
 
-	.links a {
-		margin-right: 10px;
+	.links {
+		* {
+			margin-right: 10px;
+			vertical-align: middle;
+		}
+
+		.confirm {
+			display: inline-block;
+			background-color: #FFD;
+			border: 1px solid #000;
+			padding: 4px 0 4px 10px;
+			.border-radius(); 
+		}
 	}
 
 	.noItems {

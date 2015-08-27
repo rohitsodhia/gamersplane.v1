@@ -52,12 +52,10 @@
 			return $this->spells;
 		}
 
-		public function save() {
-			global $mysql;
+		public function save($bypass = false) {
 			$data = $_POST;
-			$system = $this::SYSTEM;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
 				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);

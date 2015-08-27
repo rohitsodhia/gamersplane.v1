@@ -72,22 +72,16 @@
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
 				$player['primaryGM'] = $player['primaryGM']?true:false;
-				if ($player['approved']) 
+				if ($player['approved'] && !$player['primaryGM']) 
 					$gameInfo['approvedPlayers']++;
+				$player['characters'] = array();
 			}
 			$characters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
-			$playerChars = array();
 			foreach ($characters as $character) {
 				$character['characterID'] = (int) $character['characterID'];
 				$character['userID'] = (int) $character['userID'];
 				$character['approved'] = (bool) $character['approved'];
-				$playerChars[$character['userID']][] = $character;
-			}
-			foreach ($players as &$player) {
-				if (array_key_exists($player['userID'], $playerChars)) 
-					$player['characters'] = $playerChars[$player['userID']];
-				else 
-					$player['characters'] = array();
+				$players[$character['userID']]['characters'][] = $character;
 			}
 			$invites = $mysql->query("SELECT u.userID, u.username FROM gameInvites i INNER JOIN users u ON i.invitedID = u.userID WHERE i.gameID = {$gameID}")->fetchAll();
 			if (sizeof($invites)) {

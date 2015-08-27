@@ -370,11 +370,10 @@
 			return $this->spells;
 		}
 
-		public function save() {
-			global $mysql;
+		public function save($bypass = false) {
 			$data = $_POST;
 
-			if (!isset($data['create'])) {
+			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setRace($data['race']);
 				$this->setSize($data['size']);

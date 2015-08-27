@@ -21,7 +21,7 @@
 			$isGM = true;
 
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
-		$charClass = $systems->systemClassName($system).'Character';
+		$charClass = Systems::systemClassName($system).'Character';
 	} else 
 		$fixedGameMenu = false;
 
@@ -286,7 +286,7 @@
 		$characters = array();
 		if ($gameID) {
 			require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
-			$charClass = $systems->systemClassName($system).'Character';
+			$charClass = Systems::systemClassName($system).'Character';
 			$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
 			if ($characterIDs->rowCount()) { while ($characterID = $characterIDs->fetchColumn()) {
 				if ($character = new $charClass($characterID)) {
