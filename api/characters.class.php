@@ -43,18 +43,20 @@
 			$characters = $characters->fetchAll();
 			foreach ($characters as &$character) {
 				$character['characterID'] = (int) $character['characterID'];
-				$character['system'] = array('short' => $character['system'], 'name' => $systems->getFullName($character['system']));
+				$character['label'] = printReady($character['label']);
+				$character['system'] = array('short' => printReady($character['system']), 'name' => printReady($systems->getFullName($character['system'])));
 				$character['gameID'] = (int) $character['gameID'];
 				$character['approved'] = (bool) $character['approved'];
 				$character['inLibrary'] = (bool) $character['inLibrary'];
-			};
+			}
 			$return = array('characters' => $characters);
 			if (isset($_POST['library']) && $_POST['library']) {
 				$libraryItems = $mysql->query("SELECT c.characterID, c.label, c.charType, c.system, u.username, u.userID FROM characterLibrary_favorites f INNER JOIN characters c ON f.characterID = c.characterID INNER JOIN users u ON c.userID = u.userID WHERE c.retired IS NULL AND f.userID = {$currentUser->userID} ORDER BY c.charType, c.label")->fetchAll();
 				foreach ($libraryItems as &$item) {
 					$item['characterID'] = (int) $item['characterID'];
-					$item['system'] = array('short' => $item['system'], 'name' => $systems->getFullName($item['system']));
-					$item['user'] = array('userID' => (int) $item['userID'], 'username' => $item['username']);
+					$item['label'] = printReady($item['label']);
+					$item['system'] = array('short' => printReady($item['system']), 'name' => printReady($systems->getFullName($item['system'])));
+					$item['user'] = array('userID' => (int) $item['userID'], 'username' => printReady($item['username']));
 					unset($item['userID'], $item['username']);
 				}
 				$return['library'] = $libraryItems;

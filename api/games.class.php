@@ -48,9 +48,9 @@
 			$gameInfo['gameID'] = (int) $gameInfo['gameID'];
 			$gameInfo['title'] = printReady($gameInfo['title']);
 			$system = $mongo->systems->findOne(array('_id' => $gameInfo['system']), array('name' => 1));
-			$gameInfo['system'] = array('_id' => $gameInfo['system'], 'name' => $system['name']);
+			$gameInfo['system'] = array('_id' => printReady($gameInfo['system']), 'name' => printReady($system['name']));
 			require_once(FILEROOT.'/includes/User.class.php');
-			$gameInfo['gm'] = array('userID' => (int) $gameInfo['gmID'], 'username' => $gameInfo['gmUsername'], 'inactive' => User::inactive($gameInfo['lastActivity']));
+			$gameInfo['gm'] = array('userID' => (int) $gameInfo['gmID'], 'username' => printReady($gameInfo['gmUsername']), 'inactive' => User::inactive($gameInfo['lastActivity']));
 			unset($gameInfo['gmID'], $gameInfo['gmUsername'], $gameInfo['lastActivity']);
 			$gameInfo['created'] = date('F j, Y g:i a', strtotime($gameInfo['created']));
 			$gameInfo['postFrequency'] = explode('/', $gameInfo['postFrequency']);
@@ -65,18 +65,20 @@
 			$gameInfo['groupID'] = (int) $gameInfo['groupID'];
 			$gameStatus = array('Closed', 'Open');
 			$gameInfo['status'] = (bool) $gameInfo['status'];
-			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM, p.primaryGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID} ORDER BY p.approved, u.username")->fetchAll();
-			$gameInfo['approvedPlayers'] = 0;
 			$rCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
 			$characters = array();
 			foreach ($rCharacters as $character) {
 				$character['characterID'] = (int) $character['characterID'];
 				$character['userID'] = (int) $character['userID'];
+				$character['label'] = printReady($character['label']);
 				$character['approved'] = (bool) $character['approved'];
 				$characters[$character['userID']][] = $character;
 			}
+			$players = $mysql->query("SELECT p.userID, u.username, p.approved, p.isGM, p.primaryGM FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameID} ORDER BY p.approved, u.username")->fetchAll();
+			$gameInfo['approvedPlayers'] = 0;
 			foreach ($players as &$player) {
 				$player['userID'] = (int) $player['userID'];
+				$player['username'] = printReady($player['username']);
 				$player['approved'] = $player['approved']?true:false;
 				$player['isGM'] = $player['isGM']?true:false;
 				$player['primaryGM'] = $player['primaryGM']?true:false;

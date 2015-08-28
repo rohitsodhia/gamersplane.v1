@@ -14,7 +14,8 @@
 			foreach ($input as $key => $value) 
 				$input[$key] = utf8ize($value);
 		} else if (is_string ($input)) 
-			return utf8_encode($input);
+//			return utf8_encode($input);
+			return mb_convert_encoding($input, 'UTF-8');
 		return $input;
 	}
 
@@ -36,7 +37,7 @@
 
 		$string = trim($string);
 		$string = strip_tags($string);
-		$string = mb_convert_encoding($string, 'UTF-8');
+		$string = utf8_decode($string);
 		if (in_array('lower', $options)) $string = strtolower($string);
 		if (in_array('like_clean', $options)) $string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
 		if (in_array('rem_dup_spaces', $options)) $string = preg_replace('/\s+/', ' ', $string);
@@ -45,11 +46,13 @@
 	}
 
 	function printReady($string, $options = array('stripslashes', 'nl2br')) {
+		$string = utf8_decode($string);
 		if (in_array('nl2br', $options)) {
 			$string = str_replace("\r\n", "\n", $string);
 			$string = nl2br($string);
 		}
-		if (in_array('stripslashes', $options)) $string = stripslashes($string);
+		if (in_array('stripslashes', $options)) 
+			$string = stripslashes($string);
 		
 		return $string;
 	}
