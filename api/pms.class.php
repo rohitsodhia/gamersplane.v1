@@ -34,6 +34,7 @@
 			$pmsResults = $mongo->pms->find($search)->sort(array('datestamp' => -1))->skip(PAGINATE_PER_PAGE * ($page - 1))->limit(PAGINATE_PER_PAGE);
 			$pms = array();
 			foreach ($pmsResults as $pm) {
+				$pm = printReady($pm);
 				$pm['read'] = true;
 				if ($box == 'inbox') {
 					$pm['allowDelete'] = true;
@@ -64,8 +65,8 @@
 			$pm = $mongo->pms->findOne(array('pmID' => $pmID, '$or' => array(array('sender.userID' => $currentUser->userID), array('recipients.userID' => $currentUser->userID, 'recipients.deleted' => false))));
 			if ($pm === null) displayJSON(array('noPM' => true));
 			else {
-				$pm['title'] = printReady($pm['title']);
-				$pm['message'] = BBCode2Html(printReady($pm['message']));
+				$pm = printReady($pm);
+				$pm['message'] = BBCode2Html($pm['message']);
 				$pm['allowDelete'] = true;
 				$history = $pm['history'];
 				if ($pm['sender']['userID'] == $currentUser->userID) {

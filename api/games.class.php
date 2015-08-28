@@ -271,7 +271,7 @@
 					$systems = Systems::getInstance();
 					$emailDetails->message = "<a href=\"http://gamersplane.com/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"http://gamersplane.com/characters/{$characterID}/\">{$charLabel}</a>.";
 					ob_start();
-					include('gmEmail.php');
+					include('emails/gmEmail.php');
 					$email = ob_get_contents();
 					ob_end_clean();
 					@mail(implode(', ', $gmEmails), "Game Activity: {$emailDetails->action}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");

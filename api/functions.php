@@ -13,7 +13,7 @@
 		if (is_array($input)) {
 			foreach ($input as $key => $value) 
 				$input[$key] = utf8ize($value);
-		} else if (is_string ($input)) 
+		} elseif (is_string($input)) 
 //			return utf8_encode($input);
 			return mb_convert_encoding($input, 'UTF-8');
 		return $input;
@@ -45,16 +45,19 @@
 		return $string;
 	}
 
-	function printReady($string, $options = array('stripslashes', 'nl2br')) {
-		$string = utf8_decode($string);
-		if (in_array('nl2br', $options)) {
-			$string = str_replace("\r\n", "\n", $string);
-			$string = nl2br($string);
-		}
-		if (in_array('stripslashes', $options)) 
-			$string = stripslashes($string);
-		
-		return $string;
+	function printReady($input, $options = array('stripslashes', 'nl2br')) {
+		if (is_string($input)) {
+			$input = utf8_decode($input);
+			if (in_array('nl2br', $options)) {
+				$input = str_replace("\r\n", "\n", $input);
+				$input = nl2br($input);
+			}
+			if (in_array('stripslashes', $options)) 
+				$input = stripslashes($input);
+		} elseif (is_array($input))
+			foreach ($input as $key => $value) 
+				$input[$key] = printReady($value);
+		return $input;
 	}
 	
 	function filterString($string) {
