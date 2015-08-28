@@ -1,5 +1,6 @@
 <?
 	if ($loggedIn) { header('Location: /'); exit; }
+	$addExternalJSFiles[] = 'https://www.google.com/recaptcha/api.js';
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">Registration</h1>
@@ -64,12 +65,7 @@
 			
 			<div id="recaptchaDiv" class="tr">
 				<h2>Prove to me you're real!</h2>
-<?
-		require_once(FILEROOT.'/register/recaptcha/recaptchalib.php');
-		$publickey = '6LeuZgcAAAAAAOJpyjwOnxRuvSnMzUxSyKV-CNg5 ';
-		echo recaptcha_get_html($publickey);
-		echo "\n";
-?>
+				<div class="g-recaptcha" data-sitekey="6LcT8gsTAAAAALlRVGdtM9iansESdnIdeCUIwoqG"></div>
 				<div class="alert <?=(isset($errors['captchaFailed'])?'showDiv':'hideDiv')?>">reCaptch failed!</div>
 			</div>
 			

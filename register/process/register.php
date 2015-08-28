@@ -38,15 +38,19 @@
 			if ($emailCheck->rowCount()) $formErrors->addError('emailTaken');
 		}
 		
-		require_once(FILEROOT.'/register/recaptcha/recaptchalib.php');
-		$privatekey = '6LeuZgcAAAAAACECj0h1wj9SsR2CtuluSyMzBezb';
-		$resp = recaptcha_check_answer ($privatekey,
-										$_SERVER['REMOTE_ADDR'],
-										$_POST['recaptcha_challenge_field'],
-										$_POST['recaptcha_response_field']);
-		
-		if (!$resp->is_valid) $formErrors->addError('captchaFailed');
-		
+		$secret = '6LcT8gsTAAAAAEA0RemG5ryLemgp4h8uwwbCHFgs';
+		$recaptcha_options = array(
+			'http' => array(
+				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method'  => 'POST',
+				'content' => http_build_query(array('secret' => $secret, 'response' => $_POST['g-recaptcha-response']))
+			)
+		);
+		$context  = stream_context_create($recaptcha_options);
+		$recaptcha = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context));
+		if (!$recaptcha->success) 
+			$formErrors->addError('recaptcha');
+
 		if ($formErrors->errorsExist()) {
 			$formErrors->setErrors('registration');
 			header('Location: /register/?failed=1');
