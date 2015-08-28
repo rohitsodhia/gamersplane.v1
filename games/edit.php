@@ -13,17 +13,6 @@
 		}
 	}
 
-	if ($_SESSION['errors']) {
-		if (preg_match('/games\/process\/(new|edit)/', $_SESSION['lastURL'])) {
-			$errors = $_SESSION['errors'];
-			foreach ($_SESSION['errorVals'] as $key => $value) $$key = $value;
-		}
-		if (!preg_match('/games\/process\/(new|edit)/', $_SESSION['lastURL']) || time() > $_SESSION['errorTime']) {
-			unset($_SESSION['errors']);
-			unset($_SESSION['errorVals']);
-		}
-	}
-
 	if (isset($gameDetails['postFrequency'])) {
 		$postFrequency = array('timesPer' => 0, 'perPeriod' => 0);
 		list($postFrequency['timesPer'], $postFrequency['perPeriod']) = explode('/', $gameDetails['postFrequency']);
@@ -51,19 +40,19 @@
 <?	} ?>
 			<h1 class="headerbar"><?=$display == 'new'?'New':'Edit'?> Game</h1>
 			
-<?	if (sizeof($_GET) && $errors) { ?>
+<?	if ($formErrors->getErrors('gameDetails')) { ?>
 			<div class="alertBox_error">
 				Seems like there were some problems:
 				<ul>
 <?
-	if ($errors['invalidTitle']) 
-		echo "\t\t\t\t\t<li>Seems like there's something wrong with your game's title.</li>\n";
-	if ($errors['repeatTitle']) 
-		echo "\t\t\t\t\t<li>Someone else already has a game by this name.</li>\n";
-	if ($errors['invalidSystem']) 
-		echo "\t\t\t\t\t<li>You didn't select a system!</li>\n";
-	if ($errors['invalidNumPlayers']) 
-		echo "\t\t\t\t\t<li>You need at least 2 players in a game.</li>\n";
+		if ($formErrors->checkError('invalidTitle')) 
+			echo "\t\t\t\t\t<li>Seems like there's something wrong with your game's title.</li>\n";
+		if ($formErrors->checkError('repeatTitle')) 
+			echo "\t\t\t\t\t<li>Someone else already has a game by this name.</li>\n";
+		if ($formErrors->checkError('invalidSystem')) 
+			echo "\t\t\t\t\t<li>You didn't select a system!</li>\n";
+		if ($formErrors->checkError('invalidNumPlayers')) 
+			echo "\t\t\t\t\t<li>You need at least 2 players in a game.</li>\n";
 ?>
 				</ul>
 			</div>

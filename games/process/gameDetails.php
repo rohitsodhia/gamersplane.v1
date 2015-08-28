@@ -16,26 +16,26 @@
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		
+		$formErrors->clearErrors();
 		if (strlen($details['title']) == 0) 
-			$_SESSION['errors']['invalidTitle'] = true;
-		$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
+			$formErrors->addError('invalidTitle');
+/*		$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
 		$titleCheck->execute(array(':title' => $details['title']));
 		if ($titleCheck->rowCount()) 
-			$_SESSION['errors']['repeatTitle'] = true;
+			$formErrors->addError('repeatTitle');*/
 		if ($details['system'] == null && !isset($_POST['save'])) 
-			$_SESSION['errors']['invalidSystem'] = true;
+			$formErrors->addError('invalidSystem');
 		if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) 
-			$_SESSION['errors']['invalidFreq'] = true;
+			$formErrors->addError('invalidFreq');
 		if ($details['numPlayers'] < 2) 
-			$_SESSION['errors']['invalidNumPlayers'] = true;
+			$formErrors->addError('invalidNumPlayers');
 		
-		if (sizeof($_SESSION['errors'])) {
-			$_SESSION['errorVals'] = $_POST;
-			$_SESSION['errorTime'] = time() + 300;
+		if ($formErrors->errorsExist()) {
+			$formErrors->setErrors('gameDetails');
 			if (isset($_POST['save'])) 
-				header('Location: /games/'.$gameID.'/edit?failed=1');
+				header("Location: /games/{$gameID}/edit?failed=1");
 			else 
-				header('Location: /games/new?failed=1');
+				header('Location: /games/new/?failed=1');
 		} elseif (isset($_POST['save'])) {
 			$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, charsPerPlayer = :charsPerPlayer, description = :description, charGenInfo = :charGenInfo WHERE gameID = :gameID');
 			$updateGame->bindValue(':title', $details['title']);

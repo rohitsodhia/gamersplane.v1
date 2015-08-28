@@ -12,9 +12,12 @@
 <?	if ($formErrors->getErrors('addFAQ')) { ?>
 			<div class="alertBox_error"><ul>
 <?
-		if ($formErrors->checkError('noCategory')) echo "				<li>No category selected.</li>\n";
-		if ($formErrors->checkError('noQuestion')) echo "				<li>No question asked.</li>\n";
-		if ($formErrors->checkError('noAnswer')) echo "				<li>No answer given.</li>\n";
+		if ($formErrors->checkError('noCategory')) 
+			echo "				<li>No category selected.</li>\n";
+		if ($formErrors->checkError('noQuestion')) 
+			echo "				<li>No question asked.</li>\n";
+		if ($formErrors->checkError('noAnswer')) 
+			echo "				<li>No answer given.</li>\n";
 ?>
 			</ul></div>
 <?	} ?>
