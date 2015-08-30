@@ -58,7 +58,7 @@
 						
 					<div class="clearfix">
 						<div class="twoCol">
-							<h2 class="headerbar hbDark">Shootin Irons &amp; Such</h2>
+							<h2 class="headerbar hbDark">Weapons</h2>
 							<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
 						</div>
 						<div class="twoCol lastTwoCol">

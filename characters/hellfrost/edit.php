@@ -62,7 +62,7 @@
 							
 						<div class="clearfix">
 							<div class="twoCol">
-								<h2 class="headerbar hbDark">Shootin Irons &amp; Such</h2>
+								<h2 class="headerbar hbDark">Weapons</h2>
 								<textarea id="weapons" name="weapons" class="hbdMargined"><?=$this->getWeapons()?></textarea>
 							</div>
 							<div class="twoCol lastTwoCol">
