@@ -40,3 +40,6 @@
 <?	if (sizeof($addJSFiles)) { foreach ($addJSFiles as $file) { ?>
 <script type="text/javascript" src="/javascript/<?=$file?>?v=<?=getJSVersion('/javascript/'.$file)?>"></script>
 <?	} } ?>
+<?	if (sizeof($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
+<script src="<?=$file?>"></script>
+<?	} } ?>
