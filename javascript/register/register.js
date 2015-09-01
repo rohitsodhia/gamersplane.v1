@@ -69,7 +69,7 @@ function checkPass() {
 		});
 		
 		passValid = false;
-	} else if (pass1.length > 16 && pass1.length != 0) {
+	} else if (pass1.length > 32 && pass1.length != 0) {
 		$('#passShort').fadeOut('normal', function () {
 			$('#passLong').fadeIn('normal');
 		});
@@ -80,7 +80,7 @@ function checkPass() {
 		$('#passLong').fadeOut('normal');
 	}
 	
-	if (pass1.length >= 6 && pass1.length <= 16 && pass1 != pass2 && pass2.length != 0) {
+	if (pass1.length >= 6 && pass1.length <= 32 && pass1 != pass2 && pass2.length != 0) {
 		$('#passMismatch').fadeIn('normal');
 		
 		passValid = false;

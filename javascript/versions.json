@@ -23,9 +23,10 @@
 	"/javascript/games/decks/delete.js": "1.1.0",
 	"/javascript/games/decks/details.js": "1.1.0",
 	"/javascript/games/decks/shuffle.js": "1.1.0",
+	"/javascript/links.js": "2.0.0",
 	"/javascript/markItUp/sets/bbcode/set.js": "1.1.0",
 	"/javascript/pms/list.js": "2.0.0",
-	"/javascript/links.js": "2.0.0",
+	"/javascript/register/register.js": "1.1.0",
 	"/javascript/systems.js": "2.0.0",
 	"/javascript/tools/music.js": "2.0.0"
 }
