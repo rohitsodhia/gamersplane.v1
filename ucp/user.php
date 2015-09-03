@@ -57,7 +57,7 @@
 			<div id="charStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">Characters Stats</h2>
 <?
-	$characters = $mysql->query("SELECT c.characterID, c.system, c.gameID, c.retired, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$profileID} GROUP BY c.system ORDER BY numChars DESC, s.fullName");
+	$characters = $mysql->query("SELECT c.characterID, c.system, c.gameID, c.retired, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$profileID} AND retired IS NULL GROUP BY c.system ORDER BY numChars DESC, s.fullName");
 	echo "				<div class=\"details clearfix".($characters->rowCount()?'':' noInfo')."\">\n";
 	if ($characters->rowCount()) {
 		$charStats = array();
