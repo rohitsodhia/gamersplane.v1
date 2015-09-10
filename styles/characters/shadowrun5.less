@@ -3,3 +3,362 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+.shiftRight {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+div.shiftRight {
+	padding-left: 8px;
+}
+
+.leftLabel input {
+	margin-left: 10px;
+}
+
+textarea {
+	display: none;
+	width: 100%;
+	margin-top: .5em;
+}
+
+#charDetails {
+	ul {
+		list-style: none;
+		margin-left: 0;
+	}
+}
+
+#stats {
+	width: 430px;
+
+	.first {
+		margin-right: 20px;
+	}
+
+	ul {
+		display: inline-block;
+		width: 180px;
+	}
+
+	.labelText {
+		width: 120px;
+	}
+}
+
+#limits {
+	width: 165px;
+
+	.labelText {
+		width: 60px;
+	}
+}
+
+#damage {
+	width: 355px;
+
+	#physicalTrack {
+		margin-right: 50px;
+		margin-left: 10px;
+	}
+
+	.modify {
+		margin-bottom: .4em;
+	}
+
+	.clear {
+		font-size: .85em;
+	}
+
+	.track {
+		width: 95px;
+		margin-top: .3em;
+	}
+
+	.damageCell {
+		display: block;
+		float: left;
+		height: 30px;
+		width: 30px;
+		border: 1px solid #000;
+		margin-left: -1px;
+		margin-top: -1px;
+		cursor: pointer;
+	}
+
+	.filled {
+		background: #E00;
+		border-color: #800;
+	}
+
+	#overflow {
+		margin-top: .5em;
+		margin-left: 10px;
+	}
+}
+
+.remove {
+	margin-left: 5px;
+}
+
+.type {
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border: 2px solid #900;
+	border-radius: 20px;
+	font-weight: bold;
+	font-size: 1.1em;
+	line-height: 20px;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#skills, #qualities {
+	.name {
+		text-align: left;
+	}
+}
+
+#skills {
+	width: 445px;
+
+	.name {
+		width: 275px;
+	}
+}
+
+#qualities {
+	width: 505px;
+
+	.name {
+		width: 315px;
+	}
+}
+
+#contacts {
+	width: 490px;
+
+	label {
+		text-align: center;
+
+		&.connection {
+			position: relative;
+			left: -10px;
+			width: 60px;
+		}
+	}
+
+	.name {
+		width: 225px;
+		text-align: left;
+	}
+}
+
+.weapon {
+	label {
+		text-align: center;
+
+		&.name, &.mode, &.ammo {
+			text-align: left;
+		}
+
+		&.accuracy {
+			position: relative;
+			left: -3px;
+		}
+	}
+
+	.name {
+		text-align: left;
+	}
+
+	.remove {
+		font-size: .85em;
+	}
+}
+
+#rangedWeapons, #meleeWeapons, #armor {
+	textarea {
+		display: block;
+		width: 100%;
+		margin-top: 0;
+	}
+}
+
+#rangedWeapons {
+	width: 340px;
+
+	.row1 .lrBuffer {
+		margin: 0 6px;
+	}
+
+	.row2 .lrBuffer {
+		margin: 0 7px;
+	}
+
+	.ammo {
+		width: 200px;
+		margin-right: 0;
+	}
+}
+
+#meleeWeapons {
+	width: 300px;
+
+	.lrBuffer {
+		margin: 0 7px;
+	}
+
+	.name {
+		width: 100%;
+	}
+}
+
+#rangedWeapons .weapon, #meleeWeapons .weapon, #armor .armor {
+	margin-top: .5em;
+	padding-top: .5em;
+	border-top: 1px solid #000;
+
+	&.first {
+		margin-top: 0;
+		padding-top: 0;
+		border-top: none;
+	}
+}
+
+#armor {
+	width: 310px;
+
+	.lrBuffer {
+		margin: 0 4px;
+	}
+}
+
+#cyberdeck {
+	width: 330px;
+
+	.row2 {
+		.lrBuffer {
+			margin: 0 11px 0 0;
+
+			&.last {
+				margin: 0;
+			}
+		}
+
+		label.condition {
+			position: relative;
+			left: -4px;
+		}
+	}
+
+	.labelTR {
+		a {
+			float: right;
+			font-size: .8em;
+		}
+	}
+
+	#addProgram {
+		position: relative;
+		top: 1px;
+	}
+
+	.program {
+		position: relative;
+
+		.remove {
+			position: absolute;
+			top: 10px;
+			left: -35px;
+		}
+
+		.name {
+			width: 205px;
+			text-align: left;
+		}
+
+		a {
+			margin-right: 0;
+		}
+	}
+
+	#cyberdeckNote {
+		display: block;
+		margin-top: 0;
+	}
+}
+
+#augments {
+	width: 465px;
+}
+
+#sprcf {
+	width: 400px;
+
+	.sprcf {
+		position: relative;
+	}
+
+	.name {
+		width: 250px;
+		text-align: left;
+	}
+
+	.tt {
+		position: relative;
+		left: -1px;
+	}
+
+	.shorterText {
+		width: 60px;
+		text-align: center;
+	}
+
+	.duration {
+		position: relative;
+		left: -3px;
+	}
+
+	.row2 {
+		.lrBuffer {
+			margin-right: 18px;
+		}
+	}
+
+	textarea {
+		width: 335px;
+	}
+}
+
+#powers {
+	width: 405px;
+}
+
+#gear {
+	.labelTR {
+		margin-bottom: .5em;
+	}
+	.labelTR, .gear {
+		float: left;
+		width: 450px;
+	}
+	.name {
+		width: 280px;
+		text-align: left;
+	}
+
+	.remove {
+		vertical-align: middle;
+	}
+}
+
+#notes textarea {
+	display: block;
+	height: 8.2em;
+}

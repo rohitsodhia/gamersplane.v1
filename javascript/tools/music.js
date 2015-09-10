@@ -36,7 +36,7 @@ app.controller('music', function ($scope, $http, $sce, $timeout, currentUser) {
 }).directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $filter, $timeout) {
 	return {
 		restrict: 'E',
-		templateUrl: '/angular/templates/tools/musicForm.html',
+		templateUrl: '/angular/directives/tools/musicForm.html',
 		scope: {
 			'data': '=data'
 		},

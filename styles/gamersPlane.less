@@ -89,10 +89,10 @@ input, textarea {
 	}
 }
 
-@input-bg: #FFF9E3;
+@input-bg: #FFEEDD;
 @input-border-tl: #800;
 @input-border-br: #B00;
-input[type="text"], input[type="password"], input[type="button"], input[type="file"], select, textarea {
+input[type="text"], input[type="number"], input[type="password"], input[type="button"], input[type="file"], select, textarea {
 	background: @input-bg;
 	border: 1px solid @input-border-tl;
 	border-bottom-color: @input-border-br;
@@ -118,8 +118,17 @@ input[type="checkbox"] {
 	margin: 0;
 }
 
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
 textarea {
-	height: 4em;
+	height: 4.5em;
 	resize: none;
 }
 

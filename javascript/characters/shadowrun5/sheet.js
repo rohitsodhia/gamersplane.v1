@@ -1,4 +1,4 @@
-controllers.controller('viewCharacter_fae', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'range', function ($scope, $http, $sce, $timeout, currentUser, character, range) {
+controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'range', function ($scope, $http, $sce, $timeout, currentUser, character, range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
 		$scope.range = range.get;

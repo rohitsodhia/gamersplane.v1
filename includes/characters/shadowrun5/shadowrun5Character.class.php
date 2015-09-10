@@ -5,14 +5,15 @@
 		protected $metatype = '';
 		protected $reputation = array('street' => 0, 'notoriety' => 0, 'public' => 0);
 		protected $karma = array('spent' => 0, 'total' => 0);
-		protected $stats = array('body' => 0, 'agility' => 0, 'reaction' => 0, 'strength' => 0, 'willpower' => 0, 'logic' => 0, 'intuition' => 0, 'charisma' => 0, 'edge_total' => 0, 'edge_current' => 0, 'essence' => 0, 'mag_res' => 0, 'initiative' => 0, 'matrix_initiative' => 0, 'astral_initiative' => 0);
-		protected $damage = array('physical' => array('total' => 0, 'current' => 0), 'stun' => array('total' => 0, 'current' => 0));
+		protected $stats = array('body' => 0, 'agility' => 0, 'reaction' => 0, 'strength' => 0, 'willpower' => 0, 'logic' => 0, 'intuition' => 0, 'charisma' => 0, 'edge' => 0, 'essence' => 0, 'mag_res' => 0, 'initiative' => 0, 'matrix_initiative' => 0, 'astral_initiative' => 0);
+		protected $limits = array('physical' => 0, 'mental' => 0, 'social' => 0);
+		protected $damage = array('physical' => array('modify' => 0, 'current' => 0, 'overflow' => 0), 'stun' => array('modify' => 0, 'current' => 0));
 		protected $skills = array();
 		protected $qualities = array();
 		protected $contacts = array();
 		protected $weapons = array('ranged' => array(), 'melee' => array());
 		protected $armor = array();
-		protected $programs = array();
+		protected $cyberdeck = array('model' => '', 'rating' => 0, 'attack' => 0, 'sleaze' => 0, 'data' => 0, 'firewall' => 0, 'programs' => array(), 'condition' => 0, 'notes' => '');
 		protected $augmentations = array();
 		protected $sprcf = array();
 		protected $powers = array();
@@ -44,9 +45,17 @@
 				return false;
 		}
 
+		public function setLimit($limit, $value) {
+			$value = (int) $value;
+			if (array_key_exists($limit, $this->limits) && $value >= 0) 
+				$this->limits[$limit] = $value;
+			else 
+				return false;
+		}
+
 		public function setDamage($damage, $type, $value = 0) {
-			if (array_key_exists($damage, $this->damage) && ($type == 'total' || $type == 'current') && (int) $value >= 0) 
-				$this->damage[$type] = (int) $value;
+			if (array_key_exists($damage, $this->damage) && array_key_exists($type, $this->damage[$damage])) 
+				$this->damage[$damage][$type] = (int) $value;
 			else 
 				return false;
 		}
@@ -80,22 +89,22 @@
 		}
 
 		public function addWeapon($type, $weapon) {
-			if ($type == 'ranged' && strlen($contact->name) && strlen($contact->damage)) 
+			if ($type == 'ranged' && strlen($weapon->name) && strlen($weapon->damage)) 
 				$this->weapons['ranged'][] = array(
 					'name' => sanitizeString($weapon->name),
 					'damage' => sanitizeString($weapon->damage),
-					'acc' => sanitizeString($weapon->acc),
+					'accuracy' => sanitizeString($weapon->accuracy),
 					'ap' => (int) $weapon->ap,
 					'mode' => sanitizeString($weapon->mode),
 					'rc' => (int) $weapon->rc,
 					'ammo' => sanitizeString($weapon->ammo),
 					'notes' => sanitizeString($weapon->notes)
 				);
-			elseif ($type == 'melee' && strlen($contact->name) && strlen($contact->damage)) 
+			elseif ($type == 'melee' && strlen($weapon->name) && strlen($weapon->damage)) 
 				$this->weapons['melee'][] = array(
 					'name' => sanitizeString($weapon->name),
 					'damage' => sanitizeString($weapon->damage),
-					'acc' => sanitizeString($weapon->acc),
+					'accuracy' => sanitizeString($weapon->accuracy),
 					'ap' => (int) $weapon->ap,
 					'reach' => (int) $weapon->reach,
 					'notes' => sanitizeString($weapon->notes)
@@ -111,9 +120,18 @@
 				);
 		}
 
+		public function setCyberdeck($key, $value) {
+			if (array_key_exists($key, $this->cyberdeck)) {
+				if ($key == 'model' || $key == 'notes') 
+					$this->cyberdeck[$key] = sanitizeString($value);
+				else 
+					$this->cyberdeck[$key] = intval($value) >= 0?intval($value):0;
+			}
+		}
+
 		public function addProgram($program) {
 			if (strlen($program->name)) 
-				$this->programs[] = array(
+				$this->cyberdeck['programs'][] = array(
 					'name' => sanitizeString($program->name),
 					'notes' => sanitizeString($program->notes)
 				);
@@ -121,11 +139,11 @@
 
 		public function addAugmentation($augmentation) {
 			if (strlen($augmentation->name)) 
-				$this->augmentation[] = array(
+				$this->augmentations[] = array(
 					'name' => sanitizeString($augmentation->name),
 					'rating' => (int) $augmentation->rating >= 0?(int) $augmentation->rating:0,
 					'notes' => sanitizeString($augmentation->notes),
-					'essence' => (float) $augmentation->rating >= 0?(float) $augmentation->rating:0,
+					'essence' => (float) $augmentation->essence >= 0?(float) $augmentation->essence:0,
 				);
 		}
 
@@ -134,15 +152,16 @@
 				$this->sprcf[] = array(
 					'name' => sanitizeString($sprcf->name),
 					'tt' => sanitizeString($sprcf->tt),
-					'range' => (int) $sprcf->range >= 0?(int) $sprcf->range:0,
-					'duration' => (int) $sprcf->duration >= 0?(int) $sprcf->duration:0,
-					'notes' => sanitizeString($sprcf->notes),
+					'range' => sanitizeString($sprcf->range),
+					'duration' => sanitizeString($sprcf->duration),
+					'drain' => sanitizeString($sprcf->drain),
+					'notes' => sanitizeString($sprcf->notes)
 				);
 		}
 
 		public function addPower($power) {
 			if (strlen($power->name)) 
-				$this->power[] = array(
+				$this->powers[] = array(
 					'name' => sanitizeString($power->name),
 					'rating' => (int) $power->rating >= 0?(int) $power->rating:0,
 					'notes' => sanitizeString($power->notes)
@@ -168,12 +187,14 @@
 			if (!$bypass) {
 				$this->setName($data->name);
 				$this->setMetatype($data->metatype);
-				foreach ($data->reputations as $rep => $value) 
+				foreach ($data->reputation as $rep => $value) 
 					$this->setReputation($rep, $value);
 				foreach ($data->karma as $type => $value) 
 					$this->setKarma($type, $value);
 				foreach ($data->stats as $stat => $value) 
 					$this->setStat($stat, $value);
+				foreach ($data->limits as $limit => $value) 
+					$this->setLimit($limit, $value);
 				foreach ($data->damage->physical as $key => $value) 
 					$this->setDamage('physical', $key, $value);
 				foreach ($data->damage->stun as $key => $value) 
@@ -192,20 +213,28 @@
 						$this->addContact($contact);
 				$this->clearVar('weapons');
 				$this->weapons = array('ranged' => array(), 'melee' => array());
-				if (sizeof($data->weapons['ranged'])) 
-					foreach ($data->weapons['ranged'] as $weapon) 
+				if (sizeof($data->weapons->ranged)) 
+					foreach ($data->weapons->ranged as $weapon) 
 						$this->addWeapon('ranged', $weapon);
-				if (sizeof($data->weapons['melee'])) 
-					foreach ($data->weapons['melee'] as $weapon) 
-						$this->addWeapon($weapon);
+				if (sizeof($data->weapons->melee)) 
+					foreach ($data->weapons->melee as $weapon) 
+						$this->addWeapon('melee', $weapon);
 				$this->clearVar('armor');
-				if (sizeof($data->armors)) 
+				if (sizeof($data->armor)) 
 					foreach ($data->armor as $armor) 
 						$this->addArmor($armor);
-				$this->clearVar('programs');
-				if (sizeof($data->programs)) 
-					foreach ($data->programs as $program) 
+				$this->cyberdeck['programs'] = array();
+				$this->setCyberdeck('model', $data->cyberdeck->model);
+				$this->setCyberdeck('rating', $data->cyberdeck->rating);
+				$this->setCyberdeck('attack', $data->cyberdeck->attack);
+				$this->setCyberdeck('sleaze', $data->cyberdeck->sleaze);
+				$this->setCyberdeck('data', $data->cyberdeck->data);
+				$this->setCyberdeck('firewall', $data->cyberdeck->firewall);
+				$this->setCyberdeck('condition', $data->cyberdeck->condition);
+				if (sizeof($data->cyberdeck->programs)) 
+					foreach ($data->cyberdeck->programs as $program) 
 						$this->addProgram($program);
+				$this->setCyberdeck('notes', $data->cyberdeck->notes);
 				$this->clearVar('augmentations');
 				if (sizeof($data->augmentations)) 
 					foreach ($data->augmentations as $augmentation) 
@@ -214,7 +243,7 @@
 				if (sizeof($data->sprcf)) 
 					foreach ($data->sprcf as $sprcf) 
 						$this->addSPRCF($sprcf);
-				$this->clearVar('programs');
+				$this->clearVar('powers');
 				if (sizeof($data->powers)) 
 					foreach ($data->powers as $power) 
 						$this->addPower($power);

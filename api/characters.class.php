@@ -144,7 +144,7 @@
 					$character->load();
 					$charPermissions = $character->checkPermissions($currentUser->userID);
 					if ($charPermissions) 
-						displayJSON($character->get());
+						displayJSON($character->get(isset($_POST['printReady']) && $_POST['printReady']?true:false));
 					else 
 						displayJSON(array('failed' => true, 'errors' => array('noPermission')));
 				}
@@ -191,6 +191,7 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$character->save();
+					displayJSON(array('success' => true, 'saved' => true));
 				} else 
 					displayJSON(array('failed' => true, 'errors' => array('noPermission')));
 			}

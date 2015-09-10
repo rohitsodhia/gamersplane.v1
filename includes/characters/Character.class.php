@@ -30,8 +30,10 @@
 
 		public function clearVar($var) {
 			if (isset($this->$var)) {
-				if (is_array($this->$var)) $this->$var = array();
-				else $this->$var = null;
+				if (is_array($this->$var)) 
+					$this->$var = array();
+				else 
+					$this->$var = null;
 			}
 		}
 
@@ -142,11 +144,21 @@
 				return false;
 		}
 
-		public function get() {
-			$char = array();
-			foreach ($this as $key => $value) 
-				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) 
-					$char[$key] = $value;
+		protected function prElement($ele) {
+			if (is_object($ele) || is_array($ele)) 
+				foreach ($ele as $key => &$value) 
+					$value = $this->prElement($value);
+			else 
+				$ele = printReady($ele);
+
+			return $ele;
+		}
+
+		public function get($pr) {
+			$char = get_object_vars($this);
+			if ($pr) 
+				$char = $this->prElement($char);
+//				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) {
 			return $char;
 		}
 

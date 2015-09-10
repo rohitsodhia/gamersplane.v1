@@ -1,2 +1,0 @@
-UPDATE dispatch SET ngController = 'gamersList' WHERE pageID = 'gamersList';
-UPDATE dispatch SET ngController = 'myCharacters' WHERE pageID = 'myCharacters';

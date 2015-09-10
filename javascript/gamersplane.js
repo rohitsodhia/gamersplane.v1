@@ -719,5 +719,9 @@ app.config(function ($httpProvider) {
 		utcDT = moment.utc(dtString, parseString);
 		return utcDT.local().format(displayString);
 	}
+}).filter('ceil', function () {
+	return function (input) {
+		return Math.ceil(input);
+	}
 });
 var controllers = angular.module('controllers', []);
