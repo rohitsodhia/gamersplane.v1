@@ -3,12 +3,31 @@ controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '
 		pathElements = getPathElements();
 		$scope.range = range.get;
 		$scope.character = {};
-		character.load(pathElements[2]).then(function (data) {
+		character.load(pathElements[2], true).then(function (data) {
 			$scope.character = copyObject(data);
-			for (key in $scope.character.aspects) 
-				$scope.character.aspects[key] = { 'name': $scope.character.aspects[key] };
-			for (key in $scope.character.stunts) 
-				$scope.character.stunts[key] = { 'name': $scope.character.stunts[key] };
 		});
+		$scope.labels = {
+			'rep': { 'street': 'Street Cred', 'notoriety': 'Notoriety', 'public': 'Public Awareness' },
+			'stats': [
+				{ 'key': 'body', 'value': 'Body' },
+				{ 'key': 'agility', 'value': 'Agility' },
+				{ 'key': 'reaction', 'value': 'Reaction' },
+				{ 'key': 'strength', 'value': 'Strength' },
+				{ 'key': 'willpower', 'value': 'Willpower' },
+				{ 'key': 'logic', 'value': 'Logic' },
+				{ 'key': 'intuition', 'value': 'Intuition' },
+				{ 'key': 'charisma', 'value': 'Charisma' },
+				{ 'key': 'edge', 'value': 'Edge' },
+				{ 'key': 'essence', 'value': 'Essence' },
+				{ 'key': 'mag_res', 'value': 'Magic/Resonance' },
+				{ 'key': 'initiative', 'value': 'Initiative' },
+				{ 'key': 'matrix_initiative', 'value': 'Matrix Initiative' },
+				{ 'key': 'astral_initiative', 'value': 'Astral Initiative' }
+			]
+		};
+
+		$scope.toggleNotes = function ($event) {
+			$($event.target).siblings('.notes').slideToggle();
+		}
 	});
 }]);

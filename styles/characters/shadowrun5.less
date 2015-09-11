@@ -17,7 +17,10 @@ div.shiftRight {
 	margin-left: 10px;
 }
 
-textarea {
+textarea, .notes {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	display: none;
 	width: 100%;
 	margin-top: .5em;
@@ -47,11 +50,27 @@ textarea {
 	}
 }
 
+#page_characterSheet {
+	#stats {
+		label {
+			width: 120px;
+		}
+	}
+}
+
 #limits {
 	width: 165px;
 
 	.labelText {
 		width: 60px;
+	}
+}
+
+#page_characterSheet {
+	#limits {
+		label {
+			width: 60px;
+		}
 	}
 }
 
@@ -118,6 +137,74 @@ textarea {
 	cursor: pointer;
 }
 
+#page_characterSheet {
+	#skills, #qualities, #contacts, #rangedWeapons, #meleeWeapons, #armor, #cyberdeck, #augments, #sprcf, #powers, #gear {
+		.tr > * {
+			display: inline-block;
+		}
+
+		.notes {
+			display: none;
+		}
+
+		.avNotes {
+			display: block;
+		}
+
+		.shortNum, .medNum {
+			text-align: center;
+		}
+	}
+
+	#qualities {
+		.name {
+			width: 345px;
+		}
+	}
+
+	#contacts {
+		.name {
+			width: 255px;
+		}
+	}
+
+	#augments {
+		.name {
+			width: 230px;
+		}
+	}
+
+	#sprcf {
+		.name {
+			width: 235px;
+		}
+
+		.row2 .lrBuffer {
+			margin-right: 27px;
+		}
+	}
+
+	#powers {
+		.name {
+			width: 215px;
+		}
+	}
+
+	#gear {
+		.name {
+			width: 325px;
+		}
+	}
+
+	.notes {
+		padding: 4px;
+		border: 1px solid #888;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+}
+
 #skills, #qualities {
 	.name {
 		text-align: left;
@@ -176,10 +263,6 @@ textarea {
 	.name {
 		text-align: left;
 	}
-
-	.remove {
-		font-size: .85em;
-	}
 }
 
 #rangedWeapons, #meleeWeapons, #armor {
@@ -187,6 +270,10 @@ textarea {
 		display: block;
 		width: 100%;
 		margin-top: 0;
+	}
+
+	.remove {
+		font-size: .85em;
 	}
 }
 
@@ -344,10 +431,12 @@ textarea {
 	.labelTR {
 		margin-bottom: .5em;
 	}
+
 	.labelTR, .gear {
 		float: left;
 		width: 450px;
 	}
+
 	.name {
 		width: 280px;
 		text-align: left;
@@ -361,4 +450,23 @@ textarea {
 #notes textarea {
 	display: block;
 	height: 8.2em;
+}
+
+#page_characterSheet {
+	.displayBorder {
+		padding: 3px;
+		border: 1px solid #000;
+	}
+
+	span {
+		display: inline-block;
+
+		&.shortNum {
+			text-align: center;
+		}
+	}
+
+	.rep, .rep > *, .karma, .karma > * {
+		margin-right: 10px;
+	}
 }

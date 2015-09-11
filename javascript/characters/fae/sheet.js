@@ -3,7 +3,7 @@ controllers.controller('viewCharacter_fae', ['$scope', '$http', '$sce', '$timeou
 		pathElements = getPathElements();
 		$scope.range = range.get;
 		$scope.character = {};
-		character.load(pathElements[2]).then(function (data) {
+		character.load(pathElements[2], true).then(function (data) {
 			$scope.character = copyObject(data);
 			for (key in $scope.character.aspects) 
 				$scope.character.aspects[key] = { 'name': $scope.character.aspects[key] };

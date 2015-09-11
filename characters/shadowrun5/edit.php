@@ -304,7 +304,7 @@
 								<label class="shortNum alignCenter lrBuffer">Rating</label>
 							</div>
 							<div ng-repeat="power in character.powers" class="power tr">
-								<input type="text" ng-model="power.name" placeholder="Skill" class="name medText lrBuffer">
+								<input type="text" ng-model="power.name" placeholder="Power" class="name medText lrBuffer">
 								<input type="text" ng-model="power.rating" class="rating">
 								<a href="" class="remove sprite cross" ng-click="character.powers.splice($index, 1)"></a>
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
