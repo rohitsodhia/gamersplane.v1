@@ -46,7 +46,7 @@
 			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
 			<ul ng-if="library.length" id="libraryChars" class="hbMargined hbAttachedList" hb-margined>
-				<li ng-repeat="character in library| orderBy: ['system.short', 'user.username']" class="clearfix character">
+				<li ng-repeat="character in library| orderBy: ['system.short', 'user.username']" id="character_{{character.characterID}}" class="clearfix character">
 					<a class="sprite tassel" title="Unfavorite Character" alt="Unfavorite Character" ng-click="unfavorite(character)"></a
 					><a href="/characters/{{character.system.short}}/{{character.characterID}}" class="label" ng-bind-html="character.label | trustHTML"></a
 					><div class="charType">{{character.charType}}</div

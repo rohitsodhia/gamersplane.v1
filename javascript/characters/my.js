@@ -18,6 +18,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', 'currentUser', 'chara
 			'label': ''
 		};
 		$scope.deleting = null;
+		$scope.activeRequests = [];
 
 		$scope.editBasic = function (character) {
 			$scope.editing.characterID = character.characterID;
@@ -76,14 +77,18 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', 'currentUser', 'chara
 		}
 
 		$scope.createChar = function () {
-			var data = copyObject($scope.newChar);
-			data.label = data.label.trim();
-			if (data.label.length == 0) 
-				return;
-			data.system = data.system.value;
-			data.charType = data.charType.value;
-			characters.new(data).then(function (data) {
-			});
+			if ($scope.activeRequests.indexOf('creatingChar') == -1)
+				$scope.activeRequests.push('creatingChar');
+				var data = copyObject($scope.newChar);
+				data.label = data.label.trim();
+				if (data.label.length == 0) 
+					return;
+				data.system = data.system.value;
+				data.charType = data.charType.value;
+				characters.new(data).then(function (data) {
+					removeEle($scope.activeRequests, 'creatingChar');
+				});
+			}
 		};
 	});
 }]);
