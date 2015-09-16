@@ -89,7 +89,7 @@ input, textarea {
 	}
 }
 
-@input-bg: #FFEEDD;
+@input-bg: #FFE4BB;
 @input-border-tl: #800;
 @input-border-br: #B00;
 input[type="text"], input[type="number"], input[type="password"], input[type="button"], input[type="file"], select, textarea {
@@ -781,6 +781,25 @@ div.prettySelect > div {
 /* ----------------------------------------------------------------------------------------------*/
 
 /* IDs */
+#pageLoading {
+	position: fixed;
+	display: none;
+	z-index: 10000;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(255, 255, 255, .5);
+
+	.loadingSpinner {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -36px;
+		margin-left: -32px;
+	}
+}
+
 .bodyContainer, #fixedMenu > div {
 	position: relative;
 	width: 950px;

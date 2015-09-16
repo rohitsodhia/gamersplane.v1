@@ -153,7 +153,7 @@
 						<div><select name="postAs">
 							<option value="p"<?=$currentChar == null?' selected="selected"':''?>>Player</option>
 <?		foreach ($characters as $character) { ?>
-							<option value="<?=$character->getCharacterID()?>"<?=$currentChar == $character->getCharacterID()?' selected="selected"':''?>><?=$character->getName()?></option>
+							<option value="<?=$character->getID()?>"<?=$currentChar == $character->getID()?' selected="selected"':''?>><?=$character->getName()?></option>
 <?		} ?>
 						</select></div>
 					</div>

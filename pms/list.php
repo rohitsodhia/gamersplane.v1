@@ -35,6 +35,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="tr" hb-margined><paginate data="pagination" change-func="getPMs" class="tr"></paginate><loading-spinner size="mini" pause="spinnerPause"></loading-spinner></div>
+			<div class="tr" hb-margined><paginate data="pagination" change-func="getPMs" class="tr"></paginate><loading-spinner ng-show="!spinnerPause" size="mini" pause="spinnerPause"></loading-spinner></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

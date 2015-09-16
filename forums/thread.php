@@ -149,7 +149,7 @@
 			if ($postAsChar && $character->getAvatar()) {
 				if ($character->checkPermissions()) {
 ?>
-						<a href="/characters/<?=$character::SYSTEM?>/<?=$character->getCharacterID()?>/"><img src="<?=$character->getAvatar()?>"></a>
+						<a href="/characters/<?=$character::SYSTEM?>/<?=$character->getID()?>/"><img src="<?=$character->getAvatar()?>"></a>
 <?				} else { ?>
 						<img src="<?=$character->getAvatar()?>">
 <?
@@ -308,7 +308,7 @@
 					<div><select name="postAs">
 						<option value="p"<?=$currentChar == null?' selected="selected"':''?>>Player</option>
 <?			foreach ($characters as $character) { ?>
-						<option value="<?=$character->getCharacterID()?>"<?=$currentChar == $character->getCharacterID()?' selected="selected"':''?>><?=$character->getName()?></option>
+						<option value="<?=$character->getID()?>"<?=$currentChar == $character->getID()?' selected="selected"':''?>><?=$character->getName()?></option>
 <?			} ?>
 					</select></div>
 				</div>

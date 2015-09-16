@@ -1,4 +1,4 @@
-app.controller('myCharacters', ['$scope', '$http', '$sce', 'currentUser', 'characters', function ($scope, $http, $sce, currentUser, characters) {
+app.controller('myCharacters', ['$scope', '$http', '$sce', 'initializeVars', 'currentUser', 'characters', function ($scope, $http, $sce, initializeVars, currentUser, characters) {
 	currentUser.then(function (currentUser) {
 		$scope.characters = {};
 		$scope.library = {};
@@ -77,18 +77,17 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', 'currentUser', 'chara
 		}
 
 		$scope.createChar = function () {
-			if ($scope.activeRequests.indexOf('creatingChar') == -1)
-				$scope.activeRequests.push('creatingChar');
-				var data = copyObject($scope.newChar);
-				data.label = data.label.trim();
-				if (data.label.length == 0) 
-					return;
-				data.system = data.system.value;
-				data.charType = data.charType.value;
-				characters.new(data).then(function (data) {
-					removeEle($scope.activeRequests, 'creatingChar');
-				});
-			}
+			$scope.$emit('pageLoading');
+			var data = copyObject($scope.newChar);
+			data.label = data.label.trim();
+			if (data.label.length == 0) 
+				return;
+			data.system = data.system.value;
+			data.charType = data.charType.value;
+			characters.new(data).then(function (data) {
+				if (data.success) 
+					window.location.href = '/characters/' + data.system + '/' + data.characterID + '/edit/';
+			});
 		};
 	});
 }]);

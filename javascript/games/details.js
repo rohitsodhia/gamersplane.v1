@@ -20,10 +20,9 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 		$scope.isPrimaryGM = false;
 		$scope.combobox = {};
 		$scope.pendingInvite = false;
-		$loadingSpinner = $('#loading');
 
 		setGameData = function () {
-			$loadingSpinner.show();
+			$scope.$emit('pageLoading');
 			$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
 				if (data.success) {
 					$scope.details = data.details;
@@ -56,7 +55,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 						$scope.isPrimaryGM = true;
 				} //else 
 //					document.location = '/games/';
-				$loadingSpinner.hide();
+				$scope.$emit('pageLoading');
 			});
 		};
 		setGameData();

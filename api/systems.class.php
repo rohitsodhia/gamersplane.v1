@@ -33,16 +33,16 @@
 			}
 			$systems = array();
 			$custom = array();
-			foreach ($rSystems as $system) {
+			foreach ($rSystems as $rSystem) {
 				$system = array(
-					'shortName' => $system['_id'],
-					'fullName' => $system['name']
+					'shortName' => $rSystem['_id'],
+					'fullName' => $rSystem['name']
 				);
 				if (!isset($_POST['basic']) || !$_POST['basic'])
 					$system = array_merge($system, array(
-						'genres' => $system['genres']?$system['genres']:array(),
-						'publisher' => $system['publisher']?$system['publisher']:array('name' => '', 'site' => ''),
-						'basics' => $system['basics']?$system['basics']:array()
+						'genres' => $rSystem['genres']?$rSystem['genres']:array(),
+						'publisher' => $rSystem['publisher']?$rSystem['publisher']:array('name' => '', 'site' => ''),
+						'basics' => $rSystem['basics']?$rSystem['basics']:array()
 					));
 				if ($system['shortName'] != 'custom') 
 					$systems[] = $system;

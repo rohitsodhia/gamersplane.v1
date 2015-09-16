@@ -16,6 +16,7 @@
 		public function getMusic() {
 			global $mongo;
 
+			$itemsPerPage = 20;
 			$page = intval($_POST['page']) && (int) $_POST['page'] >= 1?(int) $_POST['page']:1;
 
 			$filter = isset($_POST['filter'])?(array) $_POST['filter']:array();
@@ -29,7 +30,7 @@
 				unset($filter['lyrics']);
 
 			$count = $mongo->music->count($filter);
-			$songs = $mongo->music->find($filter)->sort(array('approved' => 1, 'title' => 1))->skip(10 * ($page - 1))->limit(10);
+			$songs = $mongo->music->find($filter)->sort(array('approved' => 1, 'title' => 1))->skip($itemsPerPage * ($page - 1))->limit($itemsPerPage);
 			$music = array();
 			foreach ($songs as $rawSong) {
 				$song['_id'] = $rawSong['_id']->{'$id'};

@@ -1,5 +1,5 @@
 var musicGenres = [ 'Horror/Survival', 'Wild West', 'Fantasy', 'Modern', 'Epic', 'Cyberpunk', 'Espionage', 'Sci-fi' ];
-app.controller('music', function ($scope, $http, $sce, $timeout, currentUser) {
+app.controller('music', ['$scope', '$http', '$sce', '$timeout', 'currentUser', function ($scope, $http, $sce, $timeout, currentUser) {
 	pathElements = getPathElements();
 	currentUser.then(function (currentUser) {
 		$scope.loggedIn = currentUser.loggedOut?false:true;
@@ -7,21 +7,20 @@ app.controller('music', function ($scope, $http, $sce, $timeout, currentUser) {
 		$scope.filter = { 'approved': true, 'genres': [], 'lyrics': [] };
 		$scope.music = [];
 		$scope.addSong = false;
-		$scope.pagination = { numItems: 0, itemsPerPage: 10 };
+		$scope.pagination = { numItems: 0, itemsPerPage: 20 };
 		if ($.urlParam('page')) 
 			$scope.pagination.current = parseInt($.urlParam('page'));
 		else 
 			$scope.pagination.current = 1;
-		$loadingSpinner = $('#loading');
 		$scope.toggleAddSong = function () { $scope.addSong = !$scope.addSong; };
 		$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
 		$scope.loadMusic = function () {
-			$loadingSpinner.show();
+			$scope.$emit('pageLoading');
 			$http.post(API_HOST + '/music/get/', { 'page': $scope.pagination.current, 'filter': $scope.filter }).success(function (data) {
 				if (data.success) {
 					$scope.music = data.music;
 					$scope.pagination.numItems = data.count;
-					$loadingSpinner.hide();
+					$scope.$emit('pageLoading');
 				}
 			});
 		};
@@ -33,7 +32,7 @@ app.controller('music', function ($scope, $http, $sce, $timeout, currentUser) {
 			$timeout(function () { $scope.songSubmitted = false; }, 2000);
 		});
 	});
-}).directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $filter, $timeout) {
+}]).directive('musicForm', ['$http', '$filter', '$timeout', function ($http, $filter, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/tools/musicForm.html',

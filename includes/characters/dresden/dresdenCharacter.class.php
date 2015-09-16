@@ -161,7 +161,7 @@
 				$this->setNotes($data['notes']);
 			}
 
-			parent::save(true);
+			parent::save($bypass);
 		}
 	}
 ?>

@@ -11,11 +11,10 @@ controllers.controller('pmList', ['$scope', '$http', 'currentUser', 'DeletePM', 
 			$scope.pagination.current = 1;
 		$scope.box = pathElements[1] == 'outbox'?'Outbox':'Inbox';
 
-		$loading = $('.loadingSpinner');
 		$scope.spinnerPause = true;
 		$scope.getPMs = function () {
 			$scope.spinnerPause = false;
-			$loading.show();
+			$scope.$emit('pageLoading');
 			$http.post(API_HOST + '/pms/get/', { box: $scope.box, page: $scope.pagination.current }).success(function (data) {
 				if (data.success) {
 					data.pms.forEach(function (value, key) {
@@ -23,7 +22,7 @@ controllers.controller('pmList', ['$scope', '$http', 'currentUser', 'DeletePM', 
 					});
 					$scope.pms = data.pms;
 					$scope.pagination.numItems = data.totalCount;
-					$loading.hide();
+					$scope.$emit('pageLoading');
 					$scope.spinnerPause = true;
 				}
 			});

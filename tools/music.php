@@ -36,7 +36,6 @@
 			<div ng-show="songSubmitted" class="alertBox_success">Song submitted!</div>
 			<div>
 			<div class="relativeWrapper">
-				<div id="loading"><loading-spinner overlay></loading-spinner></div>
 				<ul class="hbAttachedList">
 					<li ng-repeat="song in music | orderBy: 'title'">
 						<div class="clearfix" equalize-columns>

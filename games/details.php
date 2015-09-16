@@ -29,7 +29,6 @@
 		</ul></div>
 <?	} ?>
 		<div class="relativeWrapper">
-			<div id="loading"><loading-spinner overlay></loading-spinner></div>
 			<div ng-if="details.retired" id="gameRetired">
 				This game has been retired! That means it's no longer being run.
 			</div>

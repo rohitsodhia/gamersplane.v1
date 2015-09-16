@@ -8,7 +8,6 @@
 			</label>
 		</p>
 		<div class="relativeWrapper hbMargined" hb-margined>
-			<div id="loading"><loading-spinner overlay></loading-spinner></div>
 			<ul class="clearfix">
 				<li ng-repeat="user in users" ng-class="{ 'last': $index % 5 == 4 }">
 					<div class="onlineIndicator" ng-class="{ 'online': user.online, 'offline': !user.online }"></div>

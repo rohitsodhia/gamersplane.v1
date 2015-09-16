@@ -6,7 +6,8 @@
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
 </head>
 
-<body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>"<?=strlen($dispatchInfo['ngController'])?' ng-app="gamersplane"':''?>>
+<body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>"<?=strlen($dispatchInfo['ngController'])?' ng-app="gamersplane" ng-controller="core"':''?>>
+	<div id="pageLoading"><loading-spinner pause="pageLoadingPause"></loading-spinner></div>
 <?	if (!MODAL) { ?>
 <header class="bodyHeader"><div class="bodyContainer">
 	<a href="/"><img id="logo" src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>

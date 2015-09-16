@@ -21,7 +21,7 @@
 						<p><a href="/games/list/?filter=filter&filterSystem%5B%5D={{system.shortName}}">Find games</a> | <a href="/games/new/?system={{system.shortName}}">Start a game</a></p>
 					</div>
 					<div class="info">
-						<h2 ng-bind-html="system.fullName"></h2>
+						<h2 ng-bind-html="system.fullName | trustHTML"></h2>
 						<div class="tr publisher" ng-if="system.publisher.name.length">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
 						<div class="tr genres" ng-if="system.genres.length">Genre<span ng-if="system.genres.length > 1">s</span>: <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
 						<div class="tr basics" ng-if="system.basics.length">

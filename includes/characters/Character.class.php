@@ -37,7 +37,7 @@
 			}
 		}
 
-		public function getCharacterID() {
+		public function getID() {
 			return $this->characterID;
 		}
 
@@ -174,10 +174,9 @@
 //					$value = mb_convert_encoding($value, 'UTF-8');
 //				});
 				$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => true));
+				return true;
 			} catch (Exception $e) { var_dump($e); }
-			addCharacterHistory($this->characterID, 'charEdited');
-
-			displayJSON(array('saved' => true, 'characterID' => $this->characterID));
+			return false;
 		}
 
 		public function load() {

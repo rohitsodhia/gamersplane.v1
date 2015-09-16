@@ -191,7 +191,9 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$character->save();
-					displayJSON(array('success' => true, 'saved' => true));
+					addCharacterHistory($this->characterID, 'charEdited');
+
+					displayJSON(array('success' => true, 'saved' => true, 'characterID' => $characterID));
 				} else 
 					displayJSON(array('failed' => true, 'errors' => array('noPermission')));
 			}
