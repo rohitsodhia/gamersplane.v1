@@ -19,7 +19,7 @@
 ?>
 				</ul>
 <?	} else echo "\t\t\t\t<p>No games selected.</p>\n"; ?>
-				<p class="alignRight"><a id="lfgEdit" href="/games/lfg">Edit</a></p>
+				<p class="alignRight"><a id="lfgEdit" href="/games/lfg/">Edit</a></p>
 			</div>
 		</div>
 
@@ -39,9 +39,9 @@
 		foreach ($games as $info) {
 ?>
 					<li class="gamePlaying">
-						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
+						<a href="/games/<?=$info['gameID']?>/" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
 						<div class="systemType"><?=$info['system']?></div>
-						<div class="gmInfo"><a href="/user/<?=$info['userID']?>" class="username"><?=$info['username']?></a></div>
+						<div class="gmInfo"><a href="/user/<?=$info['userID']?>/" class="username"><?=$info['username']?></a></div>
 					</li>
 <?
 			if ($first) $first = false;
@@ -64,7 +64,7 @@
 		foreach ($games as $info) {
 ?>
 					<li class="gameRunning">
-						<a href="/games/<?=$info['gameID']?>" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
+						<a href="/games/<?=$info['gameID']?>/" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
 						<div class="systemType"><?=$info['system']?></div>
 					</li>
 <?

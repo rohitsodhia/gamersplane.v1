@@ -200,14 +200,14 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			});
 		};
 
-		$scope.submitChar = { characterID: null };
+		$scope.submitChar = { 'character': {} };
 		$scope.submitCharacter = function () {
 			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.character.value }).success(function (data) {
 				if (data.success) {
-					$scope.combobox.search.characters = '';
-					for(key in $scope.combobox.characters) 
-						if ($scope.combobox.characters[key].id == $scope.submitChar.character.id) 
-							delete $scope.combobox.characters[key]
+					for (key in $scope.availChars) {
+						if ($scope.availChars[key].id == $scope.submitChar.character.id) 
+							delete $scope.availChars[key]
+					}
 					for (pKey in $scope.players) {
 						if ($scope.players[pKey].userID == currentUser.userID) {
 							$scope.players[pKey].characters.push(data.character);
@@ -226,8 +226,8 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 								if ($scope.players[pKey].characters[cKey].characterID == character.characterID) 
 									character = $scope.players[pKey].characters.splice(cKey, 1);
 							}
-							$scope.combobox.characters.push({ 'id': character[0].characterID, 'value': character[0].label });
-							$scope.combobox.characters = $filter('orderBy')($scope.combobox.characters, 'value');
+							$scope.availChars.push({ 'value': character[0].characterID, 'display': character[0].label });
+							$scope.availChars = $filter('orderBy')($scope.availChars, 'value');
 							break;
 						}
 					}

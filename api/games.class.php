@@ -252,7 +252,7 @@
 			if (is_int($charInfo['gameID'])) 
 				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
 			elseif ($charInfo['gameID'] == 0) {
-				$mysql->query("UPDATE characters SET gameID = {$gameID}".($isGM?', approved = 1':'')." WHERE characterID = {$characterID}");
+/*				$mysql->query("UPDATE characters SET gameID = {$gameID}".($isGM?', approved = 1':'')." WHERE characterID = {$characterID}");
 				addCharacterHistory($characterID, 'charApplied', $currentUser->userID, 'NOW()', $gameID);
 				addGameHistory($gameID, 'charApplied', $currentUser->userID, 'NOW()', 'character', $characterID);
 				if ($isGM) {
@@ -275,7 +275,7 @@
 					$email = ob_get_contents();
 					ob_end_clean();
 					@mail(implode(', ', $gmEmails), "Game Activity: {$emailDetails->action}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
-				}
+				}*/
 
 				displayJSON(array('success' => true, 'character' => $charInfo, 'approved' => $isGM));
 			} else 
