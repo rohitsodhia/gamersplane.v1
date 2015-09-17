@@ -93,10 +93,6 @@
 <?		} ?>
 			<li><a href="/links/">Links</a></li>
 		</ul>
-		<ul id="mainMenu_right">
-			<li><a href="/faqs/" class="first">FAQs</a></li>
-			<li><a href="/contact/">Contact Us</a></li>
-		</ul>
 	</div>
 </div></header>
 
