@@ -38,13 +38,13 @@
 				<div class="faqs" hb-margined>
 					<div ng-repeat="faq in aFAQs[slug] | orderBy: 'order'" class="faq" ng-class="{ 'editing': faq._id == editing }">
 						<div class="controls">
-							<a href="" ng-click="moveUp(faq, faqs)" class="sprite upArrow" ng-if="!$first"></a>
-							<a href="" ng-click="moveDown(faq, faqs)" class="sprite downArrow" ng-if="!$last"></a>
+							<a href="" ng-click="moveUp(faq, aFAQs[slug])" class="sprite upArrow" ng-if="!$first"></a>
+							<a href="" ng-click="moveDown(faq, aFAQs[slug])" class="sprite downArrow" ng-if="!$last"></a>
 						</div>
 						<div class="display">
 							<div class="question">{{faq.question}}</div>
 							<div class="answer" ng-bind-html="faq.answer.encoded | trustHTML"></div>
-							<div><a href="" ng-click="editFAQ(faq)" class="edit">[ Edit ]</a> <a href="" ng-click="deleteFAQ(faq._id, faqs, $index)" class="delete">[ Delete ]</a></div>
+							<div><a href="" ng-click="editFAQ(faq)" class="edit">[ Edit ]</a> <a href="" ng-click="deleteFAQ(faq._id, aFAQs[slug], $index)" class="delete">[ Delete ]</a></div>
 						</div>
 						<div class="inputs">
 							<div class="question"><input type="text" ng-model="faq.question"></div>
