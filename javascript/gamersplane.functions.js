@@ -10,10 +10,6 @@ String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-String.prototype.printReady = function () {
-	return this.replace(/(?\r\n|\r|\n:)/g, '<br>');
-}
-
 function removeEle(from, element) {
 	var key = from.indexOf(element);
 	if (key >= 0) 
