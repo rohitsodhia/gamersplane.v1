@@ -773,13 +773,16 @@ app.config(function ($httpProvider) {
 		$pageLoading.toggle();
 	});
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
+	$scope.$emit('pageLoading');
 	$scope.catMap = {};
 	$scope.aFAQs = {};
 	for (key in faqs.categories) 
 		$scope.catMap[faqs.categories[key]] = key;
 	faqs.get().then(function (data) {
-		if (data.faqs) 
+		if (data.faqs) {
+			$scope.$emit('pageLoading');
 			$scope.aFAQs = data.faqs;
+		}
 	});
 }]);
 var controllers = angular.module('controllers', []);
