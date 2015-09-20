@@ -34,7 +34,7 @@
 			<hr>
 
 			<div ng-repeat="(slug, category) in catMap" ng-if="aFAQs[slug].length">
-				<h2 class="headerbar hbDark" skew-element>{{catMap[category]}}</h2>
+				<h2 class="headerbar hbDark" skew-element>{{category}}</h2>
 				<div class="faqs" hb-margined>
 					<div ng-repeat="faq in aFAQs[slug] | orderBy: 'order'" class="faq" ng-class="{ 'editing': faq._id == editing }">
 						<div class="controls">
