@@ -24,41 +24,6 @@ $(function () {
 		});
 	}
 
-	if ($('#page_acp_faqs').length) {
-		$('div.faq').on('click', '.display a, .inputs a', function (e) {
-			e.preventDefault();
-
-			$link = $(this);
-			$faq = $link.closest('.faq');
-
-			if ($link.hasClass('edit')) $link.closest('.faq').addClass('editing');
-			else if ($link.hasClass('save')) {
-				$.post('/acp/process/editFAQ/', { mongoID: $faq.data('questionId'), question: $faq.find('input').val(), answer: $faq.find('textarea').val() }, function (data) {
-					$link.closest('.faq').removeClass('editing').find('.display .answer').html(data);
-				});
-			} else if ($link.hasClass('cancel')) $link.closest('.faq').removeClass('editing');
-			else if ($link.hasClass('delete')) {
-				$.post('/acp/process/deleteFAQ/', { mongoID: $faq.data('questionId') }, function (data) {
-					$faq.remove();
-				});
-			}
-		}).on('click', '.controls a', function (e) {
-			e.preventDefault();
-
-			$current = $(this).closest('.faq');
-			if ($(this).hasClass('upArrow')) {
-				$swap = $current.prev();
-				if ($swap.length) $current.insertBefore($swap);
-			} else {
-				$swap = $current.next();
-				if ($swap.length) $current.insertAfter($swap);
-			}
-			$.post('/acp/process/swapFAQ/', { mongoID1: $current.data('questionId'), mongoID2: $swap.data('questionId') }, function () {
-				;
-			});
-		});
-	}
-
 	if ($('#page_acp_users').length) {
 		var currentTab = 'active';
 		$('#controls a').click(function (e) {
@@ -283,7 +248,7 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 			}
 		}
 	}
-}]).controller('acp_music', function ($scope, $http, $sce) {
+}]).controller('acp_music', ['$scope', '$http', '$sce', function ($scope, $http, $sce) {
 	$scope.music = [];
 	$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
 	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
@@ -325,4 +290,70 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 		loadMusic();
 		$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
 	});
-});
+}]).controller('acp_faqs', ['$scope', '$http', '$filter', 'faqs', function ($scope, $http, $filter, faqs) {
+	$scope.categories = [];
+	$scope.catMap = {};
+	for (key in faqs.categories) {
+		$scope.categories.push({ 'value': faqs.categories[key], 'display': key });
+		$scope.catMap[faqs.categories[key]] = key;
+	}
+	$scope.aFAQs = [];
+	faqs.get().then(function (data) {
+		if (data.faqs) 
+			$scope.aFAQs = data.faqs;
+	});
+	$scope.editing = null;
+	$scope.editHold = null;
+	$scope.editFAQ = function(faq) {
+		$scope.editing = faq._id;
+		$scope.editHold = faq;
+	};
+	$scope.moveUp = function (faq, cFAQs) {
+		faqs.changeOrder(faq._id, 'up').then(function (data) {
+			order = faq.order;
+			sFAQ = $filter('filter')(cFAQs, { 'order': order - 1 });
+			faq.order = faq.order - 1;
+			sFAQ[0].order = sFAQ[0].order + 1;
+		});
+	};
+	$scope.moveDown = function (faq, cFAQs) {
+		faqs.changeOrder(faq._id, 'down').then(function (data) {
+			order = faq.order;
+			sFAQ = $filter('filter')(cFAQs, { 'order': order + 1 });
+			faq.order = faq.order + 1;
+			sFAQ[0].order = sFAQ[0].order - 1;
+		});
+	};
+	$scope.saveFAQ = function (faq) {
+		faqs.update(faq).then(function (data) {
+			if (data.success) {
+				faq = data.faq;
+				$scope.editing = null;
+				$scope.editHold = null;
+			}
+		});
+	}
+	$scope.cancelSave = function () {
+		$scope.editing = null;
+		$scope.editHold = null;
+	}
+	$scope.deleteFAQ = function (id, cFAQs, index) {
+		faqs.delete(id).then(function (data) {
+			if (data.success) 
+				cFAQs.splice(index, 1);
+		});
+	}
+
+	$scope.newFAQ = {
+		'category': '',
+		'question': '',
+		'answer': ''
+	}
+	$scope.createFAQ = function () {
+		if ($scope.newFAQ.question.length == 0 || $scope.newFAQ.answer.length == 0) 
+			return false;
+		faqs.create($scope.newFAQ).then(function (data) {
+			$scope.aFAQs[data.faq.category].push(data.faq);
+		});
+	}
+}]);

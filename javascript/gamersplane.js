@@ -176,6 +176,37 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
 		return deferred.promise;
 	}
+}]).service('faqs', ['$http', '$q', function ($http, $q) {
+	return {
+		'categories': { 'Getting Started': 'getting-started', 'Characters': 'characters', 'Games': 'games', 'Tools': 'tools' },
+		'get': function () {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/faqs/get/').success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'changeOrder': function (id, direction) {
+			if (direction != 'up' && direction != 'down') 
+				return false;
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/faqs/changeOrder/', { 'id': id, 'direction': direction }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'update': function (faq) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/faqs/save/', { 'id': faq._id, 'question': faq.question, 'answer': faq.answer.raw }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'create': function (faq) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/faqs/save/', { 'category': faq.category.value, 'question': faq.question, 'answer': faq.answer }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		},
+		'delete': function (id) {
+			var deferred = $q.defer();
+			$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
+			return deferred.promise;
+		}
+	}
 }]).service('initializeVars', [function () {
 	return {
 		'setup': function (scope) {
@@ -740,6 +771,15 @@ app.config(function ($httpProvider) {
 	$scope.$on('pageLoading', function (event) {
 		$scope.pageLoadingPause = !$scope.pageLoadingPause;
 		$pageLoading.toggle();
+	});
+}]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
+	$scope.catMap = {};
+	$scope.aFAQs = {};
+	for (key in faqs.categories) 
+		$scope.catMap[faqs.categories[key]] = key;
+	faqs.get().then(function (data) {
+		if (data.faqs) 
+			$scope.aFAQs = data.faqs;
 	});
 }]);
 var controllers = angular.module('controllers', []);

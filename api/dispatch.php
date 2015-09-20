@@ -12,7 +12,8 @@
 	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);
 	startSession();
 	require('../includes/User.class.php');
-	
+	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 
 	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
