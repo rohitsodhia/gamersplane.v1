@@ -321,10 +321,10 @@ app.config(function ($httpProvider) {
 		link: function (scope, element, attrs) {
 			$timeout(function () {
 				$element = $(element);
-				if (attrs.hbMargined = 'dark') 
+				if (attrs.hbMargined == 'dark') 
 					$headerbar = $('.headerbar.hbDark');
 				else 
-					$headerbar = $element.siblings('.headerbar');2
+					$headerbar = $element.siblings('.headerbar');
 				skewedOut = parseFloat($headerbar.data('skewedOut')) * 2;
 				$element.css('margin-left', skewedOut);
 				if (!$element.hasClass('hbTopper')) 
@@ -784,5 +784,6 @@ app.config(function ($httpProvider) {
 			$scope.aFAQs = data.faqs;
 		}
 	});
+}]).controller('about', ['$scope', function ($scope) {
 }]);
 var controllers = angular.module('controllers', []);

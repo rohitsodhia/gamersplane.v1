@@ -1,2 +1,1 @@
-UPDATE dispatch SET ngController = 'acp_faqs' WHERE url = 'acp/faqs/';
-UPDATE dispatch SET ngController = 'faqs' WHERE url = 'faqs/';
+INSERT INTO dispatch SET url = 'about/', pageID = 'about', file = 'about.php', title = "About Gamers' Plane", loginReq = 0;

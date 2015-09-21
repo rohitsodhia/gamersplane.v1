@@ -4,6 +4,7 @@
 <footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?>"><div class="bodyContainer">
 	<ul>
 		<li><a href="/faqs/">FAQs</a></li>
+		<li><a href="/about/">About GP</a></li>
 		<li><a href="/contact/">Contact Us</a></li>
 	</ul>
 	<ul class="floatRight">
