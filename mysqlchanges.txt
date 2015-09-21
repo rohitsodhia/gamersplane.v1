@@ -1,1 +1,0 @@
-INSERT INTO dispatch SET url = 'about/', pageID = 'about', file = 'about.php', title = "About Gamers' Plane", loginReq = 0;
