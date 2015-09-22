@@ -1,16 +1,22 @@
-app.controller('myCharacters', ['$scope', '$http', '$sce', 'initializeVars', 'currentUser', 'characters', function ($scope, $http, $sce, initializeVars, currentUser, characters) {
+app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'characters', 'systems', function ($scope, $http, $sce, $timeout, currentUser, characters, systems) {
 	currentUser.then(function (currentUser) {
 		$scope.characters = {};
 		$scope.library = {};
 		$scope.systems = [];
+		$scope.$emit('pageLoading');
 		characters.getMy(true).then(function (data) {
+			$scope.$emit('pageLoading');
 			$scope.characters = data.characters;
 			$scope.library = data.library;
 		});
-		$http.post(API_HOST + '/systems/get/', { 'getAll': true, 'simple': true }).success(function (data) {
+		systems.get({ 'getAll': true, 'simple': true }).then(function (data) {
 			for (key in data.systems) 
 				$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
 		});
+		$timeout(function () {
+			$scope.systems = [{ value: 'car', 'display': 'Car' }];
+			$scope.$apply();
+		}, 5000);
 		$scope.charTypes = ['PC', 'NPC', 'Mob'];
 		$scope.newChar = { 'label': '', 'system': {}, 'charType': {} };
 		$scope.editing = {

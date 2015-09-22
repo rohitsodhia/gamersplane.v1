@@ -167,53 +167,58 @@ app.config(function ($httpProvider) {
 	});
 }).service('systems', ['$http', '$q', function ($http, $q) {
 	this.get = function (params) {
+		if (typeof params != 'object' || Array.isArray(params)) 
+			params = {};
 		var deferred = $q.defer();
 		$http.post(API_HOST + '/systems/get/', params).success(function (data) { deferred.resolve(data) });
 		return deferred.promise;
-	}
+	};
 	this.getGenres = function () {
 		var deferred = $q.defer();
 		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
 		return deferred.promise;
-	}
+	};
+}]).service('links', ['$http', '$q', function ($http, $q) {
+	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
+	this.get = function (params) {
+		if (typeof params != 'object' || Array.isArray(params)) 
+			params = {};
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/links/get/', params).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
 }]).service('faqs', ['$http', '$q', function ($http, $q) {
-	return {
-		'categories': { 'Getting Started': 'getting-started', 'Characters': 'characters', 'Games': 'games', 'Tools': 'tools' },
-		'get': function () {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/faqs/get/').success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'changeOrder': function (id, direction) {
-			if (direction != 'up' && direction != 'down') 
-				return false;
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/faqs/changeOrder/', { 'id': id, 'direction': direction }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'update': function (faq) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/faqs/save/', { 'id': faq._id, 'question': faq.question, 'answer': faq.answer.raw }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'create': function (faq) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/faqs/save/', { 'category': faq.category.value, 'question': faq.question, 'answer': faq.answer }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'delete': function (id) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		}
+	this.categories = { 'Getting Started': 'getting-started', 'Characters': 'characters', 'Games': 'games', 'Tools': 'tools' };
+	this.get = function () {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/faqs/get/').success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.changeOrder = function (id, direction) {
+		if (direction != 'up' && direction != 'down') 
+			return false;
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/faqs/changeOrder/', { 'id': id, 'direction': direction }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.update = function (faq) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/faqs/save/', { 'id': faq._id, 'question': faq.question, 'answer': faq.answer.raw }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.create = function (faq) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/faqs/save/', { 'category': faq.category.value, 'question': faq.question, 'answer': faq.answer }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.delete = function (id) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
 	}
 }]).service('initializeVars', [function () {
-	return {
-		'setup': function (scope) {
-			scope.pageLoading = { 'element': $('#pageLoading'), 'pause': true };
-			scope.pageLoadingPause = true;
-			return scope;
-		}
+	this.setup = function (scope) {
+		return scope;
 	}
 }]).factory('characters', ['$http', '$q', function ($http, $q) {
 	return {
@@ -446,6 +451,8 @@ app.config(function ($httpProvider) {
 				$input = $combobox.children('input');
 				if (isUndefined(scope.data)) 
 					scope.data = [];
+
+				console.log(1);
 
 				setupFinished();
 			}, true);
@@ -784,6 +791,14 @@ app.config(function ($httpProvider) {
 			$scope.aFAQs = data.faqs;
 		}
 	});
-}]).controller('about', ['$scope', function ($scope) {
+}]).controller('about', ['$scope', '$filter', 'links', function ($scope, $filter, links) {
+	$scope.$emit('pageLoading');
+	$scope.links = [];
+	links.get({ 'level': ['Affiliate', 'Partner'], 'networks': 'rpga', 'or': true }).then(function (data) {
+		$scope.links.partners = $filter('filter')(data.links, { 'level': 'Partner' });
+		$scope.links.rpgan = $filter('filter')(data.links, { 'networks': 'rpga' });
+		$scope.links.affiliates = $filter('filter')(data.links, { 'level': 'Affiliate' });
+		$scope.$emit('pageLoading');
+	});
 }]);
 var controllers = angular.module('controllers', []);

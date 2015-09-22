@@ -5,8 +5,8 @@
 		function __construct() {
 			global $loggedIn, $pathOptions;
 
-			if ($pathOptions[0] == 'list') 
-				$this->getLinks();
+			if ($pathOptions[0] == 'get') 
+				$this->get();
 			elseif ($pathOptions[0] == 'save') 
 				$this->saveLink();
 			elseif ($pathOptions[0] == 'deleteImage') 
@@ -17,14 +17,27 @@
 				displayJSON(array('failed' => true));
 		}
 
-		public function getLinks() {
+		public function get() {
 			global $mongo, $currentUser;
 
 			$search = array();
-			if (isset($_POST['level']) && in_array($_POST['level'], array('Link', 'Affiliate', 'Partner'))) 
-				$search['level'] = $_POST['level'];
+			if (isset($_POST['level'])) {
+				if (!is_array($_POST['level'])) 
+					$_POST['level'] = array($_POST['level']);
+				foreach ($_POST['level'] as $level) 
+					if (in_array($level, array('Link', 'Affiliate', 'Partner'))) 
+						$search['level'][] = $level;
+				if (isset($search['level'])) 
+					$search['level'] = array('$in' => $search['level']);
+			}
 			if (isset($_POST['networks'])) 
 				$search['networks'] = $_POST['networks'];
+			if (isset($_POST['or'])) {
+				$or = array();
+				foreach ($search as $key => $value) 
+					$or[] = array($key => $value);
+				$search = array('$or' => $or);
+			}
 
 			$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
 			$numLinks = $mongo->links->find($search, array('_id' => 1))->count();
