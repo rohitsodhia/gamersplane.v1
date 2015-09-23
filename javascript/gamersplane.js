@@ -431,7 +431,6 @@ app.config(function ($httpProvider) {
 					scope.options = [];
 					return;
 				}
-				cleanData = [];
 				for (key in scope.options) {
 					if (typeof scope.options[key] == 'string' && scope.options[key].length > 0) 
 						scope.options[key] = { 'value': scope.options[key], 'display': scope.options[key] };
@@ -458,10 +457,6 @@ app.config(function ($httpProvider) {
 				$input = $combobox.children('input');
 				if (isUndefined(scope.options)) 
 					scope.options = [];
-
-				console.log('active');
-				setupFinished();
-				console.log('still set');
 			}, true);
 
 			scope.toggleDropdown = function ($event) {
