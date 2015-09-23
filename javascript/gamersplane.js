@@ -406,6 +406,7 @@ app.config(function ($httpProvider) {
 			scope.bypassFilter = true;
 			scope.search = typeof scope.search == 'string'?scope.search:'';
 			scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
+			scope.options = [];
 			scope.showDropdown = false;
 			scope.hasFocus = false;
 			scope.curSelected = -1;
@@ -413,48 +414,54 @@ app.config(function ($httpProvider) {
 				$input = null;
 
 			function setValue() {
-				for (key in scope.data) 
-					if (scope.search.toLowerCase() == scope.data[key].display.toLowerCase()) {
-						scope.value = scope.data[key];
+				for (key in scope.options) 
+					if (scope.search.toLowerCase() == scope.options[key].display.toLowerCase()) {
+						scope.value = scope.options[key];
 						scope.search = scope.value.display;
 					}
 			}
 			scope.filterData = function () {
-				return $filter('filter')(scope.data, (!scope.bypassFilter || '') && { 'display': scope.search });
+				return $filter('filter')(scope.options, (!scope.bypassFilter || '') && { 'display': scope.search });
 			}
-			var setupFinished = scope.$watch(function () { return scope.data; }, function () {
-				if (isUndefined(scope.data) || (scope.data instanceof Array && scope.data.length == 0)) 
+			var setupFinished = scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
+				if (newVal === oldVal) 
 					return;
-				for (key in scope.data) {
-					if (typeof scope.data[key] == 'string' && scope.data[key].length > 0) 
-						scope.data[key] = { 'value': scope.data[key], 'display': scope.data[key] };
-					else if (!isUndefined(scope.data[key].display) && scope.data[key].display.length && (isUndefined(scope.data[key].value) || scope.data[key].value.length == 0))
-						scope.data[key].value = scope.data[key].display;
-					else if (isUndefined(scope.data[key].display) || scope.data[key].display.length == 0) 
-						scope.data.splice(key, 1);
-
-					scope.data[key].value = decodeHTML(scope.data[key].value);
-					scope.data[key].display = decodeHTML(scope.data[key].display);
+				scope.options = copyObject(scope.data);
+				if (isUndefined(scope.options) || (scope.options instanceof Array && scope.options.length == 0)) {
+					scope.options = [];
+					return;
 				}
-				filterResults = $filter('filter')(scope.data, { 'value': scope.value.value }, true);
+				cleanData = [];
+				for (key in scope.options) {
+					if (typeof scope.options[key] == 'string' && scope.options[key].length > 0) 
+						scope.options[key] = { 'value': scope.options[key], 'display': scope.options[key] };
+					else if (!isUndefined(scope.options[key].display) && scope.options[key].display.length && (isUndefined(scope.options[key].value) || scope.options[key].value.length == 0))
+						scope.options[key].value = scope.options[key].display;
+					else if (isUndefined(scope.options[key].display) || scope.options[key].display.length == 0) 
+						scope.options.splice(key, 1);
+
+					scope.options[key].value = decodeHTML(scope.options[key].value);
+					scope.options[key].display = decodeHTML(scope.options[key].display);
+				}
+				filterResults = $filter('filter')(scope.options, { 'value': scope.value.value }, true);
 				if (filterResults.length == 1) 
 					scope.search = scope.value.display;
 				else 
 					scope.value = { 'value': null, 'display': '' };
 				if (scope.select && scope.value.value == null && scope.value.display == '' ) {
-					scope.value = copyObject(scope.data[0]);
+					scope.value = copyObject(scope.options[0]);
 					scope.search = scope.value.display;
 				}
 				if (!isUndefined(attrs.placeholder)) 
 					element.find('input').attr('placeholder', attrs.placeholder);
 				$combobox = element.children('.combobox');
 				$input = $combobox.children('input');
-				if (isUndefined(scope.data)) 
-					scope.data = [];
+				if (isUndefined(scope.options)) 
+					scope.options = [];
 
-				console.log(1);
-
+				console.log('active');
 				setupFinished();
+				console.log('still set');
 			}, true);
 
 			scope.toggleDropdown = function ($event) {
@@ -482,7 +489,7 @@ app.config(function ($httpProvider) {
 			scope.$watch('hasFocus', function (newVal, oldVal) {
 				if (!newVal) {
 					if (scope.search.length != '') {
-						filterResults = $filter('filter')(scope.data, { 'display': scope.search }, true);
+						filterResults = $filter('filter')(scope.options, { 'display': scope.search }, true);
 						if (filterResults.length == 1 && filterResults[0].display.toLowerCase() == scope.search.toLowerCase()) {
 							scope.search = filterResults[0].display;
 							scope.value = filterResults[0];
@@ -498,7 +505,7 @@ app.config(function ($httpProvider) {
 							}
 							if (noResults) {
 								if (scope.select) {
-									scope.value = copyObject(scope.data[0]);
+									scope.value = copyObject(scope.options[0]);
 									scope.search = scope.value.display;
 								} else {
 									scope.search = '';
@@ -518,11 +525,11 @@ app.config(function ($httpProvider) {
 					scope.value = { 'value': null, 'display': '' };
 					console.log(scope.curSelected);
 					if (scope.curSelected == -1) {
-						filterResults = $filter('filter')(scope.data, { 'display': scope.search }, true);
+						filterResults = $filter('filter')(scope.options, { 'display': scope.search }, true);
 						if (filterResults.length == 1) 
 							scope.setBox(filterResults);
 					} else {
-						filterResults = $filter('filter')(scope.data, { 'display': scope.search });
+						filterResults = $filter('filter')(scope.options, { 'display': scope.search });
 						scope.setBox(filterResults[scope.curSelected]);
 					}
 				} else if ($event.keyCode == 38 || $event.keyCode == 40) {
