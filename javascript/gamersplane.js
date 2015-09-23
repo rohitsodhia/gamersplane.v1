@@ -452,8 +452,6 @@ app.config(function ($httpProvider) {
 				if (isUndefined(scope.data)) 
 					scope.data = [];
 
-				console.log(1);
-
 				setupFinished();
 			}, true);
 
