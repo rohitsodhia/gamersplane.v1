@@ -26,22 +26,26 @@
 
 		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
-			foreach ($matches as $match) {
-				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) $allUsers[] = $eachUser;
-			}
+			foreach ($matches as $match) 
+				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) 
+					$allUsers[] = $eachUser;
 			$userCheck = $mysql->prepare('SELECT username FROM users WHERE LOWER(username) = :username');
 			foreach ($allUsers as $key => $username) {
 				$userCheck->bindValue(':username', strtolower($username));
 				$userCheck->execute();
-				if (!$userCheck->rowCount()) unset($allUsers[$key]);
-				else $allUsers[$key] = $userCheck->fetchColumn();
+				if (!$userCheck->rowCount()) 
+					unset($allUsers[$key]);
+				else 
+					$allUsers[$key] = $userCheck->fetchColumn();
 			}
 			foreach ($matches as $match) {
 				$matchUsers = preg_split('/[^\w]+/', $match[1]);
-				$validuser = array();
+				$validUsers = array();
 				foreach ($matchUsers as $user) {
-					foreach ($allUsers as $realUser) 
-						if (strtolower($user) == strtolower($realUser)) $validUsers[] = $realUser;
+					foreach ($allUsers as $realUser) {
+						if (strtolower($user) == strtolower($realUser)) 
+							$validUsers[] = $realUser;
+					}
 				}
 				$validNote = preg_replace('/\[note.*?\]/', '[note="'.implode(',', $validUsers).'"]', $match[0]);
 				$message = str_replace($match[0], $validNote, $message);
