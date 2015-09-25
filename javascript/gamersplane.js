@@ -399,19 +399,44 @@ app.config(function ($httpProvider) {
 		scope: {
 			'data': '=',
 			'value': '=',
-			'search': '='
+			'search': '=',
+			'autocomplete': '='
 		},
 		link: function (scope, element, attrs) {
 			scope.select = !isUndefined(attrs.select)?true:false;
 			scope.bypassFilter = true;
 			scope.search = typeof scope.search == 'string'?scope.search:'';
 			scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
+			if (!isUndefined(attrs.placeholder)) 
+				element.find('input').attr('placeholder', attrs.placeholder);
+			scope.usingAutocomplete = false;
+			if (!isUndefined(attrs.autocomplete)) {
+				scope.usingAutocomplete = true;
+				var skillSearchTimeout = null;
+				scope.$watch(function () { return scope.search; }, function (newVal, oldVal) {
+					if (newVal == oldVal) 
+						return;
+					$timeout.cancel(skillSearchTimeout);
+					if (scope.search.length >= 3) 
+						skillSearchTimeout = $timeout(function () {
+							scope.autocomplete(scope.search).then(function (data) {
+								if (isUndefined(scope.data)) 
+									scope.data = [];
+								scope.data = copyObject(data);
+							});
+						}, 500);
+				});
+			}
 			scope.options = [];
 			scope.showDropdown = false;
 			scope.hasFocus = false;
 			scope.curSelected = -1;
-			var $combobox = null,
-				$input = null;
+			var $combobox = element.children('.combobox'),
+				$input = element.children('input');
+			if (!isUndefined(attrs.class)) {
+				$combobox.addClass(attrs.class);
+				element.attr('class', '');
+			}
 
 			function setValue() {
 				for (key in scope.options) 
@@ -439,24 +464,23 @@ app.config(function ($httpProvider) {
 					else if (isUndefined(scope.options[key].display) || scope.options[key].display.length == 0) 
 						scope.options.splice(key, 1);
 
-					scope.options[key].value = decodeHTML(scope.options[key].value);
-					scope.options[key].display = decodeHTML(scope.options[key].display);
+					option = {
+						'value': decodeHTML(scope.options[key].value),
+						'display': decodeHTML(scope.options[key].display)
+					}
+					if (!isUndefined(scope.options[key].class)) 
+						option.class = scope.options[key].class;
+					scope.options[key] = copyObject(option);
 				}
 				filterResults = $filter('filter')(scope.options, { 'value': scope.value.value }, true);
-				if (filterResults.length == 1) 
+				if (filterResults.length == 1 && !scope.hasFocus) 
 					scope.search = scope.value.display;
 				else 
 					scope.value = { 'value': null, 'display': '' };
-				if (scope.select && scope.value.value == null && scope.value.display == '' ) {
+				if (scope.select && scope.value.value == null && scope.value.display == '' && !scope.hasFocus) {
 					scope.value = copyObject(scope.options[0]);
 					scope.search = scope.value.display;
 				}
-				if (!isUndefined(attrs.placeholder)) 
-					element.find('input').attr('placeholder', attrs.placeholder);
-				$combobox = element.children('.combobox');
-				$input = $combobox.children('input');
-				if (isUndefined(scope.options)) 
-					scope.options = [];
 			}, true);
 
 			scope.toggleDropdown = function ($event) {
@@ -518,7 +542,6 @@ app.config(function ($httpProvider) {
 					if (scope.showDropdown) 
 						$event.preventDefault();
 					scope.value = { 'value': null, 'display': '' };
-					console.log(scope.curSelected);
 					if (scope.curSelected == -1) {
 						filterResults = $filter('filter')(scope.options, { 'display': scope.search }, true);
 						if (filterResults.length == 1) 
@@ -528,6 +551,7 @@ app.config(function ($httpProvider) {
 						scope.setBox(filterResults[scope.curSelected]);
 					}
 				} else if ($event.keyCode == 38 || $event.keyCode == 40) {
+					$event.preventDefault();
 					if (!scope.showDropdown) 
 						scope.showDropdown = true;
 					$resultsWrapper = element.find('.results');
@@ -538,7 +562,6 @@ app.config(function ($httpProvider) {
 						scope.curSelected += 1;
 					else if ($event.keyCode == 38) 
 						scope.curSelected -= 1;
-					console.log(scope.curSelected);
 
 					if (scope.curSelected < 0) 
 						scope.curSelected = $results.length - 1;

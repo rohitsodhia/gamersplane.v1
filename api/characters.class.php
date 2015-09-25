@@ -23,6 +23,8 @@
 				$this->delete();
 			elseif ($pathOptions[0] == 'toggleFavorite') 
 				$this->toggleFavorite();
+			elseif ($pathOptions[0] == 'searchSkills' && $loggedIn) 
+				$this->searchSkills(); 
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -253,6 +255,30 @@
 				displayJSON(array('success' => true, 'state' => $state));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('noChar')));
+		}
+
+		public function searchSkills() {
+			global $mysql;
+
+			$search = sanitizeString($_POST['search'], 'search_format');
+			$characterID = intval($_POST['characterID']);
+			$system = $_POST['system'];
+			require_once('../includes/Systems.class.php');
+			$systems = Systems::getInstance();
+			
+			if ($systems->verifySystem($system)) {
+				$rSkills = $mysql->prepare("SELECT sl.itemID skillID, sl.name, sacm.itemID IS NOT NULL systemSkill FROM charAutocomplete sl LEFT JOIN system_charAutocomplete_map sacm ON sacm.system = '{$system}' AND sacm.itemID = sl.itemID WHERE sl.type = 'skill' AND sl.name LIKE ? ORDER BY systemSkill DESC, sl.name LIMIT 5");
+				$rSkills->execute(array("%$search%"));
+				$lastType = null;
+				$skills = array();
+				foreach ($rSkills as $skill) 
+					$skills[] = array(
+						'skillID' => (int) $skill['skillID'],
+						'name' => $skill['name'],
+						'systemSkill' => $skill['systemSkill']?true:false
+					);
+				displayJSON(array('skills' => $skills));
+			}
 		}
 	}
 ?>

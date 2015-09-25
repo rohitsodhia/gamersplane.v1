@@ -15,7 +15,6 @@ app.factory('character', ['$http', '$q', function ($http, $q) {
 		'loadBlanks': function (character, blanks) {
 			if (typeof blanks == 'undefined' || Object.keys(blanks).length == 0) 
 				return;
-			console.log(character);
 			for (key in blanks) {
 				if (key.indexOf('.') < 0) 
 					bArray = character[key];

@@ -13,10 +13,6 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentU
 			for (key in data.systems) 
 				$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
 		});
-		$timeout(function () {
-			$scope.systems = [{ value: 'car', 'display': 'Car' }];
-			$scope.$apply();
-		}, 5000);
 		$scope.charTypes = ['PC', 'NPC', 'Mob'];
 		$scope.newChar = { 'label': '', 'system': {}, 'charType': {} };
 		$scope.editing = {
