@@ -68,7 +68,6 @@
 						</div>
 					</div>
 				</div>
-
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
 						<h2 class="headerbar hbDark" skew-element>Skills <a href="" ng-click="addItem('skills')">[ Add Skill ]</a></h2>

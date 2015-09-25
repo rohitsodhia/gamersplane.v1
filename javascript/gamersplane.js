@@ -468,8 +468,7 @@ app.config(function ($httpProvider) {
 						'value': decodeHTML(scope.options[key].value),
 						'display': decodeHTML(scope.options[key].display)
 					}
-					if (!isUndefined(scope.options[key].class)) 
-						option.class = scope.options[key].class;
+					option.class = !isUndefined(scope.options[key].class)?scope.options[key].class:[];
 					scope.options[key] = copyObject(option);
 				}
 				filterResults = $filter('filter')(scope.options, { 'value': scope.value.value }, true);
