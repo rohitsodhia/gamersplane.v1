@@ -164,11 +164,11 @@
 				displayJSON(array('failed' => true, 'loggedOut' => true));
 
 			$gameID = intval($_POST['gameID']);
-			list($numPlayers, $playerCount) = $mysql->query("SELECT g.numPlayers, COUNT(*) playerCount FROM games g INNER JOIN players p ON g.gameID = p.gameID WHERE g.gameID = {$gameID} AND p.approved = 0 AND g.retired IS NULL")->fetch(PDO::FETCH_NUM);
-			if ($numPlayers > $playerCount - 1) 
+			$status = $mysql->query("SELECT status FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
+			if ($status == 1) 
 				$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}");
 			else 
-				displayJSON(array('failed' => true, 'gameFull' => true));
+				displayJSON(array('failed' => true, 'gameClosed' => true));
 
 			displayJSON(array('success' => true));
 		}
