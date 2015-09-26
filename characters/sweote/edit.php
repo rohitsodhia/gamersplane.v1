@@ -79,8 +79,8 @@
 					</div>
 				</div>
 				<div class="clearfix">
-					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="">[ Add Skill ]</a></h2>
+					<div id="skills" data-type="skill" class="floatLeft">
+						<h2 class="headerbar hbDark">Skills <a href="" class="addItem">[ Add Skill ]</a></h2>
 						<div class="hbdMargined">
 							<div class="tr labelTR">
 								<label class="medText">Skill</label>
