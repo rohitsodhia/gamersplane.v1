@@ -464,12 +464,11 @@ app.config(function ($httpProvider) {
 					else if (isUndefined(scope.options[key].display) || scope.options[key].display.length == 0) 
 						scope.options.splice(key, 1);
 
-					option = {
+					scope.options[key] = {
 						'value': decodeHTML(scope.options[key].value),
-						'display': decodeHTML(scope.options[key].display)
+						'display': decodeHTML(scope.options[key].display),
+						'class': !isUndefined(scope.options[key].class)?scope.options[key].class:[]
 					}
-					option.class = !isUndefined(scope.options[key].class)?scope.options[key].class:[];
-					scope.options[key] = copyObject(option);
 				}
 				filterResults = $filter('filter')(scope.options, { 'value': scope.value.value }, true);
 				if (filterResults.length == 1 && !scope.hasFocus) 
