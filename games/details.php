@@ -179,7 +179,7 @@
 						</ul>
 					</div>
 
-					<div ng-if="!details.retired">
+					<div ng-if="!details.retired && isGM">
 						<h2 skew-element class="headerbar hbDark hb_hasList">Invited</h2>
 						<ul class="hbAttachedList" hb-margined>
 							<li ng-repeat="invite in invites.waiting | orderBy: 'username'" class="playerInfo clearfix">
