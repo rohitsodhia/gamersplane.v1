@@ -179,17 +179,17 @@
 						</ul>
 					</div>
 
-					<div ng-if="!details.retired && isGM">
+					<div ng-if="!details.retired">
 						<h2 skew-element class="headerbar hbDark hb_hasList">Invited</h2>
 						<ul class="hbAttachedList" hb-margined>
 							<li ng-repeat="invite in invites.waiting | orderBy: 'username'" class="playerInfo clearfix">
 								<div class="player"><a href="/user/{{invite.userID}}/?>" class="username">{{invite.username}}</a></div>
-								<div class="actionLinks">
+								<div class="actionLinks" ng-show="isGM">
 									<a href="" ng-click="withdrawInvite(invite)">Withdraw Invite</a>
 								</div>
 							</li>
 						</ul>
-						<form id="invites" hb-margined ng-submit="inviteUser()">
+						<form id="invites" hb-margined ng-submit="inviteUser()" ng-show="isGM">
 							<label>Invite player to game:</label>
 							<input type="text" name="user" ng-model="invites.user">
 							<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
