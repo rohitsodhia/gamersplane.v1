@@ -74,7 +74,7 @@
 						<div hb-margined>
 							<div ng-repeat="skill in character.skills" class="skill tr">
 								<div ng-click="skill.type = skill.type == 'a'?'k':'a'" class="type">{{skill.type.toUpperCase()}}</div>
-								<combobox value="skill.name" autocomplete="searchSkills" placeholder="Skill" class="name lrBuffer"></combobox>
+								<combobox search="skill.name" autocomplete="searchSkills" placeholder="Skill" class="name lrBuffer"></combobox>
 								<input type="text" ng-model="skill.rating" class="rating">
 								<a href="" class="remove sprite cross" ng-click="character.skills.splice($index, 1)"></a>
 							</div>

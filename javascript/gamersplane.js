@@ -216,6 +216,28 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
 		return deferred.promise;
 	}
+}]).service('search', ['$http', '$q', function ($http, $q) {
+	this.skills = function (skill) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/cilSearch/', { 'type': 'skill', 'search': skill, 'system': 'shadowrun5' }).then(function (data) {
+			data = data.data;
+			if (data.items.length) {
+				for (key in data.items) {
+					systemSkill = data.items[key].systemSkill;
+					data.items[key] = {
+						'value': data.items[key].skillID,
+						'display': data.items[key].name,
+						'class': []
+					}
+					if (!systemSkill) 
+						data.items[key].class.push('nonSystemSkill');
+				}
+				deferred.resolve(data.items);
+			} else 
+				deferred.resolve([]);
+		});
+		return deferred.promise;
+	};
 }]).service('initializeVars', [function () {
 	this.setup = function (scope) {
 		return scope;

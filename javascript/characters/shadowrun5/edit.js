@@ -1,4 +1,4 @@
-controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, range) {
+controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'search', 'range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, search, range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
 		$scope.range = range.get;
@@ -46,27 +46,7 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 			else 
 				$scope.character[key].push(copyObject(blanks[key]));
 		};
-		$scope.searchSkills = function (skill) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/searchSkills/', { 'search': skill, 'system': 'shadowrun5' }).then(function (data) {
-				data = data.data;
-				if (data.skills.length) {
-					for (key in data.skills) {
-						systemSkill = data.skills[key].systemSkill;
-						data.skills[key] = {
-							'value': data.skills[key].skillID,
-							'display': data.skills[key].name,
-							'class': []
-						}
-						if (!systemSkill) 
-							data.skills[key].class.push('nonSystemSkill');
-					}
-					deferred.resolve(data.skills);
-				} else 
-					deferred.resolve([]);
-			});
-			return deferred.promise;
-		};
+		$scope.searchSkills = search.skills;
 		$scope.save = function () {
 			character.save($scope.character.characterID, $scope.character).then(function (data) {
 				if (data.saved) 
