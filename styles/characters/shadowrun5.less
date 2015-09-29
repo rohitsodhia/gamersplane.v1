@@ -21,9 +21,7 @@ textarea, .notes {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	display: none;
 	width: 100%;
-	margin-top: .5em;
 }
 
 #charDetails {
@@ -137,22 +135,27 @@ textarea, .notes {
 	cursor: pointer;
 }
 
+
+
 #page_characterSheet {
 	#skills, #qualities, #contacts, #rangedWeapons, #meleeWeapons, #armor, #cyberdeck, #augments, #sprcf, #powers, #gear {
 		.tr > * {
 			display: inline-block;
 		}
 
-		.notes {
-			display: none;
-		}
-
-		.avNotes {
-			display: block;
-		}
-
 		.shortNum, .medNum {
 			text-align: center;
+		}
+	}
+
+	#skills, #qualities, #contacts, .program, #augments, #sprcf, #powers {
+		.notes {
+			display: none;
+			padding: 4px;
+			border: 1px solid #888;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
 		}
 	}
 
@@ -194,14 +197,6 @@ textarea, .notes {
 		.name {
 			width: 325px;
 		}
-	}
-
-	.notes {
-		padding: 4px;
-		border: 1px solid #888;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
 	}
 }
 
@@ -386,7 +381,7 @@ textarea, .notes {
 }
 
 #sprcf {
-	width: 400px;
+	width: 445px;
 
 	.sprcf {
 		position: relative;

@@ -61,21 +61,25 @@
 		}
 
 		public function addSkill($skill) {
-			if (strlen($skill->name) && (int) $skill->rating > 0 && ($skill->type == 'a' || $skill->type == 'k')) 
+			if (strlen($skill->name) && (int) $skill->rating > 0 && ($skill->type == 'a' || $skill->type == 'k')) {
+				newItemized('skill', $skill->name, $this::SYSTEM);
 				$this->skills[] = array(
 					'name' => sanitizeString($skill->name),
 					'rating' => (int) $skill->rating,
 					'type' => $skill->type
 				);
+			}
 		}
 
 		public function addQuality($quality) {
-			if (strlen($quality->name) && ($quality->type == 'p' || $quality->type == 'n')) 
+			if (strlen($quality->name) && ($quality->type == 'p' || $quality->type == 'n')) {
+				newItemized('quality', $quality->name, $this::SYSTEM);
 				$this->qualities[] = array(
 					'name' => sanitizeString($quality->name),
 					'notes' => sanitizeString($quality->notes),
 					'type' => $quality->type
 				);
+			}
 		}
 
 		public function addContact($contact) {
@@ -130,25 +134,30 @@
 		}
 
 		public function addProgram($program) {
-			if (strlen($program->name)) 
+			if (strlen($program->name)) {
+				newItemized('program', $program->name, $this::SYSTEM);
 				$this->cyberdeck['programs'][] = array(
 					'name' => sanitizeString($program->name),
 					'notes' => sanitizeString($program->notes)
 				);
+			}
 		}
 
 		public function addAugmentation($augmentation) {
-			if (strlen($augmentation->name)) 
+			if (strlen($augmentation->name)) {
+				newItemized('augmentation', sanitizeString($augmentation->name), $this::SYSTEM);
 				$this->augmentations[] = array(
 					'name' => sanitizeString($augmentation->name),
 					'rating' => (int) $augmentation->rating >= 0?(int) $augmentation->rating:0,
 					'notes' => sanitizeString($augmentation->notes),
 					'essence' => (float) $augmentation->essence >= 0?(float) $augmentation->essence:0,
 				);
+			}
 		}
 
 		public function addSPRCF($sprcf) {
-			if (strlen($sprcf->name)) 
+			if (strlen($sprcf->name)) {
+				newItemized('sprcf', sanitizeString($sprcf->name), $this::SYSTEM);
 				$this->sprcf[] = array(
 					'name' => sanitizeString($sprcf->name),
 					'tt' => sanitizeString($sprcf->tt),
@@ -157,15 +166,18 @@
 					'drain' => sanitizeString($sprcf->drain),
 					'notes' => sanitizeString($sprcf->notes)
 				);
+			}
 		}
 
 		public function addPower($power) {
-			if (strlen($power->name)) 
+			if (strlen($power->name)) {
+				newItemized('power', sanitizeString($power->name), $this::SYSTEM);
 				$this->powers[] = array(
 					'name' => sanitizeString($power->name),
 					'rating' => (int) $power->rating >= 0?(int) $power->rating:0,
 					'notes' => sanitizeString($power->notes)
 				);
+			}
 		}
 
 		public function addGear($gear) {

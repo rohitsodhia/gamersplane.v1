@@ -1,4 +1,4 @@
-controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'search', 'range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, search, range) {
+controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'ACSearch', 'range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, ACSearch, range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
 		$scope.range = range.get;
@@ -46,7 +46,24 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 			else 
 				$scope.character[key].push(copyObject(blanks[key]));
 		};
-		$scope.searchSkills = search.skills;
+		$scope.searchSkills = function (search) {
+			return ACSearch.cil('skill', search, 'shadowrun5');
+		};
+		$scope.searchQualities = function (search) {
+			return ACSearch.cil('quality', search, 'shadowrun5', true);
+		};
+		$scope.searchPrograms = function (search) {
+			return ACSearch.cil('program', search, 'shadowrun5', true);
+		};
+		$scope.searchAugmentations = function (search) {
+			return ACSearch.cil('augmentation', search, 'shadowrun5', true);
+		};
+		$scope.searchSPRCF = function (search) {
+			return ACSearch.cil('sprcf', search, 'shadowrun5', true);
+		};
+		$scope.searchPowers = function (search) {
+			return ACSearch.cil('powers', search, 'shadowrun5', true);
+		};
 		$scope.save = function () {
 			character.save($scope.character.characterID, $scope.character).then(function (data) {
 				if (data.saved) 

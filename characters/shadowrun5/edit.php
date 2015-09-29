@@ -86,7 +86,7 @@
 							<div hb-margined>
 								<div ng-repeat="quality in character.qualities" class="quality tr">
 									<div ng-click="quality.type = quality.type == 'p'?'n':'p'" class="type">{{quality.type.toUpperCase()}}</div>
-									<input type="text" ng-model="quality.name" placeholder="Quality" class="name lrBuffer">
+									<combobox search="quality.name" autocomplete="searchQualities" placeholder="Quality" class="name lrBuffer"></combobox>
 									<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
 									<a href="" class="remove sprite cross" ng-click="character.qualities.splice($index, 1)"></a>
 									<textarea ng-model="quality.notes"></textarea>
@@ -235,7 +235,7 @@
 							</div>
 							<div ng-repeat="program in character.cyberdeck.programs" class="tr lrBuffer program">
 								<a href="" class="remove sprite cross" ng-click="character.cyberdeck.programs.splice($index, 1)"></a>
-								<input type="text" ng-model="program.name" placeholder="Program" class="name">
+								<combobox search="program.name" autocomplete="searchPrograms" placeholder="Program" class="name"></combobox>
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
 								<textarea ng-model="program.notes"></textarea>
 							</div>
@@ -256,7 +256,7 @@
 								<label class="shortNum lrBuffer">Essence</label>
 							</div>
 							<div ng-repeat="augment in character.augmentations" class="augment tr">
-								<input type="text" ng-model="augment.name" placeholder="Augmentation" class="name medText">
+								<combobox search="augment.name" autocomplete="searchAugmentations" placeholder="Augmentation" class="name medText"></combobox>
 								<input type="number" ng-model="augment.rating" class="rating lrBuffer">
 								<input type="number" ng-model="augment.essence" class="essence lrBuffer">
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
@@ -276,7 +276,7 @@
 									<label class="tt shorterText alignCenter lrBuffer">Type/Target</label>
 								</div>
 								<div class="tr">
-									<input type="text" ng-model="sprcf.name" placeholder="SPRCF" class="name lrBuffer">
+									<combobox search="sprcf.name" autocomplete="searchSPRCF" placeholder="SPRCF" class="name lrBuffer"></combobox>
 									<input type="text" ng-model="sprcf.tt" class="tt shorterText lrBuffer">
 								</div>
 								<div class="labelTR row2">
@@ -303,7 +303,7 @@
 								<label class="shortNum alignCenter lrBuffer">Rating</label>
 							</div>
 							<div ng-repeat="power in character.powers" class="power tr">
-								<input type="text" ng-model="power.name" placeholder="Power" class="name medText lrBuffer">
+								<combobox search="power.name" autocomplete="searchPowers" placeholder="Power" class="name medText lrBuffer"></combobox>
 								<input type="text" ng-model="power.rating" class="rating">
 								<a href="" class="remove sprite cross" ng-click="character.powers.splice($index, 1)"></a>
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>

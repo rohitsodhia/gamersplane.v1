@@ -216,21 +216,23 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
 		return deferred.promise;
 	}
-}]).service('search', ['$http', '$q', function ($http, $q) {
-	this.skills = function (skill) {
+}]).service('ACSearch', ['$http', '$q', function ($http, $q) {
+	this.cil = function (type, search, system, systemOnly) {
+		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') 
+			systemOnly = false;
 		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/cilSearch/', { 'type': 'skill', 'search': skill, 'system': 'shadowrun5' }).then(function (data) {
+		$http.post(API_HOST + '/characters/cilSearch/', { 'type': type, 'search': search, 'system': system, 'systemOnly': systemOnly }).then(function (data) {
 			data = data.data;
 			if (data.items.length) {
 				for (key in data.items) {
-					systemSkill = data.items[key].systemSkill;
+					systemItem = data.items[key].systemItem;
 					data.items[key] = {
-						'value': data.items[key].skillID,
+						'value': data.items[key].itemID,
 						'display': data.items[key].name,
 						'class': []
 					}
-					if (!systemSkill) 
-						data.items[key].class.push('nonSystemSkill');
+					if (!systemItem) 
+						data.items[key].class.push('nonSystemItem');
 				}
 				deferred.resolve(data.items);
 			} else 
