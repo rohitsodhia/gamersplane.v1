@@ -23,6 +23,8 @@
 				$this->delete();
 			elseif ($pathOptions[0] == 'toggleFavorite') 
 				$this->toggleFavorite();
+			elseif ($pathOptions[0] == 'cilSearch' && $loggedIn) 
+				$this->cilSearch(); 
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -253,6 +255,31 @@
 				displayJSON(array('success' => true, 'state' => $state));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('noChar')));
+		}
+
+		public function cilSearch() {
+			global $mysql;
+
+			$type = sanitizeString($_POST['type']);
+			$search = sanitizeString($_POST['search'], 'search_format');
+			$characterID = intval($_POST['characterID']);
+			$system = $_POST['system'];
+			require_once('../includes/Systems.class.php');
+			$systems = Systems::getInstance();
+			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
+			
+			if ($systems->verifySystem($system)) {
+				$rItems = $mysql->prepare("SELECT sacm.itemID, il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.system = '{$system}' AND sacm.itemID = il.itemID WHERE il.type = ?".($systemOnly?" AND sacm.system = '{$system}'":'')." AND il.name LIKE ? ORDER BY systemItem DESC, il.name LIMIT 5");
+				$rItems->execute(array($type, "%{$search}%"));
+				$items = array();
+				foreach ($rItems as $item) 
+					$items[] = array(
+						'itemID' => (int) $item['itemID'],
+						'name' => $item['name'],
+						'systemItem' => $item['systemItem']?true:false
+					);
+				displayJSON(array('items' => $items));
+			}
 		}
 	}
 ?>

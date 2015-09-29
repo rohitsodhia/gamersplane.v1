@@ -416,6 +416,22 @@ label.leftLabel {
 	text-align: center;
 }
 
+.combobox .results a {
+	&:first-child {
+		border-top: none !important;
+	}
+
+	&.nonSystemItem {
+		background: #EEE;
+		border-top: 1px solid #666;
+		font-style: italic;
+	}
+
+	&.nonSystemItem ~ .nonSystemItem {
+		border-top: none;
+	}
+}
+
 #feats {
 	width: 385px;
 }
