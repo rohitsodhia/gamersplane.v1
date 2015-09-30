@@ -136,6 +136,20 @@ textarea, .notes {
 }
 
 
+#skills, #qualities, #contacts, .program, #augments, #sprcf, #powers {
+	.notes, textarea {
+		display: none;
+		margin-top: .5em;
+		padding: 4px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+
+	.notes {
+		border: 1px solid #888;
+	}
+}
 
 #page_characterSheet {
 	#skills, #qualities, #contacts, #rangedWeapons, #meleeWeapons, #armor, #cyberdeck, #augments, #sprcf, #powers, #gear {
@@ -148,14 +162,9 @@ textarea, .notes {
 		}
 	}
 
-	#skills, #qualities, #contacts, .program, #augments, #sprcf, #powers {
+	#skills, #qualities, #contacts, #cyberdeck .program, #augments, #sprcf, #powers {
 		.notes {
 			display: none;
-			padding: 4px;
-			border: 1px solid #888;
-			-webkit-border-radius: 5px;
-			-moz-border-radius: 5px;
-			border-radius: 5px;
 		}
 	}
 

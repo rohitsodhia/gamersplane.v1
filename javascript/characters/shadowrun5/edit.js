@@ -47,7 +47,19 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 				$scope.character[key].push(copyObject(blanks[key]));
 		};
 		$scope.searchSkills = function (search) {
-			return ACSearch.cil('skill', search, 'shadowrun5');
+			return ACSearch.cil('skill', search, 'shadowrun5').then(function (items) {
+				for (key in items) {
+					systemItem = items[key].systemItem;
+					items[key] = {
+						'value': items[key].itemID,
+						'display': items[key].name,
+						'class': []
+					}
+					if (!systemItem) 
+						items[key].class.push('nonSystemItem');
+				}
+				return items;
+			});
 		};
 		$scope.searchQualities = function (search) {
 			return ACSearch.cil('quality', search, 'shadowrun5', true);

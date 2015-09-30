@@ -1,4 +1,4 @@
-controllers.controller('games_details', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
+controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'currentUser', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, currentUser, ACSearch) {
 	pathElements = getPathElements();
 	currentUser.then(function (currentUser) {
 		currentUser = currentUser.data;
@@ -162,7 +162,18 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			$.colorbox.close();
 		});
 
-		$scope.invites = { user: '', errorMsg: null, waiting: [] };
+		$scope.invites = { 'userID': null, 'users': [], 'errorMsg': null, 'waiting': [] };
+		$scope.searchUsers = function (search) {
+			return ACSearch.users(search, true).then(function (data) {
+				for (key in data) 
+					data[key] = {
+						'value': data[key].userID,
+						'display': data[key].username
+					};
+				console.log(data);
+				return data;
+			});
+		}
 		$scope.inviteUser = function () {
 			if ($scope.invites.user.length == 0) 
 				return;
@@ -250,7 +261,7 @@ controllers.controller('games_details', function ($scope, $http, $sce, $filter, 
 			});
 		};
 	});
-});
+}]);
 
 app.animation('.slideToggle', ['$timeout', function ($timeout) {
 	$timeout(function () { $('.slideToggle.ng-hide').hide(); }, 1);

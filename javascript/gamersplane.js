@@ -216,30 +216,28 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
 		return deferred.promise;
 	}
-}]).service('ACSearch', ['$http', '$q', function ($http, $q) {
+}]).service('ACSearch', ['$http', function ($http) {
 	this.cil = function (type, search, system, systemOnly) {
 		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') 
 			systemOnly = false;
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/cilSearch/', { 'type': type, 'search': search, 'system': system, 'systemOnly': systemOnly }).then(function (data) {
+		return $http.post(API_HOST + '/characters/cilSearch/', { 'type': type, 'search': search, 'system': system, 'systemOnly': systemOnly }).then(function (data) {
 			data = data.data;
-			if (data.items.length) {
-				for (key in data.items) {
-					systemItem = data.items[key].systemItem;
-					data.items[key] = {
-						'value': data.items[key].itemID,
-						'display': data.items[key].name,
-						'class': []
-					}
-					if (!systemItem) 
-						data.items[key].class.push('nonSystemItem');
-				}
-				deferred.resolve(data.items);
-			} else 
-				deferred.resolve([]);
+			if (data.items.length) 
+				return data.items;
+			else 
+				return [];
 		});
-		return deferred.promise;
 	};
+	this.users = function (search, notSelf) {
+		if (isUndefined(notSelf) || typeof notSelf != 'boolean') 
+			notSelf = false;
+		return $http.get(API_HOST + '/users/search/', { 'params': { 'search': search, 'notSelf': notSelf } }).then(function (data) {
+			if (data.data.users) 
+				return data.data.users;
+			else 
+				return [];
+		});
+	}
 }]).service('initializeVars', [function () {
 	this.setup = function (scope) {
 		return scope;
@@ -443,11 +441,15 @@ app.config(function ($httpProvider) {
 					$timeout.cancel(skillSearchTimeout);
 					if (scope.search.length >= 3) 
 						skillSearchTimeout = $timeout(function () {
-							scope.autocomplete(scope.search).then(function (data) {
-								if (isUndefined(scope.data)) 
-									scope.data = [];
+							var data = scope.autocomplete(scope.search)
+							if (isUndefined(scope.data)) 
+								scope.data = [];
+							if (data && typeof data.then == 'function') 
+								data.then(function (data) {
+									scope.data = copyObject(data);
+								});
+							else 
 								scope.data = copyObject(data);
-							});
 						}, 500);
 				});
 			}
@@ -472,8 +474,8 @@ app.config(function ($httpProvider) {
 			scope.filterData = function () {
 				return $filter('filter')(scope.options, (!scope.bypassFilter || '') && { 'display': scope.search });
 			}
-			var setupFinished = scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
-				if (newVal === oldVal) 
+			scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
+				if (newVal === oldVal || isUndefined(scope.data)) 
 					return;
 				scope.options = copyObject(scope.data);
 				if (isUndefined(scope.options) || (scope.options instanceof Array && scope.options.length == 0)) {

@@ -191,7 +191,7 @@
 						</ul>
 						<form id="invites" hb-margined ng-submit="inviteUser()" ng-show="isGM">
 							<label>Invite player to game:</label>
-							<input type="text" name="user" ng-model="invites.user">
+							<combobox search="invites.userID" data="invites.users" autocomplete="searchUsers" placeholder="User"></combobox>
 							<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
 							<div class="error" ng-show="invites.errorMsg">{{invites.errorMsg}}</div>
 						</form>

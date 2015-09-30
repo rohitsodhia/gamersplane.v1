@@ -39,21 +39,32 @@
 		public function search() {
 			global $mysql, $currentUser;
 
-			$search = sanitizeString(preg_replace('/[^\w.]/', '', $_GET['search']));
-			$searchBy = isset($_GET['searchBy']) && in_array($_GET['searchBy'], array('username', 'userID'))?$_GET['searchBy']:'username';
+			$search = sanitizeString(preg_replace('/[^\w.]/', '', $_GET['search']), 'lower');
 			if (isset($_GET['exact']) && (bool) $_GET['exact'] == true) {
+				$searchBy = isset($_GET['searchBy']) && in_array($_GET['searchBy'], array('username', 'userID'))?$_GET['searchBy']:'username';
 				if ($searchBy == 'userID') {
 					$search = intval($search);
-					$user = $mysql->query("SELECT userID, username, email FROM users WHERE userID = {$search}")->fetch();
+					$user = $mysql->query("SELECT userID, username FROM users WHERE userID = {$search}")->fetch();
 				} else 
-					$user = $mysql->query("SELECT userID, username, email FROM users WHERE username = '{$search}'")->fetch();
+					$user = $mysql->query("SELECT userID, username FROM users WHERE username = '{$search}'")->fetch();
 
 				if ($user) 
 					displayJSON(array('users' => array($user)));
 				else 
 					displayJSON(array('noUsers' => true));
 			} else {
-//				$valid = $mysql->query("SELECT userID, username, email FROM users WHERE username LIKE '%{$search}%'");
+				$valid = $mysql->query("SELECT userID, username FROM users WHERE username LIKE '%{$search}%'");
+				if ($valid->rowCount()) {
+					$users = array();
+					foreach ($valid as $user) 
+						$users[] = array(
+							'userID' => (int) $user['userID'],
+							'username' => $user['username']
+						);
+					displayJSON(array('users' => $users));
+				} else 
+					displayJSON(array('noUsers' => true));
+
 			}
 		}
 
