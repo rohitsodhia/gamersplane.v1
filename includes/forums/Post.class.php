@@ -67,13 +67,17 @@
 		}
 
 		public function getTitle($pr = false) {
-			if ($pr) return printReady($this->title);
-			else return $this->title;
+			if ($pr) 
+				return printReady($this->title);
+			else 
+				return $this->title;
 		}
 
 		public function getAuthor($key = null) {
-			if (property_exists($this->author, $key)) return $this->author->$key;
-			else return $this->author;
+			if (property_exists($this->author, $key)) 
+				return $this->author->$key;
+			else 
+				return $this->author;
 		}
 
 		public function setMessage($value) {
@@ -91,6 +95,20 @@
 				return printReady($this->message);
 			else 
 				return $this->message;
+		}
+
+		public static function cleanNotes($message) {
+			global $currentUser;
+
+			preg_match_all('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\][\n\r]*/ms', $message, $matches, PREG_SET_ORDER);
+			if (sizeof($matches)) {
+				foreach ($matches as $match) {
+					$noteTo = preg_split('/[^\w\.]+/', $match[1]);
+					if (!in_array($currentUser->username, $noteTo)) 
+						$message = str_replace($match[0], '', $message);
+				}
+			}
+			return trim($message);
 		}
 
 		public function getDatePosted($format = null) {

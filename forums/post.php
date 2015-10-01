@@ -44,13 +44,20 @@
 					if ($quoteID) {
 						$quoteInfo = $mysql->query("SELECT u.username, p.message FROM users u, posts p WHERE p.postID = {$quoteID} AND p.authorID = u.userID");
 						$quoteInfo = $quoteInfo->fetch();
+						$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
+						if ($gameID) {
+							$isGM = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = 1");
+							if (!$isGM->rowCount()) 
+								$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
+						}
 						$post->message = '[quote="'.$quoteInfo['username'].'"]'.$quoteInfo['message'].'[/quote]';
 					}
 				}
 			}
 		} catch (Exception $e) { $noChat = true; }
-	} else $noChat = true;
-	
+	} else 
+		$noChat = true;
+
 	if ($noChat) { header('Location: /forums/'); exit; }
 	
 	$fillVars = $formErrors->getErrors('post');
