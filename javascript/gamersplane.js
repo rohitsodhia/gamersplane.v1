@@ -475,7 +475,7 @@ app.config(function ($httpProvider) {
 				return $filter('filter')(scope.options, (!scope.bypassFilter || '') && { 'display': scope.search });
 			}
 			scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
-				if (newVal === oldVal || isUndefined(scope.data)) 
+				if (isUndefined(scope.data)) 
 					return;
 				scope.options = copyObject(scope.data);
 				if (isUndefined(scope.options) || (scope.options instanceof Array && scope.options.length == 0)) {
