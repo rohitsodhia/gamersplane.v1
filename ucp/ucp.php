@@ -19,7 +19,7 @@
 					<label>Avatar</label>
 					<div>
 						<div id="avatarDisp">
-							<img ng-src="{{user.avatar.url}}">
+							<img ng-src="{{user.avatar.url}}?{{avatarTime}}">
 							<div ng-if="user.avatar.avatarExt"><pretty-checkbox checkbox="user.avatar.delete"></pretty-checkbox> Delete avatar</div>
 						</div>
 						<input type="file" ngf-select ng-model="newAvatar">

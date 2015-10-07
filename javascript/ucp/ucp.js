@@ -6,6 +6,7 @@ controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', functi
 		$scope.user = null;
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' }
 		$scope.newAvatar = null;
+		$scope.avatarTime = new Date().getTime();
 		pathElements = getPathElements();
 		userID = null;
 		if (!isUndefined(pathElements[1])) 
@@ -22,7 +23,7 @@ controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', functi
 						'year': birthday[0]
 					};
 				}
-					$scope.$emit('pageLoading');
+				$scope.$emit('pageLoading');
 			}
 		});
 
@@ -36,7 +37,9 @@ controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', functi
 
 		$scope.save = function () {
 			Users.save({ 'details': $scope.user, 'newPass': $scope.newPass }, $scope.newAvatar).then(function (data) {
-				console.log(data);
+				data = data.data;
+				if (data.avatarUploaded) 
+					$scope.avatarTime = new Date().getTime();
 			});
 		};
 	});

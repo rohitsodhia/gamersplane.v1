@@ -144,6 +144,7 @@
 			else 
 				$user = $currentUser;
 
+			$avatarUploaded = false;
 			if ($data->avatar->delete) 
 				unlink(FILEROOT."/ucp/avatars/{$user->userID}.jpg");
 			if ($_FILES['file']['error'] == 0 && $_FILES['file']['size'] > 15 && $_FILES['file']['size'] < 1048576) {
@@ -202,6 +203,7 @@
 				if ($avatarExt == '') 
 					$avatarExt = null;
 				$user->updateUsermeta('avatarExt', $avatarExt, true);
+				$avatarUploaded = true;
 			}
 
 //			$user->updateUsermeta('showAvatars', isset($data->showAvatars)?1:0);
@@ -246,10 +248,14 @@
 				$postSide = 'l';
 			$user->updateUsermeta('postSide', $postSide);
 
+			$return = array();
 			if (sizeof($errors)) 
-				displayJSON(array('passErrors' => $errors));
+				$return['passErrors'] = $errors;
 			else 
-				displayJSON(array('success' => true));
+				$return['success'] = true;
+			if ($avatarUploaded) 
+				$return['avatarUploaded'] = true;
+			displayJSON($return);
 		}
 	}
 ?>
