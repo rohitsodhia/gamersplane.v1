@@ -1,5 +1,5 @@
 <?
-	$currentUser->checkACP();
+	$currentUser->checkACP('any');
 	
 	require_once(FILEROOT.'/header.php');
 	require_once(FILEROOT.'/acp/acpSidebar.php');

@@ -1,7 +1,7 @@
-controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'ACSearch', 'range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, ACSearch, range) {
+controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'ACSearch', 'Range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, ACSearch, Range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
-		$scope.range = range.get;
+		$scope.range = Range.get;
 		$scope.character = {};
 		$scope.labels = {
 			'rep': { 'street': 'Street Cred', 'notoriety': 'Notoriety', 'public': 'Public Awareness' },

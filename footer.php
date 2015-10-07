@@ -16,7 +16,7 @@
 			<input type="image" src="/images/support_us.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 		</form></li>
-<?		if ($currentUser->checkACP()) { ?>
+<?		if ($currentUser->checkACP('any', false)) { ?>
 		<li><a href="/acp/">ACP</a>
 		</li>
 <?		} ?>

@@ -165,7 +165,30 @@ app.config(function ($httpProvider) {
 		else 
 			return data;
 	});
-}).service('systems', ['$http', '$q', function ($http, $q) {
+}).service('Users', ['$http', 'Upload', function ($http, Upload) {
+	this.get = function (userID) {
+		params = {};
+		if (userID && parseInt(userID) > 0) 
+			params.userID = userID;
+		return $http.post(API_HOST + '/users/get/', params).then(function (data) {
+			data = data.data;
+			if (data.success) 
+				return data.details;
+			else 
+				return false;
+		});
+	};
+	this.save = function (params, newAvatar) {
+		console.log(params);
+		return Upload.upload({
+			'url': API_HOST + '/users/save/',
+			'file': newAvatar,
+			'data': params
+//			'fields': params,
+//			'sendFieldsAs': 'form'
+		});
+	}
+}]).service('systems', ['$http', '$q', function ($http, $q) {
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params)) 
 			params = {};
@@ -283,7 +306,7 @@ app.config(function ($httpProvider) {
 			return deferred.promise;
 		}
 	}
-}]).service('range', function () {
+}]).service('Range', function () {
 	this.get = function (from, to, incBy) {
 		incBy = parseInt(incBy);
 		if (Math.round(incBy) != incBy || incBy == 0) 
@@ -676,10 +699,23 @@ app.config(function ($httpProvider) {
 			'rValue': '=rValue'
 		},
 		link: function (scope, element, attrs) {
-			if (typeof attrs['eleid'] == 'string') 
-				scope.inputID = attrs['eleid'];
-			else 
-				scope.inputID = '';
+			scope.inputID = typeof attrs['eleid'] == 'string'?attrs['eleid']:'';
+
+			var label = null, wrapperLabel = false;
+			label = $(element).closest('label');
+			if (!label.length && typeof attrs['eleid'] == 'string' && attrs['eleid']) {
+//				element.attr('id', attrs['eleid']);
+				label = $('label[for=' + attrs['eleid'] + ']');
+			} else if (label.length) 
+				wrapperLabel = true;
+			if (label.length) 
+				label.click(function (e) {
+					if (wrapperLabel) 
+						scope.setRadio();
+					else 
+						e.preventDefault();
+					scope.$apply();
+				});
 
 			scope.setRadio = function () {
 				scope.radio = scope.rValue;

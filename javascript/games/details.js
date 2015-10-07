@@ -170,7 +170,6 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 						'value': data[key].userID,
 						'display': data[key].username
 					};
-				console.log(data);
 				return data;
 			});
 		}

@@ -226,10 +226,12 @@
 				return $exists?false:'/ucp/avatars/avatar.png';
 		}
 
-		public function checkACP($role = null, $redirect = true) {
-			if ($role == null && sizeof($this->acpPermissions)) 
+		public function checkACP($role, $redirect = true) {
+			if ($role == 'all' && sizeof($this->acpPermissions)) 
+				return $this->acpPermissions;
+			elseif ($role == 'any' && sizeof($this->acpPermissions)) 
 				return true;
-			elseif (strlen($role)) {
+			else {
 				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)))) 
 					return false;
 				elseif ($this->acpPermissions == null) { header('Location: /'); exit; }

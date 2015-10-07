@@ -1,162 +1,152 @@
-<?
-	if (isset($pathOptions[0]) && intval($pathOptions[0]) && $currentUser->checkACP('users')) {
-		$user = new User(intval($pathOptions[0]));
-		if (!$user->userID) { header('Location: /ucp/'); exit; }
-	} else 
-		$user = $currentUser;
-	$user->getAllUsermeta();
-	require_once(FILEROOT.'/header.php');
-?>
-		<h1 class="headerbar">User Control Panel<?=$user->userID != $currentUser->userID?' - '.$user->username:''?></h1>
-<?	if ($user->userID != $currentUser->userID) { ?>
-		<div id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
-<?	} ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
+		<h1 class="headerbar" skew-element>User Control Panel{{currentUser.userID != user.userID?' - ' + user.username:''}}</h1>
+		<div ng-if="admin" id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
 		
-<?	if ($formErrors->getErrors('addFAQ')) { ?>
-			<div class="alertBox_error"><ul>
-<?
-		if ($formErrors->checkError('noCategory')) echo "				<li>No category selected.</li>\n";
-		if ($formErrors->checkError('noQuestion')) echo "				<li>No question asked.</li>\n";
-		if ($formErrors->checkError('noAnswer')) echo "				<li>No answer given.</li>\n";
-?>
-			</ul></div>
-<?	} ?>
 <?	if ($_GET['updated']) { ?>
 		<div class="alertBox_success">
 			Account successfully updated!
 		</div>
 		
 <?	} ?>
-		<form method="post" action="/ucp/process/ucp/" enctype="multipart/form-data">
+		<form enctype="multipart/form-data">
 			<div id="profile">
-				<h2 class="headerbar hbDark">Profile</h2>
+				<h2 class="headerbar hbDark" skew-element>Profile</h2>
 				<div class="tr">
 					<label>User Since</label>
-					<div class="convertTZ"><?=date('F j, Y H:i a', strtotime($user->joinDate))?></div>
+					<div>{{user.joinDate | convertTZ:'YYYY-MM-DD HH:mm:ss':'MMMM D, YYYY h:mm a'}}</div>
 				</div>
-<?	if ($user->userID != $currentUser->userID) { ?>
-				<input type="hidden" name="userID" value="<?=$user->userID?>">
-<?	} ?>
 				<div id="avatar" class="tr">
 					<label>Avatar</label>
 					<div>
 						<div id="avatarDisp">
-							<img src="<?=User::getAvatar($user->userID, $user->avatarExt)?>">
-<?	if (User::getAvatar($user->userID, $user->avatarExt, true)) { ?>
-							<div><input type="checkbox" name="deleteAvatar"> Delete avatar</div>
-<?	} ?>
+							<img ng-src="{{user.avatar.url}}">
+							<div ng-if="user.avatar.avatarExt"><pretty-checkbox checkbox="user.avatar.delete"></pretty-checkbox> Delete avatar</div>
 						</div>
-						<input type="file" name="avatar">
-						<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images will be shrunk for GP use.</div>
+						<input type="file" ngf-select ng-model="newAvatar">
+						<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images may be shrunk for GP use.</div>
 					</div>
 				</div>
-<!--				<div class="tr">
-					<label>Show Avatars?</label>
-					<div><input type="checkbox" name="showAvatars"<?=$user->showAvatars == 1?' checked="checked"':''?>></div>
-				</div>-->
 				<div id="gender" class="tr">
 					<label>Gender</label>
-					<div><input id="male" type="radio" name="gender" value="m"<?=$user->gender == 'm'?' checked="checked"':''?>> <label for="male">Male</label> <input id="female" type="radio" name="gender" value="f"<?=$user->gender == 'f'?' checked="checked"':''?>> <label for="female">Female</label> <input id="gendre_dd" type="radio" name="gender" value="n"<?=$user->gender == ''?' checked="checked"':''?>> <label for="gendre_dd">Don't display</label></div>
+					<div><label for><pretty-radio radio="user.gender" r-value="'m'"></pretty-radio> Male</label> <label for><pretty-radio radio="user.gender" r-value="'f'"></pretty-radio> Female</label> <label for><pretty-radio radio="user.gender" r-value="'n'"></pretty-radio> Don't display</label></div>
 				</div>
 				<div class="tr">
 					<label>Birthday</label>
-					<div>
-<?	$bdayParts = explode('-', $user->birthday); ?>
-						<span>Month</span> <select name="month">
-<?	for ($count = 1; $count <= 12; $count++) echo "							<option".(intval($bdayParts[1]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
-					</select> <span>Day</span> <select name="day">
-<?	for ($count = 1; $count <= 31; $count++) echo "							<option".(intval($bdayParts[2]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
-					</select> <span>Year</span> <select name="year">
-<?	for ($count = date('Y') - 5; $count >= date('Y') - 100; $count--) echo "							<option".(intval($bdayParts[0]) == $count?' selected="selected"':'').">$count</option>\n"; ?>
-						</select>
+					<div id="birthday">
+						<input type="text" ng-model="user.birthday.date.month" placeholder="MM"> / <input type="text" ng-model="user.birthday.date.day" placeholder="DD"> / <input type="text" ng-model="user.birthday.date.year" placeholder="YYYY">
 					</div>
 				</div>
 				<div class="tr">
 					<label>Show Age?</label>
-					<div><input type="checkbox" name="showAge"<?=$user->showAge == 1?' checked="checked"':''?>></div>
-					<div class="explanation">Only your age will be shown, not your full birthday.</div>
+					<div>
+						<pretty-checkbox checkbox="user.birthday.showAge" value="category"></pretty-checkbox>
+						<span class="explanation">Only your age will be shown, not your full birthday.</span>
+					</div>
 				</div>
 				<div class="tr">
 					<label>Location</label>
-					<div><input type="text" name="location" value="<?=printReady($user->location)?>"></div>
+					<div><input type="text" ng-model="user.location"></div>
 				</div>
 				<div class="tr">
 					<label>Twitter</label>
-					<div><input type="text" name="twitter" value="<?=printReady($user->twitter)?>"></div>
+					<div><input type="text" ng-model="user.twitter"></div>
 				</div>
 				<div class="tr">
 					<label>Game Stream (Twitch, etc.)</label>
-					<div><input type="text" name="stream" value="<?=printReady($user->stream)?>"></div>
+					<div><input type="text" ng-model="user.stream"></div>
 				</div>
 				<div class="tr">
 					<label>What games are you into?</label>
-					<div><input id="games" type="text" name="games" value="<?=printReady($user->games)?>"></div>
+					<div><input type="text" ng-model="user.games"></div>
 				</div>
 				<div class="tr">
 					<label>Recieve PM emails?</label>
-					<div><input type="radio" name="pmMail" value="1"<?=$user->pmMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="pmMail" value="0"<?=$user->pmMail == 0?' checked="checked"':''?>> No</div>
+					<div>
+						<label for>
+							<pretty-radio radio="user.pmMail" r-value="true"></pretty-radio> Yes
+						</label>
+						<label for>
+							<pretty-radio radio="user.pmMail" r-value="false"></pretty-radio> No
+						</label>
+					</div>
 				</div>
 				<div class="tr">
 					<label>Recieve new game emails?</label>
-					<div><input type="radio" name="newGameMail" value="1"<?=$user->newGameMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="newGameMail" value="0"<?=$user->newGameMail == 0?' checked="checked"':''?>> No</div>
+					<div>
+						<label for>
+							<pretty-radio radio="user.newGameMail" r-value="true"></pretty-radio> Yes
+						</label>
+						<label for>
+							<pretty-radio radio="user.newGameMail" r-value="false"></pretty-radio> No
+						</label>
+					</div>
 				</div>
 				<div class="tr">
 					<label>Recieve GM emails? (Approvals)</label>
-					<div><input type="radio" name="gmMail" value="1"<?=$user->gmMail == 1?' checked="checked"':''?>> Yes <input type="radio" name="gmMail" value="0"<?=$user->gmMail == 0?' checked="checked"':''?>> No</div>
+					<div>
+						<label for>
+							<pretty-radio radio="user.gmMail" r-value="true"></pretty-radio> Yes
+						</label>
+						<label for>
+							<pretty-radio radio="user.gmMail" r-value="false"></pretty-radio> No
+						</label>
+					</div>
 				</div>
 				<div class="tr submitDiv">
-					<button type="submit" name="submit" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
 				</div>
 			</div>
 
 			<div id="security">
-				<h2 class="headerbar hbDark">Security</h2>
-<?	if ($user->userID != $currentUser->userID) { ?>
-				<div class="tr">
+				<h2 class="headerbar hbDark" skew-element>Security</h2>
+				<div ng-if="admin" class="tr">
 					<label>Username</label>
-					<div><input type="text" name="username" value="<?=$user->username?>"></div>
+					<div><input type="text" ng-model="user.username"></div>
 				</div>
-<?	} ?>
 				<div class="tr">
 					<label>Email Address</label>
-					<div><input type="text" name="email" value="<?=$user->email?>"></div>
+					<div><input type="text" ng-model="user.email"></div>
 				</div>
-<?	if ($user->userID == $currentUser->userID) { ?>
-				<div class="tr">
+				<div ng-if="user.userID == currentUser.userID && !admin" class="tr">
 					<label>Old Password</label>
-					<div><input type="password" name="oldPass" maxlength="16"></div>
+					<div><input type="password" ng-model="newPass.oldPassword" maxlength="32"></div>
 				</div>
-				<div id="wrongPass" class="<?=$formErrors->checkError('wrongPass')?'':'hideDiv'?> error">Your old password is wrong</div>
-<?	} ?>
+				<div ng-show="" class="error">Your old password is wrong</div>
 				<div class="tr">
 					<label for="password1">Change Password</label>
-					<div><input id="password1" type="password" name="password1" maxlength="32"></div>
+					<div><input id="password1" type="password" ng-model="newPass.password1" maxlength="32"></div>
 				</div>
 				<div class="explanation">Password must be between 6-32 characters</div>
-				<div id="passShort" class="<?=$formErrors->checkError('passShort')?'':'hideDiv'?> error">Password too short</div>
-				<div id="passLong" class="hideDiv error">Password too long</div>
+				<div ng-show="newPass.password1.length && newPass.password1.length < 6" class="error">Password too short</div>
+				<div ng-show="newPass.password1.length > 32" class="error">Password too long</div>
 				<div class="tr">
 					<label for="password2">Confirm Password</label>
-					<div><input id="password2" type="password" name="password2" maxlength="32"></div>
+					<div><input id="password2" type="password" ng-model="newPass.password2" ng-focus="passMissmatch = false" ng-blur="samePass()" maxlength="32"></div>
 				</div>
-				<div id="passMismatch" class="hideDiv error">Passwords don't match</div>
+				<div ng-show="passMismatch" class="error">Passwords don't match</div>
 				<div class="tr submitDiv">
-					<button type="submit" name="submit" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
 				</div>
 			</div>
 
 			<div id="forumOptions">
-				<h2 class="headerbar hbDark">Forum Options</h2>
+				<h2 class="headerbar hbDark" skew-element>Forum Options</h2>
 				<div id="postSide" class="tr">
 					<label>Post Side</label>
 					<div>
-						<input id="ps_right" type="radio" name="postSide" value="r"<?=$user->postSide == 'r'?' checked="checked"':''?>> <label for="ps_right">Right</label>
-						<input id="ps_left" type="radio" name="postSide" value="l"<?=$user->postSide == 'l'?' checked="checked"':''?>> <label for="ps_left">Left</label>
-						<input id="ps_conversation" type="radio" name="postSide" value="c"<?=$user->postSide == 'c'?' checked="checked"':''?>> <label for="ps_conversation">Conversation</label>
+						<label for>
+							<pretty-radio radio="user.postSide" r-value="'r'"></pretty-radio> Right
+						</label>
+						<label for>
+							<pretty-radio radio="user.postSide" r-value="'l'"></pretty-radio> Left
+						</label>
+						<label for>
+							<pretty-radio radio="user.postSide" r-value="'c'"></pretty-radio> Conversation
+						</label>
 					</div>
 				</div>
 				<div class="tr submitDiv">
-					<button type="submit" name="submit" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
 				</div>
 			</div>
 		</form>

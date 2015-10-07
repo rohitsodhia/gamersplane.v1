@@ -21,5 +21,6 @@ includes/connect_local.php
 oneRunScripts/
 images/links/
 images/tools/dice/sweote/sweote/
+images/bodyComponents/new/
 node_modules/
 mafia/

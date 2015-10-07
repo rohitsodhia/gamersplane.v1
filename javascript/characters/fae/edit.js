@@ -1,7 +1,7 @@
-controllers.controller('editCharacter_fae', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'range', function ($scope, $http, $sce, $timeout, currentUser, character, range) {
+controllers.controller('editCharacter_fae', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'Range', function ($scope, $http, $sce, $timeout, currentUser, character, Range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
-		$scope.range = range.get;
+		$scope.range = Range.get;
 		$scope.character = {};
 		blanks = {
 			'aspects': { 'name': '' },

@@ -1,7 +1,7 @@
-controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'range', function ($scope, $http, $sce, $timeout, currentUser, character, range) {
+controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'Range', function ($scope, $http, $sce, $timeout, currentUser, character, Range) {
 	currentUser.then(function (currentUser) {
 		pathElements = getPathElements();
-		$scope.range = range.get;
+		$scope.range = Range.get;
 		$scope.character = {};
 		character.load(pathElements[2], true).then(function (data) {
 			$scope.character = copyObject(data);

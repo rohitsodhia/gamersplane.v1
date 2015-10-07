@@ -47,19 +47,27 @@ input[type="text"], input[type="password"] {
 	width: 250px;
 }
 
-.tr > * {
-	display: inline-block;
-	vertical-align: middle;
-}
+.tr {
+	& > * {
+		display: inline-block;
+		vertical-align: middle;
+	}
 
-.tr > div > * {
-	vertical-align: middle;
-}
+	& > div {
+		& > * {
+			vertical-align: middle;
+		}
 
-.tr > div label {
-	width: auto;
-	text-align: left;
-	font-weight: normal;
+		label {
+			width: auto;
+			text-align: left;
+			font-weight: normal;
+		}
+
+		& > div {
+			margin-left: 0;
+		}
+	}
 }
 
 .explanation {
@@ -82,18 +90,14 @@ input[type="text"], input[type="password"] {
 
 #avatarDisp {
 	margin-bottom: .5em;
-}
 
-#avatarDisp img {
-	border: 2px solid #333;
-}
+	img {
+		border: 2px solid #333;
+	}
 
-#avatarDisp > div > * {
-	vertical-align: middle;
-}
-
-.tr > div > div {
-	margin-left: 0;
+	& > div > * {
+		vertical-align: middle;
+	}
 }
 
 .tr a.changeLink {
@@ -106,6 +110,17 @@ input[type="text"], input[type="password"] {
 
 input[type="checkbox"] {
 	margin-bottom: 0;
+}
+
+#birthday {
+	input {
+		width: 35px;
+		text-align: center;
+
+		&:last-of-type {
+			width: 45px;
+		}
+	}
 }
 
 #postSide > div {
