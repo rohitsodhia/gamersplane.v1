@@ -525,7 +525,7 @@ app.config(function ($httpProvider) {
 					scope.search = scope.value.display;
 				else 
 					scope.value = { 'value': null, 'display': '' };
-				if (scope.select && scope.value.value == null && scope.value.display == '' && !scope.hasFocus) {
+				if (scope.select && (isUndefined(scope.value) || isUndefined(scope.value.value) || isUndefined(scope.value.display) || (scope.value.value == null && scope.value.display == '')) && !scope.hasFocus) {
 					scope.value = copyObject(scope.options[0]);
 					scope.search = scope.value.display;
 				}
@@ -562,7 +562,6 @@ app.config(function ($httpProvider) {
 
 			scope.$watch(function () { return scope.hasFocus; }, function (newVal, oldVal) {
 				if (!newVal) {
-					console.log(skillSearchTimeout);
 					if (!isUndefined(scope.search) && scope.search.length != '') {
 						filterResults = $filter('filter')(scope.options, { 'display': scope.search });
 						if (filterResults.length == 1 && filterResults[0].display.toLowerCase() == scope.search.toLowerCase()) {
