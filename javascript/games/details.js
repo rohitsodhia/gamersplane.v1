@@ -9,6 +9,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.gameID = pathElements[1];
 		$scope.details = {};
 		$scope.players = [];
+		$scope.invites = { 'user': '', 'users': [], 'errorMsg': null, 'pending': [] };
 		$scope.playersAwaitingApproval = false;
 		$scope.curPlayer = {};
 		$scope.characters = [];
@@ -23,15 +24,16 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		setGameData = function () {
 			$scope.$emit('pageLoading');
-			$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).success(function (data) {
+			$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).then(function (data) {
+				data = copyObject(data.data);
 				if (data.success) {
 					$scope.details = data.details;
 					$scope.players = data.players;
-					$scope.invites.waiting = data.invites;
+					$scope.invites.pending = data.invites;
 					$scope.decks = data.decks;
 					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 					$scope.details.playersInGame = $scope.players.length - 1;
-					$scope.pendingInvite = $filter('filter')($scope.invites.waiting, { userID: currentUser.userID }, true).length  == 1?true:false;
+					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: currentUser.userID }, true).length  == 1?true:false;
 					for (key in $scope.players) {
 						if (currentUser && $scope.players[key].userID == currentUser.userID) {
 							$scope.inGame = true;
@@ -162,7 +164,6 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			$.colorbox.close();
 		});
 
-		$scope.invites = { 'userID': null, 'users': [], 'errorMsg': null, 'waiting': [] };
 		$scope.searchUsers = function (search) {
 			return ACSearch.users(search, true).then(function (data) {
 				for (key in data) 
@@ -183,15 +184,15 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 				} else if (data.success) {
 					$scope.invites.errorMsg = null;
 					$scope.invites.user = '';
-					$scope.invites.waiting.push(data.user);
+					$scope.invites.pending.push(data.user);
 				}
 			});
 		};
 		$scope.withdrawInvite = function (invite) {
 			$http.post(API_HOST + '/games/invite/withdraw/', { 'gameID': $scope.gameID, 'userID': invite.userID }).success(function (data) {
 				if (data.success) {
-					index = $scope.invites.waiting.indexOf(invite);
-					$scope.invites.waiting.splice(index, 1);
+					index = $scope.invites.pending.indexOf(invite);
+					$scope.invites.pending.splice(index, 1);
 				}
 			});
 		};

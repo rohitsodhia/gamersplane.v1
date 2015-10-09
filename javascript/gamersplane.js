@@ -179,7 +179,6 @@ app.config(function ($httpProvider) {
 		});
 	};
 	this.save = function (params, newAvatar) {
-		console.log(params);
 		return Upload.upload({
 			'url': API_HOST + '/users/save/',
 			'file': newAvatar,
@@ -450,8 +449,10 @@ app.config(function ($httpProvider) {
 		link: function (scope, element, attrs) {
 			scope.select = !isUndefined(attrs.select)?true:false;
 			scope.bypassFilter = true;
-			scope.search = typeof scope.search == 'string'?scope.search:'';
-			scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
+			$timeout(function () {
+				scope.search = typeof scope.search == 'string'?scope.search:'';
+				scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
+			});
 			if (!isUndefined(attrs.placeholder)) 
 				element.find('input').attr('placeholder', attrs.placeholder);
 			scope.usingAutocomplete = false;
@@ -530,6 +531,15 @@ app.config(function ($httpProvider) {
 				}
 			}, true);
 
+			scope.inputFocused = function () {
+				scope.hasFocus = true;
+				scope.showDropdown = true;
+			};
+			scope.inputBlurred = function () {
+				scope.hasFocus = false;
+				scope.showDropdown = false;
+			};
+
 			scope.toggleDropdown = function ($event) {
 				$event.stopPropagation();
 				if (scope.filterData().length) 
@@ -538,13 +548,11 @@ app.config(function ($httpProvider) {
 			scope.$watch(function () { return scope.showDropdown; }, function (val, oldVal) {
 				if (val == oldVal) 
 					return;
-				if (scope.showDropdown && scope.filterData().length) {
-					scope.hasFocus = true;
+				if (scope.showDropdown && scope.filterData().length) 
 					scope.curSelected = -1;
-				} else {
+				else {
 					element.find('.selected').removeClass('selected');
 					scope.bypassFilter = true;
-					scope.hasFocus = false;
 				}
 			});
 			$('html').click(function () {
@@ -552,10 +560,11 @@ app.config(function ($httpProvider) {
 				scope.$apply();
 			});
 
-			scope.$watch('hasFocus', function (newVal, oldVal) {
+			scope.$watch(function () { return scope.hasFocus; }, function (newVal, oldVal) {
 				if (!newVal) {
-					if (scope.search.length != '') {
-						filterResults = $filter('filter')(scope.options, { 'display': scope.search }, true);
+					console.log(skillSearchTimeout);
+					if (!isUndefined(scope.search) && scope.search.length != '') {
+						filterResults = $filter('filter')(scope.options, { 'display': scope.search });
 						if (filterResults.length == 1 && filterResults[0].display.toLowerCase() == scope.search.toLowerCase()) {
 							scope.search = filterResults[0].display;
 							scope.value = filterResults[0];

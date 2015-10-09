@@ -182,8 +182,8 @@
 					<div ng-if="!details.retired">
 						<h2 skew-element class="headerbar hbDark hb_hasList">Invited</h2>
 						<ul class="hbAttachedList" hb-margined>
-							<li ng-repeat="invite in invites.waiting | orderBy: 'username'" class="playerInfo clearfix">
-								<div class="player"><a href="/user/{{invite.userID}}/?>" class="username">{{invite.username}}</a></div>
+							<li ng-repeat="invite in invites.pending | orderBy: 'username'" class="playerInfo clearfix">
+								<div class="player"><a href="/user/{{invite.userID}}/" class="username">{{invite.username}}</a></div>
 								<div class="actionLinks" ng-show="isGM">
 									<a href="" ng-click="withdrawInvite(invite)">Withdraw Invite</a>
 								</div>
@@ -191,7 +191,7 @@
 						</ul>
 						<form id="invites" hb-margined ng-submit="inviteUser()" ng-show="isGM">
 							<label>Invite player to game:</label>
-							<combobox search="invites.userID" data="invites.users" autocomplete="searchUsers" placeholder="User"></combobox>
+							<combobox search="invites.user" autocomplete="searchUsers" placeholder="User" select></combobox>
 							<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
 							<div class="error" ng-show="invites.errorMsg">{{invites.errorMsg}}</div>
 						</form>
