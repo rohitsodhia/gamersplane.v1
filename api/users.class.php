@@ -108,6 +108,7 @@
 				'username' => $user->username,
 				'email' => $user->email,
 				'joinDate' => $user->joinDate,
+				'lastActivity' => $user->lastActivity,
 				'avatar' => array(
 					'url' => User::getAvatar($user->userID, $user->avatarExt),
 					'avatarExt' => $user->avatarExt
@@ -207,22 +208,22 @@
 			}
 
 //			$user->updateUsermeta('showAvatars', isset($data->showAvatars)?1:0);
-			if ($data->gender == 'n') 
+			if ($details->gender == 'n') 
 				$gender = '';
 			else 
-				$gender = $data->gender == 'm'?'m':'f';
+				$gender = $details->gender == 'm'?'m':'f';
 			$user->updateUsermeta('gender', $gender);
-			$birthday = intval($data->birthday->date->year).'-'.(intval($data->birthday->date->month) <= 9?'0':'').intval($data->birthday->date->month).'-'.(intval($data->birthday->date->day) <= 9?'0':'').intval($data->birthday->date->day);
+			$birthday = intval($details->birthday->date->year).'-'.(intval($details->birthday->date->month) <= 9?'0':'').intval($details->birthday->date->month).'-'.(intval($details->birthday->date->day) <= 9?'0':'').intval($details->birthday->date->day);
 			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) 
 				$user->updateUsermeta('birthday', $birthday);
-			$user->updateUsermeta('showAge', isset($data->birthday->showAge)?1:0);
-			$user->updateUsermeta('location', sanitizeString($data->location));
-			$user->updateUsermeta('twitter', sanitizeString($data->twitter));
-			$user->updateUsermeta('stream', sanitizeString($data->stream));
-			$user->updateUsermeta('games', sanitizeString($data->games));
-			$user->updateUsermeta('pmMail', intval($data->pmMail)?1:0);
-			$user->updateUsermeta('newGameMail', intval($data->newGameMail)?1:0);
-			$user->updateUsermeta('gmMail', intval($data->gmMail)?1:0);
+			$user->updateUsermeta('showAge', isset($details->birthday->showAge)?1:0);
+			$user->updateUsermeta('location', sanitizeString($details->location));
+			$user->updateUsermeta('twitter', sanitizeString($details->twitter));
+			$user->updateUsermeta('stream', sanitizeString($details->stream));
+			$user->updateUsermeta('games', sanitizeString($details->games));
+			$user->updateUsermeta('pmMail', intval($details->pmMail)?1:0);
+			$user->updateUsermeta('newGameMail', intval($details->newGameMail)?1:0);
+			$user->updateUsermeta('gmMail', intval($details->gmMail)?1:0);
 
 			$errors = array();
 			$oldPass = $newPass->oldPass;
@@ -242,8 +243,8 @@
 					$user->updatePassword($password1);
 			}
 
-			if (in_array($data->postSide, array('l', 'r', 'c'))) 
-				$postSide = $data->postSide;
+			if (in_array($details->postSide, array('l', 'r', 'c'))) 
+				$postSide = $details->postSide;
 			else 
 				$postSide = 'l';
 			$user->updateUsermeta('postSide', $postSide);
