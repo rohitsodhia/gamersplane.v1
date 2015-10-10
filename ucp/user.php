@@ -24,16 +24,10 @@
 						<div class="title">Gender</div>
 						<div>{{user.gender == 'm'?'Male':'Female'}}</div>
 					</div>
-<?
-	if ($user->showAge == 1) {
-		$thisYear = strtotime(date('Y').substr($user->birthday, 4));
-?>
-					
 					<div ng-if="user.birthday.showAge" class="tr">
 						<div class="title">Age</div>
 						<div>{{user.birthday.date}}</div>
 					</div>
-<?	} ?>
 <?	foreach ($profFields as $field => $label) { if (strlen($userInfo[$field])) { ?>
 					
 					<div class="tr">
