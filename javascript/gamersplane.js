@@ -155,7 +155,7 @@ $(function() {
 	else var curPage = $('body > div').attr('id').substring(5);
 });
 
-var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload']);
+var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
 }).factory('currentUser', function ($http) {
@@ -186,7 +186,28 @@ app.config(function ($httpProvider) {
 //			'fields': params,
 //			'sendFieldsAs': 'form'
 		});
-	}
+	};
+	this.inactive = function (lastActivity, returnImg) {
+		if (isUndefined(returnImg) || typeof returnImg != 'boolean') 
+			returnImg = true;
+		lastActivity = moment(lastActivity);
+		now = moment();
+		diff = now - lastActivity;
+		diff = Math.floor(diff / (1000 * 60 * 60 * 24));
+		if (diff < 14) 
+			return false;
+		diffStr = 'Inactive for';
+		if (diff <= 30) 
+			diffStr += ' ' + (diff - 1) + ' day' + (diff > 1?'s':'');
+		else {
+			diff = Math.floor(diff / 30);
+			if (diff < 12) 
+				diffStr += ' ' + diff + ' month' + (diff > 1?'s':'');
+			else 
+				diffStr += 'ever!';
+		}
+		return returnImg?"<img src=\"/images/sleeping.png\" title=\"" + diffStr + "\" alt=\"" + diffStr + "\">":diffStr;
+	};
 }]).service('systems', ['$http', '$q', function ($http, $q) {
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params)) 

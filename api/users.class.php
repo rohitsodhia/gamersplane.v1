@@ -108,6 +108,7 @@
 				'username' => $user->username,
 				'email' => $user->email,
 				'joinDate' => $user->joinDate,
+				'lastActivity' => $user->lastActivity,
 				'avatar' => array(
 					'url' => User::getAvatar($user->userID, $user->avatarExt),
 					'avatarExt' => $user->avatarExt

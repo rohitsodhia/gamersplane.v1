@@ -1,16 +1,11 @@
 <?
-	$profileID = intval($pathOptions[0]);
-	$user = new User($profileID);
- 	if ($user->userID == 0) { header('Location: /404'); exit; }
-	$user->getAllUsermeta();
-	$profFields = array('location' => 'Location', 'aim' => 'AIM', 'yahoo' => 'Yahoo!', 'msn' => 'MSN', 'games' => 'Games');
+	require_once(FILEROOT.'/header.php');
 ?>
-<?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar"><?=$user->username?></h1>
+		<h1 class="headerbar" skew-element>{{user.username}}</h1>
 		<div id="leftCol">
-			<img src="<?=User::getAvatar($user->userID, $user->avatarExt)?>" class="avatar">
+			<img ng-src="{{user.avatar.url}}" class="avatar">
 			<div id="actions">
-				<a href="/pms/send/?userID=<?=$user->userID?>">Send Private Message</a>
+				<a href="/pms/send/?userID={{user.userID}}">Send Private Message</a>
 			</div>
 		</div>
 		<div id="rightCol">
@@ -19,29 +14,24 @@
 				<div class="details">
 					<div class="tr">
 						<div class="title">Member Since</div>
-						<div class="convertTZ"><?=date('F j, Y g:i A', strtotime($user->joinDate))?></div>
+						<div>{{user.joinDate | amUtc | amLocal | amDateFormat:'MMMM D, YYYY h:mm a'}}</div>
 					</div>
-<?	if (User::inactive($user->lastActivity, false)) { ?>
-					<div class="tr">
+					<div ng-if="user.lastActivity" class="tr">
 						<div class="title">Inactive</div>
-						<div><?=User::inactive($user->lastActivity, false)?></div>
+						<div ng-bind-html="user.lastActivity | trustHTML"></div>
 					</div>
-<?	} ?>
-<?	if ($user->gender != '') { ?>
-
-					<div class="tr">
+					<div ng-if="user.gender != 'n'" class="tr">
 						<div class="title">Gender</div>
-						<div><?=$user->gender == 'm'?'Male':'Female'?></div>
+						<div>{{user.gender == 'm'?'Male':'Female'}}</div>
 					</div>
 <?
-	}
 	if ($user->showAge == 1) {
 		$thisYear = strtotime(date('Y').substr($user->birthday, 4));
 ?>
 					
-					<div class="tr">
+					<div ng-if="user.birthday.showAge" class="tr">
 						<div class="title">Age</div>
-						<div><?=date('Y') - substr($user->birthday, 0, 4) - ($thisYear > time()?1:0)?></div>
+						<div>{{user.birthday.date}}</div>
 					</div>
 <?	} ?>
 <?	foreach ($profFields as $field => $label) { if (strlen($userInfo[$field])) { ?>
@@ -53,6 +43,7 @@
 <?	} } ?>
 				</div>
 			</div>
+<? /*
 			
 			<div id="charStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">Characters Stats</h2>
@@ -117,5 +108,6 @@
 ?>
 				</div>
 			</div>
+*/ ?>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
