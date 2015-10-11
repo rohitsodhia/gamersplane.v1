@@ -169,6 +169,7 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 }]).controller('acp_links', ['$scope', '$http', '$sce', 'Links', function ($scope, $http, $sce, Links) {
 	$scope.links = [];
 	$scope.newLink = {};
+	$scope.search = '';
 	Links.get().then(function (data) {
 		$scope.links = data.data.links;
 		$scope.links.forEach(function (ele) {
