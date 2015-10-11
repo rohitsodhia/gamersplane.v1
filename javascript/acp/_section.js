@@ -166,28 +166,22 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 			updateGenres();
 		});
 	}
-}]).controller('acp_links', function ($scope, $http, $sce) {
-	function getLinks() {
-		$scope.links = [];
-		$http.post(API_HOST + '/links/list/', { 'page': $scope.pagination.current }).success(function (data) {
-			$(data.links).each(function (key, value) {
-				value.level = { 'value': value.level, 'display': value.level }
-				$scope.links.push(value);
-			})
-
-			$scope.pagination.numItems = data.totalCount;
+}]).controller('acp_links', ['$scope', '$http', '$sce', 'Links', function ($scope, $http, $sce, Links) {
+	$scope.links = [];
+	$scope.newLink = {};
+	Links.get().then(function (data) {
+		$scope.links = data.data.links;
+		$scope.links.forEach(function (ele) {
+			ele.level = { 'value': ele.level, 'display': ele.level };
 		});
-	}
+		$scope.pagination.numItems = data.data.totalCount;
+	});
 	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
 	else 
 		$scope.pagination.current = 1;
-
-	$scope.links = {};
-	$scope.newLink = {};
-	getLinks();
-}).directive('linksEdit', ['$filter', '$http', 'Upload', function ($filter, $http, Upload) {
+}]).directive('linksEdit', ['$filter', '$http', 'Upload', function ($filter, $http, Upload) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/acp/links.php',

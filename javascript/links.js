@@ -1,7 +1,7 @@
-controllers.controller('links', ['$scope', '$http', '$sce', '$filter', 'links', function ($scope, $http, $sce, $filter, links) {
+controllers.controller('links', ['$scope', '$http', '$sce', '$filter', 'Links', function ($scope, $http, $sce, $filter, links) {
 	$scope.$emit('pageLoading');
 	$scope.links = [];
-	links.get().then(function (data) {
+	Links.get().then(function (data) {
 		$scope.links = data.links;
 		$scope.$emit('pageLoading');
 	});

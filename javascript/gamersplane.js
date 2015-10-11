@@ -221,14 +221,12 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
 		return deferred.promise;
 	};
-}]).service('links', ['$http', '$q', function ($http, $q) {
+}]).service('Links', ['$http', function ($http, $q) {
 	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params)) 
 			params = {};
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/links/get/', params).success(function (data) { deferred.resolve(data); });
-		return deferred.promise;
+		return $http.post(API_HOST + '/links/get/', params).then(function (data) { return data; });
 	};
 }]).service('faqs', ['$http', '$q', function ($http, $q) {
 	this.categories = { 'Getting Started': 'getting-started', 'Characters': 'characters', 'Games': 'games', 'Tools': 'tools' };

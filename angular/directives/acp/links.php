@@ -1,7 +1,7 @@
 				<form enctype="multipart/form-data" ng-class="{ editing: 'editing' }">
 					<input type="hidden" name="mongoID" ng-bind="data._id">
 					<div class="preview" ng-if="!new">
-						<img ng-if="data.image" src="/images/links/{{data._id}}.{{data.image}}">
+						<img ng-if="data.image" ng-src="/images/links/{{data._id}}.{{data.image}}">
 						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small" ng-if="data.image" ng-click="deleteImage()"></button>
 					</div>
 					<div class="details">
