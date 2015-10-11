@@ -15,6 +15,7 @@
 <script type="text/javascript" src="/javascript/angular-animate.min.js?v=<?=getJSVersion('/javascript/angular-animate.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/angular-file-upload-shim.min.js?v=<?=getJSVersion('/javascript/angular-file-upload-shim.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/angular-file-upload.min.js?v=<?=getJSVersion('/javascript/angular-file-upload.min.js')?>"></script>
+<script type="text/javascript" src="/javascript/angular-moment.min.js?v=<?=getJSVersion('/javascript/angular-moment.min.js')?>"></script>
 <?	if (in_array($pathAction, array('forums', 'pms'))) { ?>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js?v=<?=getJSVersion('/javascript/markItUp/jquery.markitup.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>

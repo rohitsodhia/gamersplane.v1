@@ -1,2 +1,1 @@
-UPDATE dispatch SET ngController = 'ucp' WHERE url = 'ucp/';
-DELETE FROM dispatch WHERE url = 'ucp/process/ucp/';
+UPDATE dispatch SET ngController = 'user' WHERE url = 'user/';

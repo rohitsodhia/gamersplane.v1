@@ -15,6 +15,8 @@
 				$this->getUser();
 			elseif ($pathOptions[0] == 'save') 
 				$this->saveUser();
+			elseif ($pathOptions[0] == 'stats') 
+				$this->stats();
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -216,7 +218,7 @@
 			$birthday = intval($details->birthday->date->year).'-'.(intval($details->birthday->date->month) <= 9?'0':'').intval($details->birthday->date->month).'-'.(intval($details->birthday->date->day) <= 9?'0':'').intval($details->birthday->date->day);
 			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) 
 				$user->updateUsermeta('birthday', $birthday);
-			$user->updateUsermeta('showAge', isset($details->birthday->showAge)?1:0);
+			$user->updateUsermeta('showAge', $details->birthday->showAge?1:0);
 			$user->updateUsermeta('location', sanitizeString($details->location));
 			$user->updateUsermeta('twitter', sanitizeString($details->twitter));
 			$user->updateUsermeta('stream', sanitizeString($details->stream));
@@ -257,6 +259,48 @@
 			if ($avatarUploaded) 
 				$return['avatarUploaded'] = true;
 			displayJSON($return);
+		}
+
+		public function stats() {
+			global $mysql;
+
+			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
+				$userID = (int) $_POST['userID'];
+			else {
+				global $currentUser;
+				$userID = $currentUser->userID;
+			}
+			$rCharacters = $mysql->query("SELECT c.characterID, c.system shortName, s.fullName, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$userID} AND retired IS NULL GROUP BY c.system ORDER BY numChars DESC, s.fullName");
+			$characters = array();
+			$numChars = 0;
+			foreach ($rCharacters as $character) {
+				$characters[] = array(
+					'characterID' => (int) $character['characterID'],
+					'system' => array(
+						'_id' => $character['shortName'],
+						'name' => $character['fullName']
+					),
+					'numChars' => (int) $character['numChars']
+				);
+				$numChars += (int) $character['numChars'];
+			}
+
+			$rGames = $mysql->query("SELECT g.gameID, s.shortName, s.fullName, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s ON g.system = s.shortName INNER JOIN players p USING (gameID) WHERE p.userID = {$userID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
+			$games = array();
+			$numGames = 0;
+			foreach ($rGames as $game) {
+				$games[] = array(
+					'gameID' => (int) $game['gameID'],
+					'system' => array(
+						'_id' => $game['shortName'],
+						'name' => $game['fullName']
+					),
+					'numGames' => (int) $game['numGames']
+				);
+				$numGames += (int) $game['numGames'];
+			}
+
+			displayJSON(array('characters' => array('numChars' => $numChars, 'list' => $characters), 'games' => array('numGames' => $numGames, 'list' => $games)));
 		}
 	}
 ?>
