@@ -1,6 +1,4 @@
-<?
-	require_once(FILEROOT.'/header.php');
-?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar" skew-element>{{user.username}}</h1>
 		<div id="leftCol">
 			<img ng-src="{{user.avatar.url}}" class="avatar">
@@ -26,7 +24,7 @@
 					</div>
 					<div ng-if="user.birthday.showAge" class="tr">
 						<div class="title">Age</div>
-						<div>{{user.age}}</div>
+						<div>{{user.birthday.age}}</div>
 					</div>
 					<div ng-repeat="(field, label) in profileFields" ng-if="user[field].length" class="tr">
 						<div class="title">{{label}}</div>

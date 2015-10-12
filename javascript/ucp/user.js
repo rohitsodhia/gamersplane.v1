@@ -12,8 +12,6 @@ controllers.controller('user', ['$scope', '$http', 'currentUser', 'Users', funct
 			if (data) {
 				$scope.user = data;
 				$scope.user.lastActivity = Users.inactive($scope.user.lastActivity, false);
-				age = moment() - moment($scope.user.birthday.date);
-				$scope.user.age = Math.floor(age / (1000 * 60 * 60 * 24 * 365));
 				$http.post(API_HOST + '/users/stats/', { userID: userID }).then(function (response) {
 					$scope.characters = response.data.characters.list;
 					$scope.charCount = response.data.characters.numChars;

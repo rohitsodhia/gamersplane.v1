@@ -97,18 +97,19 @@
 		public function getUser() {
 			global $loggedIn, $currentUser;
 
-			if (isset($_POST['userID']) && $currentUser->checkACP('users', false)) 
+			if (isset($_POST['userID'])) 
 				$user = new User(intval($_POST['userID']));
 			elseif (!isset($_POST['userID'])) 
 				$user = $currentUser;
 			if (!$user) 
 				displayJSON(array('failed' => true, 'noUser' => true));
+			if ($loggedIn) 
+				$getAll = $currentUser->checkACP('users', false) || $user->userID == $currentUser->userID;
 			$user->getAllUsermeta();
 
 			$details = array(
 				'userID' => $user->userID,
 				'username' => $user->username,
-				'email' => $user->email,
 				'joinDate' => $user->joinDate,
 				'lastActivity' => $user->lastActivity,
 				'avatar' => array(
@@ -117,18 +118,30 @@
 				),
 				'gender' => $user->gender?$user->gender:'n',
 				'birthday' => array(
-					'date' => $user->birthday,
 					'showAge' => $user->showAge?true:false
 				),
 				'location' => $user->location,
 				'twitter' => $user->twitter,
 				'stream' => $user->stream,
-				'games' => $user->games,
-				'pmMail' => $user->pmMail?true:false,
-				'newGameMail' => $user->newGameMail?true:false,
-				'gmMail' => $user->gmMail?true:false,
-				'postSide' => $user->postSide
+				'games' => $user->games
 			);
+			if ($getAll) 
+				$details = array_merge($details, array(
+					'email' => $user->email,
+					'birthday' => array(
+						'date' => $user->birthday,
+						'showAge' => $user->showAge?true:false
+					),
+					'pmMail' => $user->pmMail?true:false,
+					'newGameMail' => $user->newGameMail?true:false,
+					'gmMail' => $user->gmMail?true:false,
+					'postSide' => $user->postSide
+				));
+			if ($details['birthday']['showAge']) {
+				$now = new DateTime();
+				$birthday = new DateTime($user->birthday);
+				$details['birthday']['age'] = (int) $now->diff($birthday)->y;
+			}
 			displayJSON(array('success' => true, 'details' => $details));
 		}
 

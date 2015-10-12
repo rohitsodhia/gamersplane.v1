@@ -33,5 +33,6 @@
 	"/javascript/register/register.js": "1.1.0",
 	"/javascript/systems.js": "2.1.0",
 	"/javascript/tools/music.js": "2.0.0",
-	"/javascript/ucp/ucp.js": "2.0.0"
+	"/javascript/ucp/ucp.js": "2.0.0",
+	"/javascript/ucp/user.js": "1.0.1"
 }
