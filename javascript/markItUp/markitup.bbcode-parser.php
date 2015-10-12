@@ -111,7 +111,7 @@ function BBCode2Html($text) {
 	if (strpos($text, 'blockquote class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
 			$noteTo = preg_split('/[^\w\.]+/', $match[1]);
-			if (!in_array($currentUser->username, $noteTo)) 
+			if (!in_array(strtolower($currentUser->username), strtolower($noteTo))) 
 				$text = str_replace($match[0], '', $text);
 		}
 	}
