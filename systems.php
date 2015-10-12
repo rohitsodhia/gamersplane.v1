@@ -3,7 +3,7 @@
 			<h2>Filter</h2>
 			<form>
 				<div class="tr">Search:</div>
-				<div class="tr"><input type="text" name="search" ng-model="filter.search" ng-change="adjustPagination()"></div>
+				<div class="tr"><input type="text" ng-model="filter.search"></div>
 <!--				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>-->
 			</form>
 		</div>
@@ -12,7 +12,7 @@
 			<h1 class="headerbar">Systems on Gamers' Plane</h1>
 			<div class="alignRight">
 				<div id="numResults" ng-show="filter.search.length != 0"><strong>{{numSystems}}</strong> Systems Found</div>
-				<div class="tr"><paginate data="pagination"></paginate></div>
+				<div class="tr"><paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate></div>
 			</div>
 			<div id="systems">
 				<div class="system clearfix" ng-repeat="system in systems | filter:{ fullName: filter.search } | paginateItems: 10:(pagination.current - 1) * 10">
@@ -32,6 +32,6 @@
 				</div>
 				<div id="noResults" ng-hide="pagination.numItems">No systems found</div>
 			</div>
-			<div class="alignRight tr"><paginate data="pagination"></paginate></div>
+			<div class="alignRight tr"><paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

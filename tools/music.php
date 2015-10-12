@@ -46,6 +46,6 @@
 					</li>
 				</ul>
 			</div>
-			<div class="tr"><paginate data="pagination" change-func="loadMusic"></paginate></div>
+			<div class="tr"><paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current" change-func="loadMusic"></paginate></div>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

@@ -1,11 +1,11 @@
-controllers.controller('links', ['$scope', '$http', '$sce', '$filter', 'Links', function ($scope, $http, $sce, $filter, links) {
+controllers.controller('links', ['$scope', '$http', '$sce', '$filter', 'Links', function ($scope, $http, $sce, $filter, Links) {
 	$scope.$emit('pageLoading');
 	$scope.links = [];
 	Links.get().then(function (data) {
-		$scope.links = data.links;
+		$scope.links = data.data.links;
 		$scope.$emit('pageLoading');
 	});
-	$scope.categories = links.categories;
+	$scope.categories = Links.categories;
 	$scope.filter = [];
 
 	$scope.maxHeight = {

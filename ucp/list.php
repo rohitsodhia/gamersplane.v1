@@ -18,5 +18,5 @@
 				</li>
 			</ul>
 		</div>
-		<p class="hbMargined" hb-margined><paginate data="pagination" change-func="getGamers"></paginate></p>
+		<p class="hbMargined" hb-margined><paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current" change-func="getGamers"></paginate></p>
 <?	require_once(FILEROOT.'/footer.php'); ?>

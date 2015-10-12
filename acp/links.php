@@ -14,6 +14,6 @@
 					<links-edit data="link"></links-edit>
 				</li>
 			</ul>
-			<paginate data="pagination" class="tr"></paginate>
+			<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current" class="tr"></paginate>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

@@ -17,10 +17,9 @@ controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', functio
 		return system.publisher.site?'<a href="' + system.publisher.site + '" target="_blank">' + system.publisher.name + '</a>':system.publisher.name;
 	}
 
-	$scope.adjustPagination = function () {
+	$scope.$watch(function () { return $scope.filter.search; }, function () {
 		$scope.numSystems = $filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length;
-
+		$scope.pagination.numItems = $filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length;
 		$scope.pagination.current = 1;
-		$scope.pagination.numItems = Math.ceil($filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length / 10);
-	}
+	});
 }]);

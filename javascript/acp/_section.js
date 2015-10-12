@@ -166,7 +166,7 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 			updateGenres();
 		});
 	}
-}]).controller('acp_links', ['$scope', '$http', '$sce', 'Links', function ($scope, $http, $sce, Links) {
+}]).controller('acp_links', ['$scope', '$http', '$sce', '$filter', 'Links', function ($scope, $http, $sce, $filter, Links) {
 	$scope.links = [];
 	$scope.newLink = {};
 	$scope.search = '';
@@ -177,11 +177,15 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 		});
 		$scope.pagination.numItems = data.data.totalCount;
 	});
-	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
+	$scope.pagination = { numItems: 0, itemsPerPage: 2 };
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
 	else 
 		$scope.pagination.current = 1;
+
+	$scope.$watch(function () { return $scope.search; }, function () {
+		$scope.pagination.numItems = $filter('filter')($scope.links, { 'title': $scope.search }).length;
+	});
 }]).directive('linksEdit', ['$filter', '$http', 'Upload', function ($filter, $http, Upload) {
 	return {
 		restrict: 'E',

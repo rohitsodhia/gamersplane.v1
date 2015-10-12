@@ -428,27 +428,31 @@ app.config(function ($httpProvider) {
 		restrict: 'E',
 		templateUrl: '/angular/directives/paginate.php',
 		scope: {
-			'data': '=',
+			'numItems': '=',
+			'itemsPerPage': '=',
+			'current': '=',
 			'changeFunc': '='
 		},
 		link: function (scope, element, attrs) {
 			if (!isUndefined(attrs.class) && attrs.class.length) 
 				element.attr('class', (element.attr('class').length?element.attr('.class') + ' ':'') + attrs.class);
 			scope.numPages = 0;
-			scope.$watch(function () { return scope.data.numItems; }, function (val) {
-				scope.numPages = Math.ceil(scope.data.numItems / scope.data.itemsPerPage);
+			scope.$watch(function () { return scope.numItems; }, function (val) {
+				scope.numPages = Math.ceil(scope.numItems / scope.itemsPerPage);
+				if (scope.current > scope.numPages) 
+					scope.current = 1;
 				scope.pages = [];
-				for (count = scope.data.current > 2?scope.data.current - 2:1; count <= scope.data.current + 2 && count <= scope.numPages; count++) 
+				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++) 
 					scope.pages.push(count);
 			});
 
 			scope.changePage = function (page) {
 				page = parseInt(page);
-				if (page < 0 && page > scope.data.numItems) 
+				if (page < 0 && page > scope.numItems) 
 					page = 1;
-				scope.data.current = page;
+				scope.current = page;
 				scope.pages = [];
-				for (count = scope.data.current > 2?scope.data.current - 2:1; count <= scope.data.current + 2 && count <= scope.numPages; count++) 
+				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++) 
 					scope.pages.push(count);
 				if (typeof scope.changeFunc == 'function') 
 					scope.changeFunc();
@@ -903,10 +907,11 @@ app.config(function ($httpProvider) {
 			$scope.aFAQs = data.faqs;
 		}
 	});
-}]).controller('about', ['$scope', '$filter', 'links', function ($scope, $filter, links) {
+}]).controller('about', ['$scope', '$filter', 'Links', function ($scope, $filter, Links) {
 	$scope.$emit('pageLoading');
 	$scope.links = [];
-	links.get({ 'level': ['Affiliate', 'Partner'], 'networks': 'rpga', 'or': true }).then(function (data) {
+	Links.get({ 'level': ['Affiliate', 'Partner'], 'networks': 'rpga', 'or': true }).then(function (data) {
+		data = data.data;
 		$scope.links.partners = $filter('filter')(data.links, { 'level': 'Partner' });
 		$scope.links.rpgan = $filter('filter')(data.links, { 'networks': 'rpga' });
 		$scope.links.affiliates = $filter('filter')(data.links, { 'level': 'Affiliate' });

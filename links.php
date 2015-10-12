@@ -7,9 +7,10 @@
 				<pretty-checkbox eleid="{{category}}" checkbox="filter" value="category"></pretty-checkbox>
 				<label for="{{category}}">{{category}}</label>
 			</div>
+			<div id="search" class="tr"><input type="text" ng-model="search" placeholder="Search"></div>
 		</div>
 		<ul id="links" class="clearfix">
-			<li ng-repeat="link in links | intersect: 'categories':filter | orderBy: 'sortName'" equalize-heights="maxHeight.links">
+			<li ng-repeat="link in links | intersect: 'categories' : filter | filter: { title: search } | orderBy: 'sortName'" equalize-heights="maxHeight.links">
 				<div class="image" ng-class="{ 'noImg': !link.image }">
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">
 						<p ng-if="!link.image">No Image</p>
