@@ -1,10 +1,10 @@
-app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'characters', 'systems', function ($scope, $http, $sce, $timeout, currentUser, characters, systems) {
+app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'CharactersService', 'systems', function ($scope, $http, $sce, $timeout, currentUser, CharactersService, systems) {
 	currentUser.then(function (currentUser) {
 		$scope.characters = {};
 		$scope.library = {};
 		$scope.systems = [];
 		$scope.$emit('pageLoading');
-		characters.getMy(true).then(function (data) {
+		CharactersService.getMy(true).then(function (data) {
 			$scope.$emit('pageLoading');
 			$scope.characters = data.characters;
 			$scope.library = data.library;
@@ -28,7 +28,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentU
 			character.cCharType = { 'value': character.charType, 'display': character.charType };
 		};
 		$scope.saveEdit = function (character) {
-			characters.saveBasic({
+			CharactersService.saveBasic({
 				'characterID': character.characterID,
 				'label': character.label,
 				'charType': character.cCharType.value
@@ -48,7 +48,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentU
 		};
 
 		$scope.toggleLibrary = function (character, library) {
-			characters.toggleLibrary(character.characterID).then(function (data) {
+			CharactersService.toggleLibrary(character.characterID).then(function (data) {
 				if (data.success) 
 					character.inLibrary = data.state;
 			});
@@ -58,7 +58,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentU
 			$scope.deleting = character.characterID;
 		};
 		$scope.confirmDelete = function (character) {
-			characters.delete({
+			CharactersService.delete({
 				'characterID': character.characterID,
 			}).then(function (data) {
 				if (data.success) {
@@ -73,7 +73,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentU
 		};
 
 		$scope.unfavorite = function (character) {
-			characters.toggleFavorite(character.characterID).then(function (data) {
+			CharactersService.toggleFavorite(character.characterID).then(function (data) {
 				removeEle($scope.library, character);
 			});
 		}
@@ -86,7 +86,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentU
 				return;
 			data.system = data.system.value;
 			data.charType = data.charType.value;
-			characters.new(data).then(function (data) {
+			CharactersService.new(data).then(function (data) {
 				if (data.success) 
 					window.location.href = '/characters/' + data.system + '/' + data.characterID + '/edit/';
 			});

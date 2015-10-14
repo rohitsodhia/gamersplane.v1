@@ -1,8 +1,6 @@
-controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'character', 'ACSearch', 'Range', function ($scope, $http, $q, $sce, $timeout, currentUser, character, ACSearch, Range) {
+controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$sce', '$timeout', 'currentUser', 'CharactersService', 'ACSearch', 'Range', function ($scope, $http, $q, $sce, $timeout, currentUser, CharactersService, ACSearch, Range) {
 	currentUser.then(function (currentUser) {
-		pathElements = getPathElements();
 		$scope.range = Range.get;
-		$scope.character = {};
 		$scope.labels = {
 			'rep': { 'street': 'Street Cred', 'notoriety': 'Notoriety', 'public': 'Public Awareness' },
 			'stats': [
@@ -35,17 +33,7 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 			'powers': { 'name': '', 'rating': 0, 'notes': '' },
 			'gear': { 'name': '', 'rating': 0, 'notes': '' }
 		};
-		character.load(pathElements[2]).then(function (data) {
-			$scope.character = copyObject(data);
-			character.loadBlanks($scope.character, blanks);
-		});
-		$scope.addItem = function (key) {
-			keyParts = key.split('.');
-			if (keyParts.length == 2) 
-				$scope.character[keyParts[0]][keyParts[1]].push(copyObject(blanks[key]));
-			else 
-				$scope.character[key].push(copyObject(blanks[key]));
-		};
+		$scope.loadChar();
 		$scope.searchSkills = function (search) {
 			return ACSearch.cil('skill', search, 'shadowrun5').then(function (items) {
 				for (key in items) {
@@ -76,15 +64,8 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 		$scope.searchPowers = function (search) {
 			return ACSearch.cil('powers', search, 'shadowrun5', true);
 		};
-		$scope.save = function () {
-			character.save($scope.character.characterID, $scope.character).then(function (data) {
-				if (data.saved) 
-					window.location = '/characters/' + pathElements[1] + '/' + pathElements[2];
-			});
-		};
-
-		$scope.toggleNotes = function ($event) {
-			$($event.target).siblings('textarea').slideToggle();
-		}
+//		$scope.save = function () {
+//			$parent.save();
+//		};
 	});
 }]);

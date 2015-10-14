@@ -10,8 +10,10 @@
 			$active = $character->load();
 			if ($active) {
 				$angular = $mysql->query("SELECT angular FROM systems WHERE shortName = '".SYSTEM."' LIMIT 1")->fetchColumn();
-				if ($angular) 
-					$dispatchInfo['ngController'] = 'viewCharacter_'.SYSTEM;
+				if ($angular) {
+					$dispatchInfo['ngController'] = 'viewCharacter';
+					$angular = 'viewCharacter_'.SYSTEM;
+				}
 				$dispatchInfo['title'] = $character->getLabel().' | '.$dispatchInfo['title'];
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
@@ -49,7 +51,7 @@
 <?	} else { ?>
 		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 
-		<div id="charDetails">
+		<div id="charDetails"<?=$angular?" ng-controller=\"{$angular}\"":''?>>
 <?		$character->showSheet(); ?>
 		</div>
 <?	} ?>

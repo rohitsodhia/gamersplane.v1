@@ -1,11 +1,6 @@
-controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'character', 'Range', function ($scope, $http, $sce, $timeout, currentUser, character, Range) {
+controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'CharactersService', 'Range', function ($scope, $http, $sce, $timeout, currentUser, CharactersService, Range) {
 	currentUser.then(function (currentUser) {
-		pathElements = getPathElements();
 		$scope.range = Range.get;
-		$scope.character = {};
-		character.load(pathElements[2], true).then(function (data) {
-			$scope.character = copyObject(data);
-		});
 		$scope.labels = {
 			'rep': { 'street': 'Street Cred', 'notoriety': 'Notoriety', 'public': 'Public Awareness' },
 			'stats': [
@@ -25,9 +20,6 @@ controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '
 				{ 'key': 'astral_initiative', 'value': 'Astral Initiative' }
 			]
 		};
-
-		$scope.toggleNotes = function ($event) {
-			$($event.target).siblings('.notes').slideToggle();
-		}
+		$scope.loadChar();
 	});
 }]);

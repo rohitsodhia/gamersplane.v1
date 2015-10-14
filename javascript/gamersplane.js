@@ -283,47 +283,65 @@ app.config(function ($httpProvider) {
 	this.setup = function (scope) {
 		return scope;
 	}
-}]).factory('characters', ['$http', '$q', function ($http, $q) {
-	return {
-		'getMy': function (library) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/my/', { 'library': library }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'new': function (data) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/new/', {
-				'label': data.label,
-				'system': data.system,
-				'charType': data.charType
-			}).success(function (data) { deferred.resolve(data) });
-			return deferred.promise;
-		},
-		'saveBasic': function (data) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/saveBasic/', {
-				'characterID': data.characterID,
-				'label': data.label,
-				'charType': data.charType
-			}).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'toggleLibrary': function (characterID) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/toggleLibrary/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'delete': function (data) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/delete/', { 'characterID': data.characterID }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		},
-		'toggleFavorite': function (characterID) {
-			var deferred = $q.defer();
-			$http.post(API_HOST + '/characters/toggleFavorite/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
-			return deferred.promise;
-		}
+}]).service('CharactersService', ['$http', '$q', function ($http, $q) {
+	this.getMy = function (library) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/my/', { 'library': library }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.new = function (data) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/new/', {
+			'label': data.label,
+			'system': data.system,
+			'charType': data.charType
+		}).success(function (data) { deferred.resolve(data) });
+		return deferred.promise;
+	};
+	this.saveBasic = function (data) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/saveBasic/', {
+			'characterID': data.characterID,
+			'label': data.label,
+			'charType': data.charType
+		}).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.toggleLibrary = function (characterID) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/toggleLibrary/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.delete = function (data) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/delete/', { 'characterID': data.characterID }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
+	};
+	this.toggleFavorite = function (characterID) {
+		var deferred = $q.defer();
+		$http.post(API_HOST + '/characters/toggleFavorite/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
+		return deferred.promise;
 	}
+	this.load = function (characterID, pr) {
+		if (typeof pr != 'boolean') 
+			pr = false;
+		return $http.post(API_HOST + '/characters/load/', { 'characterID': characterID, 'printReady': pr }).then(function (data) { return data.data; });
+	};
+	this.save = function (characterID, character) {
+		return $http.post(API_HOST + '/characters/save/', { 'characterID': characterID, 'character': character }).then(function (data) { return data.data; });
+	};
+	this.loadBlanks = function (character, blanks) {
+		if (typeof blanks == 'undefined' || Object.keys(blanks).length == 0) 
+			return;
+		for (key in blanks) {
+			if (key.indexOf('.') < 0) 
+				bArray = character[key];
+			else 
+				bArray = character[key.split('.')[0]][key.split('.')[1]];
+			if (typeof bArray != 'undefined' && Object.keys(bArray).length == 0) 
+				bArray.push(copyObject(blanks[key]));
+		}
+	};
 }]).service('Range', function () {
 	this.get = function (from, to, incBy) {
 		incBy = parseInt(incBy);
@@ -543,6 +561,7 @@ app.config(function ($httpProvider) {
 						'class': !isUndefined(scope.options[key].class)?scope.options[key].class:[]
 					}
 				}
+				scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
 				filterResults = $filter('filter')(scope.options, { 'value': scope.value.value }, true);
 				if (filterResults.length == 1 && !scope.hasFocus) 
 					scope.search = scope.value.display;

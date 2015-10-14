@@ -10,8 +10,10 @@
 			$active = $character->load();
 			if ($active) {
 				$angular = $mysql->query("SELECT angular FROM systems WHERE shortName = '".SYSTEM."' LIMIT 1")->fetchColumn();
-				if ($angular) 
-					$dispatchInfo['ngController'] = 'editCharacter_'.SYSTEM;
+				if ($angular) {
+					$dispatchInfo['ngController'] = 'editCharacter';
+					$angular = 'editCharacter_'.SYSTEM;
+				}
 				$dispatchInfo['title'] = 'Edit '.$character->getLabel().' | '.$dispatchInfo['title'];
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
@@ -33,7 +35,7 @@
 <?	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
 <?	} else { ?>
-		<form method="post"<?=$angular?' ng-submit="save()"':' action="/characters/process/editCharacter/"'?>>
+		<form<?=$angular?" ng-controller=\"{$angular}\" ng-submit=\"save()\"":' method="post" action="/characters/process/editCharacter/"'?>>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">
 			
