@@ -86,7 +86,7 @@
 			else 
 				$userID = intval($userID);
 
-			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = $userID OR p.userID = $userID)");
+			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = {$userID} OR p.userID = {$userID})");
 			if ($charCheck->rowCount()) 
 				return 'edit';
 
@@ -198,8 +198,9 @@
 
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0, retired = NOW() WHERE characterID = {$this->characterID}");
 			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('retired' => true)));
-			
-			addCharacterHistory($this->characterID, 'charDeleted', $currentUser->userID, 'NOW()');
+
+			$hl_charDeleted = new HistoryLogger('characterDeleted');
+			$hl_charDeleted->addCharacter($this->characterID)->save();
 		}
 	}
 ?>

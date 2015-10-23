@@ -21,13 +21,12 @@
 			$mysql->query("DELETE FROM forumAdmins WHERE userID = {$playerID} AND forumID IN (".implode(', ', $forumIDs).")");
 			$mysql->query("DELETE FROM forums_permissions_users WHERE userID = {$playerID} AND forumID IN (".implode(', ', $forumIDs).")");
 			$mysql->query("DELETE FROM gm USING forums_groupMemberships gm INNER JOIN forums_permissions_groups p WHERE gm.userID = {$playerID} AND gm.groupID = p.groupID AND p.forumID IN (".implode(', ', $forumIDs).")");
-			$mysql->query("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, gameID, action) SELECT characterID, {$currentUser->userID}, NOW(), {$gameID}, '".(isset($_POST['remove'])?'playerRemovedFromGame':'playerLeftGame')."' FROM characters WHERE gameID = {$gameID} AND userID = {$playerID}");
+			$chars = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$playerID}")->fetchAll(PDO::FETCH_COLUMN);
+			$hl_removePlayer = new HistoryLogger(isset($_POST['remove'])?'playerRemove':'playerLeft');
+			$hl_removePlayer->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->addForCharacters($chars)->save();
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE gameID = {$gameID} AND userID = {$playerID}");
+			$mysql->query("DELETE FROM dp USING deckPermissions dp INNER JOIN decks d WHERE d.deckID = dp.deckID AND gameID = {$gameID} AND dp.userID = {$playerID}");
 			$mysql->query("DELETE FROM players WHERE gameID = {$gameID} AND userID = {$playerID}");
-			if (isset($_POST['remove'])) 
-				addGameHistory($gameID, 'playerRemoved', $currentUser->userID, 'NOW()', 'user', $playerID);
-			else 
-				addGameHistory($gameID, 'playerLeft');
 			
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) 

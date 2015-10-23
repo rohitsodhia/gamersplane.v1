@@ -6,7 +6,8 @@
 		$mysql->query("DELETE FROM deckPermissions WHERE deckID = {$deckID}");
 		$mysql->query("DELETE FROM decks WHERE deckID = {$deckID}");
 		
-		addGameHistory($gameID, 'deckDeleted', $currentUser->userID, 'NOW()', 'deck', $deckID);
+		$hl_deckDeleted = new HistoryLogger('deckDeleted');
+		$hl_deckDeleted->addDeck($deckID)->addUser($currentUser->userID)->save();
 		
 		displayJSON(array('success' => true, 'deckID' => $deckID));
 	} else 

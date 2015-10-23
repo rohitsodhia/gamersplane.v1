@@ -1,7 +1,12 @@
 <?
 	$gameID = intval($_POST['gameID']);
 	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} AND isGM = 1");
-	$isGM = $gmCheck->rowCount()?TRUE:FALSE;
+	$isGM = $gmCheck->rowCount()?true:false;
+	$addUsers = array();
+	if (isset($_POST['addUser'])) 
+		foreach ($_POST['addUser'] as $userID) 
+			if (intval($userID) > 0) 
+				$addUsers[] = (int) $userID;
 	if (isset($_POST['create']) && $isGM) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
 		$type = $_POST['deckType'];
@@ -10,7 +15,8 @@
 		if ($deckInfo->rowCount() == 0) { header('Location: /games/'.$gameID.'/decks?new=1&invalidDeck=1'); exit; }
 		$deckInfo = $deckInfo->fetch();
 		$deck = array();
-		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) $deck[] = $count;
+		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) 
+			$deck[] = $count;
 		shuffle($deck);
 		$deck = sanitizeString(implode('~', $deck));
 		
@@ -22,9 +28,11 @@
 		$deckPermissionsQ->bindParam(':userID', $dUserID);
 		$dUserID = $currentUser->userID;
 		$deckPermissionsQ->execute();
-		foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
-		
-		addGameHistory($gameID, 'deckCreated', $currentUser->userID);
+		foreach ($addUsers as $dUserID) 
+			$deckPermissionsQ->execute();
+
+		$hl_deckCreated = new HistoryLogger('deckCreated');
+		$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		
 		header('Location: /games/'.$gameID.'/decks?success=create');
 	} elseif (isset($_POST['shuffle']) && $isGM) {
@@ -32,13 +40,15 @@
 		$deckInfo = $mysql->query('SELECT type, deckSize FROM decks WHERE deckID = '.$deckID);
 		$deckInfo = $deckInfo->fetch();
 		$deck = array();
-		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) $deck[] = $count;
+		for ($count = 1; $count <= $deckInfo['deckSize']; $count++) 
+			$deck[] = $count;
 		shuffle($deck);
 		$deck = sanitizeString(implode('~', $deck));
 		$updateDeck = $mysql->prepare("UPDATE decks SET position = 1, deck = :deck, lastShuffle = :lastShuffle WHERE deckID = $deckID");
 		$updateDeck->execute(array(':deck' => $deck, ':lastShuffle' => gmdate('Y-m-d H:i:s')));
 		
-		addGameHistory($gameID, 'deckShuffled', $currentUser->userID);
+		$hl_deckShuffled = new HistoryLogger('deckShuffled');
+		$hl_deckShuffled->addDeck($deckID)->addUser($currentUser->userID)->save();
 			
 		header('Location: /games/'.$gameID.'/decks?success=shuffle');
 	} elseif (isset($_POST['submit']) && $isGM) {
@@ -47,7 +57,8 @@
 		if ($deckInfo->rowCount()) {
 			$deckInfo = $deckInfo->fetch();
 			$updateStr = '';
-			if ($deckInfo['label'] != sanitizeString($_POST['deckLabel'])) $updateStr .= 'label = "'.sanitizeString($_POST['deckLabel']).'" AND ';
+			if ($deckInfo['label'] != sanitizeString($_POST['deckLabel'])) 
+				$updateStr .= 'label = "'.sanitizeString($_POST['deckLabel']).'" AND ';
 			if ($deckInfo['type'] != sanitizeString($_POST['deckType'])) {
 				$updateStr .= 'type = '.sanitizeString($_POST['deckType']).' AND ';
 				$deck = array();
@@ -65,16 +76,20 @@
 			$deckPermissionsQ->bindParam(':userID', $dUserID);
 			$dUserID = $currentUser->userID;
 			$deckPermissionsQ->execute();
-			foreach ($_POST['addUser'] as $dUserID) $deckPermissionsQ->execute();
+			foreach ($addUsers as $dUserID) 
+				$deckPermissionsQ->execute();
 			
-			addGameHistory($gameID, 'deckEdited', $currentUser->userID);
+			$hl_deckEdited = new HistoryLogger('deckEdited');
+			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		}
 		header('Location: /games/'.$gameID.'/decks?success=edit');
 	} elseif (isset($_POST['delete']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$mysql->query("DELETE FROM decks WHERE deckID = $deckID");
-		addGameHistory($gameID, 'deckDeleted', $currentUser->userID);
+		$hl_deckDeleted = new HistoryLogger('deckDeleted');
+		$hl_deckDeleted->addDeck($deckID)->addUser($currentUser->userID)->save();
 		
 		header('Location: /games/'.$gameID.'/decks?success=delete');
-	} else header('Location: /games/');
+	} else 
+	header('Location: /games/');
 ?>

@@ -171,20 +171,6 @@
 		date_default_timezone_set('GMT');
 	}
 
-	function addUserHistory($userID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
-		global $currentuser, $mysql;
-		if ($enactedBy == 0 && $loggedIn) $enactedBy = $currentUser->userID;
-
-		if (!intval($userID) || !strlen($action)) return false;
-		if ($enactedOn == '') $enactedOn = 'NOW()';
-
-		$addUserHistory = $mysql->prepare("INSERT INTO userHistory (userID, enactedBy, enactedOn, action, additionalInfo) VALUES ($userID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :additionalInfo)");
-		if ($enactedOn != 'NOW()') $addUserHistory->bindvalue(':enactedOn', $enactedOn);
-		$addUserHistory->bindvalue(':action', $action);
-		$addUserHistory->bindvalue(':additionalInfo', $additionalInfo);
-		$addUserHistory->execute();
-	}
-
 /* Character Functions */
 	function getCharacterClass($characterID) {
 		global $mysql;
@@ -196,35 +182,6 @@
 			return $system->fetchColumn();
 		else 
 			return false;
-	}
-
-	function addCharacterHistory($characterID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $additionalInfo = '') {
-		global $currentuser, $mysql;
-		if ($enactedBy == 0 && $loggedIn) $enactedBy = $currentUser->userID;
-
-		if (!isset($enactedBy) || !intval($characterID) || !strlen($action)) return false;
-		if ($enactedOn == '') $enactedOn = 'NOW()';
-
-		$addCharHistory = $mysql->prepare("INSERT INTO characterHistory (characterID, enactedBy, enactedOn, action, additionalInfo) VALUES ($characterID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :additionalInfo)");
-		if ($enactedOn != 'NOW()') $addCharHistory->bindvalue(':enactedOn', $enactedOn);
-		$addCharHistory->bindvalue(':action', $action);
-		$addCharHistory->bindvalue(':additionalInfo', $additionalInfo);
-		$addCharHistory->execute();
-	}
-	
-	function addGameHistory($gameID, $action, $enactedBy = 0, $enactedOn = 'NOW()', $affectedType = NULL, $affectedID = NULL) {
-		global $currentUser, $mysql;
-		if ($enactedBy == 0 && $loggedIn) $enactedBy = $currentUser->userID;
-
-		if (!isset($enactedBy) || !intval($gameID) || !strlen($action)) return false;
-		if ($enactedOn == '') $enactedOn = 'NOW()';
-
-		$addGameHistory = $mysql->prepare("INSERT INTO gameHistory (gameID, enactedBy, enactedOn, action, affectedType, affectedID) VALUES ($gameID, $enactedBy, ".($enactedOn == 'NOW()'?'NOW()':':enactedOn').", :action, :affectedType, :affectedID)");
-		if ($enactedOn != 'NOW()') $addGameHistory->bindvalue(':enactedOn', $enactedOn);
-		$addGameHistory->bindvalue(':action', $action);
-		$addGameHistory->bindvalue(':affectedType', $affectedType);
-		$addGameHistory->bindvalue(':affectedID', $affectedID);
-		$addGameHistory->execute();
 	}
 	
 /* Tools Functions */

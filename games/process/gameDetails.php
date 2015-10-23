@@ -50,7 +50,8 @@
 			$updateForums->bindValue(':title', $details['title']);
 			$updateForums->bindValue(':gameID', $gameID);
 			$updateForums->execute();
-			addGameHistory($gameID, 'editedGame');
+			$hl_gameEdited = new HistoryLogger('gameEdited');
+			$hl_gameEdited->addGame($gameID)->save();
 			
 			header('Location: /games/'.$gameID);
 		} else {
@@ -96,7 +97,8 @@
 			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 2, 2, 2, 2, 2, 2, 2)');
 			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
 			
-			addGameHistory($gameID, 'newGame');
+			$hl_gameCreated = new HistoryLogger('gameCreated');
+			$hl_gameCreated->addGame($gameID)->save();
 			
 			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.system = '{$details['system']}'");
 			$recips = '';
@@ -106,7 +108,7 @@
 			include('games/process/newGameEmail.php');
 			$email = ob_get_contents();
 			ob_end_clean();
-			mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName([$system])} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
+			mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName($system)} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
 			
 			header('Location: /games/my/');
 		}

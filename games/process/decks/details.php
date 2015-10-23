@@ -1,5 +1,10 @@
 <?
 	$gameID = intval($_POST['gameID']);
+	$addUsers = array();
+	if (isset($_POST['addUser'])) 
+		foreach ($_POST['addUser'] as $userID) 
+			if (intval($userID) > 0) 
+				$addUsers[] = (int) $userID;
 	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = {$gameID} AND userID = {$currentUser->userID}");
 	if (isset($_POST['create']) && $gmCheck->rowCount()) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
@@ -23,16 +28,16 @@
 			$addDeck->execute(array(':deckLabel' => $deckLabel));
 			$deckID = $mysql->lastInsertId();
 
-			addGameHistory($gameID, 'deckCreated', $currentUser->userID, 'NOW()', 'deck', $deckID);
-
-			if (isset($_POST['addUser']) && sizeof($_POST['addUser'])) {
+			if (isset($addUsers) && sizeof($addUsers)) {
 				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = $deckID, userID = :userID");
 				$dUserID = null;
 				$addDeckPermissions->bindParam(':userID', $dUserID);
-				foreach (array_keys($_POST['addUser']) as $dUserID) {
+				foreach (array_keys($addUsers) as $dUserID) 
 					$addDeckPermissions->execute();
-				}
 			}
+
+			$hl_deckCreated = new HistoryLogger('deckCreated');
+			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 			
 			if (isset($_POST['modal'])) 
 				displayJSON(array(
@@ -77,18 +82,19 @@
 			$updateDeck = $mysql->prepare("UPDATE decks SET label = :deckLabel, type = '{$type}', deck = '{$deck}', position = {$position} WHERE deckID = {$deckID}");
 			$deckLabel = sanitizeString($_POST['deckLabel']);
 			$updateDeck->execute(array(':deckLabel' => $deckLabel));
-
-			addGameHistory($gameID, 'deckUpdated', $currentUser->userID, 'NOW()', 'deck', $deckID);
 			
 			$mysql->query("DELETE FROM deckPermissions WHERE deckID = {$deckID}");
-			if (isset($_POST['addUser']) && sizeof($_POST['addUser'])) {
+			if (isset($addUsers) && sizeof($addUsers)) {
 				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = :userID");
 				$dUserID = null;
 				$addDeckPermissions->bindParam(':userID', $dUserID);
-				foreach (array_keys($_POST['addUser']) as $dUserID) {
+				foreach (array_keys($addUsers) as $dUserID) {
 					$addDeckPermissions->execute();
 				}
 			}
+
+			$hl_deckEdited = new HistoryLogger('deckEdited');
+			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		}
 		displayJSON(array(
 			'success' => true,

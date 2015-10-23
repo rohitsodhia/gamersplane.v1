@@ -2,7 +2,7 @@
 	class characters {
 		public static $charTypes = array('PC', 'NPC', 'Mob');
 
-		function __construct() {
+		public function __construct() {
 			global $loggedIn, $pathOptions;
 
 			if ($pathOptions[0] == 'library') 
@@ -138,7 +138,8 @@
 				$newChar->setLabel($label);
 				$newChar->setCharType($charType);
 				$newChar->save(true);
-				addCharacterHistory($characterID, 'charCreated', $currentUser->userID, 'NOW()', $system);
+				$hl_charCreated = new HistoryLogger('characterCreated');
+				$hl_charCreated->addCharacter($characterID, false)->save();
 
 				displayJSON(array('success' => true, 'system' => $system, 'characterID' => $characterID));
 			}
@@ -161,7 +162,8 @@
 				$updateLabel->bindValue(':charType', $charType);
 				$updateLabel->execute();
 				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('label' => $label, 'charType' => $charType)));
-				addCharacterHistory($characterID, 'basicEdited', $currentUser->userID);
+				$hl_basicEdited = new HistoryLogger('basicEdited');
+				$hl_basicEdited->addCharacter($characterID, false)->save();
 				displayJSON(array('success' => true, 'basicUpdated' => true));
 			}
 		}
@@ -231,7 +233,8 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$character->save();
-					addCharacterHistory($this->characterID, 'charEdited');
+					$hl_charEdited = new HistoryLogger('characterEdited');
+					$hl_charEdited->addCharacter($characterID)->save();
 
 					displayJSON(array('success' => true, 'saved' => true, 'characterID' => $characterID));
 				} else 
@@ -250,7 +253,8 @@
 					$currentState = (bool) $currentState->fetchColumn();
 				else 
 					$currentState = false;
-				addCharacterHistory($characterID, ($currentState?'removeFrom':'addTo').'Library');
+				$hl_libraryToggle = new HistoryLogger(($currentState?'removeFrom':'addTo').'Library');
+				$hl_libraryToggle->addCharacter($characterID, false)->save();
 
 				$mysql->query("INSERT INTO characterLibrary SET characterID = {$characterID} ON DUPLICATE KEY UPDATE inLibrary = ".($currentState?0:1));
 				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('inLibrary' => !$currentState)));
@@ -274,6 +278,8 @@
 			$charClass = Systems::systemClassName($system).'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->delete();
+				$hl_charDeleted = new HistoryLogger('characterDeleted');
+				$hl_charDeleted->addCharacter($characterID, false)->save();
 
 				displayJSON(array('success' => true, 'charDeleted' => true));
 			}
@@ -289,7 +295,8 @@
 				$state = $unfavorited->rowCount()?'unfavorited':'favorited';
 				if ($state == 'favorited') 
 					$mysql->query("INSERT INTO characterLibrary_favorites SET userID = {$currentUser->userID}, characterID = {$characterID}");
-				addCharacterHistory($characterID, ($state == 'favorited'?'charFavorited':'charUnfavorited'));
+				$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
+				$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
 				displayJSON(array('success' => true, 'state' => $state));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('noChar')));

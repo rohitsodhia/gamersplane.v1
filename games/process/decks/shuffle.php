@@ -13,7 +13,8 @@
 		$deck = implode('~', $deck);
 		$mysql->query("UPDATE decks SET position = 1, deck = '{$deck}', lastShuffle = '".gmdate('Y-m-d H:i:s')."' WHERE deckID = {$deckID}");
 		
-		addGameHistory($gameID, 'deckShuffled', $currentUser->userID, 'NOW()', 'deck', $deckID);
+		$hl_deckShuffled = new HistoryLogger('deckShuffled');
+		$hl_deckShuffled->addDeck($deckID)->addUser($currentUser->userID)->save();
 		
 		displayJSON(array('success' => true, 'deckID' => (int) $deckID, 'deckSize' => (int) $deckSize));
 	} else 
