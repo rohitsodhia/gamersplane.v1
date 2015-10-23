@@ -177,7 +177,7 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 		});
 		$scope.pagination.numItems = data.data.totalCount;
 	});
-	$scope.pagination = { numItems: 0, itemsPerPage: 2 };
+	$scope.pagination = { numItems: 0, itemsPerPage: 20 };
 	if ($.urlParam('page')) 
 		$scope.pagination.current = parseInt($.urlParam('page'));
 	else 
