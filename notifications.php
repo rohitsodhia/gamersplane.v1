@@ -75,6 +75,9 @@
 <script type="text/ng-template" id="gmRemoved">
 <span><span ng-bind-html="history.language.actor | trustHTML"></span> removed <span ng-bind-html="history.language.targetUser | trustHTML"></span> as a GM from <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
 </script>
+<script type="text/ng-template" id="gameRetired">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> retired <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
 		<div ng-repeat="(datestamp, dateHistories) in histories">
 			<h2 class="headerbar hbDark" skew-element>{{datestamp | amParse: 'YYYY-MM-DD' | amDateFormat: 'MMMM D, YYYY'}}</h2>
 			<div class="hbdMargined" hb-margined>

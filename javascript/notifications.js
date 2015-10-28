@@ -21,21 +21,21 @@ controllers.controller('notifications', ['$scope', '$http', 'currentUser', 'Lang
 						if (typeof $scope.histories[hDate] == 'undefined') 
 							$scope.histories[hDate] = [];
 						history.language = {};
-						if (['characterEdited', 'addToLibrary', 'removeFromLibrary', 'characterApplied', 'characterEdited', 'characterFavorited', 'characterUnfavorited', 'playerApplied', 'inviteAccepted', 'inviteDeclined', 'playerLeft'].indexOf(history.action) >= 0) 
+						if (['characterEdited', 'addToLibrary', 'removeFromLibrary', 'characterApplied', 'characterFavorited', 'characterUnfavorited', 'playerApplied', 'inviteAccepted', 'inviteDeclined', 'playerLeft'].indexOf(history.action) >= 0) 
 								history.language.actor = history.user.userID == currentUser.userID?'You':LanguageService.userProfileLink(history.user.userID, history.user.username);
 						else if (['characterDeleted', 'characterApplied'].indexOf(history.action) >= 0) 
 								history.language.actor = history.character.user.userID == currentUser.userID?'You':LanguageService.userProfileLink(history.character.user.userID, history.character.user.username);
-						else if (['characterApproved', 'characterRejected', 'characterRemoved', 'playerInvited', 'inviteWithdrawn', 'playerApproved', 'playerRejected', 'playerRemoved', 'gmAdded', 'gmRemoved'].indexOf(history.action) >= 0) 
+						else if (['characterApproved', 'characterRejected', 'characterRemoved', 'playerInvited', 'inviteWithdrawn', 'playerApproved', 'playerRejected', 'playerRemoved', 'gmAdded', 'gmRemoved', 'gameRetired'].indexOf(history.action) >= 0) 
 							history.language.actor = history.gm.userID == currentUser.userID?'You':LanguageService.userProfileLink(history.gm.userID, history.gm.username);
 
-						if (['characterEdited', 'characterFavorited', 'characterUnfavorited', 'playerInvited', 'inviteWithdrawn', 'playerApproved', 'playerRejected', 'playerRemoved', 'gmAdded', 'gmRemoved'].indexOf(history.action) >= 0) 
+						if (['characterFavorited', 'characterUnfavorited', 'playerInvited', 'inviteWithdrawn', 'playerApproved', 'playerRejected', 'playerRemoved', 'gmAdded', 'gmRemoved'].indexOf(history.action) >= 0) 
 							history.language.targetUser = history.user.userID == currentUser.userID?'your':LanguageService.userProfileLink(history.user.userID, history.user.username);
-						else if (['characterDeleted', 'characterApproved', 'characterRejected', 'characterRemoved'].indexOf(history.action) >= 0) 
+						else if (['characterEdited', 'characterDeleted', 'characterApproved', 'characterRejected', 'characterRemoved'].indexOf(history.action) >= 0) 
 							history.language.targetUser = history.character.user.userID == currentUser.userID?'your':'their';
 						if (['characterEdited', 'characterFavorited', 'characterUnfavorited', 'characterApproved', 'characterRejected', 'characterRemoved', 'inviteWithdrawn'].indexOf(history.action) >= 0 && history.language.targetUser != 'your' && history.language.targetUser != 'their')
 							history.language.targetUser += '\'s';
 
-						if (['characterApplied', 'characterApproved', 'characterRejected', 'characterRemoved', 'playerInvited', 'inviteAccepted', 'inviteWithdrawn', 'inviteDeclined', 'playerApproved', 'playerRejected', 'playerRemoved', 'playerLeft', 'gmAdded', 'gmRemoved'].indexOf(history.action) >= 0) 
+						if (['characterApplied', 'characterApproved', 'characterRejected', 'characterRemoved', 'playerInvited', 'inviteAccepted', 'inviteWithdrawn', 'inviteDeclined', 'playerApproved', 'playerRejected', 'playerRemoved', 'playerLeft', 'gmAdded', 'gmRemoved', 'gameRetired'].indexOf(history.action) >= 0) 
 							history.language.targetGM = history.game.gm.userID == currentUser.userID?'your':LanguageService.userProfileLink(history.game.gm.userID, history.game.gm.username) + '\'s';
 
 						if (['characterCreated', 'basicEdited', 'characterEdited', 'characterDeleted', 'addToLibrary', 'removeFromLibrary', 'characterFavorited', 'characterUnfavorited', 'characterApplied', 'characterApproved', 'characterRejected', 'characterRemoved'].indexOf(history.action) >= 0) 
