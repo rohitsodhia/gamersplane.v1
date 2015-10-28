@@ -21,9 +21,9 @@ controllers.controller('notifications', ['$scope', '$http', 'currentUser', 'Lang
 						if (typeof $scope.histories[hDate] == 'undefined') 
 							$scope.histories[hDate] = [];
 						history.language = {};
-						if (['characterEdited', 'addToLibrary', 'removeFromLibrary', 'characterApplied', 'characterFavorited', 'characterUnfavorited', 'playerApplied', 'inviteAccepted', 'inviteDeclined', 'playerLeft'].indexOf(history.action) >= 0) 
+						if (['addToLibrary', 'removeFromLibrary', 'characterApplied', 'characterFavorited', 'characterUnfavorited', 'playerApplied', 'inviteAccepted', 'inviteDeclined', 'playerLeft'].indexOf(history.action) >= 0) 
 								history.language.actor = history.user.userID == currentUser.userID?'You':LanguageService.userProfileLink(history.user.userID, history.user.username);
-						else if (['characterDeleted', 'characterApplied'].indexOf(history.action) >= 0) 
+						else if (['characterEdited', 'characterDeleted', 'characterApplied'].indexOf(history.action) >= 0) 
 								history.language.actor = history.character.user.userID == currentUser.userID?'You':LanguageService.userProfileLink(history.character.user.userID, history.character.user.username);
 						else if (['characterApproved', 'characterRejected', 'characterRemoved', 'playerInvited', 'inviteWithdrawn', 'playerApproved', 'playerRejected', 'playerRemoved', 'gmAdded', 'gmRemoved', 'gameRetired'].indexOf(history.action) >= 0) 
 							history.language.actor = history.gm.userID == currentUser.userID?'You':LanguageService.userProfileLink(history.gm.userID, history.gm.username);
