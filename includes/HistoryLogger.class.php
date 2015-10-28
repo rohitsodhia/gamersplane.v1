@@ -21,7 +21,7 @@
 		public function addCharacter($characterID, $addGame = true) {
 			$cache = HistoryCache::getInstance();
 			$this->history['character'] = $cache->fetchCharacter($characterID, $addGame);
-			if ($histories->histories['character'] == null) 
+			if ($histories->history['character'] == null) 
 				$this->error = true;
 			if ($this->error) 
 				return $this;
@@ -38,7 +38,7 @@
 		public function addUser($userID, $label = 'user') {
 			$cache = HistoryCache::getInstance();
 			$this->history[$label] = $cache->fetchUser($userID);
-			if ($histories->histories[$label] == null) 
+			if ($histories->history[$label] == null) 
 				$this->error = true;
 			if ($this->error) 
 				return $this;
