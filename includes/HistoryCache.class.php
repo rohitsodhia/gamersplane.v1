@@ -18,6 +18,8 @@
 			global $mysql;
 
 			$userID = (int) $userID;
+			if ($userID == 0) 
+				return null;
 			if (!isset($this->users[$userID])) {
 				$username = $mysql->query("SELECT username FROM users WHERE userID = ".$userID)->fetchColumn();
 				$this->users[$userID] = array(
@@ -62,6 +64,8 @@
 			global $mysql;
 
 			$gameID = (int) $gameID;
+			if ($gameID == 0) 
+				return null;
 			if (!isset($this->games[$gameID])) {
 				$gameInfo = $mysql->query("SELECT g.title, g.system, s.fullName, u.userID, u.username FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE g.gameID = {$gameID}")->fetch();
 				$this->games[$gameID] = array(
