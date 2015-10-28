@@ -122,7 +122,7 @@
 					<p hb-margined>You've been invited to join this game!</p>
 					<div class="alignCenter">
 						<button skew-element type="submit" name="acceptInvite" class="fancyButton" ng-click="acceptInvite()">Join</button>
-						<button skew-element type="submit" name="declineInvite" class="fancyButton" ng-click="rejectInvite()">Decline</button>
+						<button skew-element type="submit" name="declineInvite" class="fancyButton" ng-click="declineInvite()">Decline</button>
 					</div>
 				</div>
 				<div ng-if="!details.retired && loggedIn && inGame && approved" class="rightCol">
@@ -144,7 +144,7 @@
 								<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
 								<div class="actionLinks">
 									<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.userID}}/" colorbox>Remove player</a>
-									<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
+									<a ng-if="isPrimaryGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
 									<a ng-if="player.userID == currentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" colorbox>Leave Game</a>
 								</div>
 							</div>

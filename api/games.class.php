@@ -15,7 +15,7 @@
 				$this->apply();
 			elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user'])) 
 				$this->invite($_POST['gameID'], $_POST['user']);
-			elseif ($pathOptions[0] == 'invite' && ($pathOptions[1] == 'withdraw' || $pathOptions[1] == 'reject') && intval($_POST['gameID']) && strlen($_POST['userID'])) 
+			elseif ($pathOptions[0] == 'invite' && ($pathOptions[1] == 'withdraw' || $pathOptions[1] == 'decline') && intval($_POST['gameID']) && strlen($_POST['userID'])) 
 				$this->removeInvite($_POST['gameID'], $_POST['userID']);
 			elseif ($pathOptions[0] == 'invite' && $pathOptions[1] == 'accept' && intval($_POST['gameID'])) 
 				$this->acceptInvite($_POST['gameID']);
@@ -216,8 +216,10 @@
 			$isGM = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID} AND gameID = {$gameID}");
 			if ($isGM->rowCount() || $currentUser->userID == $userID) {
 				$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND invitedID = {$userID}");
-				$hl_inviteRemoved = new HistoryLogger('inviteRemoved');
-				$hl_inviteRemoved->addUser($currentUser->userID, 'gm')->addUser($userID)->addGame($gameID)->save();
+				$hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
+				if ($pathOptions[1] == 'withdraw') 
+					$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
+				$hl_inviteRemoved->addUser($userID)->addGame($gameID)->save();
 				displayJSON(array('success' => true, 'userID' => (int) $userID));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => 'noPermission'));

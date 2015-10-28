@@ -234,7 +234,7 @@
 				if ($charPermissions == 'edit') {
 					$character->save();
 					$hl_charEdited = new HistoryLogger('characterEdited');
-					$hl_charEdited->addCharacter($characterID)->save();
+					$hl_charEdited->addCharacter($characterID)->addUser($currentUser->userID)->save();
 
 					displayJSON(array('success' => true, 'saved' => true, 'characterID' => $characterID));
 				} else 

@@ -221,6 +221,16 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
 		return deferred.promise;
 	};
+}]).service('LanguageService', [function () {
+	this.userProfileLink = function (userID, username) {
+		return '<a href="/user/' + userID + '/" class="username">' + username + '</a>';
+	};
+	this.characterLink = function (characterID, systemShort, label) {
+		return '<a href="/characters/' + systemShort + '/' + characterID + '/">' + label + '</a>';
+	};
+	this.gameLink = function (gameID, title) {
+		return '<a href="/games/' + gameID + '/">' + title + '</a>';
+	};
 }]).service('Links', ['$http', function ($http, $q) {
 	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
 	this.get = function (params) {
@@ -441,7 +451,7 @@ app.config(function ($httpProvider) {
 			});
 		}
 	}
-}).directive('paginate', function () {
+}).directive('paginate', ['$timeout', function ($timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/paginate.php',
@@ -473,11 +483,11 @@ app.config(function ($httpProvider) {
 				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++) 
 					scope.pages.push(count);
 				if (typeof scope.changeFunc == 'function') 
-					scope.changeFunc();
+					$timeout(scope.changeFunc);
 			}
 		}
 	}
-}).directive('combobox', ['$filter', '$timeout', function ($filter, $timeout) {
+}]).directive('combobox', ['$filter', '$timeout', function ($filter, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/combobox.php',

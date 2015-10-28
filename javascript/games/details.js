@@ -196,8 +196,8 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 				}
 			});
 		};
-		$scope.rejectInvite = function (invite) {
-			$http.post(API_HOST + '/games/invite/reject/', { 'gameID': $scope.gameID, 'userID': currentUser.userID }).success(function (data) {
+		$scope.declineInvite = function (invite) {
+			$http.post(API_HOST + '/games/invite/decline/', { 'gameID': $scope.gameID, 'userID': currentUser.userID }).success(function (data) {
 				if (data.success) {
 					$scope.pendingInvite = false;
 				}
