@@ -35,6 +35,8 @@
 			$characterID = (int) $characterID;
 			if (!isset($this->characters[$characterID])) {
 				$charInfo = $mongo->characters->findOne(array('characterID' => $characterID), array('characterID', 'system', 'label', 'userID', 'game'));
+				if ($charInfo == null) 
+					return null;
 				$charInfo['username'] = $this->fetchUser($charInfo['userID'])['username'];
 				$systems = Systems::getInstance();
 				$this->characters[$characterID] = array(

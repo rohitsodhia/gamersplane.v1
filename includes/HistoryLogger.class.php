@@ -1,6 +1,7 @@
 <?
 	class HistoryLogger {
 		private $history = array();
+		private $error = false;
 
 		public function __construct($action = null) {
 			$this->history = array(
@@ -20,6 +21,10 @@
 		public function addCharacter($characterID, $addGame = true) {
 			$cache = HistoryCache::getInstance();
 			$this->history['character'] = $cache->fetchCharacter($characterID, $addGame);
+			if ($histories->histories['character'] == null) 
+				$this->error = true;
+			if ($this->error) 
+				return $this;
 			if ($addGame && isset($this->history['character']['gameID'])) {
 				$this->addGame($this->history['character']['gameID']);
 				unset($this->history['character']['gameID']);
@@ -33,6 +38,10 @@
 		public function addUser($userID, $label = 'user') {
 			$cache = HistoryCache::getInstance();
 			$this->history[$label] = $cache->fetchUser($userID);
+			if ($histories->histories[$label] == null) 
+				$this->error = true;
+			if ($this->error) 
+				return $this;
 			$this->addForUsers($userID);
 
 			return $this;
@@ -41,6 +50,10 @@
 		public function addGame($gameID) {
 			$cache = HistoryCache::getInstance();
 			$gameInfo = $cache->fetchGame($gameID);
+			if ($gameInfo == null) 
+				$this->error = true;
+			if ($this->error) 
+				return $this;
 			$this->addForUsers($gameInfo['gms']);
 			unset($gameInfo['gms']);
 			$this->history['game'] = $gameInfo;
@@ -53,6 +66,10 @@
 
 			$deckID = (int) $deckID;
 			$deckInfo = $mysql->query("SELECT gameID, label FROM decks WHERE deckID = {$deckID}")->fetch();
+			if ($deckInfo == null) 
+				$this->error = true;
+			if ($this->error) 
+				return $this;
 			$this->history['deck'] = array(
 				'deckID' => $deckID,
 				'label' => $deckInfo['label']
@@ -97,6 +114,9 @@
 		public function save($timestamp = null) {
 			global $mongo;
 
+			if ($this->error) 
+				return null;
+
 			$this->history['timestamp'] = new MongoDate($timestamp == null?time():strtotime($timestamp));
 
 			$mongo->histories->insert($this->history);
@@ -105,6 +125,9 @@
 		}
 
 		public function debug($timestamp = null) {
+			if ($this->error) 
+				return null;
+
 			$this->history['timestamp'] = new MongoDate($timestamp == null?time():strtotime($timestamp));
 
 			var_dump($this->history);
