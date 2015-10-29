@@ -3,6 +3,7 @@ controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', functi
 	currentUser.then(function (currentUser) {
 		$scope.currentUser = currentUser.data;
 		userID = null;
+		pathElements = getPathElements();
 		if (!isUndefined(pathElements[1])) 
 			userID = parseInt(pathElements[1]);
 		if ($scope.currentUser.userID != userID && (isUndefined($scope.currentUser.acpPermissions) || ($scope.currentUser.acpPermissions.indexOf('users') == -1 && $scope.currentUser.acpPermissions.indexOf('all') == -1))) 
@@ -12,7 +13,6 @@ controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', functi
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' }
 		$scope.newAvatar = null;
 		$scope.avatarTime = new Date().getTime();
-		pathElements = getPathElements();
 
 		Users.get(userID).then(function (data) {
 			if (data) {
