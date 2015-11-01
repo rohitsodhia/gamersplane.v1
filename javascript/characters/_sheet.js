@@ -33,8 +33,8 @@ controllers.controller('viewCharacter', ['$scope', 'CharactersService', function
 	$scope.toggleNotes = function ($event) {
 		$($event.target).siblings('.notes').slideToggle();
 	};
-}]).controller('viewCharacter_custom', ['$scope', 'currentUser', function ($scope, currentUser) {
-	currentUser.then(function (currentUser) {
+}]).controller('viewCharacter_custom', ['$scope', 'CurrentUser', function ($scope, CurrentUser) {
+	CurrentUser.load().then(function () {
 		$scope.loadChar();
 	});
 }]);

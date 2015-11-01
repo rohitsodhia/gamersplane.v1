@@ -158,13 +158,25 @@ $(function() {
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
-}).factory('currentUser', function ($http) {
-	return $http.post(API_HOST + '/users/getCurrentUser/').success(function (data) {
-		if (data.loggedOut) 
-			return null;
-		else 
-			return data;
-	});
+}).factory('CurrentUser', function ($http) {
+	var factory = {};
+	var userData = null;
+
+	factory.load = function () {
+		return $http.post(API_HOST + '/users/getCurrentUser/').then(function (data) {
+			userData = data.data.loggedOut?null:data.data;
+			if (data.data.loggedOut) 
+				return null;
+			else 
+				return data.data;
+		});
+	};
+
+	factory.get = function () {
+		return userData;
+	}
+
+	return factory;
 }).service('Users', ['$http', 'Upload', function ($http, Upload) {
 	this.get = function (userID) {
 		params = {};

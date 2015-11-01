@@ -1,8 +1,9 @@
 var musicGenres = [ 'Horror/Survival', 'Wild West', 'Fantasy', 'Modern', 'Epic', 'Cyberpunk', 'Espionage', 'Sci-fi' ];
-app.controller('music', ['$scope', '$http', '$sce', '$timeout', 'currentUser', function ($scope, $http, $sce, $timeout, currentUser) {
+app.controller('music', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', function ($scope, $http, $sce, $timeout, CurrentUser) {
 	pathElements = getPathElements();
-	currentUser.then(function (currentUser) {
-		$scope.loggedIn = currentUser.loggedOut?false:true;
+	CurrentUser.load().then(function () {
+		$scope.CurrentUser = CurrentUser.get();
+		$scope.loggedIn = $scope.CurrentUser.loggedOut?false:true;
 		$scope.genres = copyObject(musicGenres);
 		$scope.filter = { 'approved': true, 'genres': [], 'lyrics': [] };
 		$scope.music = [];

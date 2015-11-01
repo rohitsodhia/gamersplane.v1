@@ -1,8 +1,9 @@
-controllers.controller('pmList', ['$scope', '$http', 'currentUser', 'DeletePM', function ($scope, $http, currentUser, DeletePM) {
+controllers.controller('pmList', ['$scope', '$http', 'CurrentUser', 'DeletePM', function ($scope, $http, CurrentUser, DeletePM) {
 	pathElements = getPathElements();
 	$scope.pagination = { numItems: 0, itemsPerPage: PAGINATE_PER_PAGE };
-	currentUser.then(function (currentUser) {
-		if (!currentUser) 
+	CurrentUser.load().then(function () {
+		$scope.CurrentUser = CurrentUser.get();
+		if (!$scope.CurrentUser) 
 			document.location = '/';
 
 		if ($.urlParam('page')) 

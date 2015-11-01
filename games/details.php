@@ -115,7 +115,7 @@
 				<div ng-if="!details.retired && loggedIn && !pendingInvite && inGame && !approved" class="rightCol">
 					<h2 skew-element class="headerbar hbDark">Join Game</h2>
 					<p class="hbMargined notice">Your request to join this game is awaiting approval</p>
-					<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="/games/{{gameID}}/leaveGame/{{currentUser.userID}}/" colorbox>withdraw</a> from the game.</p>
+					<p class="hbMargined">If you're tired of waiting, you can <a id="withdrawFromGame" href="/games/{{gameID}}/leaveGame/{{CurrentUser.userID}}/" colorbox>withdraw</a> from the game.</p>
 				</div>
 				<div ng-if="!details.retired && loggedIn && pendingInvite" class="rightCol">
 					<h2 skew-element class="headerbar hbDark">Invite Pending</h2>
@@ -145,19 +145,19 @@
 								<div class="actionLinks">
 									<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.userID}}/" colorbox>Remove player</a>
 									<a ng-if="isPrimaryGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
-									<a ng-if="player.userID == currentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" colorbox>Leave Game</a>
+									<a ng-if="player.userID == CurrentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" colorbox>Leave Game</a>
 								</div>
 							</div>
 							<ul ng-if="player.characters.length" class="characters">
 								<li ng-repeat="character in player.characters" class="clearfix">
 									<div class="charLabel">
-										<a ng-if="isGM || player.userID == currentUser.userID" href="/characters/{{details.system['_id']}}/{{character.characterID}}/sheet/">{{character.label}}</a>
-										<div ng-if="!isGM && player.userID != currentUser.userID">{{character.label}}</div>
+										<a ng-if="isGM || player.userID == CurrentUser.userID" href="/characters/{{details.system['_id']}}/{{character.characterID}}/sheet/">{{character.label}}</a>
+										<div ng-if="!isGM && player.userID != CurrentUser.userID">{{character.label}}</div>
 									</div>
 									<div class="actionLinks">
 										<a ng-if="isGM && !character.approved" href="" ng-click="approveCharacter(character)">Approve Character</a>
-										<a ng-if="isGM && player.userID != currentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
-										<a ng-if="player.userID == currentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
+										<a ng-if="isGM && player.userID != CurrentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
+										<a ng-if="player.userID == CurrentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
 									</div>
 								</li>
 							</ul>

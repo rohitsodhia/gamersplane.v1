@@ -1078,24 +1078,26 @@ input[type="text"] {
 
 }
 
-input[type="text"]::-webkit-input-placeholder {
-	.placeholder_f;
-}
+input[type="text"], textarea {
+	&::-webkit-input-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]:-moz-placeholder {
-	.placeholder_f;
-}
+	&:-moz-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]::-moz-placeholder {
-	.placeholder_f;
-}
+	&::-moz-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]:-ms-input-placeholder {
-	.placeholder_f;
-}
+	&:-ms-input-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]::input-placeholder {
-	.placeholder_f;
+	&::input-placeholder {
+		.placeholder_f;
+	}
 }
 
 .mainColumn {
@@ -2521,37 +2523,17 @@ div.forumIcon {
 /* --------------------------------------------*/
 
 #page_contact {
-	p, #useJS {
-		margin-left: 330px;
+	form {
+		width: 400px;
+		margin: 0 auto;
 	}
 
-	label {
-		width: 320px;
-		margin-right: 10px;
-		padding-top: 2px;
-		text-align: right;
-		float: left;
-	}
-
-	input[type=text] {
-		width: 200px;
-	}
-
-	.loggedIn {
-		padding-top: 0;
-	}
-
-	#useJSDiv {
-		padding-bottom: 5px;
+	input[type="text"], textarea {
+		width: 400px;
 	}
 
 	textarea {
-		width: 400px;
-		height: 5em;
-	}
-
-	.inputField input[type=text].long {
-		width: 400px;
+		height: 8em;
 	}
 
 	#submitDiv {

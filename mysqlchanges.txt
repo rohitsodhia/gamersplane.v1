@@ -1,1 +1,1 @@
-UPDATE dispatch SET ngController = 'notifications' WHERE url = 'notifications/';
+UPDATE dispatch SET ngController = 'contact' WHERE url = 'contact/';

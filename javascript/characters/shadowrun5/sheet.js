@@ -1,5 +1,5 @@
-controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'CharactersService', 'Range', function ($scope, $http, $sce, $timeout, currentUser, CharactersService, Range) {
-	currentUser.then(function (currentUser) {
+controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', 'Range', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService, Range) {
+	CurrentUser.load().then(function () {
 		$scope.range = Range.get;
 		$scope.labels = {
 			'rep': { 'street': 'Street Cred', 'notoriety': 'Notoriety', 'public': 'Public Awareness' },

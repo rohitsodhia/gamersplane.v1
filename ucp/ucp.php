@@ -1,5 +1,5 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar" skew-element>User Control Panel{{currentUser.userID != user.userID?' - ' + user.username:''}}</h1>
+		<h1 class="headerbar" skew-element>User Control Panel{{CurrentUser.userID != user.userID?' - ' + user.username:''}}</h1>
 		<div ng-if="admin" id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
 		
 <?	if ($_GET['updated']) { ?>
@@ -107,7 +107,7 @@
 					<label>Email Address</label>
 					<div><input type="text" ng-model="user.email"></div>
 				</div>
-				<div ng-if="user.userID == currentUser.userID && !admin" class="tr">
+				<div ng-if="user.userID == CurrentUser.userID && !admin" class="tr">
 					<label>Old Password</label>
 					<div><input type="password" ng-model="newPass.oldPassword" maxlength="32"></div>
 				</div>

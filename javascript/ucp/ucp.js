@@ -1,8 +1,8 @@
-controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', function ($scope, $http, currentUser, Users) {
+controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'Users', function ($scope, $http, CurrentUser, Users) {
 	$scope.$emit('pageLoading');
-	currentUser.then(function (currentUser) {
-		$scope.currentUser = currentUser.data;
-		$scope.admin = !isUndefined($scope.currentUser.acpPermissions) && $scope.currentUser.acpPermissions != null && ($scope.currentUser.acpPermissions.indexOf('users') || $scope.currentUser.acpPermissions.indexOf('all'))?true:false;
+	CurrentUser.load().then(function () {
+		$scope.CurrentUser = CurrentUser.get();
+		$scope.admin = !isUndefined($scope.CurrentUser.acpPermissions) && $scope.CurrentUser.acpPermissions != null && ($scope.CurrentUser.acpPermissions.indexOf('users') || $scope.CurrentUser.acpPermissions.indexOf('all'))?true:false;
 		$scope.user = null;
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' }
 		$scope.newAvatar = null;

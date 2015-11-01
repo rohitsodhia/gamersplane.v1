@@ -1,11 +1,11 @@
-controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'currentUser', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, currentUser, ACSearch) {
+controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, ACSearch) {
 	pathElements = getPathElements();
-	currentUser.then(function (currentUser) {
-		currentUser = currentUser.data;
+	CurrentUser.load().then(function () {
+		CurrentUser = CurrentUser.get();
 		$scope.ngInterface = '';
 		$scope.skewedOut = {};
-		$scope.loggedIn = currentUser.loggedOut?false:true;
-		$scope.currentUser = currentUser;
+		$scope.loggedIn = CurrentUser.loggedOut?false:true;
+		$scope.CurrentUser = CurrentUser;
 		$scope.gameID = pathElements[1];
 		$scope.details = {};
 		$scope.players = [];
@@ -33,9 +33,9 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					$scope.decks = data.decks;
 					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 					$scope.details.playersInGame = $scope.players.length - 1;
-					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: currentUser.userID }, true).length  == 1?true:false;
+					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: CurrentUser.userID }, true).length  == 1?true:false;
 					for (key in $scope.players) {
-						if (currentUser && $scope.players[key].userID == currentUser.userID) {
+						if (CurrentUser && $scope.players[key].userID == CurrentUser.userID) {
 							$scope.inGame = true;
 							$scope.curPlayer = $scope.players[key];
 							$scope.approved = $scope.curPlayer.approved?true:false;
@@ -53,7 +53,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (currentUser && $scope.details.gm.userID == currentUser.userID && $scope.details.retired == null) 
+					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && $scope.details.retired == null) 
 						$scope.isPrimaryGM = true;
 				} //else 
 //					document.location = '/games/';
@@ -109,7 +109,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (newVal.playerID == currentUser.userID) 
+					if (newVal.playerID == CurrentUser.userID) 
 						$scope.inGame = false;
 					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 					break;
@@ -197,7 +197,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			});
 		};
 		$scope.declineInvite = function (invite) {
-			$http.post(API_HOST + '/games/invite/decline/', { 'gameID': $scope.gameID, 'userID': currentUser.userID }).success(function (data) {
+			$http.post(API_HOST + '/games/invite/decline/', { 'gameID': $scope.gameID, 'userID': CurrentUser.userID }).success(function (data) {
 				if (data.success) {
 					$scope.pendingInvite = false;
 				}
@@ -220,7 +220,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							delete $scope.availChars[key]
 					}
 					for (pKey in $scope.players) {
-						if ($scope.players[pKey].userID == currentUser.userID) {
+						if ($scope.players[pKey].userID == CurrentUser.userID) {
 							$scope.players[pKey].characters.push(data.character);
 							break;
 						}
