@@ -88,7 +88,7 @@
 				$this->threadID = intval($threadID);
 				if (strlen($this->question) && sizeof($this->options)) {
 					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
-					foreach ($this->getPollProperty('options') as $option) {
+					foreach ($this->options as $option) {
 						$addPollOptions->bindValue(':option', $option);
 						$addPollOptions->execute();
 					}
