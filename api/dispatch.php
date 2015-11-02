@@ -13,6 +13,8 @@
 	startSession();
 	require('../includes/User.class.php');
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+	require_once('../includes/HistoryLogger.class.php');
+	require_once('../includes/HistoryCache.class.php');
 
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 

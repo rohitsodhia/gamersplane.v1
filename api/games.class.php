@@ -309,7 +309,7 @@
 			$hl_charRemoved->addCharacter($characterID);
 			if ($pendingAction != 'withdrawn') 
 				$hl_charRemoved->addUser($currentUser->userID, 'gm');
-			$hl_charRemoved->addUser($charInfo['userID'])->gameID($gameID)->save();
+			$hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
 			
 			displayJSON(array('success' => true, 'action' => $pendingAction, 'characterID' => $characterID));
 		}
