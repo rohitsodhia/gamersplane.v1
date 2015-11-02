@@ -2523,9 +2523,40 @@ div.forumIcon {
 /* --------------------------------------------*/
 
 #page_contact {
-	form {
+	.animationFrame {
+		position: relative;
+		overflow: hidden;
+		height: 400px;
 		width: 400px;
 		margin: 0 auto;
+
+		& > * {
+			-webkit-transition: .35s linear all;
+			-moz-transition: .35s linear all;
+			-ms-transition: .35s linear all;
+			-o-transition: .35s linear all;
+			transition: 1.35s linear all;
+		}
+	}
+
+	form {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	form.ng-hide-add-active {
+		top: -100%;
+	}
+
+	.animationFrame > div {
+		position: absolute;
+		left: 0;
+		top: 0;
+
+		&.ng-hide.ng-hide-remove-active {
+			top: 100%;
+		}
 	}
 
 	input[type="text"], textarea {

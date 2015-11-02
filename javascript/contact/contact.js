@@ -1,8 +1,9 @@
-controllers.controller('contact', ['$scope', '$http', 'CurrentUser', function ($scope, $http, CurrentUser) {
+controllers.controller('contact', ['$scope', '$http', '$timeout', 'CurrentUser', function ($scope, $http, $timeout, CurrentUser) {
 	CurrentUser.load().then(function () {
 		$scope.CurrentUser = CurrentUser.get();
 		$scope.loggedIn = $scope.CurrentUser?true:false;
 		$scope.dispForm = true;
+		$timeout(function () { $('.animationFrame').height($('form').height() + 2); });
 
 		$scope.send = function () {
 			$scope.dispForm = false;
