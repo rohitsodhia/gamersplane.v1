@@ -40,6 +40,7 @@
 				if ($charInfo == null) 
 					return null;
 				$charInfo['username'] = $this->fetchUser($charInfo['userID'])['username'];
+				require_once('../includes/Systems.class.php');
 				$systems = Systems::getInstance();
 				$this->characters[$characterID] = array(
 					'characterID' => $charInfo['characterID'],
