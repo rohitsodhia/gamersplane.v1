@@ -1,2 +1,0 @@
-UPDATE dispatch SET ngController = 'contact' WHERE url = 'contact/';
-DELETE FROM dispatch WHERE url in ('contact/process/', 'contact/success/');
