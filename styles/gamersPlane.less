@@ -89,14 +89,18 @@ input, textarea {
 	}
 }
 
-@input-bg: #FFE4BB;
-@input-border-tl: #800;
-@input-border-br: #B00;
+@input-bg: #FEE;
+@input-border-tl: #600;
+@input-border-br: #E40;
+/*
+@input-border-tl: #A30;
+@input-border-br: #D82;
+*/
 input[type="text"], input[type="number"], input[type="password"], input[type="button"], input[type="file"], select, textarea {
 	background: @input-bg;
 	border: 1px solid @input-border-tl;
 	border-bottom-color: @input-border-br;
-	border-right-color: @input-border-tl;
+	border-right-color: @input-border-br;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
@@ -2535,7 +2539,7 @@ div.forumIcon {
 			-moz-transition: .35s linear all;
 			-ms-transition: .35s linear all;
 			-o-transition: .35s linear all;
-			transition: 1.35s linear all;
+			transition: .4s linear all;
 		}
 	}
 
@@ -2543,24 +2547,44 @@ div.forumIcon {
 		position: absolute;
 		top: 0;
 		left: 0;
+
+		&.ng-hide-add-active {
+			top: -100%;
+		}
 	}
 
-	form.ng-hide-add-active {
-		top: -100%;
-	}
-
-	.animationFrame > div {
+	.slideUp {
 		position: absolute;
 		left: 0;
-		top: 0;
 
-		&.ng-hide.ng-hide-remove-active {
+		&, &.ng-hide-remove-active {
+			top: 0;
+		}
+
+		&.ng-hide {
 			top: 100%;
+		}
+
+		p {
+			font-size: 1.2em;
+			line-height: 1.3em;
+			text-align: center;
+		}
+
+		.firstLine {
+			margin-top: 5em;
 		}
 	}
 
 	input[type="text"], textarea {
 		width: 400px;
+
+		&.error {
+			background-color: #FCC;
+			border-color: #C00;
+			border-right-color: #F00;
+			border-bottom-color: #F00;
+		}
 	}
 
 	textarea {

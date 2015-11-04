@@ -243,7 +243,13 @@ app.config(function ($httpProvider) {
 	this.gameLink = function (gameID, title) {
 		return '<a href="/games/' + gameID + '/">' + title + '</a>';
 	};
-}]).service('Links', ['$http', function ($http, $q) {
+}]).service('ContactService', ['$http', function ($http) {
+	this.send = function (fields) {
+		return $http.post(API_HOST + '/contact/send/', fields).then(function (data) {
+			return data.data;
+		});
+	};
+}]).service('Links', ['$http', function ($http) {
 	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params)) 

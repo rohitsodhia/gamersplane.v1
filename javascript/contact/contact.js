@@ -1,30 +1,22 @@
-controllers.controller('contact', ['$scope', '$http', '$timeout', 'CurrentUser', function ($scope, $http, $timeout, CurrentUser) {
+controllers.controller('contact', ['$scope', '$http', '$timeout', 'ContactService', 'CurrentUser', function ($scope, $http, $timeout, ContactService, CurrentUser) {
+	$scope.dispForm = true;
+	$scope.errors = {};
+	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
+		$scope.$emit('pageLoading');
 		$scope.CurrentUser = CurrentUser.get();
 		$scope.loggedIn = $scope.CurrentUser?true:false;
-		$scope.dispForm = true;
 		$timeout(function () { $('.animationFrame').height($('form').height() + 2); });
 
 		$scope.send = function () {
-			$scope.dispForm = false;
+			$scope.$emit('pageLoading');
+			ContactService.send($scope.form).then(function (data) {
+				$scope.$emit('pageLoading');
+				if (data.success) 
+					$scope.dispForm = false;
+				else 
+					$scope.errors = data.errors;
+			});
 		};
 	});
 }]);
-
-$(function () {
-	$('#page_contact form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
-		beforeSubmit: function () {
-			$('form input').each(function () {
-				if ($(this).val().length == 0) return false;
-			});
-			$('#jsError').slideUp();
-
-			return true;
-		},
-		success: function (data) {
-			if (data == '1') {
-				document.location = '/contact/success';
-			} else $('#jsError').slideDown();
-		}
-	});
-});
