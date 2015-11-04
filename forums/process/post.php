@@ -29,6 +29,7 @@
 			foreach ($matches as $match) 
 				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) 
 					$allUsers[] = $eachUser;
+			$allUsers = array_unique($allUsers);
 			$userCheck = $mysql->prepare('SELECT username FROM users WHERE LOWER(username) = :username');
 			foreach ($allUsers as $key => $username) {
 				$userCheck->bindValue(':username', strtolower($username));
