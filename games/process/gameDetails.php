@@ -50,8 +50,8 @@
 			$updateForums->bindValue(':title', $details['title']);
 			$updateForums->bindValue(':gameID', $gameID);
 			$updateForums->execute();
-			$hl_gameEdited = new HistoryLogger('gameEdited');
-			$hl_gameEdited->addGame($gameID)->save();
+#			$hl_gameEdited = new HistoryLogger('gameEdited');
+#			$hl_gameEdited->addGame($gameID)->save();
 			
 			header('Location: /games/'.$gameID);
 		} else {
@@ -97,8 +97,8 @@
 			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 2, 2, 2, 2, 2, 2, 2)');
 			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
 			
-			$hl_gameCreated = new HistoryLogger('gameCreated');
-			$hl_gameCreated->addGame($gameID)->save();
+#			$hl_gameCreated = new HistoryLogger('gameCreated');
+#			$hl_gameCreated->addGame($gameID)->save();
 			
 			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.system = '{$details['system']}'");
 			$recips = '';

@@ -6,8 +6,8 @@
 			$unfavorited = $mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = $characterID");
 			$state = $unfavorited->rowCount()?'unfavorited':'favorited';
 			if ($state == 'favorited') $mysql->query("INSERT INTO characterLibrary_favorites SET userID = {$currentUser->userID}, characterID = $characterID");
-			$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
-			$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
+#			$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
+#			$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
 			echo $state;
 		} else 
 			echo 'not in library';

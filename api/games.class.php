@@ -152,8 +152,8 @@
 				$mysql->query("UPDATE forums_permissions_general SET `read` = {$public}, `write` = 0, `editPost` = 0, `deletePost` = 0, `createThread` = 0, `deleteThread` = 0, `addPoll` = 0, `addRolls` = -1, `addDraws` = -1, `moderate` = -1 WHERE forumID = {$forumID}");
 				$players = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
 				$mysql->query("DELETE FROM players WHERE gameID = {$gameID} AND primaryGM = 1");
-				$hl_retired = new HistoryLogger('retired');
-				$hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
+#				$hl_retired = new HistoryLogger('retired');
+#				$hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
 				displayJSON(array('success' => true));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('notGM')));
@@ -168,8 +168,8 @@
 			$status = $mysql->query("SELECT status FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 			if ($status == 1) {
 				$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}");
-				$hl_playerApplied = new HistoryLogger('playerApplied');
-				$hl_playerApplied->addUser($currentUser->userID)->addGame($gameID)->save();
+#				$hl_playerApplied = new HistoryLogger('playerApplied');
+#				$hl_playerApplied->addUser($currentUser->userID)->addGame($gameID)->save();
 			}
 			else 
 				displayJSON(array('failed' => true, 'gameClosed' => true));
@@ -201,8 +201,8 @@
 				$email = ob_get_contents();
 				ob_end_clean();
 				@mail($user['email'], "Game Invite", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
-				$hl_playerInvited = new HistoryLogger('playerInvited');
-				$hl_playerInvited->addUser($currentUser->userID, 'gm')->addUser($user['userID'])->addGame($gameID)->save();
+#				$hl_playerInvited = new HistoryLogger('playerInvited');
+#				$hl_playerInvited->addUser($currentUser->userID, 'gm')->addUser($user['userID'])->addGame($gameID)->save();
 				displayJSON(array('success' => true, 'user' => array('userID' => (int) $user['userID'], 'username' => $user['username'])));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => 'notGM'));
@@ -216,10 +216,10 @@
 			$isGM = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND userID = {$currentUser->userID} AND gameID = {$gameID}");
 			if ($isGM->rowCount() || $currentUser->userID == $userID) {
 				$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND invitedID = {$userID}");
-				$hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
-				if ($pathOptions[1] == 'withdraw') 
-					$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
-				$hl_inviteRemoved->addUser($userID)->addGame($gameID)->save();
+#				$hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
+#				if ($pathOptions[1] == 'withdraw') 
+#					$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
+#				$hl_inviteRemoved->addUser($userID)->addGame($gameID)->save();
 				displayJSON(array('success' => true, 'userID' => (int) $userID));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => 'noPermission'));
@@ -236,8 +236,8 @@
 				$groupID = $validGame->fetchColumn();
 				$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$groupID}, userID = {$userID}");
 				$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND invitedID = {$userID}");
-				$hl_inviteAccepted = new HistoryLogger('inviteAccepted');
-				$hl_inviteAccepted->addUser($userID)->addGame($gameID)->save();
+#				$hl_inviteAccepted = new HistoryLogger('inviteAccepted');
+#				$hl_inviteAccepted->addUser($userID)->addGame($gameID)->save();
 				displayJSON(array('success' => true, 'userID' => (int) $userID));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => 'noPermission'));
@@ -262,11 +262,11 @@
 				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
 			elseif ($charInfo['gameID'] == 0) {
 				$mysql->query("UPDATE characters SET gameID = {$gameID}".($isGM?', approved = 1':'')." WHERE characterID = {$characterID}");
-				$hl_charApplied = new HistoryLogger('characterApplied');
-				$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
+#				$hl_charApplied = new HistoryLogger('characterApplied');
+#				$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
 				if ($isGM) {
-					$hl_charApproved = new HistoryLogger('characterApproved');
-					$hl_charApproved->addUser($currentUser->userID, 'gm')->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
+#					$hl_charApproved = new HistoryLogger('characterApproved');
+#					$hl_charApproved->addUser($currentUser->userID, 'gm')->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
 				}
 
 				$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN players p ON u.userID = p.userID AND p.isGM = 1 LEFT JOIN usermeta m ON u.userID = m.userID WHERE p.gameID = {$gameID} AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
@@ -305,11 +305,11 @@
 				$pendingAction = 'withdrawn';
 			if (!$charInfo['approved']) 
 				$pendingAction = 'rejected';
-			$hl_charRemoved = new HistoryLogger('character'.ucwords($pendingAction));
-			$hl_charRemoved->addCharacter($characterID);
-			if ($pendingAction != 'withdrawn') 
-				$hl_charRemoved->addUser($currentUser->userID, 'gm');
-			$hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
+#			$hl_charRemoved = new HistoryLogger('character'.ucwords($pendingAction));
+#			$hl_charRemoved->addCharacter($characterID);
+#			if ($pendingAction != 'withdrawn') 
+#				$hl_charRemoved->addUser($currentUser->userID, 'gm');
+#			$hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
 			
 			displayJSON(array('success' => true, 'action' => $pendingAction, 'characterID' => $characterID));
 		}
@@ -322,8 +322,8 @@
 			if ($charInfo->rowCount() == 0 && $gmCheck->rowCount() == 0) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
 			$mysql->query("UPDATE characters SET approved = 1 WHERE characterID = {$characterID}");
-			$hl_charApproved = new HistoryLogger('characterApproved');
-			$hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
+#			$hl_charApproved = new HistoryLogger('characterApproved');
+#			$hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 			
 			displayJSON(array('success' => true, 'action' => 'characterApproved', 'characterID' => $characterID));
 		}

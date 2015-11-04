@@ -19,8 +19,8 @@
 			} else {
 				$mysql->query("DELETE FROM players WHERE userID = {$playerID} AND gameID = {$gameID}");
 			}
-			$hl_playerApplied = new HistoryLogger($pendingAction == 'approve'?'playerApproved':'playerRejected');
-			$hl_playerApplied->addUser($playerID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
+#			$hl_playerApplied = new HistoryLogger($pendingAction == 'approve'?'playerApproved':'playerRejected');
+#			$hl_playerApplied->addUser($playerID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 			
 			if (isset($_POST['modal'])) 
 				displayJSON(array('success' => true, 'action' => $pendingAction, 'userID' => $playerID));

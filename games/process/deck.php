@@ -31,8 +31,8 @@
 		foreach ($addUsers as $dUserID) 
 			$deckPermissionsQ->execute();
 
-		$hl_deckCreated = new HistoryLogger('deckCreated');
-		$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
+#		$hl_deckCreated = new HistoryLogger('deckCreated');
+#		$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		
 		header('Location: /games/'.$gameID.'/decks?success=create');
 	} elseif (isset($_POST['shuffle']) && $isGM) {
@@ -47,8 +47,8 @@
 		$updateDeck = $mysql->prepare("UPDATE decks SET position = 1, deck = :deck, lastShuffle = :lastShuffle WHERE deckID = $deckID");
 		$updateDeck->execute(array(':deck' => $deck, ':lastShuffle' => gmdate('Y-m-d H:i:s')));
 		
-		$hl_deckShuffled = new HistoryLogger('deckShuffled');
-		$hl_deckShuffled->addDeck($deckID)->addUser($currentUser->userID)->save();
+#		$hl_deckShuffled = new HistoryLogger('deckShuffled');
+#		$hl_deckShuffled->addDeck($deckID)->addUser($currentUser->userID)->save();
 			
 		header('Location: /games/'.$gameID.'/decks?success=shuffle');
 	} elseif (isset($_POST['submit']) && $isGM) {
@@ -79,15 +79,15 @@
 			foreach ($addUsers as $dUserID) 
 				$deckPermissionsQ->execute();
 			
-			$hl_deckEdited = new HistoryLogger('deckEdited');
-			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
+#			$hl_deckEdited = new HistoryLogger('deckEdited');
+#			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		}
 		header('Location: /games/'.$gameID.'/decks?success=edit');
 	} elseif (isset($_POST['delete']) && $isGM) {
 		$deckID = intval($_POST['deckID']);
 		$mysql->query("DELETE FROM decks WHERE deckID = $deckID");
-		$hl_deckDeleted = new HistoryLogger('deckDeleted');
-		$hl_deckDeleted->addDeck($deckID)->addUser($currentUser->userID)->save();
+#		$hl_deckDeleted = new HistoryLogger('deckDeleted');
+#		$hl_deckDeleted->addDeck($deckID)->addUser($currentUser->userID)->save();
 		
 		header('Location: /games/'.$gameID.'/decks?success=delete');
 	} else 

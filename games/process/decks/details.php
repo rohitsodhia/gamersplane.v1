@@ -36,8 +36,8 @@
 					$addDeckPermissions->execute();
 			}
 
-			$hl_deckCreated = new HistoryLogger('deckCreated');
-			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
+#			$hl_deckCreated = new HistoryLogger('deckCreated');
+#			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 			
 			if (isset($_POST['modal'])) 
 				displayJSON(array(
@@ -93,8 +93,8 @@
 				}
 			}
 
-			$hl_deckEdited = new HistoryLogger('deckEdited');
-			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
+#			$hl_deckEdited = new HistoryLogger('deckEdited');
+#			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		}
 		displayJSON(array(
 			'success' => true,

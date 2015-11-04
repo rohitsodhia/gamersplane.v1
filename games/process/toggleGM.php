@@ -21,8 +21,8 @@
 			else 
 				$mysql->query("INSERT INTO forumAdmins (userID, forumID) VALUES ({$playerID}, {$forumID})");
 
-			$hl_toggleGM = new HistoryLogger($isGM?'gmRemoved':'gmAdded');
-			$hl_toggleGM->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->save();
+#			$hl_toggleGM = new HistoryLogger($isGM?'gmRemoved':'gmAdded');
+#			$hl_toggleGM->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->save();
 			
 			if (isset($_POST['modal'])) 
 				displayJSON(array('success' => true, 'userID' => $playerID));

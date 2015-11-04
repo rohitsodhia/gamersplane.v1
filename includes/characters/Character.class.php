@@ -199,8 +199,8 @@
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0, retired = NOW() WHERE characterID = {$this->characterID}");
 			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('retired' => true)));
 
-			$hl_charDeleted = new HistoryLogger('characterDeleted');
-			$hl_charDeleted->addCharacter($this->characterID)->save();
+#			$hl_charDeleted = new HistoryLogger('characterDeleted');
+#			$hl_charDeleted->addCharacter($this->characterID)->save();
 		}
 	}
 ?>

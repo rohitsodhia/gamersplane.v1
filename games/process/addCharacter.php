@@ -9,8 +9,8 @@
 			header('Location: /403/');
 		elseif ($charInfo['gameID'] == 0) {
 			$mysql->query("UPDATE characters SET gameID = {$gameID} WHERE characterID = {$characterID}");
-			$hl_charApplied = new HistoryLogger('characterApplied');
-			$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
+#			$hl_charApplied = new HistoryLogger('characterApplied');
+#			$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
 
 			foreach ($gmEmails as $key => $gmID) {
 				$gmMail = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$gmID} AND metaKey = 'gmMail'")->fetchColumn();
