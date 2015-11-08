@@ -165,10 +165,7 @@ app.config(function ($httpProvider) {
 	factory.load = function () {
 		return $http.post(API_HOST + '/users/getCurrentUser/').then(function (data) {
 			userData = data.data.loggedOut?null:data.data;
-			if (data.data.loggedOut) 
-				return null;
-			else 
-				return data.data;
+			return data.data.loggedOut?false:true;
 		});
 	};
 
@@ -285,6 +282,13 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
 		return deferred.promise;
 	}
+}]).service('GamesService', ['$http', function ($http) {
+	this.get = function(params) {
+		return $http.post(API_HOST + '/games/get/', params).then(function (data) {
+			data = data.data;
+			return data;
+		})
+	};
 }]).service('ACSearch', ['$http', function ($http) {
 	this.cil = function (type, search, system, systemOnly) {
 		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') 

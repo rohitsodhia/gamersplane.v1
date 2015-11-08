@@ -19,60 +19,35 @@
 ?>
 				</ul>
 <?	} else echo "\t\t\t\t<p>No games selected.</p>\n"; ?>
-				<p class="alignRight"><a id="lfgEdit" href="/games/lfg/">Edit</a></p>
+				<p class="alignRight"><a id="lfgEdit" href="/games/lfg/" colorbox>Edit</a></p>
 			</div>
 		</div>
 
 		<div class="mainColumn">
-			<h1 class="headerbar">My Games</h1>
-			
+			<h1 class="headerbar" skew-element>My Games</h1>
 			<div id="gamesPlaying">
-				<div class="clearfix hbdTopper"><a href="/games/list/" class="fancyButton smallButton">Join a Game</a></div>
-				<h2 class="headerbar hbDark hb_hasButton hb_hasList">Games I'm Playing</h2>
-<?
-	$games = $mysql->query('SELECT g.gameID, g.title, g.status, u.userID, u.username, s.fullName system FROM players p, games g, users u, systems s WHERE p.gameID = g.gameID AND g.gmID = u.userID AND g.system = s.shortName AND g.gmID != p.userID AND p.userID = '.$currentUser->userID.' AND p.approved = 1 AND retired IS NULL ORDER BY g.status DESC, s.fullName, g.title');
-	
-	$currentSystem = '';
-	$first = true;
-	if ($games->rowCount()) {
-		echo "				<ul class=\"gameList hbAttachedList hbdMargined\">\n";
-		foreach ($games as $info) {
-?>
-					<li class="gamePlaying">
-						<a href="/games/<?=$info['gameID']?>/" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
-						<div class="systemType"><?=$info['system']?></div>
-						<div class="gmInfo"><a href="/user/<?=$info['userID']?>/" class="username"><?=$info['username']?></a></div>
+				<div class="clearfix hbdTopper"><a href="/games/list/" class="fancyButton smallButton" skew-element>Join a Game</a></div>
+				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Playing</h2>
+				<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
+					<li ng-repeat="game in games | filter: { isGM: false } | orderBy: ['system', 'title']" class="gamePlaying">
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':'(Closed)'}}</a>
+						<div class="systemType" ng-bind-html="game.system | trustHTML"></div>
+						<div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
 					</li>
-<?
-			if ($first) $first = false;
-		}
-		echo "					</ul>\n";
-	} else echo "\t\t\t\t".'<div class="noneFound">It seems you aren\'t playing any games yet. <br>You might want to <a href="/games/list/">join one</a>!</div>'."\n";
-?>
+				</ul>
+				<div ng-hide="inGames.notGM" class="noneFound">It seems you aren't playing any games yet. <br>You might want to <a href="/games/list/">join one</a>!</div>
 			</div>
 			
 			<div id="gamesRunning">
-				<div class="clearfix hbdTopper"><a href="/games/new/" class="fancyButton smallButton">Create a New Game</a></div>
-				<h2 class="headerbar hbDark hb_hasButton hb_hasList">Games I'm Running</h2>
-<?
-	$games = $mysql->query('SELECT g.gameID, g.title, g.status, s.fullName system FROM games g INNER JOIN players p ON g.gameID = p.gameID AND p.isGM = 1 INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = '.$currentUser->userID.' AND retired IS NULL ORDER BY g.status DESC, s.fullName, g.title');
-	
-	$currentSystem = '';
-	$first = true;
-	if ($games->rowCount()) {
-		echo "				<ul class=\"gameList hbAttachedList hbdMargined\">\n";
-		foreach ($games as $info) {
-?>
-					<li class="gameRunning">
-						<a href="/games/<?=$info['gameID']?>/" class="gameTitle"><?=$info['title'].($info['status'] == 1?'':' ('.$status_names[$info['status']].')')?></a>
-						<div class="systemType"><?=$info['system']?></div>
+				<div class="clearfix hbdTopper"><a href="/games/new/" class="fancyButton smallButton" skew-element>Create a New Game</a></div>
+				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>
+				<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
+					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning">
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':'(Closed)'}}</a>
+						<div class="systemType" ng-bind-html="game.system | trustHTML"></div>
 					</li>
-<?
-			if ($first) $first = false;
-		}
-		echo "					</ul>\n";
-	} else echo "\t\t\t\t".'<div class="noneFound">It seems you aren\'t running any games yet. <br>You might want to <a href="/games/new/">get started</a>!</div>'."\n";
-?>
+				</ul>
+				<div ng-hide="inGames.gm" class="noneFound">It seems you aren't running any games yet. <br>You might want to <a href="/games/new/">get started</a>!</div>
 			</div>
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>
