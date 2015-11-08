@@ -6,7 +6,7 @@
 			'proficiency' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_success', 'success_advantage', 'success_advantage', 'success_advantage', 'advantage_advantage', 'advantage_advantage', 'triumph'),
 			'boost' => array(1 => '', '', 'success', 'advantage', 'success_advantage', 'advantage_advantage'),
 			'difficulty' => array(1 => '', 'failure', 'threat', 'threat', 'threat', 'failure_failure', 'failure_threat', 'threat_threat'),
-			'challenge' => array(1 => '', 'failure', 'failure', 'threat', 'threat', 'failure_failure', 'failure_failure', 'failure_threat', 'failure_threat', 'threat_threat', 'threat_threat', 'dispair'),
+			'challenge' => array(1 => '', 'failure', 'failure', 'threat', 'threat', 'failure_failure', 'failure_failure', 'failure_threat', 'failure_threat', 'threat_threat', 'threat_threat', 'despair'),
 			'setback' => array(1 => '', '', 'failure', 'failure', 'threat', 'threat'),
 			'force' => array(1 => 'whiteDot', 'whiteDot', 'whiteDot_whiteDot', 'whiteDot_whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot', 'blackDot_blackDot'),
 			);
