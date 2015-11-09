@@ -1,8 +1,8 @@
 <?
 	class SWEOTERoll extends Roll {
 		private $d_shortMap = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
-		private $totals = array('success' => 0, 'advantage' => 0, 'triumph' => 0, 'failure' => 0, 'threat' => 0, 'dispair' => 0, 'whiteDot' => 0, 'blackDot' => 0);
-		private $resultsMap = array('', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage', 'triumph', 'failure', 'threat', 'failure_failure', 'failure_threat', 'threat_threat', 'dispair', 'whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot_blackDot');
+		private $totals = array('success' => 0, 'advantage' => 0, 'triumph' => 0, 'failure' => 0, 'threat' => 0, 'despair' => 0, 'whiteDot' => 0, 'blackDot' => 0);
+		private $resultsMap = array('', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage', 'triumph', 'failure', 'threat', 'failure_failure', 'failure_threat', 'threat_threat', 'despair', 'whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot_blackDot');
 
 		function __construct() { }
 
@@ -101,8 +101,8 @@
 						$totalString .= $this->totals['failure'].' Failure, ';
 					if ($this->totals['threat']) 
 						$totalString .= $this->totals['threat'].' Threat, ';
-					if ($this->totals['dispair']) 
-						$totalString .= $this->totals['dispair'].' Dispair, ';
+					if ($this->totals['despair']) 
+						$totalString .= $this->totals['despair'].' Despair, ';
 					if ($this->totals['whiteDot']) 
 						$totalString .= $this->totals['whiteDot'].' White Force Point'.($this->totals['whiteDot'] > 1?'s':'').', ';
 					if ($this->totals['blackDot']) 
@@ -117,8 +117,8 @@
 						$totalString .= abs($this->totals['advantage'] - $this->totals['threat']).' '.($this->totals['advantage'] > $this->totals['threat']?'Advantage':'Threat').', ';
 					if ($this->totals['triumph']) 
 						$totalString .= $this->totals['triumph'].' Triumph, ';
-					if ($this->totals['dispair']) 
-						$totalString .= $this->totals['dispair'].' Dispair, ';
+					if ($this->totals['despair']) 
+						$totalString .= $this->totals['despair'].' Despair, ';
 					if (strlen($totalString)) 
 						echo '<strong>Total:</strong> '.substr($totalString, 0, -2);
 					echo '</p>';

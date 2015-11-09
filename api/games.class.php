@@ -3,7 +3,9 @@
 		function __construct() {
 			global $loggedIn, $pathOptions;
 
-			if ($pathOptions[0] == 'details') 
+			if ($pathOptions[0] == 'get') 
+				$this->get();
+			elseif ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
 			elseif ($pathOptions[0] == 'toggleGameStatus' && intval($_POST['gameID'])) 
 				$this->toggleGameStatus($_POST['gameID']);
@@ -25,12 +27,26 @@
 				$this->removeCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
 			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'approve' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
 				$this->approveCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
-/*			elseif ($pathOptions[0] == 'view' && intval($_POST['pmID'])) 
-				$this->displayPM($_POST['pmID']);
-			elseif ($pathOptions[0] == 'delete' && intval($_POST['pmID'])) 
-				$this->deletePM($_POST['pmID']);*/
 			else 
 				displayJSON(array('failed' => true));
+		}
+
+		public function get() {
+			global $currentUser, $mysql;
+
+			if (isset($_POST['my']) && $_POST['my']) 
+				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.fullName system, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
+			$games = array();
+			foreach ($rGames as $game) {
+				$game['gameID'] = (int) $game['gameID'];
+				$game['status'] = (bool) $game['status'];
+				$game['gm'] = array('userID' => (int) $game['userID'], 'username' => $game['username']);
+				$game['isGM'] = (bool) $game['isGM'];
+				unset($game['userID'], $game['username']);
+				$games[] = $game;
+			}
+
+			displayJSON(array('success' => true, 'games' => $games));
 		}
 
 		public function details($gameID) {

@@ -1,14 +1,13 @@
 controllers.controller('notifications', ['$scope', '$http', 'CurrentUser', 'LanguageService', function ($scope, $http, CurrentUser, LanguageService) {
+	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
+		$scope.$emit('pageLoading');
 		$scope.CurrentUser = CurrentUser.get();
 		$scope.histories = {};
 		$scope.LanguageService = LanguageService;
 		$scope.pagination = { current: 1, numItems: 0, itemsPerPage: 20 };
 		if ($.urlParam('page')) 
 			$scope.pagination.current = parseInt($.urlParam('page'));
-		$scope.$watch(function () { return $scope.pagination; }, function () {
-			console.log($scope.pagination);
-		}, true);
 		$scope.loadHistories = function () {
 			$scope.$emit('pageLoading');
 			$http.post(API_HOST + '/notifications/user/', { page: $scope.pagination.current }).then(function (data) {
