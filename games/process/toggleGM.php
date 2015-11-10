@@ -3,7 +3,7 @@
 		$gameID = intval($_POST['gameID']);
 		$playerID = intval($_POST['playerID']);
 		
-		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} and isGM = 1");
+		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} and primaryGM = 1");
 		$playerCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$playerID} AND approved = 1");
 		if ($gmCheck->rowCount() == 0 || $playerCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) 
@@ -18,9 +18,11 @@
 
 			if ($isGM) 
 				$mysql->query("DELETE FROM forumAdmins WHERE userID = {$playerID} AND forumID = {$forumID}");
-			else $mysql->query("INSERT INTO forumAdmins (userID, forumID) VALUES ({$playerID}, {$forumID})");
+			else 
+				$mysql->query("INSERT INTO forumAdmins (userID, forumID) VALUES ({$playerID}, {$forumID})");
 
-			addGameHistory($gameID, ($isGM?'gmRemoved':'gmAdded'), $currentUser->userID, 'NOW()', 'user', $playerID);
+#			$hl_toggleGM = new HistoryLogger($isGM?'gmRemoved':'gmAdded');
+#			$hl_toggleGM->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->save();
 			
 			if (isset($_POST['modal'])) 
 				displayJSON(array('success' => true, 'userID' => $playerID));

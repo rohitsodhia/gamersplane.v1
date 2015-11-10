@@ -1,1 +1,1 @@
-UPDATE systems SET angular = 1 WHERE shortName = 'custom';
+UPDATE dispatch SET ngController = 'myGames' WHERE url = 'games/';

@@ -146,8 +146,8 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2];
 		});
 	}
-}]).controller('editCharacter_custom', ['$scope', 'currentUser', function ($scope, currentUser) {
-	currentUser.then(function (currentUser) {
+}]).controller('editCharacter_custom', ['$scope', 'CurrentUser', function ($scope, CurrentUser) {
+	CurrentUser.load().then(function () {
 		$scope.loadChar();
 	});
 }]);

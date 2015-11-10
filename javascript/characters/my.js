@@ -1,5 +1,5 @@
-app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'currentUser', 'CharactersService', 'systems', function ($scope, $http, $sce, $timeout, currentUser, CharactersService, systems) {
-	currentUser.then(function (currentUser) {
+app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', 'systems', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService, systems) {
+	CurrentUser.load().then(function () {
 		$scope.characters = {};
 		$scope.library = {};
 		$scope.systems = [];

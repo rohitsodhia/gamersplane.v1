@@ -4,67 +4,22 @@
 */
 
 
-.cell {
-	display: inline-block;
-}
-
-label {
-	font-size: .8em;
-	display: inline-block;
-}
-
-input[type="text"] {
-	width: 40px;
-	text-align: center;
-}
-
-.shortText, input.shortText {
-	width: 100px;
-}
-
-.medText, input.medText {
-	width: 200px;
-}
-
-.longText, input.longText {
-	width: 350px;
-}
-
-input.shortText, input.medText, input.longText {
-	text-align: left;
-}
-
-.shortNum, input.shortNum {
-	width: 40px;
-}
-
-.medNum, input.medNum {
-	width: 60px;
-}
-
-label.leftLabel {
-	font-size: 1em;
-}
-
-.lrBuffer {
-	margin-right: 9px;
-	margin-left: 9px;
-}
-
 #page_characterSheet_edit .labelTR {
 	padding-bottom: 0;
 }
 
-#page_characterSheet .labelTR {
-	padding: 0;
-}
+#page_characterSheet {
+	.labelTR {
+		padding: 0;
+	}
 
-#page_characterSheet .dataTR {
-	margin-bottom: 1em;
-}
+	.dataTR {
+		margin-bottom: 1em;
 
-#page_characterSheet .dataTR > div {
-	display: inline-block;
+		& > div {
+			display: inline-block;
+		}
+	}
 }
 
 .col {
@@ -74,10 +29,10 @@ label.leftLabel {
 #stats, #defense {
 	float: left;
 	margin: 1em 0 .5em;
-}
 
-#stats .col:last-of-type, #defense .col:last-of-type {
-	margin-left: 10px;
+	.col:last-of-type {
+		margin-left: 10px;
+	}
 }
 
 #page_characterSheet #stats .col:last-of-type {
@@ -142,18 +97,18 @@ label.leftLabel {
 
 #talents {
 	width: 420px;
+
+	span, a {
+		display: inline-block;
+	}
 }
 
 .talent {
 	padding: 4px 0;
-}
 
-.talent > * {
-	vertical-align: middle;
-}
-
-#talents span, #talents a {
-	display: inline-block;
+	& > * {
+		vertical-align: middle;
+	}
 }
 
 #page_characterSheet_edit .talent_name {
@@ -207,12 +162,14 @@ label.leftLabel {
 	display: inline-block;
 }
 
-#page_characterSheet .weapon .labelTR {
-	padding-top: .5em;
-}
+#page_characterSheet {
+	.weapon .labelTR {
+		padding-top: .5em;
 
-#page_characterSheet .weapon .labelTR:first-child {
-	padding-top: 0;
+		&:first-child {
+			padding-top: 0;
+		}
+	}
 }
 
 .weapon .medText {
@@ -237,47 +194,27 @@ input.weapon_notes, .weapon_notes {
 
 #items {
 	width: 500px;
-}
 
-#items textarea {
-	width: 100%;
-	height: 12.4em;
+	textarea {
+		width: 100%;
+		height: 12.4em;
+	}
 }
 
 #motivations, #obligations {
 	width: 465px;
-}
 
-#motivations textarea, #obligations textarea {
-	width: 100%;
-	height: 8.2em;
+	textarea {
+		width: 100%;
+		height: 8.2em;
+	}
 }
 
 #notes {
 	margin-top: 2.5em;
-}
 
-#notes textarea {
-	width: 100%;
-	height: 16.2em;
-}
-
-#submitDiv {
-	text-align: center;
-	margin-top: 1em;
-}
-
-/* --------------------------------------------*/
-
-#page_characterSheet_sweote_editTalentNotes {
-	text-align: center;
-}
-
-#page_characterSheet_sweote_editTalentNotes textarea {
-	width: 450px;
-	height: 8em;
-}
-
-#page_characterSheet_sweote_talentNotes #notes {
-	margin-top: 0;
+	textarea {
+		width: 100%;
+		height: 16.2em;
+	}
 }

@@ -30,7 +30,7 @@
 			array('name' => 'Performance', 'stat' => 'cha'),
 			array('name' => 'Persuasion', 'stat' => 'cha'),
 			array('name' => 'Religion', 'stat' => 'int'),
-			array('name' => 'Slight of Hand', 'stat' => 'dex'),
+			array('name' => 'Sleight of Hand', 'stat' => 'dex'),
 			array('name' => 'Stealth', 'stat' => 'dex'),
 			array('name' => 'Survival', 'stat' => 'wis'),
 		);

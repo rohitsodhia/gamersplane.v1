@@ -1,91 +1,92 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Notifications</h1>
-<?
-	$perPage = 30;
-	$before = isset($_GET['before']) && preg_match('/20\d{2}-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d/', $_GET['before'])?$_GET['before']:date('Y-m-d H:i:s');
-	$charHistories = $mysql->query("SELECT c.characterID, c.label, c.system, h.enactedBy, eu.username eUsername, h.enactedOn, h.action, cu.userID cUserID, cu.username cUsername, g.gameID, g.title, gu.userID gmID, gu.username gmUsername FROM characterHistory h INNER JOIN characters c ON c.characterID = h.characterID INNER JOIN users eu ON eu.userID = h.enactedBy INNER JOIN users cu ON cu.userID = c.userID LEFT JOIN games g ON h.additionalInfo = g.gameID LEFT JOIN users gu ON g.gmID = gu.userID WHERE (c.userID = {$currentUser->userID} OR eu.userID = {$currentUser->userID}) AND h.enactedOn < '{$before}' ORDER BY enactedOn DESC LIMIT {$perPage}");
-	$cNotification = $charHistories->fetch();
-	$gameHistories = $mysql->query("SELECT g.gameID, g.title, g.system, h.enactedBy, h.enactedOn, h.action, u.userID, u.username, au.userID aUserID, au.username aUsername, c.characterID, c.label charLabel, d.deckID, d.label deckLabel FROM gameHistory h INNER JOIN games g ON g.gameID = h.gameID INNER JOIN players p ON p.gameID = g.gameID INNER JOIN users u ON u.userID = h.enactedBy LEFT JOIN users au ON h.affectedType = 'user' && h.affectedID = au.userID LEFT JOIN characters c ON h.affectedType = 'character' && h.affectedID = c.characterID LEFT JOIN decks d ON h.affectedType = 'deck' && h.affectedID = d.deckID WHERE p.userID = {$currentUser->userID} AND p.primaryGM = 1 AND h.enactedOn < '{$before}' ORDER BY enactedOn DESC LIMIT {$perPage}");
-	$gNotification = $gameHistories->fetch();
-	if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
-		$lastDate = date('Ymd', strtotime($cNotification['enactedOn']));
-		echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($cNotification['enactedOn'])).'<sup>'.date('S', strtotime($cNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($cNotification['enactedOn']))."</h2>\n";
-	} else {
-		$lastDate = date('Ymd', strtotime($gNotification['enactedOn']));
-		echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($gNotification['enactedOn'])).'<sup>'.date('S', strtotime($gNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($gNotification['enactedOn']))."</h2>\n";
-	}
-
-	$cRemaining = $cNotification?true:false; $gRemaining = $gNotification?true:false;
-	echo "		<div class=\"hbdMargined\">\n";
-	for ($count = 0; $count < $perPage && ($cRemaining || $gRemaining); $count++) {
-		if ($cNotification['enactedOn'] > $gNotification['enactedOn']) {
-			$action = $cNotification['action'];
-			if (in_array($action, array('charCreated', 'basicEdited', 'charEdited', 'charDeleted', 'addToLibrary', 'removeFromLibrary', 'charFavorited', 'charUnfavorited', 'charApplied', 'characterApproved', 'characterRejected', 'characterRemoved'))) {
-				$timestamp = strtotime($cNotification['enactedOn']);
-				if (date('Ymd', $timestamp) != $lastDate) {
-					$lastDate = date('Ymd', $timestamp);
-					echo "		</div>\n";
-					echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($cNotification['enactedOn'])).'<sup>'.date('S', strtotime($cNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($cNotification['enactedOn']))."</h2>\n";
-					echo "		<div class=\"hbdMargined\">\n";
-				}
-?>
-			<div class="notification tr">
-				<div class="timestamp"><?=date('g:i A', $timestamp)?></div>
-				<div class="dash">-</div>
-<?				if ($action == 'charCreated') { ?>
-				<div class="text">You created a new <span class="system"><?=$systems->getFullName($cNotification['system'])?></span> character: <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?				} elseif ($action == 'basicEdited') { ?>
-				<div class="text">You edited the basic info for your <span class="system"><?=$systems->getFullName($cNotification['system'])?></span> character: <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?				} elseif ($action == 'charEdited') { ?>
-				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/user/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> edited <?=$cNotification['cUserID'] == $currentUser->userID?'your':"<a href=\"/user/{$cNotification['cUserID']}/\" class=\"username\">{$cNotification['cUsername']}</a>'s"?> <span class="system"><?=$systems->getFullName($cNotification['system'])?></span> character: <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?				} elseif ($action == 'charDeleted') { ?>
-				<div class="text">You deleted your <span class="system"><?=$systems->getFullName($cNotification['system'])?></span> character: <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a></div>
-<?				} elseif ($action == 'addToLibrary' || $action == 'removeFromLibrary') { ?>
-				<div class="text">You <?=$action == 'addToLibrary'?'added':'removed'?> <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systems->getFullName($cNotification['system'])?></span>) <?=$action == 'addToLibrary'?'to':'from'?> the character library</div>
-<?				} elseif ($action == 'charFavorited' || $action == 'charUnfavorited') { ?>
-				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/user/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> <?=$action == 'unfavorited'?'un':''?>favorited <?=$cNotification['cUserID'] == $currentUser->userID?'your':"<a href=\"/user/{$cNotification['userID']}/\" class=\"username\">{$cNotification['username']}</a>'s"?> <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systems->getFullName($cNotification['system'])?></span>)</div>
-<?				} elseif ($action == 'charApplied') { ?>
-				<div class="text">You applied <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systems->getFullName($cNotification['system'])?></span>) to <a href="/user/<?=$cNotification['gmID']?>/" class="username"><?=$cNotification['gmUsername']?></a>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
-<?				} elseif ($action == 'characterApproved' || $action == 'characterRejected' || $action == 'characterRemoved') { ?>
-				<div class="text"><?=$cNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/user/{$cNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 9))?> <a href="/characters/<?=$cNotification['system']?>/<?=$cNotification['characterID']?>/"><?=$cNotification['label']?></a> (<span class="system"><?=$systems->getFullName($cNotification['system'])?></span>) <?=substr($action, 9) == 'Approved'?'to':'from'?> <?=$cNotification['gmID'] == $currentUser->userID?'your':"<a href=\"/user/{$cNotification['gmID']}/\" class=\"username\">{$cNotification['gmUsername']}</a>"?>'s game: <a href="/games/<?=$cNotification['gameID']?>?>/"><?=$cNotification['title']?></a></div>
-<?
-				}
-				echo "			</div>\n";
-			} else $count--;
-			$cNotification = $charHistories->fetch();
-			if (!$cNotification) $cRemaining = false;
-		} else {
-			$action = $gNotification['action'];
-			if (in_array($action, array('newGame', 'editedGame', 'playerApplied', 'playerApproved', 'playerRejected', 'gmAdded', 'gmRemoved'))) {
-				$timestamp = strtotime($gNotification['enactedOn']);
-				if (date('Ymd', $timestamp) != $lastDate) {
-					$lastDate = date('Ymd', $timestamp);
-					echo "		</div>\n";
-					echo "		<h2 class=\"headerbar hbDark\">".date('F j', strtotime($gNotification['enactedOn'])).'<sup>'.date('S', strtotime($gNotification['enactedOn'])).'</sup>'.date(', Y', strtotime($gNotification['enactedOn']))."</h2>\n";
-					echo "		<div class=\"hbdMargined\">\n";
-				}
-?>
-			<div class="notification tr">
-				<div class="timestamp"><?=date('g:i A', $timestamp)?></div>
-				<div class="dash">-</div>
-<?				if ($action == 'newGame') { ?>
-				<div class="text">You created a new <span class="system"><?=$systems->getFullName($gNotification['system'])?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?				} elseif ($action == 'editedGame') { ?>
-				<div class="text">You edited your <span class="system"><?=$systems->getFullName($gNotification['system'])?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?				} elseif ($action == 'playerApplied') { ?>
-				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/user/{$gNotification['enactedBy']}/\" class=\"username\">{$cNotification['eUsername']}</a>"?> applied to <span class="system"><?=$systems->getFullName($gNotification['system'])?></span> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?				} elseif ($action == 'playerApproved' || $action == 'playerRejected') { ?>
-				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/user/{$gNotification['enactedBy']}/\" class=\"username\">{$gNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 6))?> <?=$gNotification['aUserID'] == $currentUser->userID?'you':"<a href=\"/user/{$gNotification['aUserID']}/\" class=\"username\">{$gNotification['aUsername']}</a>"?> <?=substr($action, 6) == 'Approved'?'to':'from'?> <?=$gNotification['enactedBy'] == $currentUser->userID?'your':"<a href=\"/user/{$gNotification['enactedOn']}/\" class=\"username\">{$gNotification['username']}</a>'s"?> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?				} elseif ($action == 'gmAdded' || $action == 'gmRemoved') { ?>
-				<div class="text"><?=$gNotification['enactedBy'] == $currentUser->userID?'You':"<a href=\"/user/{$gNotification['enactedBy']}/\" class=\"username\">{$gNotification['eUsername']}</a>"?> <?=strtolower(substr($action, 2))?> <?=$gNotification['aUserID'] == $currentUser->userID?'you':"<a href=\"/user/{$gNotification['aUserID']}/\" class=\"username\">{$gNotification['aUsername']}</a>"?> as a GM <?=substr($action, 2) == 'Added'?'to':'from'?> <?=$gNotification['enactedBy'] == $currentUser->userID?'your':"<a href=\"/user/{$gNotification['enactedOn']}/\" class=\"username\">{$gNotification['username']}</a>'s"?> game: <a href="/games/<?=$gNotification['gameID']?>?>/"><?=$gNotification['title']?></a></div>
-<?
-				}
-				echo "			</div>\n";
-			} else $count--;
-			$gNotification = $gameHistories->fetch();
-			if (!$gNotification) $gRemaining = false;
-		}
-	}
-?>
+<script type="text/ng-template" id="characterCreated">
+<span>You created a new <span class="system" ng-bind-html="history.character.system.label | trustHTML"></span> character: <span ng-bind-html="history.language.characterLink | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="basicEdited">
+<span>You edited the basic info for your <span class="system" ng-bind-html="history.character.system.label | trustHTML"></span> character: <span ng-bind-html="history.language.characterLink | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="characterEdited">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> edited <span ng-bind-html="history.language.targetUser | trustHTML"></span> <span class="system" ng-bind-html="history.character.system.label | trustHTML"></span> character: <span ng-bind-html="history.language.characterLink | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="characterDeleted">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> deleted <span ng-bind-html="history.language.targetUser | trustHTML"></span> <span class="system" ng-bind-html="history.character.system.label | trustHTML"></span> character: <span ng-bind-html="history.language.characterLink | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="addToLibrary">
+<span>You added <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>) to the character library</span>
+</script>
+<script type="text/ng-template" id="removeFromLibrary">
+<span>You removed <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>) from the character library</span>
+</script>
+<script type="text/ng-template" id="characterFavorited">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> favorited <span ng-bind-html="history.language.targetUser | trustHTML"></span> character: <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>)</span>
+</script>
+<script type="text/ng-template" id="characterUnfavorited">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> unfavorited <span ng-bind-html="history.language.targetUser | trustHTML"></span> character: <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>)</span>
+</script>
+<script type="text/ng-template" id="characterApplied">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> applied <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>) to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="characterApproved">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> approved <span ng-bind-html="history.language.targetUser | trustHTML"></span> character <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>) to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="characterRejected">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> rejected <span ng-bind-html="history.language.targetUser | trustHTML"></span> character <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>) from <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="characterRemoved">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> removed <span ng-bind-html="history.language.targetUser | trustHTML"></span> character <span ng-bind-html="history.language.characterLink | trustHTML"></span> (<span class="system" ng-bind-html="history.character.system.label | trustHTML"></span>) from <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="gameCreated">
+<span>You created a new <span class="system">{{history.game.system.label}}</span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="editedGame">
+<span>You edited your <span class="system">{{history.game.system.label}}</span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="playerApplied">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> applied to <span class="system">{{history.game.system.label}}</span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="playerInvited">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> invited <span ng-bind-html="history.language.targetUser | trustHTML"></span> to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="inviteAccepted">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> accepted an invite to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="inviteWithdrawn">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> withdrew <span ng-bind-html="history.language.targetUser | trustHTML"></span> invite to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="inviteDeclined">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> declined their invite to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="playerApproved">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> approved <span ng-bind-html="history.language.targetUser | trustHTML"></span> to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="playerRejected">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> rejected <span ng-bind-html="history.language.targetUser | trustHTML"></span> from <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="playerRemoved">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> removed <span ng-bind-html="history.language.targetUser | trustHTML"></span> from <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="playerLeft">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> left <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="gmAdded">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> added <span ng-bind-html="history.language.targetUser | trustHTML"></span> as a GM to <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="gmRemoved">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> removed <span ng-bind-html="history.language.targetUser | trustHTML"></span> as a GM from <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+<script type="text/ng-template" id="gameRetired">
+<span><span ng-bind-html="history.language.actor | trustHTML"></span> retired <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
+</script>
+		<div ng-repeat="(datestamp, dateHistories) in histories">
+			<h2 class="headerbar hbDark" skew-element>{{datestamp | amParse: 'YYYY-MM-DD' | amDateFormat: 'MMMM D, YYYY'}}</h2>
+			<div class="hbdMargined" hb-margined>
+				<div ng-repeat="history in dateHistories" class="notification tr">
+					<div class="timestamp">{{history.timestamp | amLocal | amDateFormat: 'h:mm A'}}</div>
+					<div class="dash">-</div>
+					<div class="text" ng-include="history.action"></div>
+				</div>
+			</div>
 		</div>
+		<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current" change-func="loadHistories" class="tr"></paginate>
 <? require_once(FILEROOT.'/footer.php'); ?>

@@ -89,14 +89,18 @@ input, textarea {
 	}
 }
 
-@input-bg: #FFE4BB;
-@input-border-tl: #800;
-@input-border-br: #B00;
+@input-bg: #FEE;
+@input-border-tl: #600;
+@input-border-br: #E40;
+/*
+@input-border-tl: #A30;
+@input-border-br: #D82;
+*/
 input[type="text"], input[type="number"], input[type="password"], input[type="button"], input[type="file"], select, textarea {
 	background: @input-bg;
 	border: 1px solid @input-border-tl;
 	border-bottom-color: @input-border-br;
-	border-right-color: @input-border-tl;
+	border-right-color: @input-border-br;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
@@ -1078,24 +1082,26 @@ input[type="text"] {
 
 }
 
-input[type="text"]::-webkit-input-placeholder {
-	.placeholder_f;
-}
+input[type="text"], textarea {
+	&::-webkit-input-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]:-moz-placeholder {
-	.placeholder_f;
-}
+	&:-moz-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]::-moz-placeholder {
-	.placeholder_f;
-}
+	&::-moz-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]:-ms-input-placeholder {
-	.placeholder_f;
-}
+	&:-ms-input-placeholder {
+		.placeholder_f;
+	}
 
-input[type="text"]::input-placeholder {
-	.placeholder_f;
+	&::input-placeholder {
+		.placeholder_f;
+	}
 }
 
 .mainColumn {
@@ -2521,37 +2527,68 @@ div.forumIcon {
 /* --------------------------------------------*/
 
 #page_contact {
-	p, #useJS {
-		margin-left: 330px;
+	.animationFrame {
+		position: relative;
+		overflow: hidden;
+		height: 400px;
+		width: 400px;
+		margin: 0 auto;
+
+		& > * {
+			-webkit-transition: .35s linear all;
+			-moz-transition: .35s linear all;
+			-ms-transition: .35s linear all;
+			-o-transition: .35s linear all;
+			transition: .4s linear all;
+		}
 	}
 
-	label {
-		width: 320px;
-		margin-right: 10px;
-		padding-top: 2px;
-		text-align: right;
-		float: left;
+	form {
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		&.ng-hide-add-active {
+			top: -100%;
+		}
 	}
 
-	input[type=text] {
-		width: 200px;
+	.slideUp {
+		position: absolute;
+		left: 0;
+
+		&, &.ng-hide-remove-active {
+			top: 0;
+		}
+
+		&.ng-hide {
+			top: 100%;
+		}
+
+		p {
+			font-size: 1.2em;
+			line-height: 1.3em;
+			text-align: center;
+		}
+
+		.firstLine {
+			margin-top: 5em;
+		}
 	}
 
-	.loggedIn {
-		padding-top: 0;
-	}
+	input[type="text"], textarea {
+		width: 400px;
 
-	#useJSDiv {
-		padding-bottom: 5px;
+		&.error {
+			background-color: #FCC;
+			border-color: #C00;
+			border-right-color: #F00;
+			border-bottom-color: #F00;
+		}
 	}
 
 	textarea {
-		width: 400px;
-		height: 5em;
-	}
-
-	.inputField input[type=text].long {
-		width: 400px;
+		height: 8em;
 	}
 
 	#submitDiv {

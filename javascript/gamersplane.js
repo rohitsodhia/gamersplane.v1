@@ -158,13 +158,22 @@ $(function() {
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment']);
 app.config(function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
-}).factory('currentUser', function ($http) {
-	return $http.post(API_HOST + '/users/getCurrentUser/').success(function (data) {
-		if (data.loggedOut) 
-			return null;
-		else 
-			return data;
-	});
+}).factory('CurrentUser', function ($http) {
+	var factory = {};
+	var userData = null;
+
+	factory.load = function () {
+		return $http.post(API_HOST + '/users/getCurrentUser/').then(function (data) {
+			userData = data.data.loggedOut?null:data.data;
+			return data.data.loggedOut?false:true;
+		});
+	};
+
+	factory.get = function () {
+		return userData;
+	}
+
+	return factory;
 }).service('Users', ['$http', 'Upload', function ($http, Upload) {
 	this.get = function (userID) {
 		params = {};
@@ -221,7 +230,23 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
 		return deferred.promise;
 	};
-}]).service('Links', ['$http', function ($http, $q) {
+}]).service('LanguageService', [function () {
+	this.userProfileLink = function (userID, username) {
+		return '<a href="/user/' + userID + '/" class="username">' + username + '</a>';
+	};
+	this.characterLink = function (characterID, systemShort, label) {
+		return '<a href="/characters/' + systemShort + '/' + characterID + '/">' + label + '</a>';
+	};
+	this.gameLink = function (gameID, title) {
+		return '<a href="/games/' + gameID + '/">' + title + '</a>';
+	};
+}]).service('ContactService', ['$http', function ($http) {
+	this.send = function (fields) {
+		return $http.post(API_HOST + '/contact/send/', fields).then(function (data) {
+			return data.data;
+		});
+	};
+}]).service('Links', ['$http', function ($http) {
 	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params)) 
@@ -257,6 +282,13 @@ app.config(function ($httpProvider) {
 		$http.post(API_HOST + '/faqs/delete/', { 'id': id }).success(function (data) { deferred.resolve(data); });
 		return deferred.promise;
 	}
+}]).service('GamesService', ['$http', function ($http) {
+	this.get = function(params) {
+		return $http.post(API_HOST + '/games/get/', params).then(function (data) {
+			data = data.data;
+			return data;
+		})
+	};
 }]).service('ACSearch', ['$http', function ($http) {
 	this.cil = function (type, search, system, systemOnly) {
 		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') 
@@ -441,7 +473,7 @@ app.config(function ($httpProvider) {
 			});
 		}
 	}
-}).directive('paginate', function () {
+}).directive('paginate', ['$timeout', function ($timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/paginate.php',
@@ -473,11 +505,11 @@ app.config(function ($httpProvider) {
 				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++) 
 					scope.pages.push(count);
 				if (typeof scope.changeFunc == 'function') 
-					scope.changeFunc();
+					$timeout(scope.changeFunc);
 			}
 		}
 	}
-}).directive('combobox', ['$filter', '$timeout', function ($filter, $timeout) {
+}]).directive('combobox', ['$filter', '$timeout', function ($filter, $timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/combobox.php',

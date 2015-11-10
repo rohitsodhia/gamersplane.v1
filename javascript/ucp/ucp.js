@@ -1,14 +1,14 @@
-controllers.controller('ucp', ['$scope', '$http', 'currentUser', 'Users', function ($scope, $http, currentUser, Users) {
+controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'Users', function ($scope, $http, CurrentUser, Users) {
 	$scope.$emit('pageLoading');
-	currentUser.then(function (currentUser) {
-		$scope.currentUser = currentUser.data;
-		userID = null;
-		pathElements = getPathElements();
+	CurrentUser.load().then(function () {
+		$scope.CurrentUser = CurrentUser.get();
+		$scope.admin = !isUndefined($scope.CurrentUser.acpPermissions) && $scope.CurrentUser.acpPermissions != null && ($scope.CurrentUser.acpPermissions.indexOf('users') || $scope.CurrentUser.acpPermissions.indexOf('all'))?true:false;
+		var userID = null;
+		var pathElements = getPathElements();
 		if (!isUndefined(pathElements[1])) 
 			userID = parseInt(pathElements[1]);
 		if ($scope.currentUser.userID != userID && (typeof $scope.currentUser.acpPermissions == 'undefined' || $scope.currentUser.acpPermissions == null || ($scope.currentUser.acpPermissions.indexOf('users') == -1 && $scope.currentUser.acpPermissions.indexOf('all') == -1))) 
 			window.location.href = '/user/' + userID + '/';
-		$scope.admin = !isUndefined($scope.currentUser.acpPermissions) && $scope.currentUser.acpPermissions != null && ($scope.currentUser.acpPermissions.indexOf('users') || $scope.currentUser.acpPermissions.indexOf('all'))?true:false;
 		$scope.user = null;
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' }
 		$scope.newAvatar = null;

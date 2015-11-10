@@ -1,17 +1,22 @@
-$(function () {
-	$('#page_contact form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
-		beforeSubmit: function () {
-			$('form input').each(function () {
-				if ($(this).val().length == 0) return false;
-			});
-			$('#jsError').slideUp();
+controllers.controller('contact', ['$scope', '$http', '$timeout', 'ContactService', 'CurrentUser', function ($scope, $http, $timeout, ContactService, CurrentUser) {
+	$scope.dispForm = true;
+	$scope.errors = {};
+	$scope.$emit('pageLoading');
+	CurrentUser.load().then(function () {
+		$scope.$emit('pageLoading');
+		$scope.CurrentUser = CurrentUser.get();
+		$scope.loggedIn = $scope.CurrentUser?true:false;
+		$timeout(function () { $('.animationFrame').height($('form').height() + 2); });
 
-			return true;
-		},
-		success: function (data) {
-			if (data == '1') {
-				document.location = '/contact/success';
-			} else $('#jsError').slideDown();
-		}
+		$scope.send = function () {
+			$scope.$emit('pageLoading');
+			ContactService.send($scope.form).then(function (data) {
+				$scope.$emit('pageLoading');
+				if (data.success) 
+					$scope.dispForm = false;
+				else 
+					$scope.errors = data.errors;
+			});
+		};
 	});
-});
+}]);

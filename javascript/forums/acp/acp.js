@@ -2,8 +2,8 @@ $(function () {
 	$('a.sprite.cross, a.newPermission, a.permission_delete').colorbox();
 });
 
-controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $timeout, currentUser) {
-	currentUser.then(function (currentUser) {
+controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $timeout, CurrentUser) {
+	CurrentUser.load().then(function () {
 		pathElements = getPathElements();
 		$scope.forumID = pathElements[2]?parseInt(pathElements[2]):0;
 		$scope.currentSection = 'details';

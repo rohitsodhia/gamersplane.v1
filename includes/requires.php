@@ -14,4 +14,6 @@
 	$mobileDetect = new Mobile_Detect();
 
 	require_once('User.class.php');
+	require_once('HistoryLogger.class.php');
+	require_once('HistoryCache.class.php');
 ?>

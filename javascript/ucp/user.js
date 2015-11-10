@@ -1,6 +1,6 @@
-controllers.controller('user', ['$scope', '$http', 'currentUser', 'Users', function ($scope, $http, currentUser, Users) {
+controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'Users', function ($scope, $http, CurrentUser, Users) {
 	$scope.$emit('pageLoading');
-	currentUser.then(function (currentUser) {
+	CurrentUser.load().then(function () {
 		$scope.user = null;
 		$scope.profileFields = { 'location': 'Location', 'aim': 'AIM', 'yahoo': 'Yahoo!', 'msn': 'MSN', 'games': 'Games' };
 

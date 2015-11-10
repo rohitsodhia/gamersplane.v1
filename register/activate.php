@@ -19,8 +19,6 @@
 		$currentUser->updateUsermeta('showPubGames', 1, true);
 		$currentUser->updateUsermeta('showPubGames', 1, true);
 
-		addUserHistory($userID, 'activated');
-
 		$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');
 	
 		$currentUser->generateLoginCookie();
