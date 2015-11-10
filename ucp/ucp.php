@@ -1,13 +1,7 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar" skew-element>User Control Panel{{CurrentUser.userID != user.userID?' - ' + user.username:''}}</h1>
 		<div ng-if="admin" id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
-		
-<?	if ($_GET['updated']) { ?>
-		<div class="alertBox_success">
-			Account successfully updated!
-		</div>
-		
-<?	} ?>
+
 		<form enctype="multipart/form-data">
 			<div id="profile">
 				<h2 class="headerbar hbDark" skew-element>Profile</h2>
