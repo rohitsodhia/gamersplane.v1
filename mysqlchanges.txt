@@ -1,1 +1,1 @@
-UPDATE dispatch SET ngController = 'myGames' WHERE url = 'games/';
+DELETE FROM dispatch WHERE url LIKE '%/lfg/%';

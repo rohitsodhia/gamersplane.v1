@@ -46,6 +46,10 @@
 				return null;
 		}
 
+		public function getSlug($system) {
+			return array_search($system, $this->systems);
+		}
+
 		public static function systemClassName($slug) {
 			if (is_numeric($slug[0])) 
 				return 'n_'.$slug;

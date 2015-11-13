@@ -17,6 +17,10 @@
 				$this->saveUser();
 			elseif ($pathOptions[0] == 'stats') 
 				$this->stats();
+			elseif ($pathOptions[0] == 'getLFG') 
+				$this->getLFG();
+			elseif ($pathOptions[0] == 'saveLFG') 
+				$this->saveLFG();
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -314,6 +318,50 @@
 			}
 
 			displayJSON(array('characters' => array('numChars' => $numChars, 'list' => $characters), 'games' => array('numGames' => $numGames, 'list' => $games)));
+		}
+
+		public function getLFG() {
+			global $mongo;
+
+			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
+				$userID = (int) $_POST['userID'];
+			else {
+				global $currentUser;
+				$userID = $currentUser->userID;
+			}
+			$lfg = $mongo->users->findOne(array('userID' => $userID), array('lfg' => 1));
+			displayJSON(array('lfg' => $lfg['lfg']));
+		}
+
+		public function saveLFG() {
+			global $mongo;
+
+			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
+				$userID = (int) $_POST['userID'];
+			else {
+				global $currentUser;
+				$userID = $currentUser->userID;
+			}
+			$lfg = $mongo->users->findOne(array('userID' => $userID), array('lfg' => 1));
+			$remove = array();
+			$lfg = $lfg['lfg'];
+			$newLFG = array();
+			require_once('../includes/Systems.class.php');
+			$systems = Systems::getInstance();
+			foreach ($_POST['lfg'] as $system) 
+				$newLFG[$systems->getSlug($system)] = 1;
+			foreach ($lfg as $key => $system) {
+				if (array_key_exists($system, $newLFG)) 
+					unset($newLFG[$system]);
+				else {
+					unset($lfg[$key]);
+					$remove[$system] = -1;
+				}
+			}
+			$lfg = array_merge($lfg, array_keys($newLFG));
+			foreach (array_merge($remove, $newLFG) as $system => $count) 
+				$mongo->systems->update(array('_id' => $system), array('$inc' => array('lfg' => $count)));
+			$mongo->users->update(array('userID' => $userID), array('$set' => array('lfg' => $lfg)));
 		}
 	}
 ?>

@@ -28,9 +28,9 @@
 				<p>Players want to play (top 10)...</p>
 				<ul>
 <?
-	$lfgSummaries = $mysql->query('SELECT system, COUNT(system) numPlayers FROM lfg GROUP BY system ORDER BY numPlayers DESC LIMIT 10')->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-	foreach ($lfgSummaries as $system => $numLFGs) 
-		echo "\t\t\t\t\t<li>{$systems->getFullName($system)} - {$numLFGs[0]['numPlayers']}</li>\n";
+	$lfg = $mongo->systems->find(array('lfg' => array('$ne' => 0)), array('name' => 1, 'lfg' => 1))->sort(array('lfg' => -1, 'sortName' => 1))->limit(10);
+	foreach ($lfg as $system) 
+			echo "\t\t\t\t\t<li>{$system['name']} - {$system['lfg']}</li>\n";
 ?>
 				</ul>
 			</div>

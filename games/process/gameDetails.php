@@ -100,7 +100,11 @@
 #			$hl_gameCreated = new HistoryLogger('gameCreated');
 #			$hl_gameCreated->addGame($gameID)->save();
 			
-			$lfgRecips = $mysql->query("SELECT users.userID, users.email FROM users, lfg WHERE users.newGameMail = 1 AND users.userID = lfg.userID AND lfg.system = '{$details['system']}'");
+			$lfgRecips = $mongo->users->find(array('lfg' => $details['system']), array('userID' => true));
+			$userIDs = array();
+			foreach ($lfgRecips as $recip) 
+				$userIDs[] = $recip['userID'];
+			$lfgRecips = $mysql->query("SELECT email FROM users WHERE userID IN (".implode(', ', $userIDs).")");
 			$recips = '';
 			foreach ($lfgRecips as $info) 
 				$recips .= $info['email'].', ';

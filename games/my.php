@@ -2,24 +2,20 @@
 		<div class="sideWidget">
 			<h2>Looking for Game</h2> 
 			<div class="widgetBody">
-				<p>Your current LFG Status:</p>
-<?
-	$lfgs = $mysql->query("SELECT system FROM lfg WHERE userID = {$currentUser->userID}")->fetchAll(PDO::FETCH_COLUMN);
-	if (sizeof($lfgs)) {
-?>
-				<ul>
-<?
-		foreach ($systems->getAllSystems(true) as $slug => $system) {
-			if (in_array($slug, $lfgs)) {
-?>
-					<li><?=$system?></li>
-<?
-			}
-		}
-?>
-				</ul>
-<?	} else echo "\t\t\t\t<p>No games selected.</p>\n"; ?>
-				<p class="alignRight"><a id="lfgEdit" href="/games/lfg/" colorbox>Edit</a></p>
+				<div id="currentLFG" ng-hide="editLFG">
+					<p>Your current LFG Status:</p>
+					<ul ng-if="lfg.length">
+						<li ng-repeat="system in lfg | orderBy: 'toString()'" ng-bind-html="system"></li>
+					</ul>
+					<p ng-if="!lfg.length">No games selected.</p>
+					<p class="alignRight"><a id="lfgEdit" href="" ng-click="editLFG = true">Edit</a></p>
+				</div>
+				<div id="editLFG" ng-show="editLFG">
+					<ul>
+						<li ng-repeat="system in systems | orderBy: 'toString()'"><label><pretty-checkbox  checkbox="lfg" value="system"></pretty-checkbox> <span ng-bind-html="system"></span></label></li>
+					</ul>
+					<p class="alignCenter"><button type="submit" ng-click="saveLFG()" class="fancyButton smallButton" skew-element>Update</button></p>
+				</div>
 			</div>
 		</div>
 

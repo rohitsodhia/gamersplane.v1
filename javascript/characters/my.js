@@ -1,26 +1,27 @@
-app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', 'systems', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService, systems) {
+app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', 'SystemsService', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService, SystemsService) {
+	$scope.characters = {};
+	$scope.library = {};
+	$scope.systems = [];
+	$scope.charTypes = ['PC', 'NPC', 'Mob'];
+	$scope.newChar = { 'label': '', 'system': {}, 'charType': {} };
+	$scope.editing = {
+		'characterID': null,
+		'label': ''
+	};
+	$scope.deleting = null;
+	$scope.activeRequests = [];
+
+	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
-		$scope.characters = {};
-		$scope.library = {};
-		$scope.systems = [];
-		$scope.$emit('pageLoading');
 		CharactersService.getMy(true).then(function (data) {
 			$scope.$emit('pageLoading');
 			$scope.characters = data.characters;
 			$scope.library = data.library;
 		});
-		systems.get({ 'getAll': true, 'simple': true }).then(function (data) {
+		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
 			for (key in data.systems) 
 				$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
 		});
-		$scope.charTypes = ['PC', 'NPC', 'Mob'];
-		$scope.newChar = { 'label': '', 'system': {}, 'charType': {} };
-		$scope.editing = {
-			'characterID': null,
-			'label': ''
-		};
-		$scope.deleting = null;
-		$scope.activeRequests = [];
 
 		$scope.editBasic = function (character) {
 			$scope.editing.characterID = character.characterID;

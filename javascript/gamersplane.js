@@ -173,6 +173,18 @@ app.config(function ($httpProvider) {
 		return userData;
 	}
 
+	factory.getLFG = function () {
+		return $http.post(API_HOST + '/users/getLFG/').then(function (data) {
+			return data.data.lfg;
+		});
+	}
+
+	factory.saveLFG = function (lfg) {
+		return $http.post(API_HOST + '/users/saveLFG/', { 'lfg': lfg }).then(function (data) {
+			return data.data.lfg;
+		});
+	}
+
 	return factory;
 }).service('Users', ['$http', 'Upload', function ($http, Upload) {
 	this.get = function (userID) {
@@ -217,18 +229,24 @@ app.config(function ($httpProvider) {
 		}
 		return returnImg?"<img src=\"/images/sleeping.png\" title=\"" + diffStr + "\" alt=\"" + diffStr + "\">":diffStr;
 	};
-}]).service('systems', ['$http', '$q', function ($http, $q) {
+}]).service('SystemsService', ['$http', function ($http) {
+	this.systems = {};
+	this.init = function () {
+		var self = this;
+		this.get({ 'getAll': true, 'basic': true }).then(function (data) {
+			var systems = {};
+			data.systems.forEach(function (val) {
+				self.systems[val.shortName] = val.fullName;
+			});
+		})
+	};
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params)) 
 			params = {};
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/systems/get/', params).success(function (data) { deferred.resolve(data) });
-		return deferred.promise;
+		return $http.post(API_HOST + '/systems/get/', params).then(function (data) { return data.data; });
 	};
 	this.getGenres = function () {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/systems/getGenres/').success(function (data) { deferred.resolve(data) });
-		return deferred.promise;
+		return $http.post(API_HOST + '/systems/getGenres/').then(function (data) { return data.data; });
 	};
 }]).service('LanguageService', [function () {
 	this.userProfileLink = function (userID, username) {
@@ -740,20 +758,10 @@ app.config(function ($httpProvider) {
 				label = $('label[for=' + attrs['eleid'] + ']');
 			} else if (label.length) 
 				wrapperLabel = true;
-			if (label.length) 
-				label.click(function (e) {
-					if (wrapperLabel) 
-						scope.toggleCB();
-					else 
-						e.preventDefault();
-					scope.$apply();
-				});
 
 			scope.toggleCB = function ($event) {
-				if (!isUndefined($event) && (wrapperLabel || $event.currentTarget == 'html')) 
+				if ($event.target.nodeName == 'INPUT') 
 					return;
-				else if ($event && label.length == 0) 
-					$event.stopPropagation();
 				scope.cbm = !scope.cbm;
 			};
 
@@ -938,7 +946,7 @@ app.config(function ($httpProvider) {
 	return function (input) {
 		return Math.ceil(input);
 	}
-}]).controller('core', ['$scope', function ($scope) {
+}]).controller('core', ['$scope', 'SystemsService', function ($scope, SystemsService) {
 	$scope.pageLoadingPause = true;
 	$pageLoading = $('#pageLoading');
 
@@ -946,6 +954,8 @@ app.config(function ($httpProvider) {
 		$scope.pageLoadingPause = !$scope.pageLoadingPause;
 		$pageLoading.toggle();
 	});
+
+	SystemsService.init();
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
 	$scope.$emit('pageLoading');
 	$scope.catMap = {};

@@ -17,19 +17,25 @@
 			global $mongo;
 
 			$search = array();
+			$fields = array();
+			if (isset($_POST['fields']) && is_array($_POST['fields'])) 
+				foreach ($_POST['fields'] as $field) 
+					$fields[$field] = 1;
+			if (isset($_POST['basic']) && $_POST['basic']) 
+				$fields = array('name');
 			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
 				$search['_id'] = array('$ne' => 'custom');
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
-				$rSystems = $mongo->systems->findOne(array('_id' => $_POST['shortName']));
+				$rSystems = $mongo->systems->findOne(array('_id' => $_POST['shortName']), $fields);
 				$rSystems = array($rSystems);
 				$numSystems = 1;
 			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
 				$numSystems = $mongo->systems->find(array(), array('_id' => 1))->count();
-				$rSystems = $mongo->systems->find()->sort(array('sortName' => 1));
+				$rSystems = $mongo->systems->find(array(), $fields)->sort(array('sortName' => 1));
 			} else {
 				$numSystems = $mongo->systems->find($search, array('_id' => 1))->count();
 				$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
-				$rSystems = $mongo->systems->find($search)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
+				$rSystems = $mongo->systems->find($search, $fields)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
 			}
 			$systems = array();
 			$custom = array();

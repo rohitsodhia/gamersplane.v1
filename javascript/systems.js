@@ -1,5 +1,7 @@
-controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', function ($scope, $http, $sce, $filter, $timeout) {
-	$http.post(API_HOST + '/systems/get/', { getAll: true }).success(function (data) {
+controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', 'SystemsService', function ($scope, $http, $sce, $filter, SystemsService) {
+	$scope.$emit('pageLoading');
+	SystemsService.get({ 'getAll': true }).then(function (data) {
+		$scope.$emit('pageLoading');
 		$scope.systems = data.systems;
 		$scope.numSystems = data.numSystems;
 		$scope.pagination.numItems = data.numSystems;
@@ -15,7 +17,7 @@ controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', functio
 
 	$scope.wrapPublisher = function (system) {
 		return system.publisher.site?'<a href="' + system.publisher.site + '" target="_blank">' + system.publisher.name + '</a>':system.publisher.name;
-	}
+	};
 
 	$scope.$watch(function () { return $scope.filter.search; }, function () {
 		$scope.numSystems = $filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length;

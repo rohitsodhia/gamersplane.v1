@@ -69,14 +69,14 @@ $(function () {
 	}
 });
 
-controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 'systems', function ($scope, $http, $sce, $timeout, systems) {
+controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 'SystemsService', function ($scope, $http, $sce, $timeout, SystemsService) {
 	$scope.selectSystem = {
 		'data': [],
 		'value': {},
 		'search': ''
 	};
-	systems.get({ getAll: true }).then(function (data) {
-		var systems = data.systems;
+	SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+		systems = data.systems;
 		$scope.selectSystem.data = [];
 		for (key in systems) {
 			if (systems[key].shortName != 'custom') 
@@ -92,7 +92,7 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 		'value': {},
 		'search': ''
 	};
-	systems.getGenres().then(function (data) {
+	SystemsService.getGenres().then(function (data) {
 		$scope.allGenres = [];
 		$scope.newGenre.data = [];
 		for (key in data) {
@@ -159,7 +159,7 @@ controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 's
 	$scope.loadSystem = function () {
 		if ($scope.selectSystem.value.value == null) 
 			return;
-		systems.get({ 'shortName': $scope.selectSystem.value.value }).then(function (data) {
+		SystemsService.get({ 'shortName': $scope.selectSystem.value.value }).then(function (data) {
 			$scope.edit = data.systems[0];
 //			$scope.selectSystem.search = '';
 			$scope.newGenre.search = '';
