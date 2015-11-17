@@ -1,1 +1,1 @@
-DELETE FROM dispatch WHERE url LIKE '%/lfg/%';
+DELETE FROM dispatch WHERE url IN ('characters/delete/', 'characters/editBasic/', 'characters/new/', 'characters/process/delete/', 'characters/process/editBasic/', 'characters/process/new/');

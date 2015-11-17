@@ -7,7 +7,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'Users', functi
 		var pathElements = getPathElements();
 		if (!isUndefined(pathElements[1])) 
 			userID = parseInt(pathElements[1]);
-		if ($scope.currentUser.userID != userID && (typeof $scope.currentUser.acpPermissions == 'undefined' || $scope.currentUser.acpPermissions == null || ($scope.currentUser.acpPermissions.indexOf('users') == -1 && $scope.currentUser.acpPermissions.indexOf('all') == -1))) 
+		if ($scope.CurrentUser.userID != userID && (typeof $scope.CurrentUser.acpPermissions == 'undefined' || $scope.CurrentUser.acpPermissions == null || ($scope.CurrentUser.acpPermissions.indexOf('users') == -1 && $scope.CurrentUser.acpPermissions.indexOf('all') == -1))) 
 			window.location.href = '/user/' + userID + '/';
 		$scope.user = null;
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' }

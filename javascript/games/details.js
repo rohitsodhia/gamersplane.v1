@@ -220,7 +220,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							$scope.availChars.splice(key, 1);
 					}
 					for (pKey in $scope.players) {
-						if ($scope.players[pKey].userID == currentUser.userID) {
+						if ($scope.players[pKey].userID == CurrentUser.userID) {
 							if ($scope.isGM) 
 								data.character.approved = true;
 							$scope.players[pKey].characters.push(data.character);

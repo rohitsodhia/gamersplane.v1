@@ -24,15 +24,17 @@
 					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><combobox ng-show="editing.characterID == character.characterID" data="charTypes" value="editing.cCharType" select></combobox></div
 					><div class="systemType" ng-bind-html="character.system.name | trustHTML"></div
 					><div class="links">
-						<a class="sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type" ng-click="editBasic(character)" ng-show="editing.characterID != character.characterID"></a>
-						<span class="confirm clearfix" ng-show="editing.characterID == character.characterID">
+						<span ng-hide="editing.characterID == character.characterID || deleting == character.characterID">
+							<a class="sprite editWheel" title="Edit Label/Type" alt="Edit Label/Type" ng-click="editBasic(character)" ng-show="editing.characterID != character.characterID"></a>
+							<a href="/characters/{{character.system.short}}/{{character.characterID}}/edit/" class="editChar sprite pencil" title="Edit Character" alt="Edit Character"></a>
+							<a class="sprite book" ng-class="{ 'off': !character.inLibrary }" title="{{character.inLibrary?'Remove from':'Add to'}} Library" alt="{{character.inLibrary?'Remove from':'Add to'}} Library" ng-click="toggleLibrary(character)"></a>
+							<a class="sprite cross" title="Delete Character" alt="Delete Character" ng-click="deleteChar(character)" ng-show="deleting != character.characterID"></a>
+						</span>
+						<span class="confirm" ng-show="editing.characterID == character.characterID">
 							<a class="sprite check green" title="Save" alt="Save" ng-click="saveEdit(character)"></a>
 							<a class="sprite cross" title="Cancel" alt="Cancel" ng-click="cancelEditing(character)"></a>
 						</span>
-						<a href="/characters/{{character.system.short}}/{{character.characterID}}/edit/" class="editChar sprite pencil" title="Edit Character" alt="Edit Character"></a>
-						<a class="sprite book" ng-class="{ 'off': !character.inLibrary }" title="{{character.inLibrary?'Remove from':'Add to'}} Library" alt="{{character.inLibrary?'Remove from':'Add to'}} Library" ng-click="toggleLibrary(character)"></a>
-						<a class="sprite cross" title="Delete Character" alt="Delete Character" ng-click="deleteChar(character)" ng-show="deleting != character.characterID"></a>
-						<span class="confirm clearfix" ng-show="deleting == character.characterID">
+						<span class="confirm" ng-show="deleting == character.characterID">
 							<a class="sprite check" title="Delete" alt="Delete" ng-click="confirmDelete(character)"></a>
 							<a class="sprite cross" title="Cancel" alt="Cancel" ng-click="cancelDeleting(character)"></a>
 						</span>
