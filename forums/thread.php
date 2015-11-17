@@ -130,7 +130,7 @@
 			} else 
 				$postAsChar = false;
 ?>
-			<div class="postBlock post<?=$postSide?><?=$postAsChar && $character->getAvatar()?' postAsChar':''?> clearfix">
+			<div class="postBlock post<?=$postSide?><?=$postAsChar?' postAsChar'.($character->getAvatar()?' withCharAvatar':''):''?> clearfix">
 				<a name="p<?=$post->getPostID()?>"></a>
 <?
 			if (!$newPostMarked && ($post->getPostID() > $threadManager->getThreadLastRead() || $threadManager->thread->getLastPost('postID') == $post->getPostID())) {
