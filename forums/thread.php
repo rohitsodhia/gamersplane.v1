@@ -146,6 +146,8 @@
 				<div class="posterDetails">
 					<div class="avatar"><div>
 <?
+			if ($postAsChar) 
+				$character->load();
 			if ($postAsChar && $character->getAvatar()) {
 				if ($character->checkPermissions()) {
 ?>
@@ -174,7 +176,6 @@
 					</div></div>
 <?
 			if ($postAsChar) {
-				$character->load();
 				$character->getForumTop($post->author, in_array($post->author->userID, $gms));
 			} else {
 ?>
