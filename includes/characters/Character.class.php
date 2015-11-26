@@ -13,7 +13,7 @@
 		protected $notes;
 
 		protected $linkedTables = array();
-		protected $mongoIgnore = array('save' => array('bodyClasses', 'linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system'));
+		protected $mongoIgnore = array('save' => array('bodyClasses', 'linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system', 'user'));
 		
 		public function __construct($characterID, $userID = null) {
 			global $currentUser;
@@ -79,7 +79,7 @@
 		}
 
 		public function checkPermissions($userID = null) {
-			global $mysql;
+			global $mysql, $mongo;
 
 			if ($userID == null) 
 				$userID = $this->userID;
@@ -89,12 +89,8 @@
 			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = {$userID} OR p.userID = {$userID})");
 			if ($charCheck->rowCount()) 
 				return 'edit';
-
-			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$this->characterID} AND inLibrary = 1");
-			if ($libraryCheck->rowCount()) 
-				return 'library';
 			else 
-				return false;
+				return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 		}
 		
 		public function showSheet() {
@@ -163,7 +159,7 @@
 		}
 
 		public function save() {
-			global $mongo;
+			global $mongo, $mysql;
 
 			$classVars = get_object_vars($this);
 			foreach ($this->mongoIgnore['save'] as $key) 
@@ -173,6 +169,9 @@
 //				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value)) 
 //					$value = mb_convert_encoding($value, 'UTF-8');
 //				});
+				$username = $mysql->query("SELECT username FROM users WHERE userID = {$classVars['userID']}")->fetchColumn();
+				$classVars['user'] = array('userID' => $classVars['userID'], 'username' => $username);
+				unset($classVars['userID']);
 				$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => true));
 				return true;
 			} catch (Exception $e) { var_dump($e); }
@@ -188,6 +187,7 @@
 				foreach ($result as $key => $value) 
 					if (!in_array($key, $this->mongoIgnore['load'])) 
 						$this->$key = $value;
+				$this->userID = $result['user']['userID'];
 				return true;
 			} else 
 				return false;

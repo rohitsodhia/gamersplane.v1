@@ -20,7 +20,7 @@ $.cssHooks.backgroundColor = {
 
 $(function() {
 	$('select').prettySelect();
-	$('input[type="checkbox"]').prettyCheckbox();
+//	$('input[type="checkbox"]').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 
 	$('.loginLink').colorbox();
@@ -335,42 +335,37 @@ app.config(function ($httpProvider) {
 	}
 }]).service('CharactersService', ['$http', '$q', function ($http, $q) {
 	this.getMy = function (library) {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/my/', { 'library': library }).success(function (data) { deferred.resolve(data); });
-		return deferred.promise;
+		if (library !== true) 
+			library = false;
+		return $http.post(API_HOST + '/characters/my/', { 'library': library }).then(function (data) { return data.data; });
+	};
+	this.getLibrary = function (params) {
+		if (typeof params == 'undefined') 
+			params = {};
+		return $http.post(API_HOST + '/characters/library/', params).then(function (data) { return data.data; });
 	};
 	this.new = function (data) {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/new/', {
+		return $http.post(API_HOST + '/characters/new/', {
 			'label': data.label,
 			'system': data.system,
 			'charType': data.charType
-		}).success(function (data) { deferred.resolve(data) });
-		return deferred.promise;
+		}).then(function (data) { return data.data; });
 	};
 	this.saveBasic = function (data) {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/saveBasic/', {
+		return $http.post(API_HOST + '/characters/saveBasic/', {
 			'characterID': data.characterID,
 			'label': data.label,
 			'charType': data.charType
-		}).success(function (data) { deferred.resolve(data); });
-		return deferred.promise;
+		}).then(function (data) { return data.data; });
 	};
 	this.toggleLibrary = function (characterID) {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/toggleLibrary/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
-		return deferred.promise;
+		return $http.post(API_HOST + '/characters/toggleLibrary/', { 'characterID': characterID }).then(function (data) { return data.data; });
 	};
 	this.delete = function (data) {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/delete/', { 'characterID': data.characterID }).success(function (data) { deferred.resolve(data); });
-		return deferred.promise;
+		return $http.post(API_HOST + '/characters/delete/', { 'characterID': data.characterID }).then(function (data) { return data.data; });
 	};
 	this.toggleFavorite = function (characterID) {
-		var deferred = $q.defer();
-		$http.post(API_HOST + '/characters/toggleFavorite/', { 'characterID': characterID }).success(function (data) { deferred.resolve(data); });
-		return deferred.promise;
+		return $http.post(API_HOST + '/characters/toggleFavorite/', { 'characterID': characterID }).then(function (data) { return data.data; });
 	}
 	this.load = function (characterID, pr) {
 		if (typeof pr != 'boolean') 
@@ -737,7 +732,7 @@ app.config(function ($httpProvider) {
 			}
 		}
 	}
-}]).directive('prettyCheckbox', [function () {
+}]).directive('prettyCheckbox', ['$timeout', function ($timeout) {
 	return {
 		restrict: 'E',
 		templateUrl: '/angular/directives/prettyCheckbox.php',
@@ -747,21 +742,27 @@ app.config(function ($httpProvider) {
 		},
 		link: function (scope, element, attrs) {
 			scope.cbm = false;
-			if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox) 
-				scope.cbm = true;
-			scope.eleid = typeof attrs['eleid'] == 'string' && attrs['eleid']?attrs['eleid']:'';
-//			element.attr('id', '');
-			var label = null, wrapperLabel = false;
-			label = $(element).closest('label');
-			if (!label.length && typeof attrs['eleid'] == 'string' && attrs['eleid']) {
-//				element.attr('id', attrs['eleid']);
-				label = $('label[for=' + attrs['eleid'] + ']');
-			} else if (label.length) 
-				wrapperLabel = true;
+			var eleID = null, label = null, wrapperLabel = false;
+			$timeout(function () {
+				if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox) 
+					scope.cbm = true;
+				eleID = typeof attrs['eleid'] == 'string' && attrs['eleid']?attrs['eleid']:null;
+				$label = $(element).closest('label');
+				if (!$label.length && eleID) 
+					$label = $('label[for=' + eleID + ']');
+				else if ($label.length) 
+					wrapperLabel = true;
+				if ($label.length) 
+					$label.on('click', function ($event) {
+						$event.preventDefault();
+						if ($event.target.nodeName !== 'DIV') {
+							scope.toggleCB();
+							scope.$apply();
+						}
+					});
+			});
 
-			scope.toggleCB = function ($event) {
-				if ($event.target.nodeName == 'INPUT') 
-					return;
+			scope.toggleCB = function () {
 				scope.cbm = !scope.cbm;
 			};
 

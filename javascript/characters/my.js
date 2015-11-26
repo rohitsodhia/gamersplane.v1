@@ -15,8 +15,8 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 	CurrentUser.load().then(function () {
 		CharactersService.getMy(true).then(function (data) {
 			$scope.$emit('pageLoading');
-			$scope.characters = data.characters;
-			$scope.library = data.library;
+			$scope.characters = typeof data.characters != 'undefined'?data.characters:null;
+			$scope.library = typeof data.library != 'undefined'?data.library:null;
 		});
 		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
 			for (key in data.systems) 

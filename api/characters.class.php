@@ -66,9 +66,25 @@
 			return true;
 		}
 
+		public function library() {
+			global $mongo;
+
+			$search = array('library.inLibrary' => true);
+			if (isset($_POST['search']) && is_array($_POST['search'])) 
+				$search['system'] = array('$in' => $_POST['search']);
+			$rCharacters = $mongo->characters->find($search, array('_id' => false, 'characterID' => true, 'label' => true, 'user' => true, 'system' => true));
+			require_once('../includes/Systems.class.php');
+			$systems = Systems::getInstance();
+			$characters = array();
+			foreach ($rCharacters as $character) {
+				$character['system'] = array('slug' => $character['system'], 'name' => $systems->getFullName($character['system']));
+				$characters[] = $character;
+			}
+			displayJSON(array('success' => true, 'characters' => $characters));
+		}
 
 		public function my() {
-			global $loggedIn, $currentUser, $mysql;
+			global $loggedIn, $currentUser, $mysql, $mongo;
 			if (!$loggedIn) 
 				displayJSON(array('failed' => true, 'notLoggedIn' => true), true);
 
@@ -76,7 +92,7 @@
 			$systems = Systems::getInstance();
 
 			$userID = $currentUser->userID;
-			$characters = $mysql->prepare("SELECT c.characterID, c.label, c.charType, c.system, c.gameID, c.approved, IF(l.characterID IS NOT NULL AND l.inLibrary = 1, 1, 0) inLibrary FROM characters c LEFT JOIN characterLibrary l ON c.characterID = l.characterID WHERE c.retired IS NULL AND c.userID = {$userID}".(isset($_POST['system'])?' AND c.system = :system':'').(isset($_POST['noGame'])?' AND c.gameID IS NULL':''));
+			$characters = $mysql->prepare("SELECT c.characterID, c.label, c.charType, c.system, c.gameID, c.approved FROM characters c WHERE c.retired IS NULL AND c.userID = {$userID}".(isset($_POST['system'])?' AND c.system = :system':'').(isset($_POST['noGame'])?' AND c.gameID IS NULL':''));
 			if (isset($_POST['system'])) 
 				$characters->bindValue(':system', $_POST['system']);
 			$characters->execute();
@@ -87,19 +103,22 @@
 				$character['system'] = array('short' => printReady($character['system']), 'name' => printReady($systems->getFullName($character['system'])));
 				$character['gameID'] = (int) $character['gameID'];
 				$character['approved'] = (bool) $character['approved'];
-				$character['inLibrary'] = (bool) $character['inLibrary'];
+				$inLibrary = $mongo->characters->findOne(array('characterID' => $character['characterID']), array('library' => true));
+				$character['inLibrary'] = (bool) $inLibrary['library']['inLibrary'];
 			}
 			$return = array('characters' => $characters);
 			if (isset($_POST['library']) && $_POST['library']) {
-				$libraryItems = $mysql->query("SELECT c.characterID, c.label, c.charType, c.system, u.username, u.userID FROM characterLibrary_favorites f INNER JOIN characters c ON f.characterID = c.characterID INNER JOIN users u ON c.userID = u.userID WHERE c.retired IS NULL AND f.userID = {$currentUser->userID} ORDER BY c.charType, c.label")->fetchAll();
-				foreach ($libraryItems as &$item) {
-					$item['characterID'] = (int) $item['characterID'];
+				$rLibraryItems = $mongo->characterLibraryFavorites->find(array('userID' => $currentUser->userID));
+				$libraryItems = array();
+				foreach ($rLibraryItems as $item) 
+					$libraryItems[] = $item['characterID'];
+				$libraryItems = $mongo->characters->find(array('characterID' => array('$in' => $libraryItems)), array('characterID' => true, 'label' => true, 'charType' => true, 'system' => true, 'user' => true));
+				foreach ($libraryItems as $item) {
 					$item['label'] = printReady($item['label']);
 					$item['system'] = array('short' => printReady($item['system']), 'name' => printReady($systems->getFullName($item['system'])));
-					$item['user'] = array('userID' => (int) $item['userID'], 'username' => printReady($item['username']));
-					unset($item['userID'], $item['username']);
+					unset($item['_id']);
+					$return['library'][] = $item;
 				}
-				$return['library'] = $libraryItems;
 			}
 
 			displayJSON($return);
@@ -205,12 +224,8 @@
 			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$characterID} AND (c.userID = {$userID} OR p.userID = {$userID})");
 			if ($charCheck->rowCount()) 
 				return 'edit';
-
-			$libraryCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$this->characterID} AND inLibrary = 1");
-			if ($libraryCheck->rowCount()) 
-				return 'library';
 			else 
-				return false;
+				return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 		}
 
 		public function saveCharacter($characterID) {
@@ -248,18 +263,12 @@
 			$characterID = intval($_POST['characterID']);
 			$charAllowed = $mysql->query("SELECT userID FROM characters WHERE retired IS NULL AND characterID = {$characterID} AND userID = {$currentUser->userID}");
 			if ($charAllowed->rowCount()) {
-				$currentState = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$characterID}");
-				if ($currentState->rowCount()) 
-					$currentState = (bool) $currentState->fetchColumn();
-				else 
-					$currentState = false;
+				$currentState = $mongo->characters->findOne(array('characterID' => $characterID), array('library' => true));
+				$mongo->characters->update(array('_id' => $currentState['_id']), array('$set' => array('library.inLibrary' => !$currentState['library']['inLibrary'])));
 #				$hl_libraryToggle = new HistoryLogger(($currentState?'removeFrom':'addTo').'Library');
 #				$hl_libraryToggle->addCharacter($characterID, false)->save();
 
-				$mysql->query("INSERT INTO characterLibrary SET characterID = {$characterID} ON DUPLICATE KEY UPDATE inLibrary = ".($currentState?0:1));
-				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('inLibrary' => !$currentState)));
-
-				displayJSON(array('success' => true, 'state' => !$currentState));
+				displayJSON(array('success' => true, 'state' => !$currentState['library']['inLibrary']));
 			} else 
 				displayJSON(array('failed' => true, 'errors' => array('invalidID')));
 		}
@@ -289,12 +298,13 @@
 			global $currentUser, $mysql, $mongo;
 
 			$characterID = intval($_POST['characterID']);
-			$charCheck = $mysql->query("SELECT inLibrary FROM characterLibrary WHERE characterID = {$characterID} AND inLibrary = 1");
-			if ($charCheck->rowCount()) {
-				$unfavorited = $mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = $characterID");
-				$state = $unfavorited->rowCount()?'unfavorited':'favorited';
-				if ($state == 'favorited') 
-					$mysql->query("INSERT INTO characterLibrary_favorites SET userID = {$currentUser->userID}, characterID = {$characterID}");
+			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?true:false;
+			if ($charCheck) {
+				$state = $mongo->characterLibraryFavorites->findOne(array('userID' => $currentUser->userID, 'characterID' => $characterID))?'unfavorited':'favorited';
+				if ($state == 'unfavorited') 
+					$mongo->characterLibraryFavorites->remove(array('userID' => $currentUser->userID, 'characterID' => $characterID));
+				else 
+					$mongo->characterLibraryFavorites->insert(array('userID' => $currentUser->userID, 'characterID' => $characterID));
 #				$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
 #				$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
 				displayJSON(array('success' => true, 'state' => $state));

@@ -13,15 +13,17 @@
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'viewCharacter';
 					$angular = 'viewCharacter_'.SYSTEM;
+				} else {
+					$dispatchInfo['ngController'] = null;
+					$angular = null;
 				}
 				$dispatchInfo['title'] = $character->getLabel().' | '.$dispatchInfo['title'];
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
 					$noChar = false;
 					if ($charPermissions == 'library') {
-						$mysql->query("UPDATE characterLibrary SET viewed = viewed + 1 WHERE characterID = $characterID");
 						$mongo->characters->update(array('characterID' => $characterID), array('$inc' => array('library.views' => 1)));
-						$favorited = $mysql->query("SELECT updateDate FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID}")->rowCount();
+						$favorited = $mongo->characterLibraryFavorites->findOne(array('userID' => $currentUser->userID, 'characterID' => $characterID))?true:false;
 					}
 					$addJSFiles[] = 'characters/_sheet.js';
 					if (file_exists(FILEROOT.'/javascript/characters/'.SYSTEM.'/sheet.js')) 

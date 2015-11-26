@@ -18,7 +18,7 @@
 <?	} ?>
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
-			<ul ng-if="characters.length" id="userChars" class="hbMargined hbAttachedList" hb-margined>
+			<ul ng-if="characters != null" id="userChars" class="hbMargined hbAttachedList" hb-margined>
 				<li ng-repeat="character in characters | orderBy: ['system.short', 'label']" class="clearfix character" ng-class="{ 'editing': character.characterID == editing.characterID }">
 					<div class="label"><a href="/characters/{{character.system.short}}/{{character.characterID}}/" ng-bind-html="character.label | trustHTML" ng-show="editing.characterID != character.characterID"></a><input type="text" ng-model="character.label" ng-show="editing.characterID == character.characterID"></div
 					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><combobox ng-show="editing.characterID == character.characterID" data="charTypes" value="editing.cCharType" select></combobox></div
@@ -41,13 +41,13 @@
 					</div>
 				</li>
 			</ul>
-			<div class="noItems" ng-if="characters.length == 0">It seems you don't have any characters yet. You might wanna get started!</div>
+			<div ng-if="characters == null" class="noItems">It seems you don't have any characters yet. You might wanna get started!</div>
 		</div>
 
 		<div id="libraryFavorites">
 			<div class="clearfix hbdTopper"><a href="/characters/library/" class="fancyButton">Character Library</a></div>
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Library Favorites</h2>
-			<ul ng-if="library.length" id="libraryChars" class="hbMargined hbAttachedList" hb-margined>
+			<ul ng-if="library != null" id="libraryChars" class="hbMargined hbAttachedList" hb-margined>
 				<li ng-repeat="character in library| orderBy: ['system.short', 'user.username']" id="character_{{character.characterID}}" class="clearfix character">
 					<a class="sprite tassel" title="Unfavorite Character" alt="Unfavorite Character" ng-click="unfavorite(character)"></a
 					><a href="/characters/{{character.system.short}}/{{character.characterID}}" class="label" ng-bind-html="character.label | trustHTML"></a
@@ -56,7 +56,7 @@
 					><div class="owner"><a href="/ucp/{{character.user.userID}}" class="username" ng-bind-html="character.user.username | trustHTML"></a></div>
 				</li>
 			</ul>
-			<div ng-if="library.length == 0" class="noItems">You don't have anything from the library favorited. Check out what you're missing!</div>
+			<div ng-if="library == null" class="noItems">You don't have anything from the library favorited. Check out what you're missing!</div>
 		</div>
 
 		<form id="newChar" method="post" ng-submit="createChar()">
