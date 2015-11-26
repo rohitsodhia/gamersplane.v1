@@ -1,6 +1,0 @@
-DELETE FROM dispatch WHERE url IN ('characters/delete/', 'characters/editBasic/', 'characters/new/', 'characters/process/delete/', 'characters/process/editBasic/', 'characters/process/new/');
-UPDATE dispatch SET ngController = 'charLibrary' WHERE URL = 'characters/library/';
-
-db.characterLibraryFavorites.ensureIndex({userID: 1});
-db.characterLibraryFavorites.ensureIndex({characterID: 1});
-db.characterLibraryFavorites.ensureIndex({userID: 1, characterID: 1});
