@@ -5,14 +5,14 @@
 				<div id="currentLFG" ng-hide="editLFG">
 					<p>Your current LFG Status:</p>
 					<ul ng-if="lfg.length">
-						<li ng-repeat="system in lfg | orderBy: 'toString()'" ng-bind-html="system"></li>
+						<li ng-repeat="system in lfg | orderBy: '+'" ng-bind-html="system"></li>
 					</ul>
 					<p ng-if="!lfg.length">No games selected.</p>
 					<p class="alignRight"><a id="lfgEdit" href="" ng-click="editLFG = true">Edit</a></p>
 				</div>
 				<div id="editLFG" ng-show="editLFG">
 					<ul>
-						<li ng-repeat="system in systems | orderBy: 'toString()'"><label><pretty-checkbox  checkbox="lfg" value="system"></pretty-checkbox> <span ng-bind-html="system"></span></label></li>
+						<li ng-repeat="system in systems | orderBy: '+'"><label><pretty-checkbox checkbox="lfg" value="system"></pretty-checkbox> <span ng-bind-html="system"></span></label></li>
 					</ul>
 					<p class="alignCenter"><button type="submit" ng-click="saveLFG()" class="fancyButton smallButton" skew-element>Update</button></p>
 				</div>
@@ -26,7 +26,7 @@
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Playing</h2>
 				<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
 					<li ng-repeat="game in games | filter: { isGM: false } | orderBy: ['system', 'title']" class="gamePlaying">
-						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':'(Closed)'}}</a>
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':' (Closed)'}}</a>
 						<div class="systemType" ng-bind-html="game.system | trustHTML"></div>
 						<div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
 					</li>
@@ -38,7 +38,7 @@
 				<div class="clearfix hbdTopper"><a href="/games/new/" class="fancyButton smallButton" skew-element>Create a New Game</a></div>
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>
 				<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
-					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning">
+					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning clearfix">
 						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':'(Closed)'}}</a>
 						<div class="systemType" ng-bind-html="game.system | trustHTML"></div>
 					</li>

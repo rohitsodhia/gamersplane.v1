@@ -955,8 +955,6 @@ app.config(function ($httpProvider) {
 		$scope.pageLoadingPause = !$scope.pageLoadingPause;
 		$pageLoading.toggle();
 	});
-
-	SystemsService.init();
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
 	$scope.$emit('pageLoading');
 	$scope.catMap = {};

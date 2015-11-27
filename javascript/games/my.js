@@ -4,7 +4,7 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 	$scope.inGames = { 'notGM': false, 'gm': false };
 	$scope.editLFG = false;
 	$scope.lfg = [];
-	$scope.systems = [];
+	$scope.systems = {};
 	CurrentUser.load().then(function () {
 		GamesService.get({ my: true }).then(function (data) {
 			$scope.$emit('pageLoading');
@@ -16,14 +16,19 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 					$scope.inGames.gm = true;
 			}
 		});
-		CurrentUser.getLFG().then(function (data) {
-			$scope.lfg = [];
-			data.forEach(function (val) {
-				$scope.lfg.push(SystemsService.systems[val]);
+		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+			$scope.systems = {};
+			data.systems.forEach(function (val) {
+				$scope.systems[val.shortName] = val.fullName;
 			});
-			$scope.systems = SystemsService.systems;
+			CurrentUser.getLFG().then(function (data) {
+				$scope.lfg = [];
+				data.forEach(function (val) {
+					$scope.lfg.push($scope.systems[val]);
+				});
+				console.log($scope.lfg);
+			});
 		});
-
 		$scope.saveLFG = function () {
 			$scope.editLFG = false;
 			CurrentUser.saveLFG($scope.lfg);
