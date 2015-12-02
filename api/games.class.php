@@ -35,14 +35,30 @@
 			global $currentUser, $mysql;
 
 			if (isset($_POST['my']) && $_POST['my']) 
-				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.fullName system, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
+				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.shortName system_shortName, s.fullName system_fullName, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
+			else {
+				if ($_POST['orderBy'] == 'createdOn_d' || !isset($_POST['orderBy'])) 
+					$orderBy = 'g.created DESC';
+				elseif ($_POST['orderBy'] == 'createdOn_a') 
+					$orderBy = 'g.created ASC';
+				elseif ($_POST['orderBy'] == 'name_a') 
+					$orderBy = 'g.title ASC';
+				elseif ($_POST['orderBy'] == 'name_d') 
+					$orderBy = 'g.title DESC';
+				elseif ($_POST['orderBy'] == 'system') 
+					$orderBy = 's.fullName ASC';
+				$rGames = $mysql->query("SELECT g.gameID, g.title, s.shortName system_shortName, s.fullName system_fullName, g.gmID userID, u.username, u.lastActivity FROM games g INNER JOIN systems s ON g.system = s.shortName LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.status = 1".(isset($_POST['systems']) && sizeof($_POST['systems'])?' AND g.system IN ("'.implode('", "', $_POST['systems']).'")':'')." ORDER BY $orderBy");
+			}
 			$games = array();
 			foreach ($rGames as $game) {
 				$game['gameID'] = (int) $game['gameID'];
 				$game['status'] = (bool) $game['status'];
 				$game['gm'] = array('userID' => (int) $game['userID'], 'username' => $game['username']);
 				$game['isGM'] = (bool) $game['isGM'];
-				unset($game['userID'], $game['username']);
+				$game['system'] = array('slug' => $game['system_shortName'], 'name' => $game['system_fullName']);
+				unset($game['userID'], $game['username'], $game['system_shortName'], $game['system_fullName']);
+				if (isset($game['lastActivity'])) 
+					$game['lastActivity'] = strtotime($game['lastActivity']);
 				$games[] = $game;
 			}
 

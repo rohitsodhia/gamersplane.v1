@@ -7,7 +7,7 @@
 	"/javascript/angular-route.min.js": "1.4.3",
 	"/javascript/angular-sanitize.min.js": "1.4.3",
 	"/javascript/html5shiv.js": "3.6.2pre",
-	"/javascript/gamersplane.js": "1.9.0",
+	"/javascript/gamersplane.js": "1.10.0",
 	"/javascript/gamersplane.functions.js": "1.1.0",
 	"/javascript/notifications.js": "1.0.1",
 	"/javascript/acp/_section.js": "2.1.0",
@@ -24,8 +24,9 @@
 	"/javascript/contact/contact.js": "1.0.1",
 	"/javascript/forums/acp/acp.js": "2.0.1",
 	"/javascript/games/details.js": "2.1.2",
-	"/javascript/games/my.js": "1.2.0",
+	"/javascript/games/my.js": "1.2.1",
 	"/javascript/games/leaveGame.js": "1.1.0",
+	"/javascript/games/list.js": "1.0.0",
 	"/javascript/games/pendingPlayer.js": "1.1.0",
 	"/javascript/games/removePlayer.js": "1.1.0",
 	"/javascript/games/toggleGM.js": "1.1.0",
@@ -38,6 +39,6 @@
 	"/javascript/register/register.js": "1.1.0",
 	"/javascript/systems.js": "2.2.0",
 	"/javascript/tools/music.js": "2.0.1",
-	"/javascript/ucp/ucp.js": "2.0.2",
-	"/javascript/ucp/user.js": "1.0.2"
+	"/javascript/ucp/ucp.js": "2.0.3",
+	"/javascript/ucp/user.js": "1.0.3"
 }

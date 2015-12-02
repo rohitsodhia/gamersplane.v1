@@ -1,4 +1,4 @@
-controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'Users', function ($scope, $http, CurrentUser, Users) {
+controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService', function ($scope, $http, CurrentUser, UsersService) {
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
 		$scope.CurrentUser = CurrentUser.get();
@@ -16,7 +16,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'Users', functi
 		$scope.newAvatar = null;
 		$scope.avatarTime = new Date().getTime();
 
-		Users.get(userID).then(function (data) {
+		UsersService.get(userID).then(function (data) {
 			if (data) {
 				$scope.user = data;
 				if ($scope.user.birthday.date) {
@@ -40,7 +40,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'Users', functi
 		};
 
 		$scope.save = function () {
-			Users.save({ 'details': $scope.user, 'newPass': $scope.newPass }, $scope.newAvatar).then(function (data) {
+			UsersService.save({ 'details': $scope.user, 'newPass': $scope.newPass }, $scope.newAvatar).then(function (data) {
 				data = data.data;
 				if (data.avatarUploaded) 
 					$scope.avatarTime = new Date().getTime();

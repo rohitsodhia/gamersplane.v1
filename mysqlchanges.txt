@@ -1,0 +1,1 @@
+UPDATE dispatch SET ngController = 'listGames' WHERE url = 'games/list/';

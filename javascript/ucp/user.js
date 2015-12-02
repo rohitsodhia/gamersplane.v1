@@ -1,4 +1,4 @@
-controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'Users', function ($scope, $http, CurrentUser, Users) {
+controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService', function ($scope, $http, CurrentUser, UsersService) {
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
 		$scope.user = null;
@@ -8,10 +8,10 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'Users', funct
 		userID = null;
 		if (!isUndefined(pathElements[1])) 
 			userID = parseInt(pathElements[1]);
-		Users.get(userID).then(function (data) {
+		UsersService.get(userID).then(function (data) {
 			if (data) {
 				$scope.user = data;
-				$scope.user.lastActivity = Users.inactive($scope.user.lastActivity, false);
+				$scope.user.lastActivity = UsersService.inactive($scope.user.lastActivity, false);
 				$http.post(API_HOST + '/users/stats/', { userID: userID }).then(function (response) {
 					$scope.characters = response.data.characters.list;
 					$scope.charCount = response.data.characters.numChars;

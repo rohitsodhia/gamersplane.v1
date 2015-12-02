@@ -8,33 +8,58 @@ function equalizeHeights() {
 				maxHeight = $(this).height();
 			}
 		});
-		if (allSame) $(this).children().height(maxHeight);
+		if (allSame) 
+			$(this).children().height(maxHeight);
 	});
 }
 
-$(function() {
-	$clearCheckboxes = $('#clearCheckboxes');
-	$form = $('form');
-
-	$form.ajaxForm({
-		url: '/games/ajax/gamesSearch/',
-		type: 'post',
-		success: function (data) {
-			$('#gamesList').slideUp(function () {
-				$(this).html(data).slideDown(function () {
-					equalizeHeights();
-					if ($('input[type="checkbox"]:checked').length) $clearCheckboxes.show();
-					else $clearCheckboxes.hide();
-				});
+controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersService', 'GamesService', 'SystemsService', function ($scope, $filter, CurrentUser, UsersService, GamesService, SystemsService) {
+	$scope.$emit('pageLoading');
+	$scope.games = [];
+	$scope.systems = {};
+	$scope.filterOptions = {
+		'createdOn_d': 'Created on (Desc)',
+		'createdOn_a': 'Created on (Asc)',
+		'name_a': 'Name (Asc)',
+		'name_d': 'Name (Desc)',
+		'system': 'System'
+	}
+	$scope.filter = { 'orderBy': 'createdOn_d', 'systems': [] };
+	var reqLoading = 2;
+	CurrentUser.load().then(function () {
+		GamesService.get().then(function (data) {
+			reqLoading = $scope.clearPageLoading(reqLoading);
+			$scope.games = data.games;
+			$scope.games.forEach(function (element) {
+				element.lastActivity = UsersService.inactive(element.lastActivity);
 			});
-		}
+			equalizeHeights();
+		});
+		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+			reqLoading = $scope.clearPageLoading(reqLoading);
+			$scope.systems = {};
+			data.systems.forEach(function (val) {
+				$scope.systems[val.shortName] = val.fullName;
+			});
+		});
+		$scope.clearSystems = function () {
+			$scope.filter.systems = [];
+		};
+		$scope.filterGames = function () {
+			$scope.$emit('pageLoading');
+			var filter = copyObject($scope.filter);
+			filter.orderBy = filter.orderBy.value;
+			if (filter.systems.length == 0) 
+				filter.systems = null;
+			$scope.games = [];
+			GamesService.get(filter).then(function (data) {
+				$scope.$emit('pageLoading');
+				$scope.games = data.games;
+				$scope.games.forEach(function (element) {
+					element.lastActivity = UsersService.inactive(element.lastActivity);
+				});
+				equalizeHeights();
+			});
+		};
 	});
-
-	$clearCheckboxes.children().click(function (e) {
-		e.preventDefault();
-
-		$('input[type="checkbox"]:checked').each(function () { $(this).parent().click() });;
-	})
-
-	equalizeHeights();
-});
+}]);

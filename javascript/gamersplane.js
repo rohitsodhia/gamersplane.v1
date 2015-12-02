@@ -186,7 +186,7 @@ app.config(function ($httpProvider) {
 	}
 
 	return factory;
-}).service('Users', ['$http', 'Upload', function ($http, Upload) {
+}).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
 	this.get = function (userID) {
 		params = {};
 		if (userID && parseInt(userID) > 0) 
@@ -211,12 +211,14 @@ app.config(function ($httpProvider) {
 	this.inactive = function (lastActivity, returnImg) {
 		if (isUndefined(returnImg) || typeof returnImg != 'boolean') 
 			returnImg = true;
+		if (typeof lastActivity == 'number') 
+			lastActivity *= 1000;
 		lastActivity = moment(lastActivity);
 		now = moment();
 		diff = now - lastActivity;
 		diff = Math.floor(diff / (1000 * 60 * 60 * 24));
 		if (diff < 14) 
-			return false;
+			return null;
 		diffStr = 'Inactive for';
 		if (diff <= 30) 
 			diffStr += ' ' + (diff - 1) + ' day' + (diff > 1?'s':'');
@@ -587,24 +589,26 @@ app.config(function ($httpProvider) {
 			scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
 				if (isUndefined(scope.data)) 
 					return;
-				scope.options = copyObject(scope.data);
-				if (isUndefined(scope.options) || (scope.options instanceof Array && scope.options.length == 0)) {
-					scope.options = [];
+				scope.options = [];
+				if (isUndefined(scope.data) || (scope.data instanceof Array && scope.data.length == 0)) 
 					return;
-				}
-				for (key in scope.options) {
-					if (typeof scope.options[key] == 'string' && scope.options[key].length > 0) 
-						scope.options[key] = { 'value': scope.options[key], 'display': scope.options[key] };
-					else if (!isUndefined(scope.options[key].display) && scope.options[key].display.length && (isUndefined(scope.options[key].value) || scope.options[key].value.length == 0))
-						scope.options[key].value = scope.options[key].display;
-					else if (isUndefined(scope.options[key].display) || scope.options[key].display.length == 0) 
-						scope.options.splice(key, 1);
+				optsIsArray = Array.isArray(scope.data);
+				for (key in scope.data) {
+					val = { 'value': '', 'display': '' };
+					if (typeof scope.data[key] != 'object') {
+						val.display = scope.data[key];
+						val.value = optsIsArray?scope.data[key]:key;
+					} else if (!isUndefined(scope.data[key].display) && scope.data[key].display.length && (isUndefined(scope.data[key].value) || scope.data[key].value.length == 0))
+						val.value = val.display;
+					else if (isUndefined(scope.data[key].display) || scope.data[key].display.length == 0) 
+						continue;
 
-					scope.options[key] = {
-						'value': decodeHTML(scope.options[key].value),
-						'display': decodeHTML(scope.options[key].display),
-						'class': !isUndefined(scope.options[key].class)?scope.options[key].class:[]
+					val = {
+						'value': decodeHTML(val.value),
+						'display': decodeHTML(val.display),
+						'class': !isUndefined(val.class)?val.class:[]
 					}
+					scope.options.push(val);
 				}
 				scope.value = typeof scope.value == 'object' && !isUndefined(scope.value.value) && !isUndefined(scope.value.display)?scope.value:{ 'value': null, 'display': '' };
 				filterResults = $filter('filter')(scope.options, { 'value': scope.value.value }, true);
@@ -778,6 +782,13 @@ app.config(function ($httpProvider) {
 					}
 				} else 
 					scope.checkbox = val;
+			});
+
+			scope.$watch(function () { return scope.checkbox; }, function (newVal, oldVal) {
+				if (scope.checkbox instanceof Array) 
+					scope.cbm = scope.checkbox.indexOf(scope.cbValue) != -1?true:false;
+				else 
+					scope.cbm = scope.checkbox?true:false;
 			});
 		}
 	}
@@ -955,6 +966,13 @@ app.config(function ($httpProvider) {
 		$scope.pageLoadingPause = !$scope.pageLoadingPause;
 		$pageLoading.toggle();
 	});
+
+	$scope.clearPageLoading = function(count) {
+		count--;
+		if (count == 0) 
+			$scope.$emit('pageLoading');
+		return count;
+	};
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
 	$scope.$emit('pageLoading');
 	$scope.catMap = {};

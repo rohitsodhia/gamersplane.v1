@@ -26,7 +26,6 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 				data.forEach(function (val) {
 					$scope.lfg.push($scope.systems[val]);
 				});
-				console.log($scope.lfg);
 			});
 		});
 		$scope.saveLFG = function () {
