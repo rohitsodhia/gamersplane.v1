@@ -596,8 +596,8 @@ app.config(function ($httpProvider) {
 				for (key in scope.data) {
 					val = copyObject(scope.data[key]);
 					if (typeof val != 'object') {
-						val.display = val;
-						val.value = optsIsArray?val:key;
+						val = { 'display': val };
+						val.value = optsIsArray?val.display:key;
 					} else if (!isUndefined(val.display) && val.display.length && (isUndefined(val.value) || val.value.length == 0))
 						val.value = val.display;
 					else if (isUndefined(val.display) || val.display.length == 0) 
