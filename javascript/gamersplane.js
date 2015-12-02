@@ -594,13 +594,13 @@ app.config(function ($httpProvider) {
 					return;
 				optsIsArray = Array.isArray(scope.data);
 				for (key in scope.data) {
-					val = { 'value': '', 'display': '' };
-					if (typeof scope.data[key] != 'object') {
-						val.display = scope.data[key];
-						val.value = optsIsArray?scope.data[key]:key;
-					} else if (!isUndefined(scope.data[key].display) && scope.data[key].display.length && (isUndefined(scope.data[key].value) || scope.data[key].value.length == 0))
+					val = copyObject(scope.data[key]);
+					if (typeof val != 'object') {
+						val.display = val;
+						val.value = optsIsArray?val:key;
+					} else if (!isUndefined(val.display) && val.display.length && (isUndefined(val.value) || val.value.length == 0))
 						val.value = val.display;
-					else if (isUndefined(scope.data[key].display) || scope.data[key].display.length == 0) 
+					else if (isUndefined(val.display) || val.display.length == 0) 
 						continue;
 
 					val = {
