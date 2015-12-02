@@ -38,7 +38,7 @@
 				<div class="clearfix hbdTopper"><a href="/games/new/" class="fancyButton smallButton" skew-element>Create a New Game</a></div>
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>
 				<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
-					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning clearfix">
+					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning">
 						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':'(Closed)'}}</a
 						><div class="systemType" ng-bind-html="game.system.name | trustHTML"></div>
 					</li>
