@@ -1,6 +1,4 @@
 <?
-	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
-
 	$currentUser->checkACP('systems');
 
 	require_once(FILEROOT.'/header.php');

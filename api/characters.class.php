@@ -25,6 +25,10 @@
 				$this->toggleFavorite();
 			elseif ($pathOptions[0] == 'cilSearch' && $loggedIn) 
 				$this->cilSearch(); 
+			elseif ($pathOptions[0] == 'getUAI') 
+				$this->getUAI(); 
+			elseif ($pathOptions[0] == 'processUAI') 
+				$this->processUAI(); 
 			else 
 				displayJSON(array('failed' => true));
 		}
@@ -335,6 +339,58 @@
 					);
 				displayJSON(array('items' => $items));
 			}
+		}
+
+		public function getUAI() {
+			global $loggedIn, $currentUser, $mysql, $mongo;
+
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
+				displayJSON(array('failed' => true, 'noPermission' => true));
+
+			$rNewItems = $mongo->userAddedItems->find(array('itemID' => null, 'action' => null));
+			$newItems = array();
+			foreach ($rNewItems as $item) 
+				$newItems[] = $item;
+
+			$rAddToSystem = $mongo->userAddedItems->find(array('itemID' => array('$ne' => null), 'action' => null));
+			$addToSystem = array();
+			foreach ($rAddToSystem as $item) 
+				$addToSystem[] = $item;
+
+			displayJSON(array('success' => true, 'newItems' => $newItems, 'addToSystem' => $addToSystem));
+		}
+
+		public function processUAI() {
+			global $loggedIn, $currentUser, $mysql;
+
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
+				displayJSON(array('failed' => true, 'noPermission' => true));
+
+			$updateName = $mysql->prepare('UPDATE userAddedItems SET name = :name WHERE uItemID = '.intval($_POST['uItemID']));
+			$updateName->bindParam(':name', sanitizeString($_POST['name']));
+			$updateName->execute();
+			$newItemInfo = $mysql->query('SELECT * FROM userAddedItems WHERE uItemID = '.intval($_POST['uItemID']));
+			$newItemInfo = $newItemInfo->fetch();
+
+			if ($_POST['action'] == 'add') {
+				try {
+					$addNewItem = $mysql->prepare("INSERT INTO charAutocomplete SET type = '{$newItemInfo['itemType']}', name = :name, searchName = :searchName, userDefined = {$newItemInfo['user']->userID}");
+					$addNewItem->bindParam(':name', $_POST['name']);
+					$addNewItem->bindParam(':searchName', sanitizeString($_POST['name'], 'search_format'));
+					$addNewItem->execute();
+					$itemID = $mysql->lastInsertId();
+					$action = 'approved';
+				} catch (Exception $e) {
+					$findItem = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE searchName = :searchName");
+					$findItem->bindParam(':searchName', sanitizeString($_POST['name'], 'search_format'));
+					$findItem->execute();
+					$itemID = $findItem->fetchColumn();
+					$action = 'duplicate';
+				}
+				$addSystemRequest = $mysql->query("INSERT INTO userAddedItems SET itemType = '{$newItemInfo['itemType']}', itemID = {$itemID}, addedBy = {$newItemInfo['addedBy']}, addedOn = '{$newItemInfo['addedOn']}', system = '{$newItemInfo['system']}'");
+				$mysql->query("UPDATE userAddedItems SET itemID = {$itemID}, system = NULL, action = '{$action}', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
+			} elseif ($_POST['action'] == 'reject') 
+				$mysql->query("UPDATE userAddedItems SET action = 'rejected', actedBy = {$currentUser->userID}, actedOn = NOW() WHERE uItemID = ".intval($_POST['uItemID']));
 		}
 	}
 ?>
