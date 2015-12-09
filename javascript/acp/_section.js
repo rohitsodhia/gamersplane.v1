@@ -67,10 +67,20 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 
 	$scope.processUAI = function (item, action) {
 		item.action = action;
-		console.log(item);
-//		$http.post(API_HOST + '/characters/processUAI/', item).then(function (data) {
-//			data = data.data;
-//		});
+		$http.post(API_HOST + '/characters/processUAI/', { 'item': item, 'action': action }).then(function (data) {
+			data = data.data;
+			if (data.success) {
+				if (item.itemID) {
+					var sub = null;
+					$scope.addToSystem.forEach(function (set) {
+						if (set.type == item.type) 
+							sub = set.items;
+					});
+					removeEle(sub, item);
+				} else 
+					removeEle($scope.newItems, item);
+			}
+		});
 	}
 /*		$('#newItems').on('click', '.actions a', function (e) {
 			e.preventDefault();

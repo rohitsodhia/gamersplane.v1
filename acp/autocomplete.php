@@ -14,11 +14,13 @@
 					<div class="tr headerTR">
 						<div class="type">Type</div>
 						<div class="name">Name</div>
+						<div class="system">System</div>
 						<div class="addedBy">Added By</div>
 					</div>
 					<div ng-repeat="item in newItems | orderBy: ['+type', '+addedBy.username']" class="tr newItem">
 						<div class="type">{{item.type}}</div>
 						<input type="text" ng-model="item.name" class="name">
+						<div class="system">{{item.system}}</div>
 						<div class="addedBy"><a href="/ucp/{{item.addedBy.userID}}/" target="_blank" class="username" ng-bind-html="item.addedBy.username"></a></div>
 						<div class="actions">
 							<a href="" ng-click="processUAI(item, 'add')" class="sprite check"></a>
