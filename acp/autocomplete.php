@@ -6,32 +6,27 @@
 ?>
 
 		<div class="mainColumn right">
-			<h1 class="headerbar">Manage Autocomplete</h1>
-			<h2 class="headerbar hbDark">Skills</h2>
+			<h1 class="headerbar" skew-element>Manage Autocomplete</h1>
+			<h2 class="headerbar hbDark" skew-element>Skills</h2>
 			<div class="hbdMargined">
 				<div id="newItems">
 					<h3>New Items</h3>
 					<div class="tr headerTR">
 						<div class="type">Type</div>
 						<div class="name">Name</div>
+						<div class="system">System</div>
 						<div class="addedBy">Added By</div>
 					</div>
-<?
-	$newItems = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.name, ua.addedBy, u.username FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy WHERE name IS NOT NULL AND action IS NULL ORDER BY ua.itemType, u.username');
-	foreach ($newItems as $newItem) {
-?>
-					<div id="newItem_<?=$newItem['uItemID']?>" class="tr newItem">
-						<div class="type"><?=$newItem['itemType']?></div>
-						<input type="text" value="<?=$newItem['name']?>" class="name">
-						<div class="addedBy"><a href="/ucp/<?=$newItem['addedBy']?>/" class="username"><?=$newItem['username']?></a></div>
+					<div ng-repeat="item in newItems | orderBy: ['+type', '+addedBy.username']" class="tr newItem">
+						<div class="type">{{item.type}}</div>
+						<input type="text" ng-model="item.name" class="name">
+						<div class="system">{{item.system}}</div>
+						<div class="addedBy"><a href="/ucp/{{item.addedBy.userID}}/" target="_blank" class="username" ng-bind-html="item.addedBy.username"></a></div>
 						<div class="actions">
-							<a href="" class="sprite check"></a>
-							<a href="" class="sprite cross"></a>
+							<a href="" ng-click="processUAI(item, 'add')" class="sprite check"></a>
+							<a href="" ng-click="processUAI(item, 'reject')" class="sprite cross"></a>
 						</div>
 					</div>
-<?
-	}
-?>
 				</div>
 				<div id="addToSystem">
 					<h3>Add to System</h3>
@@ -40,27 +35,17 @@
 						<div class="system">System</div>
 						<div class="addedBy">Added By</div>
 					</div>
-<?
-	$addToSystem = $mysql->query('SELECT ua.uItemID, ua.itemType, ua.itemID, il.name, ua.addedBy, u.username, ua.system FROM userAddedItems ua INNER JOIN users u ON u.userID = ua.addedBy INNER JOIN charAutocomplete il ON ua.itemType = il.type AND ua.itemID = il.itemID WHERE ua.name IS NULL AND ua.itemID IS NOT NULL AND action IS NULL ORDER BY ua.itemType, il.name');
-	$currentType = '';
-	foreach ($addToSystem as $item) {
-		if ($item['itemType'] != $currentType) {
-			$currentType = $item['itemType'];
-			echo "					<div class=\"typeHeader\">{$item['itemType']}</div>\n";
-		}
-?>
-					<div id="item_<?=$item['uItemID']?>" class="tr item">
-						<div class="name"><?=$item['name']?></div>
-						<div class="system"><?=$systems->getFullName($item['system'])?></div>
-						<div class="addedBy"><a href="/ucp/<?=$item['addedBy']?>/" class="username"><?=$item['username']?></a></div>
-						<div class="actions">
-							<a href="" class="sprite check"></a>
-							<a href="" class="sprite cross"></a>
+					<div ng-repeat="set in addToSystem | orderBy: '+type'">
+						<div class="typeHeader">{{set.type}}</div>
+						<div ng-repeat="item in set.items | orderBy: '+system'" class="tr item">
+							<div class="name">{{item.name}}</div>
+							<div class="system">{{item.system}}</div>
+							<div class="addedBy"><a href="/ucp/{{item.addedBy.userID}}/" class="username" ng-bind-html="item.addedBy.username"></a></div>
+							<div class="actions">
+								<a href="" ng-click="processUAI(item, 'add')" class="sprite check"></a>
+								<a href="" ng-click="processUAI(item, 'reject')" class="sprite cross"></a>
+							</div>
 						</div>
-					</div>
-<?
-	}
-?>
 				</div>
 			</div>
 		</div>

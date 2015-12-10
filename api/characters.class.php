@@ -25,12 +25,16 @@
 				$this->toggleFavorite();
 			elseif ($pathOptions[0] == 'cilSearch' && $loggedIn) 
 				$this->cilSearch(); 
+			elseif ($pathOptions[0] == 'getUAI') 
+				$this->getUAI(); 
+			elseif ($pathOptions[0] == 'processUAI') 
+				$this->processUAI(); 
 			else 
 				displayJSON(array('failed' => true));
 		}
 
 		public static function newItemized($type, $name, $system) {
-			global $currentUser, $mysql;
+			global $currentUser, $systems;
 
 			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
@@ -39,29 +43,30 @@
 			if ($systems->verifySystem($system)) 
 				return false;
 
-			$itemCheck = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE type = :type AND LOWER(searchName) = :searchName");
-			$itemCheck->bindValue(':type', $type);
-			$itemCheck->bindValue(':searchName', sanitizeString($name, 'search_format'));
-			$itemCheck->execute();
-			if ($itemCheck->rowCount()) {
-				$itemID = $itemCheck->fetchColumn();
-				$inSystem = $mysql->query("SELECT system FROM system_charAutocomplete_map WHERE system = '{$system}' AND itemID = {$itemID}");
-				if ($inSystem->rowCount() == 0) {
-					try {
-						$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, itemID, addedBy, addedOn, system) VALUES (:itemType, :itemID, {$currentUser->userID}, NOW(), '{$system}')");
-						$addItem->bindValue(':itemType', $type);
-						$addItem->bindValue(':itemID', $itemID);
-						$addItem->execute();
-					} catch (Exception $e) {}
-				}
-			} else {
-				try {
-					$addItem = $mysql->prepare("INSERT INTO userAddedItems (itemType, name, addedBy, addedOn, system) VALUES (:itemType, :name, {$currentUser->userID}, NOW(), '{$system}')");
-					$addItem->bindValue(':itemType', $type);
-					$addItem->bindValue(':name', sanitizeString($name, 'rem_dup_spaces'));
-					$addItem->execute();
-				} catch (Exception $e) {}
-			}
+			$searchName = sanitizeString($name, 'search_format');
+			$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName), array('_id' => true));
+			$uai = array(
+				'name' => $name,
+				'itemID' => null,
+				'action' => null,
+				'system' => $system,
+				'type' => $type,
+				'addedBy' => array(
+					'userID' => (int) $currentUser->userID,
+					'username' => $currentUser->username,
+					'on' => new MongoDate()
+				),
+				'actedBy' => array(
+					'userID' => null,
+					'username' => null,
+					'on' => null
+				)
+			);
+			if ($ac != null) {
+				$uai['itemID'] = $ac['_id']->{$id};
+				$mongo->userAddedItems->insert($uai);
+			} else 
+				$mongo->userAddedItems->insert($uai);
 
 			return true;
 		}
@@ -313,28 +318,145 @@
 		}
 
 		public function cilSearch() {
-			global $mysql;
+			global $mysql, $mongo;
 
 			$type = sanitizeString($_POST['type']);
-			$search = sanitizeString($_POST['search'], 'search_format');
-			$characterID = intval($_POST['characterID']);
+			$searchName = sanitizeString($_POST['search'], 'search_format');
 			$system = $_POST['system'];
 			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
 			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
-			
+
 			if ($systems->verifySystem($system)) {
-				$rItems = $mysql->prepare("SELECT sacm.itemID, il.name, sacm.itemID IS NOT NULL systemItem FROM charAutocomplete il LEFT JOIN system_charAutocomplete_map sacm ON sacm.system = '{$system}' AND sacm.itemID = il.itemID WHERE il.type = ?".($systemOnly?" AND sacm.system = '{$system}'":'')." AND il.name LIKE ? ORDER BY systemItem DESC, il.name LIMIT 5");
-				$rItems->execute(array($type, "%{$search}%"));
+				$search = array('searchName' => new MongoRegex("/{$searchName}/"));
+				if ($systemOnly) {
+					$search['systems'] = $system;
+					$rCIL = $mongo->charAutocomplete->find($search)->sort(array('searchName' => true))->limit(5);
+				} else {
+					$rCIL = $mongo->charAutocomplete->aggregate(array(
+						array(
+							'$match' => array(
+								'searchName' => $search['searchName']
+							)
+						),
+						array(
+							'$project' => array(
+								'name' => true,
+								'inSystem' => array(
+									'$setIsSubset' => array(
+										array($system),
+										'$systems'
+									)
+								)
+							)
+						),
+						array(
+							'$sort' => array(
+								'inSystem' => -1,
+								'name' => 1
+							)
+						),
+						array(
+							'$limit' => 5
+						)
+					));
+				}
+
 				$items = array();
-				foreach ($rItems as $item) 
+				foreach ($rCIL['result'] as $item) 
 					$items[] = array(
-						'itemID' => (int) $item['itemID'],
+						'itemID' => $item['_id']->{$id},
 						'name' => $item['name'],
 						'systemItem' => $item['systemItem']?true:false
 					);
 				displayJSON(array('items' => $items));
 			}
+		}
+
+		public function getUAI() {
+			global $loggedIn, $currentUser, $mysql, $mongo;
+
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
+				displayJSON(array('failed' => true, 'noPermission' => true));
+
+			$rNewItems = $mongo->userAddedItems->find(array('itemID' => null, 'action' => null));
+			$newItems = array();
+			foreach ($rNewItems as $item) {
+				$item['_id'] = $item['_id']->{'$id'};
+				$newItems[] = $item;
+			}
+
+			$rAddToSystem = $mongo->userAddedItems->find(array('itemID' => array('$ne' => null), 'action' => null));
+			$addToSystem = array();
+			foreach ($rAddToSystem as $item) {
+				$item['_id'] = $item['_id']->{'$id'};
+				$addToSystem[] = $item;
+			}
+
+			displayJSON(array('success' => true, 'newItems' => $newItems, 'addToSystem' => $addToSystem));
+		}
+
+		public function processUAI() {
+			global $loggedIn, $currentUser, $mysql, $mongo;
+
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
+				displayJSON(array('failed' => true, 'noPermission' => true));
+
+			$uai = $mongo->userAddedItems->findOne(array('_id' => new MongoId($_POST['item']->_id)));
+			$uai['name'] = $_POST['item']->name;
+			$uai['actedBy'] = array(
+				'userID' => (int) $currentUser->userID,
+				'username' => $currentUser->username,
+				'on' => new MongoDate()
+			);
+			$action = $_POST['action'];
+			$ac = null;
+			$newItem = false;
+			if ($uai['itemID'] == null) {
+				$ac = $this->searchAutocomplete($uai['name'], $action == 'add'?$uai['type']:null);
+				$uai['itemID'] = $ac['_id']->{'$id'};
+				$newItem = true;
+			} else 
+				$ac = $mongo->charAutocomplete->findOne(array('_id' => $uai['itemID']));
+			if ($_POST['action'] == 'reject') {
+				$uai = array(
+					'$set' => 
+						array(
+							'name' => $uai['name'],
+							'action' => 'rejected',
+							'actedBy' => $uai['actedBy']
+						)
+				);
+				$mongo->userAddedItems->update(array('_id' => new MongoId($_POST['item']->_id)), $uai);
+			} elseif ($_POST['action'] == 'add') {
+				$uai['action'] = 'accepted';
+				if ($ac) 
+					$mongo->charAutocomplete->update(array('_id' => $ac['_id']), array('$push' => array('systems' => $uai['system'])));
+				$_id = $uai['_id'];
+				unset($uai['_id']);
+				$mongo->userAddedItems->update(array('_id' => $_id), array('$set' => $uai));
+			}
+
+			displayJSON(array('success' => true));
+		}
+
+		private function searchAutocomplete($name, $type = null) {
+			global $mongo;
+
+			$searchName = sanitizeString($name, 'search_format');
+			$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName));
+			if ($ac == null && $type != null) {
+				$ac = array(
+					'name' => $name,
+					'searchName' => $searchName,
+					'type' => $type,
+					'userDefined' => true,
+					'systems' => array()
+				);
+				$mongo->charAutocomplete->insert($ac);
+			}
+
+			return $ac;
 		}
 	}
 ?>

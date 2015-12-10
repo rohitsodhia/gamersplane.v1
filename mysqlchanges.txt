@@ -1,1 +1,3 @@
-UPDATE dispatch SET ngController = 'listGames' WHERE url = 'games/list/';
+UPDATE dispatch SET ngController = 'acp_autocomplete' WHERE url = 'acp/autocomplete/';
+
+db.userAddedItems.update({ 'type': 'specialAbi' }, {'$set': { 'type': 'specialAbilities' }})

@@ -2,7 +2,6 @@
 	$.fn.autocomplete = function (pathOption, sendData) {
 		function search(pathOption, sendData, $autocompleteWrapper) {
 			$.post(pathOption, sendData, function (data) {
-				console.log($autocompleteWrapper);
 				if (data.length > 0) {
 					$autocompleteWrapper.addClass('open');
 					$autocompleteWrapper.find('.autocompleteResults').html(data).slideDown();

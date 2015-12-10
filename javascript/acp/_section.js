@@ -1,29 +1,6 @@
 $(function () {
 	var $mainColumn = $('div.mainColumn');
 
-	if ($('#page_acp_autocomplete').length) {
-		$('#newItems').on('click', '.actions a', function (e) {
-			e.preventDefault();
-
-			var $itemRow = $(this).closest('.newItem'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
-			if ($(this).hasClass('check')) postData['action'] = 'add';
-			else if ($(this).hasClass('cross')) postData['action'] = 'reject';
-			$.post('/acp/process/newItem/', postData, function (data) {
-				$itemRow.remove();
-			});
-		});
-		$('#addToSystem').on('click', '.actions a', function (e) {
-			e.preventDefault();
-
-			var $itemRow = $(this).closest('.item'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
-			if ($(this).hasClass('check')) postData['action'] = 'add';
-			else if ($(this).hasClass('cross')) postData['action'] = 'reject';
-			$.post('/acp/process/addToSystem/', postData, function (data) {
-				$itemRow.remove();
-			});
-		});
-	}
-
 	if ($('#page_acp_users').length) {
 		var currentTab = 'active';
 		$('#controls a').click(function (e) {
@@ -69,7 +46,63 @@ $(function () {
 	}
 });
 
-controllers.controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 'SystemsService', function ($scope, $http, $sce, $timeout, SystemsService) {
+controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+	$scope.$emit('pageLoading');
+	$scope.newItems = [];
+	$scope.addToSystem = [];
+	$http.post(API_HOST + '/characters/getUAI/').then(function (data) {
+		data = data.data;
+		$scope.$emit('pageLoading');
+		$scope.newItems = data.newItems;
+		addToSystem = {};
+		data.addToSystem.forEach(function (item) {
+			if (typeof addToSystem[item.type] == 'undefined') 
+				addToSystem[item.type] = [];
+			addToSystem[item.type].push(item);
+		});
+		angular.forEach(addToSystem, function (items, key) {
+			$scope.addToSystem.push({ 'type': key, 'items': items });
+		});
+	});
+
+	$scope.processUAI = function (item, action) {
+		item.action = action;
+		$http.post(API_HOST + '/characters/processUAI/', { 'item': item, 'action': action }).then(function (data) {
+			data = data.data;
+			if (data.success) {
+				if (item.itemID) {
+					var sub = null;
+					$scope.addToSystem.forEach(function (set) {
+						if (set.type == item.type) 
+							sub = set.items;
+					});
+					removeEle(sub, item);
+				} else 
+					removeEle($scope.newItems, item);
+			}
+		});
+	}
+/*		$('#newItems').on('click', '.actions a', function (e) {
+			e.preventDefault();
+
+			var $itemRow = $(this).closest('.newItem'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
+			if ($(this).hasClass('check')) postData['action'] = 'add';
+			else if ($(this).hasClass('cross')) postData['action'] = 'reject';
+			$.post('/acp/process/newItem/', postData, function (data) {
+				$itemRow.remove();
+			});
+		});
+		$('#addToSystem').on('click', '.actions a', function (e) {
+			e.preventDefault();
+
+			var $itemRow = $(this).closest('.item'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
+			if ($(this).hasClass('check')) postData['action'] = 'add';
+			else if ($(this).hasClass('cross')) postData['action'] = 'reject';
+			$.post('/acp/process/addToSystem/', postData, function (data) {
+				$itemRow.remove();
+			});
+		});*/
+}]).controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 'SystemsService', function ($scope, $http, $sce, $timeout, SystemsService) {
 	$scope.selectSystem = {
 		'data': [],
 		'value': {},
