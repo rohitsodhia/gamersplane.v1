@@ -327,16 +327,45 @@
 			$systems = Systems::getInstance();
 			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
 
-			$search = array('searchName' => new MongoRegex("/{$searchName}/"));
-			if ($systemOnly) 
-				$search['systems'] = $system;
-			
 			if ($systems->verifySystem($system)) {
-				$rItems = $mongo->charAutocomplete->find($search);
+				$search = array('searchName' => new MongoRegex("/{$searchName}/"));
+				if ($systemOnly) {
+					$search['systems'] = $system;
+					$rCIL = $mongo->charAutocomplete->find($search)->sort(array('searchName' => true))->limit(5);
+				} else {
+					$rCIL = $mongo->charAutocomplete->aggregate(array(
+						array(
+							'$match' => array(
+								'searchName' => $search['searchName']
+							)
+						),
+						array(
+							'$project' => array(
+								'name' => true,
+								'inSystem' => array(
+									'$setIsSubset' => array(
+										array($system),
+										'$systems'
+									)
+								)
+							)
+						),
+						array(
+							'$sort' => array(
+								'inSystem' => -1,
+								'name' => 1
+							)
+						),
+						array(
+							'$limit' => 5
+						)
+					));
+				}
+
 				$items = array();
-				foreach ($rItems as $item) 
+				foreach ($rCIL['result'] as $item) 
 					$items[] = array(
-						'itemID' => (int) $item['itemID'],
+						'itemID' => $item['_id']->{$id},
 						'name' => $item['name'],
 						'systemItem' => $item['systemItem']?true:false
 					);
