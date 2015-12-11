@@ -10,6 +10,7 @@
 	<ul class="floatRight">
 		<li><a href="http://amazon.gamersplane.com" target="_blank">Amazon referral link</a></li>
 		<li><a href="http://dtrpg.gamersplane.com" target="_blank">DTRPG referral link</a></li>
+		<li><a href="http://erd.gamersplane.com" target="_blank">Easy Roller Dice Co. referral link</a></li>
 		<li><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 			<input type="hidden" name="cmd" value="_s-xclick">
 			<input type="hidden" name="hosted_button_id" value="6VHQ2BP4AS7L6">

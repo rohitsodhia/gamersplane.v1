@@ -7,6 +7,7 @@
 					<p>While you're shopping online, you can use these referral links:</p>
 					<p><a href="http://amazon.gamersplane.com" target="_blank"><img src="/images/about/amazon.jpg" title="Amazon" alt="Amazon"></a></p>
 					<p><a href="http://dtrpg.gamersplane.com" target="_blank"><img src="/images/about/drivethrurpg.jpg" title="DriveThru RPG" alt="DriveThru RPG"></a><br>(this link also works for any of DriveThru's other sites)</p>
+					<p><a href="http://erd.gamersplane.com" target="_blank"><img src="/images/about/erd.jpg" title="Easy Roller Dice Co." alt="Easy Roller Dice Co."></a></p>
 					<p>Or you can support GP directly by making a donation through PayPal:</p>
 					<p><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 						<input type="hidden" name="cmd" value="_s-xclick">
