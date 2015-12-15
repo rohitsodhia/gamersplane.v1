@@ -260,7 +260,7 @@
 					echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">".printReady($this->forums[$hForumID]->title)."</a>".($fCounter != sizeof($heritage) - 1?' > ':'')."\n";
 					$fCounter++;
 				}
-			} else echo "\t\t\t\t\t&nbsp;\n";
+			}
 ?>
 				</div>
 <?
