@@ -266,6 +266,21 @@ app.config(function ($httpProvider) {
 			return data.data;
 		});
 	};
+}]).service('ForumsService', ['$http', function ($http) {
+	this.getSubscriptions = function (fields) {
+		return $http.post(API_HOST + '/forums/getSubscriptions/', fields).then(function (data) {
+			return data.data;
+		});
+	};
+	this.unsubscribe = function (userID, type, id) {
+		return $http.post(API_HOST + '/forums/unsubscribe/', {
+			userID: userID,
+			type: type,
+			id: id
+		}).then(function (data) {
+			return data.data;
+		});
+	};
 }]).service('Links', ['$http', function ($http) {
 	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
 	this.get = function (params) {

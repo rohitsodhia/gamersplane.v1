@@ -222,16 +222,12 @@
 
 #page_forum, #page_forum_search {
 	#forumLinks {
-		margin: 1em 10px;
-		height: 24px;
-		position: relative;
+		margin: 1em 10px 0;
 	}
 }
 
 #page_forum #forumOptions {
-	position: absolute;
-	left: 0;
-	bottom: 0;
+	float: left;
 }
 
 #page_forum, #page_forum_search {
@@ -1387,5 +1383,46 @@
 
 	.buttonPanel {
 		margin-top: .5em;
+	}
+}
+
+/* --------------------------------------------*/
+
+#page_subscriptions {
+	.column {
+		display: inline-block;
+		vertical-align: top;
+		width: 49%;
+	}
+
+	#forums {
+		margin-right: 1.4%;
+	}
+
+	ul {
+		margin-left: 0;
+		list-style: none;
+
+		ul {
+			margin-left: 20px;
+			margin-top: .5em;
+		}
+
+		li {
+			margin-bottom: .5em;
+
+			span > * {
+				display: inline-block;
+				vertical-align: middle;
+			}
+
+			.sprite {
+				margin-left: 5px;
+			}
+
+			.notSubbed {
+				color: #888;
+			}
+		}
 	}
 }
