@@ -1,5 +1,0 @@
-INSERT INTO dispatch SET url = 'forums/subscriptions/', pageID = 'subscriptions', ngController = 'subscriptions', file = 'forums/subscriptions.php', title = 'Manage Subscriptions';
-
-UPDATE dispatch SET ngController = 'acp_autocomplete' WHERE url = 'acp/autocomplete/';
-
-db.userAddedItems.update({ 'type': 'specialAbi' }, {'$set': { 'type': 'specialAbilities' }})
