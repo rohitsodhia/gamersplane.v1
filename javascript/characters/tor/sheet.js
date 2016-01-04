@@ -1,6 +1,39 @@
-controllers.controller('viewCharacter_shadowrun5', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', 'Range', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService, Range) {
+controllers.controller('viewCharacter_tor', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService) {
 	CurrentUser.load().then(function () {
-		$scope.range = Range.get;
+		$scope.skills = {
+			'Body': {
+				'personality': 'Awe',
+				'movement': 'Athletics',
+				'perception': 'Awareness',
+				'survival': 'Explore',
+				'custom': 'Song',
+				'vocation': 'Craft',
+			},
+			'Heart': {
+				'personality': 'Inspire',
+				'movement': 'Travel',
+				'perception': 'Insight',
+				'survival': 'Healing',
+				'custom': 'Courtesy',
+				'vocation': 'Battle',
+			},
+			'Wits': {
+				'personality': 'Persuade',
+				'movement': 'Stealth',
+				'perception': 'Search',
+				'survival': 'Hunting',
+				'custom': 'Riddle',
+				'vocation': 'Lore'
+			}
+		}
+		$scope.skillGroups = [
+			'personality',
+			'movement',
+			'perception',
+			'survival',
+			'custom',
+			'vocation'
+		]
 		$scope.labels = {
 			'rep': { 'street': 'Street Cred', 'notoriety': 'Notoriety', 'public': 'Public Awareness' },
 			'stats': [

@@ -145,7 +145,13 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 			if (data.saved) 
 				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2];
 		});
-	}
+	};
+
+	$('.hasNotesLinks').on('click', '.notesLink', function (e) {
+		e.preventDefault();
+
+		$(this).siblings('textarea').slideToggle();
+	})
 }]).controller('editCharacter_custom', ['$scope', 'CurrentUser', function ($scope, CurrentUser) {
 	CurrentUser.load().then(function () {
 		$scope.loadChar();
