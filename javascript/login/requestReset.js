@@ -10,7 +10,7 @@ $(function () {
 		success: function (data) {
 			if (data == '1') {
 				parent.$.colorbox.close();
-//				parent.document.location.reload();
+//				parent.window.location.reload();
 			}
 		}
 	});*/

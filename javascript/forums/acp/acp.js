@@ -39,7 +39,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 		$scope.getForumDetails = function (forumID, newSection) {
 			$http.post(API_HOST + '/forums/acp/details/', { forumID: forumID }).success(function (data) {
 				if (data.failed && $scope.details == {}) 
-					document.location = '/forums/';
+					window.location.href = '/forums/';
 				else if (data.success) {
 					if (typeof newSection == 'undefined' || ['details', 'subforums', 'groups', 'permissions'].indexOf(newSection) == -1) 
 						$scope.currentSection = 'details';

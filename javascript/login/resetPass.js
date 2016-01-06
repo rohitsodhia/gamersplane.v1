@@ -54,9 +54,9 @@ $(function () {
 		},
 		success: function (data) {
 			if (data == 'success') {
-				document.location = '/login/?resetSuccess=1';
+				window.location.href = '/login/?resetSuccess=1';
 			} else {
-//				document.location.reload();
+//				window.location.reload();
 			}
 		}
 	});

@@ -15,8 +15,8 @@ $(function () {
 			success: function (data) {
 				if (data == '1') {
 //					parent.$.colorbox.close();
-					parent.document.location.reload();
-				} else parent.document.location = data;
+					parent.window.location.reload();
+				} else parent.window.location.href = data;
 			}
 		});
 	}

@@ -28,7 +28,7 @@ $(function () {
 					$suspendDate.appendTo($mainColumn);
 					$li.remove();
 				}
-//				document.location.reload();
+//				window.location.reload();
 			}
 		});
 		$('ul.prettyList').on('click', 'a.suspend', function (e) {
@@ -260,7 +260,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 					'sendFieldsAs': 'form'
 				}).success(function (data) {
 					if (scope.new) 
-						document.location.reload();
+						window.location.reload();
 					else {
 						if (data.image) 
 							scope.data.image = data.image;
@@ -275,7 +275,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 			}
 			scope.deleteLink = function () {
 				$http.post(API_HOST + '/links/deleteLink/', { '_id': scope.data._id }).success(function (data) {
-					document.location.reload();
+					window.location.reload();
 				})
 			}
 		}

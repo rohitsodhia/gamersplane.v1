@@ -3,14 +3,18 @@
 		function __construct() {
 			global $loggedIn, $pathOptions;
 
-			if ($pathOptions[0] == 'get') 
-				$this->get();
+			if ($pathOptions[0] == 'getGames') 
+				$this->getGames();
 			elseif ($pathOptions[0] == 'details') 
 				$this->details($_POST['gameID']);
-			elseif ($pathOptions[0] == 'toggleGameStatus' && intval($_POST['gameID'])) 
-				$this->toggleGameStatus($_POST['gameID']);
+			elseif ($pathOptions[0] == 'create') 
+				$this->createGame();
+			elseif ($pathOptions[0] == 'update') 
+				$this->updateGame();
 			elseif ($pathOptions[0] == 'toggleForum' && intval($_POST['gameID'])) 
 				$this->toggleForum($_POST['gameID']);
+			elseif ($pathOptions[0] == 'toggleGameStatus' && intval($_POST['gameID'])) 
+				$this->toggleGameStatus($_POST['gameID']);
 			elseif ($pathOptions[0] == 'retire' && intval($_POST['gameID'])) 
 				$this->retire($_POST['gameID']);
 			elseif ($pathOptions[0] == 'apply') 
@@ -27,11 +31,13 @@
 				$this->removeCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
 			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'approve' && intval($_POST['gameID']) && intval($_POST['characterID'])) 
 				$this->approveCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
+			elseif ($pathOptions[0] == 'getLFG') 
+				$this->getLFG();
 			else 
 				displayJSON(array('failed' => true));
 		}
 
-		public function get() {
+		public function getGames() {
 			global $currentUser, $mysql;
 
 			if (isset($_POST['my']) && $_POST['my']) 
@@ -138,6 +144,150 @@
 			displayJSON(array('success' => true, 'details' => $gameInfo, 'players' => $players, 'invites' => $invites, 'decks' => $decks));
 		}
 
+		public function createGame() {
+			global $currentUser, $mysql, $mongo;
+			require_once(FILEROOT.'/includes/Systems.class.php');
+			$systems = Systems::getInstance();
+
+			$gameID = intval($_POST['gameID']);
+			$details['title'] = sanitizeString($_POST['title']);
+			$details['system'] = $systems->verifySystem($_POST['system'])?$_POST['system']:null;
+			$details['postFrequency'] = intval($_POST['timesPer']).'/'.$_POST['perPeriod'];
+			$details['numPlayers'] = intval($_POST['numPlayers']);
+			$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
+			$details['description'] = sanitizeString($_POST['description']);
+			$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
+			
+			$errors = array();
+			if (strlen($details['title']) == 0) 
+				$errors[] = 'invalidTitle';
+/*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
+			$titleCheck->execute(array(':title' => $details['title']));
+			if ($titleCheck->rowCount()) 
+				$errors[] = 'repeatTitle';*/
+			if ($details['system'] == null && !isset($_POST['save'])) 
+				$errors[] = 'invalidSystem';
+			if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) 
+				$errors[] = 'invalidFreq';
+			if ($details['numPlayers'] < 2) 
+				$errors[] = 'invalidNumPlayers';
+
+			if (sizeof($errors)) 
+				displayJSON(array('failed' => true, 'errors' => $errors));
+			else {
+				$details['gmID'] = $currentUser->userID;
+				$details['created'] = date('Y-m-d H:i:s');
+				$details['start'] = $details['created'];
+
+				$system = $details['system'];
+				$addGame = $mysql->prepare('INSERT INTO games (title, system, gmID, created, start, postFrequency, numPlayers, description, charGenInfo, forumID, groupID) VALUES (:title, :system, :gmID, :created, :start, :postFrequency, :numPlayers, :description, :charGenInfo, -1, -1)');
+				$addGame->bindParam('title', $details['title']);
+				$addGame->bindParam('system', $details['system']);
+				$addGame->bindParam('gmID', $details['gmID']);
+				$addGame->bindParam('created', $details['created']);
+				$addGame->bindParam('start', $details['start']);
+				$addGame->bindParam('postFrequency', $details['postFrequency']);
+				$addGame->bindParam('numPlayers', $details['numPlayers']);
+				$addGame->bindParam('description', $details['description']);
+				$addGame->bindParam('charGenInfo', $details['charGenInfo']);
+				$addGame->execute();
+				$gameID = $mysql->lastInsertId();
+
+				$mysql->query("INSERT INTO players (gameID, userID, approved, isGM, primaryGM) VALUES ($gameID, {$currentUser->userID}, 1, 1, 1)");
+
+				$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
+				list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
+				$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, 2, ".mt_rand(0, 9999).", {$order}, {$gameID})");
+				$addForum->execute(array(':title' => $details['title']));
+				$forumID = $mysql->lastInsertId();
+				$heritage = sql_forumIDPad(2).'-'.sql_forumIDPad($forumID);
+				$mysql->query("UPDATE forums SET heritage = '{$heritage}' WHERE forumID = {$forumID}");
+				$details['forumID'] = $forumID;
+
+				$addForumGroup = $mysql->prepare("INSERT INTO forums_groups (name, ownerID, gameID) VALUES (:title, {$currentUser->userID}, {$gameID})");
+				$addForumGroup->execute(array('title' => $details['title']));
+				$groupID = $mysql->lastInsertId();
+				$details['groupID'] = $groupID;
+
+				$mysql->query("UPDATE games SET forumID = {$forumID}, groupID = {$groupID} WHERE gameID = {$gameID}");
+				
+				$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$currentUser->userID.')');
+
+				$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES('.$currentUser->userID.', '.$forumID.')');
+				$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ('.$groupID.', '.$forumID.', 2, 2, 2, 2, 2, 2, 2)');
+				$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
+
+#				$hl_gameCreated = new HistoryLogger('gameCreated');
+#				$hl_gameCreated->addGame($gameID)->save();
+
+				$lfgRecips = $mongo->users->find(array('lfg' => $details['system']), array('userID' => true));
+				if ($lfgRecips->count()) {
+					$userIDs = array();
+					foreach ($lfgRecips as $recip) 
+						$userIDs[] = $recip['userID'];
+					$lfgRecips = $mysql->query("SELECT email FROM users WHERE userID IN (".implode(', ', $userIDs).")");
+					$recips = '';
+					foreach ($lfgRecips as $info) 
+						$recips .= $info['email'].', ';
+					ob_start();
+					include('emails/pmEmail.php');
+					$email = ob_get_contents();
+					ob_end_clean();
+					mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName($system)} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
+				}
+
+				displayJSON(array('success' => true, 'gameID' => (int) $gameID));
+			}
+		}
+
+		public function updateGame() {
+			global $currentUser, $mysql, $mongo;
+			require_once(FILEROOT.'/includes/Systems.class.php');
+			$systems = Systems::getInstance();
+
+			$gameID = intval($_POST['gameID']);
+			$details['title'] = sanitizeString($_POST['title']);
+			$details['postFrequency'] = intval($_POST['timesPer']).'/'.$_POST['perPeriod'];
+			$details['numPlayers'] = intval($_POST['numPlayers']);
+			$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
+			$details['description'] = sanitizeString($_POST['description']);
+			$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
+			
+			$errors = array();
+			if (strlen($details['title']) == 0) 
+				$errors[] = 'invalidTitle';
+/*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
+			$titleCheck->execute(array(':title' => $details['title']));
+			if ($titleCheck->rowCount()) 
+				$errors[] = 'repeatTitle';*/
+			if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) 
+				$errors[] = 'invalidFreq';
+			if ($details['numPlayers'] < 2) 
+				$errors[] = 'invalidNumPlayers';
+
+			if (sizeof($errors)) 
+				displayJSON(array('failed' => true, 'errors' => $errors));
+			else {
+				$updateGame = $mysql->prepare('UPDATE games SET title = :title, postFrequency = :postFrequency, numPlayers = :numPlayers, charsPerPlayer = :charsPerPlayer, description = :description, charGenInfo = :charGenInfo WHERE gameID = :gameID');
+				$updateGame->bindValue(':title', $details['title']);
+				$updateGame->bindValue(':postFrequency', $details['postFrequency']);
+				$updateGame->bindValue(':numPlayers', $details['numPlayers']);
+				$updateGame->bindValue(':charsPerPlayer', $details['charsPerPlayer']);
+				$updateGame->bindValue(':description', $details['description']);
+				$updateGame->bindValue(':charGenInfo', $details['charGenInfo']);
+				$updateGame->bindValue(':gameID', $gameID);
+				$updateGame->execute();
+				$updateForums = $mysql->prepare('UPDATE forums, forums_groups, games SET forums.title = :title, forums_groups.name = :title WHERE forums.forumID = games.forumID AND forums_groups.groupID = games.groupID AND games.gameID = :gameID');
+				$updateForums->bindValue(':title', $details['title']);
+				$updateForums->bindValue(':gameID', $gameID);
+				$updateForums->execute();
+#				$hl_gameEdited = new HistoryLogger('gameEdited');
+#				$hl_gameEdited->addGame($gameID)->save();
+				
+				displayJSON(array('success' => true, 'gameID' => (int) $gameID));
+			}
+		}
+
 		public function toggleForum($gameID) {
 			global $currentUser, $mysql;
 
@@ -149,6 +299,7 @@
 			} else 
 				displayJSON(array('failed' => true, 'errors' => 'notGM'));
 		}
+
 
 		public function toggleGameStatus($gameID) {
 			global $currentUser, $mysql;
@@ -358,6 +509,18 @@
 #			$hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 			
 			displayJSON(array('success' => true, 'action' => 'characterApproved', 'characterID' => $characterID));
+		}
+
+		public function getLFG() {
+			global $mongo;
+
+			$lfgCount = intval($_POST['lfgCount']) >= 0?intval($_POST['lfgCount']):10;
+			$rLFGs = $mongo->systems->find(array('lfg' => array('$ne' => 0)), array('name' => 1, 'lfg' => 1))->sort(array('lfg' => -1, 'sortName' => 1))->limit($lfgCount);
+			$lfgs = array();
+			foreach ($rLFGs as $rLFG) 
+				$lfgs[] = array('name' => $rLFG['name'], 'count' => (int) $rLFG['lfg']);
+
+			displayJSON(array('success' => true, 'lfgs' => $lfgs));
 		}
 	}
 ?>

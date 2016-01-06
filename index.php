@@ -96,6 +96,7 @@
 	$forumSearch->findThreads();
 	$forumSearch->displayLatestHP();
 ?>
+					<div id="latestPostsLink"><a href="/forums/search/?search=latestPosts" target="_blank">Latest Posts</a></div>
 				</div>
 			</div>
 

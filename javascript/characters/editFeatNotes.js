@@ -3,7 +3,7 @@ $(function() {
 		success: function (data) {
 			if (data != 0) {
 				parent.$.colorbox.close();
-//				parent.document.location.reload();
+//				parent.window.location.reload();
 			}
 		}
 	});

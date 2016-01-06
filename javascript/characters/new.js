@@ -6,7 +6,7 @@ $(function () {
 		},
 		success: function (data) {
 			if (data == '1') {
-				parent.document.location.reload();
+				parent.window.location.reload();
 			}
 		}
 	});

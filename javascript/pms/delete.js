@@ -3,15 +3,15 @@ controllers.controller('pmDelete', function ($scope, $cookies, $http) {
 
 	$http.post(API_HOST + '/pms/allowed/', { pmID: pathElements[2] }).success(function (data) {
 		if (!data.allowed) 
-			parent.document.location = '/pms/';
+			parent.window.location.href = '/pms/';
 		$scope.pmID = pathElements[2];
 		$scope.formData = {};
 	});
 
 	$scope.deletePM = function () {
 		$http.post(API_HOST + '/pms/delete/', { pmID: pathElements[2] }).success(function (data) {
-//			if (data.success) parent.document.location = '/pms/';
-//			else parent.document.location.reload();
+//			if (data.success) parent.window.location.href = '/pms/';
+//			else parent.window.location.reload();
 		});
 	}
 
@@ -25,7 +25,7 @@ controllers.controller('pmDelete', function ($scope, $cookies, $http) {
 		success: function (data) {
 			if (data == '1') {
 				parent.deleted(pmID);
-//				parent.document.location.reload();
+//				parent.window.location.reload();
 			}
 		}
 	});

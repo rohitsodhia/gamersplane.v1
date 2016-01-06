@@ -27,9 +27,9 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 	$scope.filter = { 'orderBy': 'createdOn_d', 'systems': [] };
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
-		GamesService.get().then(function (data) {
+		GamesService.getGames().then(function (data) {
 			reqLoading = $scope.clearPageLoading(reqLoading);
-			$scope.games = data.games;
+			$scope.games = data;
 			$scope.games.forEach(function (element) {
 				element.lastActivity = UsersService.inactive(element.lastActivity);
 			});
@@ -52,9 +52,9 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 			if (filter.systems.length == 0) 
 				filter.systems = null;
 			$scope.games = [];
-			GamesService.get(filter).then(function (data) {
+			GamesService.getGames(filter).then(function (data) {
 				$scope.$emit('pageLoading');
-				$scope.games = data.games;
+				$scope.games = data;
 				$scope.games.forEach(function (element) {
 					element.lastActivity = UsersService.inactive(element.lastActivity);
 				});

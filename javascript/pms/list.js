@@ -4,7 +4,7 @@ controllers.controller('pmList', ['$scope', '$http', 'CurrentUser', 'DeletePM', 
 	CurrentUser.load().then(function () {
 		$scope.CurrentUser = CurrentUser.get();
 		if (!$scope.CurrentUser) 
-			document.location = '/';
+			window.location.href = '/';
 
 		if ($.urlParam('page')) 
 			$scope.pagination.current = parseInt($.urlParam('page'));

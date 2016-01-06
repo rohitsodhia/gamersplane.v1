@@ -36,7 +36,7 @@ $(function() {
 			dataType: 'json',
 			success: function (data) {
 				if (data.success == true) {
-					parent.document.location.reload();
+					parent.window.location.reload();
 				}
 			}
 		});
@@ -137,7 +137,7 @@ $(function() {
 		},
 		success: function (data) {
 			if (data == '1') {
-				parent.document.location.reload();
+				parent.window.location.reload();
 			}
 		}
 	});
@@ -318,11 +318,24 @@ app.config(function ($httpProvider) {
 		return deferred.promise;
 	}
 }]).service('GamesService', ['$http', function ($http) {
-	this.get = function(params) {
-		return $http.post(API_HOST + '/games/get/', params).then(function (data) {
-			data = data.data;
-			return data;
+	this.getGames = function (params) {
+		return $http.post(API_HOST + '/games/getGames/', params).then(function (data) {
+			if (data.data.success) 
+				return data.data.games;
 		})
+	};
+	this.getDetails = function (gameID) {
+		return $http.post(API_HOST + '/games/details/', { 'gameID': gameID }).then(function (data) { return data.data; });
+	};
+	this.getLFG = function (lfgCount) {
+		lfgCount = parseInt(lfgCount) >= 0?parseInt(lfgCount):10;
+		return $http.post(API_HOST + '/games/getLFG/', { count: lfgCount }).then(function (data) { return data.data.lfgs; });
+	};
+	this.create = function (details) {
+		return $http.post(API_HOST + '/games/create/', details).then(function (data) { return data.data; });
+	};
+	this.update = function (details) {
+		return $http.post(API_HOST + '/games/update/', details).then(function (data) { return data.data; });
 	};
 }]).service('ACSearch', ['$http', function ($http) {
 	this.cil = function (type, search, system, systemOnly) {
@@ -631,7 +644,7 @@ app.config(function ($httpProvider) {
 					scope.search = scope.value.display;
 				else 
 					scope.value = { 'value': null, 'display': '' };
-				if (scope.select && (isUndefined(scope.value) || isUndefined(scope.value.value) || isUndefined(scope.value.display) || (scope.value.value == null && scope.value.display == '')) && !scope.hasFocus) {
+				if (scope.select && scope.options.length && (isUndefined(scope.value) || isUndefined(scope.value.value) || isUndefined(scope.value.display) || (scope.value.value == null && scope.value.display == '')) && !scope.hasFocus) {
 					scope.value = copyObject(scope.options[0]);
 					scope.search = scope.value.display;
 				}

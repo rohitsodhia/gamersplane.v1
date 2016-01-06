@@ -1,0 +1,2 @@
+UPDATE dispatch SET ngController = 'games_new' WHERE url = 'games/new/';
+UPDATE dispatch SET ngController = 'games_edit' WHERE url = 'games/(###)/edit/';

@@ -1,4 +1,4 @@
-controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, ACSearch) {
+controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'GamesService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, GamesService, ACSearch) {
 	pathElements = getPathElements();
 	CurrentUser.load().then(function () {
 		CurrentUser = CurrentUser.get();
@@ -24,8 +24,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		setGameData = function () {
 			$scope.$emit('pageLoading');
-			$http.post(API_HOST + '/games/details/', { gameID: $scope.gameID }).then(function (data) {
-				data = copyObject(data.data);
+			GamesService.getDetails($scope.gameID).then(function (data) {
 				if (data.success) {
 					$scope.details = data.details;
 					$scope.players = data.players;
@@ -43,8 +42,8 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 								$scope.isGM = true;
 
 							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
-								$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'], 'noGame': true }).success(function (data) {
-									$scope.characters = data.characters;
+								$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'], 'noGame': true }).then(function (data) {
+									$scope.characters = data.data.characters;
 									for (key in $scope.characters) 
 										$scope.availChars.push({ 'value': $scope.characters[key].characterID, 'display': $scope.characters[key].label });
 									$scope.availChars = $filter('orderBy')($scope.availChars, 'display');
@@ -56,7 +55,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && $scope.details.retired == null) 
 						$scope.isPrimaryGM = true;
 				} //else 
-//					document.location = '/games/';
+//					window.location = '/games/';
 				$scope.$emit('pageLoading');
 			});
 		};
@@ -82,7 +81,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.confirmRetire = function () {
 			$http.post(API_HOST + '/games/retire/', { 'gameID': $scope.details.gameID }).success(function (data) {
 				if (data.success) 
-					document.location = '/games/?gameRetired=' + $scope.details.gameID;
+					window.location.href = '/games/?gameRetired=' + $scope.details.gameID;
 			});
 		}
 

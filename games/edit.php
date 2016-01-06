@@ -21,91 +21,56 @@
 
 	require_once(FILEROOT.'/header.php');
 ?>
-<?	if ($display == 'new') { ?>
-		<div class="sideWidget">
+		<div ng-if="state == 'new'" class="sideWidget">
 			<h2>LFGs</h2>
 			<div class="widgetBody">
 				<p>Players want to play (top 10)...</p>
-				<ul>
-<?
-	$lfg = $mongo->systems->find(array('lfg' => array('$ne' => 0)), array('name' => 1, 'lfg' => 1))->sort(array('lfg' => -1, 'sortName' => 1))->limit(10);
-	foreach ($lfg as $system) 
-			echo "\t\t\t\t\t<li>{$system['name']} - {$system['lfg']}</li>\n";
-?>
+				<ul ng-if="lfg.length">
+					<li ng-repeat="system in lfg | orderBy: ['-count', '+name']"><span ng-bind-html="system.name"></span> - {{system.count}}</li>
 				</ul>
 			</div>
 		</div>
 
-		<div class="mainColumn">
-<?	} ?>
-			<h1 class="headerbar"><?=$display == 'new'?'New':'Edit'?> Game</h1>
-			
-<?	if ($formErrors->getErrors('gameDetails')) { ?>
-			<div class="alertBox_error">
-				Seems like there were some problems:
-				<ul>
-<?
-		if ($formErrors->checkError('invalidTitle')) 
-			echo "\t\t\t\t\t<li>Seems like there's something wrong with your game's title.</li>\n";
-		if ($formErrors->checkError('repeatTitle')) 
-			echo "\t\t\t\t\t<li>Someone else already has a game by this name.</li>\n";
-		if ($formErrors->checkError('invalidSystem')) 
-			echo "\t\t\t\t\t<li>You didn't select a system!</li>\n";
-		if ($formErrors->checkError('invalidNumPlayers')) 
-			echo "\t\t\t\t\t<li>You need at least 2 players in a game.</li>\n";
-?>
-				</ul>
-			</div>
-<?	} ?>
+		<div class="mainColumn" ng-class="{ 'fullWidth': state == 'edit' }">
+			<h1 class="headerbar">{{state.capitalizeFirstLetter()}} Game</h1>
 
-			<form method="post" action="/games/process/<?=$display?>">
-<?	if ($display == 'edit') { ?>
-				<input type="hidden" name="gameID" value="<?=$gameID?>">
-<?	} ?>
+			<form ng-submit="save()">
 				<div class="tr">
 					<label>Title</label>
-					<input type="text" name="title" value="<?=$gameDetails['title']?>" maxlength="50">
+					<input id="title" type="text" ng-model="game.title" maxlength="100" ng-change="validateTitle()" ng-blur="validateTitle()" ng-class="{ 'error': errors.indexOf('invalidTitle') >= 0 || errors.indexOf('repeatTitle') >= 0 }">
 				</div>
-<?	if ($display == 'new') { ?>
-				<div class="tr">
+				<div class="error" ng-show="errors.indexOf('invalidTitle') >= 0">Invalid title</div>
+				<div class="error" ng-show="errors.indexOf('repeatTitle') >= 0">Someone else already has a game by this title</div>
+				<div ng-if="state == 'new'" class="tr">
 					<label>System</label>
-					<select name="system">
-						<option value="">Select One</option>
-<?		foreach ($systems->getAllSystems(true) as $slug => $system) { ?>
-						<option value="<?=$slug?>"<?=$slug == $_GET['system']?' selected="selected"':''?>><?=$system?></option>
-<?		} ?>
-						<option value="custom">Custom</option>
-					</select>
+					<combobox data="systems" value="game.system" select></combobox>
 				</div>
-<?	} ?>
 				<div class="tr">
 					<label>Post Frequency</label>
-					<input id="timesPer" type="text" name="timesPer" value="<?=$display == 'edit'?$gameDetails['postFrequency']['timesPer']:1?>" maxlength="2"> time(s) per 
-					<select name="perPeriod">
-						<option value="d"<?=($gameDetails['postFrequency']['perPeriod'] == 'd')?' selected="selected"':''?>>Day</option>
-						<option value="w"<?=($gameDetails['postFrequency']['perPeriod'] == 'w')?' selected="selected"':''?>>Week</option>
+					<input id="timesPer" type="number" ng-model="game.timesPer" maxlength="2" min="1"> time(s) per 
+					<select ng-model="game.perPeriod">
+						<option value="d" ng-selected="game.perPeriod == 'd'">Day</option>
+						<option value="w" ng-selected="game.perPeriod == 'w'">Week</option>
 					</select>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>
-					<input id="numPlayers" type="text" name="numPlayers" value="<?=$display == 'edit'?$gameDetails['numPlayers']:2?>" maxlength="2">
+					<input id="numPlayers" type="number" ng-model="game.numPlayers" maxlength="2" min="1">
 				</div>
 				<div class="tr">
 					<label>Number of Characters per Player</label>
-					<input id="charsPerPlayer" type="text" name="charsPerPlayer" value="<?=$display == 'edit'?$gameDetails['charsPerPlayer']:1?>" maxlength="1">
+					<input id="charsPerPlayer" type="number" ng-model="game.charsPerPlayer" maxlength="1" min="1">
 				</div>
 				<div class="tr textareaRow">
 					<label>Description</label>
-					<textarea name="description"><?=$gameDetails['description']?></textarea>
+					<textarea ng-model="game.description"></textarea>
 				</div>
 				<div class="tr textareaRow">
 					<label>Character Generation Info</label>
-					<textarea name="charGenInfo"><?=$gameDetails['charGenInfo']?></textarea>
+					<textarea ng-model="game.charGenInfo"></textarea>
 				</div>
 				
-				<div id="submitDiv"><button type="submit" name="<?=$display == 'new'?'create':'save'?>" class="fancyButton"><?=$display == 'new'?'Create':'Save'?></button></div>
+				<div id="submitDiv"><button type="submit" class="fancyButton">{{state == 'new'?'Create':'Save'}}</button></div>
 			</form>
-<?	if ($display == 'new') { ?>
 		</div>
-<?	} ?>
 <?	require_once(FILEROOT.'/footer.php'); ?>

@@ -60,7 +60,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 				if (!isNaN(data.mailingSelf)) 
 					$scope.formError.validUser = false;
 				else if (!isNaN(data.sent)) 
-					document.location = '/pms/?sent=1';
+					window.location.href = '/pms/?sent=1';
 				sendingPM = false;
 			});
 		}

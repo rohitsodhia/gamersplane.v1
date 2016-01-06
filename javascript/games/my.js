@@ -6,9 +6,9 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 	$scope.lfg = [];
 	$scope.systems = {};
 	CurrentUser.load().then(function () {
-		GamesService.get({ my: true }).then(function (data) {
+		GamesService.getGames({ my: true }).then(function (data) {
 			$scope.$emit('pageLoading');
-			$scope.games = data.games;
+			$scope.games = data;
 			if ($scope.games.length > 0) {
 				if ($filter('filter')($scope.games, { 'isGM': false }).length) 
 					$scope.inGames.notGM = true;

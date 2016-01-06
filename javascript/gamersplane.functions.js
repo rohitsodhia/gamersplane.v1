@@ -10,6 +10,13 @@ String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+/*Array.prototype.removeEle = function (element) {
+	var key = this.indexOf(element);
+	if (key >= 0) 
+		this.splice(key, 1);
+	return this;
+}*/
+
 function removeEle(from, element) {
 	var key = from.indexOf(element);
 	if (key >= 0) 
