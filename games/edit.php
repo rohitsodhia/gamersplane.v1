@@ -1,26 +1,4 @@
-<?
-	if ($pathOptions[0] == 'new') 
-		$display = 'new';
-	else 
-		$display = 'edit';
-
-	if ($display == 'edit') {
-		$gameID = intval($pathOptions[0]);
-		$gameDetails = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, g.postFrequency, g.numPlayers, g.charsPerPlayer, g.description, g.charGenInfo, g.status FROM games g INNER JOIN players gms ON g.gameID = gms.gameID AND gms.isGM = 1 WHERE g.gameID = {$gameID} AND gms.userID = {$currentUser->userID} AND retired IS NULL");
-		if ($gameDetails->rowCount() == 0) { header('Location: /403'); exit; }
-		else {
-			$gameDetails = $gameDetails->fetch();
-		}
-	}
-
-	if (isset($gameDetails['postFrequency'])) {
-		$postFrequency = array('timesPer' => 0, 'perPeriod' => 0);
-		list($postFrequency['timesPer'], $postFrequency['perPeriod']) = explode('/', $gameDetails['postFrequency']);
-		$gameDetails['postFrequency'] = $postFrequency;
-	}
-
-	require_once(FILEROOT.'/header.php');
-?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<div ng-if="state == 'new'" class="sideWidget">
 			<h2>LFGs</h2>
 			<div class="widgetBody">
@@ -48,10 +26,7 @@
 				<div class="tr">
 					<label>Post Frequency</label>
 					<input id="timesPer" type="number" ng-model="game.timesPer" maxlength="2" min="1"> time(s) per 
-					<select ng-model="game.perPeriod">
-						<option value="d" ng-selected="game.perPeriod == 'd'">Day</option>
-						<option value="w" ng-selected="game.perPeriod == 'w'">Week</option>
-					</select>
+					<combobox inputID="perPeriod" data="combobox.periods" value="game.perPeriod" select></combobox>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>

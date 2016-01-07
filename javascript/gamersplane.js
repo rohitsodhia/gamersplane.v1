@@ -571,6 +571,8 @@ app.config(function ($httpProvider) {
 			});
 			if (!isUndefined(attrs.placeholder)) 
 				element.find('input').attr('placeholder', attrs.placeholder);
+			if (!isUndefined(attrs.inputid)) 
+				element.find('input').attr('id', attrs.inputid);
 			scope.usingAutocomplete = false;
 			if (!isUndefined(attrs.autocomplete)) {
 				scope.usingAutocomplete = true;
