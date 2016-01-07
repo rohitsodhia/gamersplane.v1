@@ -780,6 +780,7 @@ app.config(function ($httpProvider) {
 			$timeout(function () {
 				if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox) 
 					scope.cbm = true;
+//				console.log(scope.checkbox, scope.cbValue, scope.cbm);
 				eleID = typeof attrs['eleid'] == 'string' && attrs['eleid']?attrs['eleid']:null;
 				$label = $(element).closest('label');
 				if (!$label.length && eleID) 
@@ -800,7 +801,10 @@ app.config(function ($httpProvider) {
 				scope.cbm = !scope.cbm;
 			};
 
-			scope.$watch(function () { return scope.cbm; }, function (val) {
+			scope.$watch(function () { return scope.cbm; }, function (val, oldVal) {
+				if (val == oldVal) 
+					return;
+
 				val = val?true:false;
 				if (scope.checkbox instanceof Array) {
 					if (val && scope.checkbox.indexOf(scope.cbValue) == -1) 
