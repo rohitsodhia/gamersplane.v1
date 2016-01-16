@@ -1,10 +1,10 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$deckID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p, decks d WHERE p.isGM = 1 AND p.gameID = $gameID AND d.gameID = p.gameID AND d.deckID = $deckID AND p.userID = {$currentUser->userID}");
-	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	if (!$gmCheck) { header('Location: /tools/maps'); exit; }
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Shuffle Deck</h1>
 		
 <?
@@ -21,4 +21,4 @@
 			<p class="alignCenter">Are you sure you want to shuffle <strong><?=$deckDetails['label']?></strong>?</p>
 			<div id="submitDiv" class="alignCenter"><button type="submit" name="shuffle" class="fancyButton">Shuffle Deck</button></div>
 		</form>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

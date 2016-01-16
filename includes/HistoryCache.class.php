@@ -62,26 +62,29 @@
 		}
 
 		public function fetchGame($gameID) {
-			global $mysql;
+			global $mongo;
 
 			$gameID = (int) $gameID;
 			if ($gameID == 0) 
 				return null;
 			if (!isset($this->games[$gameID])) {
-				$gameInfo = $mysql->query("SELECT g.title, g.system, s.fullName, u.userID, u.username FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE g.gameID = {$gameID}")->fetch();
+				require_once(FILEROOT.'/includes/Systems.class.php');
+				$systems = Systems::getInstance();
+				$game = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'system' => true, 'gm' => true));
 				$this->games[$gameID] = array(
 					'gameID' => $gameID,
-					'title' => $gameInfo['title'],
-					'gm' => array(
-						'userID' => (int) $gameInfo['userID'],
-						'username' => $gameInfo['username']
-					),
+					'title' => $game['title'],
+					'gm' => $game['gm']	,
 					'system' => array(
-						'short' => $gameInfo['system'],
-						'label' => $gameInfo['fullName']
+						'short' => $game['system'],
+						'label' => $systems->getFullName($game['system'])
 					)
 				);
-				$gms = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} AND isGM = 1")->fetchAll(PDO::FETCH_COLUMN);
+				$game = $mongo->games->findOne(array('gameID' => $gameID), array('players' => true));
+				$gms = array();
+				foreach ($game['players'] as $player) 
+					if ($player['isGM']) 
+						$gms[] = $player['user']['userID'];
 				$this->games[$gameID]['gms'] = $gms;
 			}
 

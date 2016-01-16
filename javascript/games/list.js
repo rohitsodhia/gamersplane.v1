@@ -25,21 +25,24 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 		'system': 'System'
 	}
 	$scope.filter = { 'orderBy': 'createdOn_d', 'systems': [] };
+	$scope.orderBy = '-start';
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
-		GamesService.getGames().then(function (data) {
-			reqLoading = $scope.clearPageLoading(reqLoading);
-			$scope.games = data;
-			$scope.games.forEach(function (element) {
-				element.lastActivity = UsersService.inactive(element.lastActivity);
-			});
-			equalizeHeights();
-		});
 		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
 			reqLoading = $scope.clearPageLoading(reqLoading);
 			$scope.systems = {};
 			data.systems.forEach(function (val) {
 				$scope.systems[val.shortName] = val.fullName;
+			});
+
+			GamesService.getGames().then(function (data) {
+				reqLoading = $scope.clearPageLoading(reqLoading);
+				$scope.games = data;
+				$scope.games.forEach(function (game) {
+					game.system = $scope.systems[game.system];
+					game.lastActivity = UsersService.inactive(game.lastActivity);
+				});
+				equalizeHeights();
 			});
 		});
 		$scope.clearSystems = function () {
@@ -48,15 +51,23 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 		$scope.filterGames = function () {
 			$scope.$emit('pageLoading');
 			var filter = copyObject($scope.filter);
-			filter.orderBy = filter.orderBy.value;
+			$scope.orderBy = filter.orderBy.value.slice(-1) == 'd'?'-':'';
+			if (filter.orderBy.value.slice(0, -2) == 'createdOn') 
+				$scope.orderBy += 'start';
+			else if (filter.orderBy.value.slice(0, -2) == 'name')
+				$scope.orderBy += 'title';
+			else if (filter.orderBy.value == 'system')
+				$scope.orderBy += filter.orderBy.value;
+			console.log($scope.orderBy);
 			if (filter.systems.length == 0) 
 				filter.systems = null;
 			$scope.games = [];
-			GamesService.getGames(filter).then(function (data) {
+			GamesService.getGames({ 'systems': filter.systems }).then(function (data) {
 				$scope.$emit('pageLoading');
 				$scope.games = data;
-				$scope.games.forEach(function (element) {
-					element.lastActivity = UsersService.inactive(element.lastActivity);
+				$scope.games.forEach(function (game) {
+					game.system = $scope.systems[game.system];
+					game.lastActivity = UsersService.inactive(game.lastActivity);
 				});
 				equalizeHeights();
 			});

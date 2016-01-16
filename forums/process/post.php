@@ -72,10 +72,15 @@
 
 		if (sizeof($_POST['decks'])) {
 			$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?true:false; });
-			$deckInfos = $mysql->query("SELECT d.deckID, d.deck, d.type, d.position, !ISNULL(per.userID) permissions, IF (!ISNULL(p.isGM), p.isGM, 0) isGM FROM decks d LEFT JOIN players p ON d.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN deckPermissions per ON d.deckID = per.deckID AND per.userID = {$currentUser->userID} WHERE d.deckID IN (".implode(',', array_keys($draws)).") HAVING permissions = 1 OR isGM = 1");
-			$temp = array();
-			foreach ($deckInfos as $deckInfo) 
-				$temp[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
+			$rDeckInfos = $mysql->query("SELECT d.deckID, d.gameID, d.deck, d.type, d.position, !ISNULL(per.userID) permissions FROM decks d LEFT JOIN deckPermissions per ON d.deckID = per.deckID AND per.userID = {$currentUser->userID} WHERE d.deckID IN (".implode(',', array_keys($draws)).")");
+			$deckInfos = array();
+			$isGM = null;
+			foreach ($deckInfos as $deckInfo) {
+				if ($isGM == null) 
+					$isGM = $mongo->games->findOne(array('gameID' => (int) $deckInfo['gameID'], 'players.user.userID' => $currentUser->userID), array('players.$' => true))['players'][0]['isGM'];
+				if ($isGM || $deckInfo['permissions']) 
+					$deckInfos[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
+			}
 			$deckInfos = $temp;
 			foreach ($draws as $deckID => $draw) {
 				if (isset($deckInfos[$deckID]) && $draw['draw'] > 0) {

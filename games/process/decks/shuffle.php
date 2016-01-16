@@ -1,8 +1,9 @@
 <?
 	$gameID = intval($_POST['gameID']);
 	$deckID = intval($_POST['deckID']);
-	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p INNER JOIN decks d ON p.gameID = d.gameID WHERE p.isGM = 1 AND p.gameID = {$gameID} AND d.deckID = {$deckID} AND p.userID = {$currentUser->userID}");
-	if (isset($_POST['shuffle']) && $gmCheck->rowCount()) {
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true))['players'][0]['isGM'];
+	$deckCheck = $mysql->query("SELECT gameID FROM decks WHERE deckID = {$deckID} LIMIT 1")->fetchColumn();
+	if (isset($_POST['shuffle']) && $gmCheck && $deckCheck == $gameID) {
 		$deckID = intval($_POST['deckID']);
 		$deckSize = $mysql->query("SELECT t.deckSize FROM deckTypes t INNER JOIN decks d ON t.short = d.type WHERE d.deckID = {$deckID}");
 		$deckSize = $deckSize->fetch(PDO::FETCH_COLUMN);

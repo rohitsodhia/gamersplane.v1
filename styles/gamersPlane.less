@@ -590,7 +590,6 @@ div.prettySelect > div {
 	z-index: 5000;
 
 	&.focused {
-		z-index: 5001;
 	}
 
 	input[type="text"] {
@@ -598,7 +597,12 @@ div.prettySelect > div {
 		padding-right: 24px;
 		text-align: left;
 
-		&.resultsOpen {
+	}
+
+	&.resultsOpen {
+		z-index: 5001;
+
+		input {
 			-webkit-border-bottom-right-radius: 0;
 			-webkit-border-bottom-left-radius: 0;
 			-moz-border-radius-bottomright: 0;

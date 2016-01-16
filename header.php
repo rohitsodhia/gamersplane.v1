@@ -70,21 +70,27 @@
 			<li>
 				<a href="/games/">Games</a>
 <?
-			$header_games = $mysql->query("SELECT g.gameID, g.title, p.isGM FROM games g INNER JOIN players p ON p.userID = {$currentUser->userID} AND p.gameID = g.gameID AND g.retired IS NULL ORDER BY g.title");
-			if ($header_games->rowCount()) {
-				echo "				<ul>\n";
+			$header_games = $mongo->games->find(array('players.user.userID' => $currentUser->userID, 'retired' => null), array('gameID' => true, 'title' => true, 'players.$' => true))->sort(array('title' => 1))->limit(6);
+			if ($header_games->count()) {
+?>
+				<ul>
+<?
 				$count = 0;
 				foreach ($header_games as $game) {
-					echo "					".'<li><a href="/games/'.$game['gameID'].'/">'.$game['title'].($game['isGM']?' <img src="/images/gm_icon.png">':'').'</a></li>'."\n";
+?>
+					<li><a href="/games/<?=$game['gameID']?>/"><?=$game['title'].($game['players'][0]['isGM']?' <img src="/images/gm_icon.png">':'')?></a></li>
+<?
 					$count++;
 					if ($count == 5) {
-						echo "					".'<li><a href="/games/my/">All games</a></li>'."\n";
+?>
+					<li><a href="/games/my/">All games</a></li>
+<?
 						break;
 					}
 				}
-				echo "				</ul>\n";
-			}
 ?>
+				</ul>
+<?			} ?>
 			</li>
 <?		} ?>
 			<li><a href="/forums/">Forums</a></li>

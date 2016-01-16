@@ -34,7 +34,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					$scope.details.playersInGame = $scope.players.length - 1;
 					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: CurrentUser.userID }, true).length  == 1?true:false;
 					for (key in $scope.players) {
-						if (CurrentUser && $scope.players[key].userID == CurrentUser.userID) {
+						if (CurrentUser && $scope.players[key].user.userID == CurrentUser.userID) {
 							$scope.inGame = true;
 							$scope.curPlayer = $scope.players[key];
 							$scope.approved = $scope.curPlayer.approved?true:false;
@@ -64,7 +64,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.toggleGameStatus = function () {
 			$http.post(API_HOST + '/games/toggleGameStatus/', { gameID: $scope.gameID }).success(function (data) {
 				if (data.success) 
-					$scope.details.status = !$scope.details.status;
+					$scope.details.status = $scope.details.status == 'open'?'closed':'open';
 			});
 		};
 		$scope.toggleForum = function () {
@@ -103,7 +103,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					break;
 				case 'rejectPlayer':
 					for (key in $scope.players) {
-						if ($scope.players[key].userID == newVal.playerID) {
+						if ($scope.players[key].user.userID == newVal.playerID) {
 							$scope.players.splice(key, 1);
 							break;
 						}
@@ -114,7 +114,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					break;
 				case 'playerRemoved':
 					for (key in $scope.players) {
-						if ($scope.players[key].userID == newVal.playerID) {
+						if ($scope.players[key].user.userID == newVal.playerID) {
 							$scope.players.splice(key, 1);
 							$scope.inGame = false;
 							$scope.pendingInvite = false;
@@ -124,7 +124,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					break;
 				case 'playerLeft':
 					for (key in $scope.players) {
-						if ($scope.players[key].userID == newVal.playerID) {
+						if ($scope.players[key].user.userID == newVal.playerID) {
 							$scope.players.splice(key, 1);
 							break;
 						}
@@ -134,7 +134,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					break;
 				case 'toggleGM':
 					for (key in $scope.players) {
-						if ($scope.players[key].userID == newVal.playerID) {
+						if ($scope.players[key].user.userID == newVal.playerID) {
 							$scope.players[key].isGM = !$scope.players[key].isGM;
 							break;
 						}
@@ -219,7 +219,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							$scope.availChars.splice(key, 1);
 					}
 					for (pKey in $scope.players) {
-						if ($scope.players[pKey].userID == CurrentUser.userID) {
+						if ($scope.players[pKey].user.userID == CurrentUser.userID) {
 							if ($scope.isGM) 
 								data.character.approved = true;
 							$scope.players[pKey].characters.push(data.character);
@@ -233,7 +233,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			$http.post(API_HOST + '/games/characters/remove/', { 'gameID': $scope.gameID, 'characterID': character.characterID }).success(function (data) {
 				if (data.success) {
 					for (pKey in $scope.players) {
-						if ($scope.players[pKey].userID == character.userID) {
+						if ($scope.players[pKey].user.userID == character.userID) {
 							for (cKey in $scope.players[pKey].characters) {
 								if ($scope.players[pKey].characters[cKey].characterID == character.characterID) 
 									character = $scope.players[pKey].characters.splice(cKey, 1);
@@ -250,7 +250,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			$http.post(API_HOST + '/games/characters/approve/', { 'gameID': $scope.gameID, 'characterID': character.characterID }).success(function (data) {
 				if (data.success) {
 					for (pKey in $scope.players) {
-						if ($scope.players[pKey].userID == character.userID) {
+						if ($scope.players[pKey].user.userID == character.userID) {
 							for (cKey in $scope.players[pKey].characters) {
 								if ($scope.players[pKey].characters[cKey].characterID == character.characterID) 
 									$scope.players[pKey].characters[cKey].approved = true;

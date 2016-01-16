@@ -1,7 +1,15 @@
 <?
 	$gameID = intval($pathOptions[0]);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = $gameID AND userID = {$currentUser->userID}");
-	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
+	$game = $mongo->games->findOne(array('gameID' => $gameID), array('gm' => true, 'players' => true));
+	$gmCheck = false;
+	foreach ($game['players'] as $player) {
+		if ($player['user']['userID'] == $currentUser->userID) {
+			if ($player['isGM']) 
+				$gmCheck = true;
+			break;
+		}
+	}
+	if (!$gmCheck) { header('Location: /tools/decks/'); exit; }
 
 	$action = $pathOptions[3];
 	$deckDetails = array('label' => '', 'type' => 'pcwj');
@@ -44,13 +52,10 @@
 				<a id="uncheckAll" href="">[ Uncheck All ]</a>
 			</div>
 			<div id="users" class="clearfix">
-<?
-	$players = $mysql->query("SELECT u.userID, u.username, p.primaryGM FROM users u, players p WHERE u.userID = p.userID AND p.gameID = $gameID AND p.approved = 1");
-	foreach ($players as $player) {
-?>
+<?	foreach ($game['players'] as $player) { ?>
 				<div class="tr user">
-					<input type="checkbox" name="addUser[<?=$player['userID']?>]"<?=(in_array($player['userID'], $deckPermissions) || $player['primaryGM']?' checked="checked"':'').($player['primaryGM']?' data-disabled="disabled"':'')?>>
-					<label><?=$player['username']?></label>
+					<input type="checkbox" name="addUser[<?=$player['user']['userID']?>]"<?=(in_array($player['user']['userID'], $deckPermissions) || $player['user']['userID'] == $game['gm']['userID']?' checked="checked"':'').($player['user']['userID'] == $game['gm']['userID']?' data-disabled="disabled"':'')?>>
+					<label><?=$player['user']['username']?></label>
 				</div>
 <?	} ?>
 			</div>

@@ -21,7 +21,14 @@
 				<div class="error" ng-show="errors.indexOf('repeatTitle') >= 0">Someone else already has a game by this title</div>
 				<div ng-if="state == 'new'" class="tr">
 					<label>System</label>
-					<combobox data="systems" value="game.system" select></combobox>
+					<combobox data="systems" value="game.system"></combobox>
+				</div>
+				<div ng-if="state == 'new'" class="tr">
+					<label>Allowed Character Sheets</label>
+					<div>
+						<combobox data="systems" value="addCharSheet"></combobox>
+						<div>adsf</div>
+					</div>
 				</div>
 				<div class="tr">
 					<label>Post Frequency</label>

@@ -1,9 +1,9 @@
 <?
 	$gameID = intval($pathOptions[0]);
-	$userInfo = $mysql->query('SELECT p.approved, g.title FROM players p, games g WHERE p.userID = '.$currentUser->userID.' AND p.gameID = g.gameID AND g.gameID = '.$gameID);
-	if ($userInfo ->rowCount() == 0) { header('Location: /403'); exit; }
-
-	list($approved, $title) = $userInfo->fetch(PDO::FETCH_NUM);
+	$game = $mongo->games->findOne(array('gameID' => $gameID, 'players.user.userID' => $currentUser->userID), array('title' => true, 'players.$' => true));
+	if (!$game) { header('Location: /403'); exit; }
+	$title = $game['title'];
+	$approved = $game['players'][0]['approved'];
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Leave Game</h1>

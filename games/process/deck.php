@@ -1,7 +1,7 @@
 <?
 	$gameID = intval($_POST['gameID']);
-	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} AND isGM = 1");
-	$isGM = $gmCheck->rowCount()?true:false;
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	$isGM = $gmCheck?true:false;
 	$addUsers = array();
 	if (isset($_POST['addUser'])) 
 		foreach ($_POST['addUser'] as $userID) 

@@ -7,6 +7,7 @@
 		protected $label;
 		public static $charTypes = array('PC', 'NPC', 'Mob');
 		protected $charType = 'PC';
+		protected $created = null;
 		protected $library = array('inLibrary' => false, 'views' => 0);
 		protected $game = null;
 		protected $name;
@@ -86,11 +87,15 @@
 			else 
 				$userID = intval($userID);
 
-			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$this->characterID} AND (c.userID = {$userID} OR p.userID = {$userID})");
-			if ($charCheck->rowCount()) 
+			$charCheck = $mysql->query("SELECT userID, gameID FROM characters WHERE characterID = {$this->characterID}")->fetch();
+			if ($charCheck['userID'] == $userID) 
 				return 'edit';
-			else 
+			else {
+				$gmCheck = $mongo->games->findOne(array('gameID' => (int) $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('players.$' => true));
+				if ($gmCheck) 
+					$return 'edit';
 				return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
+			}
 		}
 		
 		public function showSheet() {
@@ -165,6 +170,8 @@
 			foreach ($this->mongoIgnore['save'] as $key) 
 				unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
+			if ($classVars['created'] == null) 
+				$classVars['created'] = new MongoDate();
 			try {
 //				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value)) 
 //					$value = mb_convert_encoding($value, 'UTF-8');

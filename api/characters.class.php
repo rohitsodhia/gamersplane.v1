@@ -226,11 +226,15 @@
 			else 
 				$userID = intval($userID);
 
-			$charCheck = $mysql->query("SELECT c.characterID FROM characters c LEFT JOIN players p ON c.gameID = p.gameID AND p.isGM = 1 WHERE c.characterID = {$characterID} AND (c.userID = {$userID} OR p.userID = {$userID})");
-			if ($charCheck->rowCount()) 
+			$charCheck = $mysql->query("SELECT userID, gameID FROM characters WHERE c.characterID = {$characterID} LIMIT 1")->fetch();
+			if ($charCheck['userID'] == $userID) 
 				return 'edit';
-			else 
-				return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
+			else {
+				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
+				if ($gmCheck) 
+					return 'edit';
+			}
+			return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 		}
 
 		public function saveCharacter($characterID) {

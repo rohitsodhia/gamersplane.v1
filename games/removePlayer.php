@@ -1,17 +1,22 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$playerID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} and isGM = 1");
-	$playerCheck = $mysql->query("SELECT u.userID, u.username, g.title, p.isGM FROM users u, games g, players p WHERE g.gameID = $gameID AND u.userID = p.userID AND p.gameID = g.gameID AND p.userID = $playerID AND p.primaryGM IS NULL AND p.approved = 1");
-	if ($gmCheck->rowCount() == 0 || $playerCheck->rowCount() == 0) { header('Location: /games/'.$gameID); exit; }
-
-	list($playerID, $playerName, $title, $isGM) = $playerCheck->fetch(PDO::FETCH_NUM);
+	$game = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'players' => true));
+	$gmCheck = false;
+	$player = array();
+	foreach ($game['players'] as $rPlayer) {
+		if ($rPlayer['user']['userID'] == $playerID) 
+			$player = $rPlayer;
+		elseif ($rPlayer['user']['userID'] == $currentUser->userID && $rPlayer['isGM']) 
+			$gmCheck = true;
+	}
+	if (!$gmCheck || sizeof($player) == 0) { header('Location: /games/'.$gameID); exit; }
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Remove Player from Game</h1>
-		
-		<p class="hbMargined">Are you sure you want to remove <a href="/user/<?=$playerID?>" class="username" target="_parent"><?=$playerName?></a> from "<a href="<?='/games/'.$gameID?>" target="_parent"><?=$title?></a>"?</p>
-		
+
+		<p class="hbMargined">Are you sure you want to remove <a href="/user/<?=$playerID?>" class="username" target="_parent"><?=$player['user']['username']?></a> from "<a href="<?='/games/'.$gameID?>" target="_parent"><?=$game['title']?></a>"?</p>
+
 		<form method="post" action="/games/process/removePlayer/" class="alignCenter">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 			<input type="hidden" name="playerID" value="<?=$playerID?>">

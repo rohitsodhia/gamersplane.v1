@@ -20,7 +20,7 @@
 
 	if ($threadManager->isGameForum()) {
 		$gameID = $threadManager->getForumProperty('gameID');
-		$startForum = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID}")->fetchColumn();
+		$startForum = $mongo->games->findOne(array('gameID' => $gameID), array('forumID' => true))['forumID'];
 	} else 
 		$startForum = 0;
 	$forumManager = new ForumManager($startForum, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);

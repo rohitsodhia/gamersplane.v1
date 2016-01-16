@@ -12,13 +12,17 @@
 	$isGM = false;
 	$gms = array();
 	if ($threadManager->isGameForum()) {
-		$gameID = $threadManager->getForumProperty('gameID');
-		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
-
-		$gms = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} and isGM = 1");
-		$gms = $gms->fetchAll(PDO::FETCH_COLUMN);
-		if (in_array($currentUser->userID, $gms)) 
-			$isGM = true;
+		$gameID = (int) $threadManager->getForumProperty('gameID');
+		$game = $mongo->games->findOne(array('gameID' => $gameID), array('system' => true, 'players' => true));
+		$system = $game['system'];
+		$isGM = false;
+		foreach ($game['players'] as $player) {
+			if ($player['user']['userID'] == $currentUser->userID) {
+				if ($player['isGM']) 
+					$isGM = true;
+				break;
+			}
+		}
 
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = Systems::systemClassName($system).'Character';

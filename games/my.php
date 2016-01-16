@@ -26,8 +26,8 @@
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Playing</h2>
 				<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
 					<li ng-repeat="game in games | filter: { isGM: false } | orderBy: ['system', 'title']" class="gamePlaying">
-						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':' (Closed)'}}</a
-						><div class="systemType" ng-bind-html="game.system.name | trustHTML"></div
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
+						><div class="systemType" ng-bind-html="game.system | trustHTML"></div
 						><div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
 					</li>
 				</ul>
@@ -39,8 +39,8 @@
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>
 				<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
 					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning">
-						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status == 1?'':'(Closed)'}}</a
-						><div class="systemType" ng-bind-html="game.system.name | trustHTML"></div>
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
+						><div class="systemType" ng-bind-html="game.system | trustHTML"></div>
 					</li>
 				</ul>
 				<div ng-hide="inGames.gm" class="noneFound">It seems you aren't running any games yet. <br>You might want to <a href="/games/new/">get started</a>!</div>

@@ -20,7 +20,7 @@
 <?	if ($gameInfo['system'] != 'custom') { ?>
 			<p style="text-align: center"><img src="http://gamersplane.com/images/logos/<?=$gameInfo['system']?>.png" style="max-width: 300px;"></p>
 <?	} ?>
-			<p><a href="http://gamersplane.com/user/<?=$currentUser->userID?>/" class="username"><?=$currentUser->username?></a> has invited you to their <?=$gameInfo['fullName']?> game, "<a href="<?=$pathBase?>/games/<?=$gameID?>/"><?=$gameInfo['title']?></a>"!</p>
+			<p><a href="http://gamersplane.com/user/<?=$currentUser->userID?>/" class="username"><?=$currentUser->username?></a> has invited you to their <?=$systems->getFullName($gameInfo['system'])?> game, "<a href="<?=$pathBase?>/games/<?=$gameID?>/"><?=$gameInfo['title']?></a>"!</p>
 			<p style="text-align: right;">- The Gamers Plane Team</p>
 			<p style="font-size: .8em; margin-top: 2em;">If you'd like to stop recieving emails about pms, please head to your <a href="http://gamersplane.com/ucp/">user control panel</a> and change the option labeled as "Recieve new pm emails?" to "No".</p>
 		</td></tr>

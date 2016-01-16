@@ -6,16 +6,6 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 	$scope.lfg = [];
 	$scope.systems = {};
 	CurrentUser.load().then(function () {
-		GamesService.getGames({ my: true }).then(function (data) {
-			$scope.$emit('pageLoading');
-			$scope.games = data;
-			if ($scope.games.length > 0) {
-				if ($filter('filter')($scope.games, { 'isGM': false }).length) 
-					$scope.inGames.notGM = true;
-				if ($filter('filter')($scope.games, { 'isGM': true }).length) 
-					$scope.inGames.gm = true;
-			}
-		});
 		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
 			$scope.systems = {};
 			data.systems.forEach(function (val) {
@@ -26,6 +16,20 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 				data.forEach(function (val) {
 					$scope.lfg.push($scope.systems[val]);
 				});
+			});
+
+			GamesService.getGames({ my: true }).then(function (data) {
+				$scope.$emit('pageLoading');
+				$scope.games = data;
+				$scope.games.forEach(function (game) {
+					game.system = $scope.systems[game.system];
+				});
+				if ($scope.games.length > 0) {
+					if ($filter('filter')($scope.games, { 'isGM': false }).length) 
+						$scope.inGames.notGM = true;
+					if ($filter('filter')($scope.games, { 'isGM': true }).length) 
+						$scope.inGames.gm = true;
+				}
 			});
 		});
 		$scope.saveLFG = function () {

@@ -23,21 +23,23 @@
 			<div class="sideWidget">
 <?
 	if ($loggedIn) {
-		$usersGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame FROM games g INNER JOIN users u ON g.gmID = u.userID INNER JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} LEFT JOIN (SELECT gameID, COUNT(*) - 1 playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHEre g.retired IS NULL ORDER BY gameID DESC LIMIT 3");
+		$usersGames = $mongo->games->find(array('players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'approved' => true))), array('gameID' => true, 'title' => true, 'system' => true, 'gm' => true, 'numPlayers' => true, 'players' => true))->sort(array('start' => -1))->limit(3);
 ?>
-				<div class="loggedIn<?=$usersGames->rowCount()?'':' noGames'?>">
+				<div class="loggedIn<?=$usersGames?'':' noGames'?>">
 					<h2>Your Games</h2>
-<?		if ($usersGames->rowCount()) { ?>
+<?		if ($usersGames) { ?>
 					<div class="games">
 <?
 			foreach ($usersGames as $gameInfo) {
-				$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);
-				$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
+				$gameInfo['playersInGame'] = -1;
+				foreach ($gameInfo['players'] as $player) 
+					if ($player['approved']) 
+						$gameInfo['playersInGame']++;
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 ?>
 						<div class="gameInfo">
 							<p class="title"><a href="/games/<?=$gameInfo['gameID']?>"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-							<p class="details"><u><?=$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+							<p class="details"><u><?=$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
 						</div>
 <?			} ?>
 					</div>
@@ -67,13 +69,44 @@
 				<div class="widgetBody">
 <?
 	if ($loggedIn) 
-		$latestGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID LEFT JOIN characters c ON g.gameID = c.gameID AND c.userID = {$currentUser->userID} WHERE g.retired IS NULL AND c.characterID IS NULL AND g.status = 1 ORDER BY gameID DESC LIMIT 5");
+		$latestGames = $mongo->games->find(
+			array(
+				'retired' => null,
+				'players' => array(
+					'$not' => array(
+						'$elemMatch' => array(
+							'user.userID' => $currentUser->userID,
+							'approved' => true
+						)
+					)
+				)
+			), array(
+				'gameID' => true,
+				'title' => true,
+				'system' => true,
+				'gm' => true,
+				'numPlayers' => true,
+				'players' => true
+			)
+		)->sort(array('start' => -1))->limit(5);
 	else 
-		$latestGames = $mysql->query("SELECT g.gameID, g.title, g.system, g.gmID, u.username, g.created started, g.numPlayers, np.playersInGame - 1 playersInGame FROM games g LEFT JOIN users u ON g.gmID = u.userID LEFT JOIN (SELECT gameID, COUNT(*) playersInGame FROM players WHERE gameID IS NOT NULL AND approved = 1 GROUP BY gameID) np ON g.gameID = np.gameID WHERE g.retired IS NULL AND g.status = 1 ORDER BY gameID DESC LIMIT 5");
+		$latestGames = $mongo->games->find(
+			array(
+				'retired' => null
+			), array(
+				'gameID' => true,
+				'title' => true,
+				'system' => true,
+				'gm' => true,
+				'numPlayers' => true,
+				'players' => true
+			)
+		)->sort(array('start' => -1))->limit(5);
 	$first = true;
 	foreach ($latestGames as $gameInfo) {
-		$gameInfo['numPlayers'] = intval($gameInfo['numPlayers']);
-		$gameInfo['playersInGame'] = intval($gameInfo['playersInGame']);
+		foreach ($gameInfo['players'] as $player) 
+			if ($player['approved']) 
+				$gameInfo['playersInGame']++;
 		$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 		if (!$first) 
 			echo "					<hr>\n";
@@ -82,7 +115,7 @@
 ?>
 					<div class="gameInfo">
 						<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0?'Full':"{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-						<p class="details"><u><?=$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gmID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+						<p class="details"><u><?=$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
 					</div>
 <?	} ?>
 				</div>
@@ -96,7 +129,7 @@
 	$forumSearch->findThreads();
 	$forumSearch->displayLatestHP();
 ?>
-					<div id="latestPostsLink"><a href="/forums/search/?search=latestPosts" target="_blank">Latest Posts</a></div>
+					<div id="latestPostsLink"><a href="/forums/search/?search=latestPosts">Latest Posts</a></div>
 				</div>
 			</div>
 

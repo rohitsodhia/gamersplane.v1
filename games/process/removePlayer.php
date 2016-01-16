@@ -2,18 +2,24 @@
 	if (isset($_POST['remove']) || isset($_POST['leave'])) {
 		$gameID = intval($_POST['gameID']);
 		$playerID = intval($_POST['playerID']);
-		
-		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} and isGM = 1");
-		$playerCheck = $mysql->query("SELECT g.forumID FROM players p INNER JOIN games g ON p.gameID = g.gameID WHERE g.gameID = {$gameID} AND p.userID = {$playerID} AND p.primaryGM IS NULL");
 
-		$forumID = $playerCheck->fetchColumn();
+		$game = $mongo->games->findOne(array('gameID' => $gameID), array('forumID' => true, 'players' => true));
+		$gmCheck = false;
+		$playerCheck = false;
+		foreach ($game['players'] as $player) {
+			if ($player['user']['userID'] == $playerID) 
+				$playerCheck = true;
+			elseif ($player['user']['userID'] == $currentUser->userID && $player['isGM']) 
+				$gmCheck = true;
+		}
 
 		if ($playerCheck->rowCount() == 0) {
 			if (isset($_POST['modal'])) 
 				displayJSON(array('failed' => true, 'errors' => array('noPlayer')));
 			else 
 				header('Location: /403');
-		} elseif ($gmCheck->rowCount() != 0 || $playerID == $currentUser->userID) {
+		} elseif ($gmCheck || $playerCheck) {
+			$forumID = $game['forumID'];
 			$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "'.sql_forumIDPad(2).'-'.sql_forumIDPad($forumID).'%"');
 			$forumIDs = array();
 			foreach ($forums as $info) 
@@ -26,7 +32,7 @@
 #			$hl_removePlayer->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->addForCharacters($chars)->save();
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE gameID = {$gameID} AND userID = {$playerID}");
 			$mysql->query("DELETE FROM dp USING deckPermissions dp INNER JOIN decks d WHERE d.deckID = dp.deckID AND gameID = {$gameID} AND dp.userID = {$playerID}");
-			$mysql->query("DELETE FROM players WHERE gameID = {$gameID} AND userID = {$playerID}");
+			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('player.user.userID' => $playerID)));
 			
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) 

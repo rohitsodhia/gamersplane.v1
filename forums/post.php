@@ -46,8 +46,9 @@
 						$quoteInfo = $quoteInfo->fetch();
 						$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
 						if ($gameID) {
-							$isGM = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = 1");
-							if (!$isGM->rowCount()) 
+							$game = $mongo->games->find(array('gameID' => (int) $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('player.$'));
+							$isGM = $game['players'][0]['isGM'];
+							if (!$isGM) 
 								$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
 						}
 						$post->message = '[quote="'.$quoteInfo['username'].'"]'.$quoteInfo['message'].'[/quote]';
@@ -70,11 +71,17 @@
 	$gameID = false;
 	$isGM = false;
 	if ($threadManager->getForumProperty('gameID')) {
-		$gameID = $threadManager->getForumProperty('gameID');
-		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID}")->fetchColumn();
-		
-		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE userID = {$currentUser->userID} AND gameID = ".$threadManager->getForumProperty('gameID'));
-		if ($gmCheck->rowCount()) $isGM = true;
+		$gameID = (int) $threadManager->getForumProperty('gameID');
+		$game = $mongo->games->findOne(array('gameID' => $gameID), array('system' => true, 'players' => true));
+		$system = $game['system'];
+		$isGM = false;
+		foreach ($game['players'] as $player) {
+			if ($player['user']['userID'] == $currentUser->userID) {
+				if ($player['isGM']) 
+					$isGM = true;
+				break;
+			}
+		}
 
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 		$charClass = Systems::systemClassName($system).'Character';
@@ -93,8 +100,7 @@
 	$rollsAllowed = $threadManager->getThreadProperty('allowRolls')?true:false;
 	$drawsAllowed = false;
 	if ($gameID && $threadManager->getPermissions('addDraws')) {
-		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = 1");
-		if ($gmCheck->rowCount()) 
+		if ($isGM) 
 			$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
 		else 
 			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, d.deck, d.position FROM decks d INNER JOIN deckPermissions p ON d.deckID = p.deckID AND p.userID = {$currentUser->userID} WHERE d.gameID = {$gameID}");

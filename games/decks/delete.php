@@ -1,8 +1,8 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$deckID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p, decks d WHERE p.isGM = 1 AND p.gameID = $gameID AND d.gameID = p.gameID AND d.deckID = $deckID AND p.userID = {$currentUser->userID}");
-	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	if (!$gmCheck) { header('Location: /tools/decks/'); exit; }
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Delete Deck</h1>

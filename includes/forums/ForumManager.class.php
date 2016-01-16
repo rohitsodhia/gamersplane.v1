@@ -10,7 +10,7 @@
 		const ADMIN_FORUMS = 4;
 
 		public function __construct($forumID, $options = 0) {
-			global $mysql, $loggedIn, $currentUser;
+			global $mysql, $loggedIn, $currentUser, $mongo;
 
 			if ($loggedIn) {
 				$showPubGames = $currentUser->showPubGames;
@@ -29,11 +29,25 @@
 				$this->forumsData[$forum['forumID']] = $forum;
 			if (($this->currentForum == 0 || $this->currentForum == 2) && bindec($options&$this::NO_CHILDREN) == 0) {
 				if ($showPubGames) {
-					$publicGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games g ON f.gameID = g.gameID AND g.public = 1 LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
-					foreach ($publicGameForums as $forum) $this->forumsData[$forum['forumID']] = $forum;
+					$publicGames = $mongo->games->find(array('public' => true), array('forumID' => true));
+					$publicGameForumIDs = array();
+					foreach ($publicGames as $game) 
+						$publicGameForumIDs[] = $game['forumID'];
+					$publicGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE f.forumID IN (".implode(', ', $publicGameForumIDs).")");
+					foreach ($publicGameForums as $forum) 
+						$this->forumsData[$forum['forumID']] = $forum;
 				}
-				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games g ON f.gameID = g.gameID AND retired IS NULL INNER JOIN players p ON f.gameID = p.gameID AND p.userID = {$currentUser->userID} AND p.approved = 1 LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID");
-				foreach ($userGameForums as $forum) $this->forumsData[$forum['forumID']] = $forum;
+				if ($loggedIn) {
+					$userGames = $mongo->games->find(array('retired' => null, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'approved' => true))), array('forumID' => true));
+					$userGameForumIDs = array();
+					foreach ($userGames as $game) 
+						$userGameForumIDs[] = $game['forumID'];
+					if (sizeof($userGameForumIDs)) {
+						$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE f.forumID IN (".implode(', ', $userGameForumIDs).")");
+						foreach ($userGameForums as $forum) 
+							$this->forumsData[$forum['forumID']] = $forum;
+					}
+				}
 			}
 			$permissions = ForumPermissions::getPermissions($currentUser->userID, array_keys($this->forumsData), null, $this->forumsData);
 			foreach ($permissions as $pForumID => $permission)

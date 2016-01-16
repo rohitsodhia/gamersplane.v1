@@ -52,13 +52,12 @@
 			);
 			if ($details['isGameForum']) {
 				$gameForumID = $forum->heritage[2];
-				$gameDetails = $mysql->query("SELECT gameID, groupID FROM games WHERE forumID = {$gameForumID}")->fetch();
+				$gameDetails = $mongo->games->findOne(array('forumID' => $gameForumID), array('gameID' => true, 'groupID' => true, 'players' => true));
 				$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameDetails['gameID']}")->fetchAll();
 				foreach ($groups as &$group) 
 					$group['groupID'] = (int) $group['groupID'];
-				$players = $mysql->query("SELECT u.userID, u.username FROM players p INNER JOIN users u ON p.userID = u.userID WHERE p.gameID = {$gameDetails['gameID']} AND p.approved = 1 AND p.isGM = 0")->fetchAll();
-				foreach ($players as &$player) 	
-					$player['userID'] = (int) $player['userID'];
+				foreach ($players as &$player) 
+					$player = $player['user'];
 				$details['gameDetails'] = array('forumID' => $gameForumID, 'groupID' => (int) $gameDetails['groupID'], 'groups' => $groups, 'players' => $players);
 			}
 			if (sizeof($forum->getChildren())) { foreach ($forum->getChildren() as $order => $childID) {
@@ -223,10 +222,10 @@
 		}
 
 		public function editGroup($groupID, $name) {
-			global $currentUser, $mysql;
+			global $currentUser, $mysql, $mongo;
 
-			list($gName, $forumID, $mGroupID) = $mysql->query("SELECT f.name, g.forumID, g.groupID FROM forums_groups f INNER JOIN games g ON f.gameID = g.gameID WHERE f.groupID = {$groupID}")->fetch(PDO::FETCH_NUM);
-			if ($mGroupID == $groupID) 
+			$gameInfo = $mongo->games->findOne(array('groupID' => (int) $groupID), array('_id' => false, 'forumID' => true, 'groupID' => true)));
+			if ($gameInfo) 
 				displayJSON(array('failed' => true, 'errors' => array('mainGroup')));
 			if (strlen($name) < 3) 
 				displayJSON(array('failed' => true, 'errors' => array('noName')));
@@ -247,10 +246,10 @@
 		}
 
 		public function deleteGroup($groupID) {
-			global $currentUser, $mysql;
+			global $currentUser, $mysql, $mongo;
 
-			list($forumID, $mGroupID) = $mysql->query("SELECT g.forumID, g.groupID FROM forums_groups f INNER JOIN games g ON f.gameID = g.gameID WHERE f.groupID = {$groupID}")->fetch(PDO::FETCH_NUM);
-			if ($mGroupID == $groupID) 
+			$gameInfo = $mongo->games->findOne(array('groupID' => (int) $groupID), array('_id' => false, 'forumID' => true, 'groupID' => true)));
+			if ($gameInfo) 
 				displayJSON(array('failed' => true, 'errors' => array('mainGroup')));
 
 			$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);

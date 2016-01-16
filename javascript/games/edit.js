@@ -16,6 +16,7 @@ controllers.controller('games_cu', ['$scope', '$http', 'CurrentUser', 'GamesServ
 			'description': '',
 			'charGenInfo': ''
 		};
+		$scope.addCharSheet = {};
 		$scope.combobox = { 'periods': [{ 'value': 'd', 'display': 'day' }, { 'value': 'w', 'display': 'week' }] };
 		$scope.errors = [];
 

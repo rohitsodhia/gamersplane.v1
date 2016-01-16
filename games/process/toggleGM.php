@@ -2,19 +2,27 @@
 	if (isset($_POST['toggle'])) {
 		$gameID = intval($_POST['gameID']);
 		$playerID = intval($_POST['playerID']);
-		
-		$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} and primaryGM = 1");
-		$playerCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$playerID} AND approved = 1");
-		if ($gmCheck->rowCount() == 0 || $playerCheck->rowCount() == 0) {
+
+		$game = $mongo->games->findOne(array('gameID' => $gameID), array('forumID' => true, 'players' => true));
+		$gmCheck = false;
+		$playerCheck = false;
+		foreach ($game['players'] as $player) {
+			if ($player['user']['userID'] == $playerID && $player['isGM']) 
+				$playerCheck = true;
+			elseif ($player['user']['userID'] == $playerID) 
+				$playerCheck = false;
+			elseif ($player['user']['userID'] == $currentUser->userID && $player['isGM']) 
+				$gmCheck = true;
+		}
+		if (!$gmCheck && $playerCheck == null) {
 			if (isset($_POST['modal'])) 
 				displayJSON(array('failed' => true, 'errors' => array('invalidPost')));
 			else 
 				header("Location: /games/{$gameID}/");
 		} else {
-			$isGM = $playerCheck->fetchColumn();
-			$mysql->query("UPDATE players SET isGM = isGM ^ 1 WHERE gameID = {$gameID} AND userID = {$playerID}");
-			$forumID = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID}");
-			$forumID = $forumID->fetchColumn();
+			$isGM = $playerCheck;
+			$mongo->games->update(array('gameID' => $gameID, 'players.user.userID' => $playerID), array('$set' => array('players.$.isGM' = !$isGM)));
+			$forumID = $game['forumID'];
 
 			if ($isGM) 
 				$mysql->query("DELETE FROM forumAdmins WHERE userID = {$playerID} AND forumID = {$forumID}");

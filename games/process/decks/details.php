@@ -5,8 +5,8 @@
 		foreach ($_POST['addUser'] as $userID) 
 			if (intval($userID) > 0) 
 				$addUsers[] = (int) $userID;
-	$gmCheck = $mysql->query("SELECT primaryGM FROM players WHERE isGM = 1 AND gameID = {$gameID} AND userID = {$currentUser->userID}");
-	if (isset($_POST['create']) && $gmCheck->rowCount()) {
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	if (isset($_POST['create']) && $gmCheck) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
 		$type = $_POST['deckType'];
 		$deckInfo = $mysql->prepare('SELECT short, name, deckSize FROM deckTypes WHERE short = :short');
@@ -57,9 +57,10 @@
 		}
 	} elseif (isset($_POST['edit']) && $gmCheck->rowCount()) {
 		$deckID = intval($_POST['deckID']);
-		$deckInfo = $mysql->query("SELECT d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short INNER JOIN games g ON d.gameID = g.gameID INNER JOIN players p ON g.gameID = p.gameID AND p.isGM = 1 WHERE d.deckID = $deckID AND p.userID = {$currentUser->userID} LIMIT 1");
+		$deckInfo = $mysql->query("SELECT d.gameID, d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short WHERE d.deckID = {$deckID} LIMIT 1");
 		if ($deckInfo->rowCount()) {
 			$deckInfo = $deckInfo->fetch();
+			$
 			$type = $_POST['deckType'];
 			if ($deckInfo['type'] != $type) {
 				$nDeckInfo = $mysql->prepare('SELECT short, name, deckSize FROM deckTypes WHERE short = :short');

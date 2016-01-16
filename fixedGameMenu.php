@@ -3,15 +3,22 @@
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?
 		if ($gameID) {
-			$gameInfo = $mysql->query("SELECT g.gameID, g.system, g.forumID, p.isGM, p.approved, g.public FROM games g LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} WHERE g.gameID = {$gameID}");
-			$gameInfo = $gameInfo->fetch();
+			$game = $mongo->games->findOne(array(
+				'gameID' => (int) $gameID,
+				'players.user.userID' => $currentUser->userID
+			), array(
+				'forumID' => true,
+				'public' => true,
+				'players.$' => true
+			));
+			$isGM = $game && $game['players'][0]['isGM']?true:false;
 ?>
 	<ul class="rightCol">
 		<li><a href="<?='/games/'.$gameID?>" class="menuLink" target="_blank">Game Details</a></li>
 	</ul>
 <?		} ?>
 	<ul class="leftCol">
-<?		if ($gameInfo['isGM'] || $pathAction == 'characters') { ?>
+<?		if ($isGM || $pathAction == 'characters') { ?>
 		<li id="fm_tools">
 			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
@@ -67,12 +74,12 @@
 <?		} ?>
 <?
 		if ($gameID) {
-			$characters = $mysql->query("SELECT c.characterID, c.label, c.approved, u.userID, u.username FROM characters c, users u WHERE".($gameInfo['isGM']?'':" c.userID = {$currentUser->userID} AND")." c.gameID = $gameID AND u.userID = c.userID ORDER BY c.approved DESC, u.username ASC, c.label ASC");
+			$characters = $mysql->query("SELECT c.characterID, c.label, c.approved, u.userID, u.username FROM characters c, users u WHERE".($isGM?'':" c.userID = {$currentUser->userID} AND")." c.gameID = {$gameID} AND u.userID = c.userID ORDER BY c.approved DESC, u.username ASC, c.label ASC");
 			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
 			<a href="" class="menuLink">Characters</a>
-			<ul class="submenu<?=$gameInfo['isGM']?' isGM':''?>" data-menu-group="characters">
+			<ul class="submenu<?=$isGM?' isGM':''?>" data-menu-group="characters">
 <?
 				$currentUserID = 0;
 				foreach ($characters as $charInfo) {
@@ -80,7 +87,7 @@
 						if ($currentUserID != 0) echo "				</li>\n";
 						$currentUserID = $charInfo['userID'];
 						echo "				<li>\n";
-						if ($gameInfo['isGM']) {
+						if ($isGM) {
 ?>
 					<p class="username"><a href="/ucp/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
 <?
@@ -95,9 +102,9 @@
 <?
 			}
 		}
-		if ($gameID && $pathAction != 'forums' && ($gameInfo['approved'] || $gameInfo['public'])) {
+		if ($gameID && $pathAction != 'forums' && ($game['players'][0]['approved'] || $game['public'])) {
 ?>
-			<li><a href="/forums/<?=$gameInfo['forumID']?>/" target="_blank" class="menuLink">Forum</a></li>
+			<li><a href="/forums/<?=$game['forumID']?>/" target="_blank" class="menuLink">Forum</a></li>
 <?		} ?>
 	</ul>
 </div></div>

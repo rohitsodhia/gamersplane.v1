@@ -1,10 +1,10 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$mapID = intval($pathOptions[2]);
-	$gmCheck = $mysql->query("SELECT p.primaryGM FROM players p, maps m WHERE p.isGM = 1 AND p.gameID = $gameID AND m.gameID = p.gameID AND m.mapID = $mapID AND p.userID = {$currentUser->userID}");
-	if (!$gmCheck->rowCount()) { header('Location: /tools/maps'); exit; }
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	if (!$gmCheck) { header('Location: /tools/maps'); exit; }
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Delete Map</h1>
 		
 <?
@@ -19,4 +19,4 @@
 			<p class="alignCenter">Are you sure you want to delete the map <strong><?=$name?></strong>?</p>
 			<div class="alignCenter"><button type="submit" name="delete" class="fancyButton">Delete</button></div>
 		</form>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>

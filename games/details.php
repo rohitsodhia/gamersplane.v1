@@ -1,9 +1,8 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	
-	$gameInfo = $mysql->query("SELECT g.title, g.description FROM games g WHERE g.gameID = $gameID");
-	if ($gameInfo->rowCount() == 0) { header('Location: /games/list'); exit; }
-	$gameInfo = $gameInfo->fetch();
+	$gameInfo = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'description' => true));
+	if (!$gameInfo) { header('Location: /games/list/'); exit; }
 
 	$dispatchInfo['title'] = $gameInfo['title'];
 	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. ".($gameInfo['description']?$gameInfo['description']:'No description provided.');
@@ -35,7 +34,7 @@
 			<div id="details">
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Status</label></div>
-					<div class="infoCol">{{details.status?'Open':'Closed'}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status ? 'Close' : 'Open'}} Game ]</a></div>
+					<div class="infoCol">{{details.status.capitalizeFirstLetter()}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status == 'open' ? 'Close' : 'Open'}} Game ]</a></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Title</label></div>
@@ -55,7 +54,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Post Frequency</label></div>
-					<div class="infoCol">{{details.postFrequency[0]}} post<span ng-if="details.postFrequency[0] > 1">s</span> per {{details.postFrequency[1]}}</div>
+					<div class="infoCol">{{details.postFrequency.timesPer}} post<span ng-if="details.postFrequency.timesPer > 1">s</span> per {{details.postFrequency.perPeriod}}</div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Number of Players</label></div>
@@ -135,29 +134,29 @@
 					<p ng-if="curPlayer.characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
 					<p ng-if="characters.length == 0 && curPlayer.characters.length < details.charsPerPlayer" class="notice" hb-margined>You don't have any characters to submit</p>
 				</div>
-				
+
 				<div class="leftCol">
 					<h2 class="headerbar hbDark hb_hasList">Players in Game</h2>
 					<ul id="playersInGame" class="hbAttachedList hbMargined">
-						<li ng-repeat="player in players | filter: { approved: true }" id="userID_{{player.userID}}" ng-class="{ 'hasChars': player.characters > 0 }">
+						<li ng-repeat="player in players | filter: { approved: true }" id="userID_{{player.user.userID}}" ng-class="{ 'hasChars': player.characters > 0 }">
 							<div class="playerInfo clearfix" ng-class="{ 'hasChars': player.characters.length }">
-								<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
+								<div class="player"><a href="/user/{{player.user.userID}}/" class="username">{{player.user.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
 								<div class="actionLinks">
-									<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.userID}}/" colorbox>Remove player</a>
-									<a ng-if="isPrimaryGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
-									<a ng-if="player.userID == CurrentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.userID}}/" colorbox>Leave Game</a>
+									<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.user.userID}}/" colorbox>Remove player</a>
+									<a ng-if="isPrimaryGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.user.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
+									<a ng-if="player.user.userID == CurrentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.user.userID}}/" colorbox>Leave Game</a>
 								</div>
 							</div>
 							<ul ng-if="player.characters.length" class="characters">
 								<li ng-repeat="character in player.characters" class="clearfix">
 									<div class="charLabel">
-										<a ng-if="isGM || player.userID == CurrentUser.userID" href="/characters/{{details.system['_id']}}/{{character.characterID}}/sheet/">{{character.label}}</a>
-										<div ng-if="!isGM && player.userID != CurrentUser.userID">{{character.label}}</div>
+										<a ng-if="isGM || player.user.userID == CurrentUser.userID" href="/characters/{{details.system['_id']}}/{{character.characterID}}/sheet/">{{character.label}}</a>
+										<div ng-if="!isGM && player.user.userID != CurrentUser.userID">{{character.label}}</div>
 									</div>
 									<div class="actionLinks">
 										<a ng-if="isGM && !character.approved" href="" ng-click="approveCharacter(character)">Approve Character</a>
-										<a ng-if="isGM && player.userID != CurrentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
-										<a ng-if="player.userID == CurrentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
+										<a ng-if="isGM && player.user.userID != CurrentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
+										<a ng-if="player.user.userID == CurrentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
 									</div>
 								</li>
 							</ul>
@@ -167,12 +166,12 @@
 					<div ng-if="!details.retired && isGM && playersAwaitingApproval">
 						<h2 class="headerbar hbDark hb_hasList" skew-element>Players Pending Approval</h2>
 						<ul id="playersInGame" class="hbAttachedList hbMargined">
-							<li ng-repeat="player in players | filter: { approved: false }" id="userID_{{player.userID}}">
+							<li ng-repeat="player in players | filter: { approved: false }" id="userID_{{player.user.userID}}">
 								<div class="playerInfo clearfix">
-									<div class="player"><a href="/user/{{player.userID}}/" class="username">{{player.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
+									<div class="player"><a href="/user/{{player.user.userID}}/" class="username">{{player.user.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
 									<div class="actionLinks">
-										<a href="/games/{{gameID}}/approvePlayer/{{player.userID}}/" colorbox>Approve</a>
-										<a href="/games/{{gameID}}/rejectPlayer/{{player.userID}}/" colorbox>Reject</a>
+										<a href="/games/{{gameID}}/approvePlayer/{{player.user.userID}}/" colorbox>Approve</a>
+										<a href="/games/{{gameID}}/rejectPlayer/{{player.user.userID}}/" colorbox>Reject</a>
 									</div>
 								</div>
 							</li>

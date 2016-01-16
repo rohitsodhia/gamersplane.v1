@@ -279,7 +279,7 @@
 		}
 
 		public function stats() {
-			global $mysql;
+			global $mysql, $mongo;
 
 			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
 				$userID = (int) $_POST['userID'];
@@ -302,7 +302,17 @@
 				$numChars += (int) $character['numChars'];
 			}
 
-			$rGames = $mysql->query("SELECT g.gameID, s.shortName, s.fullName, COUNT(g.gameID) numGames FROM games g INNER JOIN systems s ON g.system = s.shortName INNER JOIN players p USING (gameID) WHERE p.userID = {$userID} AND p.isGM = 1 GROUP BY g.system ORDER BY numGames DESC, s.fullName");
+			$rGames = $mongo->games->group(
+				array('system' => true),
+				array('count' => 0),
+				'function (item, result) { result.count++; }',
+				array('condition' => array(
+					'$elemMatch' => array(
+						'players.user.userID' => $currentUser->userID,
+						'isGM' => true
+					)
+				))
+			);
 			$games = array();
 			$numGames = 0;
 			foreach ($rGames as $game) {

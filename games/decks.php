@@ -1,24 +1,23 @@
 <?
 	$gameID = intval($pathOptions[0]);
-	
-	$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = $gameID AND userID = {$currentUser->userID} AND isGM = 1");
-	if ($gmCheck->rowCount() == 0) { header('Location: /games/list'); exit; }
-//	$gameInfo = $mysql->fetch();
-	
-	$players = $mysql->query('SELECT u.userID, u.username, c.characterID, c.label FROM users u, characters c WHERE u.userID = c.userID AND c.gameID = '.$gameID.' AND c.approved = 1');
-	$allPlayers = array();
-	foreach ($players as $userInfo) $allPlayers[$userInfo['userID']] = $userInfo;
-	
-	$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
-	$decks = $decks->fetchAll();
-	$temp = array();
-	foreach ($decks as $key => $value) $temp[$value['deckID']] = $value;
-	$decks = $temp;
-	
+
+	$game = $mongo->games->find(array('gameID' => $gameID), array('players' => true));
+	foreach ($game['players'] as $player) {
+		if ($player['user']['userID'] == $currentUser->userID && !$player['isGM']) {
+			header('Location: /games/list/'); exit;
+		}
+	}
+
+	$rDecks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID)->fetchAll();
+	$decks = array();
+	foreach ($rDecks as $deck) 
+		$decks[$deck['deckID']] = $deck;
+
 	$deckTypes = array();
-	foreach ($mysql->query('SELECT short, name FROM deckTypes') as $deckType) $deckTypes[$deckType['short']] = $deckType['name'];
+	foreach ($mysql->query('SELECT short, name FROM deckTypes') as $deckType) 
+		$deckTypes[$deckType['short']] = $deckType['name'];
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1>Game Decks</h1>
 		
 <?
