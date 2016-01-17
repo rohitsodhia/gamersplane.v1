@@ -6,14 +6,23 @@
 ?>
 
 		<div class="mainColumn right">
-			<form ng-submit="saveSystem()" class="borderBottom">
+			<form id="loadSystem" ng-submit="loadSystem()" class="borderBottom">
+				<combobox data="selectSystem.data" value="selectSystem.value" placeholder="System"></combobox>
+				<button type="submit" class="fancyButton" skew-element>Load</button>
+				<a href="" ng-click="setNewSystem()" class="fancyButton" skew-element>New</a>
+			</form>
+			<form ng-submit="saveSystem()">
 				<div class="tr">
 					<label for="shortName">Short name</label>
-					<input type="text" ng-model="edit.shortName" disabled="disabled">
+					<input id="shortName" type="text" ng-model="edit.shortName" ng-disabled="!newSystem">
 				</div>
 				<div class="tr">
 					<label for="fullName">Full name</label>
 					<input id="fullName" type="text" ng-model="edit.fullName">
+				</div>
+				<div class="tr vAlignMiddle">
+					<label for="hasCharSheet">Has Char Sheet</label>
+					<pretty-checkbox eleID="hasCharSheet" checkbox="edit.hasCharSheet"></pretty-checkbox>
 				</div>
 				<div class="tr">
 					<label for="genres">Genres</label>
@@ -42,14 +51,9 @@
 					System saved!
 				</div>
 				<div id="buttonDiv">
-					<button type="submit" class="fancyButton" ng-click="setEditBtn('save')">Save</button>
-					<button type="cancel" class="fancyButton" ng-click="setEditBtn('cancel')">Cancel</button>
+					<button type="submit" ng-click="setEditBtn('save')" class="fancyButton" skew-element>Save</button>
+					<button type="cancel" ng-click="setEditBtn('cancel')" class="fancyButton" skew-element>Cancel</button>
 				</div>
-			</form>
-
-			<form id="loadSystem" ng-submit="loadSystem()">
-				<combobox data="selectSystem.data" value="selectSystem.value" placeholder="System"></combobox>
-				<button type="submit" class="fancyButton">Load</button>
 			</form>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

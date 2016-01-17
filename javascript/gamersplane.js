@@ -250,6 +250,9 @@ app.config(function ($httpProvider) {
 	this.getGenres = function () {
 		return $http.post(API_HOST + '/systems/getGenres/').then(function (data) { return data.data; });
 	};
+	this.save = function (systemData) {
+		return $http.post(API_HOST + '/systems/save/', { data: systemData }).then(function (data) { return data.data; });
+	}
 }]).service('LanguageService', [function () {
 	this.userProfileLink = function (userID, username) {
 		return '<a href="/user/' + userID + '/" class="username">' + username + '</a>';

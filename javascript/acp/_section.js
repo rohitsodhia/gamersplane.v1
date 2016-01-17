@@ -108,34 +108,57 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		'value': {},
 		'search': ''
 	};
-	SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
-		systems = data.systems;
-		$scope.selectSystem.data = [];
-		for (key in systems) {
-			if (systems[key].shortName != 'custom') 
-				$scope.selectSystem.data.push({
-					'value': systems[key].shortName, 
-					'display': systems[key].fullName
-				});
-		}
-		$scope.selectSystem.data.push({ 'value': 'custom', 'display': 'Custom' });
-	});
+	function loadSystems() {
+		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+			systems = data.systems;
+			$scope.selectSystem.data = [];
+			for (key in systems) {
+				if (systems[key].shortName != 'custom') 
+					$scope.selectSystem.data.push({
+						'value': systems[key].shortName, 
+						'display': systems[key].fullName
+					});
+			}
+			$scope.selectSystem.data.push({ 'value': 'custom', 'display': 'Custom' });
+		});
+	}
+	loadSystems();
 	$scope.newGenre = {
 		'data': [],
 		'value': {},
 		'search': ''
 	};
-	SystemsService.getGenres().then(function (data) {
-		$scope.allGenres = [];
-		$scope.newGenre.data = [];
-		for (key in data) {
-			$scope.allGenres.push(data[key]);
-			$scope.newGenre.data.push(data[key]);
-		}
-	});
+	function getGenres() {
+		SystemsService.getGenres().then(function (data) {
+			$scope.allGenres = [];
+			$scope.newGenre.data = [];
+			for (key in data) {
+				$scope.allGenres.push(data[key]);
+				$scope.newGenre.data.push(data[key]);
+			}
+		});
+	}
+	getGenres();
+	$scope.newSystem = true;
 	$scope.edit = {};
 	$scope.allGenres = [];
 	$scope.saveSuccess = false;
+
+	$scope.loadSystem = function () {
+		if ($scope.selectSystem.value.value == null) 
+			return;
+		SystemsService.get({ 'shortName': $scope.selectSystem.value.value }).then(function (data) {
+			$scope.newSystem = false;
+			$scope.edit = data.systems[0];
+//			$scope.selectSystem.search = '';
+			$scope.newGenre.search = '';
+			updateGenres();
+		});
+	};
+	$scope.setNewSystem = function () {
+		$scope.newSystem = true;
+		$scope.edit = {};
+	};
 
 	$scope.saveStatusBtn = 'cancel';
 	$scope.setEditBtn = function (type) {
@@ -182,21 +205,13 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		if ($scope.saveStatusBtn != 'save') 
 			return;
 
-		$http.post(API_HOST + '/systems/save/', { system: $scope.edit }).success(function (data) {
+		SystemsService.save($scope.edit).then(function (data) {
+			$scope.edit = {};
 			$scope.saveSuccess = true;
-			getGeneres();
+			$scope.newSystem = true;
+			getGenres();
+			loadSystems();
 			$timeout(function () { $scope.saveSuccess = false; }, 1500);
-		});
-	}
-
-	$scope.loadSystem = function () {
-		if ($scope.selectSystem.value.value == null) 
-			return;
-		SystemsService.get({ 'shortName': $scope.selectSystem.value.value }).then(function (data) {
-			$scope.edit = data.systems[0];
-//			$scope.selectSystem.search = '';
-			$scope.newGenre.search = '';
-			updateGenres();
 		});
 	}
 }]).controller('acp_links', ['$scope', '$http', '$sce', '$filter', 'Links', function ($scope, $http, $sce, $filter, Links) {

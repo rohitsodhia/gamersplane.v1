@@ -48,7 +48,8 @@
 					$system = array_merge($system, array(
 						'genres' => $rSystem['genres']?$rSystem['genres']:array(),
 						'publisher' => $rSystem['publisher']?$rSystem['publisher']:array('name' => '', 'site' => ''),
-						'basics' => $rSystem['basics']?$rSystem['basics']:array()
+						'basics' => $rSystem['basics']?$rSystem['basics']:array(),
+						'hasCharSheet' => $rSystem['hasCharSheet']
 					));
 				if ($system['shortName'] != 'custom') 
 					$systems[] = $system;
@@ -76,7 +77,7 @@
 
 			if ($currentUser->checkACP('systems', false)) {
 				$genres = array();
-				$systemData = $_POST['system'];
+				$systemData = $_POST['data'];
 				if (isset($systemData->genres) && is_array($systemData->genres)) { foreach ($systemData->genres as $genre) {
 					$genre = sanitizeString($genre);
 					if (strlen($genre) && !array_search($genre, $genres)) 
@@ -92,8 +93,10 @@
 					}
 				} }
 				$system = array(
+					'_id' => $systemData->shortName,
 					'name' => sanitizeString($systemData->fullName),
 					'sortName' => sanitizeString($systemData->fullName, 'lower'),
+					'hasCharSheet' => $systemData->hasCharSheet?true:false,
 					'genres' => $genres,
 					'publisher' => (object) array(
 						'name' => strlen($systemData->publisher->name)?sanitizeString($systemData->publisher->name):null,
@@ -101,7 +104,7 @@
 					),
 					'basics' => $basics
 				);
-				$system = $mongo->systems->findAndModify(array('_id' => $systemData->shortName), array('$set' => $system), null, array('new' => true));
+				$system = $mongo->systems->findAndModify(array('_id' => $systemData->shortName), array('$set' => $system), null, array('upsert' => true, 'new' => true));
 				$system['shortName'] = $system['_id'];
 				$system['fullName'] = $system['name'];
 				unset($system['_id'], $system['name']);
