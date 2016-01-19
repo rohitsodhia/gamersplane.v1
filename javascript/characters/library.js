@@ -12,7 +12,7 @@ controllers.controller('charLibrary', ['$scope', 'CurrentUser', 'CharactersServi
 				waitingLoadingFinish();
 			}
 		});
-		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+		SystemsService.get({ 'getAll': true }).then(function (data) {
 			for (key in data.systems) 
 				$scope.systems.push({ 'slug': data.systems[key].shortName, 'name': data.systems[key].fullName });
 			loadingFinished++;

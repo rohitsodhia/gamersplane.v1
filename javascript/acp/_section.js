@@ -109,7 +109,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		'search': ''
 	};
 	function loadSystems() {
-		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+		SystemsService.get({ 'getAll': true }).then(function (data) {
 			systems = data.systems;
 			$scope.selectSystem.data = [];
 			for (key in systems) {

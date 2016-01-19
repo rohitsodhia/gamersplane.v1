@@ -17,12 +17,12 @@
 			global $mongo;
 
 			$search = array();
-			$fields = array();
-			if (isset($_POST['fields']) && is_array($_POST['fields'])) 
+			$fields = array('name' => true);
+			if (isset($_POST['fields']) && $_POST['fields'] == 'all') 
+				$fields = array();
+			elseif (isset($_POST['fields']) && is_array($_POST['fields'])) 
 				foreach ($_POST['fields'] as $field) 
-					$fields[$field] = 1;
-			if (isset($_POST['basic']) && $_POST['basic']) 
-				$fields = array('name');
+					$fields[$field] = true;
 			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) 
 				$search['_id'] = array('$ne' => 'custom');
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
@@ -39,18 +39,21 @@
 			}
 			$systems = array();
 			$custom = array();
+			$defaults = array(
+				'genres' => array(),
+				'publisher' => array('name' => '', 'site' => ''),
+				'basics' => array()
+			);
+			unset($fields['name']);
 			foreach ($rSystems as $rSystem) {
 				$system = array(
 					'shortName' => $rSystem['_id'],
 					'fullName' => $rSystem['name']
 				);
-				if (!isset($_POST['basic']) || !$_POST['basic'])
-					$system = array_merge($system, array(
-						'genres' => $rSystem['genres']?$rSystem['genres']:array(),
-						'publisher' => $rSystem['publisher']?$rSystem['publisher']:array('name' => '', 'site' => ''),
-						'basics' => $rSystem['basics']?$rSystem['basics']:array(),
-						'hasCharSheet' => $rSystem['hasCharSheet']
-					));
+				if (sizeof($fields) > 0) {
+					foreach ($fields as $field => $nothing) 
+						$system[$field] = isset($rSystem[$field])?$rSystem[$field]:(isset($defaults[$field])?$defaults[$field]:null);
+				}
 				if ($system['shortName'] != 'custom') 
 					$systems[] = $system;
 				else 

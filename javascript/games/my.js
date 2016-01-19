@@ -6,7 +6,7 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 	$scope.lfg = [];
 	$scope.systems = {};
 	CurrentUser.load().then(function () {
-		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+		SystemsService.get({ 'getAll': true }).then(function (data) {
 			$scope.systems = {};
 			data.systems.forEach(function (val) {
 				$scope.systems[val.shortName] = val.fullName;

@@ -18,7 +18,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 			$scope.characters = typeof data.characters != 'undefined'?data.characters:null;
 			$scope.library = typeof data.library != 'undefined'?data.library:null;
 		});
-		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+		SystemsService.get({ 'getAll': true }).then(function (data) {
 			for (key in data.systems) 
 				$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
 		});

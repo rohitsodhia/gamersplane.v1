@@ -28,7 +28,7 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 	$scope.orderBy = '-start';
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
-		SystemsService.get({ 'getAll': true, 'basic': true }).then(function (data) {
+		SystemsService.get({ 'getAll': true }).then(function (data) {
 			reqLoading = $scope.clearPageLoading(reqLoading);
 			$scope.systems = {};
 			data.systems.forEach(function (val) {
