@@ -31,9 +31,12 @@
 .markItUp .markItUpButton9 a	{
 	background-image:url(images/quotes.png);
 }
-
 .markItUp .markItUpButton10 a	{
 	background-image:url(images/notes.png);
+}
+.markItUp .markItUpButton11 a	{
+	width: 36px;
+	background-image:url(images/ooc.png);
 }
 /*.markItUp .markItUpButton7 a	{
 	background-image:url(images/fonts.png);

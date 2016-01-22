@@ -39,7 +39,8 @@ mySettings = {
 		{name:'List item', openWith:'[*] '},
 		{separator:'---------------' },
 */		{name:'Quotes', openWith:'[quote]', closeWith:'[/quote]'},
-		{name:'Note', openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]'},/*
+		{name:'Note', openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]'},
+		{name:'OOC', openWith:'[ooc]', closeWith:'[/ooc]'},/*
 		{name:'Code', openWith:'[code]', closeWith:'[/code]'}, 
 		{separator:'---------------' },
 		{name:'Clean', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },

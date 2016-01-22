@@ -80,7 +80,8 @@ function BBCode2Html($text) {
 					 '/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
 //					 '/\[list\](.*?)\[\/list\]/ms',
-//					 '/\[\*\]\s?(.*?)\n/ms'
+//					 '/\[\*\]\s?(.*?)\n/ms',
+					 "/[\r\n]+\[ooc\](.*?)\[\/ooc\][\r\n]+/ms"
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
@@ -96,7 +97,8 @@ function BBCode2Html($text) {
 					 '<span style="color:\1">\2</span>',
 //					 '<ol start="\1">\2</ol>',
 //					 '<ul>\1</ul>',
-//					 '<li>\1</li>'
+//					 '<li>\1</li>',
+					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>'
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text)) 

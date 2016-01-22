@@ -48,7 +48,7 @@
 	"/javascript/login/login.js": "1.1.0",
 	"/javascript/login/requesetReset.js": "1.1.0",
 	"/javascript/login/resetPass.js": "1.1.0",
-	"/javascript/markItUp/sets/bbcode/set.js": "1.2.0",
+	"/javascript/markItUp/sets/bbcode/set.js": "1.3.0",
 	"/javascript/pms/delete.js": "1.1.0",
 	"/javascript/pms/list.js": "2.1.0",
 	"/javascript/pms/send.js": "1.1.0",
