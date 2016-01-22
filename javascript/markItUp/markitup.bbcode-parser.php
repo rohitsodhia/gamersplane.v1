@@ -71,7 +71,7 @@ function BBCode2Html($text) {
 					 '/\[i\](.*?)\[\/i\]/ms',
 					 '/\[u\](.*?)\[\/u\]/ms',
 					 '/\[s\](.*?)\[\/s\]/ms',
-					 "/[\r\n]+\[linebreak\][\r\n]+/",
+					 "/[\r\n]*\[linebreak\][\r\n]*/",
 					 '/\[img\](.*?)\[\/img\]/ms',
 					 '/\[email\](.*?)\[\/email\]/ms',
 					 '/\[url\="?(.*?)"?\](.*?)\[\/url\]/ms',
@@ -81,7 +81,7 @@ function BBCode2Html($text) {
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
 //					 '/\[list\](.*?)\[\/list\]/ms',
 //					 '/\[\*\]\s?(.*?)\n/ms',
-					 "/[\r\n]+\[ooc\](.*?)\[\/ooc\][\r\n]+/ms"
+					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms"
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
