@@ -341,8 +341,8 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 	$scope.categories = [];
 	$scope.catMap = {};
 	for (key in faqs.categories) {
-		$scope.categories.push({ 'value': faqs.categories[key], 'display': key });
-		$scope.catMap[faqs.categories[key]] = key;
+		$scope.categories.push({ 'value': key, 'display': faqs.categories[key] });
+		$scope.catMap[key] = faqs.categories[key];
 	}
 	$scope.aFAQs = [];
 	faqs.get().then(function (data) {
@@ -397,6 +397,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		'answer': ''
 	}
 	$scope.createFAQ = function () {
+		console.log($scope.newFAQ); return;
 		if ($scope.newFAQ.question.length == 0 || $scope.newFAQ.answer.length == 0) 
 			return false;
 		faqs.create($scope.newFAQ).then(function (data) {

@@ -42,7 +42,11 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>System</label></div>
-					<div ng-bind-html="details.system.name | trustHTML"></div>
+					<div ng-bind-html="systems[details.system] | trustHTML"></div>
+				</div>
+				<div class="tr clearfix">
+					<div class="labelCol"><label>Allowed Character Sheets</label></div>
+					<div><span ng-repeat="system in details.allowedCharSheets"><span ng-bind-html="systems[system] | trustHTML"></span><span ng-if="!$last">, </span></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Master</label></div>

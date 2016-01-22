@@ -125,6 +125,7 @@
 
 		public function details($gameID) {
 			require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+			require_once(FILEROOT.'/includes/User.class.php');
 			global $mysql, $mongo, $currentUser;
 
 			$gameID = intval($gameID);
@@ -137,11 +138,7 @@
 			$gameInfo['readPermissions'] = (bool) $gameInfo['readPermissions'];
 			$gameInfo['gm']['lastActivity'] = User::inactive($mysql->query("SELECT lastActivity FROM users WHERE userID = {$gameInfo['gm']['userID']} LIMIT 1")->fetchColumn());
 			$gameInfo['title'] = printReady($gameInfo['title']);
-			$system = $mongo->systems->findOne(array('_id' => $gameInfo['system']), array('name' => 1));
-			$gameInfo['system'] = array('_id' => printReady($gameInfo['system']), 'name' => printReady($system['name']));
-			require_once(FILEROOT.'/includes/User.class.php');
 			$gameInfo['created'] = date('F j, Y g:i a', $gameInfo['created']->sec);
-			$gameInfo['postFrequency']['perPeriod'] = $gameInfo['postFrequency']['perPeriod'] == 'd'?'day':'week';
 			$gameInfo['description'] = strlen($gameInfo['description'])?printReady($gameInfo['description']):'None Provided';
 			$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo'])?printReady($gameInfo['charGenInfo']):'None Provided';
 			$rCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
@@ -186,9 +183,22 @@
 			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
+			$errors = array();
 			$details['title'] = sanitizeString($_POST['title']);
+			if (strlen($details['title']) == 0) 
+				$errors[] = 'invalidTitle';
 			$details['system'] = $systems->verifySystem($_POST['system'])?$_POST['system']:null;
-			$details['postFrequency'] = array('timersPer' => intval($_POST['timesPer']), 'perPeriod' => $_POST['perPeriod']);
+			$details['allowedCharSheets'] = array();
+			if (!is_array($_POST['allowedCharSheets']) || sizeof($_POST['allowedCharSheets']) == 0) 
+				$errors[] = 'noCharSheets';
+			else {
+				$validCharSheets = $mongo->systems->find(array('_id' => array('$in' => $_POST['allowedCharSheets']), 'hasCharSheet' => true), array('_id' => true));
+				foreach ($validCharSheets as $system) 
+					$details['allowedCharSheets'][] = $system['_id'];
+				if (sizeof($details['allowedCharSheets']) == 0) 
+					$errors[] = 'noCharSheets';
+			}
+			$details['postFrequency'] = array('timesPer' => intval($_POST['postFrequency']->timesPer), 'perPeriod' => $_POST['postFrequency']->perPeriod);
 			$details['numPlayers'] = intval($_POST['numPlayers']);
 			$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
 			$details['description'] = sanitizeString($_POST['description']);
@@ -196,16 +206,13 @@
 			$details['status'] = 'open';
 			$details['public'] = true;
 
-			$errors = array();
-			if (strlen($details['title']) == 0) 
-				$errors[] = 'invalidTitle';
 /*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
 			$titleCheck->execute(array(':title' => $details['title']));
 			if ($titleCheck->rowCount()) 
 				$errors[] = 'repeatTitle';*/
 			if ($details['system'] == null && !isset($_POST['save'])) 
 				$errors[] = 'invalidSystem';
-			if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) 
+			if ($details['postFrequency']['timesPer'] <= 0 || !($details['postFrequency']['perPeriod'] == 'd' || $details['postFrequency']['perPeriod'] == 'w')) 
 				$errors[] = 'invalidFreq';
 			if ($details['numPlayers'] < 2) 
 				$errors[] = 'invalidNumPlayers';
@@ -277,7 +284,8 @@
 
 			$gameID = intval($_POST['gameID']);
 			$details['title'] = sanitizeString($_POST['title']);
-			$details['postFrequency'] = array('timersPer' => intval($_POST['timesPer']), 'perPeriod' => $_POST['perPeriod']);
+			$details['allowedCharSheets'] = $_POST['allowedCharSheets'];
+			$details['postFrequency'] = array('timesPer' => intval($_POST['postFrequency']->timesPer), 'perPeriod' => $_POST['postFrequency']->perPeriod);
 			$details['numPlayers'] = intval($_POST['numPlayers']);
 			$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
 			$details['description'] = sanitizeString($_POST['description']);
@@ -289,10 +297,10 @@
 /*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
 			$titleCheck->execute(array(':title' => $details['title']));
 			if ($titleCheck->rowCount()) 
-				$errors[] = 'repeatTitle';*/
+				$errors[] = 'repeatTitle';
 			if ($details['system'] == null && !isset($_POST['save'])) 
-				$errors[] = 'invalidSystem';
-			if (intval($_POST['timesPer']) == 0 || !($_POST['perPeriod'] == 'd' || $_POST['perPeriod'] == 'w')) 
+				$errors[] = 'invalidSystem';*/
+			if ($details['postFrequency']['timesPer'] <= 0 || !($details['postFrequency']['perPeriod'] == 'd' || $details['postFrequency']['perPeriod'] == 'w')) 
 				$errors[] = 'invalidFreq';
 			if ($details['numPlayers'] < 2) 
 				$errors[] = 'invalidNumPlayers';

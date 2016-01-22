@@ -292,7 +292,7 @@ app.config(function ($httpProvider) {
 		return $http.post(API_HOST + '/links/get/', params).then(function (data) { return data; });
 	};
 }]).service('faqs', ['$http', '$q', function ($http, $q) {
-	this.categories = { 'Getting Started': 'getting-started', 'Characters': 'characters', 'Games': 'games', 'Tools': 'tools' };
+	this.categories = { 'getting-started': 'Getting Started', 'characters': 'Characters', 'games': 'Games', 'tools': 'Tools' };
 	this.get = function () {
 		var deferred = $q.defer();
 		$http.post(API_HOST + '/faqs/get/').success(function (data) { deferred.resolve(data); });
@@ -561,12 +561,16 @@ app.config(function ($httpProvider) {
 		templateUrl: '/angular/directives/combobox.php',
 		scope: {
 			'data': '=',
-			'value': '=',
+			'rValue': '=value',
 			'search': '=',
 			'autocomplete': '='
 		},
 		link: function (scope, element, attrs) {
 			scope.select = !isUndefined(attrs.select)?true:false;
+			scope.orderBy = !isUndefined(attrs.orderby)?attrs.orderby:null;
+			scope.returnAs = !isUndefined(attrs.returnas)?attrs.returnas:'object';
+			if (scope.returnAs != 'value' && scope.returnAs != 'object') 
+				scope.returnAs = 'object';
 			scope.bypassFilter = true;
 			$timeout(function () {
 				scope.search = typeof scope.search == 'string'?scope.search:'';
@@ -609,16 +613,42 @@ app.config(function ($httpProvider) {
 				element.attr('class', '');
 			}
 
-			function setValue() {
-				for (key in scope.options) 
-					if (scope.search.toLowerCase() == scope.options[key].display.toLowerCase()) {
-						scope.value = scope.options[key];
-						scope.search = scope.value.display;
-					}
-			}
 			scope.filterData = function () {
 				return $filter('filter')(scope.options, (!scope.bypassFilter || '') && { 'display': scope.search });
 			}
+			scope.$watch(function () { return scope.value; }, function (newVal, oldVal) {
+				if (newVal) {
+					if (scope.returnAs == 'value') 
+						scope.rValue = newVal.value;
+					else 
+						scope.rValue = newVal;
+				}
+			});
+			scope.$watch(function () { return scope.rValue; }, function (val) {
+				if (val) {
+					hVal = null;
+					if (scope.returnAs == 'value') {
+						for (key in scope.options) {
+							if (scope.options[key].value == val) {
+								hVal = scope.options[key];
+								break;
+							}
+						}
+					} else {
+						for (key in scope.options) {
+							if (scope.options[key].value == val.value) {
+								hVal = scope.options[key];
+								break;
+							}
+						}
+					}
+					if (hVal) {
+						scope.value = hVal;
+						scope.search = hVal.display;
+					} else if (scope.value) 
+						scope.rValue = scope.returnAs == 'value'?scope.value.value:scope.value;
+				}
+			});
 			scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
 				if (isUndefined(scope.data)) 
 					return;
@@ -627,7 +657,7 @@ app.config(function ($httpProvider) {
 					return;
 				optsIsArray = Array.isArray(scope.data);
 				for (key in scope.data) {
-					val = copyObject(scope.data[key]);
+					val = scope.data[key];
 					if (typeof val != 'object') {
 						val = { 'display': val };
 						val.value = optsIsArray?val.display:key;
@@ -653,6 +683,9 @@ app.config(function ($httpProvider) {
 					scope.value = copyObject(scope.options[0]);
 					scope.search = scope.value.display;
 				}
+
+				if (scope.orderBy) 
+					scope.options = $filter('orderBy')(scope.options, scope.orderBy);
 			}, true);
 
 			scope.inputFocused = function () {

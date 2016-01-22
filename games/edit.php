@@ -19,21 +19,27 @@
 				</div>
 				<div class="error" ng-show="errors.indexOf('invalidTitle') >= 0">Invalid title</div>
 				<div class="error" ng-show="errors.indexOf('repeatTitle') >= 0">Someone else already has a game by this title</div>
-				<div ng-if="state == 'new'" class="tr">
+				<div class="tr">
 					<label>System</label>
-					<combobox data="systems" value="game.system"></combobox>
+					<combobox ng-if="state == 'new'" data="allSystems" value="game.system" returnAs="value" select></combobox>
+					<div ng-if="state != 'new'" ng-bind-html="allSystems[game.system]"></div>
 				</div>
-				<div ng-if="state == 'new'" class="tr">
+				<div class="tr">
 					<label>Allowed Character Sheets</label>
 					<div>
-						<combobox data="systems" value="addCharSheet"></combobox>
-						<div>adsf</div>
+						<combobox data="systemsWCharSheets" value="charSheet.val" orderBy="display" returnAs="value" select></combobox> <a href="" ng-click="addCharSheet()">[ + ]</a>
+					</div>
+				</div>
+				<div class="error" ng-show="errors.indexOf('noCharSheets') >= 0">You must allow at least one character sheet</div>
+				<div class="tr" ng-show="game.allowedCharSheets.length">
+					<div class="shiftRight">
+						<div ng-repeat="system in game.allowedCharSheets | orderBy: 'toString()'" class="allowedClass"><span ng-bind-html="allSystems[system]"></span> <a href="" ng-click="removeCharSheet(system)">[ - ]</a></div>
 					</div>
 				</div>
 				<div class="tr">
 					<label>Post Frequency</label>
-					<input id="timesPer" type="number" ng-model="game.timesPer" maxlength="2" min="1"> time(s) per 
-					<combobox inputID="perPeriod" data="combobox.periods" value="game.perPeriod" select></combobox>
+					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per 
+					<combobox inputID="perPeriod" data="combobox.periods" value="game.postFrequency.perPeriod" returnAs="value" select></combobox>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>

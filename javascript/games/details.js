@@ -1,4 +1,4 @@
-controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'GamesService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, GamesService, ACSearch) {
+controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'SystemsService', 'GamesService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, SystemsService, GamesService, ACSearch) {
 	pathElements = getPathElements();
 	CurrentUser.load().then(function () {
 		CurrentUser = CurrentUser.get();
@@ -6,6 +6,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.skewedOut = {};
 		$scope.loggedIn = CurrentUser.loggedOut?false:true;
 		$scope.CurrentUser = CurrentUser;
+		$scope.systems = [];
 		$scope.gameID = pathElements[1];
 		$scope.details = {};
 		$scope.players = [];
@@ -24,6 +25,11 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		setGameData = function () {
 			$scope.$emit('pageLoading');
+			SystemsService.get({ 'getAll': true, 'fields': ['hasCharSheet'] }).then(function (data) {
+				data.systems.forEach(function (val) {
+					$scope.systems[val.shortName] = val.fullName;
+				});
+			});
 			GamesService.getDetails($scope.gameID).then(function (data) {
 				if (data.success) {
 					$scope.details = data.details;
