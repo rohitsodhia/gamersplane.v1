@@ -1,4 +1,4 @@
-controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'SystemsService', 'GamesService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, SystemsService, GamesService, ACSearch) {
+controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'SystemsService', 'GamesService', 'CharactersService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, SystemsService, GamesService, CharactersService, ACSearch) {
 	pathElements = getPathElements();
 	CurrentUser.load().then(function () {
 		CurrentUser = CurrentUser.get();
@@ -48,8 +48,18 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 								$scope.isGM = true;
 
 							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
-								$http.post(API_HOST + '/characters/my/', { 'system': $scope.details.system['_id'], 'noGame': true }).then(function (data) {
-									$scope.characters = data.data.characters;
+								allowedSystems = $scope.details.allowedCharSheets;
+								addSystem = true;
+								for (key in allowedSystems) {
+									if (allowedSystems[key] == $scope.details.system) {
+										addSystem = false;
+										break;
+									}
+								}
+								if (addSystem) 
+									allowedSystems.push($scope.details.system);
+								CharactersService.getMy({ 'systems': allowedSystems, 'noGame': true }).then(function (data) {
+									$scope.characters = data.characters;
 									for (key in $scope.characters) 
 										$scope.availChars.push({ 'value': $scope.characters[key].characterID, 'display': $scope.characters[key].label });
 									$scope.availChars = $filter('orderBy')($scope.availChars, 'display');
@@ -68,13 +78,13 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		setGameData();
 
 		$scope.toggleGameStatus = function () {
-			$http.post(API_HOST + '/games/toggleGameStatus/', { gameID: $scope.gameID }).success(function (data) {
+			GamesService.toggleGameStatus($scope.gameID).then(function (data) {
 				if (data.success) 
 					$scope.details.status = $scope.details.status == 'open'?'closed':'open';
 			});
 		};
 		$scope.toggleForum = function () {
-			$http.post(API_HOST + '/games/toggleForum/', { gameID: $scope.gameID }).success(function (data) {
+			GamesService.toggleForum($scope.gameID).then(function (data) {
 				if (data.success) 
 					$scope.details.readPermissions = !$scope.details.readPermissions;
 			});
@@ -85,7 +95,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			$scope.displayRetireConfirm = !$scope.displayRetireConfirm;
 		}
 		$scope.confirmRetire = function () {
-			$http.post(API_HOST + '/games/retire/', { 'gameID': $scope.details.gameID }).success(function (data) {
+			GamesService.confirmRetire($scope.gameID).then(function (data) {
 				if (data.success) 
 					window.location.href = '/games/?gameRetired=' + $scope.details.gameID;
 			});
@@ -93,7 +103,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 
 		$scope.applyToGame = function () {
-			$http.post(API_HOST + '/games/apply/', { gameID: $scope.gameID }).success(function (data) {
+			GamesService.apply($scope.gameID).then(function (data) {
 				if (data.success == true) 
 					$scope.inGame = true;
 			});

@@ -97,9 +97,21 @@
 			$systems = Systems::getInstance();
 
 			$userID = $currentUser->userID;
-			$characters = $mysql->prepare("SELECT c.characterID, c.label, c.charType, c.system, c.gameID, c.approved FROM characters c WHERE c.retired IS NULL AND c.userID = {$userID}".(isset($_POST['system'])?' AND c.system = :system':'').(isset($_POST['noGame'])?' AND c.gameID IS NULL':''));
-			if (isset($_POST['system'])) 
-				$characters->bindValue(':system', $_POST['system']);
+			$query = "SELECT c.characterID, c.label, c.charType, c.system, c.gameID, c.approved FROM characters c WHERE c.retired IS NULL AND c.userID = {$userID}";
+			if (isset($_POST['systems'])) {
+				$allowedSystems = array_unique($_POST['systems']);
+				if (sizeof($allowedSystems) == 1) 
+					$query .= ' AND c.system = :system';
+				elseif (sizeof($allowedSystems) > 1) {
+					foreach ($allowedSystems as &$system) 
+						$system = preg_replace('/[^\w_]/', '', $system);	
+					$query .= ' AND c.system IN ("'.implode('", "', $allowedSystems).'")';
+				}
+			}
+			$query .= isset($_POST['noGame'])?' AND c.gameID IS NULL':'';
+			$characters = $mysql->prepare($query);
+			if (isset($_POST['systems']) && sizeof($allowedSystems) == 1) 
+				$characters->bindValue(':system', $allowedSystems[0]);
 			$characters->execute();
 			$characters = $characters->fetchAll();
 			foreach ($characters as &$character) {

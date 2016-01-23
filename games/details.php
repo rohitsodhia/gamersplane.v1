@@ -58,7 +58,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Post Frequency</label></div>
-					<div class="infoCol">{{details.postFrequency.timesPer}} post<span ng-if="details.postFrequency.timesPer > 1">s</span> per {{details.postFrequency.perPeriod}}</div>
+					<div class="infoCol">{{details.postFrequency.timesPer}} post<span ng-if="details.postFrequency.timesPer > 1">s</span> per {{details.postFrequency.perPeriod == 'd'?'day':'week'}}</div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Number of Players</label></div>

@@ -549,7 +549,8 @@
 			$isGM = false;
 			$playerIDs = array();
 			foreach ($game['players'] as $player) {
-				$playerIDs[] = $player['user']['userID'];
+				if ($player['isGM']) 
+					$playerIDs[] = $player['user']['userID'];
 				if ($player['user']['userID'] == $currentUser->userID) 
 					$isGM = $player['isGM'];
 			}

@@ -340,6 +340,18 @@ app.config(function ($httpProvider) {
 	this.update = function (details) {
 		return $http.post(API_HOST + '/games/update/', details).then(function (data) { return data.data; });
 	};
+	this.apply = function (gameID) {
+		return $http.post(API_HOST + '/games/apply/', { 'gameID': gameID }).then(function (data) { return data.data; });
+	};
+	this.toggleGameStatus = function (gameID) {
+		return $http.post(API_HOST + '/games/toggleGameStatus/', { 'gameID': gameID }).then(function (data) { return data.data; });
+	};
+	this.toggleForum = function (gameID) {
+		return $http.post(API_HOST + '/games/toggleForum/', { 'gameID': gameID }).then(function (data) { return data.data; });
+	};
+	this.confirmRetire = function (gameID) {
+		return $http.post(API_HOST + '/games/retire/', { 'gameID': gameID }).then(function (data) { return data.data; });
+	};
 }]).service('ACSearch', ['$http', function ($http) {
 	this.cil = function (type, search, system, systemOnly) {
 		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') 
@@ -367,10 +379,8 @@ app.config(function ($httpProvider) {
 		return scope;
 	}
 }]).service('CharactersService', ['$http', '$q', function ($http, $q) {
-	this.getMy = function (library) {
-		if (library !== true) 
-			library = false;
-		return $http.post(API_HOST + '/characters/my/', { 'library': library }).then(function (data) { return data.data; });
+	this.getMy = function (params) {
+		return $http.post(API_HOST + '/characters/my/', params).then(function (data) { return data.data; });
 	};
 	this.getLibrary = function (params) {
 		if (typeof params == 'undefined') 

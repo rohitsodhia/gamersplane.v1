@@ -13,7 +13,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
-		CharactersService.getMy(true).then(function (data) {
+		CharactersService.getMy({ 'library': true }).then(function (data) {
 			$scope.$emit('pageLoading');
 			$scope.characters = typeof data.characters != 'undefined'?data.characters:null;
 			$scope.library = typeof data.library != 'undefined'?data.library:null;
