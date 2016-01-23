@@ -93,7 +93,7 @@
 			else {
 				$gmCheck = $mongo->games->findOne(array('gameID' => (int) $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('players.$' => true));
 				if ($gmCheck) 
-					$return 'edit';
+					return 'edit';
 				return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 			}
 		}
