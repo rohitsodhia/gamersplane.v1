@@ -258,7 +258,7 @@
 							<div ng-repeat="augment in character.augmentations" class="augment tr">
 								<combobox search="augment.name" autocomplete="searchAugmentations" placeholder="Augmentation" class="name medText"></combobox>
 								<input type="number" ng-model="augment.rating" class="rating lrBuffer">
-								<input type="number" ng-model="augment.essence" class="essence lrBuffer">
+								<input type="number" step=".1" ng-model="augment.essence" class="essence lrBuffer">
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
 								<a href="" class="remove sprite cross" ng-click="character.augments.splice($index, 1)"></a>
 								<textarea ng-model="augment.notes"></textarea>
