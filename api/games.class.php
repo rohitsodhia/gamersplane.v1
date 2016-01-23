@@ -175,7 +175,9 @@
 				});
 			} else 
 				$decks = array();
-			displayJSON(array('success' => true, 'details' => $gameInfo, 'players' => $gameInfo['players'], 'invites' => $invites, 'decks' => $decks));
+			$players = $gameInfo['players'];
+			unset($gameInfo['players']);
+			displayJSON(array('success' => true, 'details' => $gameInfo, 'players' => $players, 'invites' => $invites, 'decks' => $decks));
 		}
 
 		public function createGame() {

@@ -43,7 +43,7 @@
 							<div ng-repeat="(label, limit) in character.limits" class="tr">
 								<label class="leftLabel">
 									<div class="labelText">{{label.capitalizeFirstLetter()}}</div>
-									<input type="number" ng-model="limit">
+									<input type="number" ng-model="character.limits[label]" min="0">
 								</label>
 							</div>
 						</div>
