@@ -40,7 +40,7 @@
 					<div ng-repeat="system in characters" class="game" ng-class="{ 'third': $index % 3 == 2 }">
 						<div class="gameLogo"><img ng-src="/images/logos/{{system.system._id}}.png"></div>
 						<div class="gameInfo">
-							<p>{{system.system.name}}</p>
+							<p ng-bind-html="system.system.name"></p>
 							<p>{{system.numChars}} Char<span ng-if="system.numChars > 1">s</span> - {{system.percentage}}%</p>
 						</div>
 					</div>
