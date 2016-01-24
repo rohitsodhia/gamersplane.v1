@@ -666,7 +666,7 @@
 		public function getLFG() {
 			global $mongo;
 
-			$lfgCount = intval($_POST['lfgCount']) >= 0?intval($_POST['lfgCount']):10;
+			$lfgCount = intval($_POST['lfgCount']) > 0?intval($_POST['lfgCount']):10;
 			$rLFGs = $mongo->systems->find(array('lfg' => array('$ne' => 0)), array('name' => 1, 'lfg' => 1))->sort(array('lfg' => -1, 'sortName' => 1))->limit($lfgCount);
 			$lfgs = array();
 			foreach ($rLFGs as $rLFG) 
