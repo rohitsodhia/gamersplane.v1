@@ -88,7 +88,7 @@
 				'numPlayers' => true,
 				'players' => true
 			)
-		)->sort(array('start' => -1))->limit(5);
+		)->sort(array('start' => -1))->limit(4);
 	else 
 		$latestGames = $mongo->games->find(
 			array(
@@ -101,9 +101,10 @@
 				'numPlayers' => true,
 				'players' => true
 			)
-		)->sort(array('start' => -1))->limit(5);
+		)->sort(array('start' => -1))->limit(4);
 	$first = true;
 	foreach ($latestGames as $gameInfo) {
+		$gameInfo['playersInGame'] = -1;
 		foreach ($gameInfo['players'] as $player) 
 			if ($player['approved']) 
 				$gameInfo['playersInGame']++;
