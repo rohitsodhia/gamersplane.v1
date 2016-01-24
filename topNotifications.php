@@ -32,7 +32,7 @@
 			$pendingChars[$pendingChar['gameID']] = $pendingChar['charCount'];
 	}
 
-	if (sizeof($pendingChars) > 0 || $pmCount > 0) {
+	if (sizeof($pendingPlayers) > 0 || sizeof($pendingChars) > 0 || $pmCount > 0) {
 ?>
 		<div id="topNotifications" class="alertBox_info"><ul>
 <?		if ($pmCount) { ?>
