@@ -13,24 +13,27 @@
 			'players' => true
 		)
 	);
-	$pendingIDs = array();
-	$pendingPlayers = array();
-	foreach ($pending as $game) {
-		$pendingIDs[] = $game['gameID'];
-		foreach ($game['players'] as $player) {
-			if (!$player['approved']) {
-				if (!isset($pendingPlayers[$game['gameID']])) 
-					$pendingPlayers[$game['gameID']] = 0;
-				$pendingPlayers[$game['gameID']]++;
-				break;
+	if ($pending->count()) {
+		$pendingIDs = array();
+		$pendingPlayers = array();
+		foreach ($pending as $game) {
+			$pendingIDs[] = $game['gameID'];
+			foreach ($game['players'] as $player) {
+				if (!$player['approved']) {
+					if (!isset($pendingPlayers[$game['gameID']])) 
+						$pendingPlayers[$game['gameID']] = 0;
+					$pendingPlayers[$game['gameID']]++;
+					break;
+				}
 			}
 		}
+		$rPendingChars = $mysql->query("SELECT gameID, COUNT(characterID) charCount FROM characters WHERE gameID IN (".implode(', ', $pendingIDs).") AND approved = 0 GROUP BY gameID")->fetchAll();
+		$pendingChars = array();
+		foreach ($rPendingChars as $pendingChar) 
+			$pendingChars[$pendingChar['gameID']] = $pendingChar['charCount'];
 	}
-	$rPendingChars = $mysql->query("SELECT gameID, COUNT(characterID) charCount FROM characters WHERE gameID IN (".implode(', ', $pendingIDs).") AND approved = 0 GROUP BY gameID")->fetchAll();
-	$pendingChars = array();
-	foreach ($rPendingChars as $pendingChar) 
-		$pendingChars[$pendingChar['gameID']] = $pendingChar['charCount'];
-	if (sizeof($pending) > 0 || sizeof($pendingChars) > 0 || $pmCount > 0) {
+
+	if ($pending->count() > 0 || sizeof($pendingChars) > 0 || $pmCount > 0) {
 ?>
 		<div id="topNotifications" class="alertBox_info"><ul>
 <?		if ($pmCount) { ?>
