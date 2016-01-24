@@ -308,7 +308,7 @@
 				'function (item, result) { result.count++; }',
 				array('condition' => array(
 					'$elemMatch' => array(
-						'players.user.userID' => $currentUser->userID,
+						'players.user.userID' => $userID,
 						'isGM' => true
 					)
 				))
