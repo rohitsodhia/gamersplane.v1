@@ -23,7 +23,6 @@
 					if (!isset($pendingPlayers[$game['gameID']])) 
 						$pendingPlayers[$game['gameID']] = 0;
 					$pendingPlayers[$game['gameID']]++;
-					break;
 				}
 			}
 		}
@@ -33,7 +32,7 @@
 			$pendingChars[$pendingChar['gameID']] = $pendingChar['charCount'];
 	}
 
-	if ($pending->count() > 0 || sizeof($pendingChars) > 0 || $pmCount > 0) {
+	if (sizeof($pendingChars) > 0 || $pmCount > 0) {
 ?>
 		<div id="topNotifications" class="alertBox_info"><ul>
 <?		if ($pmCount) { ?>
