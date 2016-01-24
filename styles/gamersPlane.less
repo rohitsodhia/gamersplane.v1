@@ -1690,112 +1690,116 @@ input[type="text"], textarea {
 		padding: 0;
 		background: url('../images/sprites.png') top left no-repeat;
 	}
-}
 
-.sprite.downArrow, .sprite.upArrow {
-	width: 17px;
-}
-
-.sprite.small {
-	height: 16px;
-	width: 16px;
-}
-
-.sprite.downArrow {
-	&, &:visited, &:active {
-		background-position: 0 0;
+	&.downArrow, &.upArrow {
+		width: 17px;
 	}
-}
 
-.sprite.upArrow {
-	&, &:visited, &:active {
-		background-position: -17px 0;
+	&.small {
+		height: 16px;
+		width: 16px;
 	}
-}
 
-.sprite.editWheel {
-	&, &:visited, &:active {
-		background-position: -34px 0;
+	&.downArrow {
+		&, &:visited, &:active {
+			background-position: 0 0;
+		}
 	}
-}
 
-.sprite.permissions {
-	&, &:visited, &:active {
-		background-position: -54px 0;
+	&.upArrow {
+		&, &:visited, &:active {
+			background-position: -17px 0;
+		}
 	}
-}
 
-.sprite.check {
-	&, &:visited, &:active {
-		background-position: -74px 0;
+	&.editWheel {
+		&, &:visited, &:active {
+			background-position: -34px 0;
+		}
 	}
-}
 
-.sprite.check.small {
-	&, &:visited, &:active {
-		background-position: -74px -40px;
+	&.permissions {
+		&, &:visited, &:active {
+			background-position: -54px 0;
+		}
 	}
-}
 
-.sprite.check.green {
-	&, &:visited, &:active {
-		background-position: -94px 0;
+	&.check {
+		&, &:visited, &:active {
+			background-position: -74px 0;
+		}
+
+		&.small {
+			&, &:visited, &:active {
+				background-position: -74px -40px;
+			}
+		}
 	}
-}
 
-.sprite.check.green.small {
-	&, &:visited, &:active {
-		background-position: -94px -40px;
+	&.check.green {
+		&, &:visited, &:active {
+			background-position: -94px 0;
+		}
+
+		&.small {
+			&, &:visited, &:active {
+				background-position: -94px -40px;
+			}
+		}
 	}
-}
 
-.sprite.cross {
-	&, &:visited, &:active {
-		background-position: -114px 0;
+	&.cross {
+		&, &:visited, &:active {
+			background-position: -114px 0;
+		}
+
+		&.small {
+			&, &:visited, &:active {
+				background-position: -114px -40px;
+			}
+		}
 	}
-}
 
-.sprite.cross.small {
-	&, &:visited, &:active {
-		background-position: -114px -40px;
+	&.pencil {
+		&, &:visited, &:active {
+			background-position: -134px 0;
+		}
+
+		&.small {
+			&, &:visited, &:active {
+				background-position: -134px -40px;
+			}
+		}
 	}
-}
 
-.sprite.pencil {
-	&, &:visited, &:active {
-		background-position: -134px 0;
+	&.shuffle {
+		&, &:visited, &:active {
+			width: 27px;
+			background-position: -154px 0;
+		}
 	}
-}
 
-.sprite.pencil.small {
-	&, &:visited, &:active {
-		background-position: -134px -40px;
+	&.tassel {
+		&, &.off:hover {
+			width: 14px;
+			background-position: -181px 0;
+		}
+
+		&.off, &:hover {
+			background-position: -181px -20px;
+		}
 	}
-}
 
-.sprite.shuffle {
-	&, &:visited, &:active {
-		width: 27px;
-		background-position: -154px 0;
+	&.book {
+		&, &.off:hover {
+			width: 16px;
+			background-position: -195px 0;
+		}
+
+		&.off, &:hover {
+			background-position: -195px -20px;
+		}
 	}
-}
-
-.sprite.tassel, .sprite.tassel.off:hover {
-	width: 14px;
-	background-position: -181px 0;
-}
-
-.sprite.tassel.off, .sprite.tassel:hover {
-	background-position: -181px -20px;
-}
-
-.sprite.book, .sprite.book.off:hover {
-	width: 16px;
-	background-position: -195px 0;
-}
-
-.sprite.book.off, .sprite.book:hover {
-	background-position: -195px -20px;
 }
 
 .ofToggle {
@@ -1803,10 +1807,16 @@ input[type="text"], textarea {
 	width: 41px;
 	height: 24px;
 	background: url('../images/toggle.png') bottom left;
-}
 
-.ofToggle.on {
-	background-position: top left;
+	&.mini {
+		width: 30px;
+		height: 17px;
+		background-image: url('../images/toggle_mini.png');
+	}
+
+	&.on {
+		background-position: top left;
+	}
 }
 
 

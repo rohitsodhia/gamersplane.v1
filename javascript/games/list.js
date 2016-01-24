@@ -24,7 +24,7 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 		'name_d': 'Name (Desc)',
 		'system': 'System'
 	}
-	$scope.filter = { 'orderBy': 'createdOn_d', 'systems': [] };
+	$scope.filter = { 'orderBy': 'createdOn_d', 'showFullGames': false, 'systems': [] };
 	$scope.orderBy = '-start';
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
@@ -45,6 +45,9 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 				equalizeHeights();
 			});
 		});
+		$scope.toggleShowFullGames = function () {
+			$scope.filter.showFullGames = !$scope.filter.showFullGames;
+		};
 		$scope.clearSystems = function () {
 			$scope.filter.systems = [];
 		};
@@ -62,7 +65,7 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 			if (filter.systems.length == 0) 
 				filter.systems = null;
 			$scope.games = [];
-			GamesService.getGames({ 'systems': filter.systems }).then(function (data) {
+			GamesService.getGames({ 'systems': filter.systems, 'showFullGames': filter.showFullGames }).then(function (data) {
 				$scope.$emit('pageLoading');
 				$scope.games = data;
 				$scope.games.forEach(function (game) {

@@ -5,6 +5,7 @@
 				<div class="tr">
 					Filter by <combobox data="filterOptions" value="filter.orderBy" select></combobox>
 				</div>
+				<div id="toggleFullGames" class="tr"><div ng-click="toggleShowFullGames()" class="ofToggle mini" ng-class="{ 'on': filter.showFullGames }"></div> <span>Show full games</span></div>
 <!--				<div class="tr"><input id="search" name="search" type="text" class="placeholder" data-placeholder="Search for..."></div>-->
 				<ul class="clearfix">
 					<li id="clearCheckboxes" ng-show="filter.systems.length"><a href="" ng-click="clearSystems()" class="sprite cross small"></a> Clear choices</li>

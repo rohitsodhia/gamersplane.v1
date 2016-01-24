@@ -90,23 +90,28 @@
 						'system' => true,
 						'gm' => true,
 						'start' => true,
+						'numPlayers' => true,
 						'status' => true,
 						'players' => true
 					)
 				);
 			}
+			$showFullGames = isset($_POST['showFullGames']) && $_POST['showFullGames']?true:false;
 			$games = array();
 			$gms = array();
 			foreach ($rGames as $game) {
 				$game['isGM'] = false;
+				$playerCount = -1;
 				foreach ($game['players'] as $player) {
-					if ($player['user']['userID'] == $currentUser->userID) {
+					if ($player['user']['userID'] == $currentUser->userID) 
 						$game['isGM'] = $player['isGM'];
-						break;
-					}
+					if ($player['approved']) 
+						$playerCount++;
 				}
+				if (!$showFullGames && $playerCount == $game['numPlayers']) 
+					continue;
 				$game['start'] = $game['start']->sec;
-				unset($game['players']);
+				unset($game['numPlayers'], $game['players']);
 				$games[] = $game;
 				$gms[] = $game['gm']['userID'];
 			}
