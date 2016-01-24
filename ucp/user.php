@@ -53,9 +53,9 @@
 				<div class="details clearfix" ng-class="{ 'noInfo': !games.length }">
 					<p ng-if="games.length">{{user.username}} has run {{gameCount}} game<span ng-if="gameCount > 1">s</span> so far.</p>
 					<div ng-repeat="system in games" class="game" ng-class="{ 'third': $index % 3 == 2 }">
-						<div class="gameLogo"><img ng-src="/images/logos/{{system.system._id}}.png"></div>
+						<div class="gameLogo"><img ng-src="/images/logos/{{system.system}}.png"></div>
 						<div class="gameInfo">
-							<p>{{system.system.name}}</p>
+							<p ng-bind-html="systems[system.system]"></p>
 							<p>{{system.numGames}} Char<span ng-if="system.numChars > 1">s</span> - {{system.percentage}}%</p>
 						</div>
 					</div>

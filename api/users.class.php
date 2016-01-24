@@ -317,16 +317,12 @@
 			);
 			$games = array();
 			$numGames = 0;
-			foreach ($rGames as $game) {
+			foreach ($rGames['retval'] as $game) {
 				$games[] = array(
-					'gameID' => (int) $game['gameID'],
-					'system' => array(
-						'_id' => $game['shortName'],
-						'name' => $game['fullName']
-					),
-					'numGames' => (int) $game['numGames']
+					'system' => $game['system'],
+					'numGames' => (int) $game['count']
 				);
-				$numGames += (int) $game['numGames'];
+				$numGames += (int) $game['count'];
 			}
 
 			displayJSON(array('characters' => array('numChars' => $numChars, 'list' => $characters), 'games' => array('numGames' => $numGames, 'list' => $games)));
