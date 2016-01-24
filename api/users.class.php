@@ -312,7 +312,7 @@
 							'user.userID' => $userID,
 							'isGM' => true
 						)
-					}
+					)
 				))
 			);
 			$games = array();
