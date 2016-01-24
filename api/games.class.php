@@ -161,7 +161,7 @@
 				$player['primaryGM'] = $player['user']['userID'] == $gameInfo['gm']['userID']?true:false;
 				if ($player['approved'] && !$player['primaryGM']) 
 					$gameInfo['approvedPlayers']++;
-				$player['characters'] = isset($characters[$player['userID']])?$characters[$player['userID']]:array();
+				$player['characters'] = isset($characters[$player['user']['userID']])?$characters[$player['user']['userID']]:array();
 			}
 			$invites = $mysql->query("SELECT u.userID, u.username FROM gameInvites i INNER JOIN users u ON i.invitedID = u.userID WHERE i.gameID = {$gameID}")->fetchAll();
 			if (sizeof($invites)) {
