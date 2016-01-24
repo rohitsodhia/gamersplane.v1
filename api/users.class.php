@@ -307,10 +307,12 @@
 				array('count' => 0),
 				'function (item, result) { result.count++; }',
 				array('condition' => array(
-					'$elemMatch' => array(
-						'players.user.userID' => $userID,
-						'isGM' => true
-					)
+					'players' => array(
+						'$elemMatch' => array(
+							'user.userID' => $userID,
+							'isGM' => true
+						)
+					}
 				))
 			);
 			$games = array();
