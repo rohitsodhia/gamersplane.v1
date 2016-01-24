@@ -7,6 +7,7 @@
 				'gameID' => (int) $gameID,
 				'players.user.userID' => $currentUser->userID
 			), array(
+				'system' => true,
 				'forumID' => true,
 				'public' => true,
 				'players.$' => true
@@ -94,7 +95,7 @@
 						}
 					}
 ?>
-					<p class="charName"><a href="/characters/<?=$gameInfo['system']?>/<?=$charInfo['characterID']?>/"><?=$charInfo['label']?></a></p>
+					<p class="charName"><a href="/characters/<?=$game['system']?>/<?=$charInfo['characterID']?>/"><?=$charInfo['label']?></a></p>
 <?				} ?>
 				</li>
 			</ul>
