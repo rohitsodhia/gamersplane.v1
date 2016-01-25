@@ -154,7 +154,7 @@
 							<ul ng-if="player.characters.length" class="characters">
 								<li ng-repeat="character in player.characters" class="clearfix">
 									<div class="charLabel">
-										<a ng-if="isGM || player.user.userID == CurrentUser.userID" href="/characters/{{details.system['_id']}}/{{character.characterID}}/sheet/">{{character.label}}</a>
+										<a ng-if="isGM || player.user.userID == CurrentUser.userID" href="/characters/{{details.system}}/{{character.characterID}}/sheet/">{{character.label}}</a>
 										<div ng-if="!isGM && player.user.userID != CurrentUser.userID">{{character.label}}</div>
 									</div>
 									<div class="actionLinks">

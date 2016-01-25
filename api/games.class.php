@@ -40,7 +40,9 @@
 		public function getGames() {
 			global $currentUser, $mysql, $mongo;
 
-			if (isset($_POST['my']) && $_POST['my']) 
+			$myGames = false;
+			if (isset($_POST['my']) && $_POST['my']) {
+				$myGames = true;
 				$rGames = $mongo->games->find(
 					array(
 						'players' => array(
@@ -62,7 +64,7 @@
 					)
 				);
 //				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.shortName system_shortName, s.fullName system_fullName, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
-			else {
+			} else {
 /*				$sortOrder = $_POST['sortOrder'] == 'a'?1:-1;
 				if ($_POST['orderBy'] == 'createdOn_d' || !isset($_POST['orderBy'])) 
 					$orderBy = 'g.created DESC';
@@ -108,7 +110,7 @@
 					if ($player['approved']) 
 						$playerCount++;
 				}
-				if (!$showFullGames && $playerCount == $game['numPlayers']) 
+				if (!$myGames && !$showFullGames && $playerCount == $game['numPlayers']) 
 					continue;
 				$game['start'] = $game['start']->sec;
 				unset($game['numPlayers'], $game['players']);
@@ -666,7 +668,7 @@
 		public function getLFG() {
 			global $mongo;
 
-			$lfgCount = intval($_POST['lfgCount']) >= 0?intval($_POST['lfgCount']):10;
+			$lfgCount = intval($_POST['lfgCount']) > 0?intval($_POST['lfgCount']):10;
 			$rLFGs = $mongo->systems->find(array('lfg' => array('$ne' => 0)), array('name' => 1, 'lfg' => 1))->sort(array('lfg' => -1, 'sortName' => 1))->limit($lfgCount);
 			$lfgs = array();
 			foreach ($rLFGs as $rLFG) 
