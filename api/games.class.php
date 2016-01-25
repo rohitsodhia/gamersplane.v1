@@ -40,7 +40,9 @@
 		public function getGames() {
 			global $currentUser, $mysql, $mongo;
 
+			$myGames = false;
 			if (isset($_POST['my']) && $_POST['my']) 
+				$myGames = true;
 				$rGames = $mongo->games->find(
 					array(
 						'players' => array(
@@ -108,7 +110,7 @@
 					if ($player['approved']) 
 						$playerCount++;
 				}
-				if (!$showFullGames && $playerCount == $game['numPlayers']) 
+				if (!$myGames && !$showFullGames && $playerCount == $game['numPlayers']) 
 					continue;
 				$game['start'] = $game['start']->sec;
 				unset($game['numPlayers'], $game['players']);
