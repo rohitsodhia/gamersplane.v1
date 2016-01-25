@@ -32,7 +32,7 @@
 		}
 
 		public function getDetails($forumID, $full = false) {
-			global $currentUser, $mysql;
+			global $currentUser, $mysql, $mongo;
 
 			$forumManager = new ForumManager(0, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
 			$forum = $forumManager->forums[$forumID];
@@ -56,9 +56,9 @@
 				$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameDetails['gameID']}")->fetchAll();
 				foreach ($groups as &$group) 
 					$group['groupID'] = (int) $group['groupID'];
-				foreach ($players as &$player) 
+				foreach ($gameDetails['players'] as &$player) 
 					$player = $player['user'];
-				$details['gameDetails'] = array('forumID' => $gameForumID, 'groupID' => (int) $gameDetails['groupID'], 'groups' => $groups, 'players' => $players);
+				$details['gameDetails'] = array('forumID' => $gameForumID, 'groupID' => (int) $gameDetails['groupID'], 'groups' => $groups, 'players' => $gameDetails['players']);
 			}
 			if (sizeof($forum->getChildren())) { foreach ($forum->getChildren() as $order => $childID) {
 				$cForum = $forumManager->forums[$childID];
@@ -224,7 +224,7 @@
 		public function editGroup($groupID, $name) {
 			global $currentUser, $mysql, $mongo;
 
-			$gameInfo = $mongo->games->findOne(array('groupID' => (int) $groupID), array('_id' => false, 'forumID' => true, 'groupID' => true)));
+			$gameInfo = $mongo->games->findOne(array('groupID' => (int) $groupID), array('_id' => false, 'forumID' => true, 'groupID' => true));
 			if ($gameInfo) 
 				displayJSON(array('failed' => true, 'errors' => array('mainGroup')));
 			if (strlen($name) < 3) 
@@ -248,7 +248,7 @@
 		public function deleteGroup($groupID) {
 			global $currentUser, $mysql, $mongo;
 
-			$gameInfo = $mongo->games->findOne(array('groupID' => (int) $groupID), array('_id' => false, 'forumID' => true, 'groupID' => true)));
+			$gameInfo = $mongo->games->findOne(array('groupID' => (int) $groupID), array('_id' => false, 'forumID' => true, 'groupID' => true));
 			if ($gameInfo) 
 				displayJSON(array('failed' => true, 'errors' => array('mainGroup')));
 
