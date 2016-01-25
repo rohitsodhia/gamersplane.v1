@@ -34,12 +34,13 @@
 		public function getDetails($forumID, $full = false) {
 			global $currentUser, $mysql, $mongo;
 
-			$forumManager = new ForumManager(0, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+			$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
 			$forum = $forumManager->forums[$forumID];
 			if ($forum == null || !$forum->getPermissions('admin')) 
 				displayJSON(array('failed' => true, 'errors' => array('noPermissions')));
 
-			$list = $forumManager->getAdminForums(0, $forumID);
+			$lForumManager = new ForumManager(0, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
+			$list = $lForumManager->getAdminForums(0, $forumID);
 			$details = array(
 				'forumID' => (int) $forumID,
 				'isGameForum' => (bool) $forum->isGameForum(),
