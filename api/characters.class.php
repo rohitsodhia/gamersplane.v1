@@ -34,7 +34,7 @@
 		}
 
 		public static function newItemized($type, $name, $system) {
-			global $currentUser, $systems;
+			global $currentUser, $systems, $mongo;
 
 			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
@@ -231,7 +231,7 @@
 		}
 
 		public function checkPermissions($characterID, $userID = null) {
-			global $mysql;
+			global $mysql, $mongo;
 
 			if ($userID == null) 
 				$userID = $this->userID;
