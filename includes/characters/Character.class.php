@@ -16,7 +16,7 @@
 		protected $linkedTables = array();
 		protected $mongoIgnore = array('save' => array('bodyClasses', 'linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system', 'user'));
 		
-		public function __construct($characterID, $userID = null) {
+		public function __construct($characterID = null, $userID = null) {
 			global $currentUser;
 
 			$this->characterID = intval($characterID);
