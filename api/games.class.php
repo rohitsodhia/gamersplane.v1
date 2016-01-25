@@ -41,7 +41,7 @@
 			global $currentUser, $mysql, $mongo;
 
 			$myGames = false;
-			if (isset($_POST['my']) && $_POST['my']) 
+			if (isset($_POST['my']) && $_POST['my']) {
 				$myGames = true;
 				$rGames = $mongo->games->find(
 					array(
@@ -64,7 +64,7 @@
 					)
 				);
 //				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.shortName system_shortName, s.fullName system_fullName, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
-			else {
+			} else {
 /*				$sortOrder = $_POST['sortOrder'] == 'a'?1:-1;
 				if ($_POST['orderBy'] == 'createdOn_d' || !isset($_POST['orderBy'])) 
 					$orderBy = 'g.created DESC';
