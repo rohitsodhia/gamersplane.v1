@@ -165,7 +165,7 @@
 		}
 
 		public function new() {
-			$characterID = $mongo->mongo_getNextSequence('characterID');
+			$characterID = mongo_getNextSequence('characterID');
 			$this->save(true);
 		}
 
