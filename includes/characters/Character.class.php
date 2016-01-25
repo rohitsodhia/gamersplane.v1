@@ -19,7 +19,8 @@
 		public function __construct($characterID = null, $userID = null) {
 			global $currentUser;
 
-			$this->characterID = intval($characterID);
+			if ($characterID != null) 
+				$this->characterID = intval($characterID);
 			if ($userID == null) 
 				$this->userID = $currentUser->userID;
 			else 
@@ -161,6 +162,11 @@
 				$char = $this->prElement($char);
 //				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) {
 			return $char;
+		}
+
+		public function new() {
+			$characterID = $mongo->mongo_getNextSequence('characterID');
+			$this->save(true);
 		}
 
 		public function save() {
