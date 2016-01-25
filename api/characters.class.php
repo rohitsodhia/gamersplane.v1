@@ -89,39 +89,45 @@
 		}
 
 		public function my() {
-			global $loggedIn, $currentUser, $mysql, $mongo;
+			global $loggedIn, $currentUser, $mongo;
 			if (!$loggedIn) 
 				displayJSON(array('failed' => true, 'notLoggedIn' => true), true);
 
 			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
-			$userID = $currentUser->userID;
-			$query = "SELECT c.characterID, c.label, c.charType, c.system, c.gameID, c.approved FROM characters c WHERE c.retired IS NULL AND c.userID = {$userID}";
+			$cond = array(
+				'user.userID' => $currentUser->userID
+			);
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
 				if (sizeof($allowedSystems) == 1) 
-					$query .= ' AND c.system = :system';
+					$cond['system'] = $allowedSystems[0];
 				elseif (sizeof($allowedSystems) > 1) {
 					foreach ($allowedSystems as &$system) 
-						$system = preg_replace('/[^\w_]/', '', $system);	
-					$query .= ' AND c.system IN ("'.implode('", "', $allowedSystems).'")';
+						$system = preg_replace('/[^\w_]/', '', $system);
+					$cond['system'] = array('$in' => $allowedSystems);
 				}
 			}
-			$query .= isset($_POST['noGame'])?' AND c.gameID IS NULL':'';
-			$characters = $mysql->prepare($query);
-			if (isset($_POST['systems']) && sizeof($allowedSystems) == 1) 
-				$characters->bindValue(':system', $allowedSystems[0]);
-			$characters->execute();
-			$characters = $characters->fetchAll();
-			foreach ($characters as &$character) {
-				$character['characterID'] = (int) $character['characterID'];
+			if (isset($_POST['noGame'])) 
+				$cond['game'] = null;
+			$rCharacters = $mongo->characters->find($cond, array(
+				'characterID' => true,
+				'label' => true,
+				'charType' => true,
+				'system' => true,
+				'game' => true,
+				'library' => true
+			));
+			$characters = array();
+			foreach ($rCharacters as $character) {
 				$character['label'] = printReady($character['label']);
 				$character['system'] = array('short' => printReady($character['system']), 'name' => printReady($systems->getFullName($character['system'])));
-				$character['gameID'] = (int) $character['gameID'];
-				$character['approved'] = (bool) $character['approved'];
-				$inLibrary = $mongo->characters->findOne(array('characterID' => $character['characterID']), array('library' => true));
+				$character['gameID'] = (int) $character['game']['gameID'];
+				$character['approved'] = (bool) $character['game']['approved'];
 				$character['inLibrary'] = (bool) $inLibrary['library']['inLibrary'];
+				unset($character['game'], $character['library']);
+				$characters[] = $character;
 			}
 			$return = array('characters' => $characters);
 			if (isset($_POST['library']) && $_POST['library']) {
@@ -142,7 +148,7 @@
 		}
 
 		public function newChar() {
-			global $currentUser, $mysql, $mongo;
+			global $currentUser, $mongo;
 
 			require_once('../includes/Systems.class.php');
 			$errors = array();
@@ -160,20 +166,12 @@
 			if (sizeof($errors)) 
 				displayJSON(array('failed' => true, 'errors' => $errors));
 			else {
-				$addCharacter = $mysql->prepare('INSERT INTO characters (userID, label, charType, system) VALUES (:userID, :label, :charType, :system)');
-				$addCharacter->bindValue(':userID', $currentUser->userID);
-				$addCharacter->bindValue(':label', $label);
-				$addCharacter->bindValue(':charType', $charType);
-				$addCharacter->bindValue(':system', $system);
-				$addCharacter->execute();
-				$characterID = $mysql->lastInsertId();
-
 				require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 				$charClass = Systems::systemClassName($system).'Character';
-				$newChar = new $charClass($characterID);
+				$newChar = new $charClass();
 				$newChar->setLabel($label);
 				$newChar->setCharType($charType);
-				$newChar->save(true);
+				$newChar->new();
 #				$hl_charCreated = new HistoryLogger('characterCreated');
 #				$hl_charCreated->addCharacter($characterID, false)->save();
 
@@ -182,21 +180,17 @@
 		}
 
 		public function saveBasic() {
-			global $currentUser, $mysql, $mongo;
+			global $currentUser, $mongo;
 			$characterID = intval($_POST['characterID']);
 			$label = sanitizeString($_POST['label']);
 			$charType = in_array($_POST['charType'], self::$charTypes)?$_POST['charType']:'PC';
 			if (strlen($label) == 0) 
 				displayJSON(array('failed' => true, 'errors' => array('noLabel')));
 
-			$labelCheck = $mysql->query("SELECT label, charType FROM characters WHERE retired IS NULL AND userID = {$currentUser->userID} AND characterID = {$characterID}");
-			if ($labelCheck->rowCount() == 0) 
+			$charCheck = $mongo->characters->findOne(array('user.userID' => $currentUser->userID, 'characterID' => $characterID), array('_id' => true));
+			if ($charCheck) 
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
 			else {
-				$updateLabel = $mysql->prepare("UPDATE characters SET label = :label, charType = :charType WHERE characterID = $characterID");
-				$updateLabel->bindValue(':label', $label);
-				$updateLabel->bindValue(':charType', $charType);
-				$updateLabel->execute();
 				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('label' => $label, 'charType' => $charType)));
 #				$hl_basicEdited = new HistoryLogger('basicEdited');
 #				$hl_basicEdited->addCharacter($characterID, false)->save();
@@ -205,15 +199,15 @@
 		}
 
 		public function loadCharacter($characterID) {
-			global $mysql, $mongo, $currentUser;
+			global $mongo, $currentUser;
 
 			$characterID = (int) $characterID;
 			if ($characterID <= 0) 
 				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
 
-			$charCheck = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID} AND retired IS NULL");
-			if ($charCheck->rowCount()) {
-				$system = $charCheck->fetchColumn();
+			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
+			if ($systemCheck) {
+				$system = $systemCheck['system'];
 				require_once(FILEROOT.'/includes/Systems.class.php');
 				$systems = Systems::getInstance();
 				addPackage($system.'Character');
@@ -231,18 +225,19 @@
 		}
 
 		public function checkPermissions($characterID, $userID = null) {
-			global $mysql;
+			global $mongo;
 
 			if ($userID == null) 
 				$userID = $this->userID;
 			else 
 				$userID = intval($userID);
 
-			$charCheck = $mysql->query("SELECT userID, gameID FROM characters WHERE c.characterID = {$characterID} LIMIT 1")->fetch();
-			if ($charCheck['userID'] == $userID) 
+			$characterID = (int) $characterID;
+			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
+			if ($charCheck['user']['userID'] == $userID) 
 				return 'edit';
 			else {
-				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
+				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
 				if ($gmCheck) 
 					return 'edit';
 			}
@@ -250,15 +245,15 @@
 		}
 
 		public function saveCharacter($characterID) {
-			global $mysql, $mongo, $currentUser;
+			global $mongo, $currentUser;
 
 			$characterID = (int) $characterID;
 			if ($characterID <= 0) 
 				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
-			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}");
-			if ($system->rowCount() == 0) 
+			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
+			if (!$systemCheck) 
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
-			$system = $system->fetchColumn();
+			$system = $systemCheck['system'];
 
 			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
@@ -279,12 +274,11 @@
 		}
 
 		public function toggleLibrary() {
-			global $currentUser, $mysql, $mongo;
+			global $currentUser, $mongo;
 
 			$characterID = intval($_POST['characterID']);
-			$charAllowed = $mysql->query("SELECT userID FROM characters WHERE retired IS NULL AND characterID = {$characterID} AND userID = {$currentUser->userID}");
-			if ($charAllowed->rowCount()) {
-				$currentState = $mongo->characters->findOne(array('characterID' => $characterID), array('library' => true));
+			$currentState = $mongo->characters->findOne(array('characterID' => $characterID, 'user.userID' => $currentUser->userID, 'retired' => null), array('library' => true));
+			if ($currentState) {
 				$mongo->characters->update(array('_id' => $currentState['_id']), array('$set' => array('library.inLibrary' => !$currentState['library']['inLibrary'])));
 #				$hl_libraryToggle = new HistoryLogger(($currentState?'removeFrom':'addTo').'Library');
 #				$hl_libraryToggle->addCharacter($characterID, false)->save();
@@ -316,7 +310,7 @@
 		}
 
 		public function toggleFavorite() {
-			global $currentUser, $mysql, $mongo;
+			global $currentUser, $mongo;
 
 			$characterID = intval($_POST['characterID']);
 			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?true:false;
@@ -334,7 +328,7 @@
 		}
 
 		public function cilSearch() {
-			global $mysql, $mongo;
+			global $mongo;
 
 			$type = sanitizeString($_POST['type']);
 			$searchName = sanitizeString($_POST['search'], 'search_format');
@@ -390,7 +384,7 @@
 		}
 
 		public function getUAI() {
-			global $loggedIn, $currentUser, $mysql, $mongo;
+			global $loggedIn, $currentUser, $mongo;
 
 			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
 				displayJSON(array('failed' => true, 'noPermission' => true));
@@ -413,7 +407,7 @@
 		}
 
 		public function processUAI() {
-			global $loggedIn, $currentUser, $mysql, $mongo;
+			global $loggedIn, $currentUser, $mongo;
 
 			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
 				displayJSON(array('failed' => true, 'noPermission' => true));
