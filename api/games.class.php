@@ -249,12 +249,12 @@
 				$forumID = $mysql->lastInsertId();
 				$heritage = sql_forumIDPad(2).'-'.sql_forumIDPad($forumID);
 				$mysql->query("UPDATE forums SET heritage = '{$heritage}' WHERE forumID = {$forumID}");
-				$details['forumID'] = $forumID;
+				$details['forumID'] = (int) $forumID;
 
 				$addForumGroup = $mysql->prepare("INSERT INTO forums_groups (name, ownerID, gameID) VALUES (:title, {$currentUser->userID}, {$gameID})");
 				$addForumGroup->execute(array('title' => $details['title']));
 				$groupID = $mysql->lastInsertId();
-				$details['groupID'] = $groupID;
+				$details['groupID'] = (int) $groupID;
 
 				$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES ('.$groupID.', '.$currentUser->userID.')');
 
