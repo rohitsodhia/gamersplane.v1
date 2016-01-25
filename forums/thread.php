@@ -17,11 +17,11 @@
 		$system = $game['system'];
 		$isGM = false;
 		foreach ($game['players'] as $player) {
-			if ($player['user']['userID'] == $currentUser->userID) {
+			if ($player['user']['userID'] == $currentUser->userID) 
 				if ($player['isGM']) 
 					$isGM = true;
-				break;
-			}
+			if ($player['isGM']) 
+				$gms[] = $player['user']['userID'];
 		}
 
 		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
