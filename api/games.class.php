@@ -148,15 +148,6 @@
 			$gameInfo['created'] = date('F j, Y g:i a', $gameInfo['created']->sec);
 			$gameInfo['description'] = strlen($gameInfo['description'])?printReady($gameInfo['description']):'None Provided';
 			$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo'])?printReady($gameInfo['charGenInfo']):'None Provided';
-			$rCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} ORDER BY label");
-			$characters = array();
-			foreach ($rCharacters as $character) {
-				$character['characterID'] = (int) $character['characterID'];
-				$character['userID'] = (int) $character['userID'];
-				$character['label'] = printReady($character['label']);
-				$character['approved'] = (bool) $character['approved'];
-				$characters[$character['userID']][] = $character;
-			}
 			$gameInfo['approvedPlayers'] = 0;
 			foreach ($gameInfo['players'] as &$player) {
 				$player['user']['username'] = printReady($player['user']['username']);
@@ -318,6 +309,7 @@
 				displayJSON(array('failed' => true, 'errors' => $errors));
 			else {
 				$mongo->games->update(array('gameID' => $gameID), array('$set' => $details));
+				$mongo->characters->update(array('game.gameID' => $gameID), array('game.title' => $details['title']));
 #				$hl_gameEdited = new HistoryLogger('gameEdited');
 #				$hl_gameEdited->addGame($gameID)->save();
 				
@@ -373,8 +365,6 @@
 			$gmID = (int) $gm['userID'];
 			if ($currentUser->userID == $gmID) {
 				$mongo->games->update(array('gameID' => $gameID), array('$set' => array('retired' => new MongoDate(), 'status' => 'closed', 'players' => array())));
-				$chars = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
-				$mysql->query("UPDATE characters SET gameID = NULL WHERE gameID = {$gameID}");
 				$groups = $mysql->query("DELETE FROM forums_permissions_group WHERE groupID = {$groupID}");
 				$forums = $mysql->query("SELECT forumID FROM forums WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
 				$mysql->query("DELETE FROM forums_permissions_users WHERE forumID IN (".implode(', ', $forums).")");
@@ -563,15 +553,20 @@
 				if ($player['user']['userID'] == $currentUser->userID) 
 					$isGM = $player['isGM'];
 			}
-			$charInfo = $mysql->query("SELECT characterID, label, gameID FROM characters WHERE retired IS NULL AND characterID = {$characterID} AND userID = {$currentUser->userID}");
-			if (!$charInfo->rowCount()) 
+			$charInfo = $mongo->characters->findOne(array('characterID' -> $characterID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'label' => true, 'game' => true));
+			if (!$charInfo) 
 				displayJSON(array('failed' => true, 'errors' => array('notOwner')));
-			$charInfo = $charInfo->fetch();
 
-			if (is_int($charInfo['gameID'])) 
+			if ($charInfo['game'] != null) 
 				displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
 			else {
-				$mysql->query("UPDATE characters SET gameID = {$gameID}".($isGM?', approved = 1':'')." WHERE characterID = {$characterID}");
+				$m_charInfo = array(
+					'characterID' => $charInfo['characterID'],
+					'label' => $charInfo['label'],
+					'approved' => $isGM?true:false
+				);
+				$mongo->games->update(array('gameID' => $gameID, 'players.user.userID' => $currentUser->userID), array('$push' => array('players.$.characters' => $m_charInfo)));
+				$mongo->characters->update(array('characterID' => $charInfo['characterID']), array('$set' => array('game' => array('gameID' => $game['gameID'], 'title' => $game['title']))));
 #				$hl_charApplied = new HistoryLogger('characterApplied');
 #				$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
 #				if ($isGM) {
@@ -605,25 +600,29 @@
 
 			$pendingAction = 'removed';
 			$gameID = (int) $gameID;
-			$isGM = $mongo->games->findOne(
+			$characterID = (int) $characterID;
+			$isGM = false;
+			$game = $mongo->games->findOne(
 				array(
 					'gameID' => $gameID,
-					'players' => array(
-						'$elemMatch' => array(
-							'user.userID' => $currentUser->userID,
-							'isGM' => true,
-						)
-					)
 				),
 				array(
-					'players.$' => true
+					'players' => true
 				)
 			);
-			$charInfo = $mysql->query("SELECT userID, approved FROM characters WHERE characterID = {$characterID} AND gameID = {$gameID} LIMIT 1");
-			$charInfo = $charInfo->fetch();
-			if (!$charInfo['userID'] != $currentUser->userID || !$isGM) 
+			$charInfo = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
+			$players = array();
+			$character = array();
+			foreach ($game['players'] as $player) {
+				if ($player['user']['userID'] == $currentUser->userID && $player['isGM']) 
+					$isGM = true;
+				if ($player['user']['userID'] == $charInfo['user']['userID']) 
+					$character = $player['characters'];
+			}
+			if (!$charInfo['user']['userID'] != $currentUser->userID || !$isGM) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
-			$mysql->query("UPDATE characters SET approved = 0, gameID = NULL WHERE characterID = {$characterID}");
+			$mongo->characters->update(array('characterID'=> $characterID), array('$set' => array('game' => null)));
+			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players.characters' => array('characterID' => $characterID)));
 			if ($charInfo['userID'] == $currentUser->userID) 
 				$pendingAction = 'withdrawn';
 			if (!$charInfo['approved']) 
