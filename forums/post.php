@@ -46,7 +46,7 @@
 						$quoteInfo = $quoteInfo->fetch();
 						$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
 						if ($gameID) {
-							$game = $mongo->games->findOne(array('gameID' => (int) $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('player.$'));
+							$game = $mongo->games->findOne(array('gameID' => (int) $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$'));
 							$isGM = $game['players'][0]['isGM'];
 							if (!$isGM) 
 								$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
