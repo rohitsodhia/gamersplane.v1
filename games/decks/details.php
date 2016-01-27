@@ -24,8 +24,8 @@
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($action)?> Deck</h1>
-		
-		<form method="post" action="/games/process/decks/details" class="hbMargined">
+
+		<form method="post" action="/games/process/decks/details/" class="hbMargined">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
 <? if ($action == 'edit') {?>
 			<input type="hidden" name="deckID" value="<?=$deckID?>">

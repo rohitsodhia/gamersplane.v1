@@ -156,13 +156,6 @@
 					$gameInfo['approvedPlayers']++;
 				$player['characters'] = isset($characters[$player['user']['userID']])?$characters[$player['user']['userID']]:array();
 			}
-			$invites = $mysql->query("SELECT u.userID, u.username FROM gameInvites i INNER JOIN users u ON i.invitedID = u.userID WHERE i.gameID = {$gameID}")->fetchAll();
-			if (sizeof($invites)) {
-				array_walk($invites, function (&$invite, $key) {
-					$invite['userID'] = (int) $invite['userID'];
-				});
-			} else 
-				$invites = array();
 			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short WHERE gameID = {$gameID}")->fetchAll();
 			if (sizeof($decks)) {
 				array_walk($decks, function (&$deck, $key) {
@@ -175,7 +168,13 @@
 				$decks = array();
 			$players = $gameInfo['players'];
 			unset($gameInfo['players']);
-			displayJSON(array('success' => true, 'details' => $gameInfo, 'players' => $players, 'invites' => $invites, 'decks' => $decks));
+			displayJSON(array(
+				'success' => true,
+				'details' => $gameInfo,
+				'players' => $players,
+				'invites' => sizeof($gameInfo['invites'])?$gameInfo['invites']:array(),
+				'decks' => $decks
+			));
 		}
 
 		public function createGame() {
@@ -387,8 +386,8 @@
 				displayJSON(array('failed' => true, 'loggedOut' => true));
 
 			$gameID = intval($_POST['gameID']);
-			$mongo->games->findOne(array('gameID' => $gameID), array('status' => true));
-			if ($status == 'open') {
+			$status = $mongo->games->findOne(array('gameID' => $gameID), array('status' => true));
+			if ($status['status'] == 'open') {
 				$mongo->games->update(array('gameID' => $gameID), array(
 					'$push' => array(
 						'players' => array(
@@ -430,10 +429,11 @@
 				if (!$userCheck->rowCount())
 					displayJSON(array('failed' => true, 'errors' => array('invalidUser')));
 				$user = $userCheck->fetch();
-				foreach ($gameInfo['invites'] as $invite) 
-					if ($currentUser->userID == $invite['user']['userID']) 
-						displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'));
-				$mongo->games->update(array('gameID' => $gameID), array('$push' => array('invites' => array('userID' => $currentUser->userID, 'username' => $currentUser->username))));
+				if (isset($gameInfo['invites'])) 
+					foreach ($gameInfo['invites'] as $invite) 
+						if ($currentUser->userID == $invite['user']['userID']) 
+							displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'));
+				$mongo->games->update(array('gameID' => $gameID), array('$push' => array('invites' => array('userID' => (int) $user['userID'], 'username' => $user['username']))));
 				require_once(FILEROOT.'/includes/Systems.class.php');
 				$systems = Systems::getInstance();
 				ob_start();
@@ -476,7 +476,7 @@
 					),
 					array(
 						'$pull' => array(
-							'invites.userID' => $userID
+							'invites' => array('userID' => $userID)
 						)
 					)
 				);
@@ -494,7 +494,7 @@
 
 			$gameID = intval($gameID);
 			$userID = (int) $currentUser->userID;
-			$game = $mongo->games->findOne(array('gameID' => $gameID, 'invites.user.userID' => $currentUser->userID), array('groupID' => true));
+			$game = $mongo->games->findOne(array('gameID' => $gameID, 'invites.userID' => $currentUser->userID), array('groupID' => true));
 			if ($game) {
 				$mongo->games->update(
 					array(
@@ -502,15 +502,17 @@
 					),
 					array(
 						'$push' => array(
-							'user' => array(
-								'userID' => $currentUser->userID,
-								'username' => $currentUser->username
-							),
-							'approved' => true,
-							'isGM' => false
+							'players' => array(
+								'user' => array(
+									'userID' => $currentUser->userID,
+									'username' => $currentUser->username
+								),
+								'approved' => true,
+								'isGM' => false
+							)
 						),
 						'$pull' => array(
-							'invites.userID' => $currentUser->userID
+							'invites' => array('userID' => $currentUser->userID)
 						)
 					)
 				);

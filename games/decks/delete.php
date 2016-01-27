@@ -1,7 +1,7 @@
 <?
 	$gameID = intval($pathOptions[0]);
 	$deckID = intval($pathOptions[2]);
-	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$' => true));
 	if (!$gmCheck) { header('Location: /tools/decks/'); exit; }
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
