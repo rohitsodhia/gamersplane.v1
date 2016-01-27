@@ -5,7 +5,7 @@
 		foreach ($_POST['addUser'] as $userID) 
 			if (intval($userID) > 0) 
 				$addUsers[] = (int) $userID;
-	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true));
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$' => true));
 	if (isset($_POST['create']) && $gmCheck) {
 		$deckLabel = sanitizeString($_POST['deckLabel']);
 		$type = $_POST['deckType'];
@@ -55,12 +55,11 @@
 			else 
 				header('Location: /games/'.$gameID.'/?success=createDeck');
 		}
-	} elseif (isset($_POST['edit']) && $gmCheck->rowCount()) {
+	} elseif (isset($_POST['edit']) && $gmCheck) {
 		$deckID = intval($_POST['deckID']);
 		$deckInfo = $mysql->query("SELECT d.gameID, d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short WHERE d.deckID = {$deckID} LIMIT 1");
 		if ($deckInfo->rowCount()) {
 			$deckInfo = $deckInfo->fetch();
-			$
 			$type = $_POST['deckType'];
 			if ($deckInfo['type'] != $type) {
 				$nDeckInfo = $mysql->prepare('SELECT short, name, deckSize FROM deckTypes WHERE short = :short');
@@ -79,11 +78,11 @@
 				$deck = $deckInfo['deck'];
 				$position = $deckInfo['position'];
 			}
-			
+
 			$updateDeck = $mysql->prepare("UPDATE decks SET label = :deckLabel, type = '{$type}', deck = '{$deck}', position = {$position} WHERE deckID = {$deckID}");
 			$deckLabel = sanitizeString($_POST['deckLabel']);
 			$updateDeck->execute(array(':deckLabel' => $deckLabel));
-			
+
 			$mysql->query("DELETE FROM deckPermissions WHERE deckID = {$deckID}");
 			if (isset($addUsers) && sizeof($addUsers)) {
 				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = :userID");

@@ -1,7 +1,7 @@
 <?
 	$gameID = intval($_POST['gameID']);
 	$deckID = intval($_POST['deckID']);
-	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM ' => true))), array('players.$' => true))['players'][0]['isGM'];
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$' => true))['players'][0]['isGM'];
 	$deckCheck = $mysql->query("SELECT gameID FROM decks WHERE deckID = {$deckID} LIMIT 1")->fetchColumn();
 	if (isset($_POST['shuffle']) && $gmCheck && $deckCheck == $gameID) {
 		$deckID = intval($_POST['deckID']);
