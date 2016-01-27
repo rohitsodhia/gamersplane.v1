@@ -2,7 +2,7 @@
 	$gameID = intval($_POST['gameID']);
 	$addUsers = array();
 	if (isset($_POST['addUser'])) 
-		foreach ($_POST['addUser'] as $userID) 
+		foreach ($_POST['addUser'] as $userID => $nothing) 
 			if (intval($userID) > 0) 
 				$addUsers[] = (int) $userID;
 	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$' => true));
@@ -32,7 +32,7 @@
 				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = $deckID, userID = :userID");
 				$dUserID = null;
 				$addDeckPermissions->bindParam(':userID', $dUserID);
-				foreach (array_keys($addUsers) as $dUserID) 
+				foreach ($addUsers as $dUserID) 
 					$addDeckPermissions->execute();
 			}
 
@@ -88,7 +88,7 @@
 				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = :userID");
 				$dUserID = null;
 				$addDeckPermissions->bindParam(':userID', $dUserID);
-				foreach (array_keys($addUsers) as $dUserID) {
+				foreach ($addUsers as $dUserID) {
 					$addDeckPermissions->execute();
 				}
 			}
