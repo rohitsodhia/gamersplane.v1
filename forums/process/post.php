@@ -75,13 +75,12 @@
 			$rDeckInfos = $mysql->query("SELECT d.deckID, d.gameID, d.deck, d.type, d.position, !ISNULL(per.userID) permissions FROM decks d LEFT JOIN deckPermissions per ON d.deckID = per.deckID AND per.userID = {$currentUser->userID} WHERE d.deckID IN (".implode(',', array_keys($draws)).")");
 			$deckInfos = array();
 			$isGM = null;
-			foreach ($deckInfos as $deckInfo) {
+			foreach ($rDeckInfos as $deckInfo) {
 				if ($isGM == null) 
 					$isGM = $mongo->games->findOne(array('gameID' => (int) $deckInfo['gameID'], 'players.user.userID' => $currentUser->userID), array('players.$' => true))['players'][0]['isGM'];
 				if ($isGM || $deckInfo['permissions']) 
 					$deckInfos[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
 			}
-			$deckInfos = $temp;
 			foreach ($draws as $deckID => $draw) {
 				if (isset($deckInfos[$deckID]) && $draw['draw'] > 0) {
 					$deck = explode('~', $deckInfos[$deckID]['deck']);
