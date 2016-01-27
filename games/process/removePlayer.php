@@ -13,7 +13,7 @@
 				$gmCheck = true;
 		}
 
-		if ($playerCheck->rowCount() == 0) {
+		if (!$playerCheck) {
 			if (isset($_POST['modal'])) 
 				displayJSON(array('failed' => true, 'errors' => array('noPlayer')));
 			else 
@@ -32,8 +32,8 @@
 #			$hl_removePlayer->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->addForCharacters($chars)->save();
 			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE gameID = {$gameID} AND userID = {$playerID}");
 			$mysql->query("DELETE FROM dp USING deckPermissions dp INNER JOIN decks d WHERE d.deckID = dp.deckID AND gameID = {$gameID} AND dp.userID = {$playerID}");
-			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('player.user.userID' => $playerID)));
-			
+			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players' => array('user.userID' => $playerID))));
+
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) 
 					displayJSON(array('success' => true, 'action' => 'removed', 'userID' => $playerID ));

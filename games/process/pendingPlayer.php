@@ -14,10 +14,10 @@
 		} else {
 			$groupID = $groupID['groupID'];
 			if ($pendingAction == 'approve') {
-				$mongo->games->update(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $playerID))), array('$set' => array('player.$.approved' => true)));
+				$mongo->games->update(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $playerID))), array('$set' => array('players.$.approved' => true)));
 				$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$groupID}, userID = {$playerID}");
 			} else {
-				$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('player.user.userID' => $playerID)));
+				$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players' => array('user.userID' => $playerID))));
 			}
 #			$hl_playerApplied = new HistoryLogger($pendingAction == 'approve'?'playerApproved':'playerRejected');
 #			$hl_playerApplied->addUser($playerID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();

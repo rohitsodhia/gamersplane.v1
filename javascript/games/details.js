@@ -132,8 +132,10 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					for (key in $scope.players) {
 						if ($scope.players[key].user.userID == newVal.playerID) {
 							$scope.players.splice(key, 1);
-							$scope.inGame = false;
-							$scope.pendingInvite = false;
+							if ($newVal.playerID == CurrentUser.userID) {
+								$scope.inGame = false;
+								$scope.pendingInvite = false;
+							}
 							break;
 						}
 					}

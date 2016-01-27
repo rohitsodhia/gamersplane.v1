@@ -21,9 +21,8 @@
 				header("Location: /games/{$gameID}/");
 		} else {
 			$isGM = $playerCheck;
-			$mongo->games->update(array('gameID' => $gameID, 'players.user.userID' => $playerID), array('$set' => array('players.$.isGM' = !$isGM)));
+			$mongo->games->update(array('gameID' => $gameID, 'players.user.userID' => $playerID), array('$set' => array('players.$.isGM' => !$isGM)));
 			$forumID = $game['forumID'];
-
 			if ($isGM) 
 				$mysql->query("DELETE FROM forumAdmins WHERE userID = {$playerID} AND forumID = {$forumID}");
 			else 
