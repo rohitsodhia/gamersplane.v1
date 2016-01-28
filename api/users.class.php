@@ -280,6 +280,8 @@
 
 		public function stats() {
 			global $mysql, $mongo;
+			require_once(FILEROOT.'/includes/Systems.class.php');
+			$systems = Systems::getInstance();
 
 			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
 				$userID = (int) $_POST['userID'];
@@ -287,20 +289,24 @@
 				global $currentUser;
 				$userID = $currentUser->userID;
 			}
-			$rCharacters = $mysql->query("SELECT c.characterID, c.system shortName, s.fullName, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$userID} AND retired IS NULL GROUP BY c.system ORDER BY numChars DESC, s.fullName");
+			$rCharacters = $mongo->characters->find(array('user.userID' => $userID, 'retired' => null), array('system' => true));
+//			$rCharacters = $mysql->query("SELECT c.characterID, c.system shortName, s.fullName, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$userID} AND retired IS NULL GROUP BY c.system ORDER BY numChars DESC, s.fullName");
 			$characters = array();
 			$numChars = 0;
 			foreach ($rCharacters as $character) {
-				$characters[] = array(
-					'characterID' => (int) $character['characterID'],
-					'system' => array(
-						'_id' => $character['shortName'],
-						'name' => $character['fullName']
-					),
-					'numChars' => (int) $character['numChars']
-				);
-				$numChars += (int) $character['numChars'];
+				if (!isset($characters[$character['system']])) {
+					$characters[$character['system']] = array(
+						'system' => array(
+							'slug' => $character['system'],
+							'name' => $systems->getFullName($character['system'])
+						),
+						'numChars' => 1
+					);
+				} else 
+					$characters[$character['system']]['numChars']++;
+				$numChars++;
 			}
+			$characters = array_values($characters);
 
 			$rGames = $mongo->games->group(
 				array('system' => true),
@@ -319,7 +325,10 @@
 			$numGames = 0;
 			foreach ($rGames['retval'] as $game) {
 				$games[] = array(
-					'system' => $game['system'],
+					'system' => array(
+						'slug' => $game['system'],
+						'name' => $systems->getFullName($game['system'])
+					),
 					'numGames' => (int) $game['count']
 				);
 				$numGames += (int) $game['count'];

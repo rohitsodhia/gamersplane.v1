@@ -642,6 +642,7 @@
 			global $currentUser, $mysql, $mongo;
 
 			$gameID = (int) $gameID;
+			$characterID = (int) $characterID;
 			$game = $mongo->games->findOne(
 				array(
 					'gameID' => $gameID,
@@ -656,10 +657,23 @@
 					'players' => true
 				)
 			);
-			$charInfo = $mysql->query("SELECT characterID FROM characters WHERE retired IS NULL AND gameID = {$gameID} AND characterID = {$characterID}");
-			if ($charInfo->rowCount() == 0 && $game) 
+			$charInfo = $mongo->characters->findOne(array('characterID' => $characterID, 'game.gameID' => $gameID, 'retired' => null), array('characterID' => true, 'user' => true));
+			if (!$charInfo && $game) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'));
-			$mysql->query("UPDATE characters SET approved = 1 WHERE characterID = {$characterID}");
+			$mongo->characters->update(array('characterID' => $characterID), array('game.approved' => true));
+			$players = $game['players'];
+			foreach ($players as &$player) {
+				if ($player['user']['userID'] == $charInfo['user']['userID']) {
+					foreach ($player['characters'] as &$char) {
+						if ($char['characterID'] == $charInfo['characterID']) {
+							$char['approved'] = true;
+							break;
+						}
+					}
+					break;
+				}
+			}
+			$mongo->games->update(array('gameID' => $gameID, 'players.characters.characterID'), array('$set' => array('players' => $players)));
 #			$hl_charApproved = new HistoryLogger('characterApproved');
 #			$hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 			

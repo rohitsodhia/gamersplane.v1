@@ -171,7 +171,7 @@
 				$newChar = new $charClass();
 				$newChar->setLabel($label);
 				$newChar->setCharType($charType);
-				$newChar->new();
+				$newChar->createNew();
 #				$hl_charCreated = new HistoryLogger('characterCreated');
 #				$hl_charCreated->addCharacter($characterID, false)->save();
 

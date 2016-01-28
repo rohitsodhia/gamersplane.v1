@@ -1,15 +1,9 @@
-controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService', 'SystemsService', function ($scope, $http, CurrentUser, UsersService, SystemsService) {
+controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService', function ($scope, $http, CurrentUser, UsersService) {
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
 		$scope.user = null;
 		$scope.systems = {};
 		$scope.profileFields = { 'location': 'Location', 'aim': 'AIM', 'yahoo': 'Yahoo!', 'msn': 'MSN', 'games': 'Games' };
-
-		SystemsService.get({ 'getAll': true }).then(function (data) {
-			data.systems.forEach(function (val) {
-				$scope.systems[val.shortName] = val.fullName;
-			});
-		});
 
 		pathElements = getPathElements();
 		userID = null;

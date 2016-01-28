@@ -164,7 +164,7 @@
 			return $char;
 		}
 
-		public function new() {
+		public function createNew() {
 			$characterID = mongo_getNextSequence('characterID');
 			$this->save(true);
 		}
