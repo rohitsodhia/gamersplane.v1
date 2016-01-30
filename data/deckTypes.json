@@ -1,0 +1,16 @@
+[
+	{
+		"_id": "pcwj",
+		"name": "Playing Cards w/ Jokers",
+		"size": 54,
+		"class": "pc",
+		"image": "pc"
+	},
+	{
+		"_id": "pcwoj",
+		"name": "Playing Cards w/o Jokers",
+		"size": 52,
+		"class": "pc",
+		"image": "pc"
+	}
+]

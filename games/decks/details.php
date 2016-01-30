@@ -1,6 +1,6 @@
 <?
 	$gameID = intval($pathOptions[0]);
-	$game = $mongo->games->findOne(array('gameID' => $gameID), array('gm' => true, 'players' => true));
+	$game = $mongo->games->findOne(array('gameID' => $gameID), array('gm' => true, 'players' => true, 'decks' => true));
 	$gmCheck = false;
 	foreach ($game['players'] as $player) {
 		if ($player['user']['userID'] == $currentUser->userID) {
@@ -12,27 +12,33 @@
 	if (!$gmCheck) { header('Location: /tools/decks/'); exit; }
 
 	$action = $pathOptions[3];
-	$deckDetails = array('label' => '', 'type' => 'pcwj');
-	$deckPermissions = array();
-
+	require_once('includes/DeckTypes.class.php');
+	$deckTypes = DeckTypes::getInstance()->getAll();
+	$permissions = array();
 	if ($action == 'edit') {
+		$deck = array();
 		$deckID = intval($pathOptions[2]);
-		$deckDetails = $mysql->query("SELECT label, type FROM decks where deckID = $deckID");
-		$deckDetails = $deckDetails->fetch();
-		foreach ($mysql->query("SELECT userID FROM deckPermissions WHERE deckID = $deckID") as $permission) $deckPermissions[] = $permission['userID'];
+		foreach ($game['decks'] as $iDeck) {
+			if($iDeck['deckID'] == $deckID) {
+				$deck = $iDeck;
+				break;
+			}
+		}
+		foreach ($deck['permissions'] as $user) 
+			$permissions[] = $user['userID'];
 	}
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
+<?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($action)?> Deck</h1>
 
 		<form method="post" action="/games/process/decks/details/" class="hbMargined">
 			<input type="hidden" name="gameID" value="<?=$gameID?>">
-<? if ($action == 'edit') {?>
+<?	if ($action == 'edit') {?>
 			<input type="hidden" name="deckID" value="<?=$deckID?>">
-<? } ?>
+<?	} ?>
 			<div class="tr clearfix">
 				<label class="textLabel">Deck Label</label>
-				<div class="inputCol"><input id="deckLabel" type="text" name="deckLabel" value="<?=$deckDetails['label']?>" maxlength="50"></div>
+				<div class="inputCol"><input id="deckLabel" type="text" name="deckLabel" value="<?=$deck['label']?>" maxlength="50"></div>
 			</div>
 			<div class="tr clearfix">
 				<div>
@@ -41,8 +47,8 @@
 				</div>
 				<div class="inputCol">
 <?
-	foreach ($mysql->query('SELECT short, name FROM deckTypes') as $deckType) 
-		echo "\t\t\t\t\t".'<p><input type="radio" name="deckType" value="'.$deckType['short'].'"'.($deckDetails['type'] == $deckType['short']?' checked="checked"':'').'>'.$deckType['name']."</p>\n";
+	foreach ($deckTypes as $deckType) 
+		echo "\t\t\t\t\t".'<p><input type="radio" name="deckType" value="'.$deckType['_id'].'"'.($deck['type'] == $deckType['_id']?' checked="checked"':'').'>'.$deckType['name']."</p>\n";
 ?>
 				</div>
 			</div>
@@ -54,7 +60,7 @@
 			<div id="users" class="clearfix">
 <?	foreach ($game['players'] as $player) { ?>
 				<div class="tr user">
-					<input type="checkbox" name="addUser[<?=$player['user']['userID']?>]"<?=(in_array($player['user']['userID'], $deckPermissions) || $player['user']['userID'] == $game['gm']['userID']?' checked="checked"':'').($player['user']['userID'] == $game['gm']['userID']?' data-disabled="disabled"':'')?>>
+					<input type="checkbox" name="addUser[<?=$player['user']['userID']?>]"<?=(in_array($player['user']['userID'], $permissions) || $player['user']['userID'] == $game['gm']['userID']?' checked="checked"':'').($player['user']['userID'] == $game['gm']['userID']?' data-disabled="disabled"':'')?>>
 					<label><?=$player['user']['username']?></label>
 				</div>
 <?	} ?>

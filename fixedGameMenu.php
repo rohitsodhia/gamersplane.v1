@@ -2,6 +2,7 @@
 <?	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?
+		$gameID = (int) $gameID;
 		if ($gameID) {
 			$game = $mongo->games->findOne(array(
 				'gameID' => (int) $gameID,
@@ -75,8 +76,16 @@
 <?		} ?>
 <?
 		if ($gameID) {
-			$characters = $mysql->query("SELECT c.characterID, c.label, c.approved, u.userID, u.username FROM characters c, users u WHERE".($isGM?'':" c.userID = {$currentUser->userID} AND")." c.gameID = {$gameID} AND u.userID = c.userID ORDER BY c.approved DESC, u.username ASC, c.label ASC");
-			if ($characters->rowCount() && $pathAction != 'characters') {
+			$charConds = array('game.gameID' => $gameID, 'game.approved' => true);
+			if (!$isGM) 
+				$charConds['user.userID'] = $currentUser->userID;
+			$characters = $mongo->games->find($charConds, array(
+				'characterID' => true,
+				'system' => true,
+				'label' => true,
+				'user' => true,
+			))->sort(array('user.username' => 1, 'label' => 1));
+			if ($characters && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
 			<a href="" class="menuLink">Characters</a>
@@ -84,13 +93,13 @@
 <?
 				$currentUserID = 0;
 				foreach ($characters as $charInfo) {
-					if ($currentUserID != $charInfo['userID']) {
+					if ($currentUserID != $charInfo['user']['userID']) {
 						if ($currentUserID != 0) echo "				</li>\n";
-						$currentUserID = $charInfo['userID'];
+						$currentUserID = $charInfo['user']['userID'];
 						echo "				<li>\n";
 						if ($isGM) {
 ?>
-					<p class="username"><a href="/ucp/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
+					<p class="username"><a href="/ucp/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
 <?
 						}
 					}

@@ -156,16 +156,21 @@
 					$gameInfo['approvedPlayers']++;
 				$player['characters'] = isset($characters[$player['user']['userID']])?$characters[$player['user']['userID']]:array();
 			}
-			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short WHERE gameID = {$gameID}")->fetchAll();
-			if (sizeof($decks)) {
-				array_walk($decks, function (&$deck, $key) {
-					$deck['deckID'] = (int) $deck['deckID'];
-					$deck['type'] = array('short' => $deck['type'], 'name' => $deck['name']);
-					$deck['cardsRemaining'] = sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1;
-					unset($deck['name'], $deck['deck'], $deck['position']);
-				});
+
+			$decks = $gameInfo['decks'];
+			unset($gameInfo['decks']);
+			if (is_array($decks) && sizeof($decks)) {
+				foreach ($decks as &$deck) {
+					$deck = array(
+						'deckID' => $deck['deckID'],
+						'type' => $deck['type'],
+						'label' => $deck['label'],
+						'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1
+					);
+				}
 			} else 
 				$decks = array();
+
 			$players = $gameInfo['players'];
 			unset($gameInfo['players']);
 			displayJSON(array(
@@ -555,7 +560,7 @@
 				if ($player['user']['userID'] == $currentUser->userID) 
 					$isGM = $player['isGM'];
 			}
-			$charInfo = $mongo->characters->findOne(array('characterID' -> $characterID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'label' => true, 'game' => true));
+			$charInfo = $mongo->characters->findOne(array('characterID' => $characterID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'label' => true, 'game' => true));
 			if (!$charInfo) 
 				displayJSON(array('failed' => true, 'errors' => array('notOwner')));
 
@@ -624,7 +629,7 @@
 			if (!$charInfo['user']['userID'] != $currentUser->userID || !$isGM) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
 			$mongo->characters->update(array('characterID'=> $characterID), array('$set' => array('game' => null)));
-			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players.characters' => array('characterID' => $characterID)));
+			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players.characters' => array('characterID' => $characterID))));
 			if ($charInfo['userID'] == $currentUser->userID) 
 				$pendingAction = 'withdrawn';
 			if (!$charInfo['approved']) 

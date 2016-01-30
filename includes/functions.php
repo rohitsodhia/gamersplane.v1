@@ -176,12 +176,9 @@
 		global $mysql;
 
 		$characterID = intval($characterID);
-		$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}");
+		$system = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true))['system'];
 
-		if ($system->rowCount()) 
-			return $system->fetchColumn();
-		else 
-			return false;
+		return $system?$system:null;
 	}
 	
 /* Tools Functions */

@@ -253,6 +253,19 @@ app.config(function ($httpProvider) {
 	this.save = function (systemData) {
 		return $http.post(API_HOST + '/systems/save/', { data: systemData }).then(function (data) { return data.data; });
 	}
+}]).service('ToolsService', ['$http', function ($http) {
+	this.deckTypes = {};
+	this.init = function () {
+		var self = this;
+		this.getDeckTypes().then(function (data) {
+			data.types.forEach(function (val) {
+				self.deckTypes[val._id] = val;
+			});
+		})
+	};
+	this.getDeckTypes = function () {
+		return $http.post(API_HOST + '/tools/getDeckTypes/').then(function (data) { return data.data; });
+	};
 }]).service('LanguageService', [function () {
 	this.userProfileLink = function (userID, username) {
 		return '<a href="/user/' + userID + '/" class="username">' + username + '</a>';

@@ -13,7 +13,7 @@ $(function () {
 		beforeSubmit: function (data) {
 			if ($('#deckLabel').val().length == 0) 
 				return false;
-			if ($('input[type="radio"]:checked').val().length == 0) 
+			if ($('input[type="radio"]:checked').length == 0) 
 				return false;
 
 			return true;

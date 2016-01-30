@@ -1,13 +1,14 @@
 <?
 	$characterID = intval($pathOptions[1]);
-	$charInfo = $mysql->query("SELECT c.*, u.username FROM characterLibrary_favorites f, characters c, users u WHERE c.userID = u.userID AND f.userID = {$currentUser->userID} AND c.characterID = {$characterID} AND f.characterID = c.characterID");
-	if ($charInfo->rowCount() == 0) { header('Location: /403'); exit }
-	$charInfo = $charInfo->fetch();
+	$favorited = $mongo->characterLibraryFavorites->findOne(array('characterID' => $characterID, 'userID' => $currentUser->userID), array('_id' => true));
+	if (!$favorited) { header('Location: /403'); exit }
+	$charInfo = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true, 'label' => true));
+	if (!$charInfo) { header('Location: /403'); exit }
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Unfavorite Character</h1>
 		
-		<p class="alignCenter">Are you sure you want to unfavortite <a href="/characters/<?=$charInfo['system']?>/<?=$characterID?>" target="_parent"><?=$charInfo['label']?></a>?</p>
+		<p class="alignCenter">Are you sure you want to unfavortite <a href="/characters/<?=$charInfo['system']?>/<?=$characterID?>/" target="_parent"><?=$charInfo['label']?></a>?</p>
 		
 		<form method="post" action="/characters/process/favorite/" class="alignCenter">
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">

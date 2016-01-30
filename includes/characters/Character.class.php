@@ -2,7 +2,7 @@
 	abstract class Character {
 		protected $bodyClasses = array();
 
-		protected $userID ;
+		protected $userID;
 		protected $characterID;
 		protected $label;
 		public static $charTypes = array('PC', 'NPC', 'Mob');
@@ -88,7 +88,6 @@
 			else 
 				$userID = intval($userID);
 
-			$charCheck = $mysql->query("SELECT userID, gameID FROM characters WHERE characterID = {$this->characterID}")->fetch();
 			if ($charCheck['userID'] == $userID) 
 				return 'edit';
 			else {
@@ -194,13 +193,12 @@
 		public function load() {
 			global $mysql, $mongo;
 
-			$retired = $mysql->query("SELECT retired FROM characters WHERE characterID = {$this->characterID} AND retired IS NULL");
-			if ($retired->rowCount()) {
-				$result = $mongo->characters->findOne(array('characterID' => $this->characterID));
-				foreach ($result as $key => $value) 
+			$character = $mongo->characters->findOne(array('characterID' => $this->characterID));
+			if ($character['retired'] == null) {
+				foreach ($character as $key => $value) 
 					if (!in_array($key, $this->mongoIgnore['load'])) 
 						$this->$key = $value;
-				$this->userID = $result['user']['userID'];
+				$this->userID = $character['user']['userID'];
 				return true;
 			} else 
 				return false;
@@ -209,8 +207,7 @@
 		public function delete() {
 			global $currentUser, $mysql, $mongo;
 
-			$mysql->query("UPDATE characters SET gameID = NULL, approved = 0, retired = NOW() WHERE characterID = {$this->characterID}");
-			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('retired' => true)));
+			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('game' => null, 'retired' => true)));
 
 #			$hl_charDeleted = new HistoryLogger('characterDeleted');
 #			$hl_charDeleted->addCharacter($this->characterID)->save();

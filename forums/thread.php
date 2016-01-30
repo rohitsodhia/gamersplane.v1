@@ -290,16 +290,12 @@
 	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 		$characters = array();
 		if ($gameID) {
-			require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
-			$charClass = Systems::systemClassName($system).'Character';
-			$characterIDs = $mysql->query("SELECT characterID FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID}");
-			if ($characterIDs->rowCount()) { while ($characterID = $characterIDs->fetchColumn()) {
-				if ($character = new $charClass($characterID)) {
-					$character->load();
-					if (strlen($character->getName())) 
-						$characters[$characterID] = $character;
-				}
-			} }
+			$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
+			$characters = array();
+			foreach ($rCharacters as $character)
+				if (strlen($character['name'])) 
+					$characters[$characterID] = $character['name'];
+			}
 		}
 ?>
 		<form id="quickReply" method="post" action="/forums/process/post/">
@@ -312,8 +308,8 @@
 					<label>Post As:</label>
 					<div><select name="postAs">
 						<option value="p"<?=$currentChar == null?' selected="selected"':''?>>Player</option>
-<?			foreach ($characters as $character) { ?>
-						<option value="<?=$character->getID()?>"<?=$currentChar == $character->getID()?' selected="selected"':''?>><?=$character->getName()?></option>
+<?			foreach ($characters as $characterID => $name) { ?>
+						<option value="<?=$characterID?>"<?=$currentChar == $characterID?' selected="selected"':''?>><?=$name?></option>
 <?			} ?>
 					</select></div>
 				</div>

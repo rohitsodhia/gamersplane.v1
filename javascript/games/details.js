@@ -1,4 +1,4 @@
-controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'SystemsService', 'GamesService', 'CharactersService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, SystemsService, GamesService, CharactersService, ACSearch) {
+controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '$timeout', 'CurrentUser', 'SystemsService', 'ToolsService', 'GamesService', 'CharactersService', 'ACSearch', function ($scope, $http, $sce, $filter, $timeout, CurrentUser, SystemsService, ToolsService, GamesService, CharactersService, ACSearch) {
 	pathElements = getPathElements();
 	CurrentUser.load().then(function () {
 		CurrentUser = CurrentUser.get();
@@ -7,6 +7,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.loggedIn = CurrentUser.loggedOut?false:true;
 		$scope.CurrentUser = CurrentUser;
 		$scope.systems = [];
+		$scope.deckTypes = {};
 		$scope.gameID = pathElements[1];
 		$scope.details = {};
 		$scope.players = [];
@@ -30,6 +31,9 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					$scope.systems[val.shortName] = val.fullName;
 				});
 			});
+			ToolsService.getDeckTypes().then(function (data) {
+				$scope.deckTypes = data.types;
+			})
 			GamesService.getDetails($scope.gameID).then(function (data) {
 				if (data.success) {
 					$scope.details = data.details;

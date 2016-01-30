@@ -215,7 +215,7 @@
 						<div ng-repeat="deck in decks" class="tr clearfix">
 							<div class="deckLabel">
 								{{deck.label}}
-								<div class="deckType">{{deck.type.name}}</div>
+								<div class="deckType">{{deckTypes[deck.type].name}}</div>
 							</div>
 							<div class="deckRemaining">{{deck.cardsRemaining}}</div>
 							<div ng-if="isGM" class="deckActions">

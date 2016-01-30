@@ -1,40 +1,37 @@
 <?
+	require_once('includes/DeckTypes.class.php');
+	$deckTypes = DeckTypes::getInstance()->getAll();
+
 	$gameID = intval($_POST['gameID']);
 	$addUsers = array();
 	if (isset($_POST['addUser'])) 
 		foreach ($_POST['addUser'] as $userID => $nothing) 
 			if (intval($userID) > 0) 
 				$addUsers[] = (int) $userID;
-	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$' => true));
+	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('decks' => true));
+	$deckLabel = sanitizeString($_POST['deckLabel']);
 	if (isset($_POST['create']) && $gmCheck) {
-		$deckLabel = sanitizeString($_POST['deckLabel']);
 		$type = $_POST['deckType'];
-		$deckInfo = $mysql->prepare('SELECT short, name, deckSize FROM deckTypes WHERE short = :short');
-		$deckInfo->execute(array(':short' => $type));
-		if ($deckInfo->rowCount() == 0) {
+		if (!array_key_exists($type, $deckTypes)) {
 			if (isset($_POST['modal'])) 
 				displayJSON(array('failed' => true, 'invalidDeck' => true), true);
 			else 
 				header("Location: /games/{$gameID}/decks/?new=1&invalidDeck=1");
 		} else {
-			$deckInfo = $deckInfo->fetch();
-			$deck = array();
-			for ($count = 1; $count <= $deckInfo['deckSize']; $count++) 
-				$deck[] = $count;
-			shuffle($deck);
-			$deck = implode('~', $deck);
+			$deck = array(
+				'deckID' => mongo_getNextSequence('decks'),
+				'label '=> $deckLabel,
+				'type' => $type,
+				'deck' => array(),
+				'position' => 1,
+				'lastShuffle' => new MongoDate(),
+				'permissions' => sizeof($addUsers)?$addUsers:array()
+			);
+			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) 
+				$deck['deck'][] = $count;
+			shuffle($deck['deck']);
 
-			$addDeck = $mysql->prepare("INSERT INTO decks (label, type, deck, position, gameID) VALUES (:deckLabel, '{$type}', '{$deck}', 1, {$gameID})");
-			$addDeck->execute(array(':deckLabel' => $deckLabel));
-			$deckID = $mysql->lastInsertId();
-
-			if (isset($addUsers) && sizeof($addUsers)) {
-				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = $deckID, userID = :userID");
-				$dUserID = null;
-				$addDeckPermissions->bindParam(':userID', $dUserID);
-				foreach ($addUsers as $dUserID) 
-					$addDeckPermissions->execute();
-			}
+			$mongo->games->update(array('gameID' => $gameID), array('$push' => array('decks' => $deck)));
 
 #			$hl_deckCreated = new HistoryLogger('deckCreated');
 #			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
@@ -46,52 +43,35 @@
 					'deck' => array(
 						'deckID' => (int) $deckID,
 						'label' => $deckLabel,
-						'type' => array(
-							'short' => $deckInfo['short'],
-							'name' => $deckInfo['name']
-						),
-						'cardsRemaining' => (int) $deckInfo['deckSize'])
+						'type' => $deck['_id'],
+						'cardsRemaining' => (int) $deck['size'])
 					), true);
 			else 
 				header('Location: /games/'.$gameID.'/?success=createDeck');
 		}
 	} elseif (isset($_POST['edit']) && $gmCheck) {
 		$deckID = intval($_POST['deckID']);
-		$deckInfo = $mysql->query("SELECT d.gameID, d.label, d.type, dt.name, d.deck, d.position FROM decks d INNER JOIN deckTypes dt ON d.type = dt.short WHERE d.deckID = {$deckID} LIMIT 1");
-		if ($deckInfo->rowCount()) {
-			$deckInfo = $deckInfo->fetch();
+		$deck = array();
+		foreach ($gmCheck['decks'] as $iDeck) {
+			if ($iDeck['deckID'] == $deckID) {
+				$deck = $iDeck;
+				break;
+			}
+		}
+		if (sizeof($deck)) {
+			$deck['label'] = $deckLabel;
 			$type = $_POST['deckType'];
-			if ($deckInfo['type'] != $type) {
-				$nDeckInfo = $mysql->prepare('SELECT short, name, deckSize FROM deckTypes WHERE short = :short');
-				$nDeckInfo->execute(array(':short' => $type));
-				if ($nDeckInfo = $nDeckInfo->fetch()) {
-					$deck = array();
-					for ($count = 1; $count <= $nDeckInfo['deckSize']; $count++) $deck[] = $count;
-					shuffle($deck);
-					$deck = sanitizeString(implode('~', $deck));
-					$position = 1;
-					$deckInfo['type'] = $nDeckInfo['type'];
-					$deckInfo['name'] = $nDeckInfo['name'];
-				}
+			if ($deck['type'] != $type && array_key_exists($type, $deckTypes)) {
+				$deck['deck'] = array();
+				for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) 
+					$deck['deck'][] = $count;
+				shuffle($deck['deck']);
+				$deck['position'] = 1;
+				$deck['type'] = $type;
+				$deck['lastShuffle'] = new MongoDate();
 			}
-			if ($deck == '') {
-				$deck = $deckInfo['deck'];
-				$position = $deckInfo['position'];
-			}
-
-			$updateDeck = $mysql->prepare("UPDATE decks SET label = :deckLabel, type = '{$type}', deck = '{$deck}', position = {$position} WHERE deckID = {$deckID}");
-			$deckLabel = sanitizeString($_POST['deckLabel']);
-			$updateDeck->execute(array(':deckLabel' => $deckLabel));
-
-			$mysql->query("DELETE FROM deckPermissions WHERE deckID = {$deckID}");
-			if (isset($addUsers) && sizeof($addUsers)) {
-				$addDeckPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = :userID");
-				$dUserID = null;
-				$addDeckPermissions->bindParam(':userID', $dUserID);
-				foreach ($addUsers as $dUserID) {
-					$addDeckPermissions->execute();
-				}
-			}
+			$deck['permissions'] = sizeof($addUsers)?$addUsers:array();
+			$mongo->games->update(array('gameID' => $gameID, 'decks.deckID' => $deckID), array('$set' => array('decks.$' => $deck)));
 
 #			$hl_deckEdited = new HistoryLogger('deckEdited');
 #			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
@@ -102,11 +82,8 @@
 			'deck' => array(
 				'deckID' => (int) $deckID,
 				'label' => $deckLabel,
-				'type' => array(
-					'short' => $deckInfo['type'],
-					'name' => $deckInfo['name']
-				),
-				'cardsRemaining' => (int) sizeof(explode('~', $deck)) - $position + 1)
+				'type' => $deck['type'],
+				'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1)
 			), true);
 	} else {
 		if (isset($_POST['modal'])) 

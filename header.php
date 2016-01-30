@@ -51,21 +51,26 @@
 			<li>
 				<a href="/characters/my/">Characters</a>
 <?
-			$header_characters = $mysql->query("SELECT characterID, label, system FROM characters WHERE retired IS NULL AND userID = {$currentUser->userID} ORDER BY label");
-			if ($header_characters->rowCount()) {
-				echo "				<ul>\n";
+			$header_characters = $mongo->characters->find(array('user.userID' => $currentUser->userID), array('characterID' => true, 'label' => true, 'system' => true))->sort(array('label' => 1))->limit(6);
+			if ($header_characters) {
+?>
+				<ul>
+<?
 				$count = 0;
 				foreach ($header_characters as $hCharacter) {
-					if ($count > 5) {
-						echo "					".'<li><a href="/characters/my/">All characters</a></li>'."\n";
-						break;
-					}
-					echo "					".'<li><a href="/characters/'.$hCharacter['system'].'/'.$hCharacter['characterID'].'/">'.$hCharacter['label'].'</a></li>'."\n";
+?>
+					<li><a href="/characters/<?=$hCharacter['system']?>/<?=$hCharacter['characterID']?>/"><?=$hCharacter['label']?></a></li>
+<?
 					$count++;
+					if ($count == 5) 
+						break;
 				}
-				echo "				</ul>\n";
-			}
-	?>
+				if ($header_characters->count() > 5) {
+?>
+					<li><a href="/characters/my/">All characters</a></li>
+<?				} ?>
+				</ul>
+<?			} ?>
 			</li>
 			<li>
 				<a href="/games/">Games</a>

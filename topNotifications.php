@@ -16,6 +16,7 @@
 	if ($pending->count()) {
 		$pendingIDs = array();
 		$pendingPlayers = array();
+		$pendingChars = array();
 		foreach ($pending as $game) {
 			$pendingIDs[] = $game['gameID'];
 			foreach ($game['players'] as $player) {
@@ -24,12 +25,17 @@
 						$pendingPlayers[$game['gameID']] = 0;
 					$pendingPlayers[$game['gameID']]++;
 				}
+				if (sizeof($player['characters'])) {
+					foreach ($player['characters'] as $character) {
+						if (!$character['approved']) {
+							if (!isset($pendingChars[$game['gameID']])) 
+								$pendingChars[$game['gameID']] = 0;
+							$pendingChars[$game['gameID']]++;
+						}
+					}
+				}
 			}
 		}
-		$rPendingChars = $mysql->query("SELECT gameID, COUNT(characterID) charCount FROM characters WHERE gameID IN (".implode(', ', $pendingIDs).") AND approved = 0 GROUP BY gameID")->fetchAll();
-		$pendingChars = array();
-		foreach ($rPendingChars as $pendingChar) 
-			$pendingChars[$pendingChar['gameID']] = $pendingChar['charCount'];
 	}
 
 	if (sizeof($pendingPlayers) > 0 || sizeof($pendingChars) > 0 || $pmCount > 0) {
