@@ -72,7 +72,10 @@
 	$isGM = false;
 	if ($threadManager->getForumProperty('gameID')) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
-		$game = $mongo->games->findOne(array('gameID' => $gameID), array('system' => true, 'players' => true));
+		$returnFields = array('system' => true, 'players' => true);
+		if ($threadManager->getPermissions('addDraws')) 
+			$returnFields['decks'] => true;
+		$game = $mongo->games->findOne(array('gameID' => $gameID), $returnFields);
 		$system = $game['system'];
 		$isGM = false;
 		foreach ($game['players'] as $player) {
@@ -97,11 +100,14 @@
 	$rollsAllowed = $threadManager->getThreadProperty('allowRolls')?true:false;
 	$drawsAllowed = false;
 	if ($gameID && $threadManager->getPermissions('addDraws')) {
-		if ($isGM) 
-			$decks = $mysql->query('SELECT deckID, label, type, deck, position FROM decks WHERE gameID = '.$gameID);
-		else 
-			$decks = $mysql->query("SELECT d.deckID, d.label, d.type, d.deck, d.position FROM decks d INNER JOIN deckPermissions p ON d.deckID = p.deckID AND p.userID = {$currentUser->userID} WHERE d.gameID = {$gameID}");
-		if ($decks->rowCount()) 
+		$decks = $game['decks'];
+		if (!$isGM) {
+			foreach ($decks as $key => $deck) 
+				if (!in_array($currentUser->userID, $deck['permissions'])) 
+					unset($decks[$key]);
+			$decks = array_values($decks);
+		}
+		if (sizeof($decks)) 
 			$drawsAllowed = true;
 	}
 
@@ -349,7 +355,7 @@
 					$draw = $draws[$deck['deckID']];
 ?>
 						<tr><td colspan="2">
-							<b><?=$deck['label']?></b> has <?=(sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1)?> cards left.
+							<b><?=$deck['label']?></b> has <?=(sizeof($deck['deck']) - $deck['position'] + 1)?> cards left.
 							<p>Cards Drawn: <?=$draw['reason']?></p>
 <?
 					$cardsDrawn = explode('~', $draw['cardsDrawn']);
@@ -357,7 +363,7 @@
 ?>
 						</td></tr>
 <?				} else { ?>
-						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deck['label']?></b> has <?=sizeof(explode('~', $deck['deck'])) - $deck['position'] + 1?> cards left</td></tr>
+						<tr class="deckTitle<?=$firstDeck?'':' titleBuffer'?>"><td class="label"><b><?=$deck['label']?></b> has <?=sizeof($deck['deck']) - $deck['position'] + 1?> cards left</td></tr>
 						<tr>
 							<td class="reason"><input type="text" name="decks[<?=$deck['deckID']?>][reason]" maxlength="100" value="<?=$fillVars?$fillVars[$deck['deckID']]['reason']:''?>" tabindex="<?=tabOrder();?>"></td>
 							<td class="draw">Draw <input type="text" name="decks[<?=$deck['deckID']?>][draw]" maxlength="2" value="<?=$fillVars?$fillVars[$deck['deckID']]['draw'].'"':''?>" tabindex="<?=tabOrder();?>"> cards</td>

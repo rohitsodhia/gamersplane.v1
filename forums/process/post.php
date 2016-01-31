@@ -19,10 +19,13 @@
 		if ($_POST['edit']) {
 			$postID = intval($_POST['edit']);
 			$post = new Post($postID);
-		} else $post = new Post();
+			$threadID = intval($post->threadID);
+		} else 
+			$post = new Post();
 		$post->setTitle($_POST['title']);
 		$post->setPostAs($_POST['postAs']);
 		$message = $_POST['message'];
+		$gameID = (int) $mysql->query("SELECT gameID FROM threads WHERE threadID = {$threadID} LIMIT 1")->fetchColumn();
 
 		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
@@ -71,41 +74,46 @@
 		} }
 
 		if (sizeof($_POST['decks'])) {
-			$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?true:false; });
-			$rDeckInfos = $mysql->query("SELECT d.deckID, d.gameID, d.deck, d.type, d.position, !ISNULL(per.userID) permissions FROM decks d LEFT JOIN deckPermissions per ON d.deckID = per.deckID AND per.userID = {$currentUser->userID} WHERE d.deckID IN (".implode(',', array_keys($draws)).")");
-			$deckInfos = array();
-			$isGM = null;
-			foreach ($rDeckInfos as $deckInfo) {
-				if ($isGM == null) 
-					$isGM = $mongo->games->findOne(array('gameID' => (int) $deckInfo['gameID'], 'players.user.userID' => $currentUser->userID), array('players.$' => true))['players'][0]['isGM'];
-				if ($isGM || $deckInfo['permissions']) 
-					$deckInfos[$deckInfo['deckID']] = array('deck' => $deckInfo['deck'], 'type' => $deckInfo['type'], 'position' => $deckInfo['position']);
-			}
-			foreach ($draws as $deckID => $draw) {
-				if (isset($deckInfos[$deckID]) && $draw['draw'] > 0) {
-					$deck = explode('~', $deckInfos[$deckID]['deck']);
-					if (strlen($draw['reason']) == 0) {
-						$_SESSION['errors']['noDrawReason'] = 1;
-						break;
-					} elseif ($deckInfos[$deckID]['position'] + $draw['draw'] - 1 > sizeof($deck)) {
-						$_SESSION['errors']['overdrawn'] = 1;
+			$returnFields = array('players' => true);
+			if (sizeof($_POST['decks'])) 
+				$returnFields['decks'] => true;
+			$game = $mongo->games->findOne(array('gameID' => $gameID, 'players.user.userID' => $currentUser->userID), $returnFields);
+			if ($game) {
+				$rDecks = $game['decks'];
+				$decks = array();
+				$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?true:false; });
+				foreach ($decks as $key => $deck) 
+					if (in_array($draws, $deck['deckID']) && in_array($currentUser->userID, $deck['permissions'])) 
+						$decks[$deck['deckID']] = $deck;
+				$isGM = null;
+				foreach ($game['players'] as $player) {
+					if ($player['user']['userID'] == $currentUser->userID) {
+						$isGM = $player['isGM'];
 						break;
 					}
-					
-					$draw['cardsDrawn'] = array();
-					for ($count = $deckInfos[$deckID]['position']; $count <= $deckInfos[$deckID]['position'] + $draw['draw'] - 1; $count++) $draw['cardsDrawn'][] = $deck[$count - 1];
-					$draw['cardsDrawn'] = implode('~', $draw['cardsDrawn']);
-					$draw['reason'] = sanitizeString($draw['reason']);
-					$draw['type'] = $deckInfos[$deckID]['type'];
-					$post->addDraw($deckID, $draw);
+				}
+				foreach ($draws as $deckID => $draw) {
+					if ($draw['draw'] > 0) {
+						$deck = $decks[$deckID]['deck'];
+						if (strlen($draw['reason']) == 0) {
+							$_SESSION['errors']['noDrawReason'] = 1;
+							break;
+						} elseif ($decks[$deckID]['position'] + $draw['draw'] - 1 > sizeof($deck)) {
+							$_SESSION['errors']['overdrawn'] = 1;
+							break;
+						}
+						
+						$draw['cardsDrawn'] = array();
+						for ($count = $decks[$deckID]['position']; $count <= $decks[$deckID]['position'] + $draw['draw'] - 1; $count++) 
+							$draw['cardsDrawn'][] = $deck[$count - 1];
+						$draw['cardsDrawn'] = implode('~', $draw['cardsDrawn']);
+						$draw['reason'] = sanitizeString($draw['reason']);
+						$draw['type'] = $decks[$deckID]['type'];
+						$post->addDraw($deckID, $draw);
+					}
 				}
 			}
 		}
-
-		$postID = 0;
-		$threadID = 0;
-		$noChat = false;
-		$permissions = array();
 
 		$formErrors->clearErrors();
 

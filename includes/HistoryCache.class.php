@@ -70,7 +70,7 @@
 			if (!isset($this->games[$gameID])) {
 				require_once(FILEROOT.'/includes/Systems.class.php');
 				$systems = Systems::getInstance();
-				$game = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'system' => true, 'gm' => true));
+				$game = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'system' => true, 'gm' => true, 'players' => true, 'decks' => true));
 				$this->games[$gameID] = array(
 					'gameID' => $gameID,
 					'title' => $game['title'],
@@ -78,9 +78,9 @@
 					'system' => array(
 						'short' => $game['system'],
 						'label' => $systems->getFullName($game['system'])
-					)
+					),
+					'decks' => $game['decks']
 				);
-				$game = $mongo->games->findOne(array('gameID' => $gameID), array('players' => true));
 				$gms = array();
 				foreach ($game['players'] as $player) 
 					if ($player['isGM']) 

@@ -62,7 +62,8 @@
 		}
 
 		public function addDeck($deckID) {
-			global $mysql;
+			$cache = HistoryCache::getInstance();
+			$gameInfo = $cache->fetchGame($gameID);
 
 			$deckID = (int) $deckID;
 			$deckInfo = $mysql->query("SELECT gameID, label FROM decks WHERE deckID = {$deckID}")->fetch();

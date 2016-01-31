@@ -148,7 +148,7 @@
 		}
 
 		public function savePost() {
-			global $mysql, $currentUser;
+			global $currentUser, $mysql, $mongo;
 
 			if ($this->postID == null) {
 				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = {$this->threadID}, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($this->postAs?$this->postAs:'NULL'));
@@ -170,7 +170,8 @@
 			if (sizeof($this->draws)) {
 				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = {$this->postID}, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
 				foreach($this->draws as $deckID => $draw) {
-					$mysql->query("UPDATE decks SET position = position + {$draw['draw']} WHERE deckID = {$deckID}");
+					$gameID = (int) $mysql->query("SELECT gameID FROM threads WHERE threadID = {$this->threadID} LIMIT 1")->fetchColumn();
+					$mongo->games->update(array('gameID' => $gameID, 'decks.deckID' => (int) $deckID), array('$inc' => array('decks.$.position' => (int) $draw['draw'])));
 					$addDraw->bindValue('deckID', $deckID);
 					$addDraw->bindValue('type', $draw['type']);
 					$addDraw->bindValue('cardsDrawn', $draw['cardsDrawn']);

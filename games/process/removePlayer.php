@@ -3,7 +3,7 @@
 		$gameID = intval($_POST['gameID']);
 		$playerID = intval($_POST['playerID']);
 
-		$game = $mongo->games->findOne(array('gameID' => $gameID), array('forumID' => true, 'players' => true));
+		$game = $mongo->games->findOne(array('gameID' => $gameID), array('forumID' => true, 'players' => true, 'decks' => true));
 		$gmCheck = false;
 		$playerCheck = false;
 		foreach ($game['players'] as $player) {
@@ -29,8 +29,12 @@
 			$mysql->query("DELETE FROM gm USING forums_groupMemberships gm INNER JOIN forums_permissions_groups p WHERE gm.userID = {$playerID} AND gm.groupID = p.groupID AND p.forumID IN (".implode(', ', $forumIDs).")");
 #			$hl_removePlayer = new HistoryLogger(isset($_POST['remove'])?'playerRemove':'playerLeft');
 #			$hl_removePlayer->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->addForCharacters($chars)->save();
-			$mysql->query("DELETE FROM dp USING deckPermissions dp INNER JOIN decks d WHERE d.deckID = dp.deckID AND gameID = {$gameID} AND dp.userID = {$playerID}");
-			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players' => array('user.userID' => $playerID))));
+			$decks = $game['decks'];
+			foreach ($decks as &$deck) {
+				if (in_array($playerID, $deck['permissions'])) 
+					unset($deck['permissions'][array_search($playerID, $deck['permissions'])]);
+			}
+			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players' => array('user.userID' => $playerID)), '$set' => array('decks' => $decks)));
 			$mongo->characters->update(array('user.userID' => $playerID, 'game.gameID' => $gameID), array('$set' => array('game' => null)), array('multiple' => true));
 
 			if (isset($_POST['remove'])) {
