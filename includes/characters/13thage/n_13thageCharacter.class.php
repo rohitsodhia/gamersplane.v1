@@ -42,7 +42,7 @@
 		);
 		protected $attacks = array();
 
-		public function __construct($characterID, $userID = null) {
+		public function __construct($characterID = null, $userID = null) {
 			unset($this->ac, $this->speed, $this->initiative, $this->attackBonus, $this->skills);
 			parent::__construct($characterID, $userID);
 		}

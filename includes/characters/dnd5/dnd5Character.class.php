@@ -36,7 +36,7 @@
 		);
 		protected $spells = array();
 
-		public function __construct($characterID, $userID = null) {
+		public function __construct($characterID = null, $userID = null) {
 			unset($this->saves, $this->attackBonus);
 			parent::__construct($characterID, $userID);
 		}

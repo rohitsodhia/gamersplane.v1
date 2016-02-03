@@ -25,7 +25,7 @@
 		$post->setTitle($_POST['title']);
 		$post->setPostAs($_POST['postAs']);
 		$message = $_POST['message'];
-		$gameID = (int) $mysql->query("SELECT gameID FROM threads WHERE threadID = {$threadID} LIMIT 1")->fetchColumn();
+		$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON t.forumID = f.forumID WHERE t.threadID = {$threadID} LIMIT 1")->fetchColumn();
 
 		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
@@ -76,7 +76,7 @@
 		if (sizeof($_POST['decks'])) {
 			$returnFields = array('players' => true);
 			if (sizeof($_POST['decks'])) 
-				$returnFields['decks'] => true;
+				$returnFields['decks'] = true;
 			$game = $mongo->games->findOne(array('gameID' => $gameID, 'players.user.userID' => $currentUser->userID), $returnFields);
 			if ($game) {
 				$rDecks = $game['decks'];

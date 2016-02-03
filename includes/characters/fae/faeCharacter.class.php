@@ -11,7 +11,7 @@
 		protected $stress = 0;
 		protected $consequences = array();
 
-		public function __construct($characterID, $userID = null) {
+		public function __construct($characterID = null, $userID = null) {
 			foreach (fae_consts::getApproaches() as $approach) 
 				$this->approaches[$approach] = 0;
 			for ($count = 2; $count <= 6; $count += 2) 

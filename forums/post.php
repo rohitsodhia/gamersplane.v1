@@ -74,7 +74,7 @@
 		$gameID = (int) $threadManager->getForumProperty('gameID');
 		$returnFields = array('system' => true, 'players' => true);
 		if ($threadManager->getPermissions('addDraws')) 
-			$returnFields['decks'] => true;
+			$returnFields['decks'] = true;
 		$game = $mongo->games->findOne(array('gameID' => $gameID), $returnFields);
 		$system = $game['system'];
 		$isGM = false;
@@ -93,7 +93,6 @@
 		foreach ($rCharacters as $character)
 			if (strlen($character['name'])) 
 				$characters[$characterID] = $character['name'];
-		}
 	} else 
 		$fixedGameMenu = false;
 

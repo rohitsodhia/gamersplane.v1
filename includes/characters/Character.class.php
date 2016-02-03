@@ -81,14 +81,14 @@
 		}
 
 		public function checkPermissions($userID = null) {
-			global $mysql, $mongo;
+			global $mysql, $mongo, $currentUser;
 
 			if ($userID == null) 
 				$userID = $this->userID;
 			else 
 				$userID = intval($userID);
 
-			if ($charCheck['userID'] == $userID) 
+			if ($currentUser->userID == $userID) 
 				return 'edit';
 			else {
 				$gmCheck = $mongo->games->findOne(array('gameID' => (int) $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('players.$' => true));
@@ -164,7 +164,7 @@
 		}
 
 		public function createNew() {
-			$characterID = mongo_getNextSequence('characterID');
+			$this->characterID = mongo_getNextSequence('characterID');
 			$this->save(true);
 		}
 
@@ -194,6 +194,8 @@
 			global $mysql, $mongo;
 
 			$character = $mongo->characters->findOne(array('characterID' => $this->characterID));
+			if ($character == null) 
+				return false;
 			if ($character['retired'] == null) {
 				foreach ($character as $key => $value) 
 					if (!in_array($key, $this->mongoIgnore['load'])) 
@@ -205,9 +207,27 @@
 		}
 
 		public function delete() {
-			global $currentUser, $mysql, $mongo;
+			global $currentUser, $mongo;
 
-			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('game' => null, 'retired' => true)));
+			if ($this->label == null) 
+				$this->game = $mongo->characters->findOne(array('characterID' => $this->characterID), array('game'))['game'];
+			if ($this->game) {
+				$players = $mongo->games->findOne(array('gameID' => $this->game['gameID']), array('players' => true))['players'];
+				foreach ($players as &$player) {
+					if ($player['user']['userID'] == $this->userID) {
+						foreach ($player['characters'] as $key => $character) {
+							if ($character['characterID'] == $this->characterID) {
+								unset($player['characters'][$key]);
+								break;
+							}
+						}
+						$player['characters'] = array_values($player['characters']);
+						break;
+					}
+				}
+				$mongo->games->update(array('gameID' => $this->game['gameID']), array('$set' => array('players' => $players)));
+			}
+			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('game' => null, 'retired' => new MongoDate())));
 
 #			$hl_charDeleted = new HistoryLogger('characterDeleted');
 #			$hl_charDeleted->addCharacter($this->characterID)->save();

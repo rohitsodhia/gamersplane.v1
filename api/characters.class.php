@@ -97,7 +97,8 @@
 			$systems = Systems::getInstance();
 
 			$cond = array(
-				'user.userID' => $currentUser->userID
+				'user.userID' => $currentUser->userID,
+				'retired' => null
 			);
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
@@ -125,7 +126,7 @@
 				$character['system'] = array('short' => printReady($character['system']), 'name' => printReady($systems->getFullName($character['system'])));
 				$character['gameID'] = (int) $character['game']['gameID'];
 				$character['approved'] = (bool) $character['game']['approved'];
-				$character['inLibrary'] = (bool) $inLibrary['library']['inLibrary'];
+				$character['inLibrary'] = (bool) $character['library']['inLibrary'];
 				unset($character['game'], $character['library']);
 				$characters[] = $character;
 			}

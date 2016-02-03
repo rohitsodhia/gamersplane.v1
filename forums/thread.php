@@ -290,12 +290,11 @@
 	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 		$characters = array();
 		if ($gameID) {
-			$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
+			$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'game.approved' => true, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
 			$characters = array();
 			foreach ($rCharacters as $character)
 				if (strlen($character['name'])) 
-					$characters[$characterID] = $character['name'];
-			}
+					$characters[$character['characterID']] = $character['name'];
 		}
 ?>
 		<form id="quickReply" method="post" action="/forums/process/post/">
@@ -322,8 +321,10 @@
 			</div>
 		</form>
 <?
-	} elseif ($threadManager->getThreadProperty('states[locked]')) echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
-	else echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
+	} elseif ($threadManager->getThreadProperty('states[locked]')) 
+		echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
+	else 
+		echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
 
 	$threadManager->updateLastRead($lastPostID);
 	

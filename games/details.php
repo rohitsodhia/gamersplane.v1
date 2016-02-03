@@ -158,9 +158,9 @@
 										<div ng-if="!isGM && player.user.userID != CurrentUser.userID">{{character.label}}</div>
 									</div>
 									<div class="actionLinks">
-										<a ng-if="isGM && !character.approved" href="" ng-click="approveCharacter(character)">Approve Character</a>
-										<a ng-if="isGM && player.user.userID != CurrentUser.userID" href="" ng-click="removeCharacter(character)">{{!character.approved?'Reject':'Remove'}} Character</a>
-										<a ng-if="player.user.userID == CurrentUser.userID" href="" ng-click="removeCharacter(character)">Withdraw Character</a>
+										<a ng-if="isGM && !character.approved" href="" ng-click="approveCharacter(character, player.user.userID)">Approve Character</a>
+										<a ng-if="isGM && player.user.userID != CurrentUser.userID" href="" ng-click="removeCharacter(character, player.user.userID)">{{!character.approved?'Reject':'Remove'}} Character</a>
+										<a ng-if="player.user.userID == CurrentUser.userID" href="" ng-click="removeCharacter(character, player.user.userID)">Withdraw Character</a>
 									</div>
 								</li>
 							</ul>

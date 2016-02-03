@@ -154,7 +154,6 @@
 				$player['primaryGM'] = $player['user']['userID'] == $gameInfo['gm']['userID']?true:false;
 				if ($player['approved'] && !$player['primaryGM']) 
 					$gameInfo['approvedPlayers']++;
-				$player['characters'] = isset($characters[$player['user']['userID']])?$characters[$player['user']['userID']]:array();
 			}
 
 			$decks = $gameInfo['decks'];
@@ -236,6 +235,7 @@
 					'approved' => true,
 					'isGM' => true
 				));
+				$details['decks'] = array();
 
 				$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
 				list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
@@ -573,7 +573,7 @@
 					'approved' => $isGM?true:false
 				);
 				$mongo->games->update(array('gameID' => $gameID, 'players.user.userID' => $currentUser->userID), array('$push' => array('players.$.characters' => $m_charInfo)));
-				$mongo->characters->update(array('characterID' => $charInfo['characterID']), array('$set' => array('game' => array('gameID' => $game['gameID'], 'title' => $game['title']))));
+				$mongo->characters->update(array('characterID' => $charInfo['characterID']), array('$set' => array('game' => array('gameID' => $game['gameID'], 'title' => $game['title'], 'approved' => $isGM?true:false))));
 #				$hl_charApplied = new HistoryLogger('characterApplied');
 #				$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
 #				if ($isGM) {
@@ -624,22 +624,30 @@
 				if ($player['user']['userID'] == $currentUser->userID && $player['isGM']) 
 					$isGM = true;
 				if ($player['user']['userID'] == $charInfo['user']['userID']) 
-					$character = $player['characters'];
+					$characters = $player['characters'];
 			}
-			if (!$charInfo['user']['userID'] != $currentUser->userID || !$isGM) 
-				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'), exit);
+			if ($charInfo['user']['userID'] != $currentUser->userID && !$isGM) 
+				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'));
+
 			$mongo->characters->update(array('characterID'=> $characterID), array('$set' => array('game' => null)));
-			$mongo->games->update(array('gameID' => $gameID), array('$pull' => array('players.characters' => array('characterID' => $characterID))));
-			if ($charInfo['userID'] == $currentUser->userID) 
+			foreach ($characters as $key => $character) {
+				if ($character['characterID'] == $characterID) {
+					unset($characters[$key]);
+					break;
+				}
+			}
+			$characters = array_values($characters);
+			$mongo->games->update(array('gameID' => $gameID, 'players.user.userID' => $charInfo['user']['userID']), array('$set' => array('players.$.characters' => $characters)));
+			if ($charInfo['user']['userID'] == $currentUser->userID) 
 				$pendingAction = 'withdrawn';
-			if (!$charInfo['approved']) 
+			elseif (!$charInfo['approved']) 
 				$pendingAction = 'rejected';
 #			$hl_charRemoved = new HistoryLogger('character'.ucwords($pendingAction));
 #			$hl_charRemoved->addCharacter($characterID);
 #			if ($pendingAction != 'withdrawn') 
 #				$hl_charRemoved->addUser($currentUser->userID, 'gm');
 #			$hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
-			
+
 			displayJSON(array('success' => true, 'action' => $pendingAction, 'characterID' => $characterID));
 		}
 
@@ -665,7 +673,7 @@
 			$charInfo = $mongo->characters->findOne(array('characterID' => $characterID, 'game.gameID' => $gameID, 'retired' => null), array('characterID' => true, 'user' => true));
 			if (!$charInfo && $game) 
 				displayJSON(array('failed' => true, 'errors' => 'badAuthentication'));
-			$mongo->characters->update(array('characterID' => $characterID), array('game.approved' => true));
+			$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('game.approved' => true)));
 			$players = $game['players'];
 			foreach ($players as &$player) {
 				if ($player['user']['userID'] == $charInfo['user']['userID']) {
@@ -678,7 +686,7 @@
 					break;
 				}
 			}
-			$mongo->games->update(array('gameID' => $gameID, 'players.characters.characterID'), array('$set' => array('players' => $players)));
+			$mongo->games->update(array('gameID' => $gameID), array('$set' => array('players' => $players)));
 #			$hl_charApproved = new HistoryLogger('characterApproved');
 #			$hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 			

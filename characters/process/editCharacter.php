@@ -10,11 +10,11 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$character->save();
-					header('Location: /characters/'.SYSTEM.'/'.$characterID); exit;
+					header('Location: /characters/'.SYSTEM.'/'.$characterID.'/'); exit;
 				}
 			}
 		}
 	}
 	
-	header('Location: /403');
+	header('Location: /403/');
 ?>

@@ -673,8 +673,6 @@ app.config(function ($httpProvider) {
 				}
 			});
 			scope.$watch(function () { return scope.data; }, function (newVal, oldVal) {
-				if (isUndefined(scope.data)) 
-					return;
 				scope.options = [];
 				if (isUndefined(scope.data) || (scope.data instanceof Array && scope.data.length == 0)) 
 					return;

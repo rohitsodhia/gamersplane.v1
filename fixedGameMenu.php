@@ -79,7 +79,7 @@
 			$charConds = array('game.gameID' => $gameID, 'game.approved' => true);
 			if (!$isGM) 
 				$charConds['user.userID'] = $currentUser->userID;
-			$characters = $mongo->games->find($charConds, array(
+			$characters = $mongo->characters->find($charConds, array(
 				'characterID' => true,
 				'system' => true,
 				'label' => true,
