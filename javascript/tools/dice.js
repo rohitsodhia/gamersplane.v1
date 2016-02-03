@@ -63,9 +63,27 @@ $(function() {
 
 	$('#fate_roll').click(function (e) {
 		var diceCount = parseInt($('#fate_count').val());
-		if (diceCount <= 0) diceCount = 1;
-		if (diceCount > 50) diceCount = 50;
+		if (diceCount <= 0) 
+			diceCount = 1;
+		else if (diceCount > 50) 
+			diceCount = 50;
 		$.post('/tools/process/dice/', { rollType: 'fate', dice: diceCount }, function (data) {
+			$('.newestRolls').removeClass('newestRolls');
+			$(data).addClass('newestRolls').prependTo($diceSpace);
+			$('.newestRolls').slideDown(400);
+		});
+	});
+
+	$('#fengshui_roll').click(function (e) {
+		var actionValue = parseInt($('#fengshui_av').val());
+		if (actionValue < 0) 
+			diceCount = 0;
+		else if (actionValue > 50) 
+			diceCount = 50;
+		var type = 'standard';
+		if (['standard', 'fortune', 'closed'].indexOf($('#fengshui_type').val()) >= 0) 
+			type = $('#fengshui_type').val();
+		$.post('/tools/process/dice/', { rollType: 'fengshui', dice: actionValue, 'options': [type] }, function (data) {
 			$('.newestRolls').removeClass('newestRolls');
 			$(data).addClass('newestRolls').prependTo($diceSpace);
 			$('.newestRolls').slideDown(400);

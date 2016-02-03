@@ -8,6 +8,7 @@
 						<option value="basic">Basic Dice</option>
 						<option value="sweote">Star Wars: Edge of the Empire</option>
 						<option value="fate">Fate Dice</option>
+						<option value="fengshui">Feng Shui</option>
 					</select>
 				</div>
 			</div></div>
@@ -15,6 +16,7 @@
 				<span class="dice_basic">Basic Dice</span>
 				<span class="dice_sweote hideDiv">Star Wars: Edge of the Empire</span>
 				<span class="dice_fate hideDiv">Fate Dice</span>
+				<span class="dice_fengshui hideDiv">Feng Shui Dice</span>
 			</h2>
 			<div class="dice_basic">
 				<p>Dice should be in the format<br>(number of dice)d(dice type)(modifier)</p>
@@ -93,6 +95,18 @@
 					<label for="fate_count">Number of dice: </label>
 					<input id="fate_count" type="text" value="4">
 					<div class="rollWrapper"><button id="fate_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
+				</div>
+			</div>
+			<div class="dice_fengshui hideDiv hbdMargined">
+				<div class="clearfix">
+					<label for="fengshui_av">Action Value: </label>
+					<input id="fengshui_av" type="number" value="0" min="0" step="1">
+					<select id="fengshui_type" name="fengshui_type">
+						<option value="standard">Standard</option>
+						<option value="fortune">Fortune</option>
+						<option value="closed">Closed</option>
+					</select>
+					<div class="rollWrapper"><button id="fengshui_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
 				</div>
 			</div>
 		</div>

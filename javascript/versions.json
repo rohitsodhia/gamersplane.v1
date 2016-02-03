@@ -56,8 +56,9 @@
 	"/javascript/pms/view.js": "1.1.0",
 	"/javascript/register/register.js": "1.1.0",
 	"/javascript/systems.js": "2.2.1",
-	"/javascript/tools/music.js": "2.0.1",
 	"/javascript/tools/addMusic.js": "1.1.0",
+	"/javascript/tools/dice.js": "1.1.0",
+	"/javascript/tools/music.js": "2.0.1",
 	"/javascript/ucp/ucp.js": "2.0.3",
 	"/javascript/ucp/user.js": "1.0.5"
 }

@@ -7,5 +7,6 @@
 	require_once($packageRoot.'BasicRoll.class.php');
 	require_once($packageRoot.'SWEOTERoll.class.php');
 	require_once($packageRoot.'FateRoll.class.php');
+	require_once($packageRoot.'FengShuiRoll.class.php');
 	require_once($packageRoot.'RollFactory.class.php');
 ?>

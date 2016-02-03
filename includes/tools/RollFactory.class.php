@@ -1,6 +1,6 @@
 <?
 	class RollFactory {
-		private static $systemMap = array('basic' => 'Basic', 'sweote' => 'SWEOTE', 'fate' => 'Fate');
+		private static $systemMap = array('basic' => 'Basic', 'sweote' => 'SWEOTE', 'fate' => 'Fate', 'fengshui' => 'FengShui');
 
 		private function __construct() { }
 
