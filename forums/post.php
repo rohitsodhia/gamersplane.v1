@@ -92,7 +92,7 @@
 		$characters = array();
 		foreach ($rCharacters as $character)
 			if (strlen($character['name'])) 
-				$characters[$characterID] = $character['name'];
+				$characters[$character['characterID']] = $character['name'];
 	} else 
 		$fixedGameMenu = false;
 

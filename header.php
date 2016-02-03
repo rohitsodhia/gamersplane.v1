@@ -51,7 +51,7 @@
 			<li>
 				<a href="/characters/my/">Characters</a>
 <?
-			$header_characters = $mongo->characters->find(array('user.userID' => $currentUser->userID), array('characterID' => true, 'label' => true, 'system' => true))->sort(array('label' => 1))->limit(6);
+			$header_characters = $mongo->characters->find(array('user.userID' => $currentUser->userID, 'retired' => null), array('characterID' => true, 'label' => true, 'system' => true))->sort(array('label' => 1))->limit(6);
 			if ($header_characters) {
 ?>
 				<ul>
