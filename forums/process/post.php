@@ -25,7 +25,10 @@
 		$post->setTitle($_POST['title']);
 		$post->setPostAs($_POST['postAs']);
 		$message = $_POST['message'];
-		$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON t.forumID = f.forumID WHERE t.threadID = {$threadID} LIMIT 1")->fetchColumn();
+		if (isset($threadID)) 
+			$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON t.forumID = f.forumID WHERE t.threadID = {$threadID} LIMIT 1")->fetchColumn();
+		elseif (isset($_POST['new'])) 
+			$gameID = (int) $mysql->query("SELECT gameID FROM forums f WHERE forumID = ".intval($_POST['new'])." LIMIT 1")->fetchColumn();
 
 		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = array();
