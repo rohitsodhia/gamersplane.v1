@@ -19,7 +19,7 @@
 				header("Location: /games/{$gameID}/decks/?new=1&invalidDeck=1");
 		} else {
 			$deck = array(
-				'deckID' => mongo_getNextSequence('decks'),
+				'deckID' => mongo_getNextSequence('deckID'),
 				'label '=> $deckLabel,
 				'type' => $type,
 				'deck' => array(),
