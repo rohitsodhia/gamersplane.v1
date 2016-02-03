@@ -39,7 +39,7 @@
 
 			if (isset($_POST['remove'])) {
 				if (isset($_POST['modal'])) 
-					displayJSON(array('success' => true, 'action' => 'removed', 'userID' => $playerID ));
+					displayJSON(array('success' => true, 'action' => 'playerRemoved', 'userID' => $playerID ));
 				else 
 					header('Location: /games/'.$gameID.'/?removed=1');
 			} elseif (isset($_POST['leave'])) {
