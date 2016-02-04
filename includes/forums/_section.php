@@ -98,6 +98,35 @@
 								</div>
 							</div>
 <?
+		} elseif ($data->type == 'fengshui') {
+?>
+							<div class="newRoll fengShuiRoll">
+								<div class="headers">
+									<div class="reason">Reason</div>
+									<div class="av">AV</div>
+									<div class="modifier">Modifier</div>
+									<div class="visibility">Visibility</div>
+								</div>
+								<div>
+									<input type="hidden" name="rolls[<?=$count?>][type]" value="fengshui">
+									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data->reason)?" value=\"{$data->reason}\"":null?> class="borderBox"></div>
+									<div class="av">
+										<input type="text" name="rolls[<?=$count?>][roll]" value="<?=isset($data->roll)?$data->roll:0?>">
+									</div>
+									<div class="modifier"><select name="rolls[<?=$count?>][options][]">
+<?			foreach (array('standard', 'fortune', 'closed') as $modifier) { ?>
+										<option value="<?=$modifier?>"<?=isset($data->modifier) && $data->modifier == $modifier?' selected="selected"':null?>><?=ucwords($modifier)?></option>
+<?			} ?>
+									</select></div>
+									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
+										<option value="0"<?=isset($data->visibility) && $data->visibility == 0?' selected="selected"':null?>>Hide Nothing</option>
+										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
+										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
+										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
+									</select></div>
+								</div>
+							</div>
+<?
 		}
 		echo "						</div>\n";
 	}

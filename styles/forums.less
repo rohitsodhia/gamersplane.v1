@@ -668,12 +668,14 @@
 		display: inline-block;
 	}*/
 
-	#basicPostInfo label {
-		width: 75px;
-	}
+	#basicPostInfo {
+		label {
+			width: 75px;
+		}
 
-	#basicPostInfo input {
-		width: 100%;
+		input {
+			width: 100%;
+		}
 	}
 
 	.post {
@@ -691,14 +693,16 @@
 		}
 	}
 
-	#poll label {
-		float: left;
-		width: 150px;
-		vertical-align: top;
-	}
+	#poll {
+		label {
+			float: left;
+			width: 150px;
+			vertical-align: top;
+		}
 
-	#poll > div > div {
-		margin-left: 160px;
+		& > div > div {
+			margin-left: 160px;
+		}
 	}
 
 	#pollQuestion {
@@ -727,38 +731,40 @@
 		margin-bottom: .5em;
 		padding-bottom: .5em;
 		border-bottom: 1px solid #333;
+
+		.rollInfo {
+			margin-bottom: 2em;
+		}
 	}
 
-	#postedRolls .rollInfo {
-		margin-bottom: 2em;
-	}
+	#addPoll {
+		label {
+			width: 150px;
 
-	#addPoll label {
-		width: 150px;
-	}
+			p {
+				font-size: .8em;
+			}
+		}
 
-	#addPoll input, #addPoll textarea {
-		margin: 0 0 0 15px;
-	}
+		input, textarea {
+			margin: 0 0 0 15px;
+		}
 
-	#addPoll input[type="text"], #addPoll textarea {
-		width: 727px;
-	}
+		input[type="text"], textarea {
+			width: 727px;
+		}
 
-	#addPoll label p {
-		font-size: .8em;
-	}
+		textarea {
+			height: 7.3em;
+		}
 
-	#addPoll textarea {
-		height: 7.3em;
-	}
+		#optionsPerUser {
+			width: 40px;
+		}
 
-	#addPoll #optionsPerUser {
-		width: 40px;
-	}
-
-	#addPoll #allowRevoting {
-		width: auto;
+		#allowRevoting {
+			width: auto;
+		}
 	}
 
 	.rollInfo .hidden {
@@ -767,16 +773,16 @@
 
 	#addRoll {
 		margin: 1em 0 .5em;
-	}
 
-	#addRoll span {
-		margin-right: 10px;
-		font-weight: bold;
-		vertical-align: middle;
-	}
+		span {
+			margin-right: 10px;
+			font-weight: bold;
+			vertical-align: middle;
+		}
 
-	#addRoll .fancyButton {
-		vertical-align: middle;
+		.fancyButton {
+			vertical-align: middle;
+		}
 	}
 
 	.rollWrapper {
@@ -784,139 +790,140 @@
 		margin-top: 4px;
 		padding: 7px 15px 11px 25px;
 		border-top: 1px solid #AAA;
+
+		&:first-of-type {
+			margin-top: 0;
+			border-top: 0;
+		}
+
+		.cross {
+			position: absolute;
+			left: 0;
+			top: 36px;
+		}
 	}
 
-	.rollWrapper:first-of-type {
-		margin-top: 0;
-		border-top: 0;
-	}
+	.newRoll {
+		& > div > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
 
-	.rollWrapper .cross {
-		position: absolute;
-		left: 0;
-		top: 36px;
-	}
+		.headers > div {
+			padding-bottom: 5px;
+			font-variant: small-caps;
+		}
 
-	.newRoll > div > * {
-		display: inline-block;
-		vertical-align: middle;
-	}
+		input {
+			margin: 0;
+		}
 
-	#newRolls .headers > div {
-		padding-bottom: 5px;
-		font-variant: small-caps;
-	}
+		.reason {
+			width: 400px;
+			text-align: left;
+		}
 
-	#newRolls input {
-		margin: 0;
-	}
+		.roll {
+			width: 180px;
+			padding: 0 10px;
+			text-align: center;
+		}
 
-	#newRolls .reason {
-		width: 400px;
-		text-align: left;
-	}
+		.sweoteRoll {
+			.dicePool {
+				position: relative;
+				padding-right: 30px;
+			}
 
-	#newRolls .roll {
-		padding: 0 10px;
-		text-align: center;
-	}
+			.add {
+				position: absolute;
+				top: 0;
+				right: 0;
+				height: 26px;
+				width: 40px;
+				padding: 3px 5px;
+				border: 1px solid #A00;
+				background: #333;
+				text-align: right;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+				cursor: pointer;
 
-	#newRolls .roll {
-		width: 180px;
-	}
+				img {
+					vertical-align: middle;
+				}
+			}
 
-	#newRolls .sweoteRoll .dicePool {
-		position: relative;
-		padding-right: 30px;
-	}
+			.selectedDice {
+				position: relative;
+				display: inline-block;
+				height: 26px;
+				padding: 1px 5px;
+				vertical-align: middle;
+				background: #DDF;
+				border: 1px solid #400;
+				border-bottom-color: #900;
+				border-right-color: #900;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+				text-align: left;
+				overflow: hidden;
 
-	#newRolls .sweoteRoll .add {
-		position: absolute;
-		top: 0;
-		right: 0;
-		height: 26px;
-		width: 40px;
-		padding: 3px 5px;
-		border: 1px solid #A00;
-		background: #333;
-		text-align: right;
-		-webkit-border-radius: 6px;
-		-moz-border-radius: 6px;
-		border-radius: 6px;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
-		cursor: pointer;
-	}
+				.diceIcon {
+					margin-right: 3px;
+				}
+			}
 
-	#newRolls .sweoteRoll .add img {
-		vertical-align: middle;
-	}
+			.diceOptions {
+				display: none;
+				position: absolute;
+				top: -35px;
+				right: 0;
+				width: 140px;
+				height: 23px;
+				padding: 4px 0;
+				background: #EEE;
+				border: 1px solid #444;
+				-webkit-border-radius: 4px;
+				-moz-border-radius: 4px;
+				border-radius: 4px;
+			}
+		}
 
-	#newRolls .sweoteRoll .selectedDice {
-		position: relative;
-		display: inline-block;
-		height: 26px;
-		padding: 1px 5px;
-		vertical-align: middle;
-		background: #DDF;
-		border: 1px solid #400;
-		border-bottom-color: #900;
-		border-right-color: #900;
-		-webkit-border-radius: 6px;
-		-moz-border-radius: 6px;
-		border-radius: 6px;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
-		text-align: left;
-		overflow: hidden;
-	}
+		.do_pointer {
+			position: absolute;
+			bottom: -8px;
+			right: 9px;
+			border-top: 8px solid #444;
+			border-left: 6px solid transparent;
+			border-right: 6px solid transparent;
+		}
 
-	#newRolls .sweoteRoll .selectedDice .diceIcon {
-		margin-right: 3px;
-	}
+		.do_pointer_inner {
+			position: absolute;
+			bottom: 2px;
+			left: -5px;
+			border-top: 6px solid #EEE;
+			border-left: 5px solid transparent;
+			border-right: 5px solid transparent;
+		}
 
-	#newRolls .sweoteRoll .diceOptions {
-		display: none;
-		position: absolute;
-		top: -35px;
-		right: 0;
-		width: 140px;
-		height: 23px;
-		padding: 4px 0;
-		background: #EEE;
-		border: 1px solid #444;
-		-webkit-border-radius: 4px;
-		-moz-border-radius: 4px;
-		border-radius: 4px;
-	}
-
-	#newRolls .do_pointer {
-		position: absolute;
-		bottom: -8px;
-		right: 9px;
-		border-top: 8px solid #444;
-		border-left: 6px solid transparent;
-		border-right: 6px solid transparent;
-	}
-
-	#newRolls .do_pointer_inner {
-		position: absolute;
-		bottom: 2px;
-		left: -5px;
-		border-top: 6px solid #EEE;
-		border-left: 5px solid transparent;
-		border-right: 5px solid transparent;
-	}
-
-	#newRolls .diceIcon {
-		display: inline-block;
-		height: 15px;
-		width: 10px;
-		border: 1px solid #000;
-		margin: 3px 1px;
-		cursor: pointer;
+		.diceIcon {
+			display: inline-block;
+			height: 15px;
+			width: 10px;
+			border: 1px solid #000;
+			margin: 3px 1px;
+			cursor: pointer;
+		}
 	}
 
 	.sweote_ability {
@@ -943,72 +950,99 @@
 		background-color: rgba(0, 0, 0, .5);
 	}
 
-	#newRolls .roll input, #newRolls .sweoteRoll .selectedDice {
-		width: 100%;
+	#newRolls {
+		.roll input, .sweoteRoll .selectedDice {
+			width: 100%;
+		}
 	}
 
-	#newRolls .reason input, #decksTable .reason input {
-		width: 100%;
-		margin: 0;
+	#newRolls, #decksTable {
+		.reason input {
+			width: 100%;
+			margin: 0;
+		}
 	}
 
-	#newRolls .fateRoll .roll {
-		width: 80px;
-	}
+	#newRolls {
+		.fateRoll {
+			.roll {
+				width: 80px;
 
-	#newRolls .fateRoll .roll input {
-		width: 40px;
-		text-align: center;
-	}
+				input {
+					width: 40px;
+					text-align: center;
+				}
+			}
+		}
 
-	#newRolls .reroll {
-		width: 90px;
-		padding-right: 10px;
-		text-align: center;
-		vertical-align: middle;
-	}
+		.fengShuiRoll {
+			.av {
+				width: 50px;
+				text-align: center;
 
-	#newRolls .reroll input {
-		margin-top: 3px;
-	}
+				input {
+					width: 40px;
+					text-align: center;
+				}
+			}
 
-	#newRolls .visibility {
-		width: 140px;
-	}
+			.modifier {
+				width: 110px;
+				text-align: center;
+			}
+		}
 
-	#newRolls .indivRolls {
-		width: 200px;
+		.reroll {
+			width: 90px;
+			padding-right: 10px;
+			text-align: center;
+			vertical-align: middle;
+
+			input {
+				margin-top: 3px;
+			}
+		}
+
+		.visibility {
+			width: 140px;
+		}
+
+		.indivRolls {
+			width: 200px;
+		}
 	}
 
 	#decksHeader {
 		margin-top: 1.5em;
 	}
 
-	#decksTable .titleBuffer td {
-		padding-top: 1em;
-	}
+	#decksTable {
+		.titleBuffer td {
+			padding-top: 1em;
+		}
 
-	#decksTable .reason {
-		width: 440px;
-		padding-left: 0;
-		padding-right: 15px;
-	}
+		.reason {
+			width: 440px;
+			padding-left: 0;
+			padding-right: 15px;
+		}
 
-	#decksTable .draw input {
-		width: 50px;
-		text-align: center;
+		.draw input {
+			width: 50px;
+			text-align: center;
+		}
 	}
 
 	#submitDiv {
 		margin-top: 1em;
-	}
 
-	#submitDiv button {
-		margin-left: 20px;
-	}
+		button {
+			margin-left: 20px;
 
-	#submitDiv button:first-child {
-		margin-left: 0;
+			&:first-child {
+				margin-left: 0;
+			}
+		}
 	}
 }
 
