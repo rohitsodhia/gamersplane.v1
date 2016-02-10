@@ -1,0 +1,115 @@
+				<div class="tr labelTR">
+					<label for="name" class="medText lrBuffer shiftRight">Name</label>
+					<label for="occupation" class="medText lrBuffer shiftRight">Occupation</label>
+				</div>
+				<div class="tr">
+					<input id="name" type="text" maxlength="50" ng-model="character.name" class="medText lrBuffer">
+					<input id="occupation" type="text" maxlength="50" ng-model="character.occupation" class="medText lrBuffer">
+				</div>
+
+				<div class="clearfix">
+					<div id="characteristics" class="floatLeft">
+						<h2 class="headerbar hbDark" skew-element>Characteristics</h2>
+						<ul hb-margined>
+							<li ng-repeat="(label, characteristic) in character.characteristics" class="tr" ng-class="{ 'third': $index % 3 == 2 }">
+								<label>
+									<div class="labelText">{{label.toUpperCase()}}</div>
+									<div>
+										<input type="number" ng-model="characteristic" min="0" ng-class="{ 'move': label == 'move' }"
+										><div ng-if="label != 'move'" class="textVals">
+											<div class="half">{{getHalfValue(characteristic)}}</div>
+											<div class="fifth">{{getFifthValue(characteristic)}}</div>
+										</div>
+									</div>
+								</label>
+							</li>
+						</ul>
+					</div>
+					<div id="stats" class="floatLeft">
+						<h2 class="headerbar hbDark" skew-element>Stats</h2>
+						<div hb-margined>
+							<div ng-repeat="stat in labels.stats" ng-id="stat.key" class="tr stat">
+								<h3>{{stat.value}}</h3>
+								<label class="leftLabel first">Current <input type="number" ng-model="character[stat.key].current" min="0"></label>
+								<label ng-if="stat.key != 'luck'" class="leftLabel">Max <input type="number" ng-model="character[stat.key].max" min="0"></label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="skills" class="clearfix">
+					<h2 class="headerbar hbDark" skew-element>Skills <a href="" ng-click="addItem('skills')">[ Add Skill ]</a></h2>
+					<div hb-margined>
+						<ul ng-repeat="column in [0, 1, 2]" ng-class="{ 'first': $first }">
+							<li ng-repeat="skill in character.skills | limitTo: columnSplitC(column):columnSplitS(column)" class="tr skill">
+								<combobox search="skill.name" autocomplete="searchSkills" placeholder="Skill" class="name lrBuffer"></combobox>
+								<input type="number" min="0" ng-model="skill.value" class="value">
+								<a href="" class="remove sprite cross" ng-click="removeSkill(skill)"></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="clearfix">
+					<div id="weapons" class="floatLeft">
+						<h2 class="headerbar hbDark" skew-element>Weapons <a href="" ng-click="addItem('weapons')">[ Add Weapon ]</a></h2>
+						<div hb-margined>
+							<div ng-repeat="weapon in character.weapons" class="weapon" ng-class="{ 'first': $first }">
+								<div class="labelTR">
+									<label class="medText name lrBuffer">Weapon</label>
+									<label class="shortNum lrBuffer">Regular</label>
+									<label class="shortNum lrBuffer">Hard</label>
+									<label class="shortNum lrBuffer">Extreme</label>
+									<label class="shortText lrBuffer">Damage</label>
+									<label class="shortNum lrBuffer">Range</label>
+									<label class="shortNum lrBuffer">Attacks</label>
+									<label class="shortNum lrBuffer">Ammo</label>
+									<label class="shortNum lrBuffer">Malf</label>
+								</div>
+								<div class="tr">
+									<input type="text" ng-model="weapon.name" class="medText name lrBuffer">
+									<input type="text" ng-model="weapon.regular" class="shortNum lrBuffer">
+									<input type="text" ng-model="weapon.hard" class="shortNum lrBuffer">
+									<input type="text" ng-model="weapon.extreme" class="shortNum lrBuffer">
+									<input type="text" ng-model="weapon.damage" class="shortText lrBuffer">
+									<input type="text" ng-model="weapon.range" class="shortNum lrBuffer">
+									<input type="text" ng-model="weapon.attacks" class="shortNum lrBuffer">
+									<input type="text" ng-model="weapon.ammo" class="shortNum lrBuffer">
+									<input type="text" ng-model="weapon.malf" class="shortNum lrBuffer">
+								</div>
+								<div class="labelTR lrBuffer">
+									<label class="shiftRight">Notes</label>
+								</div>
+								<div class="tr lrBuffer">
+									<textarea ng-model="weapon.notes"></textarea>
+								</div>
+								<div class="tr lrBuffer alignRight"><a href="" ng-click="character.weapons.splice($index, 1)" class="remove">[ Remove ]</a></div>
+							</div>
+						</div>
+						<div id="combat">
+
+						</div>
+					</div>
+					<div id="items" class="floatRight">
+						<h2 class="headerbar hbDark" skew-element>Gear <a href="" ng-click="addItem('items')">[ Add Gear ]</a></h2>
+						<div class="clearfix" hb-margined>
+							<div class="labelTR">
+								<label class="name"></label>
+								<label class="rating shortNum alignCenter lrBuffer">Rating</label>
+							</div>
+							<div class="labelTR">
+								<label class="name"></label>
+								<label class="rating shortNum alignCenter lrBuffer">Rating</label>
+							</div>
+							<div ng-repeat="items in character.items" class="items tr">
+								<input type="text" ng-model="items.name" class="name">
+								<input type="number" ng-model="items.rating" class="rating lrBuffer">
+								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
+								<a href="" class="remove sprite cross" ng-click="character.items.splice($index, 1)"></a>
+								<textarea ng-model="items.notes"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="notes">
+					<h2 class="headerbar hbDark">Background/Notes</h2>
+					<textarea id="notes" ng-model="character.notes" class="hbdMargined"></textarea>
+				</div>

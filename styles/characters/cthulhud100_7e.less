@@ -1,0 +1,268 @@
+/*
+	Gamers Plane Characters: Call of Cthulhu d100 (7e) CSS Stylesheet
+	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+.shiftRight {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+div.shiftRight {
+	padding-left: 8px;
+}
+
+.leftLabel input {
+	margin-left: 10px;
+}
+
+textarea, .notes {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+#charDetails {
+	ul {
+		list-style: none;
+		margin-left: 0;
+	}
+}
+
+#characteristics {
+	width: 565px;
+
+	li {
+		display: inline-block;
+		margin-right: 20px;
+
+		&.third {
+			margin-right: 0;
+		}
+	}
+
+	label > * {
+		vertical-align: middle;
+	}
+
+	div {
+		display: inline-block;
+	}
+
+	.labelText {
+		width: 70px;
+		font-weight: bold;
+	}
+
+	input {
+		width: 60px;
+		height: 50px;
+		-webkit-border-radius: 0;
+		-moz-border-radius: 0;
+		border-radius: 0;
+
+		&.move {
+			-webkit-border-radius: 15px;
+			-moz-border-radius: 15px;
+			border-radius: 15px;
+		}
+	}
+
+	.labelText, input {
+		font-size: 1.8em;
+	}
+
+	.textVals {
+		vertical-align: bottom;
+	}
+
+	.half, .fifth {
+		display: block;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 25px;
+		height: 25px;
+		line-height: 25px;
+		text-align: center;
+		font-size: 1.3em;
+		border: 1px solid #600;
+		border-left: none;
+		border-right-color: #E40;
+		border-bottom-color: #E40;
+	}
+
+	.half {
+		border-bottom: none;
+		-webkit-border-radius: 0 8px 0 0;
+		-moz-border-radius: 0 8px 0 0;
+		border-radius: 0 8px 0 0;
+	}
+}
+
+#stats {
+	width: 370px;
+
+	h3 {
+		display: inline-block;
+		width: 100px;
+		margin-right: 15px;
+		margin-bottom: 0;
+		vertical-align: middle;
+	}
+
+	.first {
+		margin-right: 10px;
+	}
+}
+
+#skills, #items {
+	.notes, textarea {
+		display: none;
+		margin-top: .5em;
+		padding: 4px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+
+	.notes {
+		border: 1px solid #888;
+	}
+}
+
+#page_characterSheet {
+	#skills, #items {
+		.tr > * {
+			display: inline-block;
+		}
+
+		.shortNum, .medNum {
+			text-align: center;
+		}
+
+		.notes {
+			display: none;
+		}
+	}
+
+	#items {
+		.name {
+			width: 325px;
+		}
+	}
+}
+
+#skills {
+	width: 100%;
+
+	ul {
+		width: 33%;
+		float: left;
+	}
+
+	.name {
+		text-align: left;
+		width: 195px;
+	}
+
+	.remove {
+		margin-left: 5px;
+	}
+}
+
+.weapon {
+	label {
+		text-align: center;
+
+		&.name {
+			text-align: left;
+		}
+	}
+
+	.name {
+		text-align: left;
+	}
+
+	.lrBuffer {
+		margin: 0 4px;
+	}
+}
+
+#weapons {
+	textarea {
+		display: block;
+		width: 100%;
+		margin-top: 0;
+	}
+
+	.remove {
+		font-size: .85em;
+	}
+}
+
+#meleeWeapons {
+	width: 300px;
+
+	.lrBuffer {
+		margin: 0 7px;
+	}
+
+	.name {
+		width: 100%;
+	}
+}
+
+#meleeWeapons .weapon {
+	margin-top: .5em;
+	padding-top: .5em;
+	border-top: 1px solid #000;
+
+	&.first {
+		margin-top: 0;
+		padding-top: 0;
+		border-top: none;
+	}
+}
+
+#gear {
+	.labelTR {
+		margin-bottom: .5em;
+	}
+
+	.labelTR, .gear {
+		float: left;
+		width: 450px;
+	}
+
+	.name {
+		width: 280px;
+		text-align: left;
+	}
+
+	.remove {
+		vertical-align: middle;
+	}
+}
+
+#notes textarea {
+	display: block;
+	height: 8.2em;
+}
+
+#page_characterSheet {
+	.displayBorder {
+		padding: 3px;
+		border: 1px solid #000;
+	}
+
+	span {
+		display: inline-block;
+
+		&.shortNum {
+			text-align: center;
+		}
+	}
+}

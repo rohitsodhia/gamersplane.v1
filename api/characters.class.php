@@ -176,7 +176,7 @@
 #				$hl_charCreated = new HistoryLogger('characterCreated');
 #				$hl_charCreated->addCharacter($characterID, false)->save();
 
-				displayJSON(array('success' => true, 'system' => $system, 'characterID' => $characterID));
+				displayJSON(array('success' => true, 'system' => $system, 'characterID' => $newChar->getID()));
 			}
 		}
 

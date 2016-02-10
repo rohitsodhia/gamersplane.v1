@@ -9,7 +9,7 @@
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
-				$angular = $mysql->query("SELECT angular FROM systems WHERE shortName = '".SYSTEM."' LIMIT 1")->fetchColumn();
+				$angular = $mongo->systems->findOne(array('_id' => SYSTEM), array('angular' => true))['angular'];
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'editCharacter';
 					$angular = 'editCharacter_'.SYSTEM;
