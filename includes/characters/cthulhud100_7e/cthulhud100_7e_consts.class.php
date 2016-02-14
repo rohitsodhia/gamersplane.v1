@@ -18,7 +18,7 @@
 			'First Aid' => 30,
 			'History' => 5,
 			'Intimidate' => 15,
-			'Jump' => 20
+			'Jump' => 20,
 			'Language (Other)' => 1,
 			'Law' => 5,
 			'Library Use' => 20,
@@ -33,10 +33,10 @@
 			'Persuade' => 10,
 			'Pilot' => 1,
 			'Psychology' => 10,
-			'Psychoanalysis' => 1
+			'Psychoanalysis' => 1,
 			'Ride' => 5,
 			'Science' => 1,
-			'Sleight of Hand' => 10
+			'Sleight of Hand' => 10,
 			'Spot Hidden' => 25,
 			'Stealth' => 20,
 			'Survival' => 10,

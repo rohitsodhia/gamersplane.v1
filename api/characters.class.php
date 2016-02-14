@@ -340,9 +340,16 @@
 
 			if ($systems->verifySystem($system)) {
 				$search = array('searchName' => new MongoRegex("/{$searchName}/"));
+				$items = array();
 				if ($systemOnly) {
 					$search['systems'] = $system;
-					$rCIL = $mongo->charAutocomplete->find($search)->sort(array('searchName' => true))->limit(5);
+					$rCIL = $mongo->charAutocomplete->find($search)->sort(array('searchName' => 1))->limit(5);
+					foreach ($rCIL as $item) 
+						$items[] = array(
+							'itemID' => $item['_id']->{$id},
+							'name' => $item['name'],
+							'systemItem' => true
+						);
 				} else {
 					$rCIL = $mongo->charAutocomplete->aggregate(array(
 						array(
@@ -371,15 +378,14 @@
 							'$limit' => 5
 						)
 					));
+					foreach ($rCIL['result'] as $item) 
+						$items[] = array(
+							'itemID' => $item['_id']->{$id},
+							'name' => $item['name'],
+							'systemItem' => $item['systemItem']?true:false
+						);
 				}
 
-				$items = array();
-				foreach ($rCIL['result'] as $item) 
-					$items[] = array(
-						'itemID' => $item['_id']->{$id},
-						'name' => $item['name'],
-						'systemItem' => $item['systemItem']?true:false
-					);
 				displayJSON(array('items' => $items));
 			}
 		}

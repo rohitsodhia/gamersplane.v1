@@ -4,8 +4,8 @@
 
 		protected $occupation = '';
 		protected $characteristics = array('str' => 0, 'dex' => 0, 'int' => 0, 'con' => 0, 'app' => 0, 'pow' => 0, 'siz' => 0, 'edu' => 0, 'move' => 0);
-		protected $hp = array('current' => 0, 'max' => 0, 'major' => 0);
-		protected $sanity = array('current' => 0, 'max' => 0, 'temp' => 0, 'indef' => 0);
+		protected $hp = array('current' => 0, 'max' => 0, 'major' => false);
+		protected $sanity = array('current' => 0, 'max' => 0, 'temp' => false, 'indef' => false);
 		protected $luck = 0;
 		protected $mp = array('current' => 0, 'max' => 0);
 		protected $skills = array();
@@ -26,18 +26,22 @@
 		}
 
 		public function setHP($type, $value = 0) {
-			$value = (int) $value >= 0?(int) $value:0;
-			if (array_key_exists($type, $this->hp)) 
-				$this->hp[$type] = $value;
-			else 
+			if (array_key_exists($type, $this->hp)) {
+				if ($type == 'major') 
+					$this->hp[$type] = (bool) $value;
+				else 
+					$this->hp[$type] = (int) $value >= 0?(int) $value:0;
+			} else 
 				return false;
 		}
 
 		public function setSanity($type, $value = 0) {
-			$value = (int) $value >= 0?(int) $value:0;
-			if (array_key_exists($type, $this->sanity)) 
-				$this->sanity[$type] = $value;
-			else 
+			if (array_key_exists($type, $this->sanity)) {
+				if ($type == 'current' || $type == 'max') 
+					$this->sanity[$type] = (int) $value >= 0?(int) $value:0;
+				else 
+					$this->sanity[$type] = (bool) $value;
+			} else 
 				return false;
 		}
 
@@ -82,15 +86,7 @@
 				);
 		}
 
-		public function setCombat($type, $value = 0) {
-			$value = (int) $value >= 0?(int) $value:0;
-			if (array_key_exists($type, $this->combat)) 
-				$this->combat[$type] = $value;
-			else 
-				return false;
-		}
-
-		public function addItems($item) {
+		public function addItem($item) {
 			if (strlen($item->name)) 
 				$this->items[] = array(
 					'name' => sanitizeString($item->name),
@@ -126,8 +122,6 @@
 				if (sizeof($data->weapons)) 
 					foreach ($data->weapons as $weapon) 
 						$this->addWeapon($weapon);
-				foreach ($data->combat as $type => $value) 
-					$this->setCombat($type, $value);
 				$this->clearVar('items');
 				if (sizeof($data->items)) 
 					foreach ($data->items as $item) 
