@@ -1,5 +1,5 @@
 <?
-	class shadowrun4_consts {
+	class cthulhu_brs7e_consts {
 		private static $skills = array(
 			'Accounting' => 5,
 			'Anthropolgy' => 1,

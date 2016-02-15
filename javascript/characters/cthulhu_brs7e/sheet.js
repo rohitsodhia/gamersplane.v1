@@ -1,4 +1,4 @@
-controllers.controller('viewCharacter_cthulhud100_7e', ['$scope', '$http', '$sce', '$timeout', '$filter', 'CurrentUser', 'CharactersService', function ($scope, $http, $sce, $timeout, $filter, CurrentUser, CharactersService) {
+controllers.controller('viewCharacter_cthulhu_brs7e', ['$scope', '$http', '$sce', '$timeout', '$filter', 'CurrentUser', 'CharactersService', function ($scope, $http, $sce, $timeout, $filter, CurrentUser, CharactersService) {
 	CurrentUser.load().then(function () {
 		$scope.labels = {
 			'stats': [
@@ -60,28 +60,24 @@ controllers.controller('viewCharacter_cthulhud100_7e', ['$scope', '$http', '$sce
 			'Track': 10
 		};
 		$scope.skillCols = [[], [], []];
-		$scope.colCount = 0;
+		var lastPos = 0;
 		$scope.loadChar().then(function() {
 			$scope.character.dodge = Math.floor($scope.character.characteristics.dex / 2);
 			skillList = [];
 			for (key in $scope.character.skills) {
 				skillList.push($scope.character.skills[key].name);
 				$scope.character.skills[key].default = false;
-				if ($scope.character.skills[key].name == 'Dodge') 
+				if ($scope.character.skills[key].name.toLowerCase() == 'Dodge') 
 					$scope.character.dodge = $scope.character.skills[key].value;
 			}
 			for (key in $scope.defaultSkills) 
 				if (skillList.indexOf(key) == -1) 
 					$scope.character.skills.push({ 'name': key, 'value': $scope.defaultSkills[key], 'default': true });
 			$scope.character.skills = $filter('orderBy')($scope.character.skills, '+name');
-			for (key in $scope.character.skills) {
-				if ($scope.character.skills[key].name.toLowerCase() == 'Dodge') 
-					$scope.character.dodge = $scope.character.skills[key].value;
-				$scope.skillCols[$scope.colCount++].push($scope.character.skills[key]);
-				if ($scope.colCount == 3) 
-					$scope.colCount = 0;
+			for (key in $scope.skillCols) {
+				$scope.skillCols[key] = $scope.character.skills.slice(lastPos, lastPos + Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0));
+				lastPos += Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0);
 			}
-			console.log($scope.skillCols);
 		});
 		$scope.getHalfValue = function (val) {
 			return Math.floor(val / 2);

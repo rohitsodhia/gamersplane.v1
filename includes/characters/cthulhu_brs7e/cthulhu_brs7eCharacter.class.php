@@ -1,5 +1,5 @@
 <?
-	class cthulhud100_7eCharacter extends Character {
+	class cthulhu_brs7eCharacter extends Character {
 		const SYSTEM = 'cthulhud100_7e';
 
 		protected $occupation = '';

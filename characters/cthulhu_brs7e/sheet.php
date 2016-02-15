@@ -46,10 +46,11 @@
 			<div id="skills" class="clearfix">
 				<h2 class="headerbar hbDark" skew-element>Skills</h2>
 				<div hb-margined>
+					<p class="note">Skills in grey italics are default values</p>
 					<ul ng-repeat="skillCol in skillCols" ng-class="{ 'first': $first }">
-						<li ng-repeat="skill in skillCol" class="tr skill">
-							<span ng-bind-html="skill.name"></span>
-							<span>{{skill.value}}%</span>
+						<li ng-repeat="skill in skillCol" class="tr skill" ng-class="{ 'default': skill.default }">
+							<span class="name" ng-bind-html="skill.name"></span>
+							<span class="value">{{skill.value}}%</span>
 						</li>
 					</ul>
 				</div>
@@ -92,17 +93,19 @@
 				</div>
 				<div id="combat" class="floatRight">
 					<h2 class="headerbar hbDark" skew-element>Combat</h2>
-					<div class="tr">
-						<h3>Damage Bonus</h3>
-						<div>{{computeDamage_Build(character.characteristics.str + character.characteristics.siz)[0]}}</div>
-					</div>
-					<div class="tr">
-						<h3>Build</h3>
-						<div>{{computeDamage_Build(character.characteristics.str + character.characteristics.siz)[1]}}</div>
-					</div>
-					<div id="dodge" class="tr">
-						<h3>Dodge</h3>
-						<div>{{character.dodge}}</div>
+					<div hb-margined>
+						<div class="tr">
+							<h3>Damage Bonus</h3>
+							<div>{{computeDamage_Build(character.characteristics.str + character.characteristics.siz)[0]}}</div>
+						</div>
+						<div class="tr">
+							<h3>Build</h3>
+							<div>{{computeDamage_Build(character.characteristics.str + character.characteristics.siz)[1]}}</div>
+						</div>
+						<div id="dodge" class="tr">
+							<h3>Dodge</h3>
+							<div>{{character.dodge}}</div>
+						</div>
 					</div>
 				</div>
 			</div>

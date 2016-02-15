@@ -1,4 +1,4 @@
-controllers.controller('editCharacter_cthulhud100_7e', ['$scope', '$http', '$q', '$sce', '$filter', '$timeout', 'CurrentUser', 'CharactersService', 'ACSearch', function ($scope, $http, $q, $sce, $filter, $timeout, CurrentUser, CharactersService, ACSearch) {
+controllers.controller('editCharacter_cthulhu_brs7e', ['$scope', '$http', '$q', '$sce', '$filter', '$timeout', 'CurrentUser', 'CharactersService', 'ACSearch', function ($scope, $http, $q, $sce, $filter, $timeout, CurrentUser, CharactersService, ACSearch) {
 	CurrentUser.load().then(function () {
 		$scope.labels = {
 			'stats': [
@@ -21,16 +21,13 @@ controllers.controller('editCharacter_cthulhud100_7e', ['$scope', '$http', '$q',
 			204: ['+1d6', '+2']
 		};
 		$scope.skillCols = [[], [], []];
-		$scope.colCount = 0;
+		var lastPos = 0;
 		$scope.loadChar().then(function() {
 			$scope.character.dodge = Math.floor($scope.character.characteristics.dex / 2);
 			$scope.character.skills = $filter('orderBy')($scope.character.skills, '+name');
-			for (key in $scope.character.skills) {
-				if ($scope.character.skills[key].name.toLowerCase() == 'Dodge') 
-					$scope.character.dodge = $scope.character.skills[key].value;
-				$scope.skillCols[$scope.colCount++].push($scope.character.skills[key]);
-				if ($scope.colCount == 3) 
-					$scope.colCount = 0;
+			for (key in $scope.skillCols) {
+				$scope.skillCols[key] = $scope.character.skills.slice(lastPos, lastPos + Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0));
+				lastPos += Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0);
 			}
 		});
 		$scope.getHalfValue = function (val) {
