@@ -88,7 +88,7 @@
 			else 
 				$userID = intval($userID);
 
-			if ($currentUser->userID == $userID) 
+			if ($this->userID == $userID) 
 				return 'edit';
 			else {
 				$gmCheck = $mongo->games->findOne(array('gameID' => (int) $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('players.$' => true));
