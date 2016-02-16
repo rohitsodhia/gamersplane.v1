@@ -28,7 +28,7 @@
 				</div>
 				<div class="tr">
 					<label>Password</label>
-					<input id="password" type="password" name="password" maxlength="16" tabindex="4">
+					<input id="password" type="password" name="password" maxlength="32" tabindex="4">
 				</div>
 				<div id="submitDiv" class="alignCenter"><button type="submit" name="login" value="login" tabindex="5">Login</button></div>
 			</form>
