@@ -329,7 +329,7 @@
 				displayJSON(array('failed' => true, 'errors' => $errors));
 			else {
 				$mongo->games->update(array('gameID' => $gameID), array('$set' => $details));
-				$mongo->characters->update(array('game.gameID' => $gameID), array('game.title' => $details['title']));
+				$mongo->characters->update(array('game.gameID' => $gameID), array('$set' => array('game.title' => $details['title'])));
 #				$hl_gameEdited = new HistoryLogger('gameEdited');
 #				$hl_gameEdited->addGame($gameID)->save();
 				
@@ -350,7 +350,7 @@
 				}
 			}
 			if ($isGM) {
-				$mysql->query("UPDATE forums_permissions_general SET read = read ^ 1 WHERE forumID = {$gameInfo['forumID']}");
+				$mysql->query("UPDATE forums_permissions_general SET `read` = `read` ^ 1 WHERE forumID = {$gameInfo['forumID']}");
 				$mongo->games->update(array('gameID' => $gameID), array('$set' => array('public' => !$gameInfo['public'])));
 				displayJSON(array('success' => true));
 			} else 
