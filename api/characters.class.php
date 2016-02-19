@@ -242,7 +242,7 @@
 				if ($gmCheck) 
 					return 'edit';
 			}
-			return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
+			return $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?'library':false;
 		}
 
 		public function saveCharacter($characterID) {

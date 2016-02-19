@@ -88,8 +88,7 @@
 			else 
 				$userID = intval($userID);
 
-			$characterID = (int) $characterID;
-			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
+			$charCheck = $mongo->characters->findOne(array('characterID' => $this->characterID), array('user' => true, 'game' => true));
 			if ($charCheck['user']['userID'] == $userID) 
 				return 'edit';
 			else {
