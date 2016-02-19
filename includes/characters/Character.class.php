@@ -88,14 +88,16 @@
 			else 
 				$userID = intval($userID);
 
-			if ($this->userID == $userID) 
+			$characterID = (int) $characterID;
+			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
+			if ($charCheck['user']['userID'] == $userID) 
 				return 'edit';
 			else {
-				$gmCheck = $mongo->games->findOne(array('gameID' => (int) $charCheck['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('players.$' => true));
+				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
 				if ($gmCheck) 
 					return 'edit';
-				return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 			}
+			return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 		}
 		
 		public function showSheet() {

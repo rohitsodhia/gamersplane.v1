@@ -20,7 +20,7 @@
 		} else {
 			$deck = array(
 				'deckID' => mongo_getNextSequence('deckID'),
-				'label '=> $deckLabel,
+				'label' => $deckLabel,
 				'type' => $type,
 				'deck' => array(),
 				'position' => 1,
@@ -35,17 +35,18 @@
 
 #			$hl_deckCreated = new HistoryLogger('deckCreated');
 #			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
-			
+
 			if (isset($_POST['modal'])) 
 				displayJSON(array(
 					'success' => true,
 					'action' => 'createDeck',
 					'deck' => array(
-						'deckID' => (int) $deckID,
-						'label' => $deckLabel,
-						'type' => $deck['_id'],
-						'cardsRemaining' => (int) $deck['size'])
-					), true);
+						'deckID' => $deck['deckID'],
+						'label' => $deck['label'],
+						'type' => $deck['type'],
+						'cardsRemaining' => sizeof($deck['deck'])
+					)
+				), true);
 			else 
 				header('Location: /games/'.$gameID.'/?success=createDeck');
 		}
