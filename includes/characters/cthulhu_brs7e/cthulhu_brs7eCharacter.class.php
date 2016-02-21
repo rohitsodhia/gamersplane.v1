@@ -1,6 +1,6 @@
 <?
 	class cthulhu_brs7eCharacter extends Character {
-		const SYSTEM = 'cthulhud100_7e';
+		const SYSTEM = 'cthulhu_brs7e';
 
 		protected $occupation = '';
 		protected $characteristics = array('str' => 0, 'dex' => 0, 'int' => 0, 'con' => 0, 'app' => 0, 'pow' => 0, 'siz' => 0, 'edu' => 0, 'move' => 0);
