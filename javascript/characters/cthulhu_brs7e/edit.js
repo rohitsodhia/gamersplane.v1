@@ -42,7 +42,7 @@ controllers.controller('editCharacter_cthulhu_brs7e', ['$scope', '$http', '$q', 
 				$scope.colCount = 0;
 		}
 		$scope.searchSkills = function (search) {
-			return ACSearch.cil('skill', search, 'cthulhud100_7e', true).then(function (items) {
+			return ACSearch.cil('skill', search, 'cthulhu_brs7e', true).then(function (items) {
 				for (key in items) {
 					systemItem = items[key].systemItem;
 					items[key] = {

@@ -102,6 +102,39 @@ textarea, .notes {
 	}
 }
 
+#page_characterSheet #characteristics {
+	.leftLabel {
+		width: 70px;
+		font-weight: bold;
+	}
+
+	.leftLabel, .shortNum {
+		font-size: 1.4em;
+	}
+
+	.shortNum {
+		width: 50px;
+		height: 42px;
+		line-height: 42px;
+		-webkit-border-radius: 0;
+		-moz-border-radius: 0;
+		border-radius: 0;
+		border: 1px solid #600;
+		border-right-color: #E40;
+		border-bottom-color: #E40;
+
+		&.move {
+			-webkit-border-radius: 15px;
+			-moz-border-radius: 15px;
+			border-radius: 15px;
+		}
+	}
+
+	.half, .fifth {
+		font-size: 1em;
+	}
+}
+
 #stats {
 	width: 370px;
 
@@ -115,6 +148,13 @@ textarea, .notes {
 
 	.first {
 		margin-right: 10px;
+	}
+}
+
+#page_characterSheet #stats {
+	.stat span {
+		width: 30px;
+		text-align: center;
 	}
 }
 
