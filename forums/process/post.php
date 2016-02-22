@@ -84,9 +84,9 @@
 			if ($game) {
 				$rDecks = $game['decks'];
 				$decks = array();
-				$draws = array_filter($_POST['decks'], function($value) { return intval($value) > 0?true:false; });
-				foreach ($decks as $key => $deck) 
-					if (in_array($draws, $deck['deckID']) && in_array($currentUser->userID, $deck['permissions'])) 
+				$draws = array_filter($_POST['decks'], function($value) { return intval($value['draw']) > 0?true:false; });
+				foreach ($rDecks as $deck) 
+					if (array_key_exists((int) $deck['deckID'], $draws) && in_array($currentUser->userID, $deck['permissions'])) 
 						$decks[$deck['deckID']] = $deck;
 				$isGM = null;
 				foreach ($game['players'] as $player) {
@@ -105,7 +105,7 @@
 							$_SESSION['errors']['overdrawn'] = 1;
 							break;
 						}
-						
+
 						$draw['cardsDrawn'] = array();
 						for ($count = $decks[$deckID]['position']; $count <= $decks[$deckID]['position'] + $draw['draw'] - 1; $count++) 
 							$draw['cardsDrawn'][] = $deck[$count - 1];

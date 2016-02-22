@@ -170,7 +170,7 @@
 			if (sizeof($this->draws)) {
 				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = {$this->postID}, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
 				foreach($this->draws as $deckID => $draw) {
-					$gameID = (int) $mysql->query("SELECT gameID FROM threads WHERE threadID = {$this->threadID} LIMIT 1")->fetchColumn();
+					$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON f.forumID = t.forumID WHERE t.threadID = {$this->threadID} LIMIT 1")->fetchColumn();
 					$mongo->games->update(array('gameID' => $gameID, 'decks.deckID' => (int) $deckID), array('$inc' => array('decks.$.position' => (int) $draw['draw'])));
 					$addDraw->bindValue('deckID', $deckID);
 					$addDraw->bindValue('type', $draw['type']);
