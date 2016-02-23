@@ -273,16 +273,22 @@
 				$suit = array('hearts', 'spades', 'diamonds', 'clubs');
 				$classes = $cardNum - (floor(($cardNum - 1)/13) * 13);
 				
-				if ($classes == 1) $classes = 'A';
-				elseif ($classes == 11) $classes = 'J';
-				elseif ($classes == 12) $classes = 'Q';
-				elseif ($classes == 13) $classes = 'K';
+				if ($classes == 1) 
+					$classes = 'A';
+				elseif ($classes == 11) 
+					$classes = 'J';
+				elseif ($classes == 12) 
+					$classes = 'Q';
+				elseif ($classes == 13) 
+					$classes = 'K';
 
 				$classes = 'num_'.$classes;
 				
 				$classes .= ' '.$suit[floor(($cardNum - 1)/13)];
-			} elseif ($classes == 53) return 'blackJoker';
-			elseif ($classes == 54) return 'redJoker';
+			} elseif ($cardNum == 53) 
+				$classes = 'blackJoker';
+			elseif ($cardNum == 54) 
+				$classes = 'redJoker';
 		}
 
 		return '<div class="cardWindow deck_'.$deckInfo['class'].$size.'"><img src="/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
