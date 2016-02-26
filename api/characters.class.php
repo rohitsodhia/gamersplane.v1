@@ -189,7 +189,7 @@
 				displayJSON(array('failed' => true, 'errors' => array('noLabel')));
 
 			$charCheck = $mongo->characters->findOne(array('user.userID' => $currentUser->userID, 'characterID' => $characterID), array('_id' => true));
-			if ($charCheck) 
+			if (!$charCheck) 
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
 			else {
 				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('label' => $label, 'charType' => $charType)));

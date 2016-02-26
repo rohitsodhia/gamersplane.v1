@@ -20,8 +20,8 @@
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
 			<ul ng-if="characters != null" id="userChars" class="hbMargined hbAttachedList" hb-margined>
 				<li ng-repeat="character in characters | orderBy: ['system.short', 'label']" class="clearfix character" ng-class="{ 'editing': character.characterID == editing.characterID }">
-					<div class="label"><a href="/characters/{{character.system.short}}/{{character.characterID}}/" ng-bind-html="character.label | trustHTML" ng-show="editing.characterID != character.characterID"></a><input type="text" ng-model="character.label" ng-show="editing.characterID == character.characterID"></div
-					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><combobox ng-show="editing.characterID == character.characterID" data="charTypes" value="editing.cCharType" select></combobox></div
+					<div class="label"><a href="/characters/{{character.system.short}}/{{character.characterID}}/" ng-bind-html="character.label | trustHTML" ng-show="editing.characterID != character.characterID"></a><input type="text" ng-model="editing.new.label" ng-show="editing.characterID == character.characterID"></div
+					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><combobox ng-show="editing.characterID == character.characterID" data="charTypes" value="editing.new.cCharType" select></combobox></div
 					><div class="systemType" ng-bind-html="character.system.name | trustHTML"></div
 					><div class="links">
 						<span ng-hide="editing.characterID == character.characterID || deleting == character.characterID">

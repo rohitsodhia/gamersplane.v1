@@ -6,7 +6,10 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 	$scope.newChar = { 'label': '', 'system': {}, 'charType': {} };
 	$scope.editing = {
 		'characterID': null,
-		'label': ''
+		'new': {
+			'label': '',
+			'cCharType': ''
+		}
 	};
 	$scope.deleting = null;
 	$scope.activeRequests = [];
@@ -25,27 +28,36 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 
 		$scope.editBasic = function (character) {
 			$scope.editing.characterID = character.characterID;
-			$scope.editing.label = character.label;
-			character.cCharType = { 'value': character.charType, 'display': character.charType };
+			$scope.editing.new.label = character.label;
+			$scope.editing.new.cCharType = { 'value': character.charType, 'display': character.charType };
 		};
 		$scope.saveEdit = function (character) {
 			CharactersService.saveBasic({
 				'characterID': character.characterID,
-				'label': character.label,
-				'charType': character.cCharType.value
+				'label': $scope.editing.new.label,
+				'charType': $scope.editing.new.cCharType.value
 			}).then(function (data) {
 				if (data.success) {
-					character.charType = character.cCharType.value;
+					character.label = $scope.editing.new.label;
+					character.charType = $scope.editing.new.cCharType.value;
 					$scope.editing = {
 						'characterID': null,
-						'label': ''
+						'new': {
+							'label': '',
+							'cCharType': ''
+						}
 					};
 				}
 			});
 		};
 		$scope.cancelEditing = function (character) {
-			$scope.editing.characterID = null;
-			character.label = $scope.editing.label;
+			$scope.editing = {
+				'characterID': null,
+				'new': {
+					'label': '',
+					'cCharType': ''
+				}
+			};
 		};
 
 		$scope.toggleLibrary = function (character, library) {
