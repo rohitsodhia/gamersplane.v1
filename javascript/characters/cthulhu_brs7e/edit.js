@@ -37,9 +37,14 @@ controllers.controller('editCharacter_cthulhu_brs7e', ['$scope', '$http', '$q', 
 			return Math.floor(val / 5);
 		};
 		$scope.addSkill = function () {
-			$scope.skillCols[$scope.colCount++].push({ 'name': '', 'value': 0 });
-			if ($scope.colCount == 3) 
-				$scope.colCount = 0;
+			$scope.character.skills = $scope.skillCols[0].concat($scope.skillCols[1], $scope.skillCols[2]);
+			$scope.skillCols = [[], [], []];
+			$scope.character.skills.push({ 'name': '', 'value': 0 });
+			lastPos = 0;
+			for (key in $scope.skillCols) {
+				$scope.skillCols[key] = $scope.character.skills.slice(lastPos, lastPos + Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0));
+				lastPos += Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0);
+			}
 		}
 		$scope.searchSkills = function (search) {
 			return ACSearch.cil('skill', search, 'cthulhu_brs7e', true).then(function (items) {
