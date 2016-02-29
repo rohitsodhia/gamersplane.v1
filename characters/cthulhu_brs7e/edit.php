@@ -31,7 +31,7 @@
 							<div ng-repeat="stat in labels.stats" ng-id="stat.key" class="tr stat">
 								<h3>{{stat.value}}</h3>
 								<label class="leftLabel first">Current <input type="number" ng-model="character[stat.key].current" min="0"></label>
-								<label ng-if="stat.key != 'luck'" class="leftLabel">Max <input type="number" ng-model="character[stat.key].max" min="0"></label>
+								<label class="leftLabel">Max <input type="number" ng-model="character[stat.key].max" min="0"></label>
 								<div ng-if="stat.key == 'hp' || stat.key == 'sanity'" class="tr">
 									<label ng-if="stat.key == 'hp'">
 										<pretty-checkbox checkbox="character.hp.major"></pretty-checkbox> Major Wound
@@ -43,6 +43,10 @@
 										<pretty-checkbox checkbox="character.sanity.indef"></pretty-checkbox> Indef Insane
 									</label>
 								</div>
+							</div>
+							<div ng-id="stat.key" class="tr stat">
+								<h3><label for="luck" class="leftLabel">Luck</label></h3>
+								<input id="luck" type="number" ng-model="character.luck" min="0"></label>
 							</div>
 						</div>
 					</div>

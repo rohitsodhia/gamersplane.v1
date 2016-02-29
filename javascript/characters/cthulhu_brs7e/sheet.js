@@ -4,8 +4,7 @@ controllers.controller('viewCharacter_cthulhu_brs7e', ['$scope', '$http', '$sce'
 			'stats': [
 				{ 'key': 'hp', 'value': 'Hit Points' },
 				{ 'key': 'sanity', 'value': 'Sanity' },
-				{ 'key': 'mp', 'value': 'Magic Points' },
-				{ 'key': 'luck', 'value': 'Luck' }
+				{ 'key': 'mp', 'value': 'Magic Points' }
 			]
 		};
 		$scope.damage_build = {

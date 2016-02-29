@@ -106,7 +106,7 @@
 					$this->setHP($type, $value);
 				foreach ($data->sanity as $type => $value) 
 					$this->setSanity($type, $value);
-				$this->setLuck($this->luck->current);
+				$this->setLuck($data->luck);
 				foreach ($data->mp as $type => $value) 
 					$this->setMP($type, $value);
 				$this->clearVar('skills');
