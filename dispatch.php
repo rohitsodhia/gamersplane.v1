@@ -42,7 +42,7 @@
 	$requireLoc = '';
 	$isAJAX = false;
 
-	if ($pathAction == 'facebook') header('Location: http://www.facebook.com/pages/Gamers-Plane/245904792107862');
+	if ($pathAction == 'facebook') header('Location: https://www.facebook.com/GamersPlane/');
 	elseif (STATE == 'standard') {
 		$moddedPath = $pathAction?$pathAction:'';
 		foreach ($pathOptions as $pathOption) {
