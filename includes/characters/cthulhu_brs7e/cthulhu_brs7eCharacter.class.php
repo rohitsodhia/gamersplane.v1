@@ -45,12 +45,8 @@
 				return false;
 		}
 
-		public function setLuck($type, $value = 0) {
-			$value = (int) $value >= 0?(int) $value:0;
-			if (array_key_exists($type, $this->luck)) 
-				$this->luck[$type] = $value;
-			else 
-				return false;
+		public function setLuck($value = 0) {
+			$this->luck = (int) $value >= 0?(int) $value:0;
 		}
 
 		public function setMP($type, $value = 0) {
@@ -110,8 +106,7 @@
 					$this->setHP($type, $value);
 				foreach ($data->sanity as $type => $value) 
 					$this->setSanity($type, $value);
-				foreach ($data->luck as $type => $value) 
-					$this->setLuck($type, $value);
+				$this->setLuck($this->luck->current);
 				foreach ($data->mp as $type => $value) 
 					$this->setMP($type, $value);
 				$this->clearVar('skills');
