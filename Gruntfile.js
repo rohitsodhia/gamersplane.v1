@@ -31,6 +31,12 @@ module.exports = function(grunt) {
 				}]
 			}
 		},
+		watch: {
+			less: {
+				files: ['styles/**/*.less'],
+				tasks: ['less:dev']
+			}
+		},
 		cssmin: {
 			css: {
 				files: [{
@@ -45,14 +51,18 @@ module.exports = function(grunt) {
 		clean: {
 			css: ['styles/**/*.css', '!styles/colorbox.css']
 		},
-		watch: {
-			less: {
-				files: ['styles/**/*.less'],
-				tasks: ['less:dev']
+		uglify: {
+			js: {
+				files: [{
+					expand: true,
+					cwd: 'javascript/',
+					src: ['*.js'],
+					dest: 'javascript/'
+				}]
 			}
 		}
 	});
 
 	grunt.registerTask('default', ['less:dev']);
-	grunt.registerTask('release', ['clean:css', 'less:prod', 'cssmin']);
+	grunt.registerTask('release', ['clean:css', 'less:prod', 'cssmin', 'uglify']);
 };
