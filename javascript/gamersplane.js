@@ -156,9 +156,9 @@ $(function() {
 });
 
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment']);
-app.config(function ($httpProvider) {
+app.config(['$httpProvider', function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
-}).factory('CurrentUser', function ($http) {
+}]).factory('CurrentUser', ['$http', function ($http) {
 	var factory = {};
 	var userData = null;
 
@@ -186,7 +186,7 @@ app.config(function ($httpProvider) {
 	}
 
 	return factory;
-}).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
+}]).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
 	this.get = function (userID) {
 		params = {};
 		if (userID && parseInt(userID) > 0) 
