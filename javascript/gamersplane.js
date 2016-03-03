@@ -1069,7 +1069,8 @@ app.config(function ($httpProvider) {
 	$scope.catMap = {};
 	$scope.aFAQs = {};
 	for (key in faqs.categories) 
-		$scope.catMap[faqs.categories[key]] = key;
+		$scope.catMap[key] = faqs.categories[key];
+	console.log(faqs.categories);
 	faqs.get().then(function (data) {
 		if (data.faqs) {
 			$scope.$emit('pageLoading');
