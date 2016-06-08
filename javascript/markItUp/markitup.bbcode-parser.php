@@ -114,7 +114,7 @@ function BBCode2Html($text) {
 		foreach ($matches as $match) {
 			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
 			if (!in_array(strtolower($currentUser->username), $noteTo))
-				$text = str_replace($match[0], '<blockquote class="note"><div>'.$post->getAuthor('userID').' sent a note to'.$match[1].'</div></blockquote>', $text);
+				$text = str_replace($match[0], '<blockquote class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></blockquote>', $text);
 		}
 	}
 
