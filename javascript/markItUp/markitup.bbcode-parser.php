@@ -14,10 +14,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -44,12 +44,12 @@ function BBCode2Html($text) {
 			$code = str_replace("[", "&#91;", $code);
 			$code = str_replace("]", "&#93;", $code);
 			return '<pre><code>'.$code.'</code></pre>';
-		}	
+		}
 	}
 	$text = preg_replace_callback('/\[code\](.*?)\[\/code\]/ms', "escape", $text);
 
 	// Smileys to find...
-/*	$in = array( 	 ':)', 	
+/*	$in = array( 	 ':)',
 					 ':D',
 					 ':o',
 					 ':p',
@@ -65,9 +65,9 @@ function BBCode2Html($text) {
 					 '<img alt=";)" src="'.EMOTICONS_DIR.'emoticon-wink.png" />'
 	);
 	$text = str_replace($in, $out, $text);
-*/	
+*/
 	// BBCode to find...
-	$in = array( 	 '/\[b\](.*?)\[\/b\]/ms',	
+	$in = array( 	 '/\[b\](.*?)\[\/b\]/ms',
 					 '/\[i\](.*?)\[\/i\]/ms',
 					 '/\[u\](.*?)\[\/u\]/ms',
 					 '/\[s\](.*?)\[\/s\]/ms',
@@ -101,10 +101,10 @@ function BBCode2Html($text) {
 					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>'
 	);
 	$text = preg_replace($in, $out, $text);
-	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text)) 
+	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
 		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\][\r\n]*/sm", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
-	
+
 	$matches = null;
 	global $currentUser, $isGM, $post;
 	$display = false;
@@ -113,8 +113,8 @@ function BBCode2Html($text) {
 	if (strpos($text, 'blockquote class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
 			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-			if (!in_array(strtolower($currentUser->username), $noteTo)) 
-				$text = str_replace($match[0], '', $text);
+			if (!in_array(strtolower($currentUser->username), $noteTo))
+				$text = str_replace($match[0], '<blockquote class="note"><div>'.$post->getAuthor('userID').' sent a note to'.$match[1].'</div></blockquote>', $text);
 		}
 	}
 
@@ -122,20 +122,20 @@ function BBCode2Html($text) {
 //	$text = str_replace("\r", "", $text);
 //	$text = "<p>".preg_replace("/(\n){2,}/", "</p><p>", $text)."</p>";
 //	$text = nl2br($text);
-	
+
 	// clean some tags to remain strict
 	// not very elegant, but it works. No time to do better ;)
 /*	if (!function_exists('removeBr')) {
 		function removeBr($s) {
 			return str_replace("<br />", "", $s[0]);
 		}
-	}	
+	}
 	$text = preg_replace_callback('/<pre>(.*?)<\/pre>/ms', "removeBr", $text);
 	$text = preg_replace('/<p><pre>(.*?)<\/pre><\/p>/ms', "<pre>\\1</pre>", $text);
-	
+
 	$text = preg_replace_callback('/<ul>(.*?)<\/ul>/ms', "removeBr", $text);
 	$text = preg_replace('/<p><ul>(.*?)<\/ul><\/p>/ms', "<ul>\\1</ul>", $text);*/
-	
+
 	return $text;
 }
 ?>
