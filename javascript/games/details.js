@@ -4,7 +4,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		CurrentUser = CurrentUser.get();
 		$scope.ngInterface = '';
 		$scope.skewedOut = {};
-		$scope.loggedIn = CurrentUser.loggedOut?false:true;
+		$scope.loggedIn = !CurrentUser || CurrentUser.loggedOut?false:true;
 		$scope.CurrentUser = CurrentUser;
 		$scope.systems = [];
 		$scope.deckTypes = {};
@@ -31,9 +31,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					$scope.systems[val.shortName] = val.fullName;
 				});
 			});
-			ToolsService.getDeckTypes().then(function (data) {
-				$scope.deckTypes = data.types;
-			})
+			$scope.deckTypes = ToolsService.deckTypes;
 			GamesService.getDetails($scope.gameID).then(function (data) {
 				if (data.success) {
 					$scope.details = data.details;
@@ -42,13 +40,13 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					$scope.decks = data.decks;
 					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 					$scope.details.playersInGame = $scope.players.length - 1;
-					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: CurrentUser.userID }, true).length  == 1?true:false;
+					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: CurrentUser?CurrentUser.userID:0 }, true).length  == 1?true:false;
 					for (key in $scope.players) {
 						if (CurrentUser && $scope.players[key].user.userID == CurrentUser.userID) {
 							$scope.inGame = true;
 							$scope.curPlayer = $scope.players[key];
 							$scope.approved = $scope.curPlayer.approved?true:false;
-							if ($scope.curPlayer.isGM) 
+							if ($scope.curPlayer.isGM)
 								$scope.isGM = true;
 
 							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
@@ -60,11 +58,11 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 										break;
 									}
 								}
-								if (addSystem) 
+								if (addSystem)
 									allowedSystems.push($scope.details.system);
 								CharactersService.getMy({ 'systems': allowedSystems, 'noGame': true }).then(function (data) {
 									$scope.characters = data.characters;
-									for (key in $scope.characters) 
+									for (key in $scope.characters)
 										$scope.availChars.push({ 'value': $scope.characters[key].characterID, 'display': $scope.characters[key].label });
 									$scope.availChars = $filter('orderBy')($scope.availChars, 'display');
 								});
@@ -72,9 +70,9 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && $scope.details.retired == null) 
+					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && $scope.details.retired == null)
 						$scope.isPrimaryGM = true;
-				} //else 
+				} //else
 //					window.location = '/games/';
 				$scope.$emit('pageLoading');
 			});
@@ -83,13 +81,13 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		$scope.toggleGameStatus = function () {
 			GamesService.toggleGameStatus($scope.gameID).then(function (data) {
-				if (data.success) 
+				if (data.success)
 					$scope.details.status = $scope.details.status == 'open'?'closed':'open';
 			});
 		};
 		$scope.toggleForum = function () {
 			GamesService.toggleForum($scope.gameID).then(function (data) {
-				if (data.success) 
+				if (data.success)
 					$scope.details.readPermissions = !$scope.details.readPermissions;
 			});
 		};
@@ -100,7 +98,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		}
 		$scope.confirmRetire = function () {
 			GamesService.confirmRetire($scope.gameID).then(function (data) {
-				if (data.success) 
+				if (data.success)
 					window.location.href = '/games/?gameRetired=' + $scope.details.gameID;
 			});
 		}
@@ -108,13 +106,13 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		$scope.applyToGame = function () {
 			GamesService.apply($scope.gameID).then(function (data) {
-				if (data.success == true) 
+				if (data.success == true)
 					$scope.inGame = true;
 			});
 		};
 
 		$scope.$watch('modalWatch', function (newVal, oldVal) {
-			if (typeof newVal != 'object') 
+			if (typeof newVal != 'object')
 				return;
 
 			switch (newVal.action) {
@@ -128,7 +126,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (newVal.playerID == CurrentUser.userID) 
+					if (newVal.playerID == CurrentUser.userID)
 						$scope.inGame = false;
 					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
 					break;
@@ -187,7 +185,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		$scope.searchUsers = function (search) {
 			return ACSearch.users(search, true).then(function (data) {
-				for (key in data) 
+				for (key in data)
 					data[key] = {
 						'value': data[key].userID,
 						'display': data[key].username
@@ -196,7 +194,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			});
 		}
 		$scope.inviteUser = function () {
-			if ($scope.invites.user.length == 0) 
+			if ($scope.invites.user.length == 0)
 				return;
 			$http.post(API_HOST + '/games/invite/', { 'gameID': $scope.gameID, 'user': $scope.invites.user }).success(function (data) {
 				if (data.failed && data.errors && data.errors.indexOf('invalidUser') != -1) {
@@ -237,12 +235,12 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			$http.post(API_HOST + '/games/characters/submit/', { 'gameID': $scope.gameID, 'characterID': $scope.submitChar.character.value }).success(function (data) {
 				if (data.success) {
 					for (key in $scope.availChars) {
-						if ($scope.availChars[key].id == $scope.submitChar.character.id) 
+						if ($scope.availChars[key].id == $scope.submitChar.character.id)
 							$scope.availChars.splice(key, 1);
 					}
 					for (pKey in $scope.players) {
 						if ($scope.players[pKey].user.userID == CurrentUser.userID) {
-							if ($scope.isGM) 
+							if ($scope.isGM)
 								data.character.approved = true;
 							$scope.players[pKey].characters.push(data.character);
 							break;
@@ -257,7 +255,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					for (pKey in $scope.players) {
 						if ($scope.players[pKey].user.userID == userID) {
 							for (cKey in $scope.players[pKey].characters) {
-								if ($scope.players[pKey].characters[cKey].characterID == character.characterID) 
+								if ($scope.players[pKey].characters[cKey].characterID == character.characterID)
 									$scope.players[pKey].characters.splice(cKey, 1);
 							}
 							$scope.availChars.push({ 'value': character.characterID, 'display': character.label });
@@ -294,7 +292,7 @@ app.animation('.slideToggle', ['$timeout', function ($timeout) {
 	return {
 		addClass: function (element, className, done) {
 			element.slideUp();
-		}, 
+		},
 		removeClass: function (element, className, done) {
 			element.slideDown();
 		}

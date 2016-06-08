@@ -2,7 +2,7 @@
 				<label>Name:</label>
 				<div><?=$this->getName()?></div>
 			</div>
-			
+
 			<div id="attributes">
 				<h2 class="headerbar hbDark">Attributes</h2>
 				<table>
@@ -17,14 +17,14 @@
 <?	} ?>
 				</table>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="skills">
 					<h2 class="headerbar hbDark">Skills</h2>
 					<div class="hbdMargined">
 <?	foreach (wod_consts::getSkillNames() as $category => $skillSet) { ?>
 						<div id="skills_mental" class="skillSet">
-							<h3>Mental</h3>
+							<h3><?=$category?></h3>
 							<p>(-<?=$category == 'Mental'?3:1?> unskilled)</p>
 <?		foreach ($skillSet as $skill) { ?>
 							<div class="tr">
@@ -37,7 +37,7 @@
 <?	} ?>
 					</div>
 				</div>
-				
+
 				<div id="otherTraits">
 					<h2 class="headerbar hbDark">Other Traits</h2>
 					<div class="hbdMargined clearfix">
@@ -46,7 +46,7 @@
 								<h3>Merits</h3>
 								<div><?=$this->getMerits()?></div>
 							</div>
-							
+
 							<div id="flaws" class="marginTop">
 								<h3>Flaws</h3>
 								<div><?=$this->getFlaws()?></div>
@@ -67,7 +67,7 @@
 									<div><?=$this->getTrait('morality')?></div>
 								</div>
 							</div>
-							
+
 							<div class="tr marginTop">
 								<label class="textLabel">Size</label>
 								<div><?=$this->getTrait('size')?></div>
@@ -91,7 +91,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div id="itemsDiv">
 					<div id="weapons">
 						<h2 class="headerbar hbDark">Weapons</h2>
@@ -103,8 +103,8 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="notes" class="marginTop">
 				<h2 id="notesTitle" class="headerbar hbDark">Notes</h3>
-				<div class="hbdMargined"><?=$this->getNotes()?></div>
+				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
 			</div>
