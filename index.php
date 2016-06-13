@@ -2,7 +2,7 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 
 	require_once(FILEROOT.'/header.php');
-	if ($loggedIn) 
+	if ($loggedIn)
 		require_once(FILEROOT.'/topNotifications.php');
 ?>
 		<div class="clearfix">
@@ -23,7 +23,25 @@
 			<div class="sideWidget">
 <?
 	if ($loggedIn) {
-		$usersGames = $mongo->games->find(array('players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'approved' => true))), array('gameID' => true, 'title' => true, 'system' => true, 'gm' => true, 'numPlayers' => true, 'players' => true))->sort(array('start' => -1))->limit(3);
+		$usersGames = $mongo->games->find(
+			array(
+				'players' => array(
+					'$elemMatch' => array(
+						'user.userID' => $currentUser->userID,
+						'approved' => true
+					)
+				),
+				'retired' => null
+			),
+			array(
+				'gameID' => true,
+				'title' => true,
+				'system' => true,
+				'gm' => true,
+				'numPlayers' => true,
+				'players' => true
+			)
+		)->sort(array('start' => -1))->limit(3);
 ?>
 				<div class="loggedIn<?=$usersGames?'':' noGames'?>">
 					<h2>Your Games</h2>
@@ -32,8 +50,8 @@
 <?
 			foreach ($usersGames as $gameInfo) {
 				$gameInfo['playersInGame'] = -1;
-				foreach ($gameInfo['players'] as $player) 
-					if ($player['approved']) 
+				foreach ($gameInfo['players'] as $player)
+					if ($player['approved'])
 						$gameInfo['playersInGame']++;
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 ?>
@@ -68,7 +86,7 @@
 				<h3 class="headerbar">Latest Games</h3>
 				<div class="widgetBody">
 <?
-	if ($loggedIn) 
+	if ($loggedIn)
 		$latestGames = $mongo->games->find(
 			array(
 				'retired' => null,
@@ -89,7 +107,7 @@
 				'players' => true
 			)
 		)->sort(array('start' => -1))->limit(4);
-	else 
+	else
 		$latestGames = $mongo->games->find(
 			array(
 				'retired' => null
@@ -105,13 +123,13 @@
 	$first = true;
 	foreach ($latestGames as $gameInfo) {
 		$gameInfo['playersInGame'] = -1;
-		foreach ($gameInfo['players'] as $player) 
-			if ($player['approved']) 
+		foreach ($gameInfo['players'] as $player)
+			if ($player['approved'])
 				$gameInfo['playersInGame']++;
 		$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
-		if (!$first) 
+		if (!$first)
 			echo "					<hr>\n";
-		else 
+		else
 			$first = false;
 ?>
 					<div class="gameInfo">
@@ -121,7 +139,7 @@
 <?	} ?>
 				</div>
 			</div>
-			
+
 			<div id="latestPosts" class="homeWidget">
 				<h3 class="headerbar">Latest Posts</h3>
 				<div class="widgetBody">
@@ -139,7 +157,7 @@
 <?
 	$rand = $mongo->execute('Math.random()');
 	$partner = $mongo->links->findOne(array('level' => 'Partner', 'random' => array('$gte' => $rand['retval'])));
-	if ($partner == null) 
+	if ($partner == null)
 		$partner = $mongo->links->findOne(array('level' => 'Partner', 'random' => array('$lte' => $rand['retval'])));
 ?>
 				<div class="widgetBody">
