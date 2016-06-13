@@ -5,7 +5,7 @@
 		protected $concept = '';
 		protected $nation = '';
 		protected $religion = '';
-		protected $reputations = '';
+		protected $reputations = [];
 		protected $wealth = '';
 		protected $arcana = '';
 		protected $traits = array('brawn' => 1, 'finesse' => 1, 'resolve' => 1, 'wits' => 1, 'panache' => 1);
@@ -56,8 +56,11 @@
 			return $this->religion;
 		}
 
-		public function setReputations($reputations) {
-			$this->reputations = sanitizeString($reputations);
+		public function addReputation($reputation) {
+			if (!is_array($reputation)) {
+				return;
+			}
+			$this->reputations[] = sanitizeString($reputation);
 		}
 
 		public function getReputations() {
@@ -160,11 +163,17 @@
 		public function save($bypass = false) {
 			$data = $_POST;
 
+			var_dump($data); exit;
+
 			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setConcept($data['concept']);
 				$this->setNation($data['nation']);
 				$this->setReligion($data['religion']);
+				$this->reputations = [];
+				foreach ($data['reputations'] as $reputation) {
+					$this->addReputation($reputation);
+				}
 				$this->setReputations($data['reputations']);
 				$this->setWealth($data['wealth']);
 				$this->setArcana($data['arcana']);

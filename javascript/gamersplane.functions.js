@@ -1,25 +1,25 @@
 $.urlParam = function(name){
 	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	if (results == null) 
+	if (results === null)
 		return null;
-	else 
+	else
 		return results[1] || 0;
-}
+};
 
 String.prototype.capitalizeFirstLetter = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
-}
+};
 
 /*Array.prototype.removeEle = function (element) {
 	var key = this.indexOf(element);
-	if (key >= 0) 
+	if (key >= 0)
 		this.splice(key, 1);
 	return this;
 }*/
 
 function removeEle(from, element) {
 	var key = from.indexOf(element);
-	if (key >= 0) 
+	if (key >= 0)
 		from.splice(key, 1);
 }
 
@@ -39,8 +39,8 @@ function decodeHTML(html) {
 
 function getPathElements() {
 	pathElements = window.location.pathname.split('/');
-	for (key in pathElements) 
-		if (pathElements[key].length == 0) 
+	for (var key in pathElements)
+		if (pathElements[key].length === 0)
 			pathElements.splice(key, 1);
 
 	return pathElements;
@@ -60,15 +60,15 @@ function decToB26(num) {
 		num = Math.floor((num - 1) / 26);
 		str = String.fromCharCode(letterCode) + str;
 	}
-	
+
 	return str;
 }
 
 function b26ToDec(str) {
 	var num = 0;
-	for (var count = 0; count < str.length; count++) 
+	for (var count = 0; count < str.length; count++)
 		num += (str[str.length - 1 - count].charCodeAt() - 96) * Math.pow(26, count);
-	
+
 	return num;
 }
 
@@ -82,9 +82,9 @@ function hex(x) {
 }
 
 function showSign(val) {
-	if (val >= 0) 
+	if (val >= 0)
 		return '+' + val;
-	else 
+	else
 		return val;
 }
 
@@ -97,19 +97,22 @@ function convertTZ(dtString, parseString, displayString) {
 }
 
 function addCSSRule(selector, rules, index) {
-	if ('insertRule' in jsCSSSheet) 
+	if (index === undefined) {
+		index = 0;
+	}
+	if ('insertRule' in jsCSSSheet)
 		jsCSSSheet.insertRule(selector + "{" + rules + "}", index);
-	else if ('addRule' in jsCSSSheet) 
+	else if ('addRule' in jsCSSSheet)
 		jsCSSSheet.addRule(selector, rules, index);
 }
 
 function skewElement() {
 	$element = $(this);
-	if ($element.children('div.skewedDiv').length) 
+	if ($element.children('div.skewedDiv').length)
 		return;
-	if (typeof $element.data('skew') != 'undefined') 
+	if (typeof $element.data('skew') != 'undefined')
 		skewDeg = parseInt($element.data('skew'));
-	else 
+	else
 		skewDeg = -30;
 	$skewDiv = $element.wrapInner('<div class="skewedDiv"></div>').children('div');
 	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
@@ -122,9 +125,9 @@ function skewElement() {
 //		'margin-left'       : Math.ceil(skewedOut) + 'px',
 //		'margin-right'      : Math.ceil(skewedOut) + 'px'
 	}).data('skewedOut', skewedOut);
-	if (parseInt($element.css('margin-left').slice(0, -2)) < Math.ceil(skewedOut)) 
+	if (parseInt($element.css('margin-left').slice(0, -2)) < Math.ceil(skewedOut))
 		$element.css('margin-left', Math.ceil(skewedOut) + 'px');
-	if (parseInt($element.css('margin-right').slice(0, -2)) < Math.ceil(skewedOut)) 
+	if (parseInt($element.css('margin-right').slice(0, -2)) < Math.ceil(skewedOut))
 		$element.css('margin-right', Math.ceil(skewedOut) + 'px');
 	$skewDiv.css({
 		'-webkit-transform' : 'skew(' + (skewDeg * -1) + 'deg)',
@@ -140,27 +143,27 @@ function skewElement() {
 function adjustSkewMargins() {
 	$element = $(this);
 	$skewDiv = $element.children('div');
-	if (typeof $element.data('skew') != 'undefined') 
+	if (typeof $element.data('skew') != 'undefined')
 		skewDeg = parseInt($element.data('skew'));
-	else 
+	else
 		skewDeg = -30;
 	skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
 	$element.add($skewDiv).css({
 		'margin-left'  : skewedOut + 'px',
 		'margin-right' : skewedOut + 'px'
-	})
+	});
 }
 
 function trapezoidify() {
 	$element = $(this);
 	$element.wrapInner('<div class="content"></div>').prepend('<div class="leftWing"></div><div class="rightWing"></div>');
-	if (typeof $element.data('skew') != 'undefined') 
+	if (typeof $element.data('skew') != 'undefined')
 		skewDeg = parseInt($element.data('skew'));
-	else 
+	else
 		skewDeg = -30;
-	if ($element.hasClass('facingUp')) 
+	if ($element.hasClass('facingUp'))
 		direction = 'up';
-	else 
+	else
 		direction = 'down';
 	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
 	$element.children('.content').css({
@@ -173,9 +176,9 @@ function trapezoidify() {
 	$element.children('.rightWing').css({
 		'border-right-width' : sideBorderWidth + 'px',
 	});
-	if (direction == 'down') 
+	if (direction == 'down')
 		$element.children('.leftWing, .rightWing').css('border-bottom-width', $element.outerHeight() + 'px');
-	else 
+	else
 		$element.children('.leftWing, .rightWing').css('border-top-width', $element.outerHeight() + 'px');
 }
 
@@ -201,25 +204,25 @@ function sumRow() {
 		var classes = $indivTotal.attr('class').split(/\s+/);
 		var finalTotal = inputTotal;
 		$.each(classes, function (index, item) {
-			if (item.substring(3, 7) == 'Stat') 
+			if (item.substring(3, 7) == 'Stat')
 				finalTotal += statBonus[item.split('_')[1]];
-			else if (item.substring(3, 6) == 'Int') 
+			else if (item.substring(3, 6) == 'Int')
 				finalTotal += parseInt(item.split('_')[1]);
-			else if (item.substring(3, 6) == 'BAB') 
+			else if (item.substring(3, 6) == 'BAB')
 				finalTotal += parseInt($('#bab').val());
-			else if (item.substring(0, 7) == 'addSize') 
+			else if (item.substring(0, 7) == 'addSize')
 				finalTotal += size;
-			else if (item.substring(0, 7) == 'subSize') 
+			else if (item.substring(0, 7) == 'subSize')
 				finalTotal -= size;
-			else if (item.substring(3, 8) == 'Level') 
+			else if (item.substring(3, 8) == 'Level')
 				finalTotal += level;
-			else if (item.substring(3, 5) == 'HL') 
+			else if (item.substring(3, 5) == 'HL')
 				finalTotal += Math.floor(level / 2);
 		});
 
-		if ($indivTotal.hasClass('noSign')) 
+		if ($indivTotal.hasClass('noSign'))
 			$indivTotal.text(finalTotal);
-		else 
+		else
 			$indivTotal.text(showSign(finalTotal));
 	});
 }

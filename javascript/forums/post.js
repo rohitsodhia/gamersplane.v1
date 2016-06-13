@@ -33,7 +33,7 @@ $(function() {
 			$newRow.find('select').prettySelect();
 			$newRow.appendTo($newRolls);
 			rollCount += 1;
-		})
+		});
 	});
 
 	$('#newRolls').on('click', '.cross', function (e) {
@@ -47,7 +47,8 @@ $(function() {
 	}).on('click', '.diceOptions .diceIcon', function (e) {
 		e.stopPropagation();
 
-		$clickedDice = $(this), $input = $(this).closest('.dicePool').children('input');
+		$clickedDice = $(this);
+		$input = $(this).closest('.dicePool').children('input');
 		$clickedDice.closest('.dicePool').children('.selectedDice').append($clickedDice.clone());
 		inputVal = $input.val().length?$input.val().split(','):[];
 		inputVal[inputVal.length] = $clickedDice.attr('class').charAt(16);

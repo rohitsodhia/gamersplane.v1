@@ -1,76 +1,75 @@
-				<div id="nameDiv" class="tr">
-					<label class="textLabel">Name:</label>
-					<input type="text" ng-model="character.name" maxlength="50">
-				</div>
-
 				<div class="clearfix">
-					<div class="sidebar left">
-						<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
-						<div id="primaryTraits">
-<?
-	foreach (savageworlds_consts::getTraits() as $abbrev => $label) {
-		$dice = $this->getTraits($abbrev);
-?>
-							<div class="hbdMargined traitDiv" data-trait="<?=$abbrev?>">
-								<div class="trait clearfix">
-									<div class="traitName"><?=$label?></div>
-									<div class="diceSelect"><span>d</span> <select name="traits[<?=$abbrev?>]" class="diceType">
-<?		foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
-										<option<?=$dice == $dCount?' selected="selected"':''?>><?=$dCount?></option>
-<?		} ?>
-									</select></div>
-								</div>
-								<div class="skillHeader"><?=$label?> Skills <a href="" class="addSkill">+</a></div>
-								<div class="skills">
-<?		$this->showSkillsEdit($abbrev); ?>
-								</div>
+					<div class="column">
+						<div id="basic" hb-margined="dark">
+							<div class="tr">
+								<label class="textLabel leftLabel">Name:</label>
+								<input type="text" ng-model="character.name" maxlength="50">
 							</div>
-<?	} ?>
+							<div class="tr">
+								<label class="textLabel leftLabel">Concept:</label>
+								<input type="text" ng-model="character.concept">
+							</div>
+							<div class="tr">
+								<label class="textLabel leftLabel">Nation:</label>
+								<input type="text" ng-model="character.nation">
+							</div>
+							<div class="tr">
+								<label class="textLabel leftLabel">Religion:</label>
+								<input type="text" ng-model="character.religion">
+							</div>
+							<div class="tr clearfix">
+								<label class="textLabel leftLabel">Reputations:</label>
+								<a href="" ng-click="addReputation()">[ Add Reputation ]</a>
+								<input ng-repeat="reputation in character.reputations" type="text" ng-model="character.concept">
+							</div>
+							<div class="tr">
+								<label class="textLabel leftLabel">Wealth:</label>
+								<input type="text" ng-model="character.wealth">
+							</div>
 						</div>
-
-						<div id="derivedTraits">
-<?	foreach (array('Pace', 'Charisma', 'Parry', 'Toughness') as $derivedTrait) { ?>
-							<div class="tr<?=$derivedTrait == 'Parry' || $derivedTrait == 'Toughness'?' longer':''?>">
-								<label class="traitName"><?=$derivedTrait?></label>
-								<input type="text" name="derivedTraits[<?=strtolower($derivedTrait)?>]" value="<?=$this->getDerivedTraits(strtolower($derivedTrait))?>">
-							</div>
-<?	} ?>
+						<div id="backgrounds">
+							<h2 class="headerbar hbDark" skew-element>Backgrounds</h2>
+							<textarea ng-model="character.backgrounds" hb-margined="dark"></textarea>
+						</div>
+						<div id="advantages">
+							<h2 class="headerbar hbDark" skew-element>Advantages</h2>
+							<textarea ng-model="character.advantages" hb-margined="dark"></textarea>
 						</div>
 					</div>
-					<div class="mainColumn right">
-						<div class="clearfix">
-							<div class="twoCol">
-								<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-								<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances()?></textarea>
-							</div>
-							<div class="twoCol lastTwoCol">
-								<h2 class="headerbar hbDark">Injuries</h2>
-								<div id="injNums" class="hbdMargined">
-									<div>
-										<div>Wounds</div>
-										<input type="text" name="wounds" maxlength="2" value="<?=$this->getWounds()?>">
-									</div>
-									<div>
-										<div>Fatigue</div>
-										<input type="text" name="fatigue" maxlength="2" value="<?=$this->getFatigue()?>">
+					<div class="column">
+						<div id="traits">
+							<h2 class="headerbar hbDark" skew-element>Traits</h2>
+							<div hb-margined="dark">
+								<div ng-repeat="count in range(1, 5)" class="rankLabel">{{count}}</div>
+								<div ng-repeat="(trait, rank) in character.traits" class="traits">
+									<label class="leftLabel">{{trait.capitalizeFirstLetter()}}</label>
+									<div class="ranks">
+										<span ng-repeat="count in range(1, 5)" class="rankWrapper"><pretty-radio radio="character.traits[trait]" r-value="count"></pretty-radio></span>
 									</div>
 								</div>
-								<textarea id="injuries" name="injuries" class="hbdMargined"><?=$this->getInjuries()?></textarea>
 							</div>
 						</div>
-
-						<div class="clearfix">
-							<div class="twoCol">
-								<h2 class="headerbar hbDark">Weapons</h2>
-								<textarea id="weapons" name="weapons" class="hbdMargined"><?=$this->getWeapons()?></textarea>
-							</div>
-							<div class="twoCol lastTwoCol">
-								<h2 class="headerbar hbDark">Equipment</h2>
-								<textarea id="equipment" name="equipment" class="hbdMargined"><?=$this->getEquipment()?></textarea>
+						<div id="skills">
+							<h2 class="headerbar hbDark" skew-element>Skills</h2>
+							<div hb-margined="dark">
+								<div ng-repeat="count in range(0, 5)" class="rankLabel">{{count}}</div>
+								<div ng-repeat="(skill, rank) in character.skills" class="skills">
+									<label class="leftLabel">{{skill.capitalizeFirstLetter()}}</label>
+									<div class="ranks">
+										<span ng-repeat="count in range(0, 5)" class="rankWrapper"><pretty-radio radio="character.skills[skill]" r-value="count"></pretty-radio></span>
+									</div>
+								</div>
 							</div>
 						</div>
-
-						<h2 class="headerbar hbDark">Background/Notes</h2>
-						<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
+						<div id="deathSpiral">
+							<h2 class="headerbar hbDark" skew-element>Death Spiral</h2>
+							<div hb-margined="dark">
+								<img src="/images/characters/7thsea_2e/deathspiral.jpg">
+							</div>
+						</div>
 					</div>
+				</div>
+				<div id="notes">
+					<h2 class="headerbar hbDark" skew-element>Background/Notes</h2>
+					<textarea id="notes" ng-model="character.notes" hb-margined="dark"></textarea>
 				</div>
