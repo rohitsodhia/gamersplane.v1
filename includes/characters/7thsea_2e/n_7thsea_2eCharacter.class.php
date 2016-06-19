@@ -30,7 +30,7 @@
 		protected $deathSpiral = 0;
 		protected $backgrounds = '';
 		protected $advantages = '';
-		protected $stories = array('name' => '', 'goal' => '', 'rewards' => '', 'steps' => array());
+		protected $stories = array();
 
 		public function setConcept($concept) {
 			$this->concept = sanitizeString($concept);
@@ -57,7 +57,7 @@
 		}
 
 		public function addReputation($reputation) {
-			if (!is_array($reputation)) {
+			if (strlen($reputation) == 0) {
 				return;
 			}
 			$this->reputations[] = sanitizeString($reputation);
@@ -139,61 +139,53 @@
 			return $this->advantages;
 		}
 
-		public function setStory($part, $value = null) {
-			if (array_key_exists($part, $this->stories) && $part != 'steps') {
-				$this->stories[$part] = sanitizeString(value);
-			} else
-				return false;
+		public function addStory($story) {
+			if (strlen($story->name) == 0)
+				return;
+			$this->stories[] = [
+				'name' => sanitizeString($story->name),
+				'goal' => sanitizeString($story->goal),
+				'reward' => sanitizeString($story->reward),
+				'steps' => sanitizeString($story->steps)
+			];
 		}
 
-		public function addStoryStep($step = null) {
-			$this->stories['steps'][] = sanitizeString($step);
-		}
-
-		public function getStories($part = null) {
-			if ($part == null) {
-				return $this->stories;
-			} elseif (array_key_exists($part, $this->stories)) {
-				return $this->stories[$part];
-			} else {
-				return false;
-			}
+		public function getStories() {
+			return $this->stories;
 		}
 
 		public function save($bypass = false) {
-			$data = $_POST;
-
-			var_dump($data); exit;
+			if (isset($_POST['character']))
+				$data = $_POST['character'];
+			else
+				$data = $_POST;
 
 			if (!$bypass) {
-				$this->setName($data['name']);
-				$this->setConcept($data['concept']);
-				$this->setNation($data['nation']);
-				$this->setReligion($data['religion']);
+				$this->setName($data->name);
+				$this->setConcept($data->concept);
+				$this->setNation($data->nation);
+				$this->setReligion($data->religion);
 				$this->reputations = [];
-				foreach ($data['reputations'] as $reputation) {
+				foreach ($data->reputations as $reputation) {
 					$this->addReputation($reputation);
 				}
-				$this->setReputations($data['reputations']);
-				$this->setWealth($data['wealth']);
-				$this->setArcana($data['arcana']);
-				foreach ($data['traits'] as $trait => $value) {
+				// $this->setReputations($data->reputations);
+				$this->setWealth($data->wealth);
+				$this->setArcana($data->arcana);
+				$this->stories = [];
+				foreach ($data->stories as $story) {
+					$this->addStory($story);
+				}
+				foreach ($data->traits as $trait => $value) {
 					$this->setTrait($trait, $value);
 				}
-				foreach ($data['skills'] as $skill => $value) {
+				foreach ($data->skills as $skill => $value) {
 					$this->setSkill($skill, $value);
 				}
-				$this->setDeathSpiral($data['deathSpiral']);
-				$this->setBackgrounds($data['backgrounds']);
-				$this->setAdvantages($data['advantages']);
-				$this->setStory('goal', $data['stories']['goal']);
-				$this->setStory('name', $data['stories']['name']);
-				$this->setStory('rewards', $data['stories']['rewards']);
-				$this->stories['steps'] = [];
-				foreach ($data['stories']['steps'] as $step) {
-					$this->addStoryStep($step);
-				}
-				$this->setNotes($data['notes']);
+				$this->setDeathSpiral($data->deathSpiral);
+				$this->setBackgrounds($data->backgrounds);
+				$this->setAdvantages($data->advantages);
+				$this->setNotes($data->notes);
 			}
 
 			parent::save();

@@ -11,7 +11,7 @@
 				There was a problem with your registration. Please see the errors below and try again.
 			</div>
 <? } ?>
-			<div id="resendActivation" class="tr">If you've previously registered but never recieved your activation mail, try <a href="/register/resendActivation/">resending your activation email</a>.</div>
+			<div id="resendActivation" class="tr">If you've previously registered but never received your activation mail, try <a href="/register/resendActivation/">resending your activation email</a>.</div>
 			<div class="tr inputTR">
 				<label class="textLabel">Username</label>
 				<input id="username" type="text" name="username" maxlength="24" value="<?=$username?>" tabindex="<?=tabOrder()?>" class="textfield">
@@ -26,7 +26,7 @@
 				<div class="noFloat notice">Username may be letters, numbers, underscores (_) and periods (.), up to 24 characters</div>
 				<div class="noFloat notice">Keep usernames PG-13. GamersPlane will act if we find your username unacceptable.</div>
 			</div>
-			
+
 			<div class="tr inputTR">
 				<label class="textLabel">Password</label>
 				<input id="password1" type="password" name="password1" maxlength="32" tabindex="<?=tabOrder()?>" class="textfield">
@@ -46,7 +46,7 @@
 					<div id="passMismatch" class="<?=(isset($errors['passMismatch'])?'showDiv':'hideDiv')?>">Passwords don't match</div>
 				</div>
 			</div>
-			
+
 			<div class="tr inputTR">
 				<label class="textLabel">Email Address</label>
 				<input id="email" type="text" name="email" maxlength="100" value="<?=$email?>" tabindex="<?=tabOrder()?>" class="textfield">
@@ -56,21 +56,21 @@
 					<div id="emailTaken" class="<?=(isset($errors['emailTaken'])?'showDiv':'hideDiv')?>">Email Taken</div>
 				</div>
 			</div>
-			
+
 			<div class="tr inputTR">
 				<label class="textLabel">Where did you hear about us?</label>
 				<input id="hear" type="text" name="hear" maxlength="100" value="<?=$hear?>" tabindex="<?=tabOrder()?>" class="textfield">
 				<div class="alert"></div>
 			</div>
-			
+
 			<div id="recaptchaDiv" class="tr">
 				<h2>Prove to me you're real!</h2>
 				<div class="g-recaptcha" data-sitekey="6LcT8gsTAAAAALlRVGdtM9iansESdnIdeCUIwoqG"></div>
 				<div class="alert <?=(isset($errors['captchaFailed'])?'showDiv':'hideDiv')?>">reCaptch failed!</div>
 			</div>
-			
+
 			<input type="hidden" name="gender" value="Pick One">
-			
+
 			<div id="submitDiv">
 				<button id="submit" type="submit" name="submit" tabindex="<?=tabOrder(2)?>" class="fancyButton">Submit</button>
 			</div>

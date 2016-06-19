@@ -143,7 +143,7 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 	$scope.save = function () {
 		CharactersService.save($scope.character.characterID, $scope.character).then(function (data) {
 			if (data.saved)
-				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2];
+				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/';
 		});
 	};
 
