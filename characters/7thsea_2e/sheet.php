@@ -45,28 +45,20 @@
 						<div hb-margined="dark">
 							<div ng-repeat="story in character.stories" class="story" ng-class="{ 'first': $first }">
 								<div class="tr">
-									<label class="leftLabel">
-										<span>Name</span>
-										{{story.name}}
-									</label>
+									<span class="leftLabel">Name</span>
+									<div>{{story.name}}</div>
 								</div>
 								<div class="tr">
-									<label class="leftLabel">
-										<span>Goal</span>
-										{{story.goal}}
-									</label>
+									<span class="leftLabel">Goal</span>
+									<div>{{story.goal}}</div>
 								</div>
 								<div class="tr">
-									<label class="leftLabel">
-										<span>Reward</span>
-										{{story.reward}}
-									</label>
+									<span class="leftLabel">Reward</span>
+									<div>{{story.reward}}</div>
 								</div>
 								<div class="tr steps">
-									<label class="leftLabel">
-										<span>Steps</span>
-										<span ng-bind-html="story.steps | trustHTML"></span>
-									</label>
+									<span class="leftLabel">Steps</span>
+									<div ng-bind-html="story.steps | trustHTML"></div>
 								</div>
 							</div>
 						</div>

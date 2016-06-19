@@ -83,13 +83,13 @@ textarea {
 		}
 	}
 
-	label {
-		span {
-			display: inline-block;
-			width: 60px;
-			cursor: pointer;
-		}
+	.leftLabel {
+		display: inline-block;
+		width: 60px;
+		cursor: pointer;
+	}
 
+	label {
 		input, textarea {
 			width: 300px;
 		}
@@ -106,6 +106,24 @@ textarea {
 
 		span {
 			padding-top: .4em;
+		}
+	}
+}
+
+#page_characterSheet {
+	#stories {
+		.tr div {
+			display: inline-block;
+		}
+
+		.steps {
+			& > * {
+				vertical-align: top;
+			}
+
+			span {
+				padding-top: 0;
+			}
 		}
 	}
 }
