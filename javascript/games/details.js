@@ -51,15 +51,15 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
 								allowedSystems = $scope.details.allowedCharSheets;
-								addSystem = true;
-								for (key in allowedSystems) {
-									if (allowedSystems[key] == $scope.details.system) {
-										addSystem = false;
-										break;
-									}
-								}
-								if (addSystem)
-									allowedSystems.push($scope.details.system);
+								// addSystem = true;
+								// for (key in allowedSystems) {
+								// 	if (allowedSystems[key] == $scope.details.system) {
+								// 		addSystem = false;
+								// 		break;
+								// 	}
+								// }
+								// if (addSystem)
+								// 	allowedSystems.push($scope.details.system);
 								CharactersService.getMy({ 'systems': allowedSystems, 'noGame': true }).then(function (data) {
 									$scope.characters = data.characters;
 									for (key in $scope.characters)

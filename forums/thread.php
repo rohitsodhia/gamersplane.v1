@@ -1,10 +1,10 @@
 <?
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
-	
+
 	$threadID = intval($pathOptions[1]);
 	if (!$threadID) { header('Location: /forums'); exit; }
-	
+
 	$threadManager = new ThreadManager($threadID);
 	if ($threadManager->getPermissions('read') == false) { header('Location: /403'); exit; }
 
@@ -17,16 +17,13 @@
 		$system = $game['system'];
 		$isGM = false;
 		foreach ($game['players'] as $player) {
-			if ($player['user']['userID'] == $currentUser->userID) 
-				if ($player['isGM']) 
+			if ($player['user']['userID'] == $currentUser->userID)
+				if ($player['isGM'])
 					$isGM = true;
-			if ($player['isGM']) 
+			if ($player['isGM'])
 				$gms[] = $player['user']['userID'];
 		}
-
-		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
-		$charClass = Systems::systemClassName($system).'Character';
-	} else 
+	} else
 		$fixedGameMenu = false;
 
 	$threadManager->setPage();
@@ -74,10 +71,10 @@
 			<form id="poll" method="post" action="/forums/process/vote/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($threadManager->getPollProperty('question'))?></p>
-<? 
+<?
 		$castVotes = $threadManager->getVotesCast();
 		$allowVote = sizeof($castVotes) && $threadManager->getPollProperty('allowRevoting') || sizeof($castVotes) == 0;
-		if ($allowVote) 
+		if ($allowVote)
 			echo "				<p>You may select ".($threadManager->getPollProperty('optionsPerUser') > 1?'up to ':'')."<b>".$threadManager->getPollProperty('optionsPerUser')."</b> option".($threadManager->getPollProperty('optionsPerUser') > 1?'s':'').".</p>\n";
 
 		$totalVotes = $threadManager->getVoteTotal();
@@ -88,9 +85,9 @@
 		foreach ($threadManager->getPollProperty('options') as $pollOptionID => $option) {
 			echo "					<li class=\"clearfix\">\n";
 			if ($allowVote) {
-				if ($threadManager->getPollProperty('optionsPerUser') == 1) 
+				if ($threadManager->getPollProperty('optionsPerUser') == 1)
 					echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
-				else 
+				else
 					echo "						<div class=\"poll_input\"><input type=\"checkbox\" name=\"votes\" value=\"{$pollOptionID}\"".($option->voted?' checked="checked"':'')."></div>\n";
 			}
 			echo "						<div class=\"poll_option\">".printReady($option->option)."</div>\n";
@@ -107,31 +104,34 @@
 			</form>
 <?
 	}
-	
+
 	$postCount = 1;
 	$forumOptions = array('showAvatars' => 1, 'postSide'=> 'r');
-	if ($loggedIn) 
+	if ($loggedIn)
 		$forumOptions['postSide'] = $currentUser->postSide;
-	if ($forumOptions['postSide'] == 'r') 
+	if ($forumOptions['postSide'] == 'r')
 		$postSide = 'Right';
-	else 
+	else
 		$postSide = 'Left';
-	
+
 	$characters = array();
 	$newPostMarked = false;
-	if ($threadManager->getFirstPostID() > $threadManager->getThreadLastRead()) 
+	if ($threadManager->getFirstPostID() > $threadManager->getThreadLastRead())
 		$hitLastRead = true;
 	$lastPostID = 0;
 	if (sizeof($threadManager->getPosts())) {
 		foreach ($threadManager->getPosts() as $post) {
 			$lastPostID = $post->getPostID();
 			if ($post->getPostAs()) {
+				$charSystem = getCharacterClass($post->getPostAs());
+				require_once(FILEROOT."/includes/packages/{$charSystem}Character.package.php");
+				$charClass = Systems::systemClassName($charSystem).'Character';
 				if (isset($characters[$post->getPostAs()]) || $characters[$post->getPostAs()] = new $charClass($post->getPostAs())) {
 					$postAsChar = true;
 					$character = $characters[$post->getPostAs()];
-				} else 
+				} else
 					$postAsChar = false;
-			} else 
+			} else
 				$postAsChar = false;
 ?>
 			<div class="postBlock post<?=$postSide?><?=$postAsChar?' postAsChar'.($character->getAvatar()?' withCharAvatar':''):''?> clearfix">
@@ -150,7 +150,7 @@
 				<div class="posterDetails">
 					<div class="avatar"><div>
 <?
-			if ($postAsChar) 
+			if ($postAsChar)
 				$character->load();
 			if ($postAsChar && $character->getAvatar()) {
 				if ($character->checkPermissions()) {
@@ -163,7 +163,7 @@
 				$userAvatarSize = getimagesize(FILEROOT.User::getAvatar($post->author->userID, $post->author->avatarExt));
 				$xRatio = 40 / $userAvatarSize[0];
 				$yRatio = 40 / $userAvatarSize[1];
-				
+
 				if ($userAvatarSize[0] <= 40 && $userAvatarSize[1] <= 40) {
 					$finalWidth = $userAvatarSize[0];
 					$finalHeight = $userAvatarSize[1];
@@ -197,7 +197,7 @@
 			echo printReady(BBCode2Html($post->message))."\n";
 			if ($post->timesEdited) { echo "\t\t\t\t\t\t".'<div class="editInfoDiv">Last edited <span  class="convertTZ">'.date('F j, Y g:i a', strtotime($post->lastEdit)).'</span>, a total of '.$post->timesEdited.' time'.(($post->timesEdited > 1)?'s':'')."</div>\n"; }
 			echo "\t\t\t\t\t</div>\n";
-			
+
 			if (sizeof($post->rolls)) {
 ?>
 					<div class="rolls">
@@ -213,7 +213,7 @@
 					</div>
 <?
 	 		}
-			
+
 			if (sizeof($post->draws)) {
 				$visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
 				$hidden = false;
@@ -266,7 +266,7 @@
 
 		$threadManager->displayPagination();
 	}
-	
+
 	if ($threadManager->getPermissions('moderate')) {
 ?>
 			<div class="clearfix"><form id="quickMod" method="post" action="/forums/process/modThread/">
@@ -274,7 +274,7 @@
 	$sticky = $threadManager->thread->getStates('sticky')?'Unsticky':'Sticky';
 	$lock = $threadManager->thread->getStates('locked')?'Unlock':'lock';
 ?>
-				Quick Mod Actions: 
+				Quick Mod Actions:
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<select name="action">
 					<option value="lock"><?=ucwords($lock)?> Thread</option>
@@ -293,7 +293,7 @@
 			$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'game.approved' => true, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
 			$characters = array();
 			foreach ($rCharacters as $character)
-				if (strlen($character['name'])) 
+				if (strlen($character['name']))
 					$characters[$character['characterID']] = $character['name'];
 		}
 ?>
@@ -312,7 +312,7 @@
 <?			} ?>
 					</select></div>
 				</div>
-<?		} ?>			
+<?		} ?>
 				<textarea id="messageTextArea" name="message"></textarea>
 			</div>
 			<div id="submitDiv" class="alignCenter">
@@ -321,12 +321,12 @@
 			</div>
 		</form>
 <?
-	} elseif ($threadManager->getThreadProperty('states[locked]')) 
+	} elseif ($threadManager->getThreadProperty('states[locked]'))
 		echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
-	else 
+	else
 		echo "\t\t\t<h2 class=\"alignCenter\">You do not have permission to post in this thread.</h2>\n";
 
 	$threadManager->updateLastRead($lastPostID);
-	
+
 	require_once(FILEROOT.'/footer.php');
 ?>

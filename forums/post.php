@@ -10,18 +10,18 @@
 		$postID = intval($pathOptions[1]);
 		$post = new Post($postID);
 		$threadManager = new ThreadManager($post->getThreadID());
-		if ($postID == $threadManager->getThreadProperty('firstPostID')) 
+		if ($postID == $threadManager->getThreadProperty('firstPostID'))
 			$firstPost = true;
 
-		if ($post->getAuthor('userID') != $currentUser->userID && !$threadManager->getPermissions('moderate')) 
+		if ($post->getAuthor('userID') != $currentUser->userID && !$threadManager->getPermissions('moderate'))
 			$noChat = true;
-		elseif ($threadManager->getThreadProperty('states[locked]') && !$threadManager->getPermissions('moderate')) 
+		elseif ($threadManager->getThreadProperty('states[locked]') && !$threadManager->getPermissions('moderate'))
 			$noChat = true;
-		elseif (!$threadManager->getPermissions('write')) 
+		elseif (!$threadManager->getPermissions('write'))
 			$noChat = true;
 	} elseif ($pathOptions[0] == 'newThread') {
 		$firstPost = true;
-		
+
 		$forumID = intval($pathOptions[1]);
 		$threadManager = new ThreadManager(null, $forumID);
 		$threadManager->thread->forumID = $forumID;
@@ -33,7 +33,7 @@
 			$threadManager = new ThreadManager($threadID);
 			$post = new Post();
 
-			if ($threadManager->getThreadProperty('states[locked]') || !$threadManager->getPermissions('write')) 
+			if ($threadManager->getThreadProperty('states[locked]') || !$threadManager->getPermissions('write'))
 				$noChat = true;
 			else {
 				if (isset($_SESSION['message'])) {
@@ -48,7 +48,7 @@
 						if ($gameID) {
 							$game = $mongo->games->findOne(array('gameID' => (int) $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('players.$'));
 							$isGM = $game['players'][0]['isGM'];
-							if (!$isGM) 
+							if (!$isGM)
 								$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
 						}
 						$post->message = '[quote="'.$quoteInfo['username'].'"]'.$quoteInfo['message'].'[/quote]';
@@ -56,16 +56,16 @@
 				}
 			}
 		} catch (Exception $e) { $noChat = true; }
-	} else 
+	} else
 		$noChat = true;
 
 	if ($noChat) { header('Location: /forums/'); exit; }
-	
+
 	$fillVars = $formErrors->getErrors('post');
 
-	if ($_GET['preview']) 
+	if ($_GET['preview'])
 		$fillVars = $_SESSION['previewVars'];
-	else 
+	else
 		unset($_SESSION['previewVars']);
 
 	$gameID = false;
@@ -73,27 +73,25 @@
 	if ($threadManager->getForumProperty('gameID')) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
 		$returnFields = array('system' => true, 'players' => true);
-		if ($threadManager->getPermissions('addDraws')) 
+		if ($threadManager->getPermissions('addDraws'))
 			$returnFields['decks'] = true;
 		$game = $mongo->games->findOne(array('gameID' => $gameID), $returnFields);
 		$system = $game['system'];
 		$isGM = false;
 		foreach ($game['players'] as $player) {
 			if ($player['user']['userID'] == $currentUser->userID) {
-				if ($player['isGM']) 
+				if ($player['isGM'])
 					$isGM = true;
 				break;
 			}
 		}
 
-		require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
-		$charClass = Systems::systemClassName($system).'Character';
 		$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
 		$characters = array();
 		foreach ($rCharacters as $character)
-			if (strlen($character['name'])) 
+			if (strlen($character['name']))
 				$characters[$character['characterID']] = $character['name'];
-	} else 
+	} else
 		$fixedGameMenu = false;
 
 	$rollsAllowed = $threadManager->getThreadProperty('allowRolls')?true:false;
@@ -101,12 +99,12 @@
 	if ($gameID && $threadManager->getPermissions('addDraws')) {
 		$decks = $game['decks'];
 		if (!$isGM) {
-			foreach ($decks as $key => $deck) 
-				if (!in_array($currentUser->userID, $deck['permissions'])) 
+			foreach ($decks as $key => $deck)
+				if (!in_array($currentUser->userID, $deck['permissions']))
 					unset($decks[$key]);
 			$decks = array_values($decks);
 		}
-		if (sizeof($decks)) 
+		if (sizeof($decks))
 			$drawsAllowed = true;
 	}
 
@@ -130,26 +128,26 @@
 	$threadManager->forumManager->displayBreadcrumbs();
 ?>
 		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post')?($editPost?'Edit post':'Post a reply').' - '.printReady($threadManager->getThreadProperty('title')):'New Thread'?></h1>
-		
+
 <?	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
 		<h2>Preview:</h2>
 		<div id="preview">
 			<?=BBCode2Html(printReady($fillVars['message']))."\n"?>
 		</div>
 		<hr>
-		
+
 <? } ?>
 		<form method="post" action="/forums/process/post/">
 <?
 	if ($pathOptions[0] == 'newThread') echo "\t\t\t".'<input type="hidden" name="new" value="'.$forumID.'">'."\n";
 	elseif ($pathOptions[0] == 'editPost') echo "\t\t\t".'<input type="hidden" name="edit" value="'.$postID.'">'."\n";
 	elseif ($pathOptions[0] == 'post') echo "\t\t\t".'<input type="hidden" name="threadID" value="'.$threadID.'">'."\n";
-	
-	if ($fillVars) 
+
+	if ($fillVars)
 		$title = printReady($fillVars['title']);
-	elseif (!strlen($post->getTitle()) && $threadManager->getThreadID()) 
+	elseif (!strlen($post->getTitle()) && $threadManager->getThreadID())
 		$title = 'Re: '.$threadManager->getThreadProperty('title');
-	else 
+	else
 		$title = printReady($post->title, array('stripslashes'));
 ?>
 			<div id="basicPostInfo" class="hbMargined">
@@ -158,10 +156,10 @@
 						<label for="title">Title:</label>
 						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder();?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
 					</div>
-<?	
+<?
 	if ($gameID && sizeof($characters)) {
 		$currentChar = $post->postAs;
-		if ($fillVars) 
+		if ($fillVars)
 			$currentChar = $fillVars['postAs'];
 ?>
 					<div class="tr">
@@ -177,7 +175,7 @@
 				</div>
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder();?>"><?=$fillVars?$fillVars['message']:$post->message?></textarea>
 			</div>
-			
+
 <?	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
 			<div id="optionControls" class="clearfix"><div class="trapezoid sectionControls">
 				<div>
@@ -200,13 +198,13 @@
 				<span class="section_rolls_decks<?=$firstPost?' hideDiv':''?>">Rolls and Decks</span>
 			</h2>
 <?	} ?>
-			
+
 <?	if ($firstPost) { ?>
 			<div id="threadOptions" class="section_options hbdMargined">
 <?
 		if ($threadManager->getPermissions('moderate')) {
 			$sticky = $threadManager->getThreadProperty('sticky');
-			if ($fillVars) 
+			if ($fillVars)
 				$sticky = $fillVars['sticky'];
 ?>
 				<p><input type="checkbox" name="sticky"<?=$sticky?' checked="checked"':''?>> Sticky thread</p>
@@ -214,7 +212,7 @@
 		}
 		if ($threadManager->getPermissions('moderate')) {
 			$locked = $threadManager->getThreadProperty('states[locked]');
-			if ($fillVars) 
+			if ($fillVars)
 				$locked = $fillVars['locked'];
 ?>
 				<p><input type="checkbox" name="locked"<?=$locked?' checked="checked"':''?>> Lock thread</p>
@@ -222,7 +220,7 @@
 		}
 		if ($threadManager->getPermissions('addRolls')) {
 			$addRolls = $rollsAllowed || ($pathOptions[0] == 'newThread' && $gameID);
-			if ($fillVars) 
+			if ($fillVars)
 				$addRolls = $fillVars['allowRolls'];
 ?>
 				<p><input type="checkbox" name="allowRolls"<?=$addRolls?' checked="checked"':''?>> Allow adding rolls to posts (if this box is unchecked, any rolls added to this thread will be ignored)</p>
@@ -230,7 +228,7 @@
 		}
 		if ($threadManager->getPermissions('addDraws')) {
 			$addDraws = $drawsAllowed || ($pathOptions[0] == 'newThread' && $gameID);
-			if ($fillVars) 
+			if ($fillVars)
 				$addDraws = $fillVars['allowDraws'];
 ?>
 				<p><input type="checkbox" name="allowDraws"<?=$addDraws?' checked="checked"':''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
@@ -257,7 +255,7 @@
 			if ($fillVars) echo $fillVars['pollOptions'];
 			else {
 				$options = array();
-				foreach ($threadManager->getPollProperty('options') as $option) 
+				foreach ($threadManager->getPollProperty('options') as $option)
 					$options[] = $option->option;
 				echo implode("\n", $options);
 			}
@@ -383,7 +381,7 @@
 	}
 ?>
 			<input type="hidden" name="postURL" value="<?=$_SESSION['currentURL']?>">
-			
+
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" tabindex="<?=tabOrder();?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
 				<button type="submit" name="preview" tabindex="<?=tabOrder();?>" class="fancyButton">Preview</button>
