@@ -11,7 +11,7 @@
 
 	function addStyle($script, $priority = 10) {
 		global $stylesToAdd, $styleVersions;
-		if (!is_array($stylesToAdd[$priority])) 
+		if (!is_array($stylesToAdd[$priority]))
 			$stylesToAdd[$priority] = array();
 		$version = isset($styleVersions[$script])?$styleVersions[$script]:'1.0.0';
 		$stylesToAdd[$priority][] = $script.'?v='.$version;
@@ -33,38 +33,38 @@
 		$validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$randomStr = "";
 		for ($count = 0; $count < $length; $count++) $randomStr .= $validChars[mt_rand(0, strlen($validChars) - 1)];
-		
+
 		return $randomStr;
 	}
-	
+
 	function tabOrder($jump = 0) {
 		global $tabNum;
-		
+
 		$jump += 1;
-		
+
 		if (isset($tabNum)) $tabNum += $jump;
 		else $tabNum = 1;
-		
+
 		return $tabNum;
 	}
-	
+
 	function camelcase($strings) {
 		if (!is_array($strings)) $strings = explode(' ', $strings);
 		$first = true;
 		$finalString = '';
-		
+
 		foreach ($strings as $indivString) {
 			$indivString = strtolower($indivString);
-			
+
 			if ($first) $first = false;
 			else $indivString[0] = strtoupper($indivString[0]);
-			
+
 			$finalString .= $indivString;
 		}
-		
+
 		return $finalString;
 	}
-	
+
 	function sanitizeString($string) {
 		$options = func_get_args();
 		array_shift($options);
@@ -75,13 +75,13 @@
 		}
 
 		$string = trim($string);
-		if (!in_array('!strip_tags', $options)) 
+		if (!in_array('!strip_tags', $options))
 			$string = strip_tags($string);
-		if (in_array('lower', $options)) 
+		if (in_array('lower', $options))
 			$string = strtolower($string);
-		if (in_array('like_clean', $options)) 
+		if (in_array('like_clean', $options))
 			$string = str_replace(array('%', '_'), array('\%', '\_'), strip_tags($string));
-		if (in_array('rem_dup_spaces', $options)) 
+		if (in_array('rem_dup_spaces', $options))
 			$string = preg_replace('/\s+/', ' ', $string);
 
 		return $string;
@@ -93,10 +93,10 @@
 			$string = nl2br($string);
 		}
 		if (in_array('stripslashes', $options)) $string = stripslashes($string);
-		
+
 		return $string;
 	}
-	
+
 	function filterString($string) {
 		global $mysql;
 		$filters = $mysql->query('SELECT word FROM wordFilter');
@@ -115,11 +115,11 @@
 		do { $string = preg_replace($filterWords, $replacements, $string); } while ($string != preg_replace($filterWords, $replacements, $string));
 		return $string;
 	}
-	
+
 	function showSign($num) {
 		return ($num >= 0?'+':'').$num;
 	}
-	
+
 	function decToB26($num) {
 		$str = '';
 		while ($num > 0) {
@@ -127,15 +127,15 @@
 			$str = chr($charNum + 97).$str;
 			$num = floor(($num - $charNum)/26);
 		}
-		
+
 		return $str;
 	}
-	
+
 	function b26ToDec($str) {
 		$num = 0;
 		$str = strtolower($str);
 		for ($count = 0; $count < strlen($str); $count++) $num += (ord($str[strlen($str) - 1 - $count]) - 96) * pow(26, $count);
-		
+
 		return $num;
 	}
 
@@ -152,35 +152,35 @@
 		$success = $success?1:0;
 
 		$mysql->query("INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ({$userID}, NOW(), '{$_SERVER['REMOTE_ADDR']}', {$success})");
-		
+
 		return true;
 	}
 
 	function displayJSON($data, $exit = false) {
 		header('Content-Type: application/json');
 		echo json_encode($data);
-		if ($exit) 
+		if ($exit)
 			exit;
 	}
 
 /*	Session Functions */
 	function startSession() {
 		session_start();
-		
+
 //		putenv('TZ=GMT');
 		date_default_timezone_set('GMT');
 	}
 
 /* Character Functions */
 	function getCharacterClass($characterID) {
-		global $mysql;
+		global $mongo;
 
 		$characterID = intval($characterID);
 		$system = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true))['system'];
 
 		return $system?$system:null;
 	}
-	
+
 /* Tools Functions */
 	function rollDice($roll, $rerollAces = 0) {
 		list($numDice, $diceType) = explode('d', str_replace(' ', '', trim($roll)));
@@ -202,7 +202,7 @@
 
 				if ($curRoll == $diceType && $rerollAces) $rollCount -= 1;
 			}
-			
+
 			return array('result' => $totalRoll, 'indivRolls' => $indivRolls, 'numDice' => $numDice, 'diceType' => $diceType, 'modifier' => $modifier);
 		} else return false;
 	}
@@ -214,7 +214,7 @@
 			if (is_array($die)) $die = '[ '.implode(', ', $die).' ]';
 		}
 		$diceString .= implode(', ', $dice).' )';
-		
+
 		return $diceString;
 	}
 
@@ -227,34 +227,34 @@
 			$_SESSION['deckShort'] = $deckType;
 			$_SESSION['deckName'] = $deckInfo['name'];
 			$_SESSION['deck'] = array_fill(1, $deckInfo['deckSize'], 1);
-			
+
 			return array($deckShort, $deckInfo['name'], $deckInfo['deckSize']);
 		} else return false;
 	}
-	
+
 	function clearGlobalDeck($deckType) {
 		unset($_SESSION['deckShort'], $_SESSION['deckName'], $_SESSION['deck']);
-		
+
 		return true;
 	}
-	
+
 	function cardText($card, $deck) {
 		if ($deck == 'pc') {
 			if ($card <= 52) {
 				$suit = array('Hearts', 'Spades', 'Diamonds', 'Clubs');
 				$cardNum = $card - (floor(($card - 1)/13) * 13);
-				
+
 				if ($cardNum == 1) $cardNum = 'Ace';
 				elseif ($cardNum == 11) $cardNum = 'Jack';
 				elseif ($cardNum == 12) $cardNum = 'Queen';
 				elseif ($cardNum == 13) $cardNum = 'King';
-				
+
 				return $cardNum.' of '.$suit[floor(($card - 1)/13)];
 			} elseif ($card == 53) return 'Black Joker';
 			elseif ($card == 54) return 'Red Joker';
 		}
 	}
-	
+
 	function getCardImg($cardNum, $deckType, $size = '') {
 		global $mysql;
 
@@ -272,28 +272,28 @@
 			if ($cardNum <= 52) {
 				$suit = array('hearts', 'spades', 'diamonds', 'clubs');
 				$classes = $cardNum - (floor(($cardNum - 1)/13) * 13);
-				
-				if ($classes == 1) 
+
+				if ($classes == 1)
 					$classes = 'A';
-				elseif ($classes == 11) 
+				elseif ($classes == 11)
 					$classes = 'J';
-				elseif ($classes == 12) 
+				elseif ($classes == 12)
 					$classes = 'Q';
-				elseif ($classes == 13) 
+				elseif ($classes == 13)
 					$classes = 'K';
 
 				$classes = 'num_'.$classes;
-				
+
 				$classes .= ' '.$suit[floor(($cardNum - 1)/13)];
-			} elseif ($cardNum == 53) 
+			} elseif ($cardNum == 53)
 				$classes = 'blackJoker';
-			elseif ($cardNum == 54) 
+			elseif ($cardNum == 54)
 				$classes = 'redJoker';
 		}
 
 		return '<div class="cardWindow deck_'.$deckInfo['class'].$size.'"><img src="/images/tools/cards/'.$deckInfo['image'].'.png" title="'.cardText($cardNum, $deckInfo['class']).'" alt="'.cardText($cardNum, $deckInfo['class']).'" class="'.$classes.'"></div>';
 	}
-	
+
 /* Forum Functions */
 	function buildForumStructure($rawForums) {
 		$forums = array(array('info' => $rawForums[0], 'children' => array()));
@@ -312,13 +312,13 @@
 		global $mysql;
 		$level = 0;
 		$family = array();
-		
+
 		if ($parent == 1) {
 			$children = $mysql->query('SELECT forumID FROM forums WHERE parentID = '.$forumID);
 			while ($hForumID = $children->fetchColumn()) $family[$hForumID] = 0;
 			$level = 1;
 		}
-		
+
 		$heritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = '.$forumID);
 		$heritage = $heritage->fetchColumn();
 		$heritage = array_reverse(explode('-', $heritage));
@@ -326,10 +326,10 @@
 			$family[$hForumID] = $level;
 			$level++;
 		}
-		
+
 		return $family;
 	}
-	
+
 /* db Functions */
 	function sql_forumIDPad($forumID) {
 		return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
