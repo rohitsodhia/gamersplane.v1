@@ -1,26 +1,26 @@
 var characterID = parseInt($('#characterID').val()), system = $('#system').val();
-var itemizationFunctions = new Array(), itemizedCount = new Array();
+var itemizationFunctions = [], itemizedCount = [];
 
 function setupItemized($list) {
-	itemizationFunctions[$list.attr('id')]['count'] = 0;
+	itemizationFunctions[$list.attr('id')].count = 0;
 	$list.on('click', '.remove', function (e) {
 		e.preventDefault();
 
 		$(this).parent().remove();
-		if ($list.find('.item').length == 0) 
+		if ($list.find('.item').length === 0)
 			$list.find('.addItem').click();
 	}).on('click', 'a.addItem', function (e) {
 		e.preventDefault();
 		$link = $(this);
 
-		itemizationFunctions[$list.attr('id')]['count'] += 1;
-		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: 'n' + itemizationFunctions[$list.attr('id')]['count'] }, function (data) {
+		itemizationFunctions[$list.attr('id')].count += 1;
+		$.post('/characters/ajax/addItemized/', { system: system, 'type': $list.data('type'), key: 'n' + itemizationFunctions[$list.attr('id')].count }, function (data) {
 			$newItem = $(data);
-			itemizationFunctions[$list.attr('id')]['newItem']($newItem, $link);
+			itemizationFunctions[$list.attr('id')].newItem($newItem, $link);
 		});
 	});
 
-	itemizationFunctions[$list.attr('id')]['init']($list);
+	itemizationFunctions[$list.attr('id')].init($list);
 }
 
 $(function () {
@@ -59,14 +59,14 @@ $(function () {
 	});
 
 	if ($('#skills').length && !$('#skills').hasClass('nonDefault')) {
-		itemizationFunctions['skills'] = {
+		itemizationFunctions.skills = {
 			newItem: function ($newItem) {
 				$newItem.appendTo('#skillList').prettify().find('.abilitySelect').trigger('change').closest('.skill').find('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system }).find('input').focus();
 			},
 			init: function ($list) {
 				$list.find('input').placeholder();
 			}
-		}
+		};
 		setupItemized($('#skills'));
 		$('.skill_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'skill', characterID: characterID, system: system });
 
@@ -74,14 +74,14 @@ $(function () {
 	}
 
 	if ($('#feats').length) {
-		itemizationFunctions['feats'] = {
+		itemizationFunctions.feats = {
 			newItem: function ($newItem) {
 				$newItem.appendTo('#featList').find('.feat_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'feat', characterID: characterID, system: system }).find('input').focus();
 			},
 			init: function ($list) {
 				$list.find('input').placeholder();
 			}
-		}
+		};
 		setupItemized($('#feats'));
 
 		$('#feats').on('click', '.notesLink', function(e) {
@@ -111,7 +111,7 @@ $(function () {
 	$('#weapons, #armor').on('click', '.remove', function (e) {
 		$(this).parent().parent().remove();
 
-		e.preventDefault()
+		e.preventDefault();
 	});
 
 	$('#submitDiv button').click(function (e) {
@@ -126,15 +126,15 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 	$scope.loadChar = function () {
 		return CharactersService.load(pathElements[2]).then(function (data) {
 			$scope.character = data;
-			if (typeof blanks != 'undefined') 
+			if (typeof blanks != 'undefined')
 				CharactersService.loadBlanks($scope.character, blanks);
 		});
 	};
 	$scope.addItem = function (key) {
 		keyParts = key.split('.');
-		if (keyParts.length == 2) 
+		if (keyParts.length == 2)
 			$scope.character[keyParts[0]][keyParts[1]].push(copyObject(blanks[key]));
-		else 
+		else
 			$scope.character[key].push(copyObject(blanks[key]));
 	};
 	$scope.toggleNotes = function ($event) {
@@ -142,8 +142,8 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 	};
 	$scope.save = function () {
 		CharactersService.save($scope.character.characterID, $scope.character).then(function (data) {
-			if (data.saved) 
-				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2];
+			if (data.saved)
+				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/';
 		});
 	};
 
@@ -151,7 +151,7 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 		e.preventDefault();
 
 		$(this).siblings('textarea').slideToggle();
-	})
+	});
 }]).controller('editCharacter_custom', ['$scope', 'CurrentUser', function ($scope, CurrentUser) {
 	CurrentUser.load().then(function () {
 		$scope.loadChar();

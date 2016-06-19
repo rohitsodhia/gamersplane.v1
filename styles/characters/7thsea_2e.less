@@ -1,0 +1,392 @@
+/**
+ * Gamers Plane Characters: 7th Sea (2e) CSS Stylesheet
+ */
+
+.column {
+	display: inline-block;
+	width: 49%;
+}
+
+#basic {
+	.tr {
+		position: relative;
+	}
+
+	label, #repLabelWrapper {
+		width: 105px;
+		margin-right: 10px;
+	}
+
+	input {
+		width: 250px;
+		text-align: left;
+	}
+}
+
+#page_characterSheet {
+	label, #repLabelWrapper {
+		width: 95px;
+	}
+}
+
+#reputations {
+	& > div {
+		display: inline-block;
+	}
+
+	label, a {
+		display: block;
+	}
+
+	a {
+		margin-top: .3em;
+		font-size: .85em;
+	}
+}
+
+#repLabelWrapper {
+	vertical-align: top;
+	padding-top: .4em;
+}
+
+#page_characterSheet {
+	#repLabelWrapper {
+		padding-top: 0;
+	}
+}
+
+#repInputWrapper {
+	div {
+		margin-top: .5em;
+
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+}
+
+textarea {
+	width: 100%;
+	height: 10.2em;
+}
+
+#stories {
+	.story {
+		margin-top: 1em;
+		padding-top: 1em;
+		border-top: 1px solid #000;
+
+		&.first {
+			margin-top: 0;
+			padding-top: 0;
+			border-top: none;
+		}
+	}
+
+	label {
+		span {
+			display: inline-block;
+			width: 60px;
+			cursor: pointer;
+		}
+
+		input, textarea {
+			width: 300px;
+		}
+
+		input {
+			text-align: left;
+		}
+	}
+
+	.steps {
+		label > * {
+			vertical-align: top;
+		}
+
+		span {
+			padding-top: .4em;
+		}
+	}
+}
+
+#traits, #skills {
+	.tr {
+		padding-top: 0;
+	}
+
+	label {
+		width: 80px;
+	}
+
+	.rankLabel, .ranks, .rankWrapper {
+		display: inline-block;
+		text-align: center;
+	}
+
+	.rankLabel, .rankWrapper {
+		width: 24px;
+	}
+}
+
+#page_characterSheet {
+	#traits, #skills {
+		.rankWrapper {
+			width: 15px;
+			height: 13px;
+			background: url('../../images/characters/inc_dots.png') top center no-repeat;
+
+			&.selected {
+				background-position: bottom center;
+			}
+		}
+	}
+}
+
+#deathSpiral {
+	ol {
+		margin-bottom: 1em;
+		list-style: none;
+	}
+
+	li {
+		counter-increment: deathSpiralCount;
+
+		&:before {
+			display: inline-block;
+			width: 20px;
+			content: counter(deathSpiralCount) ":";
+		}
+	}
+
+	.inactive {
+		color: #AAA;
+		font-style: italic;
+	}
+
+	#deathSpiralImg {
+		position: relative;
+	}
+
+	.cross {
+		position: absolute;
+		z-index: 1;
+	}
+
+	.bubble {
+		display: block;
+		position: absolute;
+		z-index: 2;
+		width: 30px;
+		height: 30px;
+		border-radius: 15px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+		cursor: pointer;
+	}
+}
+
+#bubble_1 {
+	top: 104px;
+	left: 9px;
+}
+
+#bubble_2 {
+	top: 76px;
+	left: 23px;
+}
+
+#bubble_3 {
+	top: 50px;
+	left: 41px;
+}
+
+#bubble_4 {
+	top: 29px;
+	left: 66px;
+}
+
+#bubble_5 {
+	top: 14px;
+	left: 99px;
+}
+
+#bubble_6 {
+	top: 18px;
+	left: 137px;
+}
+
+#bubble_7 {
+	top: 28px;
+	left: 166px;
+}
+
+#bubble_8 {
+	top: 51px;
+	left: 190px;
+}
+
+#bubble_9 {
+	top: 78px;
+	left: 209px;
+}
+
+#bubble_10 {
+	top: 115px;
+	left: 216px;
+}
+
+#bubble_11 {
+	top: 150px;
+	left: 204px;
+}
+
+#bubble_12 {
+	top: 171px;
+	left: 181px;
+}
+
+#bubble_13 {
+	top: 184px;
+	left: 153px;
+}
+
+#bubble_14 {
+	top: 187px;
+	left: 120px;
+}
+
+#bubble_15 {
+	top: 172px;
+	left: 88px;
+}
+
+#bubble_16 {
+	top: 145px;
+	left: 64px;
+}
+
+#bubble_17 {
+	top: 113px;
+	left: 62px;
+}
+
+#bubble_18 {
+	top: 86px;
+	left: 78px;
+}
+
+#bubble_19 {
+	top: 75px;
+	left: 108px;
+}
+
+#bubble_20 {
+	top: 91px;
+	left: 140px;
+}
+
+#cross_1 {
+	top: 106px;
+	left: 6px;
+}
+
+#cross_2 {
+	top: 77px;
+	left: 21px;
+}
+
+#cross_3 {
+	top: 52px;
+	left: 39px;
+}
+
+#cross_4 {
+	top: 30px;
+	left: 63px;
+}
+
+#cross_5 {
+	top: 18px;
+	left: 97px;
+}
+
+#cross_6 {
+	top: 20px;
+	left: 134px;
+}
+
+#cross_7 {
+	top: 30px;
+	left: 163px;
+}
+
+#cross_8 {
+	top: 52px;
+	left: 187px;
+}
+
+#cross_9 {
+	top: 80px;
+	left: 206px;
+}
+
+#cross_10 {
+	top: 117px;
+	left: 213px;
+}
+
+#cross_11 {
+	top: 153px;
+	left: 202px;
+}
+
+#cross_12 {
+	top: 173px;
+	left: 179px;
+}
+
+#cross_13 {
+	top: 185px;
+	left: 150px;
+}
+
+#cross_14 {
+	top: 189px;
+	left: 118px;
+}
+
+#cross_15 {
+	top: 174px;
+	left: 85px;
+}
+
+#cross_16 {
+	top: 147px;
+	left: 62px;
+}
+
+#cross_17 {
+	top: 116px;
+	left: 59px;
+}
+
+#cross_18 {
+	top: 88px;
+	left: 75px;
+}
+
+#cross_19 {
+	top: 76px;
+	left: 105px;
+}
+
+#cross_20 {
+	top: 94px;
+	left: 137px;
+}
+
+#notes textarea {
+	height: 15em;
+	width: 912px;
+}
