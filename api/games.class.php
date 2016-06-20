@@ -282,15 +282,15 @@
 					$userIDs = array();
 					foreach ($lfgRecips as $recip)
 						$userIDs[] = $recip['userID'];
-					$lfgRecips = $mysql->query("SELECT email FROM users WHERE userID IN (".implode(', ', $userIDs).")");
-					$recips = '';
+					$lfgRecips = $mysql->query("SELECT u.email FROM users u LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'newGameMail' WHERE u.userID IN (".implode(', ', $userIDs).") AND um.metaValue != 0");
+					$recips = [];
 					foreach ($lfgRecips as $info)
-						$recips .= $info['email'].', ';
+						$recips[] = $info['email'];
 					ob_start();
 					include('emails/newGameEmail.php');
 					$email = ob_get_contents();
 					ob_end_clean();
-					mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName($system)} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".substr($recips, 0, -2));
+					mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName($system)} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: ".implode(', ', $recips));
 				}
 
 				displayJSON(array('success' => true, 'gameID' => (int) $gameID));
