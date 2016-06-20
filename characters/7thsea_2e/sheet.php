@@ -82,7 +82,7 @@
 							<div ng-repeat="(skill, rank) in character.skills" class="tr skills">
 								<label class="leftLabel">{{skill.capitalizeFirstLetter()}}</label>
 								<div class="ranks">
-									<span ng-repeat="count in range(0, 5)" class="rankWrapper" ng-class="{ 'selected': count <= rank }"></span>
+									<span ng-repeat="count in range(1, 5)" class="rankWrapper" ng-class="{ 'selected': count <= rank }"></span>
 								</div>
 							</div>
 						</div>

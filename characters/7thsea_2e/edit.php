@@ -115,6 +115,7 @@
 									<li ng-class="{ inactive: character.deathSpiral < 15 }">Your 10s explode (+1 die)</li>
 									<li ng-class="{ inactive: character.deathSpiral < 20 }">You become Helpless</li>
 								</ol>
+								<div><a id="resetDeathSpiral" href="" ng-click="setDeathSpiral(0)">[ Reset Death Spiral ]</a></div>
 								<div id="deathSpiralImg">
 									<img src="/images/characters/7thsea_2e/deathspiral.jpg">
 									<a ng-repeat="count in range(1, 20)" ng-attr-id="{{'bubble_' + count}}" href="" ng-click="setDeathSpiral(count)" class="bubble"></a>
