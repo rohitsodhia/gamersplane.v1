@@ -53,7 +53,7 @@
 				if (sizeof($fields) > 0) {
 					foreach ($fields as $field => $nothing)
 						$system[$field] = isset($rSystem[$field])?$rSystem[$field]:(isset($defaults[$field])?$defaults[$field]:null);
-				} elseif (isset($_POST['getAll'])) {
+				} else {
 					foreach ($rSystem as $key => $value)
 						if ($key != '_id' && $key != 'name')
 							$system[$key] = $value;
