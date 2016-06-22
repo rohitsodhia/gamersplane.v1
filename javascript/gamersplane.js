@@ -444,7 +444,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 			else
 				bArray = character[key.split('.')[0]][key.split('.')[1]];
 			if (typeof bArray != 'undefined' && Object.keys(bArray).length === 0)
-				bArray.push(copyObject(blanks[key]));
+				bArray.push(blanks[key]);
 		}
 	};
 }]).service('Range', function () {
@@ -622,10 +622,10 @@ app.config(['$httpProvider', function ($httpProvider) {
 								scope.data = [];
 							if (data && typeof data.then == 'function')
 								data.then(function (data) {
-									scope.data = copyObject(data);
+									scope.data = data;
 								});
 							else
-								scope.data = copyObject(data);
+								scope.data = data;
 						}, 500);
 				});
 			}
@@ -749,7 +749,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 						if (filterResults.length == 1 && filterResults[0].display.toLowerCase() == scope.search.toLowerCase()) {
 							scope.search = filterResults[0].display;
 							scope.value = filterResults[0];
-						} else if (scope.select) {
+						} else if (filterResults.length >= 1) {
 							noResults = true;
 							for (var key in filterResults) {
 								if (filterResults[key].display.toLowerCase() == scope.search.toLowerCase()) {

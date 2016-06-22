@@ -1,7 +1,7 @@
 <?
 	if ($loggedIn) { header('Location: /'); exit; }
-	
-	$activateHash = $pathOptions[1]; 
+
+	$activateHash = $pathOptions[1];
 	$userCheck = $mysql->prepare("SELECT userID FROM users WHERE MD5(username) = ? AND activatedOn IS NULL");
 	$userCheck->execute(array($activateHash));
 
@@ -20,12 +20,13 @@
 		$currentUser->updateUsermeta('showPubGames', 1, true);
 
 		$mysql->query('INSERT INTO loginRecords (userID, attemptStamp, ipAddress, successful) VALUES ('.$userID.', NOW(), "'.$_SERVER['REMOTE_ADDR'].'", 1)');
-	
+
 		$currentUser->generateLoginCookie();
 		$loggedIn = true;
 	}
+
+	require_once(FILEROOT.'/header.php');
 ?>
-<? require_once(FILEROOT.'/header.php'); ?>
 <?	if (isset($currentUser) && $currentUser != null) { ?>
 		<h1 class="headerbar">Account Activated!</h1>
 		<p>Congratulations, <b><?=$currentUser->username?></b>! Your account has been activiated.</p>
@@ -34,5 +35,5 @@
 		<h1 class="headerbar">Sorry...</h1>
 		<p>Sorry, but the account you are trying to activate has already been activated or does not exist.</p>
 		<p>Check to make sure you entered the correct URL.</p>
-<? } ?>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?	} ?>
+<?	require_once(FILEROOT.'/footer.php'); ?>
