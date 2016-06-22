@@ -18,7 +18,7 @@
 
 			$search = array();
 			$fields = array('name' => true);
-			if (isset($_POST['fields']) && $_POST['fields'] == 'all')
+			if (!isset($_POST['fields']) || $_POST['fields'] == 'all')
 				$fields = array();
 			elseif (isset($_POST['fields']) && is_array($_POST['fields']))
 				foreach ($_POST['fields'] as $field)

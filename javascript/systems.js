@@ -7,9 +7,9 @@ controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', 'System
 		$scope.pagination.numItems = data.numSystems;
 	});
 	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
-	if ($.urlParam('page')) 
+	if ($.urlParam('page'))
 		$scope.pagination.current = parseInt($.urlParam('page'));
-	else 
+	else
 		$scope.pagination.current = 1;
 	$scope.systems = [];
 	$scope.filter = { search: '' };
