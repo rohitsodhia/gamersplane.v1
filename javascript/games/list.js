@@ -4,11 +4,12 @@ function equalizeHeights() {
 		var allSame = true;
 		$(this).children().each(function () {
 			if ($(this).height() > maxHeight) {
-				if (maxHeight != 0) allSame = false;
+				if (maxHeight !== 0)
+					allSame = false;
 				maxHeight = $(this).height();
 			}
 		});
-		if (allSame) 
+		if (allSame)
 			$(this).children().height(maxHeight);
 	});
 }
@@ -23,8 +24,8 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 		'name_a': 'Name (Asc)',
 		'name_d': 'Name (Desc)',
 		'system': 'System'
-	}
-	$scope.filter = { 'orderBy': 'createdOn_d', 'showFullGames': false, 'systems': [] };
+	};
+	$scope.filter = { 'orderBy': 'createdOn_d', 'showFullGames': false, 'showInactiveGMs': false, 'systems': [] };
 	$scope.orderBy = '-start';
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
@@ -45,8 +46,8 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 				equalizeHeights();
 			});
 		});
-		$scope.toggleShowFullGames = function () {
-			$scope.filter.showFullGames = !$scope.filter.showFullGames;
+		$scope.slideToggle = function (field) {
+			$scope.filter[field] = !$scope.filter[field];
 		};
 		$scope.clearSystems = function () {
 			$scope.filter.systems = [];
@@ -55,17 +56,17 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 			$scope.$emit('pageLoading');
 			var filter = copyObject($scope.filter);
 			$scope.orderBy = filter.orderBy.value.slice(-1) == 'd'?'-':'';
-			if (filter.orderBy.value.slice(0, -2) == 'createdOn') 
+			if (filter.orderBy.value.slice(0, -2) == 'createdOn')
 				$scope.orderBy += 'start';
 			else if (filter.orderBy.value.slice(0, -2) == 'name')
 				$scope.orderBy += 'title';
 			else if (filter.orderBy.value == 'system')
 				$scope.orderBy += filter.orderBy.value;
 			console.log($scope.orderBy);
-			if (filter.systems.length == 0) 
+			if (filter.systems.length === 0)
 				filter.systems = null;
 			$scope.games = [];
-			GamesService.getGames({ 'systems': filter.systems, 'showFullGames': filter.showFullGames }).then(function (data) {
+			GamesService.getGames({ 'systems': filter.systems, 'showFullGames': filter.showFullGames, 'showInactiveGMs': filter.showInactiveGMs }).then(function (data) {
 				$scope.$emit('pageLoading');
 				$scope.games = data;
 				$scope.games.forEach(function (game) {
