@@ -96,7 +96,7 @@
 						'players' => true
 					)
 				);
-				$inactiveGMs = $mysql->query("SELECT userID FROM usermeta WHERE metaKey = 'isGM' && metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
+				$inactiveGMs = $mysql->query("SELECT u.userID FROM users u INNER JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'isGM' AND um.metaValue = 1 WHERE u.lastActivity < NOW() - INTERVAL 14 DAY")->fetchAll(PDO::FETCH_COLUMN);
 			}
 			$showFullGames = isset($_POST['showFullGames']) && $_POST['showFullGames']?true:false;
 			$games = array();
