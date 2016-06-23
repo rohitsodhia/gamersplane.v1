@@ -277,6 +277,8 @@
 #				$hl_gameCreated = new HistoryLogger('gameCreated');
 #				$hl_gameCreated->addGame($gameID)->save();
 
+				$currentUser->updateUsermeta('isGM', true);
+
 				$lfgRecips = $mongo->users->find(array('lfg' => $details['system']), array('userID' => true));
 				if ($lfgRecips->count()) {
 					$userIDs = array();
@@ -396,6 +398,11 @@
 				// $mysql->query("UPDATE forums_permissions_general SET `read` = {$public}, `write` = 0, `editPost` = 0, `deletePost` = 0, `createThread` = 0, `deleteThread` = 0, `addPoll` = 0, `addRolls` = -1, `addDraws` = -1, `moderate` = -1 WHERE forumID = {$forumID}");
 #				$hl_retired = new HistoryLogger('retired');
 #				$hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
+
+				$gameCount = $mongo->games->find(['gm.userID' => $currentUser->userID, 'retired' => null], ['_id' => true])->count();
+				if ($gameCount == 0)
+					$currentUser->deleteUsermeta('isGM');
+
 				displayJSON(array('success' => true));
 			} else
 				displayJSON(array('failed' => true, 'errors' => array('notGM')));
