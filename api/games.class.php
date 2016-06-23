@@ -59,8 +59,7 @@
 						'system' => true,
 						'gm' => true,
 						'status' => true,
-						'players' => true,
-
+						'players' => true
 					)
 				);
 //				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.shortName system_shortName, s.fullName system_fullName, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
@@ -97,11 +96,14 @@
 						'players' => true
 					)
 				);
+				$inactiveGMs = $mysql->query("SELECT userID FROM usermeta WHERE metaKey = 'isGM' && metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 			}
 			$showFullGames = isset($_POST['showFullGames']) && $_POST['showFullGames']?true:false;
 			$games = array();
 			$gms = array();
 			foreach ($rGames as $game) {
+				if (isset($inactiveGMs) && in_array($game['gm']['userID'], $inactiveGMs))
+					continue;
 				$game['isGM'] = false;
 				$playerCount = -1;
 				foreach ($game['players'] as $player) {
