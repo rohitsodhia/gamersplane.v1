@@ -6,10 +6,10 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<title>Gamers Plane</title>
-	
+
 	<style>
 		body {
-			background: #000;
+			background: #FFF;
 			text-align: center;
 			margin-top: 150px;
 		}
@@ -17,6 +17,6 @@
 </head>
 
 <body>
-<img src="images/maintainence.jpg">
+<img src="images/maintenance.jpg">
 </body>
 </html>

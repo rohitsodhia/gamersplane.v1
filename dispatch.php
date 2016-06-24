@@ -1,11 +1,11 @@
 <?
 	require('includes/requires.php');
-	
+
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 
 	define('STATE', 'standard');
-//	define('STATE', 'maintainance');
-//	define('STATE', 'moving');
+	// define('STATE', 'maintenance');
+	// define('STATE', 'moving');
 
 	if (sizeof(explode('.', $_SERVER['HTTP_HOST'])) != 2) {
 		include('subdomains.php');
@@ -14,7 +14,7 @@
 
 	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 //	echo $reqPath;
-	
+
 	if (substr($reqPath, -1) == '/') $reqPath = substr($reqPath, 0, -1);
 	$reqPathParts = explode('/', $reqPath);
 	$pathOptions = array_slice(explode('/', $reqPath), 1);
@@ -30,10 +30,10 @@
 			$_SESSION['currentURL'] = $reqPath;
 		} elseif ($_SESSION['currentURL'] == $reqPath) $sameURL = true;
 	}
-	
-	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php')) 
+
+	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php'))
 		include(FILEROOT.'/includes/'.$pathAction.'/_section.php');
-	
+
 //	echo $pathAction;
 //	print_r($pathOptions);
 //	var_dump($_SESSION);
@@ -49,11 +49,11 @@
 			if ($pathOption == 'ajax') $isAJAX = true;
 
 			$moddedPath .= '/';
-			if (is_numeric($pathOption)) 
+			if (is_numeric($pathOption))
 				$moddedPath .= '(###)';
-			elseif (!$isAJAX && $systems->verifySystem($pathOption)) 
+			elseif (!$isAJAX && $systems->verifySystem($pathOption))
 				$moddedPath .= '(system)';
-			else 
+			else
 				$moddedPath .= $pathOption;
 		}
 //		echo $moddedPath;
@@ -69,17 +69,15 @@
 		$requireLoc = $dispatchInfo['file'];
 		define('PAGE_ID', $dispatchInfo['pageID']);
 		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?true:false;
-
-		require($requireLoc);
-	} elseif (STATE == 'maintainance') {
+	} elseif (STATE == 'maintenance') {
 		$dispatchInfo = array(
 			'url' => '/',
-			'title' => "Undergoing Maintaince",
+			'title' => "Undergoing Maintenance",
 			'bodyClass' => null,
 			'modalWidth' => null
 		);
-		$requireLoc = 'maintainance.php';
-		define('PAGE_ID', 'maintainance');
+		$requireLoc = 'maintenance.php';
+		define('PAGE_ID', 'maintenance');
 		$fixedGameMenu = false;
 	} elseif (STATE == 'moving') {
 		$dispatchInfo = array(
@@ -92,7 +90,8 @@
 		define('PAGE_ID', 'moving');
 		$fixedGameMenu = false;
 	}
-	
-	$formErrors->clearErrors(true); 
+	require($requireLoc);
+
+	$formErrors->clearErrors(true);
 	$mysql = null;
 ?>
