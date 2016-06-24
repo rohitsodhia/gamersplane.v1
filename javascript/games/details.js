@@ -71,7 +71,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && $scope.details.retired === null)
+					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && ($scope.details.retired === null || $scope.details.retired === null))
 						$scope.isPrimaryGM = true;
 				} //else
 //					window.location = '/games/';
