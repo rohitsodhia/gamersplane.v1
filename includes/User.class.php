@@ -17,7 +17,7 @@
 		public function __construct($userDetail = null) {
 			global $mysql;
 
-			if ($userDetail == null) 
+			if ($userDetail == null)
 				return false;
 
 			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn, lastActivity FROM users WHERE ".(strpos($userDetail, '@')?'email':'userID')." = :userDetail LIMIT 1");
@@ -25,24 +25,24 @@
 			$userInfo->execute();
 			if ($userInfo->rowCount()) {
 				$userInfo = $userInfo->fetch();
-				foreach ($userInfo as $key => $value) 
+				foreach ($userInfo as $key => $value)
 					$this->$key = $value;
 				$this->userID = (int) $this->userID;
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
 				foreach ($usermeta as $eMeta) {
-					if ($eMeta['metaKey'] == 'acpPermissions') 
+					if ($eMeta['metaKey'] == 'acpPermissions')
 						$this->acpPermissions = unserialize($eMeta['metaValue']);
-					else 
+					else
 						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
-			} else 
+			} else
 				return false;
 		}
 
 		public static function checkLogin($redirect = true) {
 			global $currentUser;
-			if (!isset($currentUser)) 
+			if (!isset($currentUser))
 				$currentUser = new User();
 
 			$loginHash = $_COOKIE['loginHash'];
@@ -69,10 +69,10 @@
 					}
 				}
 			}
-			
+
 			User::logout();
 			if ($redirect) { header('Location: /login/?redirect=1'); exit; }
-			
+
 			return false;
 		}
 
@@ -80,7 +80,7 @@
 			if ($resetSession) {
 				session_unset();
 //				unset($_COOKIE[session_name()]);
-			
+
 				session_regenerate_id(TRUE);
 				session_destroy();
 				setcookie(session_name(), '', time() - 30, '/');
@@ -92,18 +92,18 @@
 		}
 
 		public function __get($var) {
-			if (!in_array($var, $this->hiddenVars) && isset($this->$var)) 
+			if (!in_array($var, $this->hiddenVars) && isset($this->$var))
 				return $this->$var;
-			elseif (array_key_exists($var, $this->usermeta)) 
+			elseif (array_key_exists($var, $this->usermeta))
 				return $this->usermeta[$var];
-			elseif ($var == 'userID') 
+			elseif ($var == 'userID')
 				return 0;
-			else 
+			else
 				return null;
 		}
 
 		public function newUser($username, $password, $email) {
-			global $mysql;
+			global $mysql, $mongo;
 
 			$this->salt = randomAlphaNum(20);
 			$addUser = $mysql->prepare('INSERT INTO users SET username = :username, password = :password, salt = :salt, email = :email, joinDate = :joinDate');
@@ -113,11 +113,13 @@
 			$addUser->bindValue(':email', $email);
 			$addUser->bindValue(':joinDate', date('Y-m-d H:i:s'));
 			$addUser->execute();
-
 			$this->userID = $mysql->lastInsertId();
-			if ($this->userID) 
+
+			$mongo->users->insert(['userID' => $this->userID, 'lfg' => []]);
+			
+			if ($this->userID)
 				return $this->userID;
-			else 
+			else
 				return false;
 		}
 
@@ -128,15 +130,15 @@
 		public function validate($password) {
 			if ($this->userID !== null) {
 				if (hash('sha256', PVAR.$password.$this->salt) == $this->password) return true;
-				else 
+				else
 					return false;
-			} else 
+			} else
 				return false;
 		}
 
 		public function updatePassword($password) {
 			global $mysql;
-			
+
 			$this->salt = randomAlphaNum(20);
 			$addUser = $mysql->prepare("UPDATE users SET password = :password, salt = :salt WHERE userID = {$this->userID}");
 			$addUser->bindValue(':password', hash('sha256', PVAR.$password.$this->salt));
@@ -161,7 +163,7 @@
 			$metaValue->execute();
 
 			$this->usermeta[$metaKey] = $metaValue->rowCount()?$metaValue->fetchColumn():null;
-			if (is_string($this->usermeta[$metaKey]) && strlen($this->usermeta[$metaKey]) > 4 && substr($this->usermeta[$metaKey], 0, 2) == 'a:') 
+			if (is_string($this->usermeta[$metaKey]) && strlen($this->usermeta[$metaKey]) > 4 && substr($this->usermeta[$metaKey], 0, 2) == 'a:')
 				$this->usermeta[$metaKey] = unserialize($this->usermeta[$metaKey]);
 
 			return $this->usermeta[$metaKey];
@@ -172,7 +174,7 @@
 
 			$metaValues = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 0");
 			foreach ($metaValues as $metas) {
-				if (is_string($metas['metaKey']) && strlen($metas['metaKey']) > 4 && substr($metas['metaKey'], 0, 2) == 'a:') 
+				if (is_string($metas['metaKey']) && strlen($metas['metaKey']) > 4 && substr($metas['metaKey'], 0, 2) == 'a:')
 					$metas['metaKey'] = unserialize($metas['metaKey']);
 				$this->usermeta[$metas['metaKey']] = $metas['metaValue'];
 			}
@@ -187,13 +189,13 @@
 				$autoload = $autoload === true?1:0;
 				$updateUsermeta = $mysql->prepare("INSERT INTO usermeta SET userID = {$this->userID}, metaKey = :metaKey, metaValue = :metaValue, autoload = {$autoload} ON DUPLICATE KEY UPDATE metaValue = :metaValue");
 				$updateUsermeta->bindValue(':metaKey', $metaKey);
-				if (is_array($metaValue)) 
+				if (is_array($metaValue))
 					$metaValue = serialize($metaValue);
 				$updateUsermeta->bindValue(':metaValue', $metaValue);
 				$updateUsermeta->execute();
 
 				$this->usermeta[$metaKey] = $metaValue;
-			} else 
+			} else
 				$this->deleteUsermeta($metaKey);
 
 			return true;
@@ -209,34 +211,34 @@
 
 		static function getAvatar($userID, $ext = false, $exists = false) {
 			$userID = (int) $userID;
-			if ($userID <= 0) 
+			if ($userID <= 0)
 				return $exists?false:'/ucp/avatars/avatar.png';
 
 			if (!$ext) {
 				global $mysql;
 				$ext = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'avatarExt'");
-				if ($ext->rowCount()) 
+				if ($ext->rowCount())
 					$ext = $ext->fetchColumn();
-				else 
+				else
 					$ext = false;
 			}
-			if ($ext !== false && file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}")) 
+			if ($ext !== false && file_exists(FILEROOT."/ucp/avatars/{$userID}.{$ext}"))
 				return $exists?true:"/ucp/avatars/{$userID}.{$ext}";
-			else 
+			else
 				return $exists?false:'/ucp/avatars/avatar.png';
 		}
 
 		public function checkACP($role, $redirect = true) {
-			if ($role == 'all' && sizeof($this->acpPermissions)) 
+			if ($role == 'all' && sizeof($this->acpPermissions))
 				return $this->acpPermissions;
-			elseif ($role == 'any' && sizeof($this->acpPermissions)) 
+			elseif ($role == 'any' && sizeof($this->acpPermissions))
 				return true;
 			else {
-				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)))) 
+				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions))))
 					return false;
 				elseif ($this->acpPermissions == null) { header('Location: /'); exit; }
 				elseif (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)) { header('Location: /acp/'); exit; }
-				else 
+				else
 					return true;
 			}
 		}
@@ -244,16 +246,16 @@
 		static public function inactive($lastActivity, $returnImg = true) {
 			$diff = time() - strtotime($lastActivity);
 			$diff = floor($diff / (60 * 60 * 24));
-			if ($diff < 14) 
+			if ($diff < 14)
 				return false;
 			$diffStr = 'Inactive for';
-			if ($diff <= 30) 
+			if ($diff <= 30)
 				$diffStr .= ' '.($diff - 1).' days';
 			else {
 				$diff = floor($diff / 30);
-				if ($diff < 12) 
+				if ($diff < 12)
 					$diffStr .= ' '.$diff.' months';
-				else 
+				else
 					$diffStr .= 'ever!';
 			}
 			return $returnImg?"<img src=\"/images/sleeping.png\" title=\"{$diffStr}\" alt=\"{$diffStr}\">":$diffStr;
