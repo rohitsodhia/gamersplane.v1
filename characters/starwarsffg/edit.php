@@ -18,12 +18,12 @@
 					<input type="text" name="xp[total]" value="<?=$this->getXP('total')?>" class="shortText lrBuffer">
 					<input type="text" name="xp[spent]" value="<?=$this->getXP('spent')?>" class="shortText lrBuffer">
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="stats">
 						<div class="col">
 <?
-	$stats = sweote_consts::getStatNames();
+	$stats = starwarsffg_consts::getStatNames();
 	$count = 0;
 	foreach ($stats as $short => $stat) {
 		if ($count == 3) {
@@ -100,7 +100,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="weapons" class="floatLeft">
 						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
@@ -108,7 +108,7 @@
 <?	$this->showWeaponsEdit(2); ?>
 						</div>
 					</div>
-				
+
 					<div id="items" class="floatRight">
 						<h2 class="headerbar hbDark">Items</h2>
 						<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>

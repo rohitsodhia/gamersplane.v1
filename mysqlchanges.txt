@@ -1,1 +1,9 @@
 UPDATE dispatch SET ngController = 'games_cu' WHERE file = 'games/edit.php';
+
+RENAME TABLE sweote_talentsList to starwarsffg_talentsList;
+
+
+db.games.update({system: 'sweote'}, {'$set': {'system': 'starwarsffg'}})
+db.characters.update({system: 'sweote'}, {'$set': {'system': 'starwarsffg'}})
+db.users.update({lfg: 'sweote'}, {'$set': {'lfg.$': 'starwarsffg'}})
+db.systems.remove({'_id': 'sweote'})
