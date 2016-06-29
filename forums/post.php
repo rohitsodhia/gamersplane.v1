@@ -37,6 +37,7 @@
 				$noChat = true;
 			else {
 				if (isset($_SESSION['message'])) {
+					$post->postAs = $_SESSION['postAs'];
 					$post->message = $_SESSION['message'];
 					unset($_SESSION['message']);
 				} elseif (isset($_GET['quote'])) {
