@@ -90,7 +90,7 @@
 		$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'game.approved' => true, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
 		$characters = array();
 		foreach ($rCharacters as $character)
-			if (strlen($character['name']) && )
+			if (strlen($character['name']))
 				$characters[$character['characterID']] = $character['name'];
 	} else
 		$fixedGameMenu = false;
