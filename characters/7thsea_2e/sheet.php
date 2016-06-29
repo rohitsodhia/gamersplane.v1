@@ -30,15 +30,31 @@
 					</div>
 					<div id="arcana">
 						<h2 class="headerbar hbDark" skew-element>Arcana</h2>
-						<div hb-margined="dark"><span ng-bind-html="character.arcana | trustHTML"></span></div>
+						<div hb-margined="dark">
+							<div ng-repeat="(type, arcana) in character.arcana" class="arcana" ng-class="{ 'first': $first }">
+								<h3 ng-hide="type == 'hubris' && character.arcana.virtue.arcana == character.arcana.hubris.arcana" ng-bind-html="arcana.arcana | trustHTML"></h3>
+								<div class="tr">{{type.capitalizeFirstLetter()}} <span ng-bind-html="arcana.label | trustHTML"></span></div>
+								<div class="tr" ng-bind-html="arcana.description | trustHTML"></div>
+							</div>
+						</div>
 					</div>
 					<div id="backgrounds">
 						<h2 class="headerbar hbDark" skew-element>Backgrounds</h2>
-						<div hb-margined="dark"><span ng-bind-html="character.backgrounds | trustHTML"></span></div>
+						<div hb-margined="dark">
+							<div ng-repeat="background in character.backgrounds track by $index" class="background" ng-class="{ 'first': $first }">
+								<div class="tr" ng-bind-html="background.name | trustHTML"></div>
+								<div class="tr" ng-bind-html="background.quirk | trustHTML"></div>
+							</div>
+						</div>
 					</div>
 					<div id="advantages">
 						<h2 class="headerbar hbDark" skew-element>Advantages</h2>
-						<div hb-margined="dark"><span ng-bind-html="character.advantages | trustHTML"></span></div>
+						<div hb-margined="dark">
+							<div ng-repeat="advantage in character.advantages track by $index" class="advantage" ng-class="{ 'first': $first }">
+								<div class="tr" ng-bind-html="advantage.name | trustHTML"></div>
+								<div class="tr" ng-bind-html="advantage.description | trustHTML"></div>
+							</div>
+						</div>
 					</div>
 					<div id="stories">
 						<h2 class="headerbar hbDark" skew-element>Stories</h2>
@@ -91,10 +107,10 @@
 						<h2 class="headerbar hbDark" skew-element>Death Spiral</h2>
 						<div hb-margined="dark">
 							<ol>
-								<li ng-class="{ inactive: character.deathSpiral < 5 }">+1 Bonus Die to all Risks</li>
-								<li ng-class="{ inactive: character.deathSpiral < 10 }">Villains gain +2 Bonus Dice</li>
-								<li ng-class="{ inactive: character.deathSpiral < 15 }">Your 10s explode (+1 die)</li>
-								<li ng-class="{ inactive: character.deathSpiral < 20 }">You become Helpless</li>
+								<li ng-class="{ inactive: !character.dramaticWounds[1] }">+1 Bonus Die to all Risks</li>
+								<li ng-class="{ inactive: !character.dramaticWounds[2] }">Villains gain +2 Bonus Dice</li>
+								<li ng-class="{ inactive: !character.dramaticWounds[3] }">Your 10s explode (+1 die)</li>
+								<li ng-class="{ inactive: !character.dramaticWounds[4] }">You become Helpless</li>
 							</ol>
 							<div id="deathSpiralImg">
 								<img src="/images/characters/7thsea_2e/deathspiral.jpg">

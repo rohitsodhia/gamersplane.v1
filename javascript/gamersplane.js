@@ -444,7 +444,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 			else
 				bArray = character[key.split('.')[0]][key.split('.')[1]];
 			if (typeof bArray != 'undefined' && Object.keys(bArray).length === 0)
-				bArray.push(blanks[key]);
+				bArray.push(copyObject(blanks[key]));
 		}
 	};
 }]).service('Range', function () {
@@ -841,7 +841,6 @@ app.config(['$httpProvider', function ($httpProvider) {
 			$timeout(function () {
 				if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox)
 					scope.cbm = true;
-//				console.log(scope.checkbox, scope.cbValue, scope.cbm);
 				eleID = typeof attrs.eleid == 'string' && attrs.eleid?attrs.eleid:null;
 				$label = $(element).closest('label');
 				if (!$label.length && eleID)
@@ -932,18 +931,19 @@ app.config(['$httpProvider', function ($httpProvider) {
 			}, 1);
 		}
 	};
-}]).directive('ngPlaceholder', [function () {
+}]).directive('ngPlaceholder', ['$timeout', function ($timeout) {
 	return {
 		restrict: 'A',
 		scope: {},
 		link: function (scope, element, attrs) {
 			var placeholder = attrs.ngPlaceholder;
 			if (typeof placeholder == 'string' && placeholder.length) {
-				element.blur(function () {
-					var $input = $(this);
+				$timeout(function () {
+					var $input = $(element);
+					$input.addClass('placeholder');
 					if ($input.val() === '' || $input.val() == placeholder)
 						$input.addClass('default');
-					$input.val(function () { return placeholder === ''?placeholder:$input.val(); }).focus(function () {
+					$input.focus(function () {
 						if ($input.val() == placeholder || $input.val() === '')
 							$input.val('').removeClass('default');
 					}).blur(function () {
@@ -954,8 +954,8 @@ app.config(['$httpProvider', function ($httpProvider) {
 							$input.removeClass('default');
 						else if ($input.val() == placeholder)
 							$input.addClass('default');
-					});
-				}).blur();
+					}).blur();
+				});
 			}
 		}
 	};
@@ -1074,7 +1074,6 @@ app.config(['$httpProvider', function ($httpProvider) {
 	$scope.aFAQs = {};
 	for (var key in faqs.categories)
 		$scope.catMap[key] = faqs.categories[key];
-	console.log(faqs.categories);
 	faqs.get().then(function (data) {
 		if (data.faqs) {
 			$scope.$emit('pageLoading');
