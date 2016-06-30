@@ -54,7 +54,7 @@
 					<div><input type="text" ng-model="user.games"></div>
 				</div>
 				<div class="tr">
-					<label>Recieve PM emails?</label>
+					<label>Receive PM emails?</label>
 					<div>
 						<label for>
 							<pretty-radio radio="user.pmMail" r-value="true"></pretty-radio> Yes
@@ -65,7 +65,7 @@
 					</div>
 				</div>
 				<div class="tr">
-					<label>Recieve new game emails?</label>
+					<label>Receive new game emails?</label>
 					<div>
 						<label for>
 							<pretty-radio radio="user.newGameMail" r-value="true"></pretty-radio> Yes
@@ -76,7 +76,7 @@
 					</div>
 				</div>
 				<div class="tr">
-					<label>Recieve GM emails? (Approvals)</label>
+					<label>Receive GM emails? (Approvals)</label>
 					<div>
 						<label for>
 							<pretty-radio radio="user.gmMail" r-value="true"></pretty-radio> Yes
