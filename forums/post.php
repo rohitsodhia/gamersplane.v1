@@ -37,6 +37,7 @@
 				$noChat = true;
 			else {
 				if (isset($_SESSION['message'])) {
+					$post->postAs = $_SESSION['postAs'];
 					$post->message = $_SESSION['message'];
 					unset($_SESSION['message']);
 				} elseif (isset($_GET['quote'])) {
@@ -86,7 +87,7 @@
 			}
 		}
 
-		$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
+		$rCharacters = $mongo->characters->find(array('game.gameID' => $gameID, 'game.approved' => true, 'user.userID' => $currentUser->userID), array('characterID' => true, 'name' => true));
 		$characters = array();
 		foreach ($rCharacters as $character)
 			if (strlen($character['name']))

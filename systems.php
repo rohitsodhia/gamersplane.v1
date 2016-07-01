@@ -11,7 +11,7 @@
 		<div class="mainColumn right">
 			<h1 class="headerbar">Systems on Gamers' Plane</h1>
 			<div class="alignRight">
-				<div id="numResults" ng-show="filter.search.length != 0"><strong>{{numSystems}}</strong> Systems Found</div>
+				<div id="numResults" ng-show="filter.search.length != 0"><strong>{{numSystems}}</strong> System{{numSystems > 1?'s':''}} Found</div>
 				<div class="tr"><paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate></div>
 			</div>
 			<div id="systems">

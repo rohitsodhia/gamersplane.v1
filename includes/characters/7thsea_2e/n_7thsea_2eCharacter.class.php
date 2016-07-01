@@ -7,7 +7,10 @@
 		protected $religion = '';
 		protected $reputations = [];
 		protected $wealth = '';
-		protected $arcana = '';
+		protected $arcana = [
+			'virtue' => ['arcana' => '', 'label' => '', 'description' => ''],
+			'hubris' => ['arcana' => '', 'label' => '', 'description' => '']
+		];
 		protected $traits = array('brawn' => 1, 'finesse' => 1, 'resolve' => 1, 'wits' => 1, 'panache' => 1);
 		protected $skills = array(
 			'aim' => 0,
@@ -28,8 +31,9 @@
 			'weaponry' => 0
 		);
 		protected $deathSpiral = 0;
-		protected $backgrounds = '';
-		protected $advantages = '';
+		protected $dramaticWounds = [1 => false, false, false, false];
+		protected $backgrounds = [];
+		protected $advantages = [];
 		protected $stories = array();
 
 		public function setConcept($concept) {
@@ -76,11 +80,33 @@
 		}
 
 		public function setArcana($arcana) {
-			$this->arcana = sanitizeString($arcana);
+			if (!is_array($arcana) && !is_object($arcana)) {
+				return false;
+			}
+			foreach ($arcana as $type => &$typeInfo) {
+				if ($type != 'virtue' && $type != 'hubris') {
+					return false;
+				}
+				foreach ($typeInfo as $key => &$value) {
+					if (!in_array($key, ['arcana', 'label', 'description'])) {
+						return false;
+					}
+					$this->arcana[$type][$key] = sanitizeString($value);
+				}
+			}
 		}
 
-		public function getArcana() {
-			return $this->arcana;
+		public function getArcana($part = null, $key = null) {
+			if ($part == null) {
+				return $part;
+			} elseif ($part == 'hubris' || $part == 'virtue') {
+				if ($key == null) {
+					return $this->arcana[$part];
+				} elseif (key_exists($key, $this->arcana[$part])) {
+					return $this->arcana[$part][$key];
+				}
+			}
+			return false;
 		}
 
 		public function setTrait($trait, $value = null) {
@@ -123,16 +149,38 @@
 			return $this->deathSpiral;
 		}
 
-		public function setBackgrounds($backgrounds) {
-			$this->backgrounds = sanitizeString($backgrounds);
+		public function setDramaticWounds($level, $value) {
+			$level = (int) $level;
+			$value = (bool) $value;
+			$this->dramaticWounds[$level] = $value;
+		}
+
+		public function getDramaticWounds() {
+			return $this->dramaticWounds;
+		}
+
+		public function addBackground($background) {
+			if (strlen($background->name)) {
+				characters::newItemized('backgrounds', $background->name, $this::SYSTEM);
+				$this->backgrounds[] = array(
+					'name' => sanitizeString($background->name),
+					'quirk' => sanitizeString($background->quirk)
+				);
+			}
 		}
 
 		public function getBackgrounds() {
 			return $this->backgrounds;
 		}
 
-		public function setAdvantages($advantages) {
-			$this->advantages = sanitizeString($advantages);
+		public function addAdvantage($advantage) {
+			if (strlen($advantage->name)) {
+				characters::newItemized('advantages', $advantage->name, $this::SYSTEM);
+				$this->advantages[] = array(
+					'name' => sanitizeString($advantage->name),
+					'description' => sanitizeString($advantage->description)
+				);
+			}
 		}
 
 		public function getAdvantages() {
@@ -165,14 +213,14 @@
 				$this->setConcept($data->concept);
 				$this->setNation($data->nation);
 				$this->setReligion($data->religion);
-				$this->reputations = [];
+				$this->clearVar('reputations');
 				foreach ($data->reputations as $reputation) {
 					$this->addReputation($reputation);
 				}
 				// $this->setReputations($data->reputations);
 				$this->setWealth($data->wealth);
 				$this->setArcana($data->arcana);
-				$this->stories = [];
+				$this->clearVar('stories');
 				foreach ($data->stories as $story) {
 					$this->addStory($story);
 				}
@@ -182,9 +230,17 @@
 				foreach ($data->skills as $skill => $value) {
 					$this->setSkill($skill, $value);
 				}
+				foreach ($data->dramaticWounds as $level => $value)
+					$this->setDramaticWounds($level, $value);
 				$this->setDeathSpiral($data->deathSpiral);
-				$this->setBackgrounds($data->backgrounds);
-				$this->setAdvantages($data->advantages);
+				$this->clearVar('backgrounds');
+				foreach ($data->backgrounds as $background) {
+					$this->addBackground($background);
+				}
+				$this->clearVar('advantages');
+				foreach ($data->advantages as $advantage) {
+					$this->addAdvantage($advantage);
+				}
 				$this->setNotes($data->notes);
 			}
 

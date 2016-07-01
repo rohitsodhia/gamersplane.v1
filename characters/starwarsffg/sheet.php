@@ -122,7 +122,7 @@
 				</div>
 
 				<div id="obligations" class="floatRight">
-					<h2 class="headerbar hbDark">Obligations</h2>
+					<h2 class="headerbar hbDark">Obligation/Duty/Morality</h2>
 					<div class="hbdMargined"><?=$this->getObligations(true)?></div>
 				</div>
 			</div>

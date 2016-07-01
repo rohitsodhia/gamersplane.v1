@@ -121,7 +121,7 @@
 						<textarea name="motivations" class="hbdMargined"><?=$this->getMotivations()?></textarea>
 					</div>
 					<div id="obligations" class="floatRight">
-						<h2 class="headerbar hbDark">Obligations</h2>
+						<h2 class="headerbar hbDark">Obligation/Duty/Morality</h2>
 						<textarea name="obligations" class="hbdMargined"><?=$this->getObligations()?></textarea>
 					</div>
 				</div>
