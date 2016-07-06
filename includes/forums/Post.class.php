@@ -15,7 +15,7 @@
 
 		protected $modified = false;
 		protected $edited = false;
-		
+
 		public function __construct($loadData = null) {
 			if ($loadData == null) return true;
 
@@ -51,7 +51,7 @@
 		}
 
 		public function setThreadID($threadID) {
-			if (intval($threadID)) 
+			if (intval($threadID))
 				$this->threadID = intval($threadID);
 		}
 
@@ -61,22 +61,22 @@
 
 		public function setTitle($value) {
 			$title = sanitizeString(htmlspecialchars_decode($value));
-			if ($title != $this->getTitle()) 
+			if ($title != $this->getTitle())
 				$this->modified = true;
 			$this->title = $title;
 		}
 
 		public function getTitle($pr = false) {
-			if ($pr) 
+			if ($pr)
 				return printReady($this->title);
-			else 
+			else
 				return $this->title;
 		}
 
 		public function getAuthor($key = null) {
-			if (property_exists($this->author, $key)) 
+			if (property_exists($this->author, $key))
 				return $this->author->$key;
-			else 
+			else
 				return $this->author;
 		}
 
@@ -85,15 +85,15 @@
 
 			$isForumAdmin = $mysql->query("SELECT userID FROM forumAdmins WHERE userID = {$currentUser->userID} AND forumID = 0");
 			$message = sanitizeString($value, $isForumAdmin->rowCount()?'!strip_tags':'');
-			if ($message != $this->getMessage()) 
+			if ($message != $this->getMessage())
 				$this->modified = true;
 			$this->message = $message;
 		}
 
 		public function getMessage($pr = false) {
-			if ($pr) 
+			if ($pr)
 				return printReady($this->message);
-			else 
+			else
 				return $this->message;
 		}
 
@@ -104,7 +104,7 @@
 			if (sizeof($matches)) {
 				foreach ($matches as $match) {
 					$noteTo = preg_split('/[^\w\.]+/', $match[1]);
-					if (!in_array($currentUser->username, $noteTo)) 
+					if (!in_array($currentUser->username, $noteTo))
 						$message = str_replace($match[0], '', $message);
 				}
 			}
@@ -164,7 +164,7 @@
 				$updatePost->execute();
 			}
 
-			foreach ($this->rolls as $roll) 
+			foreach ($this->rolls as $roll)
 				$roll->forumSave($this->postID);
 
 			if (sizeof($this->draws)) {

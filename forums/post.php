@@ -322,7 +322,7 @@
 						<span>Add new roll: </span>
 						<select>
 							<option value="basic">Basic</option>
-							<option value="sweote">SWEOTE</option>
+							<option value="starwarsffg">Star Wars FFG</option>
 							<option value="fate">Fate</option>
 							<option value="fengshui">Feng Shui</option>
 						</select>

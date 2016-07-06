@@ -25,16 +25,16 @@
 								</div>
 							</div>
 <?
-		} elseif ($data->type == 'sweote') {
+		} elseif ($data->type == 'starwarsffg') {
 ?>
-							<div class="newRoll sweoteRoll">
+							<div class="newRoll starwarsffgRoll">
 								<div class="headers">
 									<div class="reason">Reason</div>
 									<div class="roll">Roll</div>
 									<div class="visibility">Visibility</div>
 								</div>
 								<div>
-									<input type="hidden" name="rolls[<?=$count?>][type]" value="sweote">
+									<input type="hidden" name="rolls[<?=$count?>][type]" value="starwarsffg">
 									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data->reason)?" value=\"{$data->reason}\"":null?> class="borderBox"></div>
 									<div class="roll">
 										<div class="dicePool">
@@ -45,7 +45,7 @@
 				$diceTypes = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
 				foreach (explode(',', $data->roll) as $dice) {
 ?>
-												<div class="diceIcon sweote_<?=$diceTypes[$dice]?>" title="<?=ucwords($diceTypes[$dice])?>"></div>
+												<div class="diceIcon starwarsffg_<?=$diceTypes[$dice]?>" title="<?=ucwords($diceTypes[$dice])?>"></div>
 <?
 				}
 			}
@@ -54,13 +54,13 @@
 											<div class="diceOptions">
 												<div class="do_pointer"><div class="do_pointer_inner"></div></div>
 												<div class="dice">
-													<div class="diceIcon sweote_ability" title="Ability"></div>
-													<div class="diceIcon sweote_proficiency" title="Proficiency"></div>
-													<div class="diceIcon sweote_boost" title="Boost"></div>
-													<div class="diceIcon sweote_difficulty" title="Difficulty"></div>
-													<div class="diceIcon sweote_challenge" title="Challenge"></div>
-													<div class="diceIcon sweote_setback" title="Setback"></div>
-													<div class="diceIcon sweote_force" title="Force"></div>
+													<div class="diceIcon starwarsffg_ability" title="Ability"></div>
+													<div class="diceIcon starwarsffg_proficiency" title="Proficiency"></div>
+													<div class="diceIcon starwarsffg_boost" title="Boost"></div>
+													<div class="diceIcon starwarsffg_difficulty" title="Difficulty"></div>
+													<div class="diceIcon starwarsffg_challenge" title="Challenge"></div>
+													<div class="diceIcon starwarsffg_setback" title="Setback"></div>
+													<div class="diceIcon starwarsffg_force" title="Force"></div>
 												</div>
 											</div>
 											<input type="hidden" name="rolls[<?=$count?>][roll]" value="<?=isset($data->roll)?$data->roll:null?>">

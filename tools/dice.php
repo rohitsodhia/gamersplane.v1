@@ -1,12 +1,12 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Dice Roller</h1>
-		
+
 		<div id="roller">
 			<div class="clearfix"><div class="sectionControls" data-ratio=".8">
 				<div class="trapezoid">
 					<select class="prettySelect">
 						<option value="basic">Basic Dice</option>
-						<option value="sweote">Star Wars: Edge of the Empire</option>
+						<option value="starwarsffg">Star Wars FFG</option>
 						<option value="fate">Fate Dice</option>
 						<option value="fengshui">Feng Shui</option>
 					</select>
@@ -14,7 +14,7 @@
 			</div></div>
 			<h2 class="headerbar hbDark hb_hasButton">
 				<span class="dice_basic">Basic Dice</span>
-				<span class="dice_sweote hideDiv">Star Wars: Edge of the Empire</span>
+				<span class="dice_starwarsffg hideDiv">Star Wars FFG</span>
 				<span class="dice_fate hideDiv">Fate Dice</span>
 				<span class="dice_fengshui hideDiv">Feng Shui Dice</span>
 			</h2>
@@ -46,46 +46,46 @@
 					</div>
 				</form>
 			</div>
-			<div class="dice_sweote hideDiv">
+			<div class="dice_starwarsffg hideDiv">
 				<div class="clearfix">
 					<div class="dicePool"></div>
-					<div class="rollWrapper"><button id="sweote_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
-					<a id="sweote_clear" href="">Clear</a>
+					<div class="rollWrapper"><button id="starwarsffg_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
+					<a id="starwarsffg_clear" href="">Clear</a>
 				</div>
 				<p>Click on a dice above to remove it from the dice pool.<br>Click on a dice below to add it to the dice pool.</p>
 				<div class="clearfix">
-					<a href="" id="sweote_ability" class="addDiceLink borderBox floatLeft">
-						<div class="sweote_dice ability"><div></div></div>
+					<a href="" id="starwarsffg_ability" class="addDiceLink borderBox floatLeft">
+						<div class="starwarsffg_dice ability"><div></div></div>
 						<span>Ability</span>
 					</a>
-					<a href="" id="sweote_difficulty" class="addDiceLink borderBox floatRight">
-						<div class="sweote_dice difficulty"><div></div></div>
+					<a href="" id="starwarsffg_difficulty" class="addDiceLink borderBox floatRight">
+						<div class="starwarsffg_dice difficulty"><div></div></div>
 						<span>Difficulty</span>
 					</a>
 				</div>
 				<div class="clearfix">
-					<a href="" id="sweote_proficiency" class="addDiceLink borderBox floatLeft">
-						<div class="sweote_dice proficiency"><div></div></div>
+					<a href="" id="starwarsffg_proficiency" class="addDiceLink borderBox floatLeft">
+						<div class="starwarsffg_dice proficiency"><div></div></div>
 						<span>Proficiency</span>
 					</a>
-					<a href="" id="sweote_challenge" class="addDiceLink borderBox floatRight">
-						<div class="sweote_dice challenge"><div></div></div>
+					<a href="" id="starwarsffg_challenge" class="addDiceLink borderBox floatRight">
+						<div class="starwarsffg_dice challenge"><div></div></div>
 						<span>Challenge</span>
 					</a>
 				</div>
 				<div class="clearfix">
-					<a href="" id="sweote_boost" class="addDiceLink borderBox floatLeft">
-						<div class="sweote_dice boost"><div></div></div>
+					<a href="" id="starwarsffg_boost" class="addDiceLink borderBox floatLeft">
+						<div class="starwarsffg_dice boost"><div></div></div>
 						<span>Boost</span>
 					</a>
-					<a href="" id="sweote_setback" class="addDiceLink borderBox floatRight">
-						<div class="sweote_dice setback"><div></div></div>
+					<a href="" id="starwarsffg_setback" class="addDiceLink borderBox floatRight">
+						<div class="starwarsffg_dice setback"><div></div></div>
 						<span>Setback</span>
 					</a>
 				</div>
 				<div class="alignCenter">
-					<a href="" id="sweote_force" class="addDiceLink borderBox alignLeft">
-						<div class="sweote_dice force"><div></div></div>
+					<a href="" id="starwarsffg_force" class="addDiceLink borderBox alignLeft">
+						<div class="starwarsffg_dice force"><div></div></div>
 						<span>Force</span>
 					</a>
 				</div>

@@ -6,7 +6,7 @@
 				<div class="medText"><?=$this->getName()?></div>
 				<div class="medText"><?=$this->getSpecies()?></div>
 			</div>
-			
+
 			<div class="tr labelTR">
 				<label id="label_career" class="medText">Career</label>
 				<label id="label_specialization" class="medText">Specialization</label>
@@ -19,12 +19,12 @@
 				<div class="shortText"><?=$this->getXP('total')?></div>
 				<div class="shortText"><?=$this->getXP('spent')?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 					<div class="col">
 <?
-	$stats = sweote_consts::getStatNames();
+	$stats = starwarsffg_consts::getStatNames();
 	$count = 0;
 	foreach ($stats as $short => $stat) {
 		if ($count == 3) {
@@ -44,7 +44,7 @@
 ?>
 					</div>
 				</div>
-				
+
 				<div id="defense">
 					<div class="col">
 						<div class="tr">
@@ -80,7 +80,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
@@ -101,7 +101,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
@@ -114,15 +114,15 @@
 					<div class="hbdMargined"><?=$this->getItems(true)?></div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="motivations" class="floatLeft">
 					<h2 class="headerbar hbDark">Motivations</h2>
 					<div class="hbdMargined"><?=$this->getMotivations(true)?></div>
 				</div>
-				
+
 				<div id="obligations" class="floatRight">
-					<h2 class="headerbar hbDark">Obligations</h2>
+					<h2 class="headerbar hbDark">Obligation/Duty/Morality</h2>
 					<div class="hbdMargined"><?=$this->getObligations(true)?></div>
 				</div>
 			</div>

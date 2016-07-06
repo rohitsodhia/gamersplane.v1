@@ -1,5 +1,5 @@
 <?
-	class SWEOTERoll extends Roll {
+	class StarWarsFFGRoll extends Roll {
 		private $d_shortMap = array('a' => 'ability', 'p' => 'proficiency', 'b' => 'boost', 'd' => 'difficulty', 'c' => 'challenge', 's' => 'setback', 'f' => 'force');
 		private $totals = array('success' => 0, 'advantage' => 0, 'triumph' => 0, 'failure' => 0, 'threat' => 0, 'despair' => 0, 'whiteDot' => 0, 'blackDot' => 0);
 		private $resultsMap = array('', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage', 'triumph', 'failure', 'threat', 'failure_failure', 'failure_threat', 'threat_threat', 'despair', 'whiteDot', 'whiteDot_whiteDot', 'blackDot', 'blackDot_blackDot');
@@ -14,7 +14,7 @@
 				elseif (!in_array($die, $this->d_shortMap)) continue;
 
 				$this->rolls[] = array('die' => $die, 'result' => NULL);
-				if (!array_key_exists($die, $this->dice)) $this->dice[$die] = new SWEOTEDie($die);
+				if (!array_key_exists($die, $this->dice)) $this->dice[$die] = new StarWarsFFGDie($die);
 			} }
 		}
 
@@ -57,7 +57,7 @@
 				$totals[$count++] = $total;
 			}
 
-			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'sweote', reason = :reason, roll = :roll, indivRolls = :indivRolls, results = :results, visibility = :visibility");
+			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'starwarsffg', reason = :reason, roll = :roll, indivRolls = :indivRolls, results = :results, visibility = :visibility");
 			$addRoll->bindValue(':reason', $this->reason);
 			$addRoll->bindValue(':roll', implode(',', array_map(function ($value) { return $value[0]; }, $rolls)));
 			$addRoll->bindValue(':indivRolls', serialize($indivRolls));
@@ -83,7 +83,7 @@
 				if ($this->visibility <= 1 || $showAll) {
 					echo '<div class="rollResults">';
 					foreach ($this->rolls as $count => $roll) {
-						echo "<div class=\"sweote_dice {$roll['die']} {$roll['result']}\">";
+						echo "<div class=\"starwarsffg_dice {$roll['die']} {$roll['result']}\">";
 						if ($this->visibility == 0 || $showAll) echo '<div></div>';
 						echo '</div>';
 					}
@@ -91,35 +91,35 @@
 				}
 				if ($this->visibility == 0 || $showAll) {
 					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
-					if ($this->totals['success']) 
+					if ($this->totals['success'])
 						$totalString .= $this->totals['success'].' Success, ';
-					if ($this->totals['advantage']) 
+					if ($this->totals['advantage'])
 						$totalString .= $this->totals['advantage'].' Advantage, ';
-					if ($this->totals['triumph']) 
+					if ($this->totals['triumph'])
 						$totalString .= $this->totals['triumph'].' Triumph, ';
-					if ($this->totals['failure']) 
+					if ($this->totals['failure'])
 						$totalString .= $this->totals['failure'].' Failure, ';
-					if ($this->totals['threat']) 
+					if ($this->totals['threat'])
 						$totalString .= $this->totals['threat'].' Threat, ';
-					if ($this->totals['despair']) 
+					if ($this->totals['despair'])
 						$totalString .= $this->totals['despair'].' Despair, ';
-					if ($this->totals['whiteDot']) 
+					if ($this->totals['whiteDot'])
 						$totalString .= $this->totals['whiteDot'].' White Force Point'.($this->totals['whiteDot'] > 1?'s':'').', ';
-					if ($this->totals['blackDot']) 
+					if ($this->totals['blackDot'])
 						$totalString .= $this->totals['blackDot'].' Black Force Point'.($this->totals['blackDot'] > 1?'s':'').', ';
 					echo substr($totalString, 0, -2);
 					echo '</p>';
 					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
 					$totalString = '';
-					if ($this->totals['success'] != $this->totals['failure']) 
+					if ($this->totals['success'] != $this->totals['failure'])
 						$totalString .= abs($this->totals['success'] - $this->totals['failure']).' '.($this->totals['success'] > $this->totals['failure']?'Success':'Failure').', ';
-					if ($this->totals['advantage'] != $this->totals['threat']) 
+					if ($this->totals['advantage'] != $this->totals['threat'])
 						$totalString .= abs($this->totals['advantage'] - $this->totals['threat']).' '.($this->totals['advantage'] > $this->totals['threat']?'Advantage':'Threat').', ';
-					if ($this->totals['triumph']) 
+					if ($this->totals['triumph'])
 						$totalString .= $this->totals['triumph'].' Triumph, ';
-					if ($this->totals['despair']) 
+					if ($this->totals['despair'])
 						$totalString .= $this->totals['despair'].' Despair, ';
-					if (strlen($totalString)) 
+					if (strlen($totalString))
 						echo '<strong>Total:</strong> '.substr($totalString, 0, -2);
 					echo '</p>';
 				}

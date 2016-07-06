@@ -1,5 +1,5 @@
 <?
-	class SWEOTEDie extends BaseDie {
+	class StarWarsFFGDie extends BaseDie {
 		private $type;
 		private $dice = array(
 			'ability' => array(1 => '', 'success', 'success', 'advantage', 'success_success', 'success_advantage', 'advantage_advantage'),

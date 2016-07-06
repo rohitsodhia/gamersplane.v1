@@ -1,6 +1,6 @@
 <?
-	class sweoteCharacter extends Character {
-		const SYSTEM = 'sweote';
+	class starwarsffgCharacter extends Character {
+		const SYSTEM = 'starwarsffg';
 
 		protected $species = '';
 		protected $career = '';
@@ -40,71 +40,71 @@
 		public function setXP($type, $value = '') {
 			if (in_array($type, array_keys($this->xp))) {
 				$value = intval($value);
-				if ($value >= 0) 
+				if ($value >= 0)
 					$this->xp[$type] = $value;
 			} else return false;
 		}
-		
+
 		public function getXP($type = null) {
-			if ($type == null) 
+			if ($type == null)
 				return $this->xp;
-			elseif (in_array($type, array_keys($this->xp))) 
+			elseif (in_array($type, array_keys($this->xp)))
 				return $this->xp[$type];
-			else 
+			else
 				return false;
 		}
 
 		public function setStat($stat, $value = '') {
 			if (in_array($stat, array_keys($this->stats))) {
 				$value = intval($value);
-				if ($value > 0) 
+				if ($value > 0)
 					$this->stats[$stat] = $value;
-			} else 
+			} else
 				return false;
 		}
-		
+
 		public function getStat($stat = null) {
-			if ($stat == null) 
+			if ($stat == null)
 				return $this->stats;
-			elseif (in_array($stat, array_keys($this->stats))) 
+			elseif (in_array($stat, array_keys($this->stats)))
 				return $this->stats[$stat];
-			else 
+			else
 				return false;
 		}
 
 		public function setDefense($defense, $value = '') {
 			if (in_array($defense, array_keys($this->defenses))) {
 				$value = intval($value);
-				if ($value >= 0) 
+				if ($value >= 0)
 					$this->defenses[$defense] = $value;
-			} else 
+			} else
 				return false;
 		}
-		
+
 		public function getDefense($defense = null) {
-			if ($defense == null) 
+			if ($defense == null)
 				return $this->defenses;
-			elseif (in_array($defense, array_keys($this->defenses))) 
+			elseif (in_array($defense, array_keys($this->defenses)))
 				return $this->defenses[$defense];
-			else 
+			else
 				return false;
 		}
 
 		public function setHP($type, $value = '') {
 			if (in_array($type, array_keys($this->hp))) {
 				$value = intval($value);
-				if ($value > 0) 
+				if ($value > 0)
 					$this->hp[$type] = $value;
-			} else 
+			} else
 				return false;
 		}
-		
+
 		public function getHP($type = null) {
-			if ($type == null) 
+			if ($type == null)
 				return $this->hp;
-			elseif (in_array($type, array_keys($this->hp))) 
+			elseif (in_array($type, array_keys($this->hp)))
 				return $this->hp[$type];
-			else 
+			else
 				return false;
 		}
 
@@ -113,7 +113,7 @@
 							<div id="skill_<?=$key?>" class="skill tr clearfix">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText">
 								<span class="skill_stat"><select name="skills[<?=$key?>][stat]">
-<?	foreach (sweote_consts::getStatNames() as $short => $stat) { ?>
+<?	foreach (starwarsffg_consts::getStatNames() as $short => $stat) { ?>
 									<option value="<?=$short?>"<?=$skillInfo['stat'] == $short?' selected="selected"':''?>><?=$stat?></option>
 <?	} ?>
 								</select></span>
@@ -184,19 +184,19 @@
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noTalents\">This character currently has no talents.</p>\n";
 		}
-		
+
 		public function addTalent($talent) {
 			if (strlen($talent['name'])) {
 				newItemized('talent', $talent['name'], $this::SYSTEM);
-				foreach ($talent as $key => $value) 
+				foreach ($talent as $key => $value)
 					$talent[$key] = sanitizeString($value);
 				$this->talents[] = $talent;
 			}
 		}
-		
+
 		public function addWeapon($weapon) {
 			if (strlen($weapon['name']) && strlen($weapon['skill']) && strlen($weapon['damage'])) {
-				foreach ($weapon as $key => $value) 
+				foreach ($weapon as $key => $value)
 					$weapon[$key] = sanitizeString($value);
 				$this->weapons[] = $weapon;
 			}
@@ -204,17 +204,17 @@
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			if (!is_array($this->weapons)) 
+			if (!is_array($this->weapons))
 				$this->weapons = (array) $this->weapons;
-			foreach ($this->weapons as $weaponInfo) 
+			foreach ($this->weapons as $weaponInfo)
 				$this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) 
-				while ($weaponNum < $min) 
+			if ($weaponNum < $min)
+				while ($weaponNum < $min)
 					$this->weaponEditFormat($weaponNum++);
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
-			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) 
+			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0)
 				$weaponInfo = array();
 ?>
 							<div class="weapon">
@@ -286,7 +286,7 @@
 
 		public function getItems($pr = false) {
 			$items = $this->items;
-			if ($pr) 
+			if ($pr)
 				$items = printReady($items);
 			return $items;
 		}
@@ -297,7 +297,7 @@
 
 		public function getMotivations($pr = false) {
 			$motivations = $this->motivations;
-			if ($pr) 
+			if ($pr)
 				$motivations = printReady($motivations);
 			return $motivations;
 		}
@@ -308,7 +308,7 @@
 
 		public function getObligations($pr = false) {
 			$obligations = $this->obligations;
-			if ($pr) 
+			if ($pr)
 				$obligations = printReady($obligations);
 			return $obligations;
 		}

@@ -11,7 +11,7 @@ $(function() {
 			e.preventDefault();
 
 			nextTalentCount += 1;
-			$.post('/characters/ajax/sweote/addTalent/', { key: nextTalentCount }, function (data) {
+			$.post('/characters/ajax/starwarsffg/addTalent/', { key: nextTalentCount }, function (data) {
 				$newTalent = $(data);
 				$newTalent.appendTo('#talentList').find('.talent_name').placeholder().autocomplete('/characters/ajax/autocomplete/', { type: 'talent', characterID: characterID, system: system }).find('input').focus();
 			});

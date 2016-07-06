@@ -51,7 +51,7 @@ $(function() {
 		$input = $(this).closest('.dicePool').children('input');
 		$clickedDice.closest('.dicePool').children('.selectedDice').append($clickedDice.clone());
 		inputVal = $input.val().length?$input.val().split(','):[];
-		inputVal[inputVal.length] = $clickedDice.attr('class').charAt(16);
+		inputVal[inputVal.length] = $clickedDice.attr('class').charAt(21);
 		$input.val(inputVal.join());
 	}).on('click', '.selectedDice .diceIcon', function (e) {
 		e.stopPropagation();
@@ -60,7 +60,7 @@ $(function() {
 		$(this).remove();
 		var inputVal = [];
 		$selectedDice.find('.diceIcon').each(function () {
-			inputVal[inputVal.length] = $(this).attr('class').charAt(16);
+			inputVal[inputVal.length] = $(this).attr('class').charAt(21);
 		});
 		$selectedDice.siblings('input').val(inputVal.join());
 	});
