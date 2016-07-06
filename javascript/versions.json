@@ -33,6 +33,7 @@
 	"/javascript/forums/acp/deletePermission.js": "1.1.0",
 	"/javascript/forums/acp/newPermission.js": "1.1.0",
 	"/javascript/forums/delete.js": "1.1.0",
+	"/javascript/forums/post.js": "1.1.0",
 	"/javascript/forums/thread.js": "1.1.0",
 	"/javascript/games/details.js": "2.4.1",
 	"/javascript/games/edit.js": "1.2.1p",
@@ -59,7 +60,7 @@
 	"/javascript/register/register.js": "1.1.0",
 	"/javascript/systems.js": "2.2.1",
 	"/javascript/tools/addMusic.js": "1.1.0",
-	"/javascript/tools/dice.js": "1.1.0",
+	"/javascript/tools/dice.js": "1.2.0",
 	"/javascript/tools/music.js": "2.0.1",
 	"/javascript/ucp/ucp.js": "2.0.3",
 	"/javascript/ucp/user.js": "1.0.5"
