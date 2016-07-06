@@ -2,6 +2,7 @@
 	addPackage('forum');
 
 	if (isset($_POST['advanced'])) {
+		$_SESSION['postAs'] = $_POST['postAs'];
 		$_SESSION['message'] = $_POST['message'];
 		header('Location: /forums/post/'.intval($_POST['threadID']).'/');
 	} elseif (isset($_POST['preview'])) {

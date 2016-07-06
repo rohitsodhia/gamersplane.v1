@@ -2,7 +2,9 @@ controllers.controller('viewCharacter_7thsea_2e', ['$scope', '$http', '$sce', '$
 	CurrentUser.load().then(function () {
 		$scope.range = Range.get;
 		blanks = {
-			'stories': { 'name': '', 'goal': '', 'reward': '', 'steps': '' }
+			'stories': { 'name': '', 'goal': '', 'reward': '', 'steps': '' },
+			'backgrounds': { 'name': '', 'quirk': '' },
+			'advantages': { 'name': '', 'description': '' }
 		};
 		$scope.loadChar();
 	});

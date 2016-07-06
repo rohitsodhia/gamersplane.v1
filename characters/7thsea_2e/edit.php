@@ -33,20 +33,36 @@
 						</div>
 						<div id="arcana">
 							<h2 class="headerbar hbDark" skew-element>Arcana</h2>
-							<div hb-margined="dark"><textarea ng-model="character.arcana"></textarea></div>
+							<div hb-margined="dark">
+								<div ng-repeat="(type, arcana) in character.arcana" class="arcana" ng-class="{ 'first': $first }">
+									<div class="tr"><input type="text" ng-model="arcana.arcana" ng-placeholder="Arcana"></div>
+									<div class="tr"><input type="text" ng-model="arcana.label" ng-placeholder="{{type.capitalizeFirstLetter()}}"></div>
+									<div class="tr"><textarea ng-model="arcana.description" ng-placeholder="Description"></textarea></div>
+								</div>
+							</div>
 						</div>
 						<div id="backgrounds">
-							<h2 class="headerbar hbDark" skew-element>Backgrounds</h2>
-							<div hb-margined="dark"><textarea ng-model="character.backgrounds"></textarea></div>
+							<h2 class="headerbar hbDark" skew-element>Backgrounds <a ng-click="addItem('backgrounds')" href="">[ Add Background ]</a></h2>
+							<div hb-margined="dark">
+								<div ng-repeat="background in character.backgrounds track by $index" class="background" ng-class="{ 'first': $first }">
+									<div class="tr"><input type="text" ng-model="background.name" ng-placeholder="Background"></div>
+									<div class="tr"><textarea ng-model="background.quirk" ng-placeholder="Quirk"></textarea></div>
+								</div>
+							</div>
 						</div>
 						<div id="advantages">
-							<h2 class="headerbar hbDark" skew-element>Advantages</h2>
-							<div hb-margined="dark"><textarea ng-model="character.advantages"></textarea></div>
+							<h2 class="headerbar hbDark" skew-element>Advantages <a ng-click="addItem('advantages')" href="">[ Add Advantage ]</a></h2>
+							<div hb-margined="dark">
+								<div ng-repeat="advantage in character.advantages track by $index" class="advantage" ng-class="{ 'first': $first }">
+									<div class="tr"><input type="text" ng-model="advantage.name" ng-placeholder="Advantage"></div>
+									<div class="tr"><textarea ng-model="advantage.description" ng-placeholder="Description"></textarea></div>
+								</div>
+							</div>
 						</div>
 						<div id="stories">
 							<h2 class="headerbar hbDark" skew-element>Stories <a href="" ng-click="addItem('stories')">[ Add Story ]</a></h2>
 							<div hb-margined="dark">
-								<div ng-repeat="story in character.stories" class="story" ng-class="{ 'first': $first }">
+								<div ng-repeat="story in character.stories track by $index" class="story" ng-class="{ 'first': $first }">
 									<div class="tr">
 										<label class="leftLabel">
 											<span>Name</span>
@@ -110,10 +126,10 @@
 							<h2 class="headerbar hbDark" skew-element>Death Spiral</h2>
 							<div hb-margined="dark">
 								<ol>
-									<li ng-class="{ inactive: character.deathSpiral < 5 }">+1 Bonus Die to all Risks</li>
-									<li ng-class="{ inactive: character.deathSpiral < 10 }">Villains gain +2 Bonus Dice</li>
-									<li ng-class="{ inactive: character.deathSpiral < 15 }">Your 10s explode (+1 die)</li>
-									<li ng-class="{ inactive: character.deathSpiral < 20 }">You become Helpless</li>
+									<li ng-class="{ inactive: !character.dramaticWounds[1] }"><pretty-checkbox checkbox="character.dramaticWounds[1]"></pretty-checkbox> +1 Bonus Die to all Risks</li>
+									<li ng-class="{ inactive: !character.dramaticWounds[2] }"><pretty-checkbox checkbox="character.dramaticWounds[2]"></pretty-checkbox> Villains gain +2 Bonus Dice</li>
+									<li ng-class="{ inactive: !character.dramaticWounds[3] }"><pretty-checkbox checkbox="character.dramaticWounds[3]"></pretty-checkbox> Your 10s explode (+1 die)</li>
+									<li ng-class="{ inactive: !character.dramaticWounds[4] }"><pretty-checkbox checkbox="character.dramaticWounds[4]"></pretty-checkbox> You become Helpless</li>
 								</ol>
 								<div><a id="resetDeathSpiral" href="" ng-click="setDeathSpiral(0)">[ Reset Death Spiral ]</a></div>
 								<div id="deathSpiralImg">
