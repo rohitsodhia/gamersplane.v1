@@ -44,7 +44,7 @@
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
 			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" class="loginLink">Login</a></li>
 			<li ng-show="loggedIn" id="userMenu">
-				<a href="/ucp/"><img ng-src="avatar" class="avatar"></a>
+				<a href="/ucp/"><img ng-src="{{avatar}}" class="avatar"></a>
 				<a ng-if="pmCount > 0" href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>
 				<ul>
 					<li><a href="/ucp/">Profile</a></li>
