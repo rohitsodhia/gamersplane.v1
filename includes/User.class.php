@@ -115,8 +115,8 @@
 			$addUser->execute();
 			$this->userID = $mysql->lastInsertId();
 
-			$mongo->users->insert(['userID' => $this->userID, 'lfg' => []]);
-			
+			$mongo->users->insert(['userID' => (int) $this->userID, 'lfg' => []]);
+
 			if ($this->userID)
 				return $this->userID;
 			else
