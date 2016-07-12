@@ -3,10 +3,26 @@
 </div></div>
 <footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?>"><div class="bodyContainer">
 	<ul>
+		<li><a href="/tools/">Tools</a></li>
+		<li><a href="/systems/">Systems</a></li>
+		<li><a href="/characters/">Characters</a></li>
+		<li><a href="/games/">Games</a></li>
+		<li><a href="/forums/">Forums</a></li>
+		<li><a href="/gamersList/">The Gamers</a></li>
+		<li><a href="/links/">Links</a></li>
+	</ul>
+	<ul>
 		<li><a href="/faqs/">FAQs</a></li>
 		<li><a href="/about/">About GP</a></li>
 		<li><a href="/contact/">Contact Us</a></li>
 	</ul>
+	<ul id="followLinks">
+		<li><a id="fl_twitter" href="http://twitter.com/GamersPlane" target="_blank" title="Twitter"></a></li>
+		<li><a id="fl_facebook" href="https://www.facebook.com/pages/Gamers-Plane/245904792107862" target="_blank" title="Facebook"></a></li>
+		<!-- <li><a id="fl_stumbleupon" href="http://www.stumbleupon.com/submit?url=http://gamersplane.com" target="_blank" title="StumbleUpon"></a></li> -->
+		<li><a id="fl_twitch" href="http://www.twitch.tv/gamersplane" target="_blank" title="Twitch"></a></li>
+	</ul>
+
 	<ul class="floatRight">
 		<li><a href="http://amazon.gamersplane.com" target="_blank">Amazon referral link</a></li>
 		<li><a href="http://dtrpg.gamersplane.com" target="_blank">DTRPG referral link</a></li>

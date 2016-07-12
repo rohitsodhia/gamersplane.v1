@@ -5,23 +5,25 @@
 		function __construct() {
 			global $pathOptions;
 
-			if ($pathOptions[0] == 'gamersList') 
+			if ($pathOptions[0] == 'gamersList')
 				$this->gamersList();
-			elseif ($pathOptions[0] == 'search') 
+			elseif ($pathOptions[0] == 'search')
 				$this->search();
-			elseif ($pathOptions[0] == 'getCurrentUser') 
+			elseif ($pathOptions[0] == 'getCurrentUser')
 				$this->getCurrentUser();
-			elseif ($pathOptions[0] == 'get') 
+			elseif ($pathOptions[0] == 'getHeader')
+				$this->getHeader();
+			elseif ($pathOptions[0] == 'get')
 				$this->getUser();
-			elseif ($pathOptions[0] == 'save') 
+			elseif ($pathOptions[0] == 'save')
 				$this->saveUser();
-			elseif ($pathOptions[0] == 'stats') 
+			elseif ($pathOptions[0] == 'stats')
 				$this->stats();
-			elseif ($pathOptions[0] == 'getLFG') 
+			elseif ($pathOptions[0] == 'getLFG')
 				$this->getLFG();
-			elseif ($pathOptions[0] == 'saveLFG') 
+			elseif ($pathOptions[0] == 'saveLFG')
 				$this->saveLFG();
-			else 
+			else
 				displayJSON(array('failed' => true));
 		}
 
@@ -42,7 +44,7 @@
 					$users[] = $user;
 				}
 				displayJSON(array('users' => $users, 'totalUsers' => (int) $total));
-			} else 
+			} else
 				displayJSON(array('noUsers' => true));
 		}
 
@@ -55,24 +57,24 @@
 				if ($searchBy == 'userID') {
 					$search = intval($search);
 					$user = $mysql->query("SELECT userID, username FROM users WHERE userID = {$search}")->fetch();
-				} else 
+				} else
 					$user = $mysql->query("SELECT userID, username FROM users WHERE username = '{$search}'")->fetch();
 
-				if ($user) 
+				if ($user)
 					displayJSON(array('users' => array($user)));
-				else 
+				else
 					displayJSON(array('noUsers' => true));
 			} else {
 				$valid = $mysql->query("SELECT userID, username FROM users WHERE username LIKE '%{$search}%'");
 				if ($valid->rowCount()) {
 					$users = array();
-					foreach ($valid as $user) 
+					foreach ($valid as $user)
 						$users[] = array(
 							'userID' => (int) $user['userID'],
 							'username' => $user['username']
 						);
 					displayJSON(array('users' => $users));
-				} else 
+				} else
 					displayJSON(array('noUsers' => true));
 
 			}
@@ -81,7 +83,7 @@
 		public function getCurrentUser() {
 			global $loggedIn, $currentUser;
 
-			if (!$loggedIn) 
+			if (!$loggedIn)
 				displayJSON(array('failed' => true, 'loggedOut' => true));
 			else {
 				$cleanUser = array(
@@ -98,16 +100,60 @@
 			}
 		}
 
+		public function getHeader() {
+			global $loggedIn, $currentUser, $mongo;
+
+			if (!$loggedIn)
+				displayJSON(['failed' => true]);
+
+			$rCharacters = $mongo->characters->find([
+				'user.userID' => $currentUser->userID,
+				'retired' => null
+			], [
+				'characterID' => true,
+				'label' => true,
+				'system' => true
+			])->sort(['label' => 1])->limit(6);
+			$characters = [];
+			foreach ($rCharacters as $char)
+				$characters[] = $char;
+
+			$rGames = $mongo->games->find([
+				'players.user.userID' => $currentUser->userID,
+				'retired' => null
+			], [
+				'gameID' => true,
+				'title' => true,
+				'players.$' => true
+			])->sort(['title' => 1])->limit(6);
+			$games = [];
+			foreach ($rGames as $game) {
+				$game['isGM'] = $game['players'][0]['isGM'];
+				unset($game['players']);
+				$games[] = $game;
+			}
+
+			$pmCount = $mongo->pms->find([
+				'recipients' => ['$elemMatch' => [
+					'userID' => $currentUser->userID,
+					'read' => false,
+					'deleted' => false
+				]]
+			])->count();
+
+			displayJSON(['success' => true, 'characters' => $characters, 'games' => $games, 'pmCount' => $pmCount]);
+		}
+
 		public function getUser() {
 			global $loggedIn, $currentUser;
 
-			if (isset($_POST['userID'])) 
+			if (isset($_POST['userID']))
 				$user = new User(intval($_POST['userID']));
-			elseif (!isset($_POST['userID'])) 
+			elseif (!isset($_POST['userID']))
 				$user = $currentUser;
-			if (!$user) 
+			if (!$user)
 				displayJSON(array('failed' => true, 'noUser' => true));
-			if ($loggedIn) 
+			if ($loggedIn)
 				$getAll = $currentUser->checkACP('users', false) || $user->userID == $currentUser->userID;
 			$user->getAllUsermeta();
 
@@ -129,7 +175,7 @@
 				'stream' => $user->stream,
 				'games' => $user->games
 			);
-			if ($getAll) 
+			if ($getAll)
 				$details = array_merge($details, array(
 					'email' => $user->email,
 					'birthday' => array(
@@ -152,38 +198,38 @@
 		public function saveUser() {
 			global $loggedIn, $currentUser;
 
-			if (!$loggedIn && $currentUser->userID != $_POST['userID'] && !$currentUser->checkACP('users', false)) 
+			if (!$loggedIn && $currentUser->userID != $_POST['userID'] && !$currentUser->checkACP('users', false))
 				displayJSON(array('failed' => true, 'noAuth' => true));
 
 			$data = json_decode($_POST['data']);
 			$details = $data->details;
 			$newPass = $data->newPass;
 			$userID = (int) $details->userID;
-			if ($currentUser->userID != $userID) 
+			if ($currentUser->userID != $userID)
 				$user = new User($userID);
-			else 
+			else
 				$user = $currentUser;
 
 			$avatarUploaded = false;
-			if ($data->avatar->delete) 
+			if ($data->avatar->delete)
 				unlink(FILEROOT."/ucp/avatars/{$user->userID}.jpg");
 			if ($_FILES['file']['error'] == 0 && $_FILES['file']['size'] > 15 && $_FILES['file']['size'] < 1048576) {
 				$avatarExt = trim(end(explode('.', strtolower($_FILES['file']['name']))));
-				if ($avatarExt == 'jpeg') 
+				if ($avatarExt == 'jpeg')
 					$avatarExt = 'jpg';
 				if (in_array($avatarExt, array('jpg', 'gif', 'png'))) {
 					$maxWidth = 150;
 					$maxHeight = 150;
-					
+
 					list($imgWidth, $imgHeight, $imgType) = getimagesize($_FILES['file']['tmp_name']);
 					if ($imgWidth >= $maxWidth && $imgHeight >= $maxHeight) {
 						if (image_type_to_mime_type($imgType) == 'image/jpeg' || image_type_to_mime_type($imgType) == 'image/pjpeg') $tempImg = imagecreatefromjpeg($_FILES['file']['tmp_name']);
 						elseif (image_type_to_mime_type($imgType) == 'image/gif') $tempImg = imagecreatefromgif($_FILES['file']['tmp_name']);
 						elseif (image_type_to_mime_type($imgType) == 'image/png') $tempImg = imagecreatefrompng($_FILES['file']['tmp_name']);
-						
+
 						$xRatio = $maxWidth / $imgWidth;
 						$yRatio = $maxHeight / $imgHeight;
-						
+
 						if ($imgWidth <= $maxWidth && $imgHeight <= $maxHeight) {
 							$finalWidth = $imgWidth;
 							$finalHeight = $imgHeight;
@@ -194,46 +240,46 @@
 							$finalWidth = ceil($yRatio * $imgWidth);
 							$finalHeight = $maxHeight;
 						}
-						
+
 						$tempColor = imagecreatetruecolor($finalWidth, $finalHeight);
 						imagealphablending($tempColor, false);
 						imagesavealpha($tempColor,true);
 						imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
-						
+
 						$destination = FILEROOT.'/ucp/avatars/'.$user->userID.'.'.$avatarExt;
-						foreach (glob(FILEROOT.'/ucp/avatars/'.$user->userID.'.*') as $oldFile) 
+						foreach (glob(FILEROOT.'/ucp/avatars/'.$user->userID.'.*') as $oldFile)
 							unlink($oldFile);
-						if ($avatarExt == 'jpg') 
+						if ($avatarExt == 'jpg')
 							imagejpeg($tempColor, $destination, 100);
-						elseif ($avatarExt == 'gif') 
+						elseif ($avatarExt == 'gif')
 							imagegif($tempColor, $destination);
-						elseif ($avatarExt == 'png') 
+						elseif ($avatarExt == 'png')
 							imagepng($tempColor, $destination, 0);
 						imagedestroy($tempImg);
 						imagedestroy($tempColor);
 						$fileUploaded = true;
 					}
 				} elseif ($avatarExt == 'svg') {
-					foreach (glob(FILEROOT.'/ucp/avatars/'.$user->userID.'.*') as $oldFile) 
+					foreach (glob(FILEROOT.'/ucp/avatars/'.$user->userID.'.*') as $oldFile)
 						unlink($oldFile);
 					move_uploaded_file($_FILES['file']['tmp_name'], FILEROOT."/ucp/avatars/{$user->userID}.svg");
 					$fileUploaded = true;
 				}
 
-				if ($avatarExt == '') 
+				if ($avatarExt == '')
 					$avatarExt = null;
 				$user->updateUsermeta('avatarExt', $avatarExt, true);
 				$avatarUploaded = true;
 			}
 
 //			$user->updateUsermeta('showAvatars', isset($data->showAvatars)?1:0);
-			if ($details->gender == 'n') 
+			if ($details->gender == 'n')
 				$gender = '';
-			else 
+			else
 				$gender = $details->gender == 'm'?'m':'f';
 			$user->updateUsermeta('gender', $gender);
 			$birthday = intval($details->birthday->date->year).'-'.(intval($details->birthday->date->month) <= 9?'0':'').intval($details->birthday->date->month).'-'.(intval($details->birthday->date->day) <= 9?'0':'').intval($details->birthday->date->day);
-			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) 
+			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday))
 				$user->updateUsermeta('birthday', $birthday);
 			$user->updateUsermeta('showAge', $details->birthday->showAge?1:0);
 			$user->updateUsermeta('location', sanitizeString($details->location));
@@ -249,31 +295,31 @@
 			$password1 = $newPass->password1;
 			$password2 = $newPass->password2;
 			if (strlen($password1) && strlen($password2) ) {
-				if (!$user->validate($oldPass) && !$user->checkACP('users', false)) 
+				if (!$user->validate($oldPass) && !$user->checkACP('users', false))
 					$errors[] = 'wrongPass';
-				if (strlen($password1) < 6) 
+				if (strlen($password1) < 6)
 					$errors[] = 'passShort';
-				if (strlen($password1) > 32) 
+				if (strlen($password1) > 32)
 					$errors[] = 'passLong';
-				if ($password1 != $password2) 
+				if ($password1 != $password2)
 					$errors[] = 'passMismatch';
 
 				if (!sizeof($errors))
 					$user->updatePassword($password1);
 			}
 
-			if (in_array($details->postSide, array('l', 'r', 'c'))) 
+			if (in_array($details->postSide, array('l', 'r', 'c')))
 				$postSide = $details->postSide;
-			else 
+			else
 				$postSide = 'l';
 			$user->updateUsermeta('postSide', $postSide);
 
 			$return = array();
-			if (sizeof($errors)) 
+			if (sizeof($errors))
 				$return['passErrors'] = $errors;
-			else 
+			else
 				$return['success'] = true;
-			if ($avatarUploaded) 
+			if ($avatarUploaded)
 				$return['avatarUploaded'] = true;
 			displayJSON($return);
 		}
@@ -283,7 +329,7 @@
 			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
-			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
+			if (isset($_POST['userID']) && intval($_POST['userID']) > 0)
 				$userID = (int) $_POST['userID'];
 			else {
 				global $currentUser;
@@ -302,7 +348,7 @@
 						),
 						'numChars' => 1
 					);
-				} else 
+				} else
 					$characters[$character['system']]['numChars']++;
 				$numChars++;
 			}
@@ -340,7 +386,7 @@
 		public function getLFG() {
 			global $mongo;
 
-			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
+			if (isset($_POST['userID']) && intval($_POST['userID']) > 0)
 				$userID = (int) $_POST['userID'];
 			else {
 				global $currentUser;
@@ -353,7 +399,7 @@
 		public function saveLFG() {
 			global $mongo;
 
-			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) 
+			if (isset($_POST['userID']) && intval($_POST['userID']) > 0)
 				$userID = (int) $_POST['userID'];
 			else {
 				global $currentUser;
@@ -365,10 +411,10 @@
 			$newLFG = array();
 			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
-			foreach ($_POST['lfg'] as $system) 
+			foreach ($_POST['lfg'] as $system)
 				$newLFG[$systems->getSlug($system)] = 1;
 			foreach ($lfg as $key => $system) {
-				if (array_key_exists($system, $newLFG)) 
+				if (array_key_exists($system, $newLFG))
 					unset($newLFG[$system]);
 				else {
 					unset($lfg[$key]);
@@ -376,7 +422,7 @@
 				}
 			}
 			$lfg = array_merge($lfg, array_keys($newLFG));
-			foreach (array_merge($remove, $newLFG) as $system => $count) 
+			foreach (array_merge($remove, $newLFG) as $system => $count)
 				$mongo->systems->update(array('_id' => $system), array('$inc' => array('lfg' => $count)));
 			$mongo->users->update(array('userID' => $userID), array('$set' => array('lfg' => $lfg)));
 		}

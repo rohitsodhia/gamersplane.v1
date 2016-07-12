@@ -6,38 +6,15 @@
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
 </head>
 
-<body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>"<?=strlen($dispatchInfo['ngController'])?' ng-app="gamersplane" ng-controller="core"':''?>>
+<body<?=(MODAL?' class="modal"':'')?> data-modal-width="<?=$dispatchInfo['modalWidth']?>" ng-app="gamersplane" ng-controller="core">
 	<div id="pageLoading"><loading-spinner pause="pageLoadingPause"></loading-spinner></div>
 <?	if (!MODAL) { ?>
-<header class="bodyHeader"><div class="bodyContainer">
-	<a href="/"><img id="logo" src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>
-	
-	<div id="userMenu">
-		<div id="userMenu_left"></div>
-		<div id="userMenu_right"></div>
-<?		if (!$loggedIn) { ?>
-		<a href="/login/" class="loginLink first">Login</a>
-		<a href="/register/" class="last">Register</a>
-<?
-		} else {
-			$pmCount = $mongo->pms->find(array('recipients.userID' => $currentUser->userID, 'recipients.read' => false))->count();
-?>
-		<span id="menuMessage"><a href="/ucp/" class="username first"><?=$currentUser->username?></a></span>
-		<a href="/pms/"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"> (<?=$pmCount?>)</a>
-<!--		<a href="/notifications/"><img src="/images/bodyComponents/exclamation.jpg" title="Notifications" alt="Notifications"></a>-->
-		<a href="/logout/" class="last">Logout</a>
-<?		} ?>
-	</div>
-	
-	<div id="followLinks">
-		<a id="fl_twitter" href="http://twitter.com/GamersPlane" target="_blank" title="Twitter"></a>
-		<a id="fl_facebook" href="https://www.facebook.com/pages/Gamers-Plane/245904792107862" target="_blank" title="Facebook"></a>
-		<a id="fl_stumbleupon" href="http://www.stumbleupon.com/submit?url=http://gamersplane.com" target="_blank" title="StumbleUpon"></a>
-		<a id="fl_twitch" href="http://www.twitch.tv/gamersplane" target="_blank" title="Twitch"></a>
-	</div>
-	
-	<div id="mainMenu">
-		<ul id="mainMenu_left">
+<header id="bodyHeader" ng-controller="header">
+	<div id="headerBG"></div>
+	<div class="bodyContainer">
+		<a id="headerLogo" href="/"><img src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>
+
+		<ul id="mainMenu">
 			<li>
 				<a href="/tools/" class="first">Tools</a>
 				<ul>
@@ -47,65 +24,37 @@
 				</ul>
 			</li>
 			<li><a href="/systems/">Systems</a></li>
-<?		if ($loggedIn) { ?>
-			<li>
+			<li ng-show="loggedIn">
 				<a href="/characters/my/">Characters</a>
-<?
-			$header_characters = $mongo->characters->find(array('user.userID' => $currentUser->userID, 'retired' => null), array('characterID' => true, 'label' => true, 'system' => true))->sort(array('label' => 1))->limit(6);
-			if ($header_characters) {
-?>
-				<ul>
-<?
-				$count = 0;
-				foreach ($header_characters as $hCharacter) {
-?>
-					<li><a href="/characters/<?=$hCharacter['system']?>/<?=$hCharacter['characterID']?>/"><?=$hCharacter['label']?></a></li>
-<?
-					$count++;
-					if ($count == 5) 
-						break;
-				}
-				if ($header_characters->count() > 5) {
-?>
-					<li><a href="/characters/my/">All characters</a></li>
-<?				} ?>
+				<ul ng-if="characters.length">
+					<li ng-repeat="char in characters | limitTo: 5"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
+					<li ng-if="characters.length > 5"><a href="/characters/my/">All characters</a></li>
 				</ul>
-<?			} ?>
 			</li>
 			<li>
 				<a href="/games/">Games</a>
-<?
-			$header_games = $mongo->games->find(array('players.user.userID' => $currentUser->userID, 'retired' => null), array('gameID' => true, 'title' => true, 'players.$' => true))->sort(array('title' => 1))->limit(6);
-			if ($header_games->count()) {
-?>
-				<ul>
-<?
-				$count = 0;
-				foreach ($header_games as $game) {
-?>
-					<li><a href="/games/<?=$game['gameID']?>/"><?=$game['title'].($game['players'][0]['isGM']?' <img src="/images/gm_icon.png">':'')?></a></li>
-<?
-					$count++;
-					if ($count == 5) {
-?>
-					<li><a href="/games/my/">All games</a></li>
-<?
-						break;
-					}
-				}
-?>
+				<ul ng-if="games.length">
+					<li ng-repeat="game in games | limitTo: 5"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
+					<li ng-if="games.lenght > 5"><a href="/games/my/">All games</a></li>
 				</ul>
-<?			} ?>
 			</li>
-<?		} ?>
 			<li><a href="/forums/">Forums</a></li>
-<?		if ($loggedIn) { ?>
-			<li><a href="/gamersList/">The Gamers</a></li>
-<?		} ?>
+			<li ng-show="loggedIn"><a href="/gamersList/">The Gamers</a></li>
 			<li><a href="/links/">Links</a></li>
+			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
+			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" class="loginLink">Login</a></li>
+			<li ng-show="loggedIn" id="userMenu">
+				<a href="/ucp/"><img src="<?=User::getAvatar($currentUser->userID)?>" class="avatar"></a>
+				<a href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>
+				<ul>
+					<li><a href="/ucp/">Profile</a></li>
+					<li><a href="/pms/">Messages ({{pmCount}})</a></li>
+					<li><a href="/logout/" class="last">Logout</a></li>
+				</ul>
+			</li>
 		</ul>
 	</div>
-</div></header>
+</header>
 
 <div id="content"><div class="bodyContainer clearfix">
 	<div id="page_<?=PAGE_ID?>"<?=strlen($dispatchInfo['bodyClass'])?' class="'.implode(' ', $bodyClasses).'"':''?><?=strlen($dispatchInfo['ngController'])?" ng-controller=\"{$dispatchInfo['ngController']}\"":''?>>

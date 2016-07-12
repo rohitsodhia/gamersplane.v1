@@ -191,6 +191,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 
 	return factory;
 }]).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
+	this.getHeader = function () {
+		return $http.post(API_HOST + '/users/getHeader/').then(function (data) {
+			return data.data;
+		});
+	};
 	this.get = function (userID) {
 		params = {};
 		if (userID && parseInt(userID) > 0)
@@ -1068,6 +1073,41 @@ app.config(['$httpProvider', function ($httpProvider) {
 			$scope.$emit('pageLoading');
 		return count;
 	};
+}]).controller('header', ['$scope', 'UsersService', function ($scope, UsersService) {
+	$scope.characters = [];
+	$scope.games = [];
+	$scope.pmCount = 0;
+	UsersService.getHeader().then(function (data) {
+		$scope.loggedIn = data.success?true:false;
+		if ($scope.loggedIn) {
+			$scope.characters = data.characters;
+			$scope.games = data.games;
+			$scope.pmCount = data.pmCount;
+		}
+	});
+
+	var $header = $('#bodyHeader'),
+		$headerEles = $('#bodyHeader, #bodyHeader > *'),
+		$logo = $('#headerLogo img'),
+		scrollPos = $(window).scrollTop(),
+		headerHeight = $header.height(),
+		scrollTimeout = null,
+		ratio = 1;
+	$headerEles.height(scrollPos < 50?120 - scrollPos:70);
+	ratio = (scrollPos < 50?scrollPos:50) / 50;
+	$logo.height(100 - 47 * ratio);
+	$(window).scroll(function () {
+		scrollPos = $(this).scrollTop();
+		headerHeight = $header.height();
+		// console.log(scrollPos);
+		if (scrollPos >= 0 && scrollPos <= 50) {
+//			scrollTimeout = setTimeout(function () {
+				$headerEles.height(scrollPos < 50?120 - scrollPos:70);
+				ratio = (scrollPos < 50?scrollPos:50) / 50;
+				$logo.height(100 - 47 * ratio);
+//			}, 100);
+		}
+	});
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
 	$scope.$emit('pageLoading');
 	$scope.catMap = {};

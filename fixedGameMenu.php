@@ -56,7 +56,7 @@
 						<div id="fm_dispArea">
 							<div class="newDeck<?=$cardCount[0] > 0?' hideDiv':''?>">
 								<h3>New Deck</h3>
-								
+
 								<div class="deckType"><a id="newDeck_pcwj" href="?newDeck=pcwj">Playing Cards w/ Jokers</a></div>
 								<div class="deckType last"><a id="newDeck_pcwoj" href="?newDeck=pcwoj">Playing Cards w/o Jokers</a></div>
 							</div>
@@ -77,7 +77,7 @@
 <?
 		if ($gameID) {
 			$charConds = array('game.gameID' => $gameID, 'game.approved' => true);
-			if (!$isGM) 
+			if (!$isGM)
 				$charConds['user.userID'] = $currentUser->userID;
 			$characters = $mongo->characters->find($charConds, array(
 				'characterID' => true,
@@ -99,7 +99,7 @@
 						echo "				<li>\n";
 						if ($isGM) {
 ?>
-					<p class="username"><a href="/ucp/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
+					<p class="username"><a href="/user/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
 <?
 						}
 					}
