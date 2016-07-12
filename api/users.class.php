@@ -141,7 +141,13 @@
 				]]
 			])->count();
 
-			displayJSON(['success' => true, 'characters' => $characters, 'games' => $games, 'pmCount' => $pmCount]);
+			displayJSON([
+				'success' => true,
+				'characters' => $characters,
+				'games' => $games,
+				'avatar' => User::getAvatar($currentUser->userID),
+				'pmCount' => $pmCount
+			]);
 		}
 
 		public function getUser() {

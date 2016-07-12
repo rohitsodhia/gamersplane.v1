@@ -1076,12 +1076,14 @@ app.config(['$httpProvider', function ($httpProvider) {
 }]).controller('header', ['$scope', '$timeout', 'UsersService', function ($scope, $timeout, UsersService) {
 	$scope.characters = [];
 	$scope.games = [];
+	$scope.avatar = '';
 	$scope.pmCount = 0;
 	UsersService.getHeader().then(function (data) {
 		$scope.loggedIn = data.success?true:false;
 		if ($scope.loggedIn) {
 			$scope.characters = data.characters;
 			$scope.games = data.games;
+			$scope.avatar = data.avatar;
 			$scope.pmCount = data.pmCount;
 		}
 	});
