@@ -1073,7 +1073,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 			$scope.$emit('pageLoading');
 		return count;
 	};
-}]).controller('header', ['$scope', 'UsersService', function ($scope, UsersService) {
+}]).controller('header', ['$scope', '$timeout', 'UsersService', function ($scope, $timeout, UsersService) {
 	$scope.characters = [];
 	$scope.games = [];
 	$scope.pmCount = 0;
@@ -1093,9 +1093,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 		headerHeight = $header.height(),
 		scrollTimeout = null,
 		ratio = 1;
-	$headerEles.height(scrollPos < 50?120 - scrollPos:70);
-	ratio = (scrollPos < 50?scrollPos:50) / 50;
-	$logo.height(100 - 47 * ratio);
+	$timeout(function () {
+		$headerEles.height(scrollPos < 50?120 - scrollPos:70);
+		ratio = (scrollPos < 50?scrollPos:50) / 50;
+		$logo.height(100 - 47 * ratio);
+	});
 	$(window).scroll(function () {
 		scrollPos = $(this).scrollTop();
 		headerHeight = $header.height();
