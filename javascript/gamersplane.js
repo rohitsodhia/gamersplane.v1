@@ -1106,6 +1106,9 @@ app.config(['$httpProvider', function ($httpProvider) {
 				ratio = (scrollPos < 50?scrollPos:50) / 50;
 				$logo.height(100 - 47 * ratio);
 //			}, 100);
+		} else if ($headerEles.height() > 70) {
+			$headerEles.height(70);
+			$logo.height(53);
 		}
 	});
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
