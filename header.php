@@ -45,7 +45,7 @@
 			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" class="loginLink">Login</a></li>
 			<li ng-show="loggedIn" id="userMenu">
 				<a href="/ucp/"><img src="<?=User::getAvatar($currentUser->userID)?>" class="avatar"></a>
-				<a href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>
+				<a ng-if="pmCount > 0" href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>
 				<ul>
 					<li><a href="/ucp/">Profile</a></li>
 					<li><a href="/pms/">Messages ({{pmCount}})</a></li>
