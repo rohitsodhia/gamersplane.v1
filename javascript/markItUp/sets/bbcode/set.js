@@ -35,13 +35,13 @@ mySettings = {
 		]},
 		{separator:'---------------' },
 		{name:'Bulleted list', openWith:'[list]\n', closeWith:'\n[/list]'},
-		{name:'Numeric list', openWith:'[list=[![Starting number]!]]\n', closeWith:'\n[/list]'}, 
+		{name:'Numeric list', openWith:'[list=[![Starting number]!]]\n', closeWith:'\n[/list]'},
 		{name:'List item', openWith:'[*] '},
 		{separator:'---------------' },
 */		{name:'Quotes', openWith:'[quote]', closeWith:'[/quote]'},
 		{name:'Note', openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]'},
-		{name:'OOC', openWith:'[ooc]', closeWith:'[/ooc]'},/*
-		{name:'Code', openWith:'[code]', closeWith:'[/code]'}, 
+		{name:'Out of Character', openWith:'[ooc]', closeWith:'[/ooc]'},/*
+		{name:'Code', openWith:'[code]', closeWith:'[/code]'},
 		{separator:'---------------' },
 		{name:'Clean', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
 		{name:'Preview', className:"preview", call:'preview' }*/
