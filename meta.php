@@ -1,5 +1,5 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link href="/images/favicon.ico" rel="shortcut icon">
+	<link href="/images/favicon.png" rel="shortcut icon">
 	<title><?=strlen($dispatchInfo['title'])?$dispatchInfo['title'].' | ':''?>Gamers Plane</title>
 <?
 	$dispatchInfo['description'] = strlen($dispatchInfo['description'])?substr($dispatchInfo['description'], 0, 155):"A pen and paper RPG play-by-post site and community, Gamers' Plane is a great place to play games online or organize your live ones.";
