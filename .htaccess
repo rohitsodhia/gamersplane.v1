@@ -2,7 +2,7 @@ ErrorDocument 401 errors/401
 ErrorDocument 403 errors/403
 ErrorDocument 404 errors/404
 
-Options -Indexes +FollowSymLinks 
+Options -Indexes +FollowSymLinks
 RewriteEngine On
 
 RewriteBase /
@@ -20,4 +20,4 @@ RewriteCond %{REQUEST_URI} !^/test/
 RewriteCond %{REQUEST_URI} !^/dbBackup\.php$
 RewriteCond %{REQUEST_URI} !^/oneRunScripts/
 RewriteCond %{REQUEST_URI} !^/angular/
-RewriteRule !\.(css|jpg|js|gif|png|ico|eot|woff|ttff|svg|psd)$ dispatch.php
+RewriteRule !\.(css|jpg|js|gif|png|ico|eot|woff|woff2|ttff|svg|psd)$ dispatch.php
