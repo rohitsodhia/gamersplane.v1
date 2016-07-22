@@ -22,8 +22,9 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 			$scope.library = typeof data.library != 'undefined'?data.library:null;
 		});
 		SystemsService.get({ 'getAll': true }).then(function (data) {
-			for (key in data.systems) 
-				$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
+			for (var key in data.systems)
+				if (data.systems[key].hasCharSheet)
+					$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
 		});
 
 		$scope.editBasic = function (character) {
@@ -62,10 +63,10 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 
 		$scope.toggleLibrary = function (character, library) {
 			CharactersService.toggleLibrary(character.characterID).then(function (data) {
-				if (data.success) 
+				if (data.success)
 					character.inLibrary = data.state;
 			});
-		}
+		};
 
 		$scope.deleteChar = function (character) {
 			$scope.deleting = character.characterID;
@@ -89,18 +90,18 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 			CharactersService.toggleFavorite(character.characterID).then(function (data) {
 				removeEle($scope.library, character);
 			});
-		}
+		};
 
 		$scope.createChar = function () {
 			$scope.$emit('pageLoading');
 			var data = copyObject($scope.newChar);
 			data.label = data.label.trim();
-			if (data.label.length == 0) 
+			if (data.label.length === 0) 
 				return;
 			data.system = data.system.value;
 			data.charType = data.charType.value;
 			CharactersService.new(data).then(function (data) {
-				if (data.success) 
+				if (data.success)
 					window.location.href = '/characters/' + data.system + '/' + data.characterID + '/edit/';
 			});
 		};
