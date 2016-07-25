@@ -1,52 +1,108 @@
-$(function () {
-	var $mainColumn = $('div.mainColumn');
-
-	if ($('#page_acp_users').length) {
-		var currentTab = 'active';
-		$('#controls a').click(function (e) {
-			e.preventDefault();
-
-			currentTab = this.id.substring(9, this.id.length);
-			$.post('/acp/ajax/listUsers/', { show: currentTab }, function (data) {
-				$('div.mainColumn ul').html(data);
-			});
-		});
-
-		$suspendDate = $('#suspendDate');
-		$suspendDate.ajaxForm({
-			beforeSubmit: function (arr, $form) {
-				var error = false;
-				$form.find('input[type="text"]').each(function () {
-					if ((this.name == 'hour' && ($(this).val() < 0 || $(this).val() > 23)) || (this.name == 'minutes' && ($(this).val() < 0 || $(this).val() > 60))) error = true;
-				});
-
-				if (error) return false;
-			},
-			success: function (data) {
-				if (data == 'suspended' && currentTab == 'active') {
-					$li = $suspendDate.closest('li');
-					$suspendDate.appendTo($mainColumn);
-					$li.remove();
-				}
-//				window.location.reload();
+controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Range', function ($scope, $timeout, UsersService, Range) {
+	$scope.loadUsers = function (loadType) {
+		if (['all', 'active', 'inactive', 'suspended'].indexOf(loadType) == -1)
+			$scope.loadType = 'all';
+		else
+			$scope.loadType = loadType;
+		$scope.$emit('pageLoading');
+		UsersService.search({
+			'search': $scope.search,
+			'loadType': $scope.loadType,
+			'fields': 'userID, username, activatedOn, suspendedUntil, banned',
+			'limit': $scope.pagination.itemsPerPage,
+			'page': $scope.pagination.current,
+			'md5': true
+		}).then(function (data) {
+			$scope.users = data.users;
+			$scope.pagination.numItems = data.numUsers;
+			for (var key in $scope.users) {
+				if ($scope.users[key].suspendedUntil)
+					$scope.users[key].suspendedUntil *= 1000;
+				$scope.users[key].showForm = null;
 			}
+			$scope.$emit('pageLoading');
 		});
-		$('ul.prettyList').on('click', 'a.suspend', function (e) {
-			e.preventDefault();
-
-			$li = $(this).closest('li');
-
-			if ($(this).text() == 'Suspend' && $li.find('form').length == 0) {
-				$li.append($suspendDate);
-				$suspendDate.find('#userID').val($li.data('id'));
-			} else if ($(this).text() == 'Suspend' && $li.find('form').length == 1) {
-				$suspendDate.appendTo($mainColumn);
-			}
+	};
+	$scope.suspend = function (user) {
+		if (user.showForm != 'suspend') {
+			$scope.suspendUntil = {
+				'month': curDate.getMonth() + 1,
+				'day': curDate.getDate(),
+				'year': curDate.getFullYear(),
+				'hour': curDate.getHours(),
+				'minutes': curDate.getMinutes()
+			};
+			if ($scope.suspendUntil.minutes < 10)
+				$scope.suspendUntil.minutes = '0' + $scope.suspendUntil.minutes;
+			user.showForm = 'suspend';
+		} else
+			$user.showForm = null;
+	};
+	$scope.confirmSuspend = function (user) {
+		if (user.suspendedUntil === null)
+			suspendDate = new Date($scope.suspendUntil.year, $scope.suspendUntil.month - 1, $scope.suspendUntil.day, $scope.suspendUntil.hour, $scope.suspendUntil.minutes);
+		else
+			suspendDate = null;
+		UsersService.suspend(user.userID, moment(suspendDate).utc().unix()).then(function (data) {
+			if (data.suspended !== null)
+				user.suspendedUntil = data.suspended * 1000;
+			else
+				user.suspendedUntil = null;
+			user.showForm = null;
 		});
-	}
-});
+	};
+	$scope.getActivation = function (user) {
+		if (user.showForm != 'activationLink') {
+			user.showForm = 'activationLink';
+		} else
+			user.showForm = null;
+	};
+	$timeout(function () {
+		$('#userList').on('click', '.activationLink input', function () {
+			if (document.selection) {
+		        document.selection.empty();
+		    } else if (window.getSelection) {
+		        window.getSelection().removeAllRanges();
+		    }
+			$(this).select();
+		}).on('keydown keypress', '.activationLink input', function ($event) {
+			$event.preventDefault();
+		});
+	});
+	var searchTimeout = null;
+	$scope.searchChange = function () {
+		$timeout.cancel(searchTimeout);
+		searchTimeout = $timeout(function () {
+			$scope.loadUsers($scope.loadType);
+		}, 500);
+	};
 
-controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+	$scope.users = [];
+	$scope.range = Range.get;
+	$scope.pagination = {
+		'numItems': 0,
+		'itemsPerPage': 25,
+		'current': 1
+	};
+	$scope.loadType = 'all';
+	$scope.search = '';
+	var curDate = new Date();
+	$scope.suspendUntil = {
+		'month': 1,
+		'day': 1,
+		'year': 1,
+		'hour': 0,
+		'minutes': 0
+	};
+	$scope.combobox = {
+		'values': {
+			'month': Range.get(1, 12),
+			'day': Range.get(1, 31),
+			'year': Range.get(curDate.getFullYear(), curDate.getFullYear() + 2)
+		}
+	};
+	$scope.loadUsers();
+}]).controller('acp_autocomplete', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
 	$scope.$emit('pageLoading');
 	$scope.newItems = [];
 	$scope.addToSystem = [];
@@ -56,7 +112,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		$scope.newItems = data.newItems;
 		addToSystem = {};
 		data.addToSystem.forEach(function (item) {
-			if (typeof addToSystem[item.type] == 'undefined') 
+			if (typeof addToSystem[item.type] == 'undefined')
 				addToSystem[item.type] = [];
 			addToSystem[item.type].push(item);
 		});
@@ -73,15 +129,15 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 				if (item.itemID) {
 					var sub = null;
 					$scope.addToSystem.forEach(function (set) {
-						if (set.type == item.type) 
+						if (set.type == item.type)
 							sub = set.items;
 					});
 					removeEle(sub, item);
-				} else 
+				} else
 					removeEle($scope.newItems, item);
 			}
 		});
-	}
+	};
 /*		$('#newItems').on('click', '.actions a', function (e) {
 			e.preventDefault();
 
@@ -112,10 +168,10 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		SystemsService.get({ 'getAll': true }).then(function (data) {
 			systems = data.systems;
 			$scope.selectSystem.data = [];
-			for (key in systems) {
-				if (systems[key].shortName != 'custom') 
+			for (var key in systems) {
+				if (systems[key].shortName != 'custom')
 					$scope.selectSystem.data.push({
-						'value': systems[key].shortName, 
+						'value': systems[key].shortName,
 						'display': systems[key].fullName
 					});
 			}
@@ -132,7 +188,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		SystemsService.getGenres().then(function (data) {
 			$scope.allGenres = [];
 			$scope.newGenre.data = [];
-			for (key in data) {
+			for (var key in data) {
 				$scope.allGenres.push(data[key]);
 				$scope.newGenre.data.push(data[key]);
 			}
@@ -145,7 +201,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 	$scope.saveSuccess = false;
 
 	$scope.loadSystem = function () {
-		if ($scope.selectSystem.value.value == null) 
+		if ($scope.selectSystem.value.value === null)
 			return;
 		SystemsService.get({ 'shortName': $scope.selectSystem.value.value }).then(function (data) {
 			$scope.newSystem = false;
@@ -163,11 +219,11 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 	$scope.saveStatusBtn = 'cancel';
 	$scope.setEditBtn = function (type) {
 		$scope.saveStatusBtn = type;
-	}
+	};
 
 	function updateGenres() {
 		$scope.newGenre.data = [];
-		for (key in $scope.allGenres) 
+		for (var key in $scope.allGenres)
 			if ($scope.edit.genres.indexOf($scope.allGenres[key]) == -1)
 				$scope.newGenre.data.push({
 					'value': $scope.allGenres[key],
@@ -175,34 +231,34 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 				});
 	}
 	$scope.addGenre = function () {
-		if (typeof $scope.edit.genres == 'undefined') 
+		if (typeof $scope.edit.genres == 'undefined')
 			$scope.edit.genres = [];
-		if ($scope.newGenre.value.display.length == 0) 
+		if ($scope.newGenre.value.display.length === 0)
 			return;
 		$scope.edit.genres.push($scope.newGenre.value.display);
 		updateGenres();
-	}
+	};
 	$scope.removeGenre = function (genre) {
 		index = $scope.edit.genres.indexOf(genre);
-		if (index >= 0) 
+		if (index >= 0)
 			$scope.edit.genres.splice(index, 1);
 		updateGenres();
-	}
+	};
 	$scope.addBasic = function () {
-		if (typeof $scope.edit.basics == 'undefined') 
+		if (typeof $scope.edit.basics == 'undefined')
 			$scope.edit.basics = [];
-		if (typeof $scope.edit.newBasic == 'undefined' || $scope.edit.newBasic.text.length == 0 || $scope.edit.newBasic.site.length == 0) 
+		if (typeof $scope.edit.newBasic == 'undefined' || $scope.edit.newBasic.text.length === 0 || $scope.edit.newBasic.site.length === 0)
 			return false;
 		$scope.edit.basics.push($scope.edit.newBasic);
 		$scope.edit.newBasic = { 'text': '', 'site': '' };
-	}
+	};
 	$scope.removeBasic = function (basic) {
 		index = $scope.edit.basics.indexOf(basic);
-		if (index >= 0) 
+		if (index >= 0)
 			$scope.edit.basics.splice(basic, 1);
-	}
+	};
 	$scope.saveSystem = function () {
-		if ($scope.saveStatusBtn != 'save') 
+		if ($scope.saveStatusBtn != 'save')
 			return;
 
 		SystemsService.save($scope.edit).then(function (data) {
@@ -213,7 +269,7 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 			loadSystems();
 			$timeout(function () { $scope.saveSuccess = false; }, 1500);
 		});
-	}
+	};
 }]).controller('acp_links', ['$scope', '$http', '$sce', '$filter', 'Links', function ($scope, $http, $sce, $filter, Links) {
 	$scope.links = [];
 	$scope.newLink = {};
@@ -226,9 +282,9 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 		$scope.pagination.numItems = data.data.totalCount;
 	});
 	$scope.pagination = { numItems: 0, itemsPerPage: 20 };
-	if ($.urlParam('page')) 
+	if ($.urlParam('page'))
 		$scope.pagination.current = parseInt($.urlParam('page'));
-	else 
+	else
 		$scope.pagination.current = 1;
 
 	$scope.$watch(function () { return $scope.search; }, function () {
@@ -257,13 +313,13 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 					'networks': [],
 					'categories': []
 				};
-			} else 
+			} else
 				scope.new = false;
 
 			scope.toggleEditing = function () {
 				scope.showEdit = !scope.showEdit;
 				scope.editing = !scope.editing;
-			}
+			};
 			scope.saveLink = function () {
 				data = copyObject(scope.data);
 				delete data.image;
@@ -274,34 +330,34 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 					'fields': data,
 					'sendFieldsAs': 'form'
 				}).success(function (data) {
-					if (scope.new) 
+					if (scope.new)
 						window.location.reload();
 					else {
-						if (data.image) 
+						if (data.image)
 							scope.data.image = data.image;
 						scope.toggleEditing();
 					}
 				});
-			}
+			};
 			scope.deleteImage = function () {
 				$http.post(API_HOST + '/links/deleteImage/', { '_id': scope.data._id }).success(function (data) {
 					delete scope.data.image;
-				})
-			}
+				});
+			};
 			scope.deleteLink = function () {
 				$http.post(API_HOST + '/links/deleteLink/', { '_id': scope.data._id }).success(function (data) {
 					window.location.reload();
-				})
-			}
+				});
+			};
 		}
-	}
+	};
 }]).controller('acp_music', ['$scope', '$http', '$sce', function ($scope, $http, $sce) {
 	$scope.music = [];
 	$scope.newSong = { 'url': '', 'title': '', 'lyrics': false, 'battlebards': false, 'genres': [], 'notes': '' };
 	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
-	if ($.urlParam('page')) 
+	if ($.urlParam('page'))
 		$scope.pagination.current = parseInt($.urlParam('page'));
-	else 
+	else
 		$scope.pagination.current = 1;
 	$scope.showPagination = true;
 	function loadMusic() {
@@ -321,14 +377,14 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 	};
 	$scope.editSong = function (id) {
 		$scope.showEdit = $scope.showEdit != id?id:null;
-		if ($scope.showEdit != null) 
+		if ($scope.showEdit !== null)
 			$scope.$broadcast('resetSongForm', id);
 	};
 	$scope.toggleApproval = function (song) {
 		$http.post(API_HOST + '/music/toggleApproval/', { 'id': song._id, approved: song.approved }).success(function (data) {
-			if (data.success) 
+			if (data.success)
 				song.approved = !song.approved;
-		})
+		});
 	};
 	$scope.$on('closeSongEdit', function (event) {
 		$scope.showEdit = null;
@@ -340,13 +396,13 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 }]).controller('acp_faqs', ['$scope', '$http', '$filter', 'faqs', function ($scope, $http, $filter, faqs) {
 	$scope.categories = [];
 	$scope.catMap = {};
-	for (key in faqs.categories) {
+	for (var key in faqs.categories) {
 		$scope.categories.push({ 'value': key, 'display': faqs.categories[key] });
 		$scope.catMap[key] = faqs.categories[key];
 	}
 	$scope.aFAQs = [];
 	faqs.get().then(function (data) {
-		if (data.faqs) 
+		if (data.faqs)
 			$scope.aFAQs = data.faqs;
 	});
 	$scope.editing = null;
@@ -379,29 +435,28 @@ controllers.controller('acp_autocomplete', ['$scope', '$http', '$timeout', funct
 				$scope.editHold = null;
 			}
 		});
-	}
+	};
 	$scope.cancelSave = function () {
 		$scope.editing = null;
 		$scope.editHold = null;
-	}
+	};
 	$scope.deleteFAQ = function (id, cFAQs, index) {
 		faqs.delete(id).then(function (data) {
-			if (data.success) 
+			if (data.success)
 				cFAQs.splice(index, 1);
 		});
-	}
+	};
 
 	$scope.newFAQ = {
 		'category': '',
 		'question': '',
 		'answer': ''
-	}
+	};
 	$scope.createFAQ = function () {
-		console.log($scope.newFAQ); return;
-		if ($scope.newFAQ.question.length == 0 || $scope.newFAQ.answer.length == 0) 
+		if ($scope.newFAQ.question.length === 0 || $scope.newFAQ.answer.length === 0)
 			return false;
 		faqs.create($scope.newFAQ).then(function (data) {
 			$scope.aFAQs[data.faq.category].push(data.faq);
 		});
-	}
+	};
 }]);

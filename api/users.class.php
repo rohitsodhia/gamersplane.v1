@@ -17,6 +17,10 @@
 				$this->getUser();
 			elseif ($pathOptions[0] == 'save')
 				$this->saveUser();
+			elseif ($pathOptions[0] == 'suspend')
+				$this->suspend();
+			elseif ($pathOptions[0] == 'ban')
+				$this->ban();
 			elseif ($pathOptions[0] == 'stats')
 				$this->stats();
 			elseif ($pathOptions[0] == 'getLFG')
@@ -52,31 +56,62 @@
 			global $mysql, $currentUser;
 
 			$search = sanitizeString(preg_replace('/[^\w.]/', '', $_GET['search']), 'lower');
+			$fields = isset($_GET['fields']) && strlen($_GET['fields'])?$_GET['fields']:'userID, username';
 			if (isset($_GET['exact']) && (bool) $_GET['exact'] == true) {
 				$searchBy = isset($_GET['searchBy']) && in_array($_GET['searchBy'], array('username', 'userID'))?$_GET['searchBy']:'username';
 				if ($searchBy == 'userID') {
 					$search = intval($search);
-					$user = $mysql->query("SELECT userID, username FROM users WHERE userID = {$search}")->fetch();
+					$user = $mysql->query("SELECT {$fields} FROM users WHERE userID = {$search} LIMIT 1")->fetch();
 				} else
-					$user = $mysql->query("SELECT userID, username FROM users WHERE username = '{$search}'")->fetch();
+					$user = $mysql->query("SELECT {$fields} FROM users WHERE username = '{$search}' LIMIT 1")->fetch();
 
-				if ($user)
+				if ($user) {
+					$user['userID'] = (int) $user['userID'];
+					if (isset($user['activatedOn']))
+						$user['activatedOn'] = strtotime($user['activatedOn']);
+					if (isset($user['suspendedUntil']) && $user['suspendedUntil'] != null)
+						$user['suspendedUntil'] = strtotime($user['suspendedUntil']);
+					if (isset($user['banned']))
+						$user['banned'] = (bool) $user['banned'];
 					displayJSON(array('users' => array($user)));
-				else
+				} else
 					displayJSON(array('noUsers' => true));
 			} else {
-				$valid = $mysql->query("SELECT userID, username FROM users WHERE username LIKE '%{$search}%'");
+				$limit = (int) $_GET['limit'] > 0?(int) $_GET['limit']:5;
+				$page = (int) $_GET['page'] > 0?(int) $_GET['page']:1;
+				$loadType = array_search($_GET['loadType'], ['all', 'active', 'inactive', 'suspended'])?$_GET['loadType']:'all';
+				$typeQuery = '';
+				if ($loadType == 'active')
+					$typeQuery = ' activatedOn IS NOT NULL';
+				elseif ($loadType == 'inactive')
+					$typeQuery = ' activatedOn IS NULL';
+				elseif ($loadType == 'suspended')
+					$typeQuery = ' suspendedUntil IS NOT NULL';
+				if ($typeQuery != '') {
+					if (strlen($search))
+						$typeQuery = ' AND'.$typeQuery;
+					else
+						$typeQuery = ' WHERE'.$typeQuery;
+				}
+				$valid = $mysql->query("SELECT {$fields} FROM users".(strlen($search)?" WHERE username LIKE '%{$search}%'":'').$typeQuery.' LIMIT '.(($page - 1) * $limit).', '.$limit);
+				$numUsers = $mysql->query("SELECT COUNT(userID) numUsers FROM users".(strlen($search)?" WHERE username LIKE '%{$search}%'":'').$typeQuery)->fetchColumn();
 				if ($valid->rowCount()) {
 					$users = array();
-					foreach ($valid as $user)
-						$users[] = array(
-							'userID' => (int) $user['userID'],
-							'username' => $user['username']
-						);
-					displayJSON(array('users' => $users));
+					foreach ($valid as $user) {
+						$user['userID'] = (int) $user['userID'];
+						if (isset($user['activatedOn']))
+							$user['activatedOn'] = strtotime($user['activatedOn']);
+						if (isset($user['suspendedUntil']) && $user['suspendedUntil'] != null)
+							$user['suspendedUntil'] = strtotime($user['suspendedUntil']);
+						if (isset($user['banned']))
+							$user['banned'] = (bool) $user['banned'];
+						if (isset($_GET['md5']) && $currentUser->checkACP('users', false))
+							$user['userHash'] = md5($user['username']);
+						$users[] = $user;
+					}
+					displayJSON(array('users' => $users, 'numUsers' => (int) $numUsers));
 				} else
 					displayJSON(array('noUsers' => true));
-
 			}
 		}
 
@@ -328,6 +363,24 @@
 			if ($avatarUploaded)
 				$return['avatarUploaded'] = true;
 			displayJSON($return);
+		}
+
+		public function suspend() {
+			global $mysql;
+
+			$userID = (int) $_POST['userID'];
+			$until = (int) $_POST['until'];
+			if ($until > time()) {
+				$mysql->query("UPDATE users SET suspendedUntil = '".date('Y-m-d H:i:s', $until)."' WHERE userID = {$userID} LIMIT 1");
+				displayJSON(['suspended' => $until]);
+			} else {
+				$mysql->query("UPDATE users SET suspendedUntil = null WHERE userID = {$userID} LIMIT 1");
+				displayJSON(['suspended' => null]);
+			}
+		}
+
+		public function ban() {
+
 		}
 
 		public function stats() {

@@ -275,12 +275,27 @@
 	#controls {
 		margin: 0 8px 1em;
 
-		a {
+		input, a {
 			margin-right: 10px;
 		}
 	}
 
-	#suspendDate {
+	.suspendDate, .activationLink {
+		margin-top: 1em;
+
+		input {
+			width: 100%;
+		}
+	}
+
+	.suspendDate {
+		combobox {
+			margin-right: 5px;
+
+			input {
+				width: 70px;
+			}
+		}
 		input {
 			width: 30px;
 			text-align: right;
@@ -288,25 +303,16 @@
 	}
 
 	.mainColumn li {
-		form {
-			margin-top: .5em;
-			margin-left: 250px;
-
-			& > * {
-				vertical-align: middle;
-			}
-		}
-
 		.info {
 			& > * {
 				display: inline-block;
 			}
 
-			& > a {
-				width: 250px;
+			.user {
+				width: 350px;
 			}
 
-			a {
+			.actions a {
 				margin-right: 10px;
 			}
 		}
