@@ -1,1 +1,1 @@
-UPDATE dispatch SET ngController = 'acp_users' WHERE file = 'acp/users.php';
+UPDATE dispatch SET loginReq = 0 WHERE url = 'games/list/';

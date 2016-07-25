@@ -61,7 +61,7 @@
 		$dispatchInfo->execute(array($moddedPath.'/'));
 		$dispatchInfo = $dispatchInfo->fetch();
 		global $loggedIn;
-		$loggedIn = User::checkLogin($dispatchInfo['loginReq']);
+		$loggedIn = User::checkLogin((bool) $dispatchInfo['loginReq']);
 		if (($dispatchInfo['pageID'] == 'home' && $moddedPath != '') || !file_exists($dispatchInfo['file'])) {
 			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404/"');
 			$dispatchInfo = $dispatchInfo->fetch();

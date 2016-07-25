@@ -32,8 +32,8 @@
 				</ul>
 			</li>
 			<li>
-				<a href="/games/">Games</a>
-				<ul ng-if="games.length">
+				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}">Games</a>
+				<ul ng-if="loggedIn && games.length">
 					<li ng-repeat="game in games | limitTo: 5"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
 					<li ng-if="games.lenght > 5"><a href="/games/my/">All games</a></li>
 				</ul>
