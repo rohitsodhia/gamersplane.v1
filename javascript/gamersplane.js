@@ -1101,7 +1101,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 
 	$mainMenu.on('click', 'li', function ($event) {
 		$event.stopPropagation();
-		if ($(this).parent()[0] == $mainMenu[0]) {
+		if ($(this).parent()[0] == $mainMenu[0] && $(this).children('ul').length) {
 			$event.preventDefault();
 			$(this).children('ul').stop(true, true).slideDown();
 		}
