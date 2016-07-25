@@ -1,6 +1,6 @@
 <?
 	$gameID = intval($pathOptions[0]);
-	
+
 	$gameInfo = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'description' => true));
 	if (!$gameInfo) { header('Location: /games/list/'); exit; }
 
@@ -50,7 +50,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Master</label></div>
-					<div class="infoCol"><a href="/user/{{details.gm.userID}}" class="username">{{details.gm.username}}</a><span ng-bind-html="details.gm.inactive | trustHTML" class="inactive"></span></div>
+					<div class="infoCol"><a href="/user/{{details.gm.userID}}/" class="username">{{details.gm.username}}</a><span ng-bind-html="details.gm.inactive | trustHTML" class="inactive"></span></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Created</label></div>

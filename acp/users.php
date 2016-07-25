@@ -6,31 +6,46 @@
 ?>
 
 		<div class="mainColumn right">
-			<form id="suspendDate" method="post" action="/acp/process/users/" class="attachForm">
-				<input id="userID" type="hidden" name="userID" value="">
-				<input type="hidden" name="ajax" value="1">
-				<span>Suspend until:</span>
-				<select name="month">
-<?	for ($count = 1; $count <= 12; $count++) echo "					<option>$count</option>\n"; ?>
-				</select>
-				<select name="day">
-<?	for ($count = 1; $count <= 31; $count++) echo "					<option>$count</option>\n"; ?>
-				</select>
-				<select name="year">
-<?	for ($count = date('Y'); $count <= date('Y') + 2; $count++) echo "					<option>$count</option>\n"; ?>
-				</select>
-				<input type="text" name="hour" value="0">:<input type="text" name="minutes" value="00">
-				<button type="submit" name="suspend" class="normal">Confirm</button>
-			</form>
 			<h1 class="headerbar">Manage Users</h1>
 			<div id="controls">
-				<a id="controls_active" href="">Active</a>
-				<a id="controls_suspended" href="">Suspended</a>
-				<a id="controls_bannedUsers" href="">Banned Users</a>
-				<a id="controls_bannedIPs" href="">Banned IPs</a>
+				<input type="text" ng-model="search" ng-keypress="searchChange()">
+				<a href="" ng-click="loadUsers('all')">All</a>
+				<a href="" ng-click="loadUsers('active')">Active</a>
+				<a href="" ng-click="loadUsers('inactive')">Inactive</a>
+				<a href="" ng-click="loadUsers('suspended')">Suspended</a>
 			</div>
-			<ul class="prettyList">
-<?	include('ajax/listUsers.php') ?>
+			<ul id="userList" class="prettyList">
+				<li ng-repeat="user in users" ng-class="{ 'not_activated': user.activatedOn }">
+					<div class="info">
+						<div class="user">
+							<a ng-href="/user/{{user.userID}}/" class="username" ng-bind-html="user.username | trustHTML"></a>
+							<span ng-if="user.suspendedUntil != null"> (suspended until {{user.suspendedUntil | amUtc | amLocal | amDateFormat:'M/D/YY h:mm a'}})</span>
+						</div>
+						<div class="actions">
+							<a ng-href="/ucp/{{user.userID}}/">Edit</a>
+							<a href="" ng-click="delete(user.userID)">Delete</a>
+							<a ng-if="user.activatedOn != null" href="" ng-click="suspend(user)">{{user.suspendedUntil?'Uns':'S'}}uspend</a>
+<!--							<a ng-if="!user.banned" href="" ng-click="ban(user.userID)">Ban</a>-->
+							<a ng-if="user.activatedOn == null" href="" ng-click="getActivation(user)">Activation link</a>
+						</div>
+					</div>
+					<form ng-show="user.showForm == 'suspend'" ng-submit="confirmSuspend(user)" class="suspendDate">
+						<div ng-if="user.suspendedUntil == null">
+							<span>Suspend until:</span>
+							<combobox ng-repeat="part in ['month', 'day', 'year']" data="combobox.values[part]" value="suspendUntil[part]" returnAs="value" select></combobox>
+							<input type="text" ng-model="suspendUntil.hour">:<input type="text" ng-model="suspendUntil.minutes">
+							<button type="submit" name="suspend" class="normal">Confirm</button>
+						</div>
+						<div ng-if="user.suspendedUntil">
+							<span>Unsuspend?</span>
+							<button type="submit" name="suspend" class="normal">Confirm</button>
+						</div>
+					</form>
+					<div ng-show="user.showForm == 'activationLink'" class="activationLink">
+						<input type="text" value="http://gamersplane.com/register/activate/{{user.userHash}}/"
+					</div>
+				</li>
 			</ul>
+			<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current" change-func="loadUsers" class="tr"></paginate>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

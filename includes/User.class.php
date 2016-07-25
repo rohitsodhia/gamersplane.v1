@@ -15,7 +15,7 @@
 		protected $hiddenVars = array('password', 'salt');
 
 		public function __construct($userDetail = null) {
-			global $mysql;
+			global $mysql, $mongo;
 
 			if ($userDetail == null)
 				return false;
@@ -30,12 +30,9 @@
 				$this->userID = (int) $this->userID;
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
-				foreach ($usermeta as $eMeta) {
-					if ($eMeta['metaKey'] == 'acpPermissions')
-						$this->acpPermissions = unserialize($eMeta['metaValue']);
-					else
-						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
-				}
+				foreach ($usermeta as $eMeta)
+					$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+				$this->acpPermissions = $mongo->users->findOne(['userID' => $this->userID], ['acpPermissions'])['acpPermissions'];
 			} else
 				return false;
 		}

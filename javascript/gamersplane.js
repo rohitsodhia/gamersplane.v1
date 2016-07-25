@@ -208,6 +208,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 				return false;
 		});
 	};
+	this.search = function (params) {
+		return $http.get(API_HOST + '/users/search/', { 'params': params }).then(function (data) {
+			return data.data;
+		});
+	};
 	this.save = function (params, newAvatar) {
 		return Upload.upload({
 			'url': API_HOST + '/users/save/',
@@ -239,6 +244,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 				diffStr += 'ever!';
 		}
 		return returnImg?"<img src=\"/images/sleeping.png\" title=\"" + diffStr + "\" alt=\"" + diffStr + "\">":diffStr;
+	};
+	this.suspend = function (userID, until) {
+		return $http.post(API_HOST + '/users/suspend/', { 'userID': userID, 'until': until }).then(function (data) {
+			return data.data;
+		});
 	};
 }]).service('SystemsService', ['$http', function ($http) {
 	this.systems = {};
@@ -657,7 +667,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 				}
 			});
 			scope.$watch(function () { return scope.rValue; }, function (val) {
-				if (val) {
+				if (val && (!scope.select || scope.options.length)) {
 					hVal = null;
 					if (scope.returnAs == 'value') {
 						for (var key in scope.options) {
