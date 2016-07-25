@@ -70,14 +70,6 @@ $(function() {
 
 	$('.trapezoid').each(trapezoidify);
 
-	$('#mainMenu li').mouseenter(function () {
-		$(this).children('ul').stop(true, true).slideDown();
-	}).mouseleave(function () {
-		$(this).children('ul').stop(true, true).slideUp();
-	}).find('ul').each(function () {
-		$(this).css('minWidth', $(this).parent().width());
-	});
-
 	if ($('#fixedMenu').size()) {
 		var $fixedMenu = $('#fixedMenu_window');
 		$('html').click(function () {
@@ -1104,7 +1096,19 @@ app.config(['$httpProvider', function ($httpProvider) {
 		scrollPos = $(window).scrollTop(),
 		headerHeight = $header.height(),
 		scrollTimeout = null,
-		ratio = 1;
+		ratio = 1,
+		$mainMenu = $('#mainMenu');
+
+	$mainMenu.on('click', 'li', function ($event) {
+		$event.stopPropagation();
+		if ($(this).parent()[0] == $mainMenu[0]) {
+			$event.preventDefault();
+			$(this).children('ul').stop(true, true).slideDown();
+		}
+	});
+	$('html').click(function ($event) {
+		$mainMenu.find('li').children('ul').stop(true, true).slideUp();
+	});
 	$timeout(function () {
 		$headerEles.height(scrollPos < 50?120 - scrollPos:70);
 		ratio = (scrollPos < 50?scrollPos:50) / 50;
