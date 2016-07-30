@@ -236,7 +236,7 @@
 				$errors[] = 'invalidSystem';
 			if ($details['postFrequency']['timesPer'] <= 0 || !($details['postFrequency']['perPeriod'] == 'd' || $details['postFrequency']['perPeriod'] == 'w'))
 				$errors[] = 'invalidFreq';
-			if ($details['numPlayers'] < 2)
+			if ($details['numPlayers'] < 1)
 				$errors[] = 'invalidNumPlayers';
 
 			if (sizeof($errors))
