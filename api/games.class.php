@@ -41,7 +41,7 @@
 			global $currentUser, $mysql, $mongo;
 
 			$myGames = false;
-			if (isset($_POST['my']) && $_POST['my']) {
+			if (isset($_GET['my']) && $_GET['my']) {
 				$myGames = true;
 				$rGames = $mongo->games->find(
 					array(
@@ -62,27 +62,14 @@
 						'players' => true
 					)
 				);
-//				$rGames = $mysql->query("SELECT g.gameID, g.title, g.status, u.userID, u.username, s.shortName system_shortName, s.fullName system_fullName, p.isGM FROM games g INNER JOIN players p ON g.gameID = p.gameID INNER JOIN users u ON g.gmID = u.userID INNER JOIN systems s ON g.system = s.shortName WHERE p.userID = {$currentUser->userID} AND p.approved = 1 AND retired IS NULL");
 			} else {
-/*				$sortOrder = $_POST['sortOrder'] == 'a'?1:-1;
-				if ($_POST['orderBy'] == 'createdOn_d' || !isset($_POST['orderBy']))
-					$orderBy = 'g.created DESC';
-				elseif ($_POST['orderBy'] == 'createdOn_a')
-					$orderBy = 'g.created ASC';
-				elseif ($_POST['orderBy'] == 'name_a')
-					$orderBy = 'g.title ASC';
-				elseif ($_POST['orderBy'] == 'name_d')
-					$orderBy = 'g.title DESC';
-				elseif ($_POST['orderBy'] == 'system')
-					$orderBy = 's.fullName ASC';
-				$rGames = $mysql->query("SELECT g.gameID, g.title, s.shortName system_shortName, s.fullName system_fullName, g.gmID userID, u.username, u.lastActivity FROM games g INNER JOIN systems s ON g.system = s.shortName LEFT JOIN players p ON g.gameID = p.gameID AND p.userID = {$currentUser->userID} INNER JOIN users u ON g.gmID = u.userID WHERE g.gmID != {$currentUser->userID} AND p.userID IS NULL AND g.status = 1".(isset($_POST['systems']) && sizeof($_POST['systems'])?' AND g.system IN ("'.implode('", "', $_POST['systems']).'")':'')." ORDER BY $orderBy");*/
 				$findParams = array(
 					'players.user.userID' => array('$ne' => $currentUser->userID),
 					'status' => 'open',
 					'retired' => null
 				);
-				if (sizeof($_POST['systems']))
-					$findParams['system'] = array('$in' => $_POST['systems']);
+				if (sizeof($_GET['systems']))
+					$findParams['system'] = array('$in' => $_GET['systems']);
 				$rGames = $mongo->games->find(
 					$findParams,
 					array(
@@ -96,12 +83,16 @@
 						'players' => true
 					)
 				);
-				if (!isset($_POST['hideInactive']) || !$_POST['hideInactive'])
+				if (isset($_GET['sort']))
+					$rGames->sort([$_GET['sort'] => !isset($_GET['sortOrder']) || $_GET['sortOrder'] == 1?1:-1]);
+				if (!isset($_GET['hideInactive']) || !$_GET['hideInactive'])
 					$inactiveGMs = $mysql->query("SELECT u.userID FROM users u INNER JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'isGM' AND um.metaValue = 1 WHERE u.lastActivity < NOW() - INTERVAL 14 DAY")->fetchAll(PDO::FETCH_COLUMN);
 			}
-			$showFullGames = isset($_POST['showFullGames']) && $_POST['showFullGames']?true:false;
+			$showFullGames = isset($_GET['showFullGames']) && $_GET['showFullGames']?true:false;
+			$limit = isset($_GET['limit']) && (int) $_GET['limit'] > 0?(int) $_GET['limit']:null;
 			$games = array();
 			$gms = array();
+			$count = 0;
 			foreach ($rGames as $game) {
 				if (isset($inactiveGMs) && in_array($game['gm']['userID'], $inactiveGMs))
 					continue;
@@ -119,6 +110,11 @@
 				unset($game['numPlayers'], $game['players']);
 				$games[] = $game;
 				$gms[] = $game['gm']['userID'];
+				if ($limit != null) {
+					$count++;
+					if ($count == $limit)
+						break;
+				}
 			}
 			if (sizeof($gms)) {
 				$gms = array_unique($gms);

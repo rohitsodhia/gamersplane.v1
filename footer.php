@@ -1,7 +1,7 @@
 <?	if (!MODAL) { ?>
 	</div>
 </div></div>
-<footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?>"><div class="bodyContainer">
+<footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?><?=isset($contentClasses) && array_search('fullWidthBody', $contentClasses) >= 0?' fullWidthBody':''?>"><div class="bodyContainer">
 	<ul>
 		<li><a href="/tools/">Tools</a></li>
 		<li><a href="/systems/">Systems</a></li>

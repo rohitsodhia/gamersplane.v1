@@ -346,7 +346,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	};
 }]).service('GamesService', ['$http', function ($http) {
 	this.getGames = function (params) {
-		return $http.post(API_HOST + '/games/getGames/', params).then(function (data) {
+		return $http.get(API_HOST + '/games/getGames/', { 'params': params }).then(function (data) {
 			if (data.data.success)
 				return data.data.games;
 		});
@@ -1060,7 +1060,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	return function (input) {
 		return Math.ceil(input);
 	};
-}]).controller('core', ['$scope', 'SystemsService', function ($scope, SystemsService) {
+}]).controller('core', ['$scope', '$window', 'SystemsService', function ($scope, $window, SystemsService) {
 	$scope.pageLoadingPause = true;
 	$pageLoading = $('#pageLoading');
 
@@ -1128,6 +1128,20 @@ app.config(['$httpProvider', function ($httpProvider) {
 			$headerEles.height(70);
 			$logo.height(53);
 		}
+	});
+}]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {
+	$scope.games = [];
+	GamesService.getGames({ 'limit': 4, 'sort': 'created', 'sortOrder': -1 }).then(function (data) {
+		$scope.games = data;
+	});
+	$scope.combobox = {
+		'systems': { 'data': [{ 'value': 'all', 'display': 'All' }], 'value': null }
+	};
+	$scope.systems = [];
+	SystemsService.get({ 'excludeCustom': true }).then(function (data) {
+		for (var key in data.systems) 
+			$scope.combobox.systems.data.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
+		loadingFinished++;
 	});
 }]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
 	$scope.$emit('pageLoading');
