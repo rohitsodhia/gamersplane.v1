@@ -14,7 +14,7 @@
 		<tr><td>
 			<p>If you're having trouble seeing this email, just head straight to <a href="http://gamersplane.com/" target="_blank">Gamers' Plane</a>!</p>
 		</td></tr>
-		<tr><td style="height:100px;padding:10px;background:url(<?=$pathBase?>/images/emails/header.jpg) top left repeat-x #111;border:1px solid #111"><img src="<?=$pathBase?>/images/bodyComponents/logo.png" height="100" alt="Header image"></td></tr>
+		<tr><td style="height:100px;padding:10px;background-color:#777;border:1px solid #111"><img src="<?=$pathBase?>/images/bodyComponents/logo.png" height="100" alt="Header image"></td></tr>
 		<tr><td style="padding:0 10px;border-color:#111;border-style:solid;border-width:0 1px 0 1px">
 			<h1 style="background-color:#C60;color:#FFF;margin:.3em auto; width: 538px;"><img src="<?=$pathBase?>/images/emails/text/Game_Activity.jpg" alt="Game Activity"></h1>
 			<p>There's been some activity in your <?=$systems->getFullName($emailDetails->gameInfo->system)?> game, <a href="<?=$pathBase?>/games/<?=$emailDetails->gameInfo->gameID?>/"><?=$emailDetails->gameInfo->title?></a>:</p>

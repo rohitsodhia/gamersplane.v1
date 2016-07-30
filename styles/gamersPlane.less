@@ -636,9 +636,20 @@ div.prettySelect > div {
 		position: absolute;
 		top: 0;
 		right: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		height: 100%;
 		width: 24px;
-		background: url('../images/dropdown_arrow_red.png') center center no-repeat;
+
+		svg {
+			width: 14px;
+			height: 10px;
+
+			path {
+				fill: #A00;
+			}
+		}
 	}
 
 	.results {
@@ -864,10 +875,20 @@ div.prettySelect > div {
 	}
 }
 
-.bodyContainer, #fixedMenu > div {
+.bodyContainer, .fullWidthBody .contentContainer, #fixedMenu > div {
 	position: relative;
 	width: 950px;
 	margin: 0 auto;
+}
+
+.fullWidthBody {
+	.bodyContainer, .contentContainer, #fixedMenu > div {
+		width: 1200px;
+	}
+}
+
+#content.fullWidthBody .bodyContainer {
+	width: 100%;
 }
 
 #bodyHeader {
@@ -1028,6 +1049,10 @@ div.prettySelect > div {
 	padding-top: 125px;
 	background: #FFF;
 	clear: both;
+
+	&.underHeader {
+		padding-top: 0;
+	}
 
 	.bodyContainer {
 		padding: 10px 0;
@@ -2589,6 +2614,70 @@ div.forumIcon {
 		/*	color: #B00;*/
 			list-style: url('../images/bullets.png');
 			margin: .25em 0 .25em 10px;
+		}
+	}
+}
+
+/* --------------------------------------------*/
+
+#page_home.landingPage {
+	#landing_top {
+		background: url('../images/landing_top_bg.jpg') top center no-repeat;
+	}
+
+	#landing_top_content {
+		padding-top: 120px;
+
+		header {
+			margin: 30px 0 30px 60px;
+
+			h1, h2 {
+				margin: 0;
+				font-family: 'OpenSans_Regular';
+				color: #FFF;
+				text-align: left;
+				line-height: 1em;
+			}
+
+			h1 {
+				margin-bottom: .5em;
+				font-size: 40px;
+				font-weight: normal;
+			}
+
+			h2 {
+				margin-left: 50px;
+				font-size: 26px;
+			}
+		}
+	}
+
+	#landing_top_whiteBox {
+		background: #FFF;
+		margin-bottom: 30px;
+		padding: 20px 10px;
+
+		& > * {
+			display: inline-block;
+			width: 560px;
+			padding: 0 20px;
+
+			h1 {
+				margin-bottom: 0;
+				font-weight: normal;
+				text-align: center;
+
+				& > div {
+					padding: 5px 8px;
+				}
+			}
+		}
+	}
+
+	#landing_systemSearch {
+		input {
+			border: none;
+			.border-radius(0);
 		}
 	}
 }
