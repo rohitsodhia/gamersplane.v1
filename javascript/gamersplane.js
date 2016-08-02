@@ -1143,7 +1143,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	});
 }]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {
 	$scope.games = [];
-	GamesService.getGames({ 'limit': 3, 'sort': 'created', 'sortOrder': -1 }).then(function (data) {
+	GamesService.getGames({ 'limit': 4, 'sort': 'created', 'sortOrder': -1 }).then(function (data) {
 		$scope.games = data;
 	});
 	$scope.combobox = {
