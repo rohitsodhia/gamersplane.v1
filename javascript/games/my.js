@@ -21,13 +21,10 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 			GamesService.getGames({ my: true }).then(function (data) {
 				$scope.$emit('pageLoading');
 				$scope.games = data;
-				$scope.games.forEach(function (game) {
-					game.system = $scope.systems[game.system];
-				});
 				if ($scope.games.length > 0) {
-					if ($filter('filter')($scope.games, { 'isGM': false }).length) 
+					if ($filter('filter')($scope.games, { 'isGM': false }).length)
 						$scope.inGames.notGM = true;
-					if ($filter('filter')($scope.games, { 'isGM': true }).length) 
+					if ($filter('filter')($scope.games, { 'isGM': true }).length)
 						$scope.inGames.gm = true;
 				}
 			});

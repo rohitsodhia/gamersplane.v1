@@ -42,7 +42,7 @@
 			<li ng-show="loggedIn"><a href="/gamersList/">The Gamers</a></li>
 			<li><a href="/links/">Links</a></li>
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
-			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" class="loginLink">Login</a></li>
+			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" colorbox>Login</a></li>
 			<li ng-show="loggedIn" id="userMenu">
 				<a href="/ucp/"><img ng-src="{{avatar}}" class="avatar"></a>
 				<a ng-if="pmCount > 0" href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>

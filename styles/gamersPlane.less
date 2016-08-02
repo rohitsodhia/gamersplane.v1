@@ -2012,6 +2012,42 @@ input[type="text"], textarea {
 			background-position: -195px -20px;
 		}
 	}
+
+	&.magnifyingglass {
+		width: 23px;
+		height: 23px;
+		background-position: 0 -56px;
+	}
+
+	&.landing_user {
+		width: 27px;
+		height: 28px;
+		background-position: -23px -56px;
+	}
+
+	&.landing_lock {
+		width: 23px;
+		height: 31px;
+		background-position: -50px -56px;
+	}
+
+	&.landing_tools {
+		width: 42px;
+		height: 40px;
+		background-position: -73px -56px;
+	}
+
+	&.landing_library {
+		width: 40px;
+		height: 31px;
+		background-position: -115px -56px;
+	}
+
+	&.landing_sheets {
+		width: 29px;
+		height: 40px;
+		background-position: -155px -56px;
+	}
 }
 
 .ofToggle {
@@ -2621,6 +2657,13 @@ div.forumIcon {
 /* --------------------------------------------*/
 
 #page_home.landingPage {
+	&, td, input, select, textarea {
+		font-size: 14px;
+		font-family: 'OpenSans_Regular', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+		color: #000;
+		line-height: 1.3em;
+	}
+
 	#landing_top {
 		background: url('../images/landing_top_bg.jpg') top center no-repeat;
 	}
@@ -2653,9 +2696,12 @@ div.forumIcon {
 	}
 
 	#landing_top_whiteBox {
-		background: #FFF;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		margin-bottom: 30px;
 		padding: 20px 10px;
+		background: #FFF;
 
 		& > * {
 			display: inline-block;
@@ -2675,10 +2721,331 @@ div.forumIcon {
 	}
 
 	#landing_systemSearch {
-		input {
-			border: none;
-			.border-radius(0);
+		padding: 6px 12px;
+		border: 2px solid #BBB;
+		border-top: 0;
+
+		& > * {
+			vertical-align: middle;
 		}
+
+		.sprite {
+			margin-right: 10px;
+		}
+
+		.combobox {
+			width: 420px;
+
+			input {
+				border: 1px solid #FFF;
+				.border-radius(0);
+				background: none;
+			}
+
+			&.resultsOpen input, .results {
+				border-color: #999;
+			}
+
+			&.resultsOpen input {
+				border-bottom-color: #CCC;
+			}
+
+			.results {
+				border-top: none;
+
+				a {
+					padding: 6px 9px;
+					background: none;
+
+					&:hover, &.selected {
+						background: #FCC;
+					}
+				}
+			}
+		}
+	}
+
+	.game {
+		padding: 8px 30px;
+		border-top: 1px solid #CCC;
+
+		&.first {
+			border-top: none;
+		}
+
+		.title {
+			margin-bottom: 5px;
+
+			a {
+				font-weight: bold;
+			}
+		}
+
+		.info {
+			margin-left: 20px;
+		}
+
+		.system {
+			text-decoration: underline;
+		}
+	}
+
+	#landing_signup {
+		& > * {
+			text-align: center;
+		}
+
+		a {
+			font-size: 1.4em;
+		}
+
+		.register {
+			font-size: 2em;
+		}
+
+		.login {
+			background-color: #742;
+		}
+
+		p {
+			margin-bottom: 1.4em;
+		}
+	}
+
+/*	#landing_signup {
+		& > div {
+			position: relative;
+			display: flex;
+			align-items: center;
+			.borderBox;
+			width: 400px;
+			height: 55px;
+			padding: 11px 18px;
+			margin: 0 auto;
+			border: 1px solid #FBB;
+			.border-radius(0);
+
+			&::before {
+				position: absolute;
+				display: inline-block;
+				content: " ";
+				background: url('../images/sprites.png') top left no-repeat;
+			}
+
+			& > * {
+				margin-left: 45px;
+				font-size: 1.3em;
+			}
+
+			input {
+				width: 100%;
+				.border-radius(0);
+				border: none;
+				background: none;
+			}
+
+			span {
+				position: absolute;
+				top: 17px;
+				left: 18px;
+				color: #888;
+			}
+		}
+	}
+
+	#landing_signup_username {
+		&::before {
+			top: 12px;
+			left: 18px;
+			width: 27px;
+			height: 28px;
+			background-position: -23px -56px !important;
+		}
+	}
+
+	#landing_signup_password {
+		border-top: none !important;
+
+		&::before {
+			top: 11px;
+			left: 21px;
+			width: 23px;
+			height: 31px;
+			background-position: -50px -56px !important;
+		}
+	}*/
+}
+
+#landing_whatIs {
+	& > * {
+		float: left;
+		margin: 40px 0;
+	}
+}
+
+#landing_whatIs_logos {
+	position: relative;
+	height: 410px;
+	width: 540px;
+	padding: 0 30px;
+
+	& > * {
+		position: absolute;
+	}
+}
+
+#landing_whatIs_dnd5 {
+	top: 40px;
+	left: 34px;
+	width: 309px;
+}
+
+#landing_whatIs_thestrange {
+	top: 17px;
+	left: 387px;
+	width: 167px;
+}
+
+#landing_whatIs_pathfinder {
+	top: 126px;
+	left: 82px;
+	width: 195px;
+}
+
+#landing_whatIs_starwarsffg {
+	top: 102px;
+	left: 336px;
+	width: 173px;
+}
+
+#landing_whatIs_13thage {
+	top: 227px;
+	left: 142px;
+	width: 89px;
+}
+
+#landing_whatIs_numenera {
+	top: 222px;
+	left: 270px;
+	width: 280px;
+}
+
+#landing_whatIs_shadowrun5 {
+	top: 331px;
+	left: 39px;
+	width: 191px;
+}
+
+#landing_whatIs_fate {
+	top: 325px;
+	left: 286px;
+	width: 113px;
+}
+
+#landing_whatIs_savageworlds {
+	top: 295px;
+	left: 433px;
+	width: 121px;
+}
+
+#landing_whatIs_text {
+	width: 570px;
+
+	h2 {
+		margin-bottom: .5em;
+		font-family: AgencyFB;
+		font-size: 48px;
+		line-height: 1em;
+	}
+
+	p {
+		margin: 1.2em 0 0;
+		line-height: 1.4em;
+	}
+}
+
+#landing_features {
+	padding: 75px 0 55px;
+	background-color: #DDD;
+
+	.contentContainer{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		& > * {
+			position: relative;
+			width: 380px;
+			height: 220px;
+			padding: 50px 30px 0;
+			.borderBox;
+			border: 1px solid #DBB;
+			background-color: #FFF;
+		}
+	}
+
+	.icon {
+		position: absolute;
+		top: -36px;
+		left: 190px;
+		width: 72px;
+		height: 72px;
+		margin-left: -36px;
+		background-color: #C31D29;
+		.border-radius(36px);
+		text-align: center;
+		line-height: 68px;
+	}
+
+	h3 {
+		margin-bottom: 1em;
+		font-family: OpenSans_Regular;
+		font-size: 20px;
+		text-transform: uppercase;
+		font-weight: bold;
+		text-align: center;
+	}
+
+	p {
+		margin: 0;
+		font-size: 1.2em;
+		line-height: 1.5em;
+		text-align: center;
+	}
+}
+
+#landing_features_tools, #landing_features_library, #landing_features_sheets {
+	span {
+		display: inline-block;
+		background: url('../images/sprites.png') top left no-repeat;
+		vertical-align: middle;
+	}
+}
+
+#landing_features_tools {
+	span {
+		width: 42px;
+		height: 40px;
+		margin-right: 2px;
+		background-position: -73px -56px;
+	}
+}
+
+
+#landing_features_library {
+	span {
+		width: 40px;
+		height: 31px;
+		background-position: -115px -56px;
+	}
+}
+
+#landing_features_sheets {
+	span {
+		width: 29px;
+		height: 40px;
+		margin-left: 2px;
+		background-position: -155px -56px;
 	}
 }
 

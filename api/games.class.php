@@ -68,8 +68,12 @@
 					'status' => 'open',
 					'retired' => null
 				);
-				if (sizeof($_GET['systems']))
-					$findParams['system'] = array('$in' => $_GET['systems']);
+				if (sizeof($_GET['systems'])) {
+					$systems = $_GET['systems'];
+					if (is_string($systems))
+						$systems = explode(',', $systems);
+					$findParams['system'] = array('$in' => $systems);
+				}
 				$rGames = $mongo->games->find(
 					$findParams,
 					array(
@@ -93,21 +97,24 @@
 			$games = array();
 			$gms = array();
 			$count = 0;
+			require_once('../includes/Systems.class.php');
+			$systems = Systems::getInstance();
 			foreach ($rGames as $game) {
 				if (isset($inactiveGMs) && in_array($game['gm']['userID'], $inactiveGMs))
 					continue;
+				$game['system'] = $systems->getFullName($game['system']);
 				$game['isGM'] = false;
-				$playerCount = -1;
+				$game['playerCount'] = -1;
 				foreach ($game['players'] as $player) {
 					if ($player['user']['userID'] == $currentUser->userID)
 						$game['isGM'] = $player['isGM'];
 					if ($player['approved'])
-						$playerCount++;
+						$game['playerCount']++;
 				}
-				if (!$myGames && !$showFullGames && $playerCount == $game['numPlayers'])
+				if (!$myGames && !$showFullGames && $game['playerCount'] == $game['numPlayers'])
 					continue;
 				$game['start'] = $game['start']->sec;
-				unset($game['numPlayers'], $game['players']);
+				unset($game['players']);
 				$games[] = $game;
 				$gms[] = $game['gm']['userID'];
 				if ($limit != null) {

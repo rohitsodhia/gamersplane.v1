@@ -40,7 +40,6 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 				reqLoading = $scope.clearPageLoading(reqLoading);
 				$scope.games = data;
 				$scope.games.forEach(function (game) {
-					game.system = $scope.systems[game.system];
 					game.lastActivity = UsersService.inactive(game.lastActivity);
 				});
 				equalizeHeights();
@@ -62,7 +61,6 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 				$scope.orderBy += 'title';
 			else if (filter.orderBy.value == 'system')
 				$scope.orderBy += filter.orderBy.value;
-			console.log($scope.orderBy);
 			if (filter.systems.length === 0)
 				filter.systems = null;
 			$scope.games = [];
@@ -70,7 +68,6 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 				$scope.$emit('pageLoading');
 				$scope.games = data;
 				$scope.games.forEach(function (game) {
-					game.system = $scope.systems[game.system];
 					game.lastActivity = UsersService.inactive(game.lastActivity);
 				});
 				equalizeHeights();
