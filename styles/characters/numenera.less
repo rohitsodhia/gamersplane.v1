@@ -1,6 +1,13 @@
 /*
-	Gamers Plane Characters: D&D3/3.5 CSS Stylesheet
+	Gamers Plane Characters: Numenera CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
+*/
+
+/*
+Albertus MT Std
+Cantoria MT Std
+Cronos Pro
+Diotima LT Std
 */
 
 .spacer {
@@ -19,20 +26,80 @@
 	display: inline-block;
 }
 
-#statCol_left, #damage {
+.notes {
+	padding: 4px;
+	border: 1px solid #888;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#name_class {
+	span {
+		display: inline-block;
+	}
+
+	.input {
+		&, input, label {
+			width: 200px;
+		}
+
+		input, div {
+			border: none;
+			border-bottom: 1px solid #000;
+			text-align: left;
+		}
+
+		div {
+			display: block;
+			padding: 4px 5px;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			border-radius: 6px;
+		}
+
+		label {
+			text-align: center;
+		}
+	}
+
+	#class_type {
+		&, input, label {
+			width: 100px;
+		}
+	}
+
+	#class_focus {
+		&, input, label {
+			width: 300px;
+		}
+	}
+
+	.text {
+		margin: -19px 6px 0;
+	}
+}
+
+#statCol, #damage {
 	margin-right: 30px;
 }
 
-#statCol_left {
+#statCol {
 	margin-top: 42px;
+
+	label {
+		width: 60px;
+	}
 }
 
-.mainStat > * {
-	display: inline-block;
-}
+.attribute {
+	& > * {
+		display: inline-block;
+	}
 
-.mainStat label {
-	text-align: center;
+	label {
+		text-align: center;
+	}
 }
 
 .pool, #poolLabel {
@@ -49,8 +116,10 @@
 	}
 }
 
-.damage label, #recoveryTimes label {
-	margin-left: 5px;
+.damage, #recoveryTimes {
+	label {
+		margin-left: 5px;
+	}
 }
 
 .damage, #recoveryTimes .tr {
@@ -61,9 +130,11 @@
 	margin-top: 1em;
 }
 
-#page_characterSheet .damage > div, #page_characterSheet #recoveryTimes .tr > div {
-	width: 20px;
-	text-align: center;
+#page_characterSheet {
+	.damage > div, #recoveryTimes .tr > div {
+		width: 20px;
+		text-align: center;
+	}
 }
 
 #recoveryTimes {
@@ -78,92 +149,105 @@
 	width: 250px;
 }
 
-#skills, #specialAbilities {
-	width: 405px;
+#skills, #specialAbilities, #cyphers {
+	width: 520px;
 	margin-left: 20px;
 }
 
-.skill > * {
-	display: inline-block;
+#skills {
+	.name {
+		width: 325px;
+		margin-right: 10px;
+	}
 }
 
-.skill_prof div {
-	display: inline-block;
-	height: 16px;
-	width: 16px;
-	-webkit-border-radius: 16px;
-	-moz-border-radius: 16px;
-	border-radius: 16px;
-	border: 2px solid #A00;
-	font-size: 12px;
-	line-height: 16px;
-	text-align: center;
-	font-weight: bold;
-	cursor: pointer;
+.skill {
+	& > * {
+		display: inline-block;
+	}
+
+	.attr, .prof {
+		div {
+			display: inline-block;
+			width: 19px;
+			height: 20px;
+			padding-left: 1px;
+			-webkit-border-radius: 20px;
+			-moz-border-radius: 20px;
+			border-radius: 20px;
+			border: 2px solid #A00;
+			font-size: 12px;
+			line-height: 21px;
+			text-align: center;
+			font-weight: bold;
+			text-transform: uppercase;
+			cursor: pointer;
+		}
+	}
 }
 
 #specialAbilities {
 	margin-top: 1em;
 }
 
+#cyphers {
+	margin-left: 0;
+}
+
 .specialAbility, .cypher {
 	padding: 4px 0;
+
+	& > * {
+		vertical-align: middle;
+	}
+
+	& > span, & > a {
+		display: inline-block;
+	}
+
+	.notesLink {
+		margin-left: 5px;
+		font-size: .8em;
+	}
+
+	textarea {
+		width: 100%;
+		height: 4.9em;
+	}
+
+	textarea, .notes {
+		display: none;
+		margin-top: .5em;
+	}
+
+	.remove {
+		margin-left: 5px;
+	}
 }
 
-.specialAbility > *, .cypher > * {
-	vertical-align: middle;
+#page_characterSheet_edit {
+	.specialAbility, .cypher {
+		.name {
+			width: 395px;
+			text-align: left;
+		}
+	}
 }
 
-.specialAbility > span, .specialAbility > a, .cypher > span, .cypher > a {
-	display: inline-block;
-}
-
-#page_characterSheet_edit .specialAbility_name, #page_characterSheet_edit .cypher_name {
-	width: 285px;
-	text-align: left;
-}
-
-#page_characterSheet .specialAbility_name, #page_characterSheet .cypher_name {
-	width: 310px;
-}
-
-.specialAbility_notesLink, .cypher_notesLink {
-	margin-left: 5px;
-	font-size: .8em;
-}
-
-.specialAbility textarea, .specialAbility .notes, .cypher textarea, .cypher .notes {
-	display: none;
-	margin-top: .5em;
-}
-
-.specialAbility textarea, .cypher textarea {
-	width: 100%;
-	height: 4.9em;
-}
-
-.notes {
-	padding: 4px;
-	border: 1px solid #888;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-}
-
-.specialAbility_remove, .cypher_remove {
-	margin-left: 5px;
-}
-
-#cyphers {
-	width: 405px;
+#page_characterSheet {
+	.specialAbility, .cypher {
+		.name {
+			width: 425px;
+		}
+	}
 }
 
 #posessions {
-	width: 540px;
-}
+	width: 430px;
 
-#posessions textarea {
-	height: 10em;
+	textarea {
+		height: 10em;
+	}
 }
 
 #notes textarea {

@@ -15,9 +15,9 @@ $(function () {
 			data: { characterID: characterID },
 			xhrFields: { withCredentials: true },
 			success: function (data) {
-				if (data != 0 && $link.hasClass('off')) {
+				if (data !== 0 && $link.hasClass('off')) {
 					$link.removeClass('off').attr('title', 'Unfavorite').attr('alt', 'Unfavorite');
-				} else if (data != 0) {
+				} else if (data !== 0) {
 					$link.addClass('off').attr('title', 'Favorite').attr('alt', 'Favorite');
 				}
 			}

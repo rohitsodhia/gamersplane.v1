@@ -452,8 +452,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 				bArray = character[key];
 			else
 				bArray = character[key.split('.')[0]][key.split('.')[1]];
+			if (!Array.isArray(bArray))
+				bArray = [];
 			if (typeof bArray != 'undefined' && Object.keys(bArray).length === 0)
 				bArray.push(copyObject(blanks[key]));
+			character[key] = bArray;
 		}
 	};
 }]).service('Range', function () {

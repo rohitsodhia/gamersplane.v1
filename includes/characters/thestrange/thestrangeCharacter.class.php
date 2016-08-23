@@ -11,18 +11,18 @@
 		protected $stats = array(
 							'might' => array(
 								'pool' => array(
-									'current' => 0, 
-									'max' => 0), 
-								'edge' => 0), 
+									'current' => 0,
+									'max' => 0),
+								'edge' => 0),
 							'speed' => array(
 								'pool' => array(
-									'current' => 0, 
-									'max' => 0), 
-								'edge' => 0), 
+									'current' => 0,
+									'max' => 0),
+								'edge' => 0),
 							'intellect' => array(
 								'pool' => array(
-									'current' => 0, 
-									'max' => 0), 
+									'current' => 0,
+									'max' => 0),
 								'edge' => 0));
 		protected $damage = array('impaired' => 0, 'debilitated' => 0);
 		protected $recovery = 0;
@@ -31,7 +31,7 @@
 		protected $attacks = null;
 		protected $skills = null;
 		protected $specialAbilities = null;
-		protected $cypers = null;
+		protected $cyphers = null;
 		protected $possessions = '';
 
 		public function setDescriptor($descriptor) {
@@ -86,13 +86,13 @@
 			$key = explode('.', $key);
 			$cKey = &$this->stats[$stat];
 			foreach ($key as $iKey) {
-				if (!isset($cKey[$iKey])) 
+				if (!isset($cKey[$iKey]))
 					return false;
 				$cKey = &$cKey[$iKey];
 			}
 			$cKey = sanitizeString($value);
 		}
-		
+
 		public function getStats($stat = null, $key = null) {
 			if ($stat == null) return $this->stats;
 			elseif ($key != null) {
@@ -107,18 +107,18 @@
 		}
 
 		public function setDamage($key, $value = null) {
-			if (array_key_exists($key, $this->damage)) 
+			if (array_key_exists($key, $this->damage))
 				$this->damage[$key] = intval($value);
-			else 
+			else
 				return false;
 		}
-		
+
 		public function getDamage($key = null) {
-			if ($key == null) 
+			if ($key == null)
 				return $this->damage;
-			elseif (array_key_exists($key, $this->damage)) 
+			elseif (array_key_exists($key, $this->damage))
 				return $this->damage[$key];
-			else 
+			else
 				return false;
 		}
 
@@ -131,18 +131,18 @@
 		}
 
 		public function setRecoveryTimes($key, $value = null) {
-			if (array_key_exists($key, $this->recoveryTimes)) 
+			if (array_key_exists($key, $this->recoveryTimes))
 				$this->recoveryTimes[$key] = intval($value);
-			else 
+			else
 				return false;
 		}
-		
+
 		public function getRecoveryTimes($key = null) {
-			if ($key == null) 
+			if ($key == null)
 				return $this->recoveryTimes;
-			elseif (array_key_exists($key, $this->recoveryTimes)) 
+			elseif (array_key_exists($key, $this->recoveryTimes))
 				return $this->recoveryTimes[$key];
-			else 
+			else
 				return false;
 		}
 
@@ -155,20 +155,20 @@
 		}
 
 		public function addAttack($attack) {
-			if (strlen($attack['name'])) 
-				foreach ($attack as $key => $value) 
+			if (strlen($attack['name']))
+				foreach ($attack as $key => $value)
 					$attack[$key] = sanitizeString($value);
 				$this->attacks[] = $attack;
 		}
 
 		public function showAttacksEdit($min) {
 			$attackNum = 0;
-			if (!is_array($this->attacks)) 
+			if (!is_array($this->attacks))
 				$this->attacks = (array) $this->attacks;
-			foreach ($this->attacks as $attackInfo) 
+			foreach ($this->attacks as $attackInfo)
 				$this->attackEditFormat($attackNum++, $attackInfo);
-			if ($attackNum < $min) 
-				while ($attackNum < $min) 
+			if ($attackNum < $min)
+				while ($attackNum < $min)
 					$this->attackEditFormat($attackNum++);
 		}
 
@@ -199,7 +199,7 @@
 		public function addSkill($skill) {
 			if (strlen($skill['name'])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				foreach ($skill as $key => $value) 
+				foreach ($skill as $key => $value)
 					$skill[$key] = sanitizeString($value);
 				$this->skills[] = $skill;
 			}
@@ -237,7 +237,7 @@
 		public function addSpecialAbility($specialAbility) {
 			if (strlen($specialAbility['name'])) {
 				newItemized('specialAbility', $specialAbility['name'], $this::SYSTEM);
-				foreach ($specialAbility as $key => $value) 
+				foreach ($specialAbility as $key => $value)
 					$specialAbility[$key] = sanitizeString($value);
 				$this->specialAbilities[] = $specialAbility;
 			}
@@ -273,12 +273,12 @@
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noSpecialAbilities\">This character currently has no special abilities.</p>\n";
 		}
-		
+
 		public function addCypher($cypher) {
 			if (strlen($cypher['name'])) {
 				newItemized('cypher', $cypher['name'], $this::SYSTEM);
-				foreach ($cypher as $key => $value) 
-					$cyper[$key] = sanitizeString($value);
+				foreach ($cypher as $key => $value)
+					$cypher[$key] = sanitizeString($value);
 				$this->cyphers[] = $cypher;
 			}
 		}
@@ -313,7 +313,7 @@
 <?
 			} } else echo "\t\t\t\t\t<p id=\"noCyphers\">This character currently has no cyphers.</p>\n";
 		}
-		
+
 		public function setPossessions($possessions) {
 			$this->possessions = sanitizeString($possessions);
 		}
@@ -347,19 +347,19 @@
 				$this->setArmor($data['armor']);
 
 				$this->clearVar('attacks');
-				if (sizeof($data['attacks'])) 
+				if (sizeof($data['attacks']))
 					foreach ($data['attacks'] as $attack) $this->addAttack($attack);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) 
+				if (sizeof($data['skills']))
 					foreach ($data['skills'] as $skillInfo) $this->addSkill($skillInfo);
 
 				$this->clearVar('specialAbilities');
-				if (sizeof($data['specialAbilities'])) 
+				if (sizeof($data['specialAbilities']))
 					foreach ($data['specialAbilities'] as $specialAbilityInfo) $this->addSpecialAbility($specialAbilityInfo);
 
 				$this->clearVar('cyphers');
-				if (sizeof($data['cyphers'])) 
+				if (sizeof($data['cyphers']))
 					foreach ($data['cyphers'] as $cypherInfo) $this->addCypher($cypherInfo);
 
 				$this->setPossessions($data['possessions']);

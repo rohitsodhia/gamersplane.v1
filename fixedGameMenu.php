@@ -104,7 +104,7 @@
 						}
 					}
 ?>
-					<p class="charName"><a href="/characters/<?=$game['system']?>/<?=$charInfo['characterID']?>/"><?=$charInfo['label']?></a></p>
+					<p class="charName"><a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/"><?=$charInfo['label']?></a></p>
 <?				} ?>
 				</li>
 			</ul>

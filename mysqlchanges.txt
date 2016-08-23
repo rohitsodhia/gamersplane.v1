@@ -1,1 +1,4 @@
 UPDATE dispatch SET loginReq = 0 WHERE url = 'games/list/';
+
+db.systems.update({_id: 'numenera'}, {'$set': {'angular': true}});
+db.characters.update({system: 'numenera'}, {'$rename':{'stats':'attributes','cypers':'cyphers'}}, {'multi':true});
