@@ -1,40 +1,43 @@
 <?
+	require_once(FILEROOT.'/includes/Systems.class.php');
+	
 	class games {
 		function __construct() {
 			global $loggedIn, $pathOptions;
 
-			if ($pathOptions[0] == 'getGames')
+			if ($pathOptions[0] == 'getGames') {
 				$this->getGames();
-			elseif ($pathOptions[0] == 'details')
+			} elseif ($pathOptions[0] == 'details') {
 				$this->details($_POST['gameID']);
-			elseif ($pathOptions[0] == 'create')
+			} elseif ($pathOptions[0] == 'create') {
 				$this->createGame();
-			elseif ($pathOptions[0] == 'update')
+			} elseif ($pathOptions[0] == 'update') {
 				$this->updateGame();
-			elseif ($pathOptions[0] == 'toggleForum' && intval($_POST['gameID']))
+			} elseif ($pathOptions[0] == 'toggleForum' && intval($_POST['gameID'])) {
 				$this->toggleForum($_POST['gameID']);
-			elseif ($pathOptions[0] == 'toggleGameStatus' && intval($_POST['gameID']))
+			} elseif ($pathOptions[0] == 'toggleGameStatus' && intval($_POST['gameID'])) {
 				$this->toggleGameStatus($_POST['gameID']);
-			elseif ($pathOptions[0] == 'retire' && intval($_POST['gameID']))
+			} elseif ($pathOptions[0] == 'retire' && intval($_POST['gameID'])) {
 				$this->retire($_POST['gameID']);
-			elseif ($pathOptions[0] == 'apply')
+			} elseif ($pathOptions[0] == 'apply') {
 				$this->apply();
-			elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user']))
+			} elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user'])) {
 				$this->invite($_POST['gameID'], $_POST['user']);
-			elseif ($pathOptions[0] == 'invite' && ($pathOptions[1] == 'withdraw' || $pathOptions[1] == 'decline') && intval($_POST['gameID']) && strlen($_POST['userID']))
+			} elseif ($pathOptions[0] == 'invite' && ($pathOptions[1] == 'withdraw' || $pathOptions[1] == 'decline') && intval($_POST['gameID']) && strlen($_POST['userID'])) {
 				$this->removeInvite($_POST['gameID'], $_POST['userID']);
-			elseif ($pathOptions[0] == 'invite' && $pathOptions[1] == 'accept' && intval($_POST['gameID']))
+			} elseif ($pathOptions[0] == 'invite' && $pathOptions[1] == 'accept' && intval($_POST['gameID'])) {
 				$this->acceptInvite($_POST['gameID']);
-			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'submit' && intval($_POST['gameID']) && intval($_POST['characterID']))
+			} elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'submit' && intval($_POST['gameID']) && intval($_POST['characterID'])) {
 				$this->submitCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
-			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'remove' && intval($_POST['gameID']) && intval($_POST['characterID']))
+			} elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'remove' && intval($_POST['gameID']) && intval($_POST['characterID'])) {
 				$this->removeCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
-			elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'approve' && intval($_POST['gameID']) && intval($_POST['characterID']))
+			} elseif ($pathOptions[0] == 'characters' && $pathOptions[1] == 'approve' && intval($_POST['gameID']) && intval($_POST['characterID'])) {
 				$this->approveCharacter((int) $_POST['gameID'], (int) $_POST['characterID']);
-			elseif ($pathOptions[0] == 'getLFG')
+			} elseif ($pathOptions[0] == 'getLFG') {
 				$this->getLFG();
-			else
+			} else {
 				displayJSON(array('failed' => true));
+			}
 		}
 
 		public function getGames() {
@@ -97,7 +100,6 @@
 			$games = array();
 			$gms = array();
 			$count = 0;
-			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
 			foreach ($rGames as $game) {
 				if (isset($inactiveGMs) && in_array($game['gm']['userID'], $inactiveGMs))
@@ -205,7 +207,6 @@
 
 		public function createGame() {
 			global $currentUser, $mysql, $mongo;
-			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
 			$errors = array();
@@ -307,7 +308,6 @@
 
 		public function updateGame() {
 			global $currentUser, $mysql, $mongo;
-			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
 			$gameID = intval($_POST['gameID']);
@@ -468,7 +468,6 @@
 						if ($currentUser->userID == $invite['user']['userID'])
 							displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'));
 				$mongo->games->update(array('gameID' => $gameID), array('$push' => array('invites' => array('userID' => (int) $user['userID'], 'username' => $user['username']))));
-				require_once(FILEROOT.'/includes/Systems.class.php');
 				$systems = Systems::getInstance();
 				ob_start();
 				include('emails/gameInviteEmail.php');
@@ -611,7 +610,6 @@
 					$emailDetails->action = 'Character Added';
 					$emailDetails->gameInfo = (object) $game;
 					$charLabel = strlen($charDetails['name'])?$charDetails['name']:$charInfo['label'];
-					require_once(FILEROOT.'/includes/Systems.class.php');
 					$systems = Systems::getInstance();
 					$emailDetails->message = "<a href=\"http://gamersplane.com/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"http://gamersplane.com/characters/{$characterID}/\">{$charLabel}</a>.";
 					ob_start();

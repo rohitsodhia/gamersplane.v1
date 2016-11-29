@@ -58,25 +58,32 @@ controllers.controller('viewCharacter_cthulhu_brs7e', ['$scope', '$http', '$sce'
 			'Throw': 20,
 			'Track': 10
 		};
-		$scope.skillCols = [[], [], []];
-		var lastPos = 0;
 		$scope.loadChar().then(function() {
 			$scope.character.dodge = Math.floor($scope.character.characteristics.dex / 2);
 			skillList = [];
-			for (key in $scope.character.skills) {
+			for (var key in $scope.character.skills) {
 				skillList.push($scope.character.skills[key].name);
 				$scope.character.skills[key].default = false;
-				if ($scope.character.skills[key].name.toLowerCase() == 'Dodge') 
+				if ($scope.character.skills[key].name.toLowerCase() == 'Dodge') {
 					$scope.character.dodge = $scope.character.skills[key].value;
+				}
 			}
-			for (key in $scope.defaultSkills) 
-				if (skillList.indexOf(key) == -1) 
+			for (var key in $scope.defaultSkills) {
+				if (skillList.indexOf(key) == -1) {
 					$scope.character.skills.push({ 'name': key, 'value': $scope.defaultSkills[key], 'default': true });
-			$scope.character.skills = $filter('orderBy')($scope.character.skills, '+name');
-			for (key in $scope.skillCols) {
-				$scope.skillCols[key] = $scope.character.skills.slice(lastPos, lastPos + Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0));
-				lastPos += Math.floor($scope.character.skills.length / 3) + ($scope.character.skills.length % 3 > key?1:0);
+				}
 			}
+			$scope.character.skills = $filter('orderBy')($scope.character.skills, '+name');
+			var numCols = 3;
+			$scope.colRanges = [];
+			var colLength = Math.ceil($scope.character.skills.length / 3);
+			for (var count = 0; count < numCols; count++) {
+				$scope.colRanges.push([
+					count * colLength,
+					(count + 1) * colLength
+				]);
+			}
+
 		});
 		$scope.getHalfValue = function (val) {
 			return Math.floor(val / 2);
@@ -85,9 +92,11 @@ controllers.controller('viewCharacter_cthulhu_brs7e', ['$scope', '$http', '$sce'
 			return Math.floor(val / 5);
 		};
 		$scope.computeDamage_Build = function (val) {
-			for (key in $scope.damage_build) 
-				if (val <= key) 
+			for (var key in $scope.damage_build) {
+				if (val <= key) {
 					return $scope.damage_build[key];
+				}
+			}
 		};
 	});
 }]);

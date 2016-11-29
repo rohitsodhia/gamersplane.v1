@@ -1,50 +1,61 @@
 <?
+	require_once(FILEROOT.'/includes/Systems.class.php');
+
 	class characters {
 		public static $charTypes = array('PC', 'NPC', 'Mob');
 
 		public function __construct() {
 			global $loggedIn, $pathOptions;
 
-			if ($pathOptions[0] == 'library') 
+			if ($pathOptions[0] == 'library') {
 				$this->library();
-			elseif ($pathOptions[0] == 'my') 
+			} elseif ($pathOptions[0] == 'my') {
 				$this->my();
-			elseif ($pathOptions[0] == 'new') 
+			} elseif ($pathOptions[0] == 'new') {
 				$this->newChar();
-			elseif ($pathOptions[0] == 'saveBasic') 
+			} elseif ($pathOptions[0] == 'saveBasic') {
 				$this->saveBasic();
-			elseif ($pathOptions[0] == 'load' && intval($_POST['characterID'])) 
-				$this->loadCharacter($_POST['characterID']);
-			elseif ($pathOptions[0] == 'save' && intval($_POST['characterID'])) 
-				$this->saveCharacter($_POST['characterID']);
-			elseif ($pathOptions[0] == 'toggleLibrary') 
+			} elseif ($pathOptions[0] == 'load') {
+				$this->loadCharacter();
+			} elseif ($pathOptions[0] == 'save') {
+				$this->saveCharacter();
+			} elseif ($pathOptions[0] == 'toggleLibrary') {
 				$this->toggleLibrary();
-			elseif ($pathOptions[0] == 'delete') 
+			} elseif ($pathOptions[0] == 'delete') {
 				$this->delete();
-			elseif ($pathOptions[0] == 'toggleFavorite') 
+			} elseif ($pathOptions[0] == 'toggleFavorite') {
 				$this->toggleFavorite();
-			elseif ($pathOptions[0] == 'cilSearch' && $loggedIn) 
-				$this->cilSearch(); 
-			elseif ($pathOptions[0] == 'getUAI') 
-				$this->getUAI(); 
-			elseif ($pathOptions[0] == 'processUAI') 
-				$this->processUAI(); 
-			else 
+			} elseif ($pathOptions[0] == 'getBookData') {
+				$this->getBookData();
+			} elseif ($pathOptions[0] == 'cilSearch' && $loggedIn) {
+				$this->cilSearch();
+			} elseif ($pathOptions[0] == 'getUAI') {
+				$this->getUAI();
+			} elseif ($pathOptions[0] == 'processUAI') {
+				$this->processUAI();
+			} else {
 				displayJSON(array('failed' => true));
+			}
 		}
 
 		public static function newItemized($type, $name, $system) {
 			global $currentUser, $systems, $mongo;
 
-			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
-			if ($system == 'custom') 
+			if ($system == 'custom') {
 				return false;
-			if ($systems->verifySystem($system)) 
+			}
+			if (!$systems->verifySystem($system)) {
 				return false;
+			}
 
 			$searchName = sanitizeString($name, 'search_format');
-			$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName), array('_id' => true));
+			$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName), array('_id' => true, 'systems' => true));
+			$alreadyExists = $mongo->userAddedItems->findOne(array('name' => $name, 'system' => $system), array('_id' => true));
+			if ($alreadyExists || ($ac && in_array($system, $ac['systems']))) {
+				return true;
+			}
+
 			$uai = array(
 				'name' => $name,
 				'itemID' => null,
@@ -63,10 +74,11 @@
 				)
 			);
 			if ($ac != null) {
-				$uai['itemID'] = $ac['_id']->{$id};
+				$uai['itemID'] = $ac['_id']->{'$id'};
 				$mongo->userAddedItems->insert($uai);
-			} else 
+			} else {
 				$mongo->userAddedItems->insert($uai);
+			}
 
 			return true;
 		}
@@ -75,10 +87,9 @@
 			global $mongo;
 
 			$search = array('library.inLibrary' => true);
-			if (isset($_POST['search']) && is_array($_POST['search'])) 
+			if (isset($_POST['search']) && is_array($_POST['search']))
 				$search['system'] = array('$in' => $_POST['search']);
 			$rCharacters = $mongo->characters->find($search, array('_id' => false, 'characterID' => true, 'label' => true, 'user' => true, 'system' => true));
-			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
 			$characters = array();
 			foreach ($rCharacters as $character) {
@@ -90,10 +101,9 @@
 
 		public function my() {
 			global $loggedIn, $currentUser, $mongo;
-			if (!$loggedIn) 
+			if (!$loggedIn)
 				displayJSON(array('failed' => true, 'notLoggedIn' => true), true);
 
-			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
 			$cond = array(
@@ -102,15 +112,15 @@
 			);
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
-				if (sizeof($allowedSystems) == 1) 
+				if (sizeof($allowedSystems) == 1)
 					$cond['system'] = $allowedSystems[0];
 				elseif (sizeof($allowedSystems) > 1) {
-					foreach ($allowedSystems as &$system) 
+					foreach ($allowedSystems as &$system)
 						$system = preg_replace('/[^\w_]/', '', $system);
 					$cond['system'] = array('$in' => $allowedSystems);
 				}
 			}
-			if (isset($_POST['noGame'])) 
+			if (isset($_POST['noGame']))
 				$cond['game'] = null;
 			$rCharacters = $mongo->characters->find($cond, array(
 				'characterID' => true,
@@ -134,7 +144,7 @@
 			if (isset($_POST['library']) && $_POST['library']) {
 				$rLibraryItems = $mongo->characterLibraryFavorites->find(array('userID' => $currentUser->userID));
 				$libraryItems = array();
-				foreach ($rLibraryItems as $item) 
+				foreach ($rLibraryItems as $item)
 					$libraryItems[] = $item['characterID'];
 				$libraryItems = $mongo->characters->find(array('characterID' => array('$in' => $libraryItems)), array('characterID' => true, 'label' => true, 'charType' => true, 'system' => true, 'user' => true));
 				foreach ($libraryItems as $item) {
@@ -151,20 +161,19 @@
 		public function newChar() {
 			global $currentUser, $mongo;
 
-			require_once('../includes/Systems.class.php');
 			$errors = array();
 			$system = $_POST['system'];
 			$validSystem = $mongo->systems->findOne(array('_id' => $system), array('_id' => true));
-			if (!$validSystem) 
+			if (!$validSystem)
 				$errors[] = 'invalidSystem';
 			$label = sanitizeString($_POST['label']);
-			if (strcmp(filterString($label), $label) != 0 || $label == '') 
+			if (strcmp(filterString($label), $label) != 0 || $label == '')
 				$errors[] = 'invalidLabel';
 			$charType = $_POST['charType'];
-			if (!in_array($charType, array('PC', 'NPC', 'Mob'))) 
+			if (!in_array($charType, array('PC', 'NPC', 'Mob')))
 				$charType = 'PC';
 
-			if (sizeof($errors)) 
+			if (sizeof($errors))
 				displayJSON(array('failed' => true, 'errors' => $errors));
 			else {
 				require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
@@ -185,11 +194,11 @@
 			$characterID = intval($_POST['characterID']);
 			$label = sanitizeString($_POST['label']);
 			$charType = in_array($_POST['charType'], self::$charTypes)?$_POST['charType']:'PC';
-			if (strlen($label) == 0) 
+			if (strlen($label) == 0)
 				displayJSON(array('failed' => true, 'errors' => array('noLabel')));
 
 			$charCheck = $mongo->characters->findOne(array('user.userID' => $currentUser->userID, 'characterID' => $characterID), array('_id' => true));
-			if (!$charCheck) 
+			if (!$charCheck)
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
 			else {
 				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('label' => $label, 'charType' => $charType)));
@@ -199,26 +208,25 @@
 			}
 		}
 
-		public function loadCharacter($characterID) {
+		public function loadCharacter() {
 			global $mongo, $currentUser;
 
-			$characterID = (int) $characterID;
-			if ($characterID <= 0) 
+			$characterID = (int) $_POST['characterID'];
+			if ($characterID <= 0)
 				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
 
 			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
 			if ($systemCheck) {
 				$system = $systemCheck['system'];
-				require_once(FILEROOT.'/includes/Systems.class.php');
 				$systems = Systems::getInstance();
 				addPackage($system.'Character');
 				$charClass = Systems::systemClassName($system).'Character';
 				if ($character = new $charClass($characterID)) {
 					$character->load();
 					$charPermissions = $character->checkPermissions($currentUser->userID);
-					if ($charPermissions) 
+					if ($charPermissions)
 						displayJSON($character->get(isset($_POST['printReady']) && $_POST['printReady']?true:false));
-					else 
+					else
 						displayJSON(array('failed' => true, 'errors' => array('noPermission')));
 				}
 			}
@@ -228,35 +236,34 @@
 		public function checkPermissions($characterID, $userID = null) {
 			global $mongo;
 
-			if ($userID == null) 
+			if ($userID == null)
 				$userID = $this->userID;
-			else 
+			else
 				$userID = intval($userID);
 
 			$characterID = (int) $characterID;
 			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
-			if ($charCheck['user']['userID'] == $userID) 
+			if ($charCheck['user']['userID'] == $userID)
 				return 'edit';
 			else {
 				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
-				if ($gmCheck) 
+				if ($gmCheck)
 					return 'edit';
 			}
 			return $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?'library':false;
 		}
 
-		public function saveCharacter($characterID) {
+		public function saveCharacter() {
 			global $mongo, $currentUser;
 
-			$characterID = (int) $characterID;
-			if ($characterID <= 0) 
+			$characterID = (int) $_POST['characterID'];
+			if ($characterID <= 0)
 				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
 			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
-			if (!$systemCheck) 
+			if (!$systemCheck)
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
 			$system = $systemCheck['system'];
 
-			require_once(FILEROOT.'/includes/Systems.class.php');
 			$systems = Systems::getInstance();
 			addPackage($system.'Character');
 			$charClass = Systems::systemClassName($system).'Character';
@@ -269,7 +276,7 @@
 #					$hl_charEdited->addCharacter($characterID)->addUser($currentUser->userID)->save();
 
 					displayJSON(array('success' => true, 'saved' => true, 'characterID' => $characterID));
-				} else 
+				} else
 					displayJSON(array('failed' => true, 'errors' => array('noPermission')));
 			}
 		}
@@ -285,7 +292,7 @@
 #				$hl_libraryToggle->addCharacter($characterID, false)->save();
 
 				displayJSON(array('success' => true, 'state' => !$currentState['library']['inLibrary']));
-			} else 
+			} else
 				displayJSON(array('failed' => true, 'errors' => array('invalidID')));
 		}
 
@@ -299,7 +306,6 @@
 				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
 			}
 			require_once(FILEROOT."/includes/packages/".$system."Character.package.php");
-			require_once('../includes/Systems.class.php');
 			$charClass = Systems::systemClassName($system).'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->delete();
@@ -317,15 +323,27 @@
 			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?true:false;
 			if ($charCheck) {
 				$state = $mongo->characterLibraryFavorites->findOne(array('userID' => $currentUser->userID, 'characterID' => $characterID))?'unfavorited':'favorited';
-				if ($state == 'unfavorited') 
+				if ($state == 'unfavorited')
 					$mongo->characterLibraryFavorites->remove(array('userID' => $currentUser->userID, 'characterID' => $characterID));
-				else 
+				else
 					$mongo->characterLibraryFavorites->insert(array('userID' => $currentUser->userID, 'characterID' => $characterID));
 #				$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
 #				$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
 				displayJSON(array('success' => true, 'state' => $state));
-			} else 
+			} else
 				displayJSON(array('failed' => true, 'errors' => array('noChar')));
+		}
+
+		public function getBookData() {
+			$system = $_POST['system'];
+			$systems = Systems::getInstance();
+			if ($systems->verifySystem($system)) {
+				addPackage($system.'Character');
+				$charClass = Systems::systemClassName($system).'Character';
+				return $charClass::getBookData();
+			} else {
+				return null;
+			}
 		}
 
 		public function cilSearch() {
@@ -334,7 +352,6 @@
 			$type = sanitizeString($_POST['type']);
 			$searchName = sanitizeString($_POST['search'], 'search_format');
 			$system = $_POST['system'];
-			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
 			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
 
@@ -344,7 +361,7 @@
 				if ($systemOnly) {
 					$search['systems'] = $system;
 					$rCIL = $mongo->charAutocomplete->find($search)->sort(array('searchName' => 1))->limit(5);
-					foreach ($rCIL as $item) 
+					foreach ($rCIL as $item)
 						$items[] = array(
 							'itemID' => $item['_id']->{$id},
 							'name' => $item['name'],
@@ -378,7 +395,7 @@
 							'$limit' => 5
 						)
 					));
-					foreach ($rCIL['result'] as $item) 
+					foreach ($rCIL['result'] as $item)
 						$items[] = array(
 							'itemID' => $item['_id']->{$id},
 							'name' => $item['name'],
@@ -393,7 +410,7 @@
 		public function getUAI() {
 			global $loggedIn, $currentUser, $mongo;
 
-			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete'))
 				displayJSON(array('failed' => true, 'noPermission' => true));
 
 			$rNewItems = $mongo->userAddedItems->find(array('itemID' => null, 'action' => null));
@@ -416,7 +433,7 @@
 		public function processUAI() {
 			global $loggedIn, $currentUser, $mongo;
 
-			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) 
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete'))
 				displayJSON(array('failed' => true, 'noPermission' => true));
 
 			$uai = $mongo->userAddedItems->findOne(array('_id' => new MongoId($_POST['item']->_id)));
@@ -433,11 +450,11 @@
 				$ac = $this->searchAutocomplete($uai['name'], $action == 'add'?$uai['type']:null);
 				$uai['itemID'] = $ac['_id']->{'$id'};
 				$newItem = true;
-			} else 
+			} else
 				$ac = $mongo->charAutocomplete->findOne(array('_id' => $uai['itemID']));
 			if ($_POST['action'] == 'reject') {
 				$uai = array(
-					'$set' => 
+					'$set' =>
 						array(
 							'name' => $uai['name'],
 							'action' => 'rejected',
@@ -447,7 +464,7 @@
 				$mongo->userAddedItems->update(array('_id' => new MongoId($_POST['item']->_id)), $uai);
 			} elseif ($_POST['action'] == 'add') {
 				$uai['action'] = 'accepted';
-				if ($ac) 
+				if ($ac)
 					$mongo->charAutocomplete->update(array('_id' => $ac['_id']), array('$push' => array('systems' => $uai['system'])));
 				$_id = $uai['_id'];
 				unset($uai['_id']);

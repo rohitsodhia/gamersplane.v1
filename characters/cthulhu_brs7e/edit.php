@@ -54,9 +54,9 @@
 				<div id="skills" class="clearfix">
 					<h2 class="headerbar hbDark" skew-element>Skills <a href="" ng-click="addSkill()">[ Add Skill ]</a></h2>
 					<div hb-margined>
-						<ul ng-repeat="skillCol in skillCols" ng-class="{ 'first': $first }">
-							<li ng-repeat="skill in skillCol" class="tr skill">
-								<combobox search="skill.name" autocomplete="searchSkills" placeholder="Skill" class="name lrBuffer"></combobox>
+						<ul ng-repeat="column in range(0, numCols - 1)" ng-class="{ 'first': $first }">
+							<li ng-repeat="skill in character.skills" ng-if="$index % 3 == column" class="tr skill">
+								<combobox data="skill.search" search="skill.name" change="changeSkillName(skill, value)" placeholder="Skill" class="name lrBuffer"></combobox>
 								<input type="number" min="0" ng-model="skill.value" class="value">
 								<a href="" class="remove sprite cross" ng-click="removeSkill(skill)"></a>
 							</li>

@@ -1,11 +1,13 @@
 {
-	"/javascript/angular.min.js": "1.4.3",
-	"/javascript/angular-animate.min.js": "1.4.3",
-	"/javascript/angular-cookies.min.js": "1.4.3",
-	"/javascript/angular-file-upload.min.js": "5.0.9",
-	"/javascript/angular-file-upload-shim.min.js": "5.0.9",
-	"/javascript/angular-route.min.js": "1.4.3",
-	"/javascript/angular-sanitize.min.js": "1.4.3",
+	"/javascript/angular.min.js": "1.5.8",
+	"/javascript/angular-animate.min.js": "1.5.8",
+	"/javascript/angular-cookies.min.js": "1.5.8",
+	"/javascript/angular-file-upload.min.js": "12.2.12",
+	"/javascript/angular-file-upload-shim.min.js": "12.2.12",
+	"/javascript/angular-route.min.js": "1.5.8",
+	"/javascript/angular-sanitize.min.js": "1.5.8",
+	"/javascript/angular-moment.min.js": "1.0.0",
+	"/javascript/combobox.angular.js": "1.1.0",
 	"/javascript/html5shiv.js": "3.6.2pre",
 	"/javascript/gamersplane.js": "1.17.2",
 	"/javascript/gamersplane.functions.js": "1.2.0",
@@ -65,5 +67,7 @@
 	"/javascript/tools/dice.js": "1.2.0",
 	"/javascript/tools/music.js": "2.0.1",
 	"/javascript/ucp/ucp.js": "2.0.3",
-	"/javascript/ucp/user.js": "1.0.5"
+	"/javascript/ucp/user.js": "1.0.5",
+	"/node_modules/rx/dist/rx.all.min.js": "4.1.0",
+	"/node_modules/rx-angular/dist/rx.angular.min.js": "1.1.3"
 }

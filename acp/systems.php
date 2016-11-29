@@ -7,7 +7,7 @@
 
 		<div class="mainColumn right">
 			<form id="loadSystem" ng-submit="loadSystem()" class="borderBottom">
-				<combobox data="selectSystem.data" value="selectSystem.value" placeholder="System"></combobox>
+				<combobox data="selectSystem.data" change="setSelectSystem(value)" placeholder="System"></combobox>
 				<button type="submit" class="fancyButton" skew-element>Load</button>
 				<a href="" ng-click="setNewSystem()" class="fancyButton" skew-element>New</a>
 			</form>
@@ -26,7 +26,7 @@
 				</div>
 				<div class="tr">
 					<label for="genres">Genres</label>
-					<combobox data="newGenre.data" value="newGenre.value"></combobox> <a ng-click="addGenre()">[ + ]</a>
+					<combobox data="newGenre.data" change="setNewGenre(value)"></combobox> <a ng-click="addGenre()">[ + ]</a>
 					<div id="genres" ng-show="edit.genres.length">
 						<a ng-repeat="genre in edit.genres | orderBy:genre" ng-click="removeGenre(genre)">{{genre}}{{$last?'':', '}}</a>
 					</div>

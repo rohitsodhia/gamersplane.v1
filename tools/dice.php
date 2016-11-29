@@ -19,7 +19,7 @@
 				<span class="dice_fengshui hideDiv">Feng Shui Dice</span>
 			</h2>
 			<div class="dice_basic">
-				<p>Dice should be in the format<br>(number of dice)d(dice type)(modifier)</p>
+				<p>Dice should be in the format<br>(number of dice)d(die type)(modifier)</p>
 				<p>Separate rolls should be separated by commas or on new lines.</p>
 				<p><i>Example: 2d4, 3d6+4</i></p>
 				<form id="basic_customDice" method="post" action="/tools/process/dice/">
@@ -52,7 +52,7 @@
 					<div class="rollWrapper"><button id="starwarsffg_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
 					<a id="starwarsffg_clear" href="">Clear</a>
 				</div>
-				<p>Click on a dice above to remove it from the dice pool.<br>Click on a dice below to add it to the dice pool.</p>
+				<p>Click on a die above to remove it from the dice pool.<br>Click on a die below to add it to the dice pool.</p>
 				<div class="clearfix">
 					<a href="" id="starwarsffg_ability" class="addDiceLink borderBox floatLeft">
 						<div class="starwarsffg_dice ability"><div></div></div>

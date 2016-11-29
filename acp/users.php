@@ -32,7 +32,7 @@
 					<form ng-show="user.showForm == 'suspend'" ng-submit="confirmSuspend(user)" class="suspendDate">
 						<div ng-if="user.suspendedUntil == null">
 							<span>Suspend until:</span>
-							<combobox ng-repeat="part in ['month', 'day', 'year']" data="combobox.values[part]" value="suspendUntil[part]" returnAs="value" select></combobox>
+							<combobox ng-repeat="part in ['month', 'day', 'year']" data="combobox.values[part]" search="suspendUntil[part]" change="setDatePart(suspendUntil, part, value)" select></combobox>
 							<input type="text" ng-model="suspendUntil.hour">:<input type="text" ng-model="suspendUntil.minutes">
 							<button type="submit" name="suspend" class="normal">Confirm</button>
 						</div>

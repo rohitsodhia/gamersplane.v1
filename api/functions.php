@@ -11,18 +11,18 @@
 
 	function utf8ize($input) {
 		if (is_array($input)) {
-			foreach ($input as $key => $value) 
+			foreach ($input as $key => $value)
 				$input[$key] = utf8ize($value);
-		} elseif (is_string($input)) 
+		} elseif (is_string($input))
 //			return utf8_encode($input);
 			return mb_convert_encoding($input, 'UTF-8');
 		return $input;
 	}
 
 	function displayJSON($data, $exit = true) {
-		header('Content-Type: application/json');
-		echo json_encode(utf8ize($data));
-		if ($exit) 
+		header('Content-Type: application/json; charset=UTF-8');
+		echo json_encode($data, JSON_UNESCAPED_UNICODE);
+		if ($exit)
 			exit;
 	}
 
@@ -52,14 +52,14 @@
 				$input = str_replace("\r\n", "\n", $input);
 				$input = nl2br($input);
 			}
-			if (in_array('stripslashes', $options)) 
+			if (in_array('stripslashes', $options))
 				$input = stripslashes($input);
 		} elseif (is_array($input))
-			foreach ($input as $key => $value) 
+			foreach ($input as $key => $value)
 				$input[$key] = printReady($value);
 		return $input;
 	}
-	
+
 	function filterString($string) {
 		global $mysql;
 		$filters = $mysql->query('SELECT word FROM wordFilter');
@@ -78,11 +78,11 @@
 		do { $string = preg_replace($filterWords, $replacements, $string); } while ($string != preg_replace($filterWords, $replacements, $string));
 		return $string;
 	}
-	
+
 	function showSign($num) {
 		return ($num >= 0?'+':'').$num;
 	}
-	
+
 	function decToB26($num) {
 		$str = '';
 		while ($num > 0) {
@@ -90,22 +90,22 @@
 			$str = chr($charNum + 97).$str;
 			$num = floor(($num - $charNum)/26);
 		}
-		
+
 		return $str;
 	}
-	
+
 	function b26ToDec($str) {
 		$num = 0;
 		$str = strtolower($str);
 		for ($count = 0; $count < strlen($str); $count++) $num += (ord($str[strlen($str) - 1 - $count]) - 96) * pow(26, $count);
-		
+
 		return $num;
 	}
 
 /* Session Functions */
 	function startSession() {
 		session_start();
-		
+
 //		putenv('TZ=GMT');
 		date_default_timezone_set('GMT');
 	}

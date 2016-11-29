@@ -15,28 +15,32 @@
 
 		protected $linkedTables = array();
 		protected $mongoIgnore = array('save' => array('bodyClasses', 'linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system', 'user'));
-		
+
 		public function __construct($characterID = null, $userID = null) {
 			global $currentUser;
 
-			if ($characterID != null) 
+			if ($characterID != null)
 				$this->characterID = intval($characterID);
-			if ($userID == null) 
+			if ($userID == null)
 				$this->userID = $currentUser->userID;
-			else 
+			else
 				$this->userID = $userID;
 
-			foreach ($this->bodyClasses as $bodyClass) 
+			foreach ($this->bodyClasses as $bodyClass)
 				addBodyClass($bodyClass);
 		}
 
 		public function clearVar($var) {
 			if (isset($this->$var)) {
-				if (is_array($this->$var)) 
+				if (is_array($this->$var))
 					$this->$var = array();
-				else 
+				else
 					$this->$var = null;
 			}
+		}
+
+		public static function getBookData() {
+			return null;
 		}
 
 		public function getID() {
@@ -52,7 +56,7 @@
 		}
 
 		public function setCharType($charType) {
-			if (in_array($charType, self::$charTypes)) 
+			if (in_array($charType, self::$charTypes))
 				$this->charType = $charType;
 		}
 
@@ -83,30 +87,30 @@
 		public function checkPermissions($userID = null) {
 			global $mysql, $mongo, $currentUser;
 
-			if ($userID == null) 
+			if ($userID == null)
 				$userID = $this->userID;
-			else 
+			else
 				$userID = intval($userID);
 
 			$charCheck = $mongo->characters->findOne(array('characterID' => $this->characterID), array('user' => true, 'game' => true));
-			if ($charCheck['user']['userID'] == $userID) 
+			if ($charCheck['user']['userID'] == $userID)
 				return 'edit';
 			else {
 				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
-				if ($gmCheck) 
+				if ($gmCheck)
 					return 'edit';
 			}
 			return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
 		}
-		
+
 		public function showSheet() {
 			require_once(FILEROOT.'/characters/'.$this::SYSTEM.'/sheet.php');
 		}
-		
+
 		public function showEdit() {
 			require_once(FILEROOT.'/characters/'.$this::SYSTEM.'/edit.php');
 		}
-		
+
 		public function setName($name) {
 			$this->name = sanitizeString($name);
 		}
@@ -121,14 +125,14 @@
 
 		public function getNotes($pr = false) {
 			$notes = $this->notes;
-			if ($pr) 
+			if ($pr)
 				$notes = printReady($notes);
 			return $notes;
 		}
 
 		public function getForumTop($postAuthor, $isGM) {
 			global $currentUser;
-			
+
 			if ($this->checkPermissions($currentUser->userID) == 'edit') {
 ?>
 					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/"><?=$this->name?></a></p>
@@ -140,17 +144,17 @@
 		}
 
 		public function getAvatar($showTS = true) {
-			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg")) 
+			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg"))
 				return "/characters/avatars/{$this->characterID}.jpg".($showTS?'?'.time():'');
-			else 
+			else
 				return false;
 		}
 
 		protected function prElement($ele) {
-			if (is_object($ele) || is_array($ele)) 
-				foreach ($ele as $key => &$value) 
+			if (is_object($ele) || is_array($ele))
+				foreach ($ele as $key => &$value)
 					$value = $this->prElement($value);
-			else 
+			else
 				$ele = printReady($ele);
 
 			return $ele;
@@ -158,7 +162,7 @@
 
 		public function get($pr) {
 			$char = get_object_vars($this);
-			if ($pr) 
+			if ($pr)
 				$char = $this->prElement($char);
 //				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) {
 			return $char;
@@ -173,13 +177,13 @@
 			global $mongo, $mysql;
 
 			$classVars = get_object_vars($this);
-			foreach ($this->mongoIgnore['save'] as $key) 
+			foreach ($this->mongoIgnore['save'] as $key)
 				unset($classVars[$key]);
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
-			if ($classVars['created'] == null) 
+			if ($classVars['created'] == null)
 				$classVars['created'] = new MongoDate();
 			try {
-//				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value)) 
+//				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value))
 //					$value = mb_convert_encoding($value, 'UTF-8');
 //				});
 				$username = $mysql->query("SELECT username FROM users WHERE userID = {$classVars['userID']}")->fetchColumn();
@@ -195,22 +199,22 @@
 			global $mysql, $mongo;
 
 			$character = $mongo->characters->findOne(array('characterID' => $this->characterID));
-			if ($character == null) 
+			if ($character == null)
 				return false;
 			if ($character['retired'] == null) {
-				foreach ($character as $key => $value) 
-					if (!in_array($key, $this->mongoIgnore['load'])) 
+				foreach ($character as $key => $value)
+					if (!in_array($key, $this->mongoIgnore['load']))
 						$this->$key = $value;
 				$this->userID = $character['user']['userID'];
 				return true;
-			} else 
+			} else
 				return false;
 		}
 
 		public function delete() {
 			global $currentUser, $mongo;
 
-			if ($this->label == null) 
+			if ($this->label == null)
 				$this->game = $mongo->characters->findOne(array('characterID' => $this->characterID), array('game'))['game'];
 			if ($this->game) {
 				$players = $mongo->games->findOne(array('gameID' => $this->game['gameID']), array('players' => true))['players'];

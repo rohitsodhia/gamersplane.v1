@@ -36,14 +36,14 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 		$scope.loadChar();
 		$scope.searchSkills = function (search) {
 			return ACSearch.cil('skill', search, 'shadowrun5').then(function (items) {
-				for (key in items) {
+				for (var key in items) {
 					systemItem = items[key].systemItem;
 					items[key] = {
 						'value': items[key].itemID,
 						'display': items[key].name,
 						'class': []
-					}
-					if (!systemItem) 
+					};
+					if (!systemItem)
 						items[key].class.push('nonSystemItem');
 				}
 				return items;

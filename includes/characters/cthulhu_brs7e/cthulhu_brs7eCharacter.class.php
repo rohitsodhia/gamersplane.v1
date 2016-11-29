@@ -19,30 +19,35 @@
 
 		public function setCharacteristic($characteristic, $value = 0) {
 			$value = (int) $value;
-			if (array_key_exists($characteristic, $this->characteristics) && $value >= 0) 
+			if (array_key_exists($characteristic, $this->characteristics) && $value >= 0) {
 				$this->characteristics[$characteristic] = $value;
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setHP($type, $value = 0) {
 			if (array_key_exists($type, $this->hp)) {
-				if ($type == 'major') 
+				if ($type == 'major') {
 					$this->hp[$type] = (bool) $value;
-				else 
+				} else {
 					$this->hp[$type] = (int) $value >= 0?(int) $value:0;
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
 
 		public function setSanity($type, $value = 0) {
 			if (array_key_exists($type, $this->sanity)) {
-				if ($type == 'current' || $type == 'max') 
+				if ($type == 'current' || $type == 'max') {
 					$this->sanity[$type] = (int) $value >= 0?(int) $value:0;
-				else 
+				} else {
 					$this->sanity[$type] = (bool) $value;
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
 
 		public function setLuck($value = 0) {
@@ -51,10 +56,11 @@
 
 		public function setMP($type, $value = 0) {
 			$value = (int) $value >= 0?(int) $value:0;
-			if (array_key_exists($type, $this->mp)) 
+			if (array_key_exists($type, $this->mp)) {
 				$this->mp[$type] = $value;
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function addSkill($skill) {
@@ -68,7 +74,7 @@
 		}
 
 		public function addWeapon($weapon) {
-			if (strlen($weapon->name) && strlen($weapon->damage)) 
+			if (strlen($weapon->name) && strlen($weapon->damage))
 				$this->weapons[] = array(
 					'name' => sanitizeString($weapon->name),
 					'regular' => (int) $weapon->regular,
@@ -83,7 +89,7 @@
 		}
 
 		public function addItem($item) {
-			if (strlen($item->name)) 
+			if (strlen($item->name))
 				$this->items[] = array(
 					'name' => sanitizeString($item->name),
 					'notes' => sanitizeString($item->notes)
@@ -92,35 +98,46 @@
 
 		public function save($bypass = false) {
 			global $mysql;
-			if (isset($_POST['character'])) 
+			if (isset($_POST['character'])) {
 				$data = $_POST['character'];
-			else 
+			} else {
 				$data = $_POST;
+			}
 
 			if (!$bypass) {
 				$this->setName($data->name);
 				$this->setOccupation($data->occupation);
-				foreach ($data->characteristics as $characteristic => $value) 
+				foreach ($data->characteristics as $characteristic => $value) {
 					$this->setCharacteristic($characteristic, $value);
-				foreach ($data->hp as $type => $value) 
+				}
+				foreach ($data->hp as $type => $value) {
 					$this->setHP($type, $value);
-				foreach ($data->sanity as $type => $value) 
+				}
+				foreach ($data->sanity as $type => $value) {
 					$this->setSanity($type, $value);
+				}
 				$this->setLuck($data->luck);
-				foreach ($data->mp as $type => $value) 
+				foreach ($data->mp as $type => $value) {
 					$this->setMP($type, $value);
+				}
 				$this->clearVar('skills');
-				if (sizeof($data->skills)) 
-					foreach ($data->skills as $skill) 
+				if (sizeof($data->skills)) {
+					foreach ($data->skills as $skill) {
 						$this->addSkill($skill);
+					}
+				}
 				$this->clearVar('weapons');
-				if (sizeof($data->weapons)) 
-					foreach ($data->weapons as $weapon) 
+				if (sizeof($data->weapons)) {
+					foreach ($data->weapons as $weapon) {
 						$this->addWeapon($weapon);
+					}
+				}
 				$this->clearVar('items');
-				if (sizeof($data->items)) 
-					foreach ($data->items as $item) 
+				if (sizeof($data->items)) {
+					foreach ($data->items as $item) {
 						$this->addItem($item);
+					}
+				}
 				$this->setNotes($data->notes);
 			}
 

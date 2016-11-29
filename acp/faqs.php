@@ -10,11 +10,11 @@
 <?	if ($formErrors->getErrors('addFAQ')) { ?>
 			<div class="alertBox_error"><ul>
 <?
-		if ($formErrors->checkError('noCategory')) 
+		if ($formErrors->checkError('noCategory'))
 			echo "				<li>No category selected.</li>\n";
-		if ($formErrors->checkError('noQuestion')) 
+		if ($formErrors->checkError('noQuestion'))
 			echo "				<li>No question asked.</li>\n";
-		if ($formErrors->checkError('noAnswer')) 
+		if ($formErrors->checkError('noAnswer'))
 			echo "				<li>No answer given.</li>\n";
 ?>
 			</ul></div>
@@ -22,7 +22,7 @@
 			<form ng-submit="createFAQ()">
 				<div class="pRow">
 					<label>Category</label>
-					<combobox data="categories" value="newFAQ.category" select></combobox>
+					<combobox data="categories" change="setCategory(value)" select></combobox>
 				</div>
 				<div class="pRow">
 					<label for="question">Question</label>

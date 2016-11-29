@@ -12,7 +12,7 @@
 						</div>
 						<div class="type">
 							<div ng-show="!new && !editing">{{data.level.display}}</div>
-							<combobox ng-show="new || editing" data="levels" value="data.level" select></combobox>
+							<combobox ng-show="new || editing" data="levels" search="data.level" change="setLevel(value)" select></combobox>
 
 							<div class="tr" ng-show="data.networks.rpga || editing"><pretty-checkbox eleid="rpga_{{data._id}}" checkbox="data.networks" value="'rpga'" ng-show="editing"></pretty-checkbox> <label for="rpga_{{data._id}}">The RPG Academy Network</label></div>
 						</div>

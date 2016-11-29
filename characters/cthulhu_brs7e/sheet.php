@@ -51,8 +51,8 @@
 				<h2 class="headerbar hbDark" skew-element>Skills</h2>
 				<div hb-margined>
 					<p class="note">Skills in grey italics are default values</p>
-					<ul ng-repeat="skillCol in skillCols" ng-class="{ 'first': $first }">
-						<li ng-repeat="skill in skillCol" class="tr skill" ng-class="{ 'default': skill.default }">
+					<ul ng-repeat="colRange in colRanges" ng-class="{ 'first': $first }">
+						<li ng-repeat="skill in character.skills" ng-if="$index >= colRange[0] && $index < colRange[1]" class="tr skill" ng-class="{ 'default': skill.default }">
 							<span class="name" ng-bind-html="skill.name"></span>
 							<span class="value">{{skill.value}}%</span>
 						</li>
