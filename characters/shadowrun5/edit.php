@@ -74,7 +74,7 @@
 						<div hb-margined>
 							<div ng-repeat="skill in character.skills" class="skill tr">
 								<div ng-click="skill.type = skill.type == 'a'?'k':'a'" class="type">{{skill.type.toUpperCase()}}</div>
-								<combobox search="skill.name" autocomplete="searchSkills" placeholder="Skill" class="name lrBuffer"></combobox>
+								<combobox data="skill.search" search="skill.name" change="changeSkillName(skill, value)" placeholder="Skill" class="name lrBuffer"></combobox>
 								<input type="text" ng-model="skill.rating" class="rating">
 								<a href="" class="remove sprite cross" ng-click="character.skills.splice($index, 1)"></a>
 							</div>
@@ -86,7 +86,7 @@
 							<div hb-margined>
 								<div ng-repeat="quality in character.qualities" class="quality tr">
 									<div ng-click="quality.type = quality.type == 'p'?'n':'p'" class="type">{{quality.type.toUpperCase()}}</div>
-									<combobox search="quality.name" autocomplete="searchQualities" placeholder="Quality" class="name lrBuffer"></combobox>
+									<combobox data="quality.search" search="quality.name" change="changeQualityName(quality, value)" placeholder="Quality" class="name lrBuffer"></combobox>
 									<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
 									<a href="" class="remove sprite cross" ng-click="character.qualities.splice($index, 1)"></a>
 									<textarea ng-model="quality.notes"></textarea>
@@ -235,7 +235,7 @@
 							</div>
 							<div ng-repeat="program in character.cyberdeck.programs" class="tr lrBuffer program">
 								<a href="" class="remove sprite cross" ng-click="character.cyberdeck.programs.splice($index, 1)"></a>
-								<combobox search="program.name" autocomplete="searchPrograms" placeholder="Program" class="name"></combobox>
+								<combobox data="program.search" search="program.name" change="changeProgramName(program, value)" placeholder="Program" class="name lrBuffer"></combobox>
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
 								<textarea ng-model="program.notes"></textarea>
 							</div>
@@ -256,7 +256,7 @@
 								<label class="shortNum lrBuffer">Essence</label>
 							</div>
 							<div ng-repeat="augment in character.augmentations" class="augment tr">
-								<combobox search="augment.name" autocomplete="searchAugmentations" placeholder="Augmentation" class="name medText"></combobox>
+								<combobox data="augment.search" search="augment.name" change="changeAugmentationName(augment, value)" placeholder="Augmentation" class="name lrBuffer"></combobox>
 								<input type="number" ng-model="augment.rating" class="rating lrBuffer">
 								<input type="number" step=".1" ng-model="augment.essence" class="essence lrBuffer">
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>
@@ -276,7 +276,7 @@
 									<label class="tt shorterText alignCenter lrBuffer">Type/Target</label>
 								</div>
 								<div class="tr">
-									<combobox search="sprcf.name" autocomplete="searchSPRCF" placeholder="SPRCF" class="name lrBuffer"></combobox>
+									<combobox data="sprcf.search" search="sprcf.name" change="changeSPRCFName(sprcf, value)" placeholder="SPRCF" class="name lrBuffer"></combobox>
 									<input type="text" ng-model="sprcf.tt" class="tt shorterText lrBuffer">
 								</div>
 								<div class="labelTR row2">
@@ -303,7 +303,7 @@
 								<label class="shortNum alignCenter lrBuffer">Rating</label>
 							</div>
 							<div ng-repeat="power in character.powers" class="power tr">
-								<combobox search="power.name" autocomplete="searchPowers" placeholder="Power" class="name medText lrBuffer"></combobox>
+								<combobox data="power.search" search="power.name" change="changePowerName(power, value)" placeholder="Power" class="name lrBuffer"></combobox>
 								<input type="text" ng-model="power.rating" class="rating">
 								<a href="" class="remove sprite cross" ng-click="character.powers.splice($index, 1)"></a>
 								<a href="" ng-click="toggleNotes($event)" class="notesLink">[ Notes ]</a>

@@ -32,7 +32,7 @@ controllers.controller('editCharacter_cthulhu_brs7e', ['$scope', '$http', '$q', 
 			return Math.floor(val / 5);
 		};
 		$scope.addSkill = function () {
-			$scope.character.skills.push({ 'name': '', 'value': 0 });
+			$scope.character.skills.push({ 'name': '', 'value': 0, search: [] });
 		};
 		$scope.changeSkillName = function (skill, name) {
 			skill.name = name;
@@ -44,8 +44,9 @@ controllers.controller('editCharacter_cthulhu_brs7e', ['$scope', '$http', '$q', 
 						'display': items[key].name,
 						'class': []
 					};
-					if (!systemItem)
+					if (!systemItem) {
 						items[key].class.push('nonSystemItem');
+					}
 				}
 				skill.search = items;
 			});

@@ -1,5 +1,3 @@
-<?
-?>
 <? require_once(FILEROOT.'/header.php'); ?>
 <?	if ($_GET['passWipe']) { ?>
 		<div class="alertBox_info">
@@ -20,7 +18,7 @@
 
 		<div id="formWrapper">
 			<h1 class="headerbar">Login</h1>
-			
+
 			<form method="post" action="/login/process/login/" class="hbMargined">
 				<div class="tr">
 					<label>Username/Email</label>
@@ -33,7 +31,7 @@
 				<div id="submitDiv" class="alignCenter"><button type="submit" name="login" value="login" tabindex="5">Login</button></div>
 			</form>
 		</div>
-		
+
 		<p><a id="register" href="/register/">Don't have an account? Register for free!</a></p>
 		<p><a id="requestReset" href="/login/requestReset/" class="inFrame">Forgot your password?</a></p>
 <? require_once(FILEROOT.'/footer.php'); ?>

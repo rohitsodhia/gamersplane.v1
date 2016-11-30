@@ -21,8 +21,8 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 			]
 		};
 		blanks = {
-			'skills': { 'name': '', 'rating': 1, 'type': 'a' },
-			'qualities': { 'name': '', 'notes': '', 'type': 'p' },
+			'skills': { 'name': '', 'rating': 1, 'type': 'a', 'search': [] },
+			'qualities': { 'name': '', 'notes': '', 'type': 'p', 'search': [] },
 			'contacts': { 'name': '', 'loyalty': 0, 'connection': 0, 'notes': '' },
 			'weapons.ranged': { 'name': '', 'damage': '', 'accuracy': 0, 'ap': 0, 'mode': '', 'rc': '', 'ammo': '', 'notes': '' },
 			'weapons.melee': { 'name': '', 'reach': 0, 'damage': '', 'accuracy': 0, 'ap': 0, 'notes': '' },
@@ -34,38 +34,55 @@ controllers.controller('editCharacter_shadowrun5', ['$scope', '$http', '$q', '$s
 			'gear': { 'name': '', 'rating': 0, 'notes': '' }
 		};
 		$scope.loadChar();
-		$scope.searchSkills = function (search) {
-			return ACSearch.cil('skill', search, 'shadowrun5').then(function (items) {
-				for (var key in items) {
-					systemItem = items[key].systemItem;
-					items[key] = {
-						'value': items[key].itemID,
-						'display': items[key].name,
-						'class': []
-					};
-					if (!systemItem)
-						items[key].class.push('nonSystemItem');
+		function setupCILData(items) {
+			for (var key in items) {
+				systemItem = items[key].systemItem;
+				items[key] = {
+					'value': items[key].itemID,
+					'display': items[key].name,
+					'class': []
+				};
+				if (!systemItem) {
+					items[key].class.push('nonSystemItem');
 				}
-				return items;
+			}
+			return items;
+		}
+		$scope.changeSkillName = function (skill, name) {
+			skill.name = name;
+			ACSearch.cil('skill', name, 'shadowrun5', true).then(function (items) {
+				skill.search = setupCILData(items);
 			});
 		};
-		$scope.searchQualities = function (search) {
-			return ACSearch.cil('quality', search, 'shadowrun5', true);
+		$scope.changeQualityName = function (quality, name) {
+			quality.name = name;
+			ACSearch.cil('quality', name, 'shadowrun5e', true).then(function (items) {
+				quality.search = setupCILData(items);
+			});
 		};
-		$scope.searchPrograms = function (search) {
-			return ACSearch.cil('program', search, 'shadowrun5', true);
+		$scope.changeProgramName = function (program, name) {
+			program.name = name;
+			ACSearch.cil('program', name, 'shadowrun5e', true).then(function (items) {
+				program.search = setupCILData(items);
+			});
 		};
-		$scope.searchAugmentations = function (search) {
-			return ACSearch.cil('augmentation', search, 'shadowrun5', true);
+		$scope.changeAugmentationName = function (augmentation, name) {
+			augmentation.name = name;
+			ACSearch.cil('augmentation', name, 'shadowrun5e', true).then(function (items) {
+				augmentation.search = setupCILData(items);
+			});
 		};
-		$scope.searchSPRCF = function (search) {
-			return ACSearch.cil('sprcf', search, 'shadowrun5', true);
+		$scope.changeSPRCFName = function (sprcf, name) {
+			sprcf.name = name;
+			ACSearch.cil('sprcf', name, 'shadowrun5e', true).then(function (items) {
+				sprcf.search = setupCILData(items);
+			});
 		};
-		$scope.searchPowers = function (search) {
-			return ACSearch.cil('powers', search, 'shadowrun5', true);
+		$scope.changePowerName = function (power, name) {
+			power.name = name;
+			ACSearch.cil('power', name, 'shadowrun5e', true).then(function (items) {
+				power.search = setupCILData(items);
+			});
 		};
-//		$scope.save = function () {
-//			$parent.save();
-//		};
 	});
 }]);
