@@ -3,11 +3,11 @@
 
 	$forumID = intval($pathOptions[1]);
 
-/*	if (in_array($pathOptions[2], array('details', 'subforums', 'permissions'))) 
+/*	if (in_array($pathOptions[2], array('details', 'subforums', 'permissions')))
 		$section = $pathOptions[2];
-	elseif ($forumID == 0) 
+	elseif ($forumID == 0)
 		$section = 'subforums';
-	else 
+	else
 		$section = 'details';
 
 	$forumManager = new ForumManager(0, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
@@ -115,15 +115,15 @@
 					<h3>General</h3>
 					<div ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 				</div>
-				
+
 				<div id="permissions_groups">
 					<h3 class="gapAbove">Groups</h3>
 					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<form ng-if="details.isGameForum && newGroupPermission.data.length" class="newPermission" ng-submit="addGroupPermission()">
-						Add permission for <combobox data="newGroupPermission.data" value="newGroupPermission.value" select></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
+						Add permission for <combobox data="newGroupPermission.data" change="setNewGroup(search, value)" select></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
 					</form>
 				</div>
-				
+
 				<div id="permissions_users">
 					<h3 class="gapAbove">User</h3>
 					<div ng-repeat="permission in permissions.user" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
