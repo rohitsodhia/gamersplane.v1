@@ -1,6 +1,6 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<div class="sideWidget">
-			<h2>Looking for Game</h2> 
+			<h2>Looking for Game</h2>
 			<div class="widgetBody">
 				<div id="currentLFG" ng-hide="editLFG">
 					<p>Your current LFG Status:</p>
@@ -12,7 +12,7 @@
 				</div>
 				<div id="editLFG" ng-show="editLFG">
 					<ul>
-						<li ng-repeat="system in systems | orderBy: '+'"><label><pretty-checkbox checkbox="lfg" value="system"></pretty-checkbox> <span ng-bind-html="system"></span></label></li>
+						<li ng-repeat="system in systems"><label><pretty-checkbox checkbox="lfg" value="system"></pretty-checkbox> <span ng-bind-html="system"></span></label></li>
 					</ul>
 					<p class="alignCenter"><button type="submit" ng-click="saveLFG()" class="fancyButton smallButton" skew-element>Update</button></p>
 				</div>
@@ -33,7 +33,7 @@
 				</ul>
 				<div ng-hide="inGames.notGM" class="noneFound">It seems you aren't playing any games yet. <br>You might want to <a href="/games/list/">join one</a>!</div>
 			</div>
-			
+
 			<div id="gamesRunning">
 				<div class="clearfix hbdTopper"><a href="/games/new/" class="fancyButton smallButton" skew-element>Create a New Game</a></div>
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>

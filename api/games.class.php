@@ -1,6 +1,6 @@
 <?
 	require_once(FILEROOT.'/includes/Systems.class.php');
-	
+
 	class games {
 		function __construct() {
 			global $loggedIn, $pathOptions;
@@ -21,8 +21,13 @@
 				$this->retire($_POST['gameID']);
 			} elseif ($pathOptions[0] == 'apply') {
 				$this->apply();
-			} elseif ($pathOptions[0] == 'invite' && sizeof($pathOptions) == 1 && intval($_POST['gameID']) && strlen($_POST['user'])) {
-				$this->invite($_POST['gameID'], $_POST['user']);
+			} elseif (
+				$pathOptions[0] == 'invite' &&
+				sizeof($pathOptions) == 1 &&
+				intval($_POST['gameID']) &&
+				(int) $_POST['userID']
+			) {
+				$this->invite($_POST['gameID'], $_POST['userID']);
 			} elseif ($pathOptions[0] == 'invite' && ($pathOptions[1] == 'withdraw' || $pathOptions[1] == 'decline') && intval($_POST['gameID']) && strlen($_POST['userID'])) {
 				$this->removeInvite($_POST['gameID'], $_POST['userID']);
 			} elseif ($pathOptions[0] == 'invite' && $pathOptions[1] == 'accept' && intval($_POST['gameID'])) {
@@ -36,7 +41,7 @@
 			} elseif ($pathOptions[0] == 'getLFG') {
 				$this->getLFG();
 			} else {
-				displayJSON(array('failed' => true));
+				displayJSON(['failed' => true]);
 			}
 		}
 
@@ -443,30 +448,53 @@
 			displayJSON(array('success' => true));
 		}
 
-		public function invite($gameID, $user) {
+		public function invite($gameID, $userID) {
 			global $mysql, $currentUser, $mongo;
 
 			$gameID = intval($gameID);
-			$user = sanitizeString($user, 'lower');
-			$gameInfo = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'system' => true, 'players' => true, 'invites' => true));
+			$gameInfo = $mongo->games->findOne(
+				['gameID' => $gameID],
+				[
+					'title' => true,
+					'system' => true,
+					'players' => true,
+					'invites' => true
+				]
+			);
 			$isGM = false;
 			foreach ($gameInfo['players'] as $player) {
-				if ($currentUser->userID == $player['user']['userID'])
-					if ($player['isGM'])
+				if ($currentUser->userID == $player['user']['userID']) {
+					if ($player['isGM']) {
 						$isGM = true;
-				if ($user == strtolower($player['user']['username']))
-					displayJSON(array('failed' => true, 'errors' => array('alreadyInGame')));
+					}
+				}
+				if ($user == strtolower($player['user']['userID'])) {
+					displayJSON([
+						'failed' => true,
+						'errors' => ['alreadyInGame']
+					]);
+				}
 			}
 			if ($isGM) {
-				$userCheck = $mysql->prepare("SELECT userID, username, email FROM users WHERE LOWER(username) = :username LIMIT 1");
-				$userCheck->execute(array(':username' => $user));
-				if (!$userCheck->rowCount())
-					displayJSON(array('failed' => true, 'errors' => array('invalidUser')));
+				$userCheck = $mysql->prepare("SELECT userID, username, email FROM users WHERE userID = :userID LIMIT 1");
+				$userCheck->execute(array(':userID' => $userID));
+				if (!$userCheck->rowCount()) {
+					displayJSON([
+						'failed' => true,
+						'errors' => ['invalidUser']
+					]);
+				}
 				$user = $userCheck->fetch();
-				if (isset($gameInfo['invites']))
-					foreach ($gameInfo['invites'] as $invite)
-						if ($currentUser->userID == $invite['user']['userID'])
-							displayJSON(array('failed' => true, 'errors' => 'alreadyInvited'));
+				if (isset($gameInfo['invites'])) {
+					foreach ($gameInfo['invites'] as $invite) {
+						if ($currentUser->userID == $invite['user']['userID']) {
+							displayJSON([
+								'failed' => true,
+								'errors' => ['alreadyInvited']
+							]);
+						}
+					}
+				}
 				$mongo->games->update(array('gameID' => $gameID), array('$push' => array('invites' => array('userID' => (int) $user['userID'], 'username' => $user['username']))));
 				$systems = Systems::getInstance();
 				ob_start();

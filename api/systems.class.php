@@ -3,14 +3,15 @@
 		function __construct() {
 			global $pathOptions;
 
-			if ($pathOptions[0] == 'get')
+			if ($pathOptions[0] == 'get') {
 				$this->get();
-			elseif ($pathOptions[0] == 'getGenres')
+			} elseif ($pathOptions[0] == 'getGenres') {
 				$this->getGenres();
-			elseif ($pathOptions[0] == 'save')
+			} elseif ($pathOptions[0] == 'save') {
 				$this->save();
-			else
+			} else {
 				displayJSON(array('failed' => true));
+			}
 		}
 
 		public function get() {
@@ -18,13 +19,16 @@
 
 			$search = array();
 			$fields = array('name' => true);
-			if (!isset($_POST['fields']) || $_POST['fields'] == 'all')
+			if (!isset($_POST['fields']) || $_POST['fields'] == 'all') {
 				$fields = array();
-			elseif (isset($_POST['fields']) && is_array($_POST['fields']))
-				foreach ($_POST['fields'] as $field)
+			} elseif (isset($_POST['fields']) && is_array($_POST['fields'])) {
+				foreach ($_POST['fields'] as $field) {
 					$fields[$field] = true;
-			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom'])
+				}
+			}
+			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) {
 				$search['_id'] = array('$ne' => 'custom');
+			}
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
 				$rSystems = $mongo->systems->findOne(array('_id' => $_POST['shortName']), $fields);
 				$rSystems = array($rSystems);
@@ -51,20 +55,25 @@
 					'fullName' => $rSystem['name']
 				);
 				if (sizeof($fields) > 0) {
-					foreach ($fields as $field => $nothing)
+					foreach ($fields as $field => $nothing) {
 						$system[$field] = isset($rSystem[$field])?$rSystem[$field]:(isset($defaults[$field])?$defaults[$field]:null);
+					}
 				} else {
-					foreach ($rSystem as $key => $value)
-						if ($key != '_id' && $key != 'name')
+					foreach ($rSystem as $key => $value) {
+						if ($key != '_id' && $key != 'name') {
 							$system[$key] = $value;
+						}
+					}
 				}
-				if ($system['shortName'] != 'custom')
+				if ($system['shortName'] != 'custom') {
 					$systems[] = $system;
-				else
+				} else {
 					$custom = $system;
+				}
 			}
-			if ((!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) && sizeof($custom))
+			if ((!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) && sizeof($custom)) {
 				$systems[] = $custom;
+			}
 			displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
 		}
 
@@ -73,9 +82,11 @@
 
 			$genres = array();
 			$rSystem = $mongo->systems->find(array('genres' => array('$not' => array('$size' => 0))), array('_id' => -1, 'genres' => 1));
-			foreach ($rSystem as $system)
-				foreach ($system['genres'] as $genre)
+			foreach ($rSystem as $system) {
+				foreach ($system['genres'] as $genre) {
 					$genres[] = $genre;
+				}
+			}
 			displayJSON(array_unique($genres));
 		}
 
@@ -85,20 +96,25 @@
 			if ($currentUser->checkACP('systems', false)) {
 				$genres = array();
 				$systemData = $_POST['data'];
-				if (isset($systemData->genres) && is_array($systemData->genres)) { foreach ($systemData->genres as $genre) {
-					$genre = sanitizeString($genre);
-					if (strlen($genre) && !array_search($genre, $genres))
-						$genres[] = $genre;
-				} }
-				$basics = array();
-				if (isset($systemData->basics) && is_array($systemData->basics)) { foreach ($systemData->basics as $basic) {
-					if (strlen($basic->text) && strlen($basic->site)) {
-						$basics[] = (object) array(
-							'text' => sanitizeString($basic->text),
-							'site' => sanitizeString($basic->site)
-						);
+				if (isset($systemData->genres) && is_array($systemData->genres)) {
+					foreach ($systemData->genres as $genre) {
+						$genre = sanitizeString($genre);
+						if (strlen($genre) && !array_search($genre, $genres)) {
+							$genres[] = $genre;
+						}
 					}
-				} }
+				}
+				$basics = array();
+				if (isset($systemData->basics) && is_array($systemData->basics)) {
+					foreach ($systemData->basics as $basic) {
+						if (strlen($basic->text) && strlen($basic->site)) {
+							$basics[] = (object) [
+								'text' => sanitizeString($basic->text),
+								'site' => sanitizeString($basic->site)
+							];
+						}
+					}
+				}
 				$system = array(
 					'_id' => $systemData->shortName,
 					'name' => sanitizeString($systemData->fullName),

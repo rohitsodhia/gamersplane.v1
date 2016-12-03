@@ -132,7 +132,7 @@
 					<h2 class="headerbar hbDark" skew-element>Submit a Character</h2>
 					<form ng-if="characters.length && (curPlayer.characters.length < details.charsPerPlayer || isGM)" id="submitChar" method="post" ng-submit="submitCharacter()" hb-margined>
 						<input type="hidden" name="gameID" value="{{gameID}}">
-						<combobox data="availChars" value="submitChar.character" select></combobox>
+						<combobox data="availChars" search="submitChar.character" change="selectCharacter(value)" select></combobox>
 						<div><button skew-element type="submit" name="submitCharacter" class="fancyButton">Submit</button></div>
 					</form>
 					<p ng-if="curPlayer.characters.length >= details.charsPerPlayer && !isGM" class="hbMargined notice">You cannot submit any more characters to this game</p>
@@ -193,8 +193,8 @@
 							</li>
 						</ul>
 						<form id="invites" hb-margined ng-submit="inviteUser()" ng-show="isGM">
-							<label>Invite player to game:</label>
-							<combobox search="invites.user" autocomplete="searchUsers" placeholder="User" select></combobox>
+							<label>Invite player:</label>
+							<combobox data="invites.users" change="searchForUsers(search, value)" placeholder="User" select></combobox>
 							<button skew-element type="submit" name="invite" class="fancyButton">Invite</button>
 							<div class="error" ng-show="invites.errorMsg">{{invites.errorMsg}}</div>
 						</form>

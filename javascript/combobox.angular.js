@@ -98,6 +98,9 @@ angular.module('rsCombobox', ['rx'])
 			});
 
 			scope.$watch(function () { return scope.search; }, function (newVal, oldVal) {
+				if (isUndefined(scope.search)) {
+					scope.search = '';
+				}
 				filterResults = $filter('filter')(scope.options, { 'display': scope.search.toString() }, select?true:false);
 				if (filterResults.length == 1) {
 					scope.value = filterResults[0].value;
