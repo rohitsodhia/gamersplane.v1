@@ -3,7 +3,7 @@
 			<h2>Filter</h2>
 			<form id="filterGames" ng-submit="filterGames()">
 				<div class="tr">
-					Filter by <combobox data="filterOptions" value="filter.orderBy" select></combobox>
+					Filter by <combobox data="filterOptions" change="setFilter(value)" select></combobox>
 				</div>
 <!--				<div class="tr"><input id="search" name="search" type="text" class="placeholder" data-placeholder="Search for..."></div>-->
 				<ul class="clearfix">

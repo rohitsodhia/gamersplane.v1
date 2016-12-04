@@ -345,15 +345,28 @@ app.config(['$httpProvider', function ($httpProvider) {
 	};
 }]).service('GamesService', ['$http', function ($http) {
 	this.getGames = function (params) {
-		if (typeof params != 'undefined' && typeof params.systems != 'undefined')
+		console.log(params);
+		if (typeof params != 'undefined' && typeof params.systems != 'undefined' && Array.isArray(params.systems)) {
 			params.systems = params.systems.join(',');
-		return $http.get(API_HOST + '/games/getGames/', { 'params': params }).then(function (data) {
-			if (data.data.success)
+		}
+		return $http.get(
+			API_HOST + '/games/getGames/',
+			{
+				'params': params
+			}
+		).then(function (data) {
+			if (data.data.success) {
 				return data.data.games;
+			}
 		});
 	};
 	this.getDetails = function (gameID) {
-		return $http.post(API_HOST + '/games/details/', { 'gameID': gameID }).then(function (data) { return data.data; });
+		return $http.post(
+			API_HOST + '/games/details/',
+			{
+				'gameID': gameID
+			}
+		).then(function (data) { return data.data; });
 	};
 	this.getLFG = function (lfgCount) {
 		lfgCount = parseInt(lfgCount) >= 0?parseInt(lfgCount):10;
