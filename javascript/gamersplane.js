@@ -345,7 +345,6 @@ app.config(['$httpProvider', function ($httpProvider) {
 	};
 }]).service('GamesService', ['$http', function ($http) {
 	this.getGames = function (params) {
-		console.log(params);
 		if (typeof params != 'undefined' && typeof params.systems != 'undefined' && Array.isArray(params.systems)) {
 			params.systems = params.systems.join(',');
 		}
@@ -932,25 +931,35 @@ app.config(['$httpProvider', function ($httpProvider) {
 	});
 }]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {
 	$scope.games = [];
-	GamesService.getGames({ 'limit': 4, 'sort': 'created', 'sortOrder': -1 }).then(function (data) {
+	GamesService.getGames({
+		'limit': 4,
+		'sort': 'created',
+		'sortOrder': -1
+	}).then(function (data) {
 		$scope.games = data;
 	});
-	$scope.combobox = {
-		'system': { 'data': [{ 'value': 'all', 'display': 'All' }], 'value': null }
-	};
-	$scope.systems = [];
+	$scope.systems = [{ 'value': 'all', 'display': 'All' }];
 	SystemsService.get({ 'getAll': true, 'excludeCustom': true }).then(function (data) {
-		for (var key in data.systems)
-			$scope.combobox.system.data.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
+		for (var key in data.systems) {
+			$scope.systems.push({
+				'value': data.systems[key].shortName,
+				'display': data.systems[key].fullName
+			});
+		}
 	});
-	$scope.$watch(function () { return $scope.combobox.system.value; }, function () {
-		var system = $scope.combobox.system.value;
-		if (system == 'all')
+	$scope.setSystem = function (system) {
+		if (system == 'all') {
 			system = null;
-		GamesService.getGames({ 'systems': system, 'limit': 3, 'sort': 'created', 'sortOrder': -1 }).then(function (data) {
+		}
+		GamesService.getGames({
+			'systems': system,
+			'limit': 3,
+			'sort': 'created',
+			'sortOrder': -1
+		}).then(function (data) {
 			$scope.games = data;
 		});
-	});
+	};
 
 	$scope.signup = {
 		'username': '',
@@ -958,8 +967,9 @@ app.config(['$httpProvider', function ($httpProvider) {
 	};
 	$scope.formFocus = '';
 	$scope.setFormFocus = function (input) {
-		if (input == $scope.formFocus)
+		if (input == $scope.formFocus) {
 			return;
+		}
 		$scope.formFocus = input;
 		if (input !== '') {
 			$timeout(function () {
@@ -985,7 +995,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 }]).controller('about', ['$scope', '$filter', 'Links', function ($scope, $filter, Links) {
 	$scope.$emit('pageLoading');
 	$scope.links = [];
-	Links.get({ 'level': ['Affiliate', 'Partner'], 'networks': 'rpga', 'or': true }).then(function (data) {
+	Links.get({
+		'level': ['Affiliate', 'Partner'],
+		'networks': 'rpga',
+		'or': true
+	}).then(function (data) {
 		data = data.data;
 		$scope.links.partners = $filter('filter')(data.links, { 'level': 'Partner' });
 		$scope.links.rpgan = $filter('filter')(data.links, { 'networks': 'rpga' });

@@ -10,7 +10,7 @@
 						<div hb-margined>
 							<div id="landing_systemSearch">
 								<div class="sprite magnifyingglass"></div>
-								<combobox data="combobox.system.data" value="combobox.system.value" select returnas="value"></combobox>
+								<combobox data="systems" change="setSystem(value)" select></combobox>
 							</div>
 
 							<div ng-repeat="game in games" class="game" ng-class="{ 'first': $first }">
