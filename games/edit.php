@@ -21,13 +21,13 @@
 				<div class="error" ng-show="errors.indexOf('repeatTitle') >= 0">Someone else already has a game by this title</div>
 				<div class="tr">
 					<label>System</label>
-					<combobox ng-if="state == 'new'" data="allSystems" value="game.system" returnAs="value" select></combobox>
+					<combobox ng-if="state == 'new'" data="allSystems" change="setSystem(value)" select></combobox>
 					<div ng-if="state != 'new'" ng-bind-html="allSystems[game.system]"></div>
 				</div>
 				<div class="tr">
 					<label>Allowed Character Sheets</label>
 					<div>
-						<combobox data="systemsWCharSheets" value="charSheet.val" orderBy="display" returnAs="value" select></combobox> <a href="" ng-click="addCharSheet()">[ + ]</a>
+						<combobox data="systemsWCharSheets" change="setCharSheet(value)" select></combobox> <a href="" ng-click="addCharSheet()">[ + ]</a>
 					</div>
 				</div>
 				<div class="error" ng-show="errors.indexOf('noCharSheets') >= 0">You must allow at least one character sheet</div>
@@ -38,8 +38,8 @@
 				</div>
 				<div class="tr">
 					<label>Post Frequency</label>
-					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per 
-					<combobox inputID="perPeriod" data="combobox.periods" value="game.postFrequency.perPeriod" returnAs="value" select></combobox>
+					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per
+					<combobox inputID="perPeriod" data="combobox.periods" change="setPeriod(value)" select></combobox>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>
@@ -57,7 +57,7 @@
 					<label>Character Generation Info</label>
 					<textarea ng-model="game.charGenInfo"></textarea>
 				</div>
-				
+
 				<div id="submitDiv"><button type="submit" class="fancyButton">{{state == 'new'?'Create':'Save'}}</button></div>
 			</form>
 		</div>

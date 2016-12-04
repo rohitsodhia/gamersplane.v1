@@ -43,10 +43,11 @@ angular.module('rsCombobox', ['rx'])
 					if (typeof val != 'object') {
 						val = { 'display': val };
 						val.value = optsIsArray?val.display:key;
-					} else if (!isUndefined(val.display) && val.display.length && (isUndefined(val.value) || val.value.length === 0))
+					} else if (!isUndefined(val.display) && val.display.length && (isUndefined(val.value) || val.value.length === 0)) {
 						val.value = val.display;
-					else if (isUndefined(val.display) || val.display.length === 0)
+					} else if (isUndefined(val.display) || val.display.length === 0) {
 						continue;
+					}
 
 					val = {
 						'value': decodeHTML(val.value),
@@ -55,13 +56,8 @@ angular.module('rsCombobox', ['rx'])
 					};
 					scope.options.push(val);
 				}
-				// filterResults = $filter('filter')(scope.options, { 'value': scope.value }, true);
-				// if (filterResults.length == 1 && !scope.hasFocus) {
-				// 	scope.search = scope.value.display;
-				// } else {
-				// 	scope.value = '';
-				// }
-				if (select && scope.options.length && (isUndefined(scope.value) || scope.value === null || scope.value === '') && !scope.hasFocus) {
+				filterResults = $filter('filter')(scope.options, { 'value': scope.value }, true);
+				if (select && scope.options.length && (isUndefined(scope.value) || scope.value === null || scope.value === '' || filterResults.length === 0) && !scope.hasFocus) {
 					scope.value = scope.options[0].value;
 					scope.search = scope.options[0].display;
 				}
