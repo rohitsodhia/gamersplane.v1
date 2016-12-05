@@ -230,8 +230,10 @@
 					$post->savePost();
 				}
 
-				foreach ($_POST['nVisibility'] as $rollID => $nVisibility) {
-					if (intval($nVisibility) != intval($_POST['oVisibility'][$rollID])) $mysql->query('UPDATE rolls SET visibility = '.intval($nVisibility)." WHERE rollID = $rollID");
+				if (isset($_POST['nVisibility'])) {
+					foreach ($_POST['nVisibility'] as $rollID => $nVisibility) {
+						if (intval($nVisibility) != intval($_POST['oVisibility'][$rollID])) $mysql->query('UPDATE rolls SET visibility = '.intval($nVisibility)." WHERE rollID = $rollID");
+					}
 				}
 			}
 		}

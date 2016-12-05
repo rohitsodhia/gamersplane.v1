@@ -18,18 +18,18 @@
 	<link href="/styles/characters/<?=$pathOptions[0]?>.css?v=<?=getStyleVersion('/styles/characters/'.$pathOptions[0].'.css')?>" rel="stylesheet">
 <? } ?>
 	<link href="/styles/colorbox.css?v=<?=getStyleVersion('/styles/colorbox.css')?>" rel="stylesheet">
-	
-<? if ($mobileDetect->isMobile()) { ?>
-	<link href="/styles/mobile.css?v=<?=getStyleVersion('/styles/mobile.css')?>" rel="stylesheet">
-<? } ?>
-	
+
+<? // if ($mobileDetect->isMobile()) { ?>
+<!--	<link href="/styles/mobile.css?v=<?=getStyleVersion('/styles/mobile.css')?>" rel="stylesheet"> -->
+<? // } ?>
+
 	<noscript><link href="/styles/noJS.css?v=<?=getStyleVersion('/styles/noJS.css')?>" rel="stylesheet"></noscript>
 	<!--[if IE]>
 	<link href="/styles/gamersPlane_ie.css?v=<?=getStyleVersion('/styles/gamersPlane_ie.css')?>" rel="stylesheet">
-	<![endif]-->	
+	<![endif]-->
 	<!--[if IE 7]>
 	<link href="/styles/gamersPlane_ie7.css?v=<?=getStyleVersion('/styles/gamersPlane_ie7.css')?>" rel="stylesheet">
-	<![endif]-->	
+	<![endif]-->
 	<!--[if IE 8]>
 	<link href="/styles/gamersPlane_ie8.css?v=<?=getStyleVersion('/styles/gamersPlane_ie8.css')?>" rel="stylesheet">
-	<![endif]-->	
+	<![endif]-->
