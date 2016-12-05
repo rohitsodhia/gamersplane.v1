@@ -20,8 +20,10 @@
 	}
 
 	function displayJSON($data, $exit = true) {
-		header('Content-Type: application/json; charset=UTF-8');
-		echo json_encode($data, JSON_UNESCAPED_UNICODE);
+		header('Content-Type: application/json');
+		echo json_encode(utf8ize($data));
+		// header('Content-Type: application/json; charset=UTF-8');
+		// echo json_encode($data, JSON_UNESCAPED_UNICODE);
 		if ($exit)
 			exit;
 	}
