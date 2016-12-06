@@ -447,9 +447,10 @@ app.config(['$httpProvider', function ($httpProvider) {
 	this.toggleFavorite = function (characterID) {
 		return $http.post(API_HOST + '/characters/toggleFavorite/', { 'characterID': characterID }).then(function (data) { return data.data; });
 	};
-	this.load = function (characterID, options) {
-		if (typeof options != 'object')
+	this.load = function (characterID, printReady/*options*/) {
+		if (typeof options != 'object') {
 			options = {};
+		}
 		var validOptions = {
 			'pr': {
 				'type': 'boolean',
@@ -461,6 +462,9 @@ app.config(['$httpProvider', function ($httpProvider) {
 			if (option in options && typeof options[option] == validOptions[option].type) {
 				postData[option] = options[option];
 			}
+		}
+		if (printReady === true) {
+			postData.printReady = true;
 		}
 		return $http.post(API_HOST + '/characters/load/', postData).then(function (data) { return data.data; });
 	};

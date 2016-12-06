@@ -212,8 +212,12 @@
 			global $mongo, $currentUser;
 
 			$characterID = (int) $_POST['characterID'];
-			if ($characterID <= 0)
-				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
+			if ($characterID <= 0) {
+				displayJSON([
+					'failed' => true,
+					'errors' => ['noCharacterID']
+				]);
+			}
 
 			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
 			if ($systemCheck) {
@@ -236,10 +240,11 @@
 		public function checkPermissions($characterID, $userID = null) {
 			global $mongo;
 
-			if ($userID == null)
+			if ($userID == null) {
 				$userID = $this->userID;
-			else
+			} else {
 				$userID = intval($userID);
+			}
 
 			$characterID = (int) $characterID;
 			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));

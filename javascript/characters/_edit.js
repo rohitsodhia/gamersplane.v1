@@ -126,24 +126,27 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 	$scope.loadChar = function () {
 		return CharactersService.load(pathElements[2]).then(function (data) {
 			$scope.character = data;
-			if (typeof blanks != 'undefined')
+			if (typeof blanks != 'undefined') {
 				CharactersService.loadBlanks($scope.character, blanks);
+			}
 		});
 	};
 	$scope.addItem = function (key) {
 		keyParts = key.split('.');
-		if (keyParts.length == 2)
+		if (keyParts.length == 2) {
 			$scope.character[keyParts[0]][keyParts[1]].push(copyObject(blanks[key]));
-		else
+		} else {
 			$scope.character[key].push(copyObject(blanks[key]));
+		}
 	};
 	$scope.toggleNotes = function ($event) {
 		$($event.target).siblings('textarea').slideToggle();
 	};
 	$scope.save = function () {
 		CharactersService.save($scope.character.characterID, $scope.character).then(function (data) {
-			if (data.saved)
+			if (data.saved) {
 				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/';
+			}
 		});
 	};
 

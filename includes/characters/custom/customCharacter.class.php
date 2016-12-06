@@ -3,10 +3,11 @@
 		const SYSTEM = 'custom';
 
 		public function save($bypass = false) {
-			if (isset($_POST['character'])) 
+			if (isset($_POST['character'])) {
 				$data = $_POST['character'];
-			else 
+			} else {
 				$data = $_POST;
+			}
 
 			if (!$bypass) {
 				$this->setName($data->name);
