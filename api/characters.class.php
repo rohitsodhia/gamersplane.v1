@@ -219,7 +219,7 @@
 				]);
 			}
 
-			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
+			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['system' => true]);
 			if ($systemCheck) {
 				$system = $systemCheck['system'];
 				$systems = Systems::getInstance();
@@ -228,13 +228,17 @@
 				if ($character = new $charClass($characterID)) {
 					$character->load();
 					$charPermissions = $character->checkPermissions($currentUser->userID);
-					if ($charPermissions)
+					if ($charPermissions) {
 						displayJSON($character->get(isset($_POST['printReady']) && $_POST['printReady']?true:false));
-					else
-						displayJSON(array('failed' => true, 'errors' => array('noPermission')));
+					} else {
+						displayJSON([
+							'failed' => true,
+							'errors' => ['noPermission']
+						]);
+					}
 				}
 			}
-			displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
+			displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 		}
 
 		public function checkPermissions($characterID, $userID = null) {
@@ -248,9 +252,9 @@
 
 			$characterID = (int) $characterID;
 			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
-			if ($charCheck['user']['userID'] == $userID)
+			if ($charCheck['user']['userID'] == $userID) {
 				return 'edit';
-			else {
+			} else {
 				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
 				if ($gmCheck)
 					return 'edit';
