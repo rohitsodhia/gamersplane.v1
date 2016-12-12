@@ -25,16 +25,26 @@
 
 //	$reqPath .= strlen($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:'';
 	if (!in_array('ajax', $reqPathParts)) {
-		if (($_SESSION['currentURL'] != $reqPath || $_SESSION['lastURL'] == '' || $_SESSION['currentURL'] == '') && !in_array($pathAction, array('login'))) {
+		if (
+			(
+				$_SESSION['currentURL'] != $reqPath ||
+				$_SESSION['lastURL'] == '' ||
+				$_SESSION['currentURL'] == ''
+			) &&
+			!in_array($pathAction, ['login'])
+		) {
 			$_SESSION['lastURL'] = $_SESSION['currentURL'];
 			$_SESSION['currentURL'] = $reqPath;
-		} elseif ($_SESSION['currentURL'] == $reqPath) $sameURL = true;
+		} elseif ($_SESSION['currentURL'] == $reqPath) {
+			$sameURL = true;
+		}
 	}
 
-	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php'))
+	if (file_exists(FILEROOT.'/includes/'.$pathAction.'/_section.php')) {
 		include(FILEROOT.'/includes/'.$pathAction.'/_section.php');
+	}
 
-//	echo $pathAction;
+	// echo $pathAction;
 //	print_r($pathOptions);
 //	var_dump($_SESSION);
 //	var_dump($_COOKIE);
@@ -42,27 +52,33 @@
 	$requireLoc = '';
 	$isAJAX = false;
 
-	if ($pathAction == 'facebook') header('Location: https://www.facebook.com/GamersPlane/');
-	elseif (STATE == 'standard') {
+	if ($pathAction == 'facebook') {
+		header('Location: https://www.facebook.com/GamersPlane/');
+	} elseif (STATE == 'standard') {
 		$moddedPath = $pathAction?$pathAction:'';
 		foreach ($pathOptions as $pathOption) {
 			if ($pathOption == 'ajax') $isAJAX = true;
 
 			$moddedPath .= '/';
-			if (is_numeric($pathOption))
+			if (is_numeric($pathOption)) {
 				$moddedPath .= '(###)';
-			elseif (!$isAJAX && $systems->verifySystem($pathOption))
+			} elseif (!$isAJAX && $systems->verifySystem($pathOption)) {
 				$moddedPath .= '(system)';
-			else
+			} else {
 				$moddedPath .= $pathOption;
+			}
 		}
-//		echo $moddedPath;
+		echo $moddedPath;
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, ngController, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
-		$dispatchInfo->execute(array($moddedPath.'/'));
+		$dispatchInfo->execute([$moddedPath . '/']);
 		$dispatchInfo = $dispatchInfo->fetch();
+		// var_dump($dispatchInfo);
 		global $loggedIn;
 		$loggedIn = User::checkLogin((bool) $dispatchInfo['loginReq']);
-		if (($dispatchInfo['pageID'] == 'home' && $moddedPath != '') || !file_exists($dispatchInfo['file'])) {
+		if (
+			($dispatchInfo['pageID'] == 'home' && $moddedPath != '') ||
+			!file_exists($dispatchInfo['file'])
+		) {
 			$dispatchInfo = $mysql->query('SELECT url, pageID, file, title, fixedGameMenu FROM dispatch WHERE url = "404/"');
 			$dispatchInfo = $dispatchInfo->fetch();
 		}
