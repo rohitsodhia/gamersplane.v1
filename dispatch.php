@@ -68,7 +68,7 @@
 				$moddedPath .= $pathOption;
 			}
 		}
-		echo $moddedPath;
+		// echo $moddedPath;
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, ngController, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute([$moddedPath . '/']);
 		$dispatchInfo = $dispatchInfo->fetch();
