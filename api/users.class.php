@@ -249,15 +249,15 @@
 			$details = $_POST['details'];
 			$newPass = $_POST['newPass'];
 			$userID = (int) $details['userID'];
-			if ($currentUser['userID'] != $userID) {
+			if ($currentUser->userID != $userID) {
 				$user = new User($userID);
 			} else {
 				$user = $currentUser;
 			}
 
 			$avatarUploaded = false;
-			if ($details['avatar']['delete']) {
-				unlink(FILEROOT."/ucp/avatars/{$user->userID}.jpg");
+			if (isset($details['avatar']['delete']) && $details['avatar']['delete'] == 'true') {
+				@unlink(FILEROOT."/ucp/avatars/{$user->userID}.jpg");
 			}
 			if ($_FILES['file']['error'] == 0 && $_FILES['file']['size'] > 15 && $_FILES['file']['size'] < 1048576) {
 				$avatarExt = trim(end(explode('.', strtolower($_FILES['file']['name']))));
