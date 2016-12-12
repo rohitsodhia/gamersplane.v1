@@ -1004,16 +1004,25 @@ div.prettySelect > div {
 
 	#userMenu {
 		.avatar {
-			max-height: 40px;
-			max-width: 40px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 40px;
+			width: 40px;
+			padding: 0;
 			border: 1px solid #BC2025;
 			background: #FFF;
+
+			img {
+				max-height: 40px;
+				max-width: 40px;
+			}
 		}
 
 		.mail {
 			position: absolute;
 			bottom: -8px;
-			right: -3px;
+			right: -12px;
 			z-index: 6001;
 			height: auto;
 			width: auto;
