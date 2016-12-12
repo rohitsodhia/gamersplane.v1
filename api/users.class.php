@@ -247,7 +247,6 @@
 			}
 
 			$details = $_POST['details'];
-			var_dump($details); exit;
 			$newPass = $_POST['newPass'];
 			$userID = (int) $details['userID'];
 			if ($currentUser['userID'] != $userID) {
