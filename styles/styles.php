@@ -1,10 +1,8 @@
 	<link href="/styles/reset.css?v=<?=getStyleVersion('/styles/reset.css')?>" rel="stylesheet">
 	<link href="/styles/gamersPlane.css?v=<?=getStyleVersion('/styles/gamersPlane.css')?>" rel="stylesheet">
-<? if (in_array($pathAction, array('forums', 'pms'))) { ?>
 	<link href="/javascript/markItUp/skins/gp/style.css?v=<?=getStyleVersion('/javascript/markItUp/skins/gp/style.css')?>" rel="stylesheet">
 	<link href="/javascript/markItUp/sets/bbcode/style.css?v=<?=getStyleVersion('/javascript/markItUp/sets/bbcode/style.css')?>" rel="stylesheet">
 <?
-	}
 	if (file_exists(FILEROOT.'/styles/'.$pathAction.'.css')) {
 ?>
 	<link href="/styles/<?=$pathAction?>.css?v=<?=getStyleVersion('/styles/'.$pathAction.'.css')?>" rel="stylesheet">

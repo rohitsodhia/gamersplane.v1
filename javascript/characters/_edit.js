@@ -26,6 +26,8 @@ function setupItemized($list) {
 $(function () {
 	$('#charAvatar a').colorbox();
 
+	$('.markItUp').markItUp(mySettings);
+
 	$('#charDetails').on('blur', '.sumRow input', sumRow);
 
 	if ($('#classWrapper')) {

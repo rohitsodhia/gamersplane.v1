@@ -13,29 +13,36 @@
 		protected $name;
 		protected $notes;
 
-		protected $linkedTables = array();
-		protected $mongoIgnore = array('save' => array('bodyClasses', 'linkedTables', 'mongoIgnore'), 'load' => array('_id', 'system', 'user'));
+		protected $linkedTables = [];
+		protected $mongoIgnore = [
+			'save' => ['bodyClasses', 'linkedTables', 'mongoIgnore'],
+			'load' => ['_id', 'system', 'user']
+		];
 
 		public function __construct($characterID = null, $userID = null) {
 			global $currentUser;
 
-			if ($characterID != null)
+			if ($characterID != null) {
 				$this->characterID = intval($characterID);
-			if ($userID == null)
+			}
+			if ($userID == null) {
 				$this->userID = $currentUser->userID;
-			else
+			} else {
 				$this->userID = $userID;
+			}
 
-			foreach ($this->bodyClasses as $bodyClass)
+			foreach ($this->bodyClasses as $bodyClass) {
 				addBodyClass($bodyClass);
+			}
 		}
 
 		public function clearVar($var) {
 			if (isset($this->$var)) {
-				if (is_array($this->$var))
-					$this->$var = array();
-				else
+				if (is_array($this->$var)) {
+					$this->$var = [];
+				} else {
 					$this->$var = null;
+				}
 			}
 		}
 
@@ -56,8 +63,9 @@
 		}
 
 		public function setCharType($charType) {
-			if (in_array($charType, self::$charTypes))
+			if (in_array($charType, self::$charTypes)) {
 				$this->charType = $charType;
+			}
 		}
 
 		public function getCharType() {
@@ -65,7 +73,7 @@
 		}
 
 		public function toggleLibrary() {
-			$this->inLibrary = $this->inLibrary?false:true;
+			$this->inLibrary = $this->inLibrary ? false : true;
 		}
 
 		public function getLibraryStatus() {
@@ -73,7 +81,7 @@
 		}
 
 		public function addToGame($gameID) {
-			$this->game = array('gameID' => $gameID, 'approved' => false);
+			$this->game = ['gameID' => $gameID, 'approved' => false];
 		}
 
 		public function approveToGame() {
@@ -87,20 +95,33 @@
 		public function checkPermissions($userID = null) {
 			global $mysql, $mongo, $currentUser;
 
-			if ($userID == null)
+			if ($userID == null) {
 				$userID = $this->userID;
-			else
+			} else {
 				$userID = intval($userID);
-
-			$charCheck = $mongo->characters->findOne(array('characterID' => $this->characterID), array('user' => true, 'game' => true));
-			if ($charCheck['user']['userID'] == $userID)
-				return 'edit';
-			else {
-				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
-				if ($gmCheck)
-					return 'edit';
 			}
-			return $mongo->characters->findOne(array('characterID' => $this->characterID, 'library.inLibrary' => true))?'library':false;
+
+			$charCheck = $mongo->characters->findOne(
+				['characterID' => $this->characterID],
+				['user' => true, 'game' => true]
+			);
+			if ($charCheck['user']['userID'] == $userID) {
+				return 'edit';
+			} else {
+				$gmCheck = $mongo->games->findOne(
+					[
+						'gameID' => $charCheck['game']['gameID'],
+						'players' => ['$elemMatch' => [
+							'user.userID' => $userID,
+							'isGM' => true
+						]]
+					],
+					['_id' => true]);
+				if ($gmCheck) {
+					return 'edit';
+				}
+			}
+			return $mongo->characters->findOne(['characterID' => $this->characterID, 'library.inLibrary' => true]) ? 'library' : false;
 		}
 
 		public function showSheet() {
@@ -125,8 +146,9 @@
 
 		public function getNotes($pr = false) {
 			$notes = $this->notes;
-			if ($pr)
+			if ($pr) {
 				$notes = printReady($notes);
+			}
 			return $notes;
 		}
 
@@ -151,19 +173,25 @@
 		}
 
 		protected function prElement($ele) {
-			if (is_object($ele) || is_array($ele))
-				foreach ($ele as $key => &$value)
+			if (is_object($ele) || is_array($ele)) {
+				foreach ($ele as $key => &$value) {
 					$value = $this->prElement($value);
-			else
+				}
+			} else {
 				$ele = printReady($ele);
+			}
 
 			return $ele;
 		}
 
-		public function get($pr) {
+		public function get($pr = false, $bb = false) {
+			require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+
 			$char = get_object_vars($this);
-			if ($pr)
+			if ($pr) {
 				$char = $this->prElement($char);
+				$char['notes'] = BBCode2Html($char['notes']);
+			}
 //				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) {
 			return $char;
 		}

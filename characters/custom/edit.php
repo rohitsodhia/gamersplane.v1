@@ -4,5 +4,5 @@
 				</div>
 				<div class="tr">
 					<div class="leftCol">Character Sheet</div>
-					<div class="rightCol"><textarea ng-model="character.notes"></textarea></div>
+					<div class="rightCol"><textarea ng-model="character.notes" class="markItUp"></textarea></div>
 				</div>

@@ -54,11 +54,14 @@
 				$input = str_replace("\r\n", "\n", $input);
 				$input = nl2br($input);
 			}
-			if (in_array('stripslashes', $options))
+			if (in_array('stripslashes', $options)) {
 				$input = stripslashes($input);
-		} elseif (is_array($input))
-			foreach ($input as $key => $value)
+			}
+		} elseif (is_array($input)) {
+			foreach ($input as $key => $value) {
 				$input[$key] = printReady($value);
+			}
+		}
 		return $input;
 	}
 
