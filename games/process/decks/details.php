@@ -1,58 +1,76 @@
-<?
+<?php
 	require_once('includes/DeckTypes.class.php');
 	$deckTypes = DeckTypes::getInstance()->getAll();
 
 	$gameID = intval($_POST['gameID']);
-	$addUsers = array();
-	if (isset($_POST['addUser'])) 
-		foreach ($_POST['addUser'] as $userID => $nothing) 
-			if (intval($userID) > 0) 
+	$addUsers = [];
+	if (isset($_POST['addUser'])) {
+		foreach ($_POST['addUser'] as $userID => $nothing) {
+			if (intval($userID) > 0) {
 				$addUsers[] = (int) $userID;
-	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('decks' => true));
+			}
+		}
+	}
+	$gmCheck = $mongo->games->findOne(
+		[
+			'gameID' => $gameID,
+			'players' => ['$elemMatch' => [
+				'user.userID' => $currentUser->userID,
+				'isGM' => true
+			]]
+		],
+		['projection' => ['decks' => true]]
+	);
 	$deckLabel = sanitizeString($_POST['deckLabel']);
 	if (isset($_POST['create']) && $gmCheck) {
 		$type = $_POST['deckType'];
 		if (!array_key_exists($type, $deckTypes)) {
-			if (isset($_POST['modal'])) 
-				displayJSON(array('failed' => true, 'invalidDeck' => true), true);
-			else 
+			if (isset($_POST['modal'])) {
+				displayJSON(['failed' => true, 'invalidDeck' => true], true);
+			} else {
 				header("Location: /games/{$gameID}/decks/?new=1&invalidDeck=1");
+			}
 		} else {
-			$deck = array(
+			$deck = [
 				'deckID' => mongo_getNextSequence('deckID'),
 				'label' => $deckLabel,
 				'type' => $type,
-				'deck' => array(),
+				'deck' => [],
 				'position' => 1,
 				'lastShuffle' => new MongoDate(),
-				'permissions' => sizeof($addUsers)?$addUsers:array()
-			);
-			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) 
+				'permissions' => sizeof($addUsers) ? $addUsers : []
+			];
+			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
 				$deck['deck'][] = $count;
+			}
 			shuffle($deck['deck']);
 
-			$mongo->games->update(array('gameID' => $gameID), array('$push' => array('decks' => $deck)));
+			$mongo->games->updateOne(
+				['gameID' => $gameID],
+				['$push' => ['decks' => $deck]]
+			);
 
 #			$hl_deckCreated = new HistoryLogger('deckCreated');
 #			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 
-			if (isset($_POST['modal'])) 
-				displayJSON(array(
+			if (isset($_POST['modal'])) {
+				displayJSON([
 					'success' => true,
 					'action' => 'createDeck',
-					'deck' => array(
+					'deck' => [
 						'deckID' => $deck['deckID'],
 						'label' => $deck['label'],
 						'type' => $deck['type'],
 						'cardsRemaining' => sizeof($deck['deck'])
-					)
-				), true);
-			else 
-				header('Location: /games/'.$gameID.'/?success=createDeck');
+					]
+				], true);
+			} else {
+				header('Location: /games/' . $gameID . '/?success=createDeck');
+			}
 		}
 	} elseif (isset($_POST['edit']) && $gmCheck) {
 		$deckID = intval($_POST['deckID']);
-		$deck = array();
+		$deck = [];
 		foreach ($gmCheck['decks'] as $iDeck) {
 			if ($iDeck['deckID'] == $deckID) {
 				$deck = $iDeck;
@@ -63,33 +81,39 @@
 			$deck['label'] = $deckLabel;
 			$type = $_POST['deckType'];
 			if ($deck['type'] != $type && array_key_exists($type, $deckTypes)) {
-				$deck['deck'] = array();
-				for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) 
+				$deck['deck'] = [];
+				for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
 					$deck['deck'][] = $count;
+				}
 				shuffle($deck['deck']);
 				$deck['position'] = 1;
 				$deck['type'] = $type;
-				$deck['lastShuffle'] = new MongoDate();
+				$deck['lastShuffle'] = genMongoDate();
 			}
-			$deck['permissions'] = sizeof($addUsers)?$addUsers:array();
-			$mongo->games->update(array('gameID' => $gameID, 'decks.deckID' => $deckID), array('$set' => array('decks.$' => $deck)));
+			$deck['permissions'] = sizeof($addUsers) ? $addUsers : [];
+			$mongo->games->updateOne(
+				['gameID' => $gameID, 'decks.deckID' => $deckID],
+				['$set' => ['decks.$' => $deck]]
+			);
 
 #			$hl_deckEdited = new HistoryLogger('deckEdited');
 #			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 		}
-		displayJSON(array(
+		displayJSON([
 			'success' => true,
 			'action' => 'editDeck',
-			'deck' => array(
+			'deck' => [
 				'deckID' => (int) $deckID,
 				'label' => $deckLabel,
 				'type' => $deck['type'],
-				'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1)
-			), true);
+				'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1
+			]
+		], true);
 	} else {
-		if (isset($_POST['modal'])) 
-			displayJSON(array('failed' => true), true);
-		else 
+		if (isset($_POST['modal'])) {
+			displayJSON(['failed' => true], true);
+		} else {
 			header('Location: /games/');
+		}
 	}
 ?>

@@ -1,8 +1,17 @@
-<?
+<?php
 	$gameID = intval($_POST['gameID']);
 	$deckID = intval($_POST['deckID']);
-	$gmCheck = $mongo->games->findOne(array('gameID' => $gameID, 'players' => array('$elemMatch' => array('user.userID' => $currentUser->userID, 'isGM' => true))), array('decks' => true));
-	$deck = array();
+	$gmCheck = $mongo->games->findOne(
+		[
+			'gameID' => $gameID,
+			'players' => ['$elemMatch' => [
+				'user.userID' => $currentUser->userID,
+				'isGM' => true
+			]]
+		],
+		['projection' => ['decks' => true]]
+	);
+	$deck = [];
 	foreach ($gmCheck['decks'] as $iDeck) {
 		if ($iDeck['deckID'] == $deckID) {
 			$deck = $iDeck;
@@ -10,12 +19,16 @@
 		}
 	}
 	if (isset($_POST['delete']) && $gmCheck && sizeof($deck)) {
-		$mongo->games->update(array('gameID' => $gameID, 'decks.deckID' => $deckID), array('$pull' => array('decks' => array('deckID' => $deckID))));
+		$mongo->games->updateOne(
+			['gameID' => $gameID, 'decks.deckID' => $deckID],
+			['$pull' => ['decks' => ['deckID' => $deckID]]]
+		);
 
 #		$hl_deckDeleted = new HistoryLogger('deckDeleted');
 #		$hl_deckDeleted->addDeck($deckID)->addUser($currentUser->userID)->save();
-		
-		displayJSON(array('success' => true, 'deckID' => $deckID));
-	} else 
-		displayJSON(array('failed' => true));
+
+		displayJSON(['success' => true, 'deckID' => $deckID]);
+	} else {
+		displayJSON(['failed' => true]);
+	}
 ?>

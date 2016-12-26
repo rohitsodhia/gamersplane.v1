@@ -1,7 +1,7 @@
-<?
+<?php
 	global $levels;
-	$levels = array(1 => 'Link', 'Affiliate');
-	function linkFormat($link = array()) {
+	$levels = [1 => 'Link', 'Affiliate'];
+	function linkFormat($link = []) {
 		global $levels;
 		if (sizeof($link) == 0) {
 			$link['_id'] = 'new';
@@ -9,34 +9,34 @@
 		}
 		if ($link['_id'] != 'new') {
 ?>
-				<li<?=!$link['active']?' class="inactive"':''?>><form method="post" action="/acp/process/manageLink/" enctype="multipart/form-data">
+				<li<?=!$link['active'] ? ' class="inactive"' : ''?>><form method="post" action="/acp/process/manageLink/" enctype="multipart/form-data">
 					<input type="hidden" name="modal" value="1">
 					<input type="hidden" name="mongoID" value="<?=$link['_id']?>">
-<?		} ?>
+<?php		} ?>
 					<div class="preview">
-<?		if (file_exists(FILEROOT.'/images/links/'.$link['_id'].'.'.$link['image'])) { ?>
+<?php		if (file_exists(FILEROOT . '/images/links/' . $link['_id'] . '.' . $link['image'])) { ?>
 						<img src="/images/links/<?=$link['_id']?>.<?=$link['image']?>">
-<?		} else { ?>
+<?php		} else { ?>
 						<img src="/images/spacer.gif">
-<?		} ?>
-<?		if ($link['_id'] != 'new') { ?>
+<?php		} ?>
+<?php		if ($link['_id'] != 'new') { ?>
 						<button type="submit" name="action" value="deleteImage" class="action_deleteImage sprite cross small"></button>
-<?		} ?>
+<?php		} ?>
 					</div>
 					<div class="link">
-						<input type="text" name="title" value="<?=$link['title']?>"<?=$link['_id'] != 'new'?' disabled="disabled"':''?> class="title placeholder" data-placeholder="Title">
-						<input type="text" name="url" value="<?=$link['url']?>"<?=$link['_id'] != 'new'?' disabled="disabled"':''?> class="url placeholder" data-placeholder="URL">
-						<input type="file" name="image"<?=$link['_id'] != 'new'?' disabled="disabled"':''?> class="image">
+						<input type="text" name="title" value="<?=$link['title']?>"<?=$link['_id'] != 'new' ? ' disabled="disabled"' : ''?> class="title placeholder" data-placeholder="Title">
+						<input type="text" name="url" value="<?=$link['url']?>"<?=$link['_id'] != 'new' ? ' disabled="disabled"' : ''?> class="url placeholder" data-placeholder="URL">
+						<input type="file" name="image"<?=$link['_id'] != 'new' ? ' disabled="disabled"' : ''?> class="image">
 					</div>
 					<div class="level">
 						<div class="display"><?=$levels[$link['level']]?></div>
 						<select name="level">
-<?		foreach ($levels as $levelNum => $level) { ?>
-							<option value="<?=$levelNum?>"<?=$link['level'] == $levelNum?' selected="selected"':''?>><?=$level?></option>
-<?		} ?>
+<?php		foreach ($levels as $levelNum => $level) { ?>
+							<option value="<?=$levelNum?>"<?=$link['level'] == $levelNum ? ' selected="selected"' : ''?>><?=$level?></option>
+<?php		} ?>
 						</select>
 					</div>
-<?		if ($link['_id'] != 'new') { ?>
+<?php		if ($link['_id'] != 'new') { ?>
 					<div class="actions">
 						<div>
 							<button type="submit" name="action" value="edit" class="action_edit sprite pencil"></button>
@@ -54,7 +54,7 @@
 						</div>
 					</div>
 				</form></li>
-<?
+<?php
 		}
 	}
 ?>

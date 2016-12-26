@@ -1,14 +1,14 @@
-<?
+<?php
 	abstract class Character {
-		protected $bodyClasses = array();
+		protected $bodyClasses = [];
 
 		protected $userID;
 		protected $characterID;
 		protected $label;
-		public static $charTypes = array('PC', 'NPC', 'Mob');
+		public static $charTypes = ['PC', 'NPC', 'Mob'];
 		protected $charType = 'PC';
 		protected $created = null;
-		protected $library = array('inLibrary' => false, 'views' => 0);
+		protected $library = ['inLibrary' => false, 'views' => 0];
 		protected $game = null;
 		protected $name;
 		protected $notes;
@@ -93,7 +93,9 @@
 		}
 
 		public function checkPermissions($userID = null) {
-			global $mysql, $mongo, $currentUser;
+			global $currentUser;
+			$mysql = DB::conn('mysql');
+			$mongo = DB::conn('mongo');
 
 			if ($userID == null) {
 				$userID = $this->userID;
@@ -103,7 +105,7 @@
 
 			$charCheck = $mongo->characters->findOne(
 				['characterID' => $this->characterID],
-				['user' => true, 'game' => true]
+				['projection' => ['user' => true, 'game' => true]]
 			);
 			if ($charCheck['user']['userID'] == $userID) {
 				return 'edit';
@@ -116,7 +118,8 @@
 							'isGM' => true
 						]]
 					],
-					['_id' => true]);
+					['projection' => ['_id' => true]]
+				);
 				if ($gmCheck) {
 					return 'edit';
 				}
@@ -125,11 +128,11 @@
 		}
 
 		public function showSheet() {
-			require_once(FILEROOT.'/characters/'.$this::SYSTEM.'/sheet.php');
+			require_once(FILEROOT . '/characters/' . $this::SYSTEM . '/sheet.php');
 		}
 
 		public function showEdit() {
-			require_once(FILEROOT.'/characters/'.$this::SYSTEM.'/edit.php');
+			require_once(FILEROOT . '/characters/' . $this::SYSTEM . '/edit.php');
 		}
 
 		public function setName($name) {
@@ -166,10 +169,11 @@
 		}
 
 		public function getAvatar($showTS = true) {
-			if (file_exists(FILEROOT."/characters/avatars/{$this->characterID}.jpg"))
-				return "/characters/avatars/{$this->characterID}.jpg".($showTS?'?'.time():'');
-			else
+			if (file_exists(FILEROOT . "/characters/avatars/{$this->characterID}.jpg")) {
+				return "/characters/avatars/{$this->characterID}.jpg" . ($showTS ? '?' . time() : '');
+			} else {
 				return false;
+			}
 		}
 
 		protected function prElement($ele) {
@@ -185,14 +189,14 @@
 		}
 
 		public function get($pr = false, $bb = false) {
-			require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+			require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
 
 			$char = get_object_vars($this);
 			if ($pr) {
 				$char = $this->prElement($char);
 				$char['notes'] = BBCode2Html($char['notes']);
 			}
-//				if (!in_array($key, array('bodyClasses', 'linkedTables', 'mongoIgnore'))) {
+//				if (!in_array($key, ['bodyClasses', 'linkedTables', 'mongoIgnore'))) {
 			return $char;
 		}
 
@@ -202,50 +206,72 @@
 		}
 
 		public function save() {
-			global $mongo, $mysql;
+			$mysql = DB::conn('mysql');
+			$mongo = DB::conn('mongo');
 
 			$classVars = get_object_vars($this);
-			foreach ($this->mongoIgnore['save'] as $key)
+			foreach ($this->mongoIgnore['save'] as $key) {
 				unset($classVars[$key]);
+			}
 			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
-			if ($classVars['created'] == null)
-				$classVars['created'] = new MongoDate();
+			if ($classVars['created'] == null) {
+				$classVars['created'] = genMongoDate();
+			}
 			try {
 //				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value))
 //					$value = mb_convert_encoding($value, 'UTF-8');
 //				});
 				$username = $mysql->query("SELECT username FROM users WHERE userID = {$classVars['userID']}")->fetchColumn();
-				$classVars['user'] = array('userID' => $classVars['userID'], 'username' => $username);
+				$classVars['user'] = ['userID' => $classVars['userID'], 'username' => $username];
 				unset($classVars['userID']);
-				$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => $classVars), array('upsert' => true));
+				$mongo->characters->updateOne(
+					['characterID' => $this->characterID],
+					['$set' => $classVars],
+					['upsert' => true]
+				);
 				return true;
 			} catch (Exception $e) { var_dump($e); }
+
 			return false;
 		}
 
 		public function load() {
-			global $mysql, $mongo;
+			$mysql = DB::conn('mysql');
+			$mongo = DB::conn('mongo');
 
-			$character = $mongo->characters->findOne(array('characterID' => $this->characterID));
-			if ($character == null)
+			$character = $mongo->characters->findOne(['characterID' => $this->characterID]);
+			if ($character == null) {
 				return false;
+			}
 			if ($character['retired'] == null) {
-				foreach ($character as $key => $value)
-					if (!in_array($key, $this->mongoIgnore['load']))
+				foreach ($character as $key => $value) {
+					if (!in_array($key, $this->mongoIgnore['load'])) {
 						$this->$key = $value;
+					}
+				}
 				$this->userID = $character['user']['userID'];
+
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		}
 
 		public function delete() {
-			global $currentUser, $mongo;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
-			if ($this->label == null)
-				$this->game = $mongo->characters->findOne(array('characterID' => $this->characterID), array('game'))['game'];
+			if ($this->label == null) {
+				$this->game = $mongo->characters->findOne(
+					['characterID' => $this->characterID],
+					['projection' => ['game' => true]]
+				)['game'];
+			}
 			if ($this->game) {
-				$players = $mongo->games->findOne(array('gameID' => $this->game['gameID']), array('players' => true))['players'];
+				$players = $mongo->games->findOne(
+					['gameID' => $this->game['gameID']],
+					['projection' => ['players' => true]]
+				)['players'];
 				foreach ($players as &$player) {
 					if ($player['user']['userID'] == $this->userID) {
 						foreach ($player['characters'] as $key => $character) {
@@ -258,9 +284,15 @@
 						break;
 					}
 				}
-				$mongo->games->update(array('gameID' => $this->game['gameID']), array('$set' => array('players' => $players)));
+				$mongo->games->updateOne(
+					['gameID' => $this->game['gameID']],
+					['$set' => ['players' => $players]]
+				);
 			}
-			$mongo->characters->update(array('characterID' => $this->characterID), array('$set' => array('game' => null, 'retired' => new MongoDate())));
+			$mongo->characters->updateOne(
+				['characterID' => $this->characterID],
+				['$set' => ['game' => null, 'retired' => genMongoDate()]]
+			);
 
 #			$hl_charDeleted = new HistoryLogger('characterDeleted');
 #			$hl_charDeleted->addCharacter($this->characterID)->save();

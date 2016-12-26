@@ -1,32 +1,47 @@
-<?
+<?php
 	$gameID = intval($pathOptions[0]);
 
-	$gameInfo = $mongo->games->findOne(array('gameID' => $gameID), array('title' => true, 'description' => true));
+	$gameInfo = $mongo->games->findOne(
+		['gameID' => $gameID],
+		['projection' => ['title' => true, 'description' => true]]
+	);
 	if (!$gameInfo) { header('Location: /games/list/'); exit; }
 
 	$dispatchInfo['title'] = $gameInfo['title'];
-	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. ".($gameInfo['description']?$gameInfo['description']:'No description provided.');
+	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. " . ($gameInfo['description'] ? $gameInfo['description'] : 'No description provided.');
 ?>
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar">Game Details <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 
-<?	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
+<?php	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
 		<div class="alertBox_error"><ul>
-<?
-		if ($_GET['submitted']) { echo "\t\t\t<li>You already submitted that character to a game.</li>\n"; }
-		if ($_GET['wrongSystem']) { echo "\t\t\t<li>That character isn't made for this game.</li>\n"; }
-		if ($_GET['approveError']) { echo "\t\t\t<li>There was an issue approving the character.</li>\n"; }
+<?php
+		if ($_GET['submitted']) {
+			echo "\t\t\t<li>You already submitted that character to a game.</li>\n";
+		}
+		if ($_GET['wrongSystem']) {
+			echo "\t\t\t<li>That character isn't made for this game.</li>\n";
+		}
+		if ($_GET['approveError']) {
+			echo "\t\t\t<li>There was an issue approving the character.</li>\n";
+		}
 ?>
 		</ul></div>
-<?	} if ($_GET['removed'] || $_GET['gmAdded'] || $_GET['gmRemoved']) { ?>
+<?php	} if ($_GET['removed'] || $_GET['gmAdded'] || $_GET['gmRemoved']) { ?>
 		<div class="alertBox_success"><ul>
-<?
-		if ($_GET['gmAdded']) echo "\t\t\t<li>GM successfully added.</li>\n";
-		if ($_GET['gmRemoved']) echo "\t\t\t<li>GM successfully removed.</li>\n";
-		if ($_GET['removed']) echo "\t\t\t<li>Character successfully removed from game.</li>\n";
+<?php
+		if ($_GET['gmAdded']) {
+			echo "\t\t\t<li>GM successfully added.</li>\n";
+		}
+		if ($_GET['gmRemoved']) {
+			echo "\t\t\t<li>GM successfully removed.</li>\n";
+		}
+		if ($_GET['removed']) {
+			echo "\t\t\t<li>Character successfully removed from game.</li>\n";
+		}
 ?>
 		</ul></div>
-<?	} ?>
+<?php	} ?>
 		<div class="relativeWrapper">
 			<div ng-if="details.retired" id="gameRetired">
 				This game has been retired! That means it's no longer being run.
@@ -58,7 +73,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Post Frequency</label></div>
-					<div class="infoCol">{{details.postFrequency.timesPer}} post<span ng-if="details.postFrequency.timesPer > 1">s</span> per {{details.postFrequency.perPeriod == 'd'?'day':'week'}}</div>
+					<div class="infoCol">{{details.postFrequency.timesPer}} post<span ng-if="details.postFrequency.timesPer > 1">s</span> per {{details.postFrequency.perPeriod == 'd' ? 'day' : 'week'}}</div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Number of Players</label></div>
@@ -229,4 +244,4 @@
 				</div>
 			</div>
 		</div>
-<?	require_once(FILEROOT.'/footer.php'); ?>
+<?php	require_once(FILEROOT . '/footer.php'); ?>

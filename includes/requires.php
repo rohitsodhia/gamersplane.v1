@@ -1,4 +1,6 @@
 <?
+	require_once('vendor/autoload.php');
+
 	require_once('connect.php');
 	require_once('variables.php');
 //	require_once('classes.php');

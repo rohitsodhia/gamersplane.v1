@@ -1,40 +1,42 @@
-<?
+<?php
 	function showOptions($forumID, $indent = 0) {
 		global $forumManager;
 		$forum = $forumManager->forums[$forumID];
-		if ($forum == null) 
+		if ($forum == null)
 			return;
 ?>
-				<option value="<?=$forumID?>"<?=$forum->getPermissions('admin') === true?'':' disabled="disabled"'?>><?=str_repeat('-', $indent)?><?=$forum->title?></option>
-<?
-		foreach ($forum->getChildren() as $cForumID) 
+				<option value="<?=$forumID?>"<?=$forum->getPermissions('admin') === true ? '' : ' disabled="disabled"'?>><?=str_repeat('-', $indent)?><?=$forum->title?></option>
+<?php
+		foreach ($forum->getChildren() as $cForumID) {
 			showOptions($cForumID, $indent + 1);
+		}
 	}
 
 	addPackage('forum');
 	$threadID = intval($pathOptions[1]);
 	if (!$threadID) { header('Location: /forums'); exit; }
-	
+
 	$threadManager = new ThreadManager($threadID);
 	if ($threadManager->getPermissions('admin') == false) { header('Location: /403'); exit; }
 
 	if ($threadManager->isGameForum()) {
 		$gameID = $threadManager->getForumProperty('gameID');
-		$startForum = $mongo->games->findOne(array('gameID' => $gameID), array('forumID' => true))['forumID'];
-	} else 
+		$startForum = $mongo->games->findOne(['gameID' => $gameID], ['projection' => ['forumID' => true]])['forumID'];
+	} else {
 		$startForum = 0;
+	}
 	$forumManager = new ForumManager($startForum, ForumManager::NO_NEWPOSTS|ForumManager::ADMIN_FORUMS);
 
-	require_once(FILEROOT.'/header.php');
+	require_once(FILEROOT . '/header.php');
 ?>
 		<h1 class="headerbar">Move Thread</h1>
 		<div class="hbMargined">
 			<p>Where would you like to move the thread to?</p>
-		
+
 			<form method="post" action="/forums/process/moveThread/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<select name="forumID">
-<?	showOptions($startForum); ?>
+<?php	showOptions($startForum); ?>
 				</select>
 				<div class="tr">
 					<button type="submit" name="add" class="fancyButton">Move</button>
@@ -42,4 +44,4 @@
 				</div>
 			</form>
 		</div>
-<?	require_once(FILEROOT.'/footer.php'); ?>
+<?php	require_once(FILEROOT . '/footer.php'); ?>

@@ -1,36 +1,39 @@
-<?
+<?php
 	function newItemized($type, $name, $system) {
 		global $currentUser, $systems;
 
-		if ($system == 'custom') 
+		if ($system == 'custom') {
 			return false;
-		if ($systems->verifySystem($system)) 
+		}
+		if ($systems->verifySystem($system)) {
 			return false;
+		}
 
 		$searchName = sanitizeString($name, 'search_format');
-		$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName), array('_id' => true));
+		$ac = $mongo->charAutocomplete->findOne(['searchName' => $searchName], ['projection' => ['_id' => true]]);
 		$uai = array(
 			'name' => $name,
 			'itemID' => null,
 			'action' => null,
 			'system' => $system,
 			'type' => $type,
-			'addedBy' => array(
+			'addedBy' => [
 				'userID' => (int) $currentUser->userID,
 				'username' => $currentUser->username,
-				'on' => new MongoDate()
-			),
-			'actedBy' => array(
+				'on' => genMongoDate()
+			],
+			'actedBy' => [
 				'userID' => null,
 				'username' => null,
 				'on' => null
-			)
+			]
 		);
 		if ($ac != null) {
 			$uai['itemID'] = $ac['_id']->{$id};
-			$mongo->userAddedItems->insert($uai);
-		} else 
-			$mongo->userAddedItems->insert($uai);
+			$mongo->userAddedItems->insertOne($uai);
+		} else {
+			$mongo->userAddedItems->insertOne($uai);
+		}
 
 		return true;
 	}

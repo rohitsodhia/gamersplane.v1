@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 	Gamers Plane Functions
 	Created by RhoVisions, designer Rohit Sodhia
@@ -107,6 +107,10 @@
 		return $num;
 	}
 
+	function randomFloat() {
+		return mt_rand() / mt_getrandmax();
+	}
+
 /* Session Functions */
 	function startSession() {
 		session_start();
@@ -121,16 +125,27 @@
 	}
 
 	function mongo_getNextSequence($key) {
-		global $mongo;
+		$mongo = DB::conn('mongo');
 
 		$counter = $mongo->counters->findAndModify(
-			array('_id' => $key),
-			array('$inc' => array('seq' => 1)),
-			null,
-			array('new' => true)
+			['_id' => $key],
+			['$inc' => ['seq' => 1]],
+			['returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER]
 		);
 
 		return $counter['seq'];
+	}
+
+	function genMongoId($id = null) {
+		return new MongoDB\BSON\ObjectID($id);
+	}
+
+	function genMongoDate($seconds = null) {
+		return new MongoDB\BSON\UTCDateTime($seconds ? $seconds * 1000 : null);
+	}
+
+	function getMongoSeconds($mongoDateTime) {
+		return $mongoDateTime->toDateTime()->getTimestamp();
 	}
 
 /* Character Functions */

@@ -1,4 +1,4 @@
-<?
+<?php
 	class systems {
 		function __construct() {
 			global $pathOptions;
@@ -15,48 +15,68 @@
 		}
 
 		public function get() {
-			global $mongo;
+			$mongo = DB::conn('mongo');
 
-			$search = array();
-			$fields = array('name' => true);
+			$search = [];
+			$fields = ['name' => true];
 			if (!isset($_POST['fields']) || $_POST['fields'] == 'all') {
-				$fields = array();
+				$fields = [];
 			} elseif (isset($_POST['fields']) && is_array($_POST['fields'])) {
 				foreach ($_POST['fields'] as $field) {
 					$fields[$field] = true;
 				}
 			}
 			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) {
-				$search['_id'] = array('$ne' => 'custom');
+				$search['_id'] = ['$ne' => 'custom'];
 			}
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
-				$rSystems = $mongo->systems->findOne(array('_id' => $_POST['shortName']), $fields);
-				$rSystems = array($rSystems);
+				$rSystems = $mongo->systems->findOne(
+					['_id' => $_POST['shortName']],
+					['projection' => $fields]
+				);
+				$rSystems = [$rSystems];
 				$numSystems = 1;
 			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
-				$numSystems = $mongo->systems->find(array(), array('_id' => 1))->count();
-				$rSystems = $mongo->systems->find(array(), $fields)->sort(array('sortName' => 1));
+				$numSystems = count($mongo->systems->find(
+					[],
+					['projection' => ['_id' => 1]]
+				));
+				$rSystems = $mongo->systems->find(
+					[],
+					[
+						'projection' => $fields,
+						'sort' => ['sortName' => 1]
+					]
+				);
 			} else {
-				$numSystems = $mongo->systems->find($search, array('_id' => 1))->count();
-				$page = isset($_POST['page']) && intval($_POST['page'])?intval($_POST['page']):1;
-				$rSystems = $mongo->systems->find($search, $fields)->sort(array('sortName' => 1))->skip(10 * ($page - 1))->limit(10);
+				$numSystems = count($mongo->systems->find($search, ['projection' => ['_id' => 1]]));
+				$page = isset($_POST['page']) && intval($_POST['page']) ? intval($_POST['page']) : 1;
+				$rSystems = $mongo->systems->find(
+					$search,
+					[
+						'projection' => $fields,
+						'sort' => ['sortName' => 1],
+						'skip' => 10 * ($page - 1),
+						'limit' => 10
+					]
+				);
 			}
-			$systems = array();
-			$custom = array();
-			$defaults = array(
-				'genres' => array(),
-				'publisher' => array('name' => '', 'site' => ''),
-				'basics' => array()
-			);
+			$systems = [];
+			$custom = [];
+			$defaults = [
+				'genres' => [],
+				'publisher' => ['name' => '', 'site' => ''],
+				'basics' => []
+			];
 			unset($fields['name']);
 			foreach ($rSystems as $rSystem) {
-				$system = array(
+				$system = [
 					'shortName' => $rSystem['_id'],
 					'fullName' => $rSystem['name']
-				);
+				];
 				if (sizeof($fields) > 0) {
 					foreach ($fields as $field => $nothing) {
-						$system[$field] = isset($rSystem[$field])?$rSystem[$field]:(isset($defaults[$field])?$defaults[$field]:null);
+						$system[$field] = isset($rSystem[$field]) ? $rSystem[$field] : (isset($defaults[$field]) ? $defaults[$field] : null);
 					}
 				} else {
 					foreach ($rSystem as $key => $value) {
@@ -78,10 +98,15 @@
 		}
 
 		public function getGenres() {
-			global $mongo;
+			$mongo = DB::conn('mongo');
 
-			$genres = array();
-			$rSystem = $mongo->systems->find(array('genres' => array('$not' => array('$size' => 0))), array('_id' => -1, 'genres' => 1));
+			$genres = [];
+			$rSystem = $mongo->systems->find(
+				['genres' => [
+					'$not' => ['$size' => 0]
+				]],
+				['projection' => ['_id' => -1, 'genres' => 1]]
+			);
 			foreach ($rSystem as $system) {
 				foreach ($system['genres'] as $genre) {
 					$genres[] = $genre;
@@ -91,10 +116,11 @@
 		}
 
 		public function save() {
-			global $mongo, $currentUser;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
 			if ($currentUser->checkACP('systems', false)) {
-				$genres = array();
+				$genres = [];
 				$systemData = $_POST['data'];
 				if (isset($systemData->genres) && is_array($systemData->genres)) {
 					foreach ($systemData->genres as $genre) {
@@ -104,7 +130,7 @@
 						}
 					}
 				}
-				$basics = array();
+				$basics = [];
 				if (isset($systemData->basics) && is_array($systemData->basics)) {
 					foreach ($systemData->basics as $basic) {
 						if (strlen($basic->text) && strlen($basic->site)) {
@@ -115,19 +141,23 @@
 						}
 					}
 				}
-				$system = array(
+				$system = [
 					'_id' => $systemData->shortName,
 					'name' => sanitizeString($systemData->fullName),
 					'sortName' => sanitizeString($systemData->fullName, 'lower'),
-					'hasCharSheet' => $systemData->hasCharSheet?true:false,
+					'hasCharSheet' => $systemData->hasCharSheet ? true : false,
 					'genres' => $genres,
-					'publisher' => (object) array(
-						'name' => strlen($systemData->publisher->name)?sanitizeString($systemData->publisher->name):null,
-						'site' => strlen($systemData->publisher->site)?$systemData->publisher->site:null
-					),
+					'publisher' => (object) [
+						'name' => strlen($systemData->publisher->name) ? sanitizeString($systemData->publisher->name) : null,
+						'site' => strlen($systemData->publisher->site) ? $systemData->publisher->site : null
+					],
 					'basics' => $basics
+				];
+				$system = $mongo->systems->findOneAndUpdate(
+					['_id' => $systemData->shortName],
+					['$set' => $system],
+					['returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER, 'upsert' => true]
 				);
-				$system = $mongo->systems->findAndModify(array('_id' => $systemData->shortName), array('$set' => $system), null, array('upsert' => true, 'new' => true));
 				$system['shortName'] = $system['_id'];
 				$system['fullName'] = $system['name'];
 				unset($system['_id'], $system['name']);

@@ -1,4 +1,4 @@
-<?
+<?php
 	require_once(FILEROOT.'/includes/Systems.class.php');
 
 	class characters {
@@ -34,12 +34,13 @@
 			} elseif ($pathOptions[0] == 'processUAI') {
 				$this->processUAI();
 			} else {
-				displayJSON(array('failed' => true));
+				displayJSON(['failed' => true]);
 			}
 		}
 
 		public static function newItemized($type, $name, $system) {
-			global $currentUser, $systems, $mongo;
+			global $currentUser, $systems;
+			$mongo = DB::conn('mongo');
 
 			$systems = Systems::getInstance();
 			if ($system == 'custom') {
@@ -50,90 +51,116 @@
 			}
 
 			$searchName = sanitizeString($name, 'search_format');
-			$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName), array('_id' => true, 'systems' => true));
-			$alreadyExists = $mongo->userAddedItems->findOne(array('name' => $name, 'system' => $system), array('_id' => true));
+			$ac = $mongo->charAutocomplete->findOne(
+				['searchName' => $searchName],
+				['projection' => ['_id' => true, 'systems' => true]]
+			);
+			$alreadyExists = $mongo->userAddedItems->findOne(
+				['name' => $name, 'system' => $system],
+				['projection' => ['_id' => true]]
+			);
 			if ($alreadyExists || ($ac && in_array($system, $ac['systems']))) {
 				return true;
 			}
 
-			$uai = array(
+			$uai = [
 				'name' => $name,
 				'itemID' => null,
 				'action' => null,
 				'system' => $system,
 				'type' => $type,
-				'addedBy' => array(
+				'addedBy' => [
 					'userID' => (int) $currentUser->userID,
 					'username' => $currentUser->username,
-					'on' => new MongoDate()
-				),
-				'actedBy' => array(
+					'on' => genMongoDate()
+				],
+				'actedBy' => [
 					'userID' => null,
 					'username' => null,
 					'on' => null
-				)
-			);
+				]
+			];
 			if ($ac != null) {
-				$uai['itemID'] = $ac['_id']->{'$id'};
-				$mongo->userAddedItems->insert($uai);
+				$uai['itemID'] = (string) $ac['_id'];
+				$mongo->userAddedItems->insertOne($uai);
 			} else {
-				$mongo->userAddedItems->insert($uai);
+				$mongo->userAddedItems->insertOne($uai);
 			}
 
 			return true;
 		}
 
 		public function library() {
-			global $mongo;
+			$mongo = DB::conn('mongo');
 
-			$search = array('library.inLibrary' => true);
-			if (isset($_POST['search']) && is_array($_POST['search']))
+			$search = ['library.inLibrary' => true];
+			if (isset($_POST['search']) && is_array($_POST['search'])) {
 				$search['system'] = array('$in' => $_POST['search']);
-			$rCharacters = $mongo->characters->find($search, array('_id' => false, 'characterID' => true, 'label' => true, 'user' => true, 'system' => true));
+			}
+			$rCharacters = $mongo->characters->find(
+				$search,
+				['projection' => [
+					'_id' => false,
+					'characterID' => true,
+					'label' => true,
+					'user' => true,
+					'system' => true
+				]]
+			);
 			$systems = Systems::getInstance();
-			$characters = array();
+			$characters = [];
 			foreach ($rCharacters as $character) {
-				$character['system'] = array('slug' => $character['system'], 'name' => $systems->getFullName($character['system']));
+				$character['system'] = [
+					'slug' => $character['system'],
+					'name' => $systems->getFullName($character['system'])
+				];
 				$characters[] = $character;
 			}
-			displayJSON(array('success' => true, 'characters' => $characters));
+			displayJSON(['success' => true, 'characters' => $characters]);
 		}
 
 		public function my() {
-			global $loggedIn, $currentUser, $mongo;
-			if (!$loggedIn)
-				displayJSON(array('failed' => true, 'notLoggedIn' => true), true);
+			global $loggedIn, $currentUser;
+			$mongo = DB::conn('mongo');
+			if (!$loggedIn) {
+				displayJSON(['failed' => true, 'notLoggedIn' => true], true);
+			}
 
 			$systems = Systems::getInstance();
 
-			$cond = array(
+			$cond = [
 				'user.userID' => $currentUser->userID,
 				'retired' => null
-			);
+			];
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
-				if (sizeof($allowedSystems) == 1)
+				if (sizeof($allowedSystems) == 1) {
 					$cond['system'] = $allowedSystems[0];
-				elseif (sizeof($allowedSystems) > 1) {
-					foreach ($allowedSystems as &$system)
+				} elseif (sizeof($allowedSystems) > 1) {
+					foreach ($allowedSystems as &$system) {
 						$system = preg_replace('/[^\w_]/', '', $system);
-					$cond['system'] = array('$in' => $allowedSystems);
+					}
+					$cond['system'] = ['$in' => $allowedSystems];
 				}
 			}
-			if (isset($_POST['noGame']))
+			if (isset($_POST['noGame'])) {
 				$cond['game'] = null;
-			$rCharacters = $mongo->characters->find($cond, array(
+			}
+			$rCharacters = $mongo->characters->find($cond, ['projection' => [
 				'characterID' => true,
 				'label' => true,
 				'charType' => true,
 				'system' => true,
 				'game' => true,
 				'library' => true
-			));
+			]]);
 			$characters = array();
 			foreach ($rCharacters as $character) {
 				$character['label'] = printReady($character['label']);
-				$character['system'] = array('short' => printReady($character['system']), 'name' => printReady($systems->getFullName($character['system'])));
+				$character['system'] = [
+					'short' => printReady($character['system']),
+					'name' => printReady($systems->getFullName($character['system']))
+				];
 				$character['gameID'] = (int) $character['game']['gameID'];
 				$character['approved'] = (bool) $character['game']['approved'];
 				$character['inLibrary'] = (bool) $character['library']['inLibrary'];
@@ -142,14 +169,26 @@
 			}
 			$return = array('characters' => $characters);
 			if (isset($_POST['library']) && $_POST['library']) {
-				$rLibraryItems = $mongo->characterLibraryFavorites->find(array('userID' => $currentUser->userID));
-				$libraryItems = array();
-				foreach ($rLibraryItems as $item)
+				$rLibraryItems = $mongo->characterLibraryFavorites->find(['userID' => $currentUser->userID]);
+				$libraryItems = [];
+				foreach ($rLibraryItems as $item) {
 					$libraryItems[] = $item['characterID'];
-				$libraryItems = $mongo->characters->find(array('characterID' => array('$in' => $libraryItems)), array('characterID' => true, 'label' => true, 'charType' => true, 'system' => true, 'user' => true));
+				}
+				$libraryItems = $mongo->characters->find(
+					['characterID' => ['$in' => $libraryItems]],
+					['projection' => [
+						'characterID' => true,
+						'label' => true,
+						'charType' => true,
+						'system' => true,
+						'user' => true
+					]]);
 				foreach ($libraryItems as $item) {
 					$item['label'] = printReady($item['label']);
-					$item['system'] = array('short' => printReady($item['system']), 'name' => printReady($systems->getFullName($item['system'])));
+					$item['system'] = [
+						'short' => printReady($item['system']),
+						'name' => printReady($systems->getFullName($item['system']))
+					];
 					unset($item['_id']);
 					$return['library'][] = $item;
 				}
@@ -159,23 +198,27 @@
 		}
 
 		public function newChar() {
-			global $currentUser, $mongo;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
-			$errors = array();
+			$errors = [];
 			$system = $_POST['system'];
-			$validSystem = $mongo->systems->findOne(array('_id' => $system), array('_id' => true));
-			if (!$validSystem)
+			$validSystem = $mongo->systems->findOne(['_id' => $system], ['projection' => ['_id' => true]]);
+			if (!$validSystem) {
 				$errors[] = 'invalidSystem';
+			}
 			$label = sanitizeString($_POST['label']);
-			if (strcmp(filterString($label), $label) != 0 || $label == '')
+			if (strcmp(filterString($label), $label) != 0 || $label == '') {
 				$errors[] = 'invalidLabel';
+			}
 			$charType = $_POST['charType'];
-			if (!in_array($charType, array('PC', 'NPC', 'Mob')))
+			if (!in_array($charType, self::$charTypes)) {
 				$charType = 'PC';
+			}
 
-			if (sizeof($errors))
-				displayJSON(array('failed' => true, 'errors' => $errors));
-			else {
+			if (sizeof($errors)) {
+				displayJSON(['failed' => true, 'errors' => $errors]);
+			} else {
 				require_once(FILEROOT."/includes/packages/{$system}Character.package.php");
 				$charClass = Systems::systemClassName($system).'Character';
 				$newChar = new $charClass();
@@ -185,31 +228,46 @@
 #				$hl_charCreated = new HistoryLogger('characterCreated');
 #				$hl_charCreated->addCharacter($characterID, false)->save();
 
-				displayJSON(array('success' => true, 'system' => $system, 'characterID' => $newChar->getID()));
+				displayJSON([
+					'success' => true,
+					'system' => $system,
+					'characterID' => $newChar->getID()
+				]);
 			}
 		}
 
 		public function saveBasic() {
-			global $currentUser, $mongo;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 			$characterID = intval($_POST['characterID']);
 			$label = sanitizeString($_POST['label']);
-			$charType = in_array($_POST['charType'], self::$charTypes)?$_POST['charType']:'PC';
-			if (strlen($label) == 0)
-				displayJSON(array('failed' => true, 'errors' => array('noLabel')));
+			$charType = in_array($_POST['charType'], self::$charTypes) ? $_POST['charType'] : 'PC';
+			if (strlen($label) == 0) {
+				displayJSON(['failed' => true, 'errors' => ['noLabel']]);
+			}
 
-			$charCheck = $mongo->characters->findOne(array('user.userID' => $currentUser->userID, 'characterID' => $characterID), array('_id' => true));
-			if (!$charCheck)
-				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
-			else {
-				$mongo->characters->update(array('characterID' => $characterID), array('$set' => array('label' => $label, 'charType' => $charType)));
+			$charCheck = $mongo->characters->findOne(
+				[
+					'user.userID' => $currentUser->userID,
+					'characterID' => $characterID
+				],
+				['projection' => ['_id' => true]]);
+			if (!$charCheck) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
+			} else {
+				$mongo->characters->updateOne(
+					['characterID' => $characterID],
+					['$set' => ['label' => $label, 'charType' => $charType]]
+				);
 #				$hl_basicEdited = new HistoryLogger('basicEdited');
 #				$hl_basicEdited->addCharacter($characterID, false)->save();
-				displayJSON(array('success' => true, 'basicUpdated' => true));
+				displayJSON(['success' => true, 'basicUpdated' => true]);
 			}
 		}
 
 		public function loadCharacter() {
-			global $mongo, $currentUser;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
 			$characterID = (int) $_POST['characterID'];
 			if ($characterID <= 0) {
@@ -219,7 +277,7 @@
 				]);
 			}
 
-			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['system' => true]);
+			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
 			if ($systemCheck) {
 				$system = $systemCheck['system'];
 				$systems = Systems::getInstance();
@@ -251,26 +309,44 @@
 			}
 
 			$characterID = (int) $characterID;
-			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('user' => true, 'game' => true));
+			$charCheck = $mongo->characters->findOne(
+				['characterID' => $characterID],
+				['projection' => ['user' => true, 'game' => true]]
+			);
 			if ($charCheck['user']['userID'] == $userID) {
 				return 'edit';
 			} else {
-				$gmCheck = $mongo->games->findOne(array('gameID' => $charCheck['game']['gameID'], 'players' => array('$elemMatch' => array('user.userID' => $userID, 'isGM' => true))), array('_id' => true));
-				if ($gmCheck)
+				$gmCheck = $mongo->games->findOne(
+					[
+						'gameID' => $charCheck['game']['gameID'],
+						'players' => [
+							'$elemMatch' => [
+								'user.userID' => $userID,
+								'isGM' => true
+							]
+						]
+					],
+					['projection' => ['_id' => true]]
+				);
+				if ($gmCheck) {
 					return 'edit';
+				}
 			}
-			return $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?'library':false;
+			return $mongo->characters->findOne(['characterID' => $characterID, 'library.inLibrary' => true]) ? 'library' : false;
 		}
 
 		public function saveCharacter() {
-			global $mongo, $currentUser;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
 			$characterID = (int) $_POST['characterID'];
-			if ($characterID <= 0)
-				displayJSON(array('failed' => true, 'errors' => array('noCharacterID')));
-			$systemCheck = $mongo->characters->findOne(array('characterID' => $characterID), array('system' => true));
-			if (!$systemCheck)
-				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
+			if ($characterID <= 0) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
+			}
+			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
+			if (!$systemCheck) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
+			}
 			$system = $systemCheck['system'];
 
 			$systems = Systems::getInstance();
@@ -284,35 +360,51 @@
 #					$hl_charEdited = new HistoryLogger('characterEdited');
 #					$hl_charEdited->addCharacter($characterID)->addUser($currentUser->userID)->save();
 
-					displayJSON(array('success' => true, 'saved' => true, 'characterID' => $characterID));
-				} else
-					displayJSON(array('failed' => true, 'errors' => array('noPermission')));
+					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
+				} else {
+					displayJSON(['failed' => true, 'errors' => ['noPermission']]);
+				}
 			}
 		}
 
 		public function toggleLibrary() {
-			global $currentUser, $mongo;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
 			$characterID = intval($_POST['characterID']);
-			$currentState = $mongo->characters->findOne(array('characterID' => $characterID, 'user.userID' => $currentUser->userID, 'retired' => null), array('library' => true));
+			$currentState = $mongo->characters->findOne(
+				[
+					'characterID' => $characterID,
+					'user.userID' => $currentUser->userID,
+					'retired' => null
+				],
+				['projection' => ['library' => true]]
+			);
 			if ($currentState) {
-				$mongo->characters->update(array('_id' => $currentState['_id']), array('$set' => array('library.inLibrary' => !$currentState['library']['inLibrary'])));
+				$mongo->characters->update(
+					['_id' => $currentState['_id']],
+					['$set' => ['library.inLibrary' => !$currentState['library']['inLibrary']]]
+				);
 #				$hl_libraryToggle = new HistoryLogger(($currentState?'removeFrom':'addTo').'Library');
 #				$hl_libraryToggle->addCharacter($characterID, false)->save();
 
-				displayJSON(array('success' => true, 'state' => !$currentState['library']['inLibrary']));
+				displayJSON(['success' => true, 'state' => !$currentState['library']['inLibrary']]);
 			} else
-				displayJSON(array('failed' => true, 'errors' => array('invalidID')));
+				displayJSON(['failed' => true, 'errors' => array('invalidID')]);
 		}
 
 		public function delete() {
-			global $currentUser, $mongo;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
 			$characterID = intval($_POST['characterID']);
 			try {
-				$system = $mongo->characters->findOne(array('characterID' => $characterID), array('_id' => false, 'system' => true))['system'];
+				$system = $mongo->characters->findOne(
+					['characterID' => $characterID],
+					['projection' => ['_id' => false, 'system' => true]]
+				)['system'];
 			} catch (Exception $e) {
-				displayJSON(array('failed' => true, 'errors' => array('noCharacter')));
+				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
 			require_once(FILEROOT."/includes/packages/".$system."Character.package.php");
 			$charClass = Systems::systemClassName($system).'Character';
@@ -321,26 +413,39 @@
 #				$hl_charDeleted = new HistoryLogger('characterDeleted');
 #				$hl_charDeleted->addCharacter($characterID, false)->save();
 
-				displayJSON(array('success' => true, 'charDeleted' => true));
+				displayJSON(['success' => true, 'charDeleted' => true]);
 			}
 		}
 
 		public function toggleFavorite() {
-			global $currentUser, $mongo;
+			global $currentUser;
+			$mongo = DB::conn('mongo');
 
 			$characterID = intval($_POST['characterID']);
-			$charCheck = $mongo->characters->findOne(array('characterID' => $characterID, 'library.inLibrary' => true))?true:false;
+			$charCheck = $mongo->characters->findOne(
+				[
+					'characterID' => $characterID,
+					'library.inLibrary' => true
+				]
+			) ? true : false;
 			if ($charCheck) {
-				$state = $mongo->characterLibraryFavorites->findOne(array('userID' => $currentUser->userID, 'characterID' => $characterID))?'unfavorited':'favorited';
-				if ($state == 'unfavorited')
-					$mongo->characterLibraryFavorites->remove(array('userID' => $currentUser->userID, 'characterID' => $characterID));
-				else
-					$mongo->characterLibraryFavorites->insert(array('userID' => $currentUser->userID, 'characterID' => $characterID));
+				$state = $mongo->characterLibraryFavorites->findOne(
+					[
+						'userID' => $currentUser->userID,
+						'characterID' => $characterID
+					]
+				) ? 'unfavorited' : 'favorited';
+				if ($state == 'unfavorited') {
+					$mongo->characterLibraryFavorites->deleteOne(['userID' => $currentUser->userID, 'characterID' => $characterID]);
+				} else {
+					$mongo->characterLibraryFavorites->insertOne(['userID' => $currentUser->userID, 'characterID' => $characterID]);
+				}
 #				$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
 #				$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
-				displayJSON(array('success' => true, 'state' => $state));
-			} else
-				displayJSON(array('failed' => true, 'errors' => array('noChar')));
+				displayJSON(['success' => true, 'state' => $state]);
+			} else {
+				displayJSON(['failed' => true, 'errors' => ['noChar']]);
+			}
 		}
 
 		public function getBookData() {
@@ -356,7 +461,7 @@
 		}
 
 		public function cilSearch() {
-			global $mongo;
+			$mongo = DB::conn('mongo');
 
 			$type = sanitizeString($_POST['type']);
 			$searchName = sanitizeString($_POST['search'], 'search_format');
@@ -365,137 +470,165 @@
 			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
 
 			if ($systems->verifySystem($system)) {
-				$search = array('searchName' => new MongoRegex("/{$searchName}/"));
+				$search = ['searchName' => new MongoDB\BSON\Regex("/{$searchName}/")];
 				$items = array();
 				if ($systemOnly) {
 					$search['systems'] = $system;
-					$rCIL = $mongo->charAutocomplete->find($search)->sort(array('searchName' => 1))->limit(5);
-					foreach ($rCIL as $item)
-						$items[] = array(
-							'itemID' => $item['_id']->{$id},
+					$rCIL = $mongo->charAutocomplete->find(
+						$search,
+						[
+							'sort' => ['searchName' => 1],
+							'limit' => 5
+						]
+					);
+					foreach ($rCIL as $item) {
+						$items[] = [
+							'itemID' => (string) $item['_id'],
 							'name' => $item['name'],
 							'systemItem' => true
-						);
+						];
+					}
 				} else {
-					$rCIL = $mongo->charAutocomplete->aggregate(array(
-						array(
-							'$match' => array(
+					$rCIL = $mongo->charAutocomplete->aggregate([
+						[
+							'$match' => [
 								'searchName' => $search['searchName']
-							)
-						),
-						array(
-							'$project' => array(
+							]
+						],
+						[
+							'$project' => [
 								'name' => true,
-								'inSystem' => array(
-									'$setIsSubset' => array(
-										array($system),
+								'inSystem' => [
+									'$setIsSubset' => [
+										[$system],
 										'$systems'
-									)
-								)
-							)
-						),
-						array(
-							'$sort' => array(
+									]
+								]
+							]
+						],
+						[
+							'$sort' => [
 								'inSystem' => -1,
 								'name' => 1
-							)
-						),
-						array(
+							]
+						],
+						[
 							'$limit' => 5
-						)
-					));
-					foreach ($rCIL['result'] as $item)
-						$items[] = array(
-							'itemID' => $item['_id']->{$id},
+						]
+					]);
+					foreach ($rCIL['result'] as $item) {
+						$items[] = [
+							'itemID' => (string) $item['_id'],
 							'name' => $item['name'],
 							'systemItem' => $item['systemItem']?true:false
-						);
+						];
+					}
 				}
 
-				displayJSON(array('items' => $items));
+				displayJSON(['items' => $items]);
 			}
 		}
 
 		public function getUAI() {
-			global $loggedIn, $currentUser, $mongo;
+			global $loggedIn, $currentUser;
+			$mongo = DB::conn('mongo');
 
-			if (!$loggedIn || !$currentUser->checkACP('autocomplete'))
-				displayJSON(array('failed' => true, 'noPermission' => true));
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) {
+				displayJSON(['failed' => true, 'noPermission' => true]);
+			}
 
-			$rNewItems = $mongo->userAddedItems->find(array('itemID' => null, 'action' => null));
-			$newItems = array();
+			$rNewItems = $mongo->userAddedItems->find(['itemID' => null, 'action' => null]);
+			$newItems = [];
 			foreach ($rNewItems as $item) {
-				$item['_id'] = $item['_id']->{'$id'};
+				$item['_id'] = (string) $item['_id'];
 				$newItems[] = $item;
 			}
 
-			$rAddToSystem = $mongo->userAddedItems->find(array('itemID' => array('$ne' => null), 'action' => null));
-			$addToSystem = array();
+			$rAddToSystem = $mongo->userAddedItems->find(
+				[
+					'itemID' => ['$ne' => null],
+					'action' => null
+				]
+			);
+			$addToSystem = [];
 			foreach ($rAddToSystem as $item) {
-				$item['_id'] = $item['_id']->{'$id'};
+				$item['_id'] = (string) $item['_id'];
 				$addToSystem[] = $item;
 			}
 
-			displayJSON(array('success' => true, 'newItems' => $newItems, 'addToSystem' => $addToSystem));
+			displayJSON([
+				'success' => true,
+				'newItems' => $newItems,
+				'addToSystem' => $addToSystem
+			]);
 		}
 
 		public function processUAI() {
-			global $loggedIn, $currentUser, $mongo;
+			global $loggedIn, $currentUser;
+			$mongo = DB::conn('mongo');
 
-			if (!$loggedIn || !$currentUser->checkACP('autocomplete'))
-				displayJSON(array('failed' => true, 'noPermission' => true));
+			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) {
+				displayJSON(['failed' => true, 'noPermission' => true]);
+			}
 
-			$uai = $mongo->userAddedItems->findOne(array('_id' => new MongoId($_POST['item']->_id)));
+			$uai = $mongo->userAddedItems->findOne(
+				['_id' => genMongoId($_POST['item'])]
+			);
 			$uai['name'] = $_POST['item']->name;
 			$uai['actedBy'] = array(
 				'userID' => (int) $currentUser->userID,
 				'username' => $currentUser->username,
-				'on' => new MongoDate()
+				'on' => genMongoDate()
 			);
 			$action = $_POST['action'];
 			$ac = null;
 			$newItem = false;
 			if ($uai['itemID'] == null) {
-				$ac = $this->searchAutocomplete($uai['name'], $action == 'add'?$uai['type']:null);
-				$uai['itemID'] = $ac['_id']->{'$id'};
+				$ac = $this->searchAutocomplete($uai['name'], $action == 'add' ? $uai['type'] : null);
+				$uai['itemID'] = (string) $ac['_id'];
 				$newItem = true;
-			} else
-				$ac = $mongo->charAutocomplete->findOne(array('_id' => $uai['itemID']));
+			} else {
+				$ac = $mongo->charAutocomplete->findOne(['_id' => $uai['itemID']]);
+			}
 			if ($_POST['action'] == 'reject') {
-				$uai = array(
-					'$set' =>
-						array(
-							'name' => $uai['name'],
-							'action' => 'rejected',
-							'actedBy' => $uai['actedBy']
-						)
+				$uai = ['$set' => [
+					'name' => $uai['name'],
+					'action' => 'rejected',
+					'actedBy' => $uai['actedBy']
+				]];
+				$mongo->userAddedItems->updateOne(
+					['_id' => genMongoId($_POST['item']->_id)],
+					$uai
 				);
-				$mongo->userAddedItems->update(array('_id' => new MongoId($_POST['item']->_id)), $uai);
 			} elseif ($_POST['action'] == 'add') {
 				$uai['action'] = 'accepted';
-				if ($ac)
-					$mongo->charAutocomplete->update(array('_id' => $ac['_id']), array('$push' => array('systems' => $uai['system'])));
+				if ($ac) {
+					$mongo->charAutocomplete->updateOne(
+						['_id' => $ac['_id']],
+						['$push' => ['systems' => $uai['system']]]
+					);
+				}
 				$_id = $uai['_id'];
 				unset($uai['_id']);
-				$mongo->userAddedItems->update(array('_id' => $_id), array('$set' => $uai));
+				$mongo->userAddedItems->updateOne(['_id' => $_id], ['$set' => $uai]);
 			}
 
-			displayJSON(array('success' => true));
+			displayJSON(['success' => true]);
 		}
 
 		private function searchAutocomplete($name, $type = null) {
-			global $mongo;
+			$mongo = DB::conn('mongo');
 
 			$searchName = sanitizeString($name, 'search_format');
-			$ac = $mongo->charAutocomplete->findOne(array('searchName' => $searchName));
+			$ac = $mongo->charAutocomplete->findOne(['searchName' => $searchName]);
 			if ($ac == null && $type != null) {
-				$ac = array(
+				$ac = [
 					'name' => $name,
 					'searchName' => $searchName,
 					'type' => $type,
 					'userDefined' => true,
 					'systems' => array()
-				);
+				];
 				$mongo->charAutocomplete->insert($ac);
 			}
 

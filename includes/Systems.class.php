@@ -1,12 +1,13 @@
-<?
+<?php
 	class Systems {
 		private static $instance;
-		protected $systems = array();
+		protected $systems = [];
 
 		private function __construct() {
-			global $mongo;
-
-			$systems = $mongo->systems->find(array(), array('name' => 1))->sort(array('sortName' => 1));
+			$systems = DB::conn('mongo')->systems->find([], [
+				'projection' => ['name' => 1],
+				'sort' => ['sortName' => 1]
+			]);
 			foreach ($systems as $system) {
 				$this->systems[$system['_id']] = $system['name'];
 			}
@@ -60,7 +61,7 @@
 
 		public static function systemClassName($slug) {
 			if (is_numeric($slug[0])) {
-				return 'n_'.$slug;
+				return 'n_' . $slug;
 			} else {
 				return $slug;
 			}
