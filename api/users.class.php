@@ -199,13 +199,13 @@
 				$games[] = $game;
 			}
 
-			$pmCount = count($mongo->pms->find([
+			$pmCount = $mongo->pms->count([
 				'recipients' => ['$elemMatch' => [
 					'userID' => $currentUser->userID,
 					'read' => false,
 					'deleted' => false
 				]]
-			]));
+			]);
 
 			displayJSON([
 				'success' => true,

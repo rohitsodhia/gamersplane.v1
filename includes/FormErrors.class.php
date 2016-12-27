@@ -45,10 +45,14 @@
 			if (isset($_SESSION['errors']['for']) && $_SESSION['errors']['for'] == $for && time() <= $_SESSION['errors']['errorTimer']) {
 				$this->errors = $_SESSION['errors']['errorCodes'];
 				$this->errorChecked = true;
-				if (isset($_SESSION['errors']['errorVals']))
+				if (isset($_SESSION['errors']['errorVals'])) {
 					return $_SESSION['errors']['errorVals'];
-				else return true;
-			} else return false;
+				} else {
+					return true;
+				}
+			} else {
+				return false;
+			}
 		}
 
 		public function checkError($error) {

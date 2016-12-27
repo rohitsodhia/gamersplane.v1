@@ -27,7 +27,7 @@
 					['projection' => ['_id' => 1]]
 				));
 				$rHistories = $mongo->histories->find(
-					['for.users' => $userID]
+					['for.users' => $userID],
 					[
 						'sort' => ['timestamp' => -1],
 						'skip' => PAGINATE_PER_PAGE * ($page - 1),

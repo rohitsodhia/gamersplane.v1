@@ -5,7 +5,7 @@
 		$action = $_POST['action'];
 		$song = $mongo->music->findOne(['_id' => genMongoId($songID)]);
 		if ($song && $action == 'toggleApproval') {
-			$mongo->music->update(
+			$mongo->music->updateOne(
 				['_id' => genMongoId($songID)],
 				['$set' => ['approved' => !$song['approved']]]
 			);

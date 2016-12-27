@@ -32,7 +32,7 @@
 				displayJSON(['failed' => true, 'errors' => $errors]);
 			} else {
 				$inserts['date'] = genMongoDate();
-				$mongo->contact->insert($inserts);
+				$mongo->contact->insertOne($inserts);
 
 				$message = '';
 				foreach ($inserts as $key => $value) {

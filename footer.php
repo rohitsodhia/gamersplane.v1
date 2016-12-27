@@ -1,7 +1,7 @@
-<?	if (!MODAL) { ?>
+<?php	if (!MODAL) { ?>
 	</div>
 </div></div>
-<footer class="clearfix<?=$fixedGameMenu?' withFixedMenu':''?><?=isset($contentClasses) && array_search('fullWidthBody', $contentClasses) >= 0?' fullWidthBody':''?>"><div class="bodyContainer">
+<footer class="clearfix<?=$fixedGameMenu ? ' withFixedMenu' : ''?><?=isset($contentClasses) && array_search('fullWidthBody', $contentClasses) >= 0 ? ' fullWidthBody' : ''?>"><div class="bodyContainer">
 	<ul>
 		<li><a href="/tools/">Tools</a></li>
 		<li><a href="/systems/">Systems</a></li>
@@ -33,18 +33,18 @@
 			<input type="image" src="/images/support_us.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 		</form></li>
-<?		if ($currentUser->checkACP('any', false)) { ?>
+<?php		if ($currentUser->checkACP('any', false)) { ?>
 		<li><a href="/acp/">ACP</a>
 		</li>
-<?		} ?>
+<?php		} ?>
 	</ul>
 </div></footer>
-<?		if ($fixedGameMenu) require(FILEROOT.'/fixedGameMenu.php'); ?>
-<?	} else { ?>
+<?php		if ($fixedGameMenu) { require(FILEROOT . '/fixedGameMenu.php'); } ?>
+<?php	} else { ?>
 </div>
-<?	} ?>
+<?php	} ?>
 
-<?	require_once(FILEROOT.'/javascript/js.php'); ?>
+<?php	require_once(FILEROOT . '/javascript/js.php'); ?>
 
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

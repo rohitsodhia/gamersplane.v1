@@ -48,13 +48,13 @@
 			}
 
 			$page = isset($_POST['page']) && intval($_POST['page']) ? intval($_POST['page']) : 1;
-			$numLinks = count($mongo->links->find($search, ['projection' => ['_id' => 1]]));
+			$numLinks = $mongo->links->count($search);
 			if (isset($_POST['page'])) {
 				$linksResults = $mongo->links->find(
 					$search,
 					[
 						'sort' => ['title' => 1],
-						'skip' => PAGINATE_PER_PAGE * ($page - 1,
+						'skip' => PAGINATE_PER_PAGE * ($page - 1),
 						'limit' => PAGINATE_PER_PAGE
 					]
 				);
@@ -212,7 +212,7 @@
 			foreach (glob(FILEROOT . "/images/links/{$_POST['_id']}.*") as $file) {
 				unlink($file);
 			}
-			$mongo->links->remove(['_id' => genMongoId($_POST['_id'])]);
+			$mongo->links->deleteOne(['_id' => genMongoId($_POST['_id'])]);
 		}
 	}
 ?>

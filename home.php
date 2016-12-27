@@ -41,9 +41,9 @@
 			]
 		);
 ?>
-				<div class="loggedIn<?=$usersGames ? '' : ' noGames'?>">
+				<div class="loggedIn<?=count($usersGames->toArray()) ? '' : ' noGames'?>">
 					<h2>Your Games</h2>
-<?php		if ($usersGames) { ?>
+<?php		if (count($usersGames->toArray())) { ?>
 					<div class="games">
 <?php
 			foreach ($usersGames as $gameInfo) {

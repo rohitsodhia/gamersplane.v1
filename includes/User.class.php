@@ -36,9 +36,9 @@
 				foreach ($usermeta as $eMeta) {
 					$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
-				$this->acpPermissions = $mongo->users->findOne(
+				$this->acpPermissions = (array) $mongo->users->findOne(
 					['userID' => $this->userID],
-					['projection' => ['acpPermissions']]
+					['projection' => ['acpPermissions' => 1]]
 				)['acpPermissions'];
 			} else {
 				return false;
@@ -123,7 +123,7 @@
 			$addUser->execute();
 			$this->userID = $mysql->lastInsertId();
 
-			$mongo->users->insert(['userID' => (int) $this->userID, 'lfg' => []]);
+			$mongo->users->insertOne(['userID' => (int) $this->userID, 'lfg' => []]);
 
 			if ($this->userID) {
 				return $this->userID;

@@ -36,7 +36,7 @@
 			}
 
 			$page = isset($_POST['page']) && intval($_POST['page']) ? intval($_POST['page']) : 1;
-			$numLinks = count($mongo->links->find($search, ['projection' => ['_id' => 1]]));
+			$numLinks = $mongo->links->count($search);
 			if (isset($_POST['page'])) {
 				$linksResults = $mongo->links->find(
 					$search,

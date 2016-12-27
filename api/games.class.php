@@ -358,7 +358,7 @@
 				$currentUser->updateUsermeta('isGM', true);
 
 				$lfgRecips = $mongo->users->find(['lfg' => $details['system']], ['projection' => ['userID' => true]]);
-				if ($lfgRecips->count()) {
+				if (count($lfgRecips->toArray())) {
 					$userIDs = [];
 					foreach ($lfgRecips as $recip) {
 						$userIDs[] = $recip['userID'];
@@ -500,7 +500,7 @@
 #				$hl_retired = new HistoryLogger('retired');
 #				$hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
 
-				$gameCount = count($mongo->games->find(['gm.userID' => $currentUser->userID, 'retired' => null], ['_id' => true]));
+				$gameCount = $mongo->games->count(['gm.userID' => $currentUser->userID, 'retired' => null]);
 				if ($gameCount == 0) {
 					$currentUser->deleteUsermeta('isGM');
 				}

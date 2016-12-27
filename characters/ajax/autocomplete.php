@@ -7,7 +7,7 @@
 		$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly'] ? true : false;
 
 		if ($systems->verifySystem($system)) {
-			$search = array('searchName' => new MongoDB\BSON\Regex("/{$searchName}/"));
+			$search = array('searchName' => new MongoDB\BSON\Regex($searchName));
 			if ($systemOnly) {
 				$search['systems'] = $system;
 				$rCIL = $mongo->charAutocomplete->find(
@@ -40,7 +40,7 @@
 				]);
 			}
 			$lastType = null;
-			foreach ($rCIL['result'] as $item) {
+			foreach ($rCIL as $item) {
 				$classes = [];
 				if (!$item['systemItem']) {
 					$classes[] = 'nonSystemItem';

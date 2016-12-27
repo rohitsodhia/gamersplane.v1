@@ -26,7 +26,7 @@
 			}
 		} else {
 			$isGM = $playerCheck;
-			$mongo->games->update(
+			$mongo->games->updateOne(
 				['gameID' => $gameID, 'players.user.userID' => $playerID],
 				['$set' => ['players.$.isGM' => !$isGM]]
 			);

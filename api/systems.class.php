@@ -37,10 +37,7 @@
 				$rSystems = [$rSystems];
 				$numSystems = 1;
 			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
-				$numSystems = count($mongo->systems->find(
-					[],
-					['projection' => ['_id' => 1]]
-				));
+				$numSystems = $mongo->systems->count();
 				$rSystems = $mongo->systems->find(
 					[],
 					[
@@ -49,7 +46,7 @@
 					]
 				);
 			} else {
-				$numSystems = count($mongo->systems->find($search, ['projection' => ['_id' => 1]]));
+				$numSystems = $mongo->systems->count($search);
 				$page = isset($_POST['page']) && intval($_POST['page']) ? intval($_POST['page']) : 1;
 				$rSystems = $mongo->systems->find(
 					$search,

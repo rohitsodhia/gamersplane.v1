@@ -127,7 +127,7 @@
 	function mongo_getNextSequence($key) {
 		$mongo = DB::conn('mongo');
 
-		$counter = $mongo->counters->findAndModify(
+		$counter = $mongo->counters->findOneAndUpdate(
 			['_id' => $key],
 			['$inc' => ['seq' => 1]],
 			['returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER]

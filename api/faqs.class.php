@@ -112,7 +112,7 @@
 				];
 				$order = $mongo->faqs->count(['category' => $faq['category']]);
 				$faq['order'] = $order + 1;
-				$mongo->faqs->insert($faq);
+				$mongo->faqs->insertOne($faq);
 			}
 
 			$faq['_id'] = (string) $faq['_id'];

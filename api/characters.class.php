@@ -154,7 +154,7 @@
 				'game' => true,
 				'library' => true
 			]]);
-			$characters = array();
+			$characters = [];
 			foreach ($rCharacters as $character) {
 				$character['label'] = printReady($character['label']);
 				$character['system'] = [
@@ -182,7 +182,8 @@
 						'charType' => true,
 						'system' => true,
 						'user' => true
-					]]);
+					]]
+				);
 				foreach ($libraryItems as $item) {
 					$item['label'] = printReady($item['label']);
 					$item['system'] = [
@@ -381,7 +382,7 @@
 				['projection' => ['library' => true]]
 			);
 			if ($currentState) {
-				$mongo->characters->update(
+				$mongo->characters->updateOne(
 					['_id' => $currentState['_id']],
 					['$set' => ['library.inLibrary' => !$currentState['library']['inLibrary']]]
 				);
@@ -470,8 +471,8 @@
 			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
 
 			if ($systems->verifySystem($system)) {
-				$search = ['searchName' => new MongoDB\BSON\Regex("/{$searchName}/")];
-				$items = array();
+				$search = ['searchName' => new MongoDB\BSON\Regex($searchName)];
+				$items = [];
 				if ($systemOnly) {
 					$search['systems'] = $system;
 					$rCIL = $mongo->charAutocomplete->find(
@@ -627,9 +628,9 @@
 					'searchName' => $searchName,
 					'type' => $type,
 					'userDefined' => true,
-					'systems' => array()
+					'systems' => []
 				];
-				$mongo->charAutocomplete->insert($ac);
+				$mongo->charAutocomplete->insertOne($ac);
 			}
 
 			return $ac;

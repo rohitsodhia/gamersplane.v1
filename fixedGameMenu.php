@@ -95,7 +95,7 @@
 					'sort' => ['user.username' => 1, 'label' => 1]
 				]
 			);
-			if ($characters && $pathAction != 'characters') {
+			if (count($characters->toArray()) && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
 			<a href="" class="menuLink">Characters</a>

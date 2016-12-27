@@ -1,16 +1,19 @@
-<?
+<?php
 	if ($loggedIn) { header('Location: /'); exit; }
 	$addExternalJSFiles[] = 'https://www.google.com/recaptcha/api.js';
+	if ($formErrors->getErrors('register')) {
+		$errors = $formErrors->getErrors('register');
+	}
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">Registration</h1>
 
 		<form method="post" action="/register/process/register/">
-<?	if ($formErrors->getErrors('addFAQ')) { ?>
+<?php	if ($formErrors->getErrors('register')) { ?>
 			<div class="alertBox_error">
 				There was a problem with your registration. Please see the errors below and try again.
 			</div>
-<? } ?>
+<?php	} ?>
 			<div id="resendActivation" class="tr">If you've previously registered but never received your activation mail, try <a href="/register/resendActivation/">resending your activation email</a>.</div>
 			<div class="tr inputTR">
 				<label class="textLabel">Username</label>
@@ -63,11 +66,13 @@
 				<div class="alert"></div>
 			</div>
 
+<?php	if ($_SERVER['HTTP_HOST'] != 'gamersplane.local') { ?>
 			<div id="recaptchaDiv" class="tr">
 				<h2>Prove to me you're real!</h2>
 				<div class="g-recaptcha" data-sitekey="6LcT8gsTAAAAALlRVGdtM9iansESdnIdeCUIwoqG"></div>
-				<div class="alert <?=(isset($errors['captchaFailed'])?'showDiv':'hideDiv')?>">reCaptch failed!</div>
+				<div class="alert <?=(isset($errors['captchaFailed']) ? 'showDiv' : 'hideDiv')?>">reCaptch failed!</div>
 			</div>
+<?php	} ?>
 
 			<input type="hidden" name="gender" value="Pick One">
 
@@ -75,4 +80,4 @@
 				<button id="submit" type="submit" name="submit" tabindex="<?=tabOrder(2)?>" class="fancyButton">Submit</button>
 			</div>
 		</form>
-<? require_once(FILEROOT.'/footer.php'); ?>
+<?php	require_once(FILEROOT . '/footer.php'); ?>

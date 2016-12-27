@@ -35,10 +35,7 @@
 				$search = ['sender.userID' => $currentUser->userID];
 			}
 			$page = isset($_POST['page']) && intval($_POST['page']) > 0 ? intval($_POST['page']) : 1;
-			$numPMs = count($mongo->pms->find(
-				$search,
-				['projection' => ['_id' => 1]]
-			));
+			$numPMs = $mongo->pms->count($search);
 			$pmsResults = $mongo->pms->find(
 				$search,
 				[
@@ -124,7 +121,7 @@
 							'replyTo' => $pm['replyTo'],
 						];
 					}
-					if (is_array($history)) {
+					if (sizeof($history)) {
 						foreach ($history as $pmID) {
 							$hPM = $mongo->pms->findOne(
 								[
@@ -190,7 +187,7 @@
 						$history = array_merge($history, $parent['history']);
 					}
 				}
-				$mongo->pms->insert([
+				$mongo->pms->insertOne([
 					'pmID' => mongo_getNextSequence('pmID'),
 					'sender' => $sender,
 					'recipients' => [$recipient],
