@@ -357,8 +357,8 @@
 
 				$currentUser->updateUsermeta('isGM', true);
 
-				$lfgRecips = $mongo->users->find(['lfg' => $details['system']], ['projection' => ['userID' => true]]);
-				if (count($lfgRecips->toArray())) {
+				$lfgRecips = $mongo->users->find(['lfg' => $details['system']], ['projection' => ['userID' => true]])->toArray();
+				if (count($lfgRecips)) {
 					$userIDs = [];
 					foreach ($lfgRecips as $recip) {
 						$userIDs[] = $recip['userID'];

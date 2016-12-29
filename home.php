@@ -39,11 +39,11 @@
 				'sort' => ['start' => -1],
 				'limit' => 3
 			]
-		);
+		)->toArray();
 ?>
-				<div class="loggedIn<?=count($usersGames->toArray()) ? '' : ' noGames'?>">
+				<div class="loggedIn<?=count($usersGames) ? '' : ' noGames'?>">
 					<h2>Your Games</h2>
-<?php		if (count($usersGames->toArray())) { ?>
+<?php		if (count($usersGames)) { ?>
 					<div class="games">
 <?php
 			foreach ($usersGames as $gameInfo) {

@@ -13,8 +13,8 @@
 			'title' => true,
 			'players' => true
 		]]
-	);
-	if (count($pending->toArray())) {
+	)->toArray();
+	if (count($pending)) {
 		$pendingIDs = [];
 		$pendingPlayers = [];
 		$pendingChars = [];
