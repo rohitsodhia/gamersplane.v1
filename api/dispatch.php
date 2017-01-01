@@ -11,8 +11,8 @@
 
 	require('../includes/connect.php');
 	define('PVAR', getenv('PVAR'));
-	define('PAGINATE_PER_PAGE', getenv('PAGINATE_PER_PAGE'));
-	define('HERITAGE_PAD', getenv('HERITAGE_PAD'));
+	define('PAGINATE_PER_PAGE', (int) getenv('PAGINATE_PER_PAGE'));
+	define('HERITAGE_PAD', (int) getenv('HERITAGE_PAD'));
 	require('functions.php');
 	define('FILEROOT', getenv('APP_FILEROOT'));
 	define('APIROOT', getenv('APP_API_FILEROOT'));
