@@ -1,6 +1,14 @@
 <?
 	require_once('vendor/autoload.php');
 
+	$envs = explode("\n", file_get_contents('.env'));
+	foreach ($envs as $env) {
+		$env = trim($env);
+		if (strlen($env)) {
+			putenv($env);
+		}
+	}
+
 	require_once('connect.php');
 	require_once('variables.php');
 //	require_once('classes.php');

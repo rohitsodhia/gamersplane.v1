@@ -3,9 +3,10 @@
 
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 
-	define('STATE', 'standard');
-	// define('STATE', 'maintenance');
-	// define('STATE', 'moving');
+	/*
+	Possible states: standard, maintenance, moving
+	*/
+	define('STATE', getenv('APP_STATE'));
 
 	if (sizeof(explode('.', $_SERVER['HTTP_HOST'])) != 2) {
 		include('subdomains.php');

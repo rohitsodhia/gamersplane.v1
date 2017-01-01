@@ -1,8 +1,8 @@
 <?
-	$dbHostname = 'localhost';
-	$dbUsername = 'gamersplane';
-	$dbPassword = 'Ep2NXZ0Atv6MThNtsa2h';
-	$dbName     = 'gamersplane';
+	$dbHostname = getenv('MYSQL_HOST');
+	$dbUsername = getenv('MYSQL_USERNAME');
+	$dbPassword = getenv('MYSQL_PASSWORD');
+	$dbName     = getenv('MYSQL_DATABASE');
 
 	$mysql = new PDO("mysql:host=$dbHostname;dbname=$dbName", $dbUsername, $dbPassword);
 	$mysql->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

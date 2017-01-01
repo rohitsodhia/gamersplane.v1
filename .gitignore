@@ -1,5 +1,4 @@
-._htaccess
-_backup/
+# File types
 *.ods
 *.csv
 *.sh
@@ -11,8 +10,15 @@ _backup/
 *.pdf
 *.sql
 *.zip
+.env
+
+# Specific files
+._htaccess
+_backup/
 Thumbs.db
 test*.php
+
+# Folders
 blog/
 characters/avatars/
 images/links/

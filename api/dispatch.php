@@ -1,13 +1,21 @@
 <?php
 	require_once('../vendor/autoload.php');
 
+	$envs = explode("\n", file_get_contents('../.env'));
+	foreach ($envs as $env) {
+		$env = trim($env);
+		if (strlen($env)) {
+			putenv($env);
+		}
+	}
+
 	require('../includes/connect.php');
-	define('PVAR', 'xU3Fh9XLo21mlHuk6H31');
-	define('PAGINATE_PER_PAGE', 20);
-	define('HERITAGE_PAD', 4);
+	define('PVAR', getenv('PVAR'));
+	define('PAGINATE_PER_PAGE', getenv('PAGINATE_PER_PAGE'));
+	define('HERITAGE_PAD', getenv('HERITAGE_PAD'));
 	require('functions.php');
-	define('APIROOT', $_SERVER['DOCUMENT_ROOT']);
-	define('FILEROOT', $_SERVER['DOCUMENT_ROOT'].'/..');
+	define('FILEROOT', getenv('APP_FILEROOT'));
+	define('APIROOT', getenv('APP_API_FILEROOT'));
 	$permissionTypes = [
 		'read' => 'Read',
 		'write' => 'Write',
@@ -19,9 +27,7 @@
 		'addDraws' => 'Add Draws',
 		'moderate' => 'Moderate'
 	];
-	$ext = explode('.', $_SERVER['HTTP_HOST']);
-	$ext = end($ext);
-	define('COOKIE_DOMAIN', '.gamersplane.'.$ext);
+	define('COOKIE_DOMAIN', '.'.getenv('APP_URL'));
 	startSession();
 	require('../includes/User.class.php');
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
