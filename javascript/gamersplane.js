@@ -5,14 +5,15 @@ function hex(x) {
 $.cssHooks.backgroundColor = {
     get: function(elem) {
 		var bg;
-        if (elem.currentStyle)
+        if (elem.currentStyle) {
             bg = elem.currentStyle.backgroundColor;
-        else if (window.getComputedStyle)
-            bg = document.defaultView.getComputedStyle(elem,
-                null).getPropertyValue("background-color");
-        if (bg.search("rgb") == -1)
+		}
+        else if (window.getComputedStyle) {
+            bg = document.defaultView.getComputedStyle(elem, null).getPropertyValue("background-color");
+		}
+        if (bg.search("rgb") == -1) {
             return bg;
-        else {
+        } else {
             bg = bg.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
             hexString = /*"#" + */hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
             return hexString.toUpperCase();

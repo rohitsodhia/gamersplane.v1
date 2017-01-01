@@ -7,7 +7,9 @@ $(function () {
 		$('#page_login form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
 			beforeSubmit: function () {
 				$('form input[type="text"], form input[type="password"]').each(function () {
-					if ($(this).val().length == 0) return false;
+					if ($(this).val().length === 0) {
+						return false;
+					}
 				});
 
 				return true;
@@ -16,7 +18,9 @@ $(function () {
 				if (data == '1') {
 //					parent.$.colorbox.close();
 					parent.window.location.reload();
-				} else parent.window.location.href = data;
+				} else {
+					parent.window.location.href = data;
+				}
 			}
 		});
 	}
