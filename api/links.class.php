@@ -63,7 +63,7 @@
 			}
 			$links = [];
 			foreach ($linksResults as $rawLink) {
-				$link['_id'] = $rawLink['_id']->{'$id'};
+				$link['_id'] = (string) $rawLink['_id'];
 				$link['title'] = $rawLink['title'];
 				$link['url'] = $rawLink['url'];
 				$link['level'] = $rawLink['level'];

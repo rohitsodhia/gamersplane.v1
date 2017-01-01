@@ -109,7 +109,7 @@
 			return $this->ac;
 		}
 
-		public function setInitiative($value) {
+		public function setInitiative($key, $value) {
 			$this->initiative = intval($value);
 		}
 
@@ -342,7 +342,7 @@
 				$this->setHP('total', $data['hp']['total']);
 				$this->setHP('temp', $data['hp']['temp']);
 				$this->setAC(null, $data['ac']);
-				$this->setInitiative($data['initiative']);
+				$this->setInitiative(null, $data['initiative']);
 				$this->setSpeed($data['speed']);
 
 				$this->clearVar('skills');
