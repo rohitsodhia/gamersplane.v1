@@ -1,4 +1,4 @@
-<?
+<?php
 	define('FILEROOT', getenv('APP_FILEROOT'));
 	define('API_HOST', getenv('APP_API_URL'));
 

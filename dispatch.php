@@ -1,4 +1,4 @@
-<?
+<?php
 	require('includes/requires.php');
 
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
@@ -8,7 +8,7 @@
 	*/
 	define('STATE', getenv('APP_STATE'));
 
-	if (sizeof(explode('.', $_SERVER['HTTP_HOST'])) != 2) {
+	if (sizeof(explode('.', getenv('APP_URL'))) != 2) {
 		include('subdomains.php');
 		exit;
 	}
@@ -16,7 +16,9 @@
 	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 //	echo $reqPath;
 
-	if (substr($reqPath, -1) == '/') $reqPath = substr($reqPath, 0, -1);
+	if (substr($reqPath, -1) == '/') {
+		$reqPath = substr($reqPath, 0, -1);
+	}
 	$reqPathParts = explode('/', $reqPath);
 	$pathOptions = array_slice(explode('/', $reqPath), 1);
 	$pathAction = $pathOptions[0];
