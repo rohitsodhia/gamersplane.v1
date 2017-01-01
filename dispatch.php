@@ -8,12 +8,12 @@
 	*/
 	define('STATE', getenv('APP_STATE'));
 
-	if (sizeof(explode('.', getenv('APP_URL'))) != 2) {
+	if (sizeof(explode('.', $_SERVER['HTTP_HOST'])) != sizeof(explode('.', getenv('APP_URL')))) {
 		include('subdomains.php');
 		exit;
 	}
 
-	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
+	$reqPath = str_replace('?' . $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 //	echo $reqPath;
 
 	if (substr($reqPath, -1) == '/') {
