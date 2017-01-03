@@ -149,7 +149,9 @@
 				if (!$myGames && !$showFullGames && $game['playerCount'] == $game['numPlayers']) {
 					continue;
 				}
-				$game['start'] = getMongoSeconds($game['start']);
+				if ($game['start']) {
+					$game['start'] = getMongoSeconds($game['start']);
+				}
 				unset($game['players']);
 				$games[] = $game;
 				$gms[] = $game['gm']['userID'];
