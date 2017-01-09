@@ -37,7 +37,7 @@
 				'type' => $type,
 				'deck' => [],
 				'position' => 1,
-				'lastShuffle' => new MongoDB\BSON\UTCDateTime(),
+				'lastShuffle' => genMongoDate(),
 				'permissions' => sizeof($addUsers) ? $addUsers : []
 			];
 			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
