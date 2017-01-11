@@ -45,5 +45,21 @@ mySettings = {
 		{separator:'---------------' },
 		{name:'Clean', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
 		{name:'Preview', className:"preview", call:'preview' }*/
+		{name:'Spoiler', openWith:'[spoiler="[![Tag]!]"]', closeWith:'[/spoiler]'},
 	]
-}
+};
+
+window.onload = function () {
+	var spoilers = document.getElementsByClassName('spoiler');
+	for (var count = 0; count < spoilers.length; count++) {
+		var element = spoilers[count];
+		element.addEventListener('click', function () {
+			console.log(1);
+			var classes = this.className.match(/\S+/g) || [],
+				index = classes.indexOf('closed');
+
+			index >= 0 ? classes.splice(index, 1) : classes.push('closed');
+			this.className = classes.join(' ');
+		});
+	}
+};

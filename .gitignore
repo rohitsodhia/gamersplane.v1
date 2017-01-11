@@ -7,10 +7,10 @@ _backup/
 *.psd
 *.ai
 *.doc
-*.css
 *.pdf
 *.sql
 *.zip
+styles/**/*.css
 Thumbs.db
 test*.php
 blog/

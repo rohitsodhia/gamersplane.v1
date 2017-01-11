@@ -81,7 +81,9 @@ function BBCode2Html($text) {
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
 //					 '/\[list\](.*?)\[\/list\]/ms',
 //					 '/\[\*\]\s?(.*?)\n/ms',
-					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms"
+					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
+					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
+					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
@@ -98,7 +100,9 @@ function BBCode2Html($text) {
 //					 '<ol start="\1">\2</ol>',
 //					 '<ul>\1</ul>',
 //					 '<li>\1</li>',
-					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>'
+					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
+					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler: \1</div><div class="hidden">\2</div></blockquote>',
+					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
