@@ -34,7 +34,7 @@
 								<label for="specialties" class="medText lrBuffer shiftRight font-kelt">Specialties</label>
 							</div>
 							<div class="tr">
-								<div id="specialties" ng-bind-html="character.specialties" class="medText lrBuffer"></div>
+								<div id="specialties" ng-bind-html="character.traits.specialties" class="medText lrBuffer"></div>
 							</div>
 						</div>
 						<div class="column">
@@ -42,7 +42,7 @@
 								<label for="features" class="medText lrBuffer shiftRight font-kelt">Distinctive Features</label>
 							</div>
 							<div class="tr">
-								<div id="features" ng-bind-html="character.features" class="medText lrBuffer"></div>
+								<div id="features" ng-bind-html="character.traits.features" class="medText lrBuffer"></div>
 							</div>
 						</div>
 					</div>

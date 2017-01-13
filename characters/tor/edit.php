@@ -34,7 +34,7 @@
 									<label for="specialties" class="medText lrBuffer shiftRight font-kelt">Specialties</label>
 								</div>
 								<div class="tr">
-									<textarea id="specialties" ng-model="character.specialties" class="medText lrBuffer"></textarea>
+									<textarea id="specialties" ng-model="character.traits.specialties" class="medText lrBuffer"></textarea>
 								</div>
 							</div>
 							<div class="column">
@@ -42,7 +42,7 @@
 									<label for="features" class="medText lrBuffer shiftRight font-kelt">Distinctive Features</label>
 								</div>
 								<div class="tr">
-									<textarea id="features" ng-model="character.features" class="medText lrBuffer"></textarea>
+									<textarea id="features" ng-model="character.traits.features" class="medText lrBuffer"></textarea>
 								</div>
 							</div>
 						</div>
