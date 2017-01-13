@@ -390,16 +390,21 @@ app.config(['$httpProvider', function ($httpProvider) {
 	this.confirmRetire = function (gameID) {
 		return $http.post(API_HOST + '/games/retire/', { 'gameID': gameID }).then(function (data) { return data.data; });
 	};
-}]).service('ACSearch', ['$http', function ($http) {
+}]).service('ACSearch', ['$http', '$q', function ($http, $q) {
 	this.cil = function (type, search, system, systemOnly) {
-		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean')
+		if (search.length === 0) {
+			return $q(function (resolve, reject) { resolve([]); })
+		}
+		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') {
 			systemOnly = false;
+		}
 		return $http.post(API_HOST + '/characters/cilSearch/', { 'type': type, 'search': search, 'system': system, 'systemOnly': systemOnly }).then(function (data) {
 			data = data.data;
-			if (data.items.length)
+			if (data.items.length) {
 				return data.items;
-			else
+			} else {
 				return [];
+			}
 		});
 	};
 	this.users = function (search, notSelf) {

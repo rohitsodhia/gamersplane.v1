@@ -6,11 +6,11 @@
 *.psd
 *.ai
 *.doc
-*.css
 *.pdf
 *.sql
 *.zip
 .env
+styles/**/*.css
 
 # Specific files
 ._htaccess

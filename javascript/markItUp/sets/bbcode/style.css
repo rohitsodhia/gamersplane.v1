@@ -38,6 +38,10 @@
 	width: 32px;
 	background-image:url(images/ooc.png);
 }
+.markItUp .markItUpButton12 a	{
+	width: 44px;
+	background-image:url(images/spoiler.png);
+}
 /*.markItUp .markItUpButton7 a	{
 	background-image:url(images/fonts.png);
 }
@@ -57,7 +61,7 @@
 .markItUp .markItUpButton12 a	{
 	background-image:url(images/code.png);
 }
-	
+
 .markItUp .clean a {
 	background-image:url(images/clean.png);
 }

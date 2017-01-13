@@ -181,7 +181,7 @@
 						</div>
 					</div>
 					<div id="armor" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Armor <a href="" ng-click="addItem('Armor')">[ Add Armor ]</a></h2>
+						<h2 class="headerbar hbDark" skew-element>Armor <a href="" ng-click="addItem('armor')">[ Add Armor ]</a></h2>
 						<div hb-margined>
 							<div ng-repeat="armor in character.armor" class="armor" ng-class="{ 'first': $first }">
 								<div class="labelTR">

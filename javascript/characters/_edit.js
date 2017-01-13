@@ -138,6 +138,7 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 		if (keyParts.length == 2) {
 			$scope.character[keyParts[0]][keyParts[1]].push(copyObject(blanks[key]));
 		} else {
+			console.log(key);
 			$scope.character[key].push(copyObject(blanks[key]));
 		}
 	};
