@@ -2,7 +2,18 @@
 	class afmbeCharacter extends Character {
 		const SYSTEM = 'afmbe';
 
-		protected $stats = array('str' => '', 'dex' => '', 'con' => '', 'int' => '', 'per' => '', 'wil' => '', 'lp' => '', 'end' => '', 'spd' => '', 'ess' => '');
+		protected $stats = array(
+			'str' => '',
+			'dex' => '',
+			'con' => '',
+			'int' => '',
+			'per' => '',
+			'wil' => '',
+			'lp' => '',
+			'end' => '',
+			'spd' => '',
+			'ess' => ''
+		);
 		protected $qualities = '';
 		protected $drawbacks = '';
 		protected $skills = '';
@@ -12,15 +23,24 @@
 
 		public function setStat($stat, $value = '') {
 			if (in_array($stat, array_keys($this->stats))) {
-				$value = intval($value);
-				if ($value > 0) $this->stats[$stat] = $value;
-			} else return false;
+				$value = (int) $value;
+				if ($value > 0) {
+					$this->stats[$stat] = $value;
+				}
+			} else {
+				return false;
+			}
 		}
-		
+
 		public function getStat($stat = null) {
-			if ($stat == null) return $this->stats;
-			elseif (in_array($stat, array_keys($this->stats))) return $this->stats[$stat];
-			else return false;
+			$stats = (array) $this->stats;
+			if ($stat == null) {
+				return $this->stats;
+			} elseif (in_array($stat, array_keys($stats))) {
+				return $stats[$stat];
+			} else {
+				return false;
+			}
 		}
 
 		public function setQualities($qualities) {
@@ -76,7 +96,9 @@
 
 			if (!$bypass) {
 				$this->setName($data['name']);
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['stats'] as $stat => $value) {
+					$this->setStat($stat, $value);
+				}
 				$this->setQualities($data['qualities']);
 				$this->setDrawbacks($data['drawbacks']);
 				$this->setSkills($data['skills']);

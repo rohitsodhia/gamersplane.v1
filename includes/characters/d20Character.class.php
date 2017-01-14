@@ -57,7 +57,7 @@
 		}
 
 		public function getLevel() {
-			return array_sum($this->classes);
+			return array_sum((array) $this->classes);
 		}
 
 		public function setStat($stat, $value = 10) {
