@@ -134,7 +134,7 @@
 			}
 		}
 
-		public function setSpeed($value) {
+		public function setSpeed($value, $hold = null) {
 			$value = (int) $value;
 			if ($value >= 0) {
 				$this->speed = $value;

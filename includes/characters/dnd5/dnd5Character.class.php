@@ -68,7 +68,7 @@
 		}
 
 		public function setInspiration($value) {
-			$this->inspiration = intval($value);
+			$this->inspiration = (int) $value;
 		}
 
 		public function getInspiration() {
@@ -76,7 +76,7 @@
 		}
 
 		public function setProfBonus($value) {
-			$this->profBonus = intval($value);
+			$this->profBonus = (int) $value;
 		}
 
 		public function getProfBonus() {
@@ -102,7 +102,7 @@
 		}
 
 		public function setAC($key, $value) {
-			$this->ac = intval($value);
+			$this->ac = (int) $value;
 		}
 
 		public function getAC($key = null) {
@@ -110,15 +110,15 @@
 		}
 
 		public function setInitiative($key, $value) {
-			$this->initiative = intval($value);
+			$this->initiative = (int) $value;
 		}
 
 		public function getInitiative($key = null) {
 			return $this->initiative;
 		}
 
-		public function setSpeed($value) {
-			$this->speed = intval($value);
+		public function setSpeed($value, $hold = null) {
+			$this->speed = (int) $value;
 		}
 
 		public function getSpeed($key = null) {
@@ -220,7 +220,7 @@
 		}
 
 		public function displayWeapons() {
-			if (is_array($this->weapons)) {
+			if (sizeof($this->weapons)) {
 				foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
