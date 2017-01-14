@@ -8,7 +8,7 @@
 					<input type="text" name="race" value="<?=$this->getRace()?>" class="medText lrBuffer">
 					<input id="size" type="text" name="size" value="<?=$this->getSize()?>" class="lrBuffer">
 				</div>
-				
+
 				<div class="tr labelTR">
 					<label id="label_classes" class="medText lrBuffer borderBox shiftRight">Class(es)</label>
 					<label id="label_levels" class="shortNum lrBuffer borderBox">Level(s)</label>
@@ -42,7 +42,7 @@
 <?	} ?>
 					</select>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="stats">
 <?
@@ -56,7 +56,7 @@
 						</div>
 <?	} ?>
 					</div>
-					
+
 					<div id="savingThrows">
 						<div class="tr labelTR">
 							<div class="fillerBlock cell">&nbsp;</div>
@@ -86,7 +86,7 @@
 						</div>
 <?	} ?>
 					</div>
-				
+
 					<div id="hp">
 						<label class="leftLabel textLabel">Total HP</label>
 						<input type="text" name="hp[total]" value="<?=$this->getHP('total')?>" class="medNum">
@@ -94,7 +94,7 @@
 						<input id="damageReduction" type="text" name="damageReduction" value="<?=$this->getDamageReduction()?>" class="medText">
 					</div>
 				</div>
-				
+
 				<div id="ac">
 					<div class="tr labelTR">
 						<label class="lrBuffer">Total AC</label>
@@ -121,7 +121,7 @@
 						<input type="text" name="ac[misc]" value="<?=$this->getAC('misc')?>" class="acComponents lrBuffer">
 					</div>
 				</div>
-				
+
 				<div id="combatBonuses" class="clearFix">
 					<div id="combatBonuses">
 						<div class="tr labelTR">
@@ -178,7 +178,7 @@
 							<input id="ranged_misc" type="text" name="attackBonus[misc][ranged]" value="<?=$this->getAttackBonus('misc', 'ranged')?>" class="lrBuffer">
 						</div>
 					</div>
-				
+
 					<div id="combatManuvers">
 						<div id="cmb">
 							<div class="tr labelTR">
@@ -198,7 +198,7 @@
 								<input type="text" name="cmb[misc]" value="<?=$this->getCMB('misc')?>">
 							</div>
 						</div>
-						
+
 						<div id="cmd">
 							<div class="tr labelTR">
 								<div class="medNum">&nbsp;</div>
@@ -222,7 +222,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="skills" class="floatLeft" data-type="skill">
 						<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
@@ -246,7 +246,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="weapons" class="floatLeft" data-type="weapon">
 						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="" class="addItem">[ Add Weapon ]</a></h2>
@@ -261,13 +261,13 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="items">
 						<h2 class="headerbar hbDark">Items</h2>
 						<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
 					</div>
-					
+
 					<div id="spells">
 						<h2 class="headerbar hbDark">Spells</h2>
 						<textarea name="spells" class="hbdMargined"><?=$this->getSpells()?></textarea>

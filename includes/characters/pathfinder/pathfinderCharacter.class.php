@@ -5,9 +5,11 @@
 		protected $race = '';
 		protected $size = 0;
 		protected $alignment = 'tn';
-		protected $saves = array ('fort' => array('base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0),
-								  'ref' => array('base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0),
-								  'will' => array('base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0));
+		protected $saves = array (
+			'fort' => array('base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0),
+			'ref' => array('base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0),
+		  	'will' => array('base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0)
+		);
 		protected $ac = array('armor' => 0, 'shield' => 0, 'dex' => 0, 'class' => 0, 'natural' => 0, 'deflection' => 0, 'misc' => 0);
 		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
 		protected $damageReduction = '';
@@ -27,20 +29,22 @@
 		}
 
 		public function setSize($value) {
-			$value = intval($value);
+			$value = (int) $value;
 			$this->size = $value;
 		}
 
 		public function getSize($showSign = false) {
 			$size = $this->size;
-			if ($showSign) 
+			if ($showSign) {
 				$size = showSign($size);
+			}
 			return $size;
 		}
 
 		public function setAlignment($value) {
-			if ($value != null && pathfinder_consts::getAlignments($value)) 
+			if ($value != null && pathfinder_consts::getAlignments($value)) {
 				$this->alignment = $value;
+			}
 		}
 
 		public function getAlignment() {
@@ -48,14 +52,15 @@
 		}
 
 		public function getAC($key = null) {
-			if ($key == null) 
+			if ($key == null) {
 				return array_merge(array('total' => array_sum($this->ac) + 10 + $this->size), $this->ac);
-			elseif (array_key_exists($key, $this->ac)) 
+			} elseif (array_key_exists($key, $this->ac)) {
 				return $this->ac[$key];
-			elseif ($key == 'total') 
-				return array_sum($this->ac) + 10 + $this->size;
-			else 
+			} elseif ($key == 'total') {
+				return array_sum((array) $this->ac) + 10 + $this->size;
+			} else {
 				return false;
+			}
 		}
 
 		public function setDamageReduction($value) {
@@ -67,67 +72,78 @@
 		}
 
 		public function getAttackBonus($key = null, $type = null) {
-			if ($key == null) 
-				return $this->attackBonus;
-			elseif ($key == 'total' && $type != null) {
-				$total = $this->attackBonus['base'];
-				foreach ($this->attackBonus as $value) {
-					if (is_array($value) && is_numeric($value[$type])) 
-						$total += $value[$type];
-					elseif (is_numeric($value[$type])) 
+			$attackBonus = (array) $this->attackBonus;
+			if ($key == null) {
+				return $attackBonus;
+			} elseif ($key == 'total' && $type != null) {
+				$total = $attackBonus->base;
+				foreach ($attackBonus as $value) {
+					if (is_array($value) && is_numeric($value->$type)) {
+						$total += $value->$type;
+					} elseif (is_numeric($value[$type])) {
 						$total += $value;
+					}
 				}
-				$total += $this->getStatMod($this->attackBonus['stat'][$type], false);
+				$total += $this->getStatMod($attackBonus->stat->$type, false);
 				$total += $this->size;
 				return $total;
-			} elseif (array_key_exists($key, $this->attackBonus)) {
-				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) 
-					return $this->attackBonus[$key][$type];
-				elseif (!is_array($this->attackBonus[$key])) 
-					return $this->attackBonus[$key];
-				else 
+			} elseif (array_key_exists($key, $attackBonus)) {
+				if (is_array($attackBonus->$key) && array_key_exists($type, $attackBonus->$key)) {
+					var_dump($attackBonus->$key->$type); exit;
+					return $attackBonus->$key->$type;
+				} elseif (!is_array($attackBonus->$key)) {
+					return $attackBonus->$key;
+				} else {
 					return false;
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
 
 		public function setCMB($key, $value) {
-			if (array_key_exists($key, $this->cmb)) 
-				$this->cmb[$key] = intval($value);
-			else 
+			if (array_key_exists($key, $this->cmb)) {
+				$this->cmb[$key] = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getCMB($key = null) {
-			if (array_key_exists($key, $this->cmb)) 
+			if (array_key_exists($key, $this->cmb)) {
 				return $this->cmb[$key];
-			elseif ($key == null) 
+			} elseif ($key == null) {
 				return $this->cmb;
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setCMD($key, $value) {
-			if (array_key_exists($key, $this->cmd)) 
-				$this->cmd[$key] = intval($value);
-			else 
+			if (array_key_exists($key, $this->cmd)) {
+				$this->cmd[$key] = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getCMD($key = null) {
-			if (array_key_exists($key, $this->cmd)) 
+			if (array_key_exists($key, $this->cmd)) {
 				return $this->cmd[$key];
-			elseif ($key == null) 
+			} elseif ($key == null) {
 				return $this->cmd;
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
-			if ($skillInfo == null) 
+			if ($skillInfo == null) {
 				$skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
-			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) 
+			}
+			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) {
 				$statBonus = 0;
+			}
 ?>
 							<div class="skill item clearfix sumRow">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
@@ -145,15 +161,17 @@
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) 
-				foreach ($this->skills as $key => $skill) 
+			if (sizeof($this->skills)) {
+				foreach ($this->skills as $key => $skill)
 				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
-			else 
+			} else {
 				$this->skillEditFormat();
+			}
 		}
 
 		public function displaySkills() {
-			if ($this->skills) { foreach ($this->skills as $skill) {
+			if ($this->skills) {
+				foreach ($this->skills as $skill) {
 ?>
 					<div class="skill tr clearfix">
 						<span class="skill_name medText"><?=$skill['name']?></span>
@@ -163,31 +181,40 @@
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['misc'])?></span>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
+				}
+			} else {
+				echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
+			}
 		}
 
 		public function addWeapon($weapon) {
 			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) {
-				foreach ($weapon as $key => $value) 
+				foreach ($weapon as $key => $value) {
 					$weapon[$key] = sanitizeString($value);
+				}
 				$this->weapons[] = $weapon;
 			}
 		}
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			if (!is_array($this->weapons)) 
+			if (!is_array($this->weapons)) {
 				$this->weapons = (array) $this->weapons;
-			foreach ($this->weapons as $weaponInfo) 
+			}
+			foreach ($this->weapons as $weaponInfo) {
 				$this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) 
-				while ($weaponNum < $min) 
+			}
+			if ($weaponNum < $min) {
+				while ($weaponNum < $min) {
 					$this->weaponEditFormat($weaponNum++);
+				}
+			}
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
-			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) 
+			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) {
 				$weaponInfo = array();
+			}
 ?>
 						<div class="weapon">
 							<div class="tr labelTR">
@@ -224,6 +251,9 @@
 		}
 
 		public function displayWeapons() {
+			if (sizeof($this->weapons) == 0) {
+				return null;
+			}
 			foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
@@ -262,26 +292,32 @@
 
 		public function addArmor($armor) {
 			if (strlen($armor['name']) && strlen($armor['ac'])) {
-				foreach ($armor as $key => $value) 
+				foreach ($armor as $key => $value) {
 					$armor[$key] = sanitizeString($value);
+				}
 				$this->armor[] = $armor;
 			}
 		}
 
 		public function showArmorEdit($min) {
 			$armorNum = 0;
-			if (!is_array($this->armor)) 
+			if (!is_array($this->armor)) {
 				$this->armor = (array) $this->armor;
-			foreach ($this->armor as $armorInfo) 
+			}
+			foreach ($this->armor as $armorInfo) {
 				$this->armorEditFormat($armorNum++, $armorInfo);
-			if ($armorNum < $min) 
-				while ($armorNum < $min) 
+			}
+			if ($armorNum < $min) {
+				while ($armorNum < $min) {
 					$this->armorEditFormat($armorNum++);
+				}
+			}
 		}
 
 		public function armorEditFormat($armorNum, $armorInfo = array()) {
-			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) 
+			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) {
 				$armorInfo = array();
+			}
 ?>
 						<div class="armor<?=$armorNum == 1?' first':''?>">
 							<div class="tr labelTR armor_firstRow">
@@ -318,6 +354,9 @@
 		}
 
 		public function displayArmor() {
+			if (sizeof($this->armor) == 0) {
+				return null;
+			}
 			foreach ($this->armor as $armor) {
 ?>
 					<div class="armor">
@@ -377,17 +416,27 @@
 				$this->setName($data['name']);
 				$this->setRace($data['race']);
 				$this->setSize($data['size']);
-				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
+				foreach ($data['class'] as $key => $value) {
+					if (strlen($value) && (int) $data['level'][$key] > 0) {
+						$data['classes'][$value] = $data['level'][$key];
+					}
+				}
 				$this->setClasses($data['classes']);
 				$this->setAlignment($data['alignment']);
 
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['stats'] as $stat => $value) {
+					$this->setStat($stat, $value);
+				}
 				foreach ($data['saves'] as $save => $values) {
-					foreach ($values as $sub => $value) $this->setSave($save, $sub, $value);
+					foreach ($values as $sub => $value) {
+						$this->setSave($save, $sub, $value);
+					}
 				}
 				$this->setHP('total', $data['hp']['total']);
 				$this->setDamageReduction($data['damageReduction']);
-				foreach ($data['ac'] as $key => $value) $this->setAC($key, $value);
+				foreach ($data['ac'] as $key => $value) {
+					$this->setAC($key, $value);
+				}
 				$this->setInitiative('stat', $data['initiative']['stat']);
 				$this->setInitiative('misc', $data['initiative']['misc']);
 				$this->setAttackBonus('base', $data['attackBonus']['base']);
@@ -397,20 +446,28 @@
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					$this->addSkill($skillInfo);
-				} }
+				if (sizeof($data['skills'])) {
+					foreach ($data['skills'] as $skillInfo) {
+						$this->addSkill($skillInfo);
+					}
+				}
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
-					$this->addFeat($featInfo);
-				} }
+				if (sizeof($data['feats'])) {
+					foreach ($data['feats'] as $featInfo) {
+						$this->addFeat($featInfo);
+					}
+				}
 
 				$this->clearVar('weapons');
-				foreach ($data['weapons'] as $weapon) $this->addWeapon($weapon);
+				foreach ($data['weapons'] as $weapon) {
+					$this->addWeapon($weapon);
+				}
 
 				$this->clearVar('armor');
-				foreach ($data['armor'] as $armor) $this->addArmor($armor);
+				foreach ($data['armor'] as $armor) {
+					$this->addArmor($armor);
+				}
 
 				$this->setItems($data['items']);
 				$this->setSpells($data['spells']);
