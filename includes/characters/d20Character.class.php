@@ -22,7 +22,7 @@
 		protected $items = '';
 
 		public function setClass($class, $level = 1) {
-			$this->classes[sanitizeString($class)] = intval($level);
+			$this->classes[sanitizeString($class)] = (int) $level;
 		}
 
 		public function setClasses($classes) {
@@ -62,7 +62,7 @@
 
 		public function setStat($stat, $value = 10) {
 			if (array_key_exists($stat, $this->stats)) {
-				$value = intval($value);
+				$value = (int) $value;
 				if ($value > 0) {
 					$this->stats[$stat] = $value;
 				}
@@ -95,44 +95,47 @@
 
 		public function setAC($key, $value) {
 			if (array_key_exists($key, $this->ac)) {
-				$this->ac[$key] = intval($value);
+				$this->ac[$key] = (int) $value;
 			} else {
 				return false;
 			}
 		}
 
 		public function getAC($key = null) {
+			$ac = (array) $this->ac;
 			if ($key == null) {
-				return array_merge(array('total' => array_sum($this->ac) + 10), $this->ac);
-			} elseif (array_key_exists($key, $this->ac)) {
-				return $this->ac[$key];
+				return array_merge(array('total' => array_sum($ac) + 10), $ac);
+			} elseif (array_key_exists($key, $ac)) {
+				return $ac[$key];
 			} elseif ($key == 'total') {
-				return array_sum($this->ac) + 10;
+				return array_sum($ac) + 10;
 			} else {
 				return false;
 			}
 		}
 
 		public function setHP($key, $value) {
-			if (array_key_exists($key, $this->hp)) {
-				$this->hp[$key] = intval($value);
+			$hp = (array) $this->hp;
+			if (array_key_exists($key, $hp)) {
+				$hp[$key] = (int) $value;
 			} else {
 				return false;
 			}
 		}
 
 		public function getHP($key = null) {
-			if (array_key_exists($key, $this->hp)) {
-				return $this->hp[$key];
+			$hp = (array) $this->hp;
+			if (array_key_exists($key, $hp)) {
+				return $hp[$key];
 			} elseif ($key == null) {
-				return $this->hp;
+				return $hp;
 			} else {
 				return false;
 			}
 		}
 
 		public function setSpeed($value) {
-			$value = intval($value);
+			$value = (int) $value;
 			if ($value >= 0) {
 				$this->speed = $value;
 			} else {
@@ -149,7 +152,7 @@
 				if ($key == 'stat' && $value != null && d20Character_consts::getStatNames($value)) {
 					$this->saves[$save][$key] = $value;
 				} elseif ($key != 'stat') {
-					$this->saves[$save][$key] = intval($value);
+					$this->saves[$save][$key] = (int) $value;
 				} else {
 					return false;
 				}
@@ -188,7 +191,7 @@
 				if ($key == 'stat' && $value != null && d20Character_consts::getStatNames($value)) {
 					$this->initiative[$key] = $value;
 				} elseif ($key != 'stat') {
-					$this->initiative[$key] = intval($value);
+					$this->initiative[$key] = (int) $value;
 				} else {
 					return false;
 				}
@@ -279,17 +282,17 @@
 		}
 
 		public function setAttackBonus($key, $value, $type = null) {
-			if (array_key_exists($key, $this->attackBonus)) {
-				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) {
+			if (property_exists($this->attackBonus, $key)) {
+				if (is_object($this->attackBonus[$key]) && property_exists($this->attackBonus[$key], $type)) {
 					if ($key == 'stat' && $value != null && d20Character_consts::getStatNames($value)) {
 						$this->attackBonus[$key][$type] = $value;
 					} elseif ($key != 'stat') {
-						$this->attackBonus[$key][$type] = intval($value);
+						$this->attackBonus[$key][$type] = (int) $value;
 					} else {
 						return false;
 					}
-				} elseif (!is_array($this->attackBonus[$key])) {
-					$this->attackBonus[$key] = intval($value);
+				} elseif (!is_object($this->attackBonus[$key])) {
+					$this->attackBonus[$key] = (int) $value;
 				} else {
 					return false;
 				}
@@ -304,7 +307,7 @@
 			} elseif ($key == 'total' && $type != null) {
 				$total = 0;
 				foreach ($this->attackBonus as $value) {
-					if (is_array($value) && is_numeric($value[$type])) {
+					if (is_object($value) && is_numeric($value->$type)) {
 						$total += $value[$type];
 					} elseif (is_numeric($value[$type])) {
 						$total += $value;
@@ -312,10 +315,10 @@
 				}
 				$total += $this->getStatMod($this->attackBonus['stat'][$type], false);
 				return $total;
-			} elseif (array_key_exists($key, $this->attackBonus)) {
-				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) {
+			} elseif (property_exists($this->attackBonus, $key)) {
+				if (is_object($this->attackBonus->$key) && array_key_exists($type, $this->attackBonus->$key)) {
 					return $this->attackBonus[$key][$type];
-				} elseif (!is_array($this->attackBonus[$key])) {
+				} elseif (!is_object($this->attackBonus[$key])) {
 					return $this->attackBonus[$key];
 				} else {
 					return false;

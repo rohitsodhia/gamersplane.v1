@@ -9,24 +9,30 @@
 		protected $spells = '';
 
 		public function setSanity($key, $value) {
-			if (in_array($key, array_keys($this->sanity))) 
-				$this->sanity[$key] = intval($value);
-			else 
+			if (property_exists($this->sanity, $key)) {
+				$this->sanity->$key = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getSanity($key = null) {
-			if (in_array($key, array_keys($this->sanity))) 
-				return $this->sanity[$key];
-			elseif ($key == null) 
+			if (property_exists($this->sanity, $key)) {
+				return $this->sanity->$key;
+			} elseif ($key == null) {
 				return $this->sanity;
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
-			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) $statBonus = 0;
+			if ($skillInfo == null) {
+				$skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
+			}
+			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) {
+				$statBonus = 0;
+			}
 ?>
 							<div class="skill clearfix sumRow">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText placeholder dontAdd" data-placeholder="Skill Name">
@@ -34,7 +40,9 @@
 								<span class="skill_stat"><select name="skills[<?=$key?>][stat]" class="abilitySelect" data-stat-hold="<?=$skillInfo['stat']?>" data-total-ele="skillTotal_<?=$key?>">
 									<option value="n/a"<?=$skillInfo['stat'] == 'n/a'?' selected="selected"':''?>>N/A</option>
 <?
-	foreach (d20Character_consts::getStatNames() as $short => $stat) echo "								<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+	foreach (d20Character_consts::getStatNames() as $short => $stat) {
+		echo "								<option value=\"$short\"".($skillInfo['stat'] == $short?' selected="selected"':'').">".ucfirst($short)."</option>\n";
+	}
 ?>
 								</select></span>
 								<input type="text" name="skills[<?=$key?>][ranks]" value="<?=$skillInfo['ranks']?>" class="skill_ranks shortNum lrBuffer">
@@ -45,13 +53,18 @@
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
-			} } else $this->skillEditFormat();
+			if (sizeof($this->skills)) {
+				foreach ($this->skills as $key => $skill) {
+					$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
+				}
+			} else {
+				$this->skillEditFormat();
+			}
 		}
 
 		public function displaySkills() {
-			if ($this->skills) { foreach ($this->skills as $skill) {
+			if ($this->skills) {
+				foreach ($this->skills as $skill) {
 ?>
 					<div class="skill tr clearfix">
 						<span class="skill_name medText"><?=$skill['name']?></span>
@@ -61,27 +74,35 @@
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['misc'])?></span>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
+				}
+			} else {
+				echo "\t\t\t\t\t<p id=\"noSkills\">This character currently has no skills.</p>\n";
+			}
 		}
-		
+
 		public function addWeapon($weapon) {
 			if (strlen($weapon['name']) && strlen($weapon['ab']) && strlen($weapon['damage'])) {
-				foreach ($weapon as $key => $value) 
+				foreach ($weapon as $key => $value) {
 					$weapon[$key] = sanitizeString($value);
+				}
 				$this->weapons[] = $weapon;
 			}
 		}
 
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
-			foreach ($this->weapons as $weaponInfo) 
+			foreach ($this->weapons as $weaponInfo) {
 				$this->weaponEditFormat($weaponNum++, $weaponInfo);
-			if ($weaponNum < $min) while ($weaponNum < $min) 
+			}
+			if ($weaponNum < $min) while ($weaponNum < $min) {
 				$this->weaponEditFormat($weaponNum++);
+			}
 		}
 
 		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
-			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) $weaponInfo = array();
+			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) {
+				$weaponInfo = array();
+			}
 ?>
 						<div class="weapon">
 							<div class="tr labelTR">
@@ -118,6 +139,9 @@
 		}
 
 		public function displayWeapons() {
+			if (sizeof($this->weapons) === 0) {
+				return null;
+			}
 			foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
@@ -175,22 +199,28 @@
 
 			if (!$bypass) {
 				$this->setName($data['name']);
-				foreach ($data['class'] as $key => $value) 
-					if (strlen($value) && (int) $data['level'][$key] > 0) 
+				foreach ($data['class'] as $key => $value) {
+					if (strlen($value) && (int) $data['level'][$key] > 0) {
 						$data['classes'][$value] = $data['level'][$key];
+					}
+				}
 				$this->setClasses($data['classes']);
 
-				foreach ($data['stats'] as $stat => $value) 
+				foreach ($data['stats'] as $stat => $value) {
 					$this->setStat($stat, $value);
-				foreach ($data['saves'] as $save => $values) 
-					foreach ($values as $sub => $value) 
+				}
+				foreach ($data['saves'] as $save => $values) {
+					foreach ($values as $sub => $value) {
 						$this->setSave($save, $sub, $value);
+					}
+				}
 				$this->setHP('total', $data['hp']['total']);
 				$this->setHP('subdual', $data['hp']['subdual']);
 				$this->setSanity('max', $data['sanity']['max']);
 				$this->setSanity('current', $data['sanity']['current']);
-				foreach ($data['ac'] as $key => $value) 
+				foreach ($data['ac'] as $key => $value) {
 					$this->setAC($key, $value);
+				}
 				$this->setSpeed($data['speed']);
 				$this->setInitiative('stat', $data['initiative']['stat']);
 				$this->setInitiative('misc', $data['initiative']['misc']);
@@ -201,18 +231,23 @@
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) 
-					foreach ($data['skills'] as $skillInfo) 
+				if (sizeof($data['skills'])) {
+					foreach ($data['skills'] as $skillInfo) {
 						$this->addSkill($skillInfo);
+					}
+				}
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) 
-					foreach ($data['feats'] as $featInfo) 
+				if (sizeof($data['feats'])) {
+					foreach ($data['feats'] as $featInfo) {
 						$this->addFeat($featInfo);
+					}
+				}
 
 				$this->clearVar('weapons');
-				foreach ($data['weapons'] as $weapon) 
+				foreach ($data['weapons'] as $weapon) {
 					$this->addWeapon($weapon);
+				}
 
 				$this->setItems($data['items']);
 				$this->setSpells($data['spells']);
