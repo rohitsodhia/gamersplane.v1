@@ -21,8 +21,9 @@ controllers.controller('editCharacter_numenera', ['$scope', '$timeout', 'Current
 	$scope.cycleValues = function (field, attrObj, list) {
 		var cur = cycleVars[list].indexOf(attrObj[field]),
 			next = 0;
-		if (cur != cycleVars[list].length - 1)
+		if (cur != cycleVars[list].length - 1) {
 			next = cur + 1;
+		}
 		attrObj[field] = cycleVars[list][next];
 	};
 }]);

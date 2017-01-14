@@ -2,31 +2,36 @@
 	class fateCharacter extends Character {
 		const SYSTEM = 'fate';
 
-		protected $fatePoints = array('current' => 3, 'refresh' => 0);
+		protected $fatePoints = ['current' => 3, 'refresh' => 0];
 		protected $highConcept = '';
 		protected $trouble = '';
-		protected $aspects = array();
-		protected $skills = array();
+		protected $aspects = [];
+		protected $skills = [];
 		protected $extras = '';
-		protected $stunts = array();
+		protected $stunts = [];
 		protected $maxStress = 4;
-		protected $stresses = array('physical' => array(1 => 0, 0), 'mental' => array(1 => 0, 0));
+		protected $stresses = [
+			'physical' => [1 => 0, 0],
+			'mental' => [1 => 0, 0]
+		];
 		protected $consequences;
 
 		public function setFatePoints($key, $value) {
-			if (array_key_exists($key, $this->fatePoints)) 
-				$this->fatePoints[$key] = intval($value);
-			else 
+			if (property_exists($this->fatePoints, $key)) {
+				$this->fatePoints[$key] = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getFatePoints($key = null) {
-			if ($key == null) 
+			if ($key == null) {
 				return $this->fatePoints;
-			elseif (array_key_exists($key, $this->fatePoints)) 
+			} elseif (property_exists($this->fatePoints, $key)) {
 				return $this->fatePoints[$key];
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setHighConcept($highConcept) {
@@ -46,8 +51,9 @@
 		}
 
 		public function addAspect($aspect) {
-			if (strlen($aspect)) 
+			if (strlen($aspect)) {
 				$this->aspects[] = sanitizeString($aspect);
+			}
 		}
 
 		public function aspectEditFormat($key = 1, $aspect = null) {
@@ -60,28 +66,36 @@
 		}
 
 		public function showAspectsEdit() {
-			if (sizeof($this->aspects)) { foreach ($this->aspects as $key => $aspect) {
-				$this->aspectEditFormat($key, $aspect);
-			} } else $this->aspectEditFormat();
+			if (sizeof($this->aspects)) {
+				foreach ($this->aspects as $key => $aspect) {
+					$this->aspectEditFormat($key, $aspect);
+				}
+			} else {
+				$this->aspectEditFormat();
+			}
 		}
 
 		public function displayAspects() {
-			if ($this->aspects) { foreach ($this->aspects as $aspect) {
+			if ($this->aspects) {
+				foreach ($this->aspects as $aspect) {
 ?>
 								<div class="aspect"><?=$aspect?></div>
 <?
-			} }
+				}
+			}
 		}
 
 		public function addSkill($skill) {
 			if (strlen($skill['name'])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[] = array('name' => sanitizeString($skill['name']), 'rating' => intval($skill['rating']));
+				$this->skills[] = ['name' => sanitizeString($skill['name']), 'rating' => (int) $skill['rating']];
 			}
 		}
 
 		public function skillEditFormat($key = 0, $skillInfo = null) {
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'rating' => 0);
+			if ($skillInfo == null) {
+				$skillInfo = ['name' => '', 'rating' => 0];
+			}
 ?>
 									<div class="skill tr clearfix">
 										<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="name placeholder width4" data-placeholder="Skill Name">
@@ -96,17 +110,23 @@
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skillInfo) {
-				$this->skillEditFormat($key, $skillInfo);
-			} } else $this->skillEditFormat();
+			if (sizeof($this->skills)) {
+				foreach ($this->skills as $key => $skillInfo) {
+					$this->skillEditFormat($key, $skillInfo);
+				}
+			} else {
+				$this->skillEditFormat();
+			}
 		}
 
 		public function displaySkills() {
-			if ($this->skills) { foreach ($this->skills as $skill) {
+			if ($this->skills) {
+				foreach ($this->skills as $skill) {
 ?>
 								<div class="skill clearfix"><?=$skill['name']?> (<span class="rating"><?=showSign($skill['rating'])?></span>)</div>
 <?
-			} }
+				}
+			}
 		}
 
 		public function setExtras($extras) {
@@ -118,7 +138,9 @@
 		}
 
 		public static function stuntEditFormat($key = 0, $stuntInfo = null) {
-			if ($stuntInfo == null) $stuntInfo = array('name' => '', 'notes' => '');
+			if ($stuntInfo == null) {
+				$stuntInfo = ['name' => '', 'notes' => ''];
+			}
 ?>
 									<div class="stunt tr clearfix">
 										<input type="text" name="stunts[<?=$key?>][name]" value="<?=$stuntInfo['name']?>" class="name placeholder" data-placeholder="Stunt Name">
@@ -130,24 +152,33 @@
 		}
 
 		public function showStuntsEdit() {
-			if (sizeof($this->stunts)) { foreach ($this->stunts as $key => $stunt) {
-				$this->stuntEditFormat($key + 1, $stunt);
-			} } else $this->stuntEditFormat();
+			if (sizeof($this->stunts)) {
+				foreach ($this->stunts as $key => $stunt) {
+					$this->stuntEditFormat($key + 1, $stunt);
+				}
+			} else {
+				$this->stuntEditFormat();
+			}
 		}
 
 		public function displayStunts() {
-			if ($this->stunts) { foreach ($this->stunts as $stunt) { ?>
+			if ($this->stunts) {
+				foreach ($this->stunts as $stunt) {
+?>
 					<div class="stunt tr clearfix">
 						<span class="name"><?=$stunt['name']?></span>
-<?	if (strlen($stunt['notes'])) { ?>
+<?				if (strlen($stunt['notes'])) { ?>
 						<a href="" class="notesLink">Notes</a>
 						<div class="notes"><?=$stunt['notes']?></div>
-<?	} ?>
+<?				} ?>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noStunts\">This character currently has no stunts/abilities.</p>\n";
+				}
+			} else {
+				echo "\t\t\t\t\t<p id=\"noStunts\">This character currently has no stunts/abilities.</p>\n";
+			}
 		}
-		
+
 		public function addStunt($stunt) {
 			if (strlen($stunt['name'])) {
 				newItemized('stunt', $stunt['name'], $this::SYSTEM);
@@ -166,31 +197,35 @@
 		}
 
 		public function setStressBoxes($type, $numBoxes = 2) {
-			$numBoxes = intval($numBoxes);
-			if (in_array($type, array_keys($this->stresses)) && $numBoxes > 2 && $numBoxes <= $this->maxStress) {
-				$this->stresses[$type] = array();
-				for ($count = 1; $count <= $numBoxes; $count++) 
+			$numBoxes = (int) $numBoxes;
+			if (property_exists($this->stresses, $type) && $numBoxes > 2 && $numBoxes <= $this->maxStress) {
+				$this->stresses[$type] = [];
+				for ($count = 1; $count <= $numBoxes; $count++) {
 					$this->stresses[$type][$count] = 0;
+				}
 			}
 		}
 
 		public function setStress($type, $key, $value = 0) {
-			if (in_array($type, array_keys($this->stresses)) && array_key_exists($key, $this->stresses[$type]) && (in_array(intval($value), array(0, 1)))) 
-				$this->stresses[$type][$key] = intval($value);
-			else 
+			if (in_array($type, array_keys($this->stresses)) && array_key_exists($key, $this->stresses[$type]) && (in_array((int) $value, [0, 1]))) {
+				$this->stresses[$type][$key] = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getStress($type = null, $key = null) {
-			if ($type == null) 
+			if ($type == null) {
 				return $this->stresses;
-			elseif (in_array($type, array_keys($this->stresses))) {
-				if ($key == null) 
+			} elseif (in_array($type, array_keys($this->stresses))) {
+				if ($key == null) {
 					return $this->stresses[$type];
-				elseif (in_array($key, in_array($key, $this->stresses[$type]))) 
+				} elseif (in_array($key, in_array($key, $this->stresses[$type]))) {
 					return $this->stresses[$type][$key];
-			} else 
-			return false;
+				}
+			} else {
+				return false;
+			}
 		}
 
 		public function setConsequences($consequences) {
@@ -226,14 +261,19 @@
 
 				$this->setExtras($data['extras']);
 				$this->clearVar('stunts');
-				if (sizeof($data['stunts'])) { foreach ($data['stunts'] as $stuntInfo) {
-					$this->addStunt($stuntInfo);
-				} }
+				if (sizeof($data['stunts'])) {
+					foreach ($data['stunts'] as $stuntInfo) {
+						$this->addStunt($stuntInfo);
+					}
+				}
 
 				foreach ($this->stresses as $type => $stress) {
 					$this->setStressBoxes($type, $data['stressCap'][$type]);
-					for ($count = 0; $count <= $data['stressCap'][$type]; $count++) 
-						if (isset($data['stresses'][$type][$count])) $this->setStress($type, $count, 1);
+					for ($count = 0; $count <= $data['stressCap'][$type]; $count++) {
+						if (isset($data['stresses'][$type][$count])) {
+							$this->setStress($type, $count, 1);
+						}
+					}
 				}
 
 				$this->setConsequences($data['consequences']);

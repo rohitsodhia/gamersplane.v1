@@ -5,13 +5,17 @@
 		protected $spells = '';
 
 		public function skillEditFormat($key = null, $skillInfo = NULL) {
-			if ($key == null) $key = 1;
-			if ($skillInfo == null) $skillInfo = array('name' => '', 'diceType' => '');
+			if ($key == null) {
+				$key = 1;
+			}
+			if ($skillInfo == null) {
+				$skillInfo = ['name' => '', 'diceType' => ''];
+			}
 ?>
 							<div class="skill clearfix">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skillName placeholder" data-placeholder="Skill Name">
 								<div class="diceSelect"><span>d</span> <select name="skills[<?=$key?>][diceType]" class="diceType">
-<?			foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
+<?			foreach ([4, 6, 8, 10, 12] as $dCount) { ?>
 									<option<?=$skillInfo['diceType'] == $dCount?' selected="selected"':''?>><?=$dCount?></option>
 <?			} ?>
 								</select></div>
@@ -20,27 +24,31 @@
 <?
 		}
 
-		public function showSkillsEdit() {
-			if (sizeof($this->skills)) { foreach ($this->skills as $key => $skill) {
-				$this->skillEditFormat($key + 1, $skill);
-			} }
+		public function showSkillsEdit($unnecssary = null) {
+			if (sizeof($this->skills)) {
+				foreach ($this->skills as $key => $skill) {
+					$this->skillEditFormat($key + 1, $skill);
+				}
+			}
 		}
 
-		public function displaySkills() {
-			if ($this->skills) { foreach ($this->skills as $skill) {
+		public function displaySkills($unnecssary = null) {
+			if ($this->skills) {
+				foreach ($this->skills as $skill) {
 ?>
 								<div class="skill clearfix">
 									<div class="skillName"><?=$skill['name']?></div>
 									<div class="diceType">d<?=$skill['diceType']?></div>
 								</div>
 <?
-			} }
+				}
+			}
 		}
 
 		public function addSkill($skill) {
-			if (strlen($skill['name']) && in_array(intval($skill['diceType']), array(4, 6, 8, 10, 12))) {
+			if (strlen($skill['name']) && in_array((int) $skill['diceType'], [4, 6, 8, 10, 12])) {
 				newItemized('skill', $skill['name'], $this::SYSTEM);
-				$this->skills[] = array('name' => sanitizeString($skill['name']), 'diceType' => intval($skill['diceType']));
+				$this->skills[] = ['name' => sanitizeString($skill['name']), 'diceType' => (int) $skill['diceType']];
 			}
 		}
 
@@ -57,13 +65,19 @@
 
 			if (!$bypass) {
 				$this->setName($data['name']);
-				foreach ($data['traits'] as $trait => $value) $this->setTrait($trait, $value);
-				foreach ($data['derivedTraits'] as $trait => $value) $this->setDerivedTrait($trait, $value);
+				foreach ($data['traits'] as $trait => $value) {
+					$this->setTrait($trait, $value);
+				}
+				foreach ($data['derivedTraits'] as $trait => $value) {
+					$this->setDerivedTrait($trait, $value);
+				}
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
-					$this->addSkill($skillInfo);
-				} }
+				if (sizeof($data['skills'])) {
+					foreach ($data['skills'] as $skillInfo) {
+						$this->addSkill($skillInfo);
+					}
+				}
 
 				$this->setEdgesHindrances($data['edge_hind']);
 				$this->setWounds($data['wounds']);

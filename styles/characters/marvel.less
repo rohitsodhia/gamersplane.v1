@@ -13,62 +13,70 @@
 	font-weight: bold;
 }
 
-#page_characterSheet .basicInfo label {
-	vertical-align: baseline;
-}
+#page_characterSheet .basicInfo {
+	label {
+		vertical-align: baseline;
+	}
 
-#page_characterSheet .basicInfo div {
-	display: inline-block;
-}
-
-#remainingStones span {
-	font-weight: bold;
+	div {
+		display: inline-block;
+	}
 }
 
 #modNumStones {
 	margin-top: .7em;
 	margin-left: 192px;
-}
 
-#modNumStones button {
-	position: relative;
-	top: -4px;
-	left: 4px;
+	button {
+		position: relative;
+		top: -4px;
+		left: 4px;
+	}
 }
 
 #remainingRedStones {
 	margin-left: .7em;
+
+	span {
+		font-weight: bold;
+	}
 }
 
-#stats label, #statCosts label {
-	float: left;
-	width: 100px;
-	margin-right: 10px;
-	text-transform: capitalize;
-	font-weight: bold;
-	text-align: right;
+#stats, #statCosts {
+	label {
+		float: left;
+		width: 100px;
+		margin-right: 10px;
+		text-transform: capitalize;
+		font-weight: bold;
+		text-align: right;
+
+		&.first {
+			width: 195px;
+		}
+	}
 }
 
-#stats label.first, #statCosts label.first {
-	width: 195px;
+#stats {
+	div {
+		float: left;
+		width: 20px;
+	}
 }
 
-#stats div {
-	float: left;
-	width: 20px;
+#stats, #statCosts {
+	input {
+		float: left;
+	}
 }
 
-#stats input, #statCosts input {
-	float: left;
-}
-
-ul {
+#content ul {
 	list-style: none;
 	margin-left: 200px;
-}
 
-ul li {
-	padding-bottom: .75em;
+	li {
+		padding-bottom: .75em;
+	}
 }
 
 .remove {
@@ -79,7 +87,7 @@ ul li {
 	padding-top: .5em;
 }
 
-h2 a {
+#content h2 a {
 	margin-left: 10px;
 	font-size: .6em;
 	font-weight: normal;
@@ -103,8 +111,10 @@ h2 a {
 	vertical-align: middle;
 }
 
-#actions .fancyButton, #modifiers .fancyButton, #challenges .fancyButton {
-	margin-left: 10px;
+#actions, #modifiers, #challenges {
+	.fancyButton {
+		margin-left: 10px;
+	}
 }
 
 .action, .modifier {
@@ -115,85 +125,97 @@ h2 a {
 	border: 1px solid #666;
 }
 
+#page_characterSheet, #page_characterSheet {
+	.modifier {
+		width: 29.8%;
+		min-height: 200px;
+	}
+}
+
+.action, .modifier {
+	.labelTR {
+		padding-top: 0;
+	}
+
+	label, input {
+		width: 40px;
+		margin-left: 6px;
+		text-align: center;
+	}
+
+	.labelTR label {
+		font-size: .85em;
+		font-variant: small-caps;
+	}
+
+	.name {
+		display: inline-block;
+		text-align: left;
+		width: 167px;
+		margin-left: 0;
+	}
+}
+
 #page_characterSheet .action, #page_characterSheet .modifier {
-	width: 29.8%;
-	min-height: 200px;
+	.name {
+		width: 170px;
+		padding-top: 0;
+	}
+
+	.cost, .level {
+		float: none;
+		display: inline-block;
+		width: 32px;
+		margin: 0 6px;
+		vertical-align: top;
+		text-align: center;
+	}
+
+	.details {
+		min-height: 145px;
+		margin-top: .5em;
+		padding: 6px;
+		border: 1px solid #CCC;
+		overflow: auto;
+	}
 }
 
-.action .labelTR, .modifier .labelTR {
-	padding-top: 0;
-}
-
-.action label, .modifier label, .action input, .modifier input {
-	width: 40px;
-	margin-left: 6px;
-	text-align: center;
-}
-
-.action .labelTR label, .modifier .labelTR label {
-	font-size: .85em;
-	font-variant: small-caps;
-}
-
-.action .name, .modifier .name {
-	display: inline-block;
-	text-align: left;
-	width: 167px;
-	margin-left: 0;
-}
-
-#page_characterSheet .action .name, #page_characterSheet .modifier .name {
-	width: 170px;
-	padding-top: 0;
-}
-
-#page_characterSheet .action .cost, #page_characterSheet .action .level, #page_characterSheet .modifier .cost, #page_characterSheet .modifier .level {
-	float: none;
-	display: inline-block;
-	width: 32px;
-	margin: 0 6px;
-	vertical-align: top;
-	text-align: center;
-}
-
-#page_characterSheet .action .details, #page_characterSheet .modifier .details {
-	min-height: 145px;
-	margin-top: .5em;
-	padding: 6px;
-	border: 1px solid #CCC;
-	overflow: auto;
-}
-
-.action textarea, .modifier textarea {
-	width: 100%;
-	height: 6.2em;
-	margin-top: .8em
+.action, .modifier {
+	textarea {
+		width: 100%;
+		height: 6.2em;
+		margin-top: .8em
+	}
 }
 
 #page_characterSheet #challenges .tr {
 	padding-bottom: 0;
 }
 
-#challenges .name {
-	width: 350px;
-	margin-right: 25px;
-	text-align: left; 
-}
+#challenges {
+	.name {
+		width: 350px;
+		margin-right: 25px;
+		text-align: left;
+	}
 
-#challenges .stones {
-	width: 45px;
+	.stones {
+		width: 45px;
+	}
 }
 
 #page_characterSheet #challenges .name, #page_characterSheet #challenges .stones {
 	display: inline-block;
 }
 
-#challenges label {
-	font-variant: small-caps;
-}
+#challenges {
+	label {
+		font-variant: small-caps;
+	}
 
-#challenges .remove {
-	margin-left: 10px;
+	.remove {
+		margin-left: 10px;
+	}
 }
 
 #notes textarea {
