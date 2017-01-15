@@ -2,14 +2,14 @@
 	class d20cthulhuCharacter extends d20Character {
 		const SYSTEM = 'd20cthulhu';
 
-		protected $ac = array('armor' => 0, 'dex' => 0, 'misc' => 0);
-		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
-		protected $sanity = array('max' => 0, 'current' => 0);
-		protected $weapons = array();
+		protected $ac = ['armor' => 0, 'dex' => 0, 'misc' => 0];
+		protected $hp = ['total' => 0, 'current' => 0, 'subdual' => 0];
+		protected $sanity = ['max' => 0, 'current' => 0];
+		protected $weapons = [];
 		protected $spells = '';
 
 		public function setSanity($key, $value) {
-			if (property_exists($this->sanity, $key)) {
+			if (array_key_exists($key, $this->sanity)) {
 				$this->sanity->$key = (int) $value;
 			} else {
 				return false;
@@ -17,7 +17,7 @@
 		}
 
 		public function getSanity($key = null) {
-			if (property_exists($this->sanity, $key)) {
+			if (array_key_exists($key, $this->sanity)) {
 				return $this->sanity->$key;
 			} elseif ($key == null) {
 				return $this->sanity;
@@ -28,7 +28,7 @@
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
 			if ($skillInfo == null) {
-				$skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
+				$skillInfo = ['name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0];
 			}
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) {
 				$statBonus = 0;
@@ -99,9 +99,9 @@
 			}
 		}
 
-		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
+		public function weaponEditFormat($weaponNum, $weaponInfo = []) {
 			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) {
-				$weaponInfo = array();
+				$weaponInfo = [];
 			}
 ?>
 						<div class="weapon">

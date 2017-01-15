@@ -2,9 +2,9 @@
 	class gurpsCharacter extends Character {
 		const SYSTEM = 'gurps';
 
-		protected $stats = array('st' => 0, 'dx' => 0, 'iq' => 0, 'ht' => 0, 'hp' => 0, 'will' => 0, 'per' => 0, 'fp' => 0);
-		protected $damage = array('thrown' => 0, 'swing' => 0);
-		protected $speed = array('speed' => 0, 'move' => 0);
+		protected $stats = ['st' => 0, 'dx' => 0, 'iq' => 0, 'ht' => 0, 'hp' => 0, 'will' => 0, 'per' => 0, 'fp' => 0];
+		protected $damage = ['thrown' => 0, 'swing' => 0];
+		protected $speed = ['speed' => 0, 'move' => 0];
 		protected $languages = '';
 		protected $advantages = '';
 		protected $disadvantages = '';
@@ -14,55 +14,64 @@
 		public function setStat($stat, $value) {
 			if (array_key_exists($stat, $this->stats)) {
 				$value = intval($value);
-				if ($value > 0) 
+				if ($value > 0) {
 					$this->stats[$stat] = $value;
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
-		
+
 		public function getStat($stat = null) {
-			if ($stat == null) 
+			if ($stat == null) {
 				return $this->stats;
-			elseif (array_key_exists($stat, $this->stats)) 
+			} elseif (array_key_exists($stat, $this->stats)) {
 				return $this->stats[$stat];
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setDamage($type, $value) {
 			if (array_key_exists($type, $this->damage)) {
 				$value = intval($value);
-				if ($value > 0) 
+				if ($value > 0) {
 					$this->damage[$type] = $value;
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
-		
+
 		public function getDamage($type = null) {
-			if ($type == null) 
+			if ($type == null) {
 				return $this->damage;
-			elseif (array_key_exists($type, $this->damage)) 
+			} elseif (array_key_exists($type, $this->damage)) {
 				return $this->damage[$type];
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setSpeed($type, $value) {
 			if (array_key_exists($type, $this->speed)) {
 				$value = floatval($value);
-				if ($value > 0) 
+				if ($value > 0) {
 					$this->speed[$type] = $value;
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
-		
+
 		public function getSpeed($type = null) {
-			if ($type == null) 
+			if ($type == null) {
 				return $this->speed;
-			elseif (array_key_exists($type, $this->speed)) 
+			} elseif (array_key_exists($type, $this->speed)) {
 				return $this->speed[$type];
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setLanguages($languages) {
@@ -111,9 +120,15 @@
 			if (!$bypass) {
 				$this->setName($data['name']);
 
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
-				foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
-				foreach ($data['speed'] as $type => $value) $this->setSpeed($type, $value);
+				foreach ($data['stats'] as $stat => $value) {
+					$this->setStat($stat, $value);
+				}
+				foreach ($data['damage'] as $type => $value) {
+					$this->setDamage($type, $value);
+				}
+				foreach ($data['speed'] as $type => $value) {
+					$this->setSpeed($type, $value);
+				}
 
 				$this->languages = $data['languages'];
 				$this->advantages = $data['advantages'];

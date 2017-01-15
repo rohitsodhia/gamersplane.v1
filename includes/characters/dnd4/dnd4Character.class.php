@@ -7,18 +7,18 @@
 		protected $totalLevels = 0;
 		protected $paragon = '';
 		protected $epic = '';
-		protected $saves = array (
-			'ac' => array('armor' => 0, 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0),
-			'fort' => array('ability' => array('con', 'str'), 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0),
-			'ref' => array('ability' => array('dex', 'int'), 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0),
-			'will' => array('ability' => array('wis', 'cha'), 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0)
-		);
-		protected $hp = array('total' => 0, 'current' => 0, 'surges' => 0);
-		protected $speed = array('base' => 0, 'armor' => 0, 'item' => 0, 'misc' => 0);
+		protected $saves = [
+			'ac' => ['armor' => 0, 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0],
+			'fort' => ['ability' => ['con', 'str'], 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0],
+			'ref' => ['ability' => ['dex', 'int'], 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0],
+			'will' => ['ability' => ['wis', 'cha'], 'class' => 0, 'feats' => 0, 'enh' => 0, 'misc' => 0]
+		];
+		protected $hp = ['total' => 0, 'current' => 0, 'surges' => 0];
+		protected $speed = ['base' => 0, 'armor' => 0, 'item' => 0, 'misc' => 0];
 		protected $actionPoints = 0;
-		protected $passiveSenses = array('insight' => 0, 'perception' => 0);
-		protected $attacks = array();
-		protected $powers = array('atwill' => array(), 'encounter' => array(), 'daily' => array());
+		protected $passiveSenses = ['insight' => 0, 'perception' => 0];
+		protected $attacks = [];
+		protected $powers = ['atwill' => [], 'encounter' => [], 'daily' => []];
 		protected $weapons = '';
 		protected $armor = '';
 
@@ -41,7 +41,7 @@
 		}
 
 		public function getHL($showSign = false) {
-			$hl = floor(array_sum((array) $this->classes) / 2);
+			$hl = floor(array_sum($this->classes) / 2);
 			if ($showSign) {
 				return showSign($hl);
 			} else {
@@ -87,7 +87,7 @@
 						}
 					}
 					$abilities = $this->saves[$save]['ability'];
-					$abilityMods = array($this->getStatMod($abilities[0], false), $this->getStatMod($abilities[1], false));
+					$abilityMods = [$this->getStatMod($abilities[0], false), $this->getStatMod($abilities[1], false)];
 					if ($abilityMods[0] > $abilityMods[1]) {
 						$total += $abilityMods[0];
 					} else {
@@ -122,11 +122,11 @@
 
 		public function getSpeed($key = null) {
 			if ($key == null) {
-				return array_merge(array('total' => array_sum($this->speed)), $this->speed);
+				return array_merge(['total' => array_sum($this->speed)], $this->speed);
 			} elseif (array_key_exists($key, $this->speed)) {
 				return $this->speed[$key];
 			} elseif ($key == 'total') {
-				return array_sum((array) $this->speed);
+				return array_sum($this->speed);
 			} else {
 				return false;
 			}
@@ -178,7 +178,7 @@
 		public function showAttacksEdit($min) {
 			$attackNum = 0;
 			if (!is_array($this->attacks)) {
-				$this->attacks = (array) $this->attacks;
+				$this->attacks = $this->attacks;
 			}
 			foreach ($this->attacks as $attackInfo) {
 				$this->attackEditFormat($attackNum++, $attackInfo);
@@ -190,8 +190,8 @@
 			}
 		}
 
-		public function attackEditFormat($attackNum, $attackInfo = array()) {
-			$defaults = array('total' => 0, 'stat' => 0, 'class' => 0, 'prof' => 0, 'feat' => 0, 'enh' => 0, 'misc' => 0);
+		public function attackEditFormat($attackNum, $attackInfo = []) {
+			$defaults = ['total' => 0, 'stat' => 0, 'class' => 0, 'prof' => 0, 'feat' => 0, 'enh' => 0, 'misc' => 0];
 			foreach ($defaults as $key => $value) {
 				if (!isset($attackInfo[$key])) {
 					$attackInfo[$key] = $value;
@@ -273,7 +273,7 @@
 				$key = 1;
 			}
 			if ($skillInfo == null) {
-				$skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
+				$skillInfo = ['name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0];
 			}
 			if ($skillInfo['stat'] == null || $statBonus == null) {
 				$statBonus = 0;
@@ -430,8 +430,8 @@
 					}
 				}
 
-				foreach (array('atwill', 'encounter', 'daily') as $type) {
-					$this->powers[$type] = array();
+				foreach (['atwill', 'encounter', 'daily'] as $type) {
+					$this->powers[$type] = [];
 					if (isset($data['powers'][$type])) {
 						foreach ($data['powers'][$type] as $power) {
 							$this->addPower($power, $type);

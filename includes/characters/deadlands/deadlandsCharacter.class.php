@@ -2,47 +2,52 @@
 	class deadlandsCharacter extends Character {
 		const SYSTEM = 'deadlands';
 
-		protected $stats = array(
-			'cog' => array('dice' => '', 'skills' => 'Search - 1'), 
-			'kno' => array('dice' => '', 'skills' => "Area Knowledge: Home County - 2\nLanguage: Native Tongue - 2"), 
-			'mie' => array('dice' => '', 'skills' => ''), 
-			'sma' => array('dice' => '', 'skills' => ''), 
-			'spi' => array('dice' => '', 'skills' => ''), 
-			'def' => array('dice' => '', 'skills' => ''), 
-			'nim' => array('dice' => '', 'skills' => ''), 
-			'str' => array('dice' => '', 'skills' => ''), 
-			'qui' => array('dice' => '', 'skills' => ''), 
-			'vig' => array('dice' => '', 'skills' => '')
+		protected $stats = [
+			'cog' => ['dice' => '', 'skills' => 'Search - 1'],
+			'kno' => ['dice' => '', 'skills' => "Area Knowledge: Home County - 2\nLanguage: Native Tongue - 2"],
+			'mie' => ['dice' => '', 'skills' => ''],
+			'sma' => ['dice' => '', 'skills' => ''],
+			'spi' => ['dice' => '', 'skills' => ''],
+			'def' => ['dice' => '', 'skills' => ''],
+			'nim' => ['dice' => '', 'skills' => ''],
+			'str' => ['dice' => '', 'skills' => ''],
+			'qui' => ['dice' => '', 'skills' => ''],
+			'vig' => ['dice' => '', 'skills' => '']
 		);
 		protected $edgesHindrances = '';
 		protected $nightmare = '';
-		protected $wounds = array('head' => 0, 'leftHand' => 0, 'rightHand' => 0, 'guts' => 0, 'leftLeg' => 0, 'rightLeg' => 0);
+		protected $wounds = ['head' => 0, 'leftHand' => 0, 'rightHand' => 0, 'guts' => 0, 'leftLeg' => 0, 'rightLeg' => 0];
 		protected $wind = 0;
 		protected $weapons = '';
 		protected $arcane = '';
 		protected $equipment = '';
 
 		public function setStat($stat, $sub, $value = '') {
-			if ($sub != 'dice' && $sub != 'skills') return false;
+			if ($sub != 'dice' && $sub != 'skills') {
+				return false;
+			}
 
-			if (array_key_exists($stat, $this->stats)) 
+			if (array_key_exists($stat, $this->stats)) {
 				$this->stats[$stat][$sub] = sanitizeString($value);
-			else 
+			} else {
 				return false;
+			}
 		}
-		
+
 		public function getStats($stat = null, $sub = null) {
-			if ($stat == null) 
+			if ($stat == null) {
 				return $this->stats;
-			elseif (array_key_exists($stat, $this->stats) && $sub == null) 
+			} elseif (array_key_exists($stat, $this->stats) && $sub == null) {
 				return $this->stats[$stat];
-			elseif (array_key_exists($stat, $this->stats)) {
-				if ($sub != 'dice' && $sub != 'skills') 
+			} elseif (array_key_exists($stat, $this->stats)) {
+				if ($sub != 'dice' && $sub != 'skills') {
 					return false;
-				else 
+				} else {
 					return $this->stats[$stat][$sub];
-			} else 
+				}
+			} else {
 				return false;
+			}
 		}
 
 		public function setEdgesHindrances($edgesHindrances) {
@@ -62,23 +67,25 @@
 		}
 
 		public function setWounds($region, $value) {
-			if (array_key_exists($region, $this->wounds)) 
-				$this->wounds[$region] = intval($value);
-			else 
+			if (array_key_exists($region, $this->wounds)) {
+				$this->wounds[$region] = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getWounds($region) {
-			if ($region == null) 
+			if ($region == null) {
 				return $this->wounds;
-			elseif (array_key_exists($region, $this->wounds)) 
+			} elseif (array_key_exists($region, $this->wounds)) {
 				return $this->wounds[$region];
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setWind($wind) {
-			$this->wind = intval($wind);
+			$this->wind = (int) $wind;
 		}
 
 		public function getWind() {
@@ -120,8 +127,9 @@
 				}
 				$this->setEdgesHindrances($data['edge_hind']);
 				$this->setNightmare($data['nightmare']);
-				foreach ($data['wounds'] as $region => $value) 
+				foreach ($data['wounds'] as $region => $value) {
 					$this->setWounds($region, $value);
+				}
 				$this->setWind($data['wind']);
 				$this->setWeapons($data['weapons']);
 				$this->setArcane($data['arcane']);

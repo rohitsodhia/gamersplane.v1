@@ -3,15 +3,15 @@
 		const SYSTEM = 'cthulhu_brs7e';
 
 		protected $occupation = '';
-		protected $characteristics = array('str' => 0, 'dex' => 0, 'int' => 0, 'con' => 0, 'app' => 0, 'pow' => 0, 'siz' => 0, 'edu' => 0, 'move' => 0);
-		protected $hp = array('current' => 0, 'max' => 0, 'major' => false);
-		protected $sanity = array('current' => 0, 'max' => 0, 'temp' => false, 'indef' => false);
+		protected $characteristics = ['str' => 0, 'dex' => 0, 'int' => 0, 'con' => 0, 'app' => 0, 'pow' => 0, 'siz' => 0, 'edu' => 0, 'move' => 0];
+		protected $hp = ['current' => 0, 'max' => 0, 'major' => false];
+		protected $sanity = ['current' => 0, 'max' => 0, 'temp' => false, 'indef' => false];
 		protected $luck = 0;
-		protected $mp = array('current' => 0, 'max' => 0);
-		protected $skills = array();
-		protected $weapons = array();
-		protected $combat = array('damage_bonus' => 0, 'build' => 0);
-		protected $items = array();
+		protected $mp = ['current' => 0, 'max' => 0];
+		protected $skills = [];
+		protected $weapons = [];
+		protected $combat = ['damage_bonus' => 0, 'build' => 0];
+		protected $items = [];
 
 		public function setOccupation($value) {
 			$this->occupation = sanitizeString($value);
@@ -31,7 +31,7 @@
 				if ($type == 'major') {
 					$this->hp[$type] = (bool) $value;
 				} else {
-					$this->hp[$type] = (int) $value >= 0?(int) $value:0;
+					$this->hp[$type] = (int) $value >= 0 ? (int) $value : 0;
 				}
 			} else {
 				return false;
@@ -41,7 +41,7 @@
 		public function setSanity($type, $value = 0) {
 			if (array_key_exists($type, $this->sanity)) {
 				if ($type == 'current' || $type == 'max') {
-					$this->sanity[$type] = (int) $value >= 0?(int) $value:0;
+					$this->sanity[$type] = (int) $value >= 0 ? (int) $value : 0;
 				} else {
 					$this->sanity[$type] = (bool) $value;
 				}
@@ -51,11 +51,11 @@
 		}
 
 		public function setLuck($value = 0) {
-			$this->luck = (int) $value >= 0?(int) $value:0;
+			$this->luck = (int) $value >= 0 ? (int) $value : 0;
 		}
 
 		public function setMP($type, $value = 0) {
-			$value = (int) $value >= 0?(int) $value:0;
+			$value = (int) $value >= 0 ? (int) $value : 0;
 			if (array_key_exists($type, $this->mp)) {
 				$this->mp[$type] = $value;
 			} else {
@@ -66,34 +66,34 @@
 		public function addSkill($skill) {
 			if (strlen($skill->name) && (int) $skill->value > 0) {
 				characters::newItemized('skill', $skill->name, $this::SYSTEM);
-				$this->skills[] = array(
+				$this->skills[] = [
 					'name' => sanitizeString($skill->name),
 					'value' => (int) $skill->value,
-				);
+				];
 			}
 		}
 
 		public function addWeapon($weapon) {
 			if (strlen($weapon->name) && strlen($weapon->damage))
-				$this->weapons[] = array(
+				$this->weapons[] = [
 					'name' => sanitizeString($weapon->name),
 					'regular' => (int) $weapon->regular,
 					'hard' => (int) $weapon->hard,
 					'extreme' => (int) $weapon->extreme,
 					'damage' => sanitizeString($weapon->damage),
-					'range' => $weapon->range?(int) $weapon->range:'-',
+					'range' => $weapon->range ? (int) $weapon->range : '-',
 					'attacks' => (int) $weapon->attacks,
-					'ammo' => $weapon->ammo?(int) $weapon->ammo:null,
-					'malf' => $weapon->malf?(int) $weapon->malf:null
-				);
+					'ammo' => $weapon->ammo ? (int) $weapon->ammo : null,
+					'malf' => $weapon->malf ? (int) $weapon->malf : null
+				];
 		}
 
 		public function addItem($item) {
 			if (strlen($item->name))
-				$this->items[] = array(
+				$this->items[] = [
 					'name' => sanitizeString($item->name),
 					'notes' => sanitizeString($item->notes)
-				);
+				];
 		}
 
 		public function save($bypass = false) {

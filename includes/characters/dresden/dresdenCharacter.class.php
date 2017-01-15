@@ -3,13 +3,17 @@
 		const SYSTEM = 'dresden';
 
 		protected $template = '';
-		protected $fatePoints = array('current' => 3, 'refresh' => 0, 'adjustedRefresh' => 0);
+		protected $fatePoints = ['current' => 3, 'refresh' => 0, 'adjustedRefresh' => 0];
 		protected $powerLevel = '';
-		protected $phases = array();
+		protected $phases = [];
 		protected $skillCap = 0;
-		protected $skillPoints = array('spent' => 0, 'available' => 0);
+		protected $skillPoints = ['spent' => 0, 'available' => 0];
 		protected $maxStress = 8;
-		protected $stresses = array('physical' => array(1 => 0, 0), 'mental' => array(1 => 0, 0), 'social' => array(1 => 0, 0));
+		protected $stresses = [
+			'physical' => [1 => 0, 0],
+			'mental' => [1 => 0, 0],
+			'social' => [1 => 0, 0]
+		];
 
 		public function setTemplate($template) {
 			$this->template = sanitizeString($template);
@@ -29,29 +33,32 @@
 
 		public function setPhase($phase, $key, $value) {
 			$phase = intval($phase);
-			if ($phase >= 1 && $phase <= 5 && in_array($key, array('aspect', 'events'))) 
+			if ($phase >= 1 && $phase <= 5 && in_array($key, ['aspect', 'events'])) {
 				$this->phases[$phase][$key] = $value;
+			}
 		}
 
 		public function getPhase($phase = null, $key = null) {
-			if ($phase == null) 
+			if ($phase == null) {
 				return $this->phases;
-			else {
-				$phase = intval($phase);
-				if ($phase < 1 || $phase > 5) 
+			} else {
+				$phase = (int) $phase;
+				if ($phase < 1 || $phase > 5) {
 					return false;
+				}
 
-				if ($key == null) 
+				if ($key == null) {
 					return $this->phases[$phase];
-				elseif (in_array($key, array('aspect', 'events'))) 
+				} elseif (in_array($key, ['aspect', 'events'])) {
 					return $this->phases[$phase][$key];
-				else 
+				} else {
 					return false;
+				}
 			}
 		}
 
 		public function setSkillCap($skillCap) {
-			$this->skillCap = intval($skillCap);
+			$this->skillCap = (int) $skillCap;
 		}
 
 		public function getSkillCap() {
@@ -59,24 +66,26 @@
 		}
 
 		public function setSkillPoints($key, $value) {
-			if (array_key_exists($key, $this->skillPoints)) 
-				$this->skillPoints[$key] = intval($value);
-			else 
+			if (array_key_exists($key, $this->skillPoints)) {
+				$this->skillPoints[$key] = (int) $value;
+			} else
 				return false;
 		}
 
 		public function getSkillPoints($key = null) {
-			if ($key == null) 
+			if ($key == null) {
 				return $this->skillPoints;
-			elseif (array_key_exists($key, $this->skillPoints)) 
+			} elseif (array_key_exists($key, $this->skillPoints)) {
 				return $this->skillPoints[$key];
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public static function stuntEditFormat($key = 1, $stuntInfo = null) {
-			if ($stuntInfo == null) 
-				$stuntInfo = array('name' => '', 'cost' => 0, 'notes' => '');
+			if ($stuntInfo == null) {
+				$stuntInfo = ['name' => '', 'cost' => 0, 'notes' => ''];
+			}
 ?>
 									<div class="stunt tr clearfix">
 										<input type="text" name="stunts[<?=$key?>][cost]" value="<?=$stuntInfo['cost']?>" class="cost">
@@ -89,7 +98,8 @@
 		}
 
 		public function displayStunts() {
-			if ($this->stunts) { foreach ($this->stunts as $stunt) {
+			if ($this->stunts) {
+				foreach ($this->stunts as $stunt) {
 ?>
 					<div class="stunt tr clearfix">
 						<span class="cost"><?=$stunt['cost']?></span>
@@ -100,9 +110,12 @@
 <?				} ?>
 					</div>
 <?
-			} } else echo "\t\t\t\t\t<p id=\"noStunts\">This character currently has no stunts/abilities.</p>\n";
+				}
+			} else {
+				echo "\t\t\t\t\t<p id=\"noStunts\">This character currently has no stunts/abilities.</p>\n";
+			}
 		}
-		
+
 		public function addStunt($stunt) {
 			if (strlen($stunt['name'])) {
 				newItemized('stunt', $stunt['name'], $this::SYSTEM);
@@ -112,7 +125,6 @@
 		}
 
 		public function save($bypass = false) {
-			global $mysql;
 			$data = $_POST;
 			$system = $this::SYSTEM;
 
@@ -137,9 +149,11 @@
 				}
 
 				$this->clearVar('stunts');
-				if (sizeof($data['stunts'])) { foreach ($data['stunts'] as $stuntInfo) {
-					$this->addStunt($stuntInfo);
-				} }
+				if (sizeof($data['stunts'])) {
+					foreach ($data['stunts'] as $stuntInfo) {
+						$this->addStunt($stuntInfo);
+					}
+				}
 
 				$this->setSkillCap($data['skillCap']);
 				$this->setSkillPoints('spent', $data['skillPoints']['spent']);
@@ -147,13 +161,17 @@
 
 				$this->clearVar('skills');
 				if (sizeof($data['skills'])) {
-					foreach ($data['skills'] as $skill) $this->addSkill($skill);
+					foreach ($data['skills'] as $skill) {
+						$this->addSkill($skill);
+					}
 				}
 
 				foreach ($this->stresses as $type => $stress) {
 					$this->setStressBoxes($type, $data['stressCap'][$type]);
-					for ($count = 0; $count <= $data['stressCap'][$type]; $count++) 
-						if (isset($data['stresses'][$type][$count])) $this->setStress($type, $count, 1);
+					for ($count = 0; $count <= $data['stressCap'][$type]; $count++)
+						if (isset($data['stresses'][$type][$count])) {
+							$this->setStress($type, $count, 1);
+						}
 				}
 
 				$this->setConsequences($data['consequences']);

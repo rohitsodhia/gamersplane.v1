@@ -2,7 +2,7 @@
 	class afmbeCharacter extends Character {
 		const SYSTEM = 'afmbe';
 
-		protected $stats = array(
+		protected $stats = [
 			'str' => '',
 			'dex' => '',
 			'con' => '',
@@ -13,7 +13,7 @@
 			'end' => '',
 			'spd' => '',
 			'ess' => ''
-		);
+		];
 		protected $qualities = '';
 		protected $drawbacks = '';
 		protected $skills = '';
@@ -22,7 +22,7 @@
 		protected $posessions = '';
 
 		public function setStat($stat, $value = '') {
-			if (in_array($stat, array_keys($this->stats))) {
+			if (array_key_exists($stat, $this->stats)) {
 				$value = (int) $value;
 				if ($value > 0) {
 					$this->stats[$stat] = $value;
@@ -36,7 +36,7 @@
 			$stats = (array) $this->stats;
 			if ($stat == null) {
 				return $this->stats;
-			} elseif (in_array($stat, array_keys($stats))) {
+			} elseif (array_key_exists($stat, $stats)) {
 				return $stats[$stat];
 			} else {
 				return false;

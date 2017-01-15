@@ -282,8 +282,8 @@
 		}
 
 		public function setAttackBonus($key, $value, $type = null) {
-			if (property_exists($this->attackBonus, $key)) {
-				if (is_object($this->attackBonus[$key]) && property_exists($this->attackBonus[$key], $type)) {
+			if (array_key_exists($key, $this->attackBonus)) {
+				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) {
 					if ($key == 'stat' && $value != null && d20Character_consts::getStatNames($value)) {
 						$this->attackBonus[$key][$type] = $value;
 					} elseif ($key != 'stat') {
@@ -291,7 +291,7 @@
 					} else {
 						return false;
 					}
-				} elseif (!is_object($this->attackBonus[$key])) {
+				} elseif (!is_array($this->attackBonus[$key])) {
 					$this->attackBonus[$key] = (int) $value;
 				} else {
 					return false;
@@ -307,7 +307,7 @@
 			} elseif ($key == 'total' && $type != null) {
 				$total = 0;
 				foreach ($this->attackBonus as $value) {
-					if (is_object($value) && is_numeric($value->$type)) {
+					if (is_array($value) && is_numeric($value->$type)) {
 						$total += $value[$type];
 					} elseif (is_numeric($value[$type])) {
 						$total += $value;
@@ -315,10 +315,10 @@
 				}
 				$total += $this->getStatMod($this->attackBonus['stat'][$type], false);
 				return $total;
-			} elseif (property_exists($this->attackBonus, $key)) {
-				if (is_object($this->attackBonus->$key) && array_key_exists($type, $this->attackBonus->$key)) {
+			} elseif (array_key_exists($key, $this->attackBonus)) {
+				if (is_array($this->attackBonus->$key) && array_key_exists($type, $this->attackBonus->$key)) {
 					return $this->attackBonus[$key][$type];
-				} elseif (!is_object($this->attackBonus[$key])) {
+				} elseif (!is_array($this->attackBonus[$key])) {
 					return $this->attackBonus[$key];
 				} else {
 					return false;

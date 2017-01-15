@@ -6,18 +6,18 @@
 		protected $size = 0;
 		protected $alignment = 'tn';
 		protected $saves = array (
-			'fort' => array('base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0),
-			'ref' => array('base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0),
-		  	'will' => array('base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0)
+			'fort' => ['base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0],
+			'ref' => ['base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0],
+		  	'will' => ['base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0]
 		);
-		protected $ac = array('armor' => 0, 'shield' => 0, 'dex' => 0, 'class' => 0, 'natural' => 0, 'deflection' => 0, 'misc' => 0);
-		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
+		protected $ac = ['armor' => 0, 'shield' => 0, 'dex' => 0, 'class' => 0, 'natural' => 0, 'deflection' => 0, 'misc' => 0];
+		protected $hp = ['total' => 0, 'current' => 0, 'subdual' => 0];
 		protected $damageReduction = '';
-		protected $initiative = array('stat' => 'dex', 'misc' => 0);
-		protected $cmb = array('misc' => 0);
-		protected $cmd = array('misc' => 0);
-		protected $weapons = array();
-		protected $armor = array();
+		protected $initiative = ['stat' => 'dex', 'misc' => 0];
+		protected $cmb = ['misc' => 0];
+		protected $cmd = ['misc' => 0];
+		protected $weapons = [];
+		protected $armor = [];
 		protected $spells = '';
 
 		public function setRace($value) {
@@ -53,7 +53,7 @@
 
 		public function getAC($key = null) {
 			if ($key == null) {
-				return array_merge(array('total' => array_sum($this->ac) + 10 + $this->size), $this->ac);
+				return array_merge(['total' => array_sum($this->ac) + 10 + $this->size], $this->ac);
 			} elseif (array_key_exists($key, $this->ac)) {
 				return $this->ac[$key];
 			} elseif ($key == 'total') {
@@ -139,7 +139,7 @@
 
 		public static function skillEditFormat($key = 1, $skillInfo = null, $statBonus = null) {
 			if ($skillInfo == null) {
-				$skillInfo = array('name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0);
+				$skillInfo = ['name' => '', 'stat' => 'n/a', 'ranks' => 0, 'misc' => 0];
 			}
 			if ($skillInfo['stat'] == null || $skillInfo['stat'] == 'n/a' || $statBonus == null) {
 				$statBonus = 0;
@@ -211,9 +211,9 @@
 			}
 		}
 
-		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
+		public function weaponEditFormat($weaponNum, $weaponInfo = []) {
 			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) {
-				$weaponInfo = array();
+				$weaponInfo = [];
 			}
 ?>
 						<div class="weapon">
@@ -314,9 +314,9 @@
 			}
 		}
 
-		public function armorEditFormat($armorNum, $armorInfo = array()) {
+		public function armorEditFormat($armorNum, $armorInfo = []) {
 			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) {
-				$armorInfo = array();
+				$armorInfo = [];
 			}
 ?>
 						<div class="armor<?=$armorNum == 1?' first':''?>">

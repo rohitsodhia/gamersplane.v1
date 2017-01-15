@@ -17,7 +17,7 @@
 		protected $consequences;
 
 		public function setFatePoints($key, $value) {
-			if (property_exists($this->fatePoints, $key)) {
+			if (array_key_exists($key, $this->fatePoints)) {
 				$this->fatePoints[$key] = (int) $value;
 			} else {
 				return false;
@@ -27,7 +27,7 @@
 		public function getFatePoints($key = null) {
 			if ($key == null) {
 				return $this->fatePoints;
-			} elseif (property_exists($this->fatePoints, $key)) {
+			} elseif (array_key_exists($key, $this->fatePoints)) {
 				return $this->fatePoints[$key];
 			} else {
 				return false;
@@ -198,7 +198,7 @@
 
 		public function setStressBoxes($type, $numBoxes = 2) {
 			$numBoxes = (int) $numBoxes;
-			if (property_exists($this->stresses, $type) && $numBoxes > 2 && $numBoxes <= $this->maxStress) {
+			if (array_key_exists($type, $this->stresses) && $numBoxes > 2 && $numBoxes <= $this->maxStress) {
 				$this->stresses[$type] = [];
 				for ($count = 1; $count <= $numBoxes; $count++) {
 					$this->stresses[$type][$count] = 0;
@@ -207,7 +207,7 @@
 		}
 
 		public function setStress($type, $key, $value = 0) {
-			if (in_array($type, array_keys($this->stresses)) && array_key_exists($key, $this->stresses[$type]) && (in_array((int) $value, [0, 1]))) {
+			if (array_key_exists($type, $this->stresses) && array_key_exists($key, $this->stresses[$type]) && (in_array((int) $value, [0, 1]))) {
 				$this->stresses[$type][$key] = (int) $value;
 			} else {
 				return false;
@@ -217,10 +217,10 @@
 		public function getStress($type = null, $key = null) {
 			if ($type == null) {
 				return $this->stresses;
-			} elseif (in_array($type, array_keys($this->stresses))) {
+			} elseif (array_key_exists($type, $this->stresses)) {
 				if ($key == null) {
 					return $this->stresses[$type];
-				} elseif (in_array($key, in_array($key, $this->stresses[$type]))) {
+				} elseif (array_key_exists($key, $key, $this->stresses[$type])) {
 					return $this->stresses[$type][$key];
 				}
 			} else {

@@ -1,6 +1,6 @@
 <?
 	class cthulhu_brs7e_consts {
-		private static $skills = array(
+		private static $skills = [
 			'Accounting' => 5,
 			'Anthropolgy' => 1,
 			'Appraise' => 5,
@@ -43,15 +43,16 @@
 			'Swim' => 20,
 			'Throw' => 20,
 			'Track' => 10
-		);
+		];
 
 		public static function getStatNames($stat = null) {
-			if ($stat == null) 
+			if ($stat === null) {
 				return self::$statNames;
-			elseif (array_key_exists($stat, self::$statNames)) 
+			} elseif (array_key_exists($stat, self::$statNames)) {
 				return self::$statNames[$stat];
-			else 
+			} else {
 				return false;
+			}
 		}
 	}
 ?>

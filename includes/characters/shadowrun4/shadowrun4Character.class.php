@@ -3,7 +3,24 @@
 		const SYSTEM = 'shadowrun4';
 
 		protected $metatype = '';
-		protected $stats = array('body' => 0, 'agility' => 0, 'reaction' => 0, 'strength' => 0, 'charisma' => 0, 'intuition' => 0, 'logic' => 0, 'willpower' => 0, 'edge_total' => 0, 'edge_current' => 0, 'essence' => 0, 'mag_res' => 0, 'initiative' => 0, 'initiative_passes' => 0, 'matrix_initiative' => 0, 'astral_initiative' => 0);
+		protected $stats = [
+			'body' => 0,
+			'agility' => 0,
+			'reaction' => 0,
+			'strength' => 0,
+			'charisma' => 0,
+			'intuition' => 0,
+			'logic' => 0,
+			'willpower' => 0,
+			'edge_total' => 0,
+			'edge_current' => 0,
+			'essence' => 0,
+			'mag_res' => 0,
+			'initiative' => 0,
+			'initiative_passes' => 0,
+			'matrix_initiative' => 0,
+			'astral_initiative' => 0
+		];
 		protected $qualities = '';
 		protected $damage = array('physical' => 0, 'stun' => 0);
 		protected $skills = '';
@@ -24,19 +41,23 @@
 
 		public function setStat($stat, $value = 0) {
 			if (array_key_exists($stat, $this->stats)) {
-				$value = floatval($value);
-				if ($value > 0) 
+				$value = (float) $value;
+				if ($value > 0) {
 					$this->stats[$stat] = $value;
-			} else return false;
-		}
-		
-		public function getStat($stat = null) {
-			if ($stat == null) 
-				return $this->stats;
-			elseif (array_key_exists($stat, $this->stats)) 
-				return $this->stats[$stat];
-			else 
+				}
+			} else {
 				return false;
+			}
+		}
+
+		public function getStat($stat = null) {
+			if ($stat == null) {
+				return $this->stats;
+			} elseif (array_key_exists($stat, $this->stats)) {
+				return $this->stats[$stat];
+			} else {
+				return false;
+			}
 		}
 
 		public function setQualities($value) {
@@ -48,19 +69,21 @@
 		}
 
 		public function setDamage($key, $value) {
-			if (in_array($key, array_keys($this->damage))) 
-				$this->damage[$key] = intval($value);
-			else 
+			if (array_key_exists($key, $this->damage)) {
+				$this->damage[$key] = (int) $value;
+			} else {
 				return false;
+			}
 		}
 
 		public function getDamage($key = null) {
-			if (in_array($key, array_keys($this->damage))) 
+			if (array_key_exists($key, $this->damage)) {
 				return $this->damage[$key];
-			elseif ($key == null) 
+			} elseif ($key === null) {
 				return $this->damage;
-			else 
+			} else {
 				return false;
+			}
 		}
 
 		public function setSkills($value) {
@@ -125,9 +148,13 @@
 			if (!$bypass) {
 				$this->setName($data['name']);
 				$this->setMetatype($data['metatype']);
-				foreach ($data['stats'] as $stat => $value) $this->setStat($stat, $value);
+				foreach ($data['stats'] as $stat => $value) {
+					$this->setStat($stat, $value);
+				}
 				$this->setQualities($data['qualities']);
-				foreach ($data['damage'] as $type => $value) $this->setDamage($type, $value);
+				foreach ($data['damage'] as $type => $value) {
+					$this->setDamage($type, $value);
+				}
 				$this->setSkills($data['skills']);
 				$this->setSpells($data['spells']);
 				$this->setWeapons($data['weapons']);

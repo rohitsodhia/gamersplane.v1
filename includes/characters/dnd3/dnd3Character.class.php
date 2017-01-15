@@ -5,17 +5,17 @@
 		protected $race = '';
 		protected $size = 0;
 		protected $alignment = 'tn';
-		protected $saves = array(
-			'fort' => array('base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0),
-			'ref' => array('base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0),
-			'will' => array('base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0)
-		);
-		protected $ac = array('armor' => 0, 'shield' => 0, 'dex' => 0, 'class' => 0, 'natural' => 0, 'deflection' => 0, 'misc' => 0);
-		protected $hp = array('total' => 0, 'current' => 0, 'subdual' => 0);
+		protected $saves = [
+			'fort' => ['base' => 0, 'stat' => 'con', 'magic' => 0, 'race' => 0, 'misc' => 0],
+			'ref' => ['base' => 0, 'stat' => 'dex', 'magic' => 0, 'race' => 0, 'misc' => 0],
+			'will' => ['base' => 0, 'stat' => 'wis', 'magic' => 0, 'race' => 0, 'misc' => 0]
+		];
+		protected $ac = ['armor' => 0, 'shield' => 0, 'dex' => 0, 'class' => 0, 'natural' => 0, 'deflection' => 0, 'misc' => 0];
+		protected $hp = ['total' => 0, 'current' => 0, 'subdual' => 0];
 		protected $damageReduction = '';
-		protected $initiative = array('stat' => 'dex', 'misc' => 0);
-		protected $weapons = array();
-		protected $armor = array();
+		protected $initiative = ['stat' => 'dex', 'misc' => 0];
+		protected $weapons = [];
+		protected $armor = [];
 		protected $spells = '';
 
 		public function setRace($value) {
@@ -58,7 +58,7 @@
 				$key = 1;
 			}
 			if ($skillInfo == null) {
-				$skillInfo = array('name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0);
+				$skillInfo = ['name' => '', 'stat' => 'str', 'ranks' => 0, 'misc' => 0];
 			}
 			if ($skillInfo['stat'] == null || $statBonus == null) {
 				$statBonus = 0;
@@ -121,7 +121,7 @@
 		public function showWeaponsEdit($min) {
 			$weaponNum = 0;
 			if (!is_array($this->weapons)) {
-				$this->weapons = (array) $this->weapons;
+				$this->weapons = $this->weapons;
 			}
 			foreach ($this->weapons as $weaponInfo) {
 				$this->weaponEditFormat($weaponNum++, $weaponInfo);
@@ -133,9 +133,9 @@
 			}
 		}
 
-		public function weaponEditFormat($weaponNum, $weaponInfo = array()) {
+		public function weaponEditFormat($weaponNum, $weaponInfo = []) {
 			if (!is_array($weaponInfo) || sizeof($weaponInfo) == 0) {
-				$weaponInfo = array();
+				$weaponInfo = [];
 			}
 ?>
 						<div class="weapon">
@@ -224,7 +224,7 @@
 		public function showArmorEdit($min) {
 			$armorNum = 0;
 			if (!is_array($this->armor)) {
-				$this->armor = (array) $this->armor;
+				$this->armor = $this->armor;
 			}
 			foreach ($this->armor as $armorInfo) {
 				$this->armorEditFormat($armorNum++, $armorInfo);
@@ -236,9 +236,9 @@
 			}
 		}
 
-		public function armorEditFormat($armorNum, $armorInfo = array()) {
+		public function armorEditFormat($armorNum, $armorInfo = []) {
 			if (!is_array($armorInfo) || sizeof($armorInfo) == 0) {
-				$armorInfo = array();
+				$armorInfo = [];
 			}
 ?>
 						<div class="armor<?=$armorNum == 1?' first':''?>">

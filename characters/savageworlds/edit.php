@@ -2,7 +2,7 @@
 					<label class="textLabel">Name:</label>
 					<input type="text" name="name" maxlength="50" value="<?=$this->getName()?>">
 				</div>
-				
+
 				<div class="clearfix">
 					<div class="sidebar left">
 						<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
@@ -15,7 +15,7 @@
 								<div class="trait clearfix">
 									<div class="traitName"><?=$label?></div>
 									<div class="diceSelect"><span>d</span> <select name="traits[<?=$abbrev?>]" class="diceType">
-<?		foreach (array(4, 6, 8, 10, 12) as $dCount) { ?>
+<?		foreach ([4, 6, 8, 10, 12] as $dCount) { ?>
 										<option<?=$dice == $dCount?' selected="selected"':''?>><?=$dCount?></option>
 <?		} ?>
 									</select></div>
@@ -27,9 +27,9 @@
 							</div>
 <?	} ?>
 						</div>
-						
+
 						<div id="derivedTraits">
-<?	foreach (array('Pace', 'Charisma', 'Parry', 'Toughness') as $derivedTrait) { ?>
+<?	foreach (['Pace', 'Charisma', 'Parry', 'Toughness'] as $derivedTrait) { ?>
 							<div class="tr<?=$derivedTrait == 'Parry' || $derivedTrait == 'Toughness'?' longer':''?>">
 								<label class="traitName"><?=$derivedTrait?></label>
 								<input type="text" name="derivedTraits[<?=strtolower($derivedTrait)?>]" value="<?=$this->getDerivedTraits(strtolower($derivedTrait))?>">
@@ -58,7 +58,7 @@
 								<textarea id="injuries" name="injuries" class="hbdMargined"><?=$this->getInjuries()?></textarea>
 							</div>
 						</div>
-							
+
 						<div class="clearfix">
 							<div class="twoCol">
 								<h2 class="headerbar hbDark">Weapons</h2>
@@ -69,7 +69,7 @@
 								<textarea id="equipment" name="equipment" class="hbdMargined"><?=$this->getEquipment()?></textarea>
 							</div>
 						</div>
-						
+
 						<h2 class="headerbar hbDark">Background/Notes</h2>
 						<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
 					</div>

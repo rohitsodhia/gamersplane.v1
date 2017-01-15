@@ -3,44 +3,44 @@
 		const SYSTEM = '13thage';
 
 		protected $race = '';
-		protected $saves = array(
-			'ac' => array(
+		protected $saves = [
+			'ac' => [
 				'base' => 10,
 				'misc' => 0
-			),
-			'pd' => array(
+			],
+			'pd' => [
 				'base' => 10,
 				'misc' => 0
-			),
-			'md' => array(
+			],
+			'md' => [
 				'base' => 10,
 				'misc' => 0
-			)
-		);
-		protected $hp = array('current' => 0, 'maximum' => 0);
-		protected $recoveries = array('current' => 0, 'maximum' => 0);
+			]
+		];
+		protected $hp = ['current' => 0, 'maximum' => 0];
+		protected $recoveries = ['current' => 0, 'maximum' => 0];
 		protected $recoveryRoll = 0;
 		protected $uniqueThing = '';
 		protected $iconRelationships = '';
-		protected $backgrounds = array();
-		protected $feats = array();
-		protected $abilitiesTalents = array();
-		protected $powers = array();
-		protected $basicAttacks = array(
-			'melee' => array(
+		protected $backgrounds = [];
+		protected $feats = [];
+		protected $abilitiesTalents = [];
+		protected $powers = [];
+		protected $basicAttacks = [
+			'melee' => [
 				'stat' => 'str',
 				'misc' => 0,
 				'hit' => '',
 				'miss' => ''
-			),
-			'ranged' => array(
+			],
+			'ranged' => [
 				'stat' => 'dex',
 				'misc' => 0,
 				'hit' => '',
 				'miss' => ''
-			)
-		);
-		protected $attacks = array();
+			]
+		];
+		protected $attacks = [];
 
 		public function __construct($characterID = null, $userID = null) {
 			unset($this->ac, $this->speed, $this->initiative, $this->attackBonus, $this->skills);
@@ -57,40 +57,40 @@
 
 		public function getHL($showSign = false) {
 			$hl = floor(array_sum($this->classes) / 2);
-			if ($showSign) 
+			if ($showSign)
 				return showSign($hl);
-			else 
+			else
 				return $hl;
 		}
 
 		public function getSave($save = null, $key = null) {
 			if (array_key_exists($save, $this->saves)) {
-				if ($key == null) 
+				if ($key == null)
 					return $this->saves[$save];
-				elseif (array_key_exists($key, $this->saves[$save])) 
+				elseif (array_key_exists($key, $this->saves[$save]))
 					return $this->saves[$save][$key];
 				elseif ($key == 'total') {
 					$total = 0;
-					foreach ($this->saves[$save] as $value) 
-						if (is_numeric($value)) 
+					foreach ($this->saves[$save] as $value)
+						if (is_numeric($value))
 							$total += $value;
 					$total += $this->getStatMod($this->getSaveStat($save), false) + $this->getLevel();
 					return $total;
-				} else 
+				} else
 					return false;
-			} elseif ($save == null) 
+			} elseif ($save == null)
 				return $this->saves;
-			else 
+			else
 				return false;
 		}
 
 		public function getSaveStat($stat) {
-			if ($stat == 'ac') 
-				$stats = array('dex', 'con', 'wis');
-			elseif ($stat == 'pd') 
-				$stats = array('str', 'dex', 'con');
-			elseif ($stat == 'md') 
-				$stats = array('int', 'wis', 'cha');
+			if ($stat == 'ac')
+				$stats = ['dex', 'con', 'wis'];
+			elseif ($stat == 'pd')
+				$stats = ['str', 'dex', 'con'];
+			elseif ($stat == 'md')
+				$stats = ['int', 'wis', 'cha'];
 			else
 				return false;
 
@@ -114,42 +114,42 @@
 		}
 
 		public function setHP($key, $value) {
-			if (array_key_exists($key, $this->hp)) 
+			if (array_key_exists($key, $this->hp))
 				$this->hp[$key] = intval($value);
-			else 
+			else
 				return false;
 		}
 
 		public function getHP($key = null) {
-			if ($key == null) 
+			if ($key == null)
 				return $this->hp;
-			elseif (array_key_exists($key, $this->hp)) 
+			elseif (array_key_exists($key, $this->hp))
 				return $this->hp[$key];
-			else 
+			else
 				return false;
 		}
 
 		public function setRecoveries($key, $value) {
-			if (array_key_exists($key, $this->recoveries)) 
+			if (array_key_exists($key, $this->recoveries))
 				$this->recoveries[$key] = intval($value);
-			else 
+			else
 				return false;
 		}
 
 		public function getRecoveries($key = null) {
-			if ($key == null) 
+			if ($key == null)
 				return $this->recoveries;
-			elseif (array_key_exists($key, $this->recoveries)) 
+			elseif (array_key_exists($key, $this->recoveries))
 				return $this->recoveries[$key];
-			else 
+			else
 				return false;
 		}
 
 		public function setRecoveryRoll($value) {
 			$value = str_replace(' ', '', strtolower($value));
-			if (preg_match('/\d+d\d+([+-]\d+)?/', $value)) 
+			if (preg_match('/\d+d\d+([+-]\d+)?/', $value))
 				$this->recoveryRoll = $value;
-			else 
+			else
 				$this->recoveryRoll = '';
 		}
 
@@ -174,8 +174,8 @@
 		}
 
 		public static function backgroundEditFormat($key = 1, $backgroundInfo = null) {
-			if ($backgroundInfo == null) 
-				$backgroundInfo = array('name' => '', 'notes' => '');
+			if ($backgroundInfo == null)
+				$backgroundInfo = ['name' => '', 'notes' => ''];
 ?>
 								<div class="tr background clearfix">
 									<input type="text" name="backgrounds[<?=$key?>][name]" value="<?=$backgroundInfo['name']?>" class="name placeholder" data-placeholder="Background/Racial Abilities">
@@ -202,22 +202,22 @@
 <?	} ?>
 					</div>
 <?
-			} } else 
+			} } else
 				echo "\t\t\t\t\t<p id=\"noBackgrounds\">This character currently has no backgrounds/racial abilities.</p>\n";
 		}
-		
+
 		public function addBackground($background) {
 			if (strlen($background['name'])) {
 				newItemized('background', $background['name'], $this::SYSTEM);
-				foreach ($background as $key => $value) 
+				foreach ($background as $key => $value)
 					$background[$key] = sanitizeString($value);
 				$this->backgrounds[] = $background;
 			}
 		}
 
 		public static function abilityTalentEditFormat($key = 1, $info = null) {
-			if ($info == null) 
-				$info = array('name' => '', 'notes' => '');
+			if ($info == null)
+				$info = ['name' => '', 'notes' => ''];
 ?>
 							<div class="abilityTalent tr clearfix">
 								<input type="text" name="abilitiesTalents[<?=$key?>][name]" value="<?=$info['name']?>" class="name placeholder" data-placeholder="Ability/Talent">
@@ -229,15 +229,15 @@
 		}
 
 		public function showAbilitiesTalentsEdit() {
-			if (sizeof($this->abilitiesTalents)) 
-				foreach ($this->abilitiesTalents as $key => $info) 
+			if (sizeof($this->abilitiesTalents))
+				foreach ($this->abilitiesTalents as $key => $info)
 					$this->abilityTalentEditFormat($key + 1, $info);
-			else 
+			else
 				$this->abilityTalentEditFormat();
 		}
 
 		public function displayAbilitiesTalents() {
-			if ($this->abilitiesTalents) { 
+			if ($this->abilitiesTalents) {
 				foreach ($this->abilitiesTalents as $abilityTalent) {
 ?>
 					<div class="abilityTalent tr clearfix">
@@ -249,22 +249,22 @@
 					</div>
 <?
 				}
-			} else 
+			} else
 				echo "\t\t\t\t\t<p id=\"noAbilitiesTalents\">This character currently has no class abilities/talents.</p>\n";
 		}
-		
+
 		public function addAbilitiesTalents($abilityTalent) {
 			if (strlen($abilityTalent['name'])) {
 				newItemized('abilityTalent', $abilityTalent['name'], $this::SYSTEM);
-				foreach ($abilityTalent as $key => $value) 
+				foreach ($abilityTalent as $key => $value)
 					$abilityTalent[$key] = sanitizeString($value);
 				$this->abilitiesTalents[] = $abilityTalent;
 			}
 		}
 
 		public static function powerEditFormat($key = 1, $powerInfo = null) {
-			if ($powerInfo == null) 
-				$powerInfo = array('name' => '', 'notes' => '');
+			if ($powerInfo == null)
+				$powerInfo = ['name' => '', 'notes' => ''];
 ?>
 							<div class="power tr clearfix">
 								<input type="text" name="powers[<?=$key?>][name]" value="<?=$powerInfo['name']?>" class="name placeholder" data-placeholder="Power">
@@ -291,14 +291,14 @@
 <?	} ?>
 					</div>
 <?
-			} } else 
+			} } else
 				echo "\t\t\t\t\t<p id=\"noPowers\">This character currently has no powers.</p>\n";
 		}
-		
+
 		public function addPower($power) {
 			if (strlen($power['name'])) {
 				newItemized('power', $power['name'], $this::SYSTEM);
-				foreach ($power as $key => $value) 
+				foreach ($power as $key => $value)
 					$power[$key] = sanitizeString($value);
 				$this->powers[] = $power;
 			}
@@ -306,28 +306,28 @@
 
 		public function setBasicAttack($attack, $key, $value) {
 			if (array_key_exists($attack, $this->basicAttacks)) {
-				if (is_int($value)) 
+				if (is_int($value))
 					$this->basicAttacks[$attack][$key] = intval($value);
-				else 
+				else
 					$this->basicAttacks[$attack][$key] = sanitizeString($value);
 			}
 		}
 
 		public function getBasicAttacks($attack = null, $key = null) {
 			if (array_key_exists($attack, $this->basicAttacks)) {
-				if (array_key_exists($key, $this->basicAttacks[$attack])) 
+				if (array_key_exists($key, $this->basicAttacks[$attack]))
 					return $this->basicAttacks[$attack][$key];
-				elseif ($key == null) 
+				elseif ($key == null)
 					return $this->basicAttacks[$attack];
-			} elseif ($attack == null) 
+			} elseif ($attack == null)
 				return $this->basicAttacks;
-			else 
+			else
 				return null;
 		}
 
 		public static function attackEditFormat($key = 1, $attackInfo = null) {
-			if ($attackInfo == null) 
-				$attackInfo = array('name' => '', 'notes' => '');
+			if ($attackInfo == null)
+				$attackInfo = ['name' => '', 'notes' => ''];
 ?>
 							<div class="attack tr clearfix">
 								<input type="text" name="attacks[<?=$key?>][name]" value="<?=$attackInfo['name']?>" class="name placeholder" data-placeholder="Attack">
@@ -354,14 +354,14 @@
 <?	} ?>
 					</div>
 <?
-			} } else 
+			} } else
 				echo "\t\t\t\t\t<p id=\"noAttacks\">This character currently has no attacks.</p>\n";
 		}
-		
+
 		public function addAttack($attack) {
 			if (strlen($attack['name'])) {
 				newItemized('attack', $attack['name'], $this::SYSTEM);
-				foreach ($attack as $key => $value) 
+				foreach ($attack as $key => $value)
 					$attack[$key] = sanitizeString($value);
 				$this->attacks[] = $attack;
 			}
@@ -376,10 +376,10 @@
 				foreach ($data['class'] as $key => $value) if (strlen($value) && (int) $data['level'][$key] > 0) $data['classes'][$value] = $data['level'][$key];
 				$this->setClasses($data['classes']);
 
-				foreach ($data['stats'] as $stat => $value) 
+				foreach ($data['stats'] as $stat => $value)
 					$this->setStat($stat, $value);
-				foreach ($data['saves'] as $save => $values) 
-					foreach ($values as $sub => $value) 
+				foreach ($data['saves'] as $save => $values)
+					foreach ($values as $sub => $value)
 						$this->setSave($save, $sub, $value);
 				$this->setHP('current', $data['hp']['current']);
 				$this->setHP('maximum', $data['hp']['maximum']);
@@ -391,32 +391,32 @@
 				$this->setIconRelationships($data['iconRelationships']);
 
 				$this->clearVar('backgrounds');
-				if (sizeof($data['backgrounds'])) 
-					foreach ($data['backgrounds'] as $backgroundInfo) 
+				if (sizeof($data['backgrounds']))
+					foreach ($data['backgrounds'] as $backgroundInfo)
 						$this->addBackground($backgroundInfo);
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) 
-					foreach ($data['feats'] as $featInfo) 
+				if (sizeof($data['feats']))
+					foreach ($data['feats'] as $featInfo)
 						$this->addFeat($featInfo);
 
 				$this->clearVar('abilitiesTalents');
-				if (sizeof($data['abilitiesTalents'])) 
-					foreach ($data['abilitiesTalents'] as $info) 
+				if (sizeof($data['abilitiesTalents']))
+					foreach ($data['abilitiesTalents'] as $info)
 						$this->addAbilitiesTalents($info);
 
 				$this->clearVar('powers');
-				if (sizeof($data['powers'])) 
-					foreach ($data['powers'] as $info) 
+				if (sizeof($data['powers']))
+					foreach ($data['powers'] as $info)
 						$this->addPower($info);
 
-				foreach ($data['basicAttacks'] as $type => $field) 
-					foreach ($field as $key => $value) 
+				foreach ($data['basicAttacks'] as $type => $field)
+					foreach ($field as $key => $value)
 						$this->setBasicAttack($type, $key, $value);
 
 				$this->clearVar('attacks');
-				if (sizeof($data['attacks'])) 
-					foreach ($data['attacks'] as $info) 
+				if (sizeof($data['attacks']))
+					foreach ($data['attacks'] as $info)
 						$this->addAttack($info);
 
 				$this->setItems($data['items']);

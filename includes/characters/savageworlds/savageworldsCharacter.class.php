@@ -62,7 +62,7 @@
 			}
 		}
 
-		public function skillEditFormat($key = 1, $skillInfo = null) {
+		static public function skillEditFormat($key = 1, $skillInfo = null) {
 			if ($skillInfo == null) {
 				$skillInfo = ['trait' => 'trait', 'name' => '', 'diceType' => 4];
 			}

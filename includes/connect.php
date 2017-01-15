@@ -9,7 +9,7 @@
 	$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$mysql->query('SET time_zone="GMT"');
 
-	$mongo = new MongoDB\Client();
+	$mongo = new MongoDB\Client(null, [], ['typeMap' => ['array' => 'array', 'document' => 'array', 'root' => 'array']]);
 	$mongo = $mongo->gamersplane;
 
 	class DB
