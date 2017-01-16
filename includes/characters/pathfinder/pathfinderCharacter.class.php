@@ -72,27 +72,25 @@
 		}
 
 		public function getAttackBonus($key = null, $type = null) {
-			$attackBonus = (array) $this->attackBonus;
 			if ($key == null) {
-				return $attackBonus;
+				return $this->attackBonus;
 			} elseif ($key == 'total' && $type != null) {
-				$total = $attackBonus->base;
-				foreach ($attackBonus as $value) {
-					if (is_array($value) && is_numeric($value->$type)) {
-						$total += $value->$type;
+				$total = $this->attackBonus['base'];
+				foreach ($this->attackBonus as $value) {
+					if (is_array($value) && is_numeric($value[$type])) {
+						$total += $value[$type];
 					} elseif (is_numeric($value[$type])) {
 						$total += $value;
 					}
 				}
-				$total += $this->getStatMod($attackBonus->stat->$type, false);
+				$total += $this->getStatMod($this->attackBonus['stat'][$type], false);
 				$total += $this->size;
 				return $total;
-			} elseif (array_key_exists($key, $attackBonus)) {
-				if (is_array($attackBonus->$key) && array_key_exists($type, $attackBonus->$key)) {
-					var_dump($attackBonus->$key->$type); exit;
-					return $attackBonus->$key->$type;
-				} elseif (!is_array($attackBonus->$key)) {
-					return $attackBonus->$key;
+			} elseif (array_key_exists($key, $this->attackBonus)) {
+				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) {
+					return $this->attackBonus[$key][$type];
+				} elseif (!is_array($this->attackBonus[$key])) {
+					return $this->attackBonus[$key];
 				} else {
 					return false;
 				}
