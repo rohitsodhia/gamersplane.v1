@@ -210,7 +210,6 @@
 		}
 
 		public function save($bypass = false) {
-			var_dump($this); exit;
 			if (isset($_POST['character']))
 				$data = $_POST['character'];
 			else
