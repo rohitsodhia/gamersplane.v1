@@ -1,5 +1,5 @@
 <?
-	$subdomainParts = explode('.', getenv('APP_URL'));
+	$subdomainParts = explode('.', $_SERVER['HTTP_HOST']);
 	$subdomain = $subdomainParts[0];
 	$redirect = '';
 	if ($subdomain == 'www') {
