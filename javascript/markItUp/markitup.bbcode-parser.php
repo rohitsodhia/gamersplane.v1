@@ -111,14 +111,17 @@ function BBCode2Html($text) {
 
 	$matches = null;
 	global $currentUser, $isGM, $post;
-	$display = false;
+	if ($post) {
+		$display = false;
 
-	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<blockquote class="note"><div>Note to \1</div>\2</blockquote>', $text);
-	if (strpos($text, 'blockquote class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
-		foreach ($matches as $match) {
-			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-			if (!in_array(strtolower($currentUser->username), $noteTo))
-				$text = str_replace($match[0], '<blockquote class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></blockquote>', $text);
+		$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<blockquote class="note"><div>Note to \1</div>\2</blockquote>', $text);
+		if (strpos($text, 'blockquote class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
+				if (!in_array(strtolower($currentUser->username), $noteTo)) {
+					$text = str_replace($match[0], '<blockquote class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></blockquote>', $text);
+				}
+			}
 		}
 	}
 
