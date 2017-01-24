@@ -1167,6 +1167,12 @@ footer {
 	background: url('../images/fixedMenuBG.png') top repeat-x;
 }
 
+@media print {
+	#fixedMenu {
+		display: none;
+	}
+}
+
 #fixedMenu, #fixedMenu * {
 	z-index: 7500;
 }
