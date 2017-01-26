@@ -125,7 +125,7 @@
 				if (!isset($_GET['hideInactive']) || !$_GET['hideInactive'])
 					$inactiveGMs = $mysql->query("SELECT u.userID FROM users u INNER JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'isGM' AND um.metaValue = 1 WHERE u.lastActivity < NOW() - INTERVAL 14 DAY")->fetchAll(PDO::FETCH_COLUMN);
 			}
-			$showFullGames = isset($_GET['showFullGames']) && $_GET['showFullGames'];
+			$showFullGames = isset($_GET['showFullGames']) && $_GET['showFullGames'] === 'true';
 			$limit = isset($_GET['limit']) && (int) $_GET['limit'] > 0 ? (int) $_GET['limit'] : null;
 			$games = [];
 			$gms = [];
@@ -146,7 +146,7 @@
 						$game['playerCount']++;
 					}
 				}
-				if (!$myGames && !$showFullGames && $game['playerCount'] == $game['numPlayers']) {
+				if (!$myGames && !$showFullGames && $game['playerCount'] >= $game['numPlayers']) {
 					continue;
 				}
 				if ($game['start']) {
