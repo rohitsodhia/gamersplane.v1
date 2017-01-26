@@ -197,7 +197,6 @@
 					'replyTo' => $replyTo,
 					'history' => $history
 				]);
-				displayJSON(['sent' => true]);
 
 				if ($currentUser->getUsermeta('pmMail')) {
 					ob_start();
@@ -206,6 +205,8 @@
 					ob_end_clean();
 					mail($recipEmail, "New PM", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 				}
+
+				displayJSON(['sent' => true]);
 			}
 		}
 

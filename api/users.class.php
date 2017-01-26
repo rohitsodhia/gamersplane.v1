@@ -374,13 +374,25 @@
 				$user->updateUsermeta('birthday', $birthday);
 			}
 			$user->updateUsermeta('showAge', $details['birthday']['showAge'] ? 1 : 0);
+			if ($details['location'] == 'null') {
+				$details['location'] = '';
+			}
 			$user->updateUsermeta('location', sanitizeString($details['location']));
+			if ($details['twitter'] == 'null') {
+				$details['twitter'] = '';
+			}
 			$user->updateUsermeta('twitter', sanitizeString($details['twitter']));
+			if ($details['stream'] == 'null') {
+				$details['stream'] = '';
+			}
 			$user->updateUsermeta('stream', sanitizeString($details['stream']));
+			if ($details['games'] == 'null') {
+				$details['games'] = '';
+			}
 			$user->updateUsermeta('games', sanitizeString($details['games']));
-			$user->updateUsermeta('pmMail', intval($details['pmMail']) ? 1 : 0);
-			$user->updateUsermeta('newGameMail', intval($details['newGameMail']) ? 1 : 0);
-			$user->updateUsermeta('gmMail', intval($details['gmMail']) ? 1 : 0);
+			$user->updateUsermeta('pmMail', $details['pmMail'] ? 1 : 0);
+			$user->updateUsermeta('newGameMail', $details['newGameMail'] ? 1 : 0);
+			$user->updateUsermeta('gmMail', $details['gmMail'] ? 1 : 0);
 
 			$errors = [];
 			$oldPass = $newPass['oldPass'];
