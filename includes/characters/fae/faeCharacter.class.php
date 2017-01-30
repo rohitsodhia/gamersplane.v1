@@ -114,6 +114,8 @@
 				$this->setNotes($data->notes);
 			}
 
+			// var_dump($this); exit;
+
 			parent::save();
 		}
 	}

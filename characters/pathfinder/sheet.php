@@ -8,7 +8,7 @@
 				<div class="medText"><?=$this->getRace()?></div>
 				<div id="size" class="medText"><?=$this->getSize(true)?></div>
 			</div>
-			
+
 			<div class="tr labelTR">
 				<label id="label_classes" class="longText">Class(es)</label>
 				<label id="label_alignment" class="medText">Alignment</label>
@@ -17,7 +17,7 @@
 				<div class="longText"><? $this->displayClasses(); ?></div>
 				<div class="longText"><?=$this->getAlignment()?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 <?
@@ -34,7 +34,7 @@
 	}
 ?>
 				</div>
-				
+
 				<div id="savingThrows">
 					<div class="tr labelTR">
 						<div class="fillerBlock">&nbsp;</div>
@@ -60,7 +60,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="hp" class="dataTR">
 					<label class="leftLabel textLabel">Total HP</label>
 					<div><?=$this->getHP('total')?></div>
@@ -68,7 +68,7 @@
 					<div><?=strlen($this->getDamageReduction())?$this->getDamageReduction():'&nbsp;'?></div>
 				</div>
 			</div>
-			
+
 			<div id="ac">
 				<div class="tr labelTR">
 					<label class="first">Total AC</label>
@@ -95,7 +95,7 @@
 					<div><?=showSign($this->getAC('misc'))?></div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="combatBonuses">
 					<div class="tr labelTR">
@@ -140,7 +140,7 @@
 						<div class="shortNum"><?=showSign($this->getAttackBonus('misc', 'ranged'))?></div>
 					</div>
 				</div>
-				
+
 				<div id="combatManuvers">
 					<div id="cmb">
 						<div class="tr labelTR">
@@ -158,7 +158,7 @@
 							<div class="shortNum"><?=showSign(0 - $this->getSize())?></div>
 						</div>
 					</div>
-					
+
 					<div id="cmd">
 						<div class="tr labelTR">
 							<div class="fillerBlock medNum">&nbsp;</div>
@@ -180,7 +180,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
@@ -202,7 +202,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
@@ -217,13 +217,13 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="items">
 					<h2 class="headerbar hbDark">Items</h2>
 					<div class="hbdMargined"><?=printReady($this->getItems())?></div>
 				</div>
-				
+
 				<div id="spells">
 					<h2 class="headerbar hbDark">Spells</h2>
 					<div class="hbdMargined"><?=printReady($this->getSpells())?></div>

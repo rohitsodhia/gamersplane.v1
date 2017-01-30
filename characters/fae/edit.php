@@ -45,7 +45,7 @@
 							<h2 class="headerbar hbDark" skew-element>Stunts <a href="" ng-click="addItem('stunts')">[ Add Stunt ]</a></h2>
 							<div id="stuntsList" class="hbMargined" hb-margined>
 								<div ng-repeat="stunt in character.stunts track by $index" class="stunt item tr clearfix">
-									<input type="text" ng-model="stunt.name" class="stuntName width5 alignLeft" placeholder="Aspect Name">
+									<input type="text" ng-model="stunt.name" class="stuntName width5 alignLeft" placeholder="Stunt Name">
 									<a href="" class="remove sprite cross" ng-click="character.stunts.splice($index, 1)"></a>
 								</div>
 							</div>

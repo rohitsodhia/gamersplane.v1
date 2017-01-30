@@ -124,7 +124,6 @@ $(function () {
 });
 
 controllers.controller('editCharacter', ['$scope', 'CharactersService', function ($scope, CharactersService) {
-	console.log(1);
 	pathElements = getPathElements();
 	$scope.loadChar = function () {
 		return CharactersService.load(pathElements[2]).then(function (data) {

@@ -393,7 +393,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 }]).service('ACSearch', ['$http', '$q', function ($http, $q) {
 	this.cil = function (type, search, system, systemOnly) {
 		if (search.length === 0) {
-			return $q(function (resolve, reject) { resolve([]); })
+			return $q(function (resolve, reject) { resolve([]); });
 		}
 		if (isUndefined(systemOnly) || typeof systemOnly != 'boolean') {
 			systemOnly = false;

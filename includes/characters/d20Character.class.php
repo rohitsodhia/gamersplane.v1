@@ -115,9 +115,8 @@
 		}
 
 		public function setHP($key, $value) {
-			$hp = (array) $this->hp;
-			if (array_key_exists($key, $hp)) {
-				$hp[$key] = (int) $value;
+			if (array_key_exists($key, $this->hp)) {
+				$this->hp[$key] = (int) $value;
 			} else {
 				return false;
 			}

@@ -61,3 +61,4 @@
 						<div class="hbdMargined">{{character.notes}}</div>
 					</div>
 				</div>
+			</div>
