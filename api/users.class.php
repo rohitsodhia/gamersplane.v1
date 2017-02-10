@@ -366,14 +366,14 @@
 			if ($details['gender'] == 'n') {
 				$gender = '';
 			} else {
-				$gender = $details['gender'] == 'm'?'m':'f';
+				$gender = $details['gender'] == 'm' ? 'm' : 'f';
 			}
 			$user->updateUsermeta('gender', $gender);
 			$birthday = intval($details['birthday']['date']['year']) . '-' . (intval($details['birthday']['date']['month']) <= 9 ? '0' : '') . intval($details['birthday']['date']['month']) . '-' . (intval($details['birthday']['date']['day']) <= 9 ? '0' : '') . intval($details['birthday']['date']['day']);
 			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) {
 				$user->updateUsermeta('birthday', $birthday);
 			}
-			$user->updateUsermeta('showAge', $details['birthday']['showAge'] ? 1 : 0);
+			$user->updateUsermeta('showAge', $details['birthday']['showAge'] === 'true' ? 1 : 0);
 			if ($details['location'] == 'null') {
 				$details['location'] = '';
 			}
@@ -390,9 +390,9 @@
 				$details['games'] = '';
 			}
 			$user->updateUsermeta('games', sanitizeString($details['games']));
-			$user->updateUsermeta('pmMail', $details['pmMail'] ? 1 : 0);
-			$user->updateUsermeta('newGameMail', $details['newGameMail'] ? 1 : 0);
-			$user->updateUsermeta('gmMail', $details['gmMail'] ? 1 : 0);
+			$user->updateUsermeta('pmMail', $details['pmMail'] === 'true' ? 1 : 0);
+			$user->updateUsermeta('newGameMail', $details['newGameMail'] === 'true' ? 1 : 0);
+			$user->updateUsermeta('gmMail', $details['gmMail'] === 'true' ? 1 : 0);
 
 			$errors = [];
 			$oldPass = $newPass['oldPass'];

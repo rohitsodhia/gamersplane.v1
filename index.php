@@ -1,16 +1,17 @@
 <?
-	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+	require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
 
 	if (!$loggedIn) {
 		$contentClasses = ['fullWidthBody', 'underHeader'];
 		$bodyClasses = ['landingPage'];
 	}
 
-	require_once(FILEROOT.'/header.php');
-	if ($loggedIn)
+	require_once(FILEROOT . '/header.php');
+	if ($loggedIn) {
 		include('home.php');
-	else
+	} else {
 		include('landing.php');
+	}
 
-	require_once(FILEROOT.'/footer.php');
+	require_once(FILEROOT . '/footer.php');
 ?>
