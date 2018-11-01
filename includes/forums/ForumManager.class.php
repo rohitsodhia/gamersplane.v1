@@ -32,6 +32,7 @@
 				$this->forumsData[$forum['forumID']] = $forum;
 			}
 			if (($this->currentForum == 0 || $this->currentForum == 2) && bindec($options&$this::NO_CHILDREN) == 0) {
+				$showPubGames = false;
 				if ($showPubGames) {
 					$publicGames = $mongo->games->find(
 						['public' => true],
