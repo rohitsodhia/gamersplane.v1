@@ -63,7 +63,7 @@
 
 	$moddedPath = $pathAction ? $pathAction : '';
 
-	header("Access-Control-Allow-Origin: http://".substr(COOKIE_DOMAIN, 1));
+	header("Access-Control-Allow-Origin: https://".substr(COOKIE_DOMAIN, 1));
 	header('Access-Control-Allow-Credentials: true');
 	if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 		if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
