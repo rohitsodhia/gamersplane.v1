@@ -15,6 +15,8 @@
 	require_once('functions.php');
 	require_once('rhocode.php');
 
+	require_once('emails.php');
+
 	startSession();
 
 //	require_once(FILEROOT.'/blog/wp-blog-header.php');
