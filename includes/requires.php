@@ -1,7 +1,7 @@
 <?
-	require_once('vendor/autoload.php');
+	require_once(dirname(__FILE__).'/../vendor/autoload.php');
 
-	$envs = explode("\n", file_get_contents('.env'));
+	$envs = explode("\n", file_get_contents(dirname(__FILE__).'/../.env'));
 	foreach ($envs as $env) {
 		$env = trim($env);
 		if (strlen($env)) {
@@ -9,11 +9,11 @@
 		}
 	}
 
-	require_once('connect.php');
-	require_once('variables.php');
+	require_once(dirname(__FILE__).'/connect.php');
+	require_once(dirname(__FILE__).'/variables.php');
 //	require_once('classes.php');
-	require_once('functions.php');
-	require_once('rhocode.php');
+	require_once(dirname(__FILE__).'/functions.php');
+	require_once(dirname(__FILE__).'/rhocode.php');
 
 	startSession();
 
