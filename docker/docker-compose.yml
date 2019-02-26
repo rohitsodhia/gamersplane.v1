@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile-nginx
     container_name: gamersplane-proxy
     ports:
-      - 80
+      - 80:80
     volumes:
       - ../:/var/www
       - ./nginx.conf:/etc/nginx/conf.d/site.conf
@@ -40,4 +40,4 @@ services:
       - MYSQL_USER=gamersplane
       - MYSQL_PASSWORD=&amp;R6ivIqTS0b#wQ7e
     ports:
-      - 3306
+      - 3306:3306
