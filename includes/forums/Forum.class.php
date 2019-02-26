@@ -29,9 +29,8 @@
 				if (!array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 				$this->__set($key, $forumData[$key]);
 			}
-			$this->heritage = explode('-', $this->heritage);
-			array_walk($this->heritage, function (&$value, $key) { $value = intval($value); });
-			if ($this->forumID != 0) $this->heritage = array_merge(array(0), $this->heritage);
+			$this->heritage = array_map('intval', explode('-', $this->heritage));
+			if ($this->forumID != 0) $this->heritage = array_merge([0], $this->heritage);
 			if (isset($forumData['lastPostID'])) {
 				$this->lastPost = new stdClass();
 				$this->lastPost->postID = $forumData['lastPostID'];
