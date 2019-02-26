@@ -1,0 +1,43 @@
+version: '3.6'
+
+# volumes:
+#   logs:
+#     driver: local
+#   database:
+#     driver: local
+
+services:
+  # memcached:
+  #   image: memcached:alpine
+  #   container_name: gamersplane-memcached
+
+  proxy:
+    build:
+      context: ./
+      dockerfile: Dockerfile-nginx
+    container_name: gamersplane-proxy
+    ports:
+      - 80
+    volumes:
+      - ../:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/site.conf
+
+  api:
+    build:
+      context: ./
+      dockerfile: Dockerfile-php
+    container_name: gamersplane-api
+    volumes:
+      - ../:/var/www
+
+  mysql:
+    image: mysql:8.0
+    container_name: gamersplane-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=p2HR1IQGF8c!A&amp;f&amp;
+      - MYSQL_DATABASE=gamersplane
+      - MYSQL_USER=gamersplane
+      - MYSQL_PASSWORD=&amp;R6ivIqTS0b#wQ7e
+    ports:
+      - 3306
