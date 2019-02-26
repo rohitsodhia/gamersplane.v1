@@ -7,10 +7,10 @@
 	);
 	$gmCheck = false;
 	$player = null;
-	foreach ($game['players'] as $player) {
-		if ($player['user']['userID'] == $playerID) {
-			$player = $player;
-		} elseif ($player['user']['userID'] == $currentUser->userID && $player['isGM']) {
+	foreach ($game['players'] as $iPlayer) {
+		if ($iPlayer['user']['userID'] == $playerID) {
+			$player = $iPlayer;
+		} elseif ($iPlayer['user']['userID'] == $currentUser->userID && $iPlayer['isGM']) {
 			$gmCheck = true;
 		}
 	}

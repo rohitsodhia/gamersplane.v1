@@ -15,6 +15,8 @@
 	require_once(dirname(__FILE__).'/functions.php');
 	require_once(dirname(__FILE__).'/rhocode.php');
 
+	require_once('emails.php');
+
 	startSession();
 
 //	require_once(FILEROOT.'/blog/wp-blog-header.php');
