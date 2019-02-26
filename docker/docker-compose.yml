@@ -41,3 +41,7 @@ services:
       - MYSQL_PASSWORD=&amp;R6ivIqTS0b#wQ7e
     ports:
       - 3306:3306
+
+  mongo:
+    image: mongo:3.6-stretch
+    container_name: gamersplane-mongodb
