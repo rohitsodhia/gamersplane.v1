@@ -251,7 +251,7 @@
 		public function checkACP($role, $redirect = true) {
 			if ($role == 'all' && sizeof($this->acpPermissions)) {
 				return $this->acpPermissions;
-			} elseif ($role == 'any' && sizeof($this->acpPermissions)) {
+			} elseif ($role == 'any' && $this->acpPermissions && sizeof($this->acpPermissions)) {
 				return true;
 			} else {
 				if (!$redirect && ($this->acpPermissions == null || (!in_array($role, $this->acpPermissions) && !in_array('all', $this->acpPermissions)))) {
