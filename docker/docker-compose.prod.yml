@@ -13,13 +13,14 @@ services:
 
   proxy:
     build:
-      context: ./nginx
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile-nginx
     container_name: gamersplane-proxy
     ports:
       - 80:80
     volumes:
       - ../:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/site.conf
 
   api:
     build:
