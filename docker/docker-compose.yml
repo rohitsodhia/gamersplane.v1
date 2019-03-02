@@ -13,7 +13,7 @@ services:
 
   proxy:
     build:
-      context: ./nginx
+      context: ./apache
       dockerfile: Dockerfile
     container_name: gamersplane-proxy
     ports:

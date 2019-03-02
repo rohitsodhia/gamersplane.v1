@@ -1,0 +1,25 @@
+#!/bin/bash
+
+for opt in $@; do
+	case $opt in
+		"-d")
+			DETACHED="-d"
+			;;
+	esac
+	shift
+done
+
+env=$1
+valid=0
+valid_envs=("dev" "prod")
+for valid_env in ${valid_envs[@]}; do
+	if [[ $1 == $valid_env ]]; then
+    	valid=1
+		break
+	fi
+done
+if [ $valid == 0 ]; then
+	env="dev"
+fi
+
+docker-compose -f docker-compose.yml -f docker-compose.$env.yml up $DETACHED

@@ -3,5 +3,5 @@ version: '3.6'
 services:
   proxy:
     volumes:
-      - ./nginx/dev/site.conf:/etc/nginx/conf.d/site.conf
-      - ./nginx/dev/api.conf:/etc/nginx/conf.d/api.conf
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./apache/extra:/usr/local/apache2/conf/extra
