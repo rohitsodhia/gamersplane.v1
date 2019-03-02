@@ -98,7 +98,7 @@
 					'status' => 'open',
 					'retired' => null
 				];
-				if (sizeof($_GET['systems'])) {
+				if ($_GET['systems'] && sizeof($_GET['systems'])) {
 					$systems = $_GET['systems'];
 					if (is_string($systems)) {
 						$systems = explode(',', $systems);
