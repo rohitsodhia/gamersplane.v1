@@ -1,10 +1,12 @@
 version: '3.6'
 
-# volumes:
-#   logs:
-#     driver: local
-#   database:
-#     driver: local
+volumes:
+  logs:
+    driver: local
+  mysql_db:
+    driver: local
+  mongo_db:
+    driver: local
 
 services:
   # memcached:
@@ -38,10 +40,12 @@ services:
       - MYSQL_USER=gamersplane
       - MYSQL_PASSWORD=&amp;R6ivIqTS0b#wQ7e
     volumes:
-      - ./mysql/:/docker-entrypoint-initdb.d
+      - ./mysql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
 
   mongo:
     image: mongo:3.4-jessie
-    container_name: gamersplane-mongodb
+    container_name: gamersplane-mongo
+    volumes:
+    - mongo_db:/data/db
