@@ -1,12 +1,14 @@
 version: '3.6'
 
 volumes:
-  logs:
-    driver: local
+  # logs:
+  #   driver: local
   mysql_db:
     driver: local
+    name: gp_mysql_db
   mongo_db:
     driver: local
+    name: gp_mongo_db
 
 services:
   # memcached:
@@ -45,7 +47,8 @@ services:
       - 3306:3306
 
   mongo:
-    image: mongo:3.4-jessie
+    build:
+      context: ./mongo
     container_name: gamersplane-mongo
     volumes:
     - mongo_db:/data/db

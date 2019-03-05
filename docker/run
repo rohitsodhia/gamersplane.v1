@@ -1,25 +1,38 @@
 #!/bin/bash
 
+env="dev"
 for opt in $@; do
+	parsed=0
 	case $opt in
 		"-d")
 			DETACHED="-d"
+			parsed=1
+			;;
+		"-e")
+			env=$2
+			valid=0
+			valid_envs=("dev" "prod")
+			for valid_env in ${valid_envs[@]}; do
+				if [[ $env == $valid_env ]]; then
+					valid=1
+					break
+				fi
+			done
+			if [ $valid == 0 ]; then
+				env="dev"
+			fi
+			shift
+			parsed=1
 			;;
 	esac
-	shift
-done
 
-env=$1
-valid=0
-valid_envs=("dev" "prod")
-for valid_env in ${valid_envs[@]}; do
-	if [[ $1 == $valid_env ]]; then
-    	valid=1
-		break
+	if [[ $parsed == 1 ]]; then
+		shift
 	fi
 done
-if [ $valid == 0 ]; then
-	env="dev"
+
+if [[ $# == 1 ]]; then
+	service=$1
 fi
 
-docker-compose -f docker-compose.yml -f docker-compose.$env.yml up $DETACHED
+docker-compose -f docker-compose.yml -f docker-compose.$env.yml up $DETACHED $service
