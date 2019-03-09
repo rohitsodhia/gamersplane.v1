@@ -85,7 +85,7 @@
 		}
 
 		public function getAuthor($key = null) {
-			if (property_exists($this->author, $key)) {
+			if ($this->author && property_exists($this->author, $key)) {
 				return $this->author->$key;
 			} else {
 				return $this->author;

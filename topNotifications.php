@@ -41,7 +41,7 @@
 		}
 	}
 
-	if (sizeof($pendingPlayers) > 0 || sizeof($pendingChars) > 0 || $pmCount > 0) {
+	if (($pendingPlayers && sizeof($pendingPlayers) > 0) || ($pendingChars && sizeof($pendingChars) > 0) || $pmCount > 0) {
 ?>
 		<div id="topNotifications" class="alertBox_info"><ul>
 <?php		if ($pmCount) { ?>
