@@ -5,3 +5,4 @@ services:
     volumes:
       - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./apache/extra:/usr/local/apache2/conf/extra
+      - ./apache/ssl:/usr/local/apache2/ssl
