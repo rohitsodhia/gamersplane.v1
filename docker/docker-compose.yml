@@ -25,6 +25,8 @@ services:
       - 443:443
     volumes:
       - ../:/var/www
+    depends_on:
+      - api
 
   api:
     build:
@@ -33,6 +35,9 @@ services:
     container_name: gamersplane-api
     volumes:
       - ../:/var/www
+    depends_on:
+      - mysql
+      - mongo
 
   mysql:
     image: mysql:5.5
