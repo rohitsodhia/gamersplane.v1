@@ -306,6 +306,20 @@ CREATE TABLE `forums` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `forums_heritage`
+--
+
+DROP TABLE IF EXISTS `forums_heritage`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forums_heritage` (
+  `parentID` int(11) NOT NULL,
+  `childID` int(11) NOT NULL,
+  PRIMARY KEY (`parentID`,`childID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `forums_groupMemberships`
 --
 

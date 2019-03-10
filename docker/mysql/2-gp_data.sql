@@ -86,6 +86,17 @@ INSERT INTO `forums` VALUES (0,'Index',NULL,NULL,NULL,'',0,NULL,0),(1,'General',
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `forums_heritage`
+--
+
+LOCK TABLES `forums_heritage` WRITE;
+/*!40000 ALTER TABLE `forums_heritage` DISABLE KEYS */;
+INSERT INTO `forums_heritage` VALUES (1,3),(1,4),(1,5),(1,11),(1,12),(1,14),(2,10),(4,12),(4,14),(5,11),(6,7),(6,8),(6,9),(6,13),(6,15),(6,16),(6,17),(6,18),(6,19),(9,13),(16,17),(16,18),(16,19),(20,21),(22,23),(22,24),(22,25);
+/*!40000 ALTER TABLE `forums_heritage` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+--
 -- Dumping data for table `forums_groupMemberships`
 --
 
