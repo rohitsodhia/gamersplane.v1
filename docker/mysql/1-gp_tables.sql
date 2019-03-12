@@ -316,7 +316,7 @@ CREATE TABLE `forums_heritage` (
   `parentID` int(11) NOT NULL,
   `childID` int(11) NOT NULL,
   PRIMARY KEY (`parentID`,`childID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
