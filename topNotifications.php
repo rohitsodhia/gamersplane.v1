@@ -27,7 +27,7 @@
 					}
 					$pendingPlayers[$game['gameID']]++;
 				}
-				if (sizeof($player['characters'])) {
+				if (is_countable($player['characters']) && sizeof($player['characters'])) {
 					foreach ($player['characters'] as $character) {
 						if (!$character['approved']) {
 							if (!isset($pendingChars[$game['gameID']])) {
