@@ -1,4 +1,4 @@
-<?
+<?php
 	$dbHostname = getenv('MYSQL_HOST');
 	$dbUsername = getenv('MYSQL_USERNAME');
 	$dbPassword = getenv('MYSQL_PASSWORD');
