@@ -120,6 +120,7 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 				return;
 			}
 			gameDetails = copyObject($scope.game);
+			$scope.$emit('pageLoading');
 			if ($scope.state == 'new') {
 				GamesService.create(gameDetails).then(function (data) {
 					if (data.success) {
@@ -127,6 +128,7 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 					} else if (data.failed) {
 						$scope.errors = data.errors;
 					}
+					$scope.$emit('pageLoading');
 				});
 			} else {
 				GamesService.update(gameDetails).then(function (data) {
@@ -135,6 +137,7 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 					} else if (data.failed) {
 						$scope.errors = data.errors;
 					}
+					$scope.$emit('pageLoading');
 				});
 			}
 		};
