@@ -259,7 +259,7 @@ class games
 			'success' => true,
 			'details' => $gameInfo,
 			'players' => $players,
-			'invites' => sizeof($gameInfo['invites']) ? $gameInfo['invites'] : [],
+			'invites' => is_countable($gameInfo['invites']) && sizeof($gameInfo['invites']) ? $gameInfo['invites'] : [],
 			'decks' => $decks
 		]);
 	}
