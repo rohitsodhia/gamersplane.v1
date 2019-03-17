@@ -35,4 +35,5 @@ if [[ $# == 1 ]]; then
 	service=$1
 fi
 
-docker-compose -f docker-compose.yml -f docker-compose.$env.yml up $DETACHED $service
+path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+docker-compose -f "$path/docker-compose.yml" -f "$path/docker-compose.$env.yml" up $DETACHED $service
