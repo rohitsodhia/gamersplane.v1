@@ -316,7 +316,7 @@ CREATE TABLE `forums_heritage` (
   `parentID` int(11) NOT NULL,
   `childID` int(11) NOT NULL,
   PRIMARY KEY (`parentID`,`childID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -838,7 +838,7 @@ CREATE TABLE `referralLinks` (
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `order` int(11) DEFAULT NULL,
   PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
