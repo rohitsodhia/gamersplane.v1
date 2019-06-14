@@ -6,3 +6,12 @@ services:
       - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./apache/extra:/usr/local/apache2/conf/extra
       - ./apache/ssl:/usr/local/apache2/ssl
+
+  mysql:
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=test123
+      - MYSQL_DATABASE=gamersplane
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=test123

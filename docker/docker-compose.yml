@@ -50,12 +50,10 @@ services:
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
-    ports:
-      - 3306:3306
 
   mongo:
     build:
       context: ./mongo
     container_name: gamersplane-mongo
     volumes:
-    - mongo_db:/data/db
+      - mongo_db:/data/db
