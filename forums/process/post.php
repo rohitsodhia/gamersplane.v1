@@ -70,7 +70,7 @@
 		$rolls = [];
 		$draws = [];
 
-		if (sizeof($_POST['rolls'])) { foreach ($_POST['rolls'] as $num => $roll) {
+		if (array_key_exists('rolls', $_POST) && sizeof($_POST['rolls'])) { foreach ($_POST['rolls'] as $num => $roll) {
 			$cleanedRoll = [];
 			if (strlen($roll['roll'])) {
 				$rollObj = RollFactory::getRoll($roll['type']);
@@ -83,7 +83,7 @@
 			}
 		} }
 
-		if (sizeof($_POST['decks'])) {
+		if (array_key_exists('decks', $_POST) && sizeof($_POST['decks'])) {
 			$returnFields = ['players' => true];
 			if (sizeof($_POST['decks'])) {
 				$returnFields['decks'] = true;
