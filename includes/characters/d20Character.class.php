@@ -309,13 +309,13 @@
 					if (is_array($value) && is_numeric($value->$type)) {
 						$total += $value[$type];
 					} elseif (is_numeric($value[$type])) {
-						$total += $value;
+						$total += $value[$type];
 					}
 				}
 				$total += $this->getStatMod($this->attackBonus['stat'][$type], false);
 				return $total;
 			} elseif (array_key_exists($key, $this->attackBonus)) {
-				if (is_array($this->attackBonus->$key) && array_key_exists($type, $this->attackBonus->$key)) {
+				if (is_array($this->attackBonus[$key]) && array_key_exists($type, $this->attackBonus[$key])) {
 					return $this->attackBonus[$key][$type];
 				} elseif (!is_array($this->attackBonus[$key])) {
 					return $this->attackBonus[$key];
