@@ -1,4 +1,4 @@
-3<?
+<?
 	class dnd4Character extends d20Character {
 		const SYSTEM = 'dnd4';
 
