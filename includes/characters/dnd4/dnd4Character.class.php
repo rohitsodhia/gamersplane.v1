@@ -112,7 +112,7 @@
 			return $return;
 		}
 
-		public function setSpeed($key, $value) {
+		public function setSpeed($key, $value = null) {
 			if (array_key_exists($key, $this->speed)) {
 				$this->speed[$key] = (int) $value;
 			} else {
