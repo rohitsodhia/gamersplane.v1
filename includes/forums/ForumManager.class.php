@@ -34,7 +34,7 @@ class ForumManager
 
 		$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
 
-/*		$forumsToGet = [];
+		/*		$forumsToGet = [];
 		$forumsToGetR = $mysql->query("SELECT parentID FROM forums_heritage WHERE childID = {$this->currentForum}");
 		foreach ($forumsToGetR as $forumID) {
 			$forumsToGet[] = $forumID;
@@ -55,7 +55,7 @@ class ForumManager
 		}
 		$forumsToGet[] = $this->currentForum;
 		$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)"); */
-		
+
 		foreach ($forumsR as $forum) {
 			$this->forumsData[$forum['forumID']] = $forum;
 		}
@@ -81,7 +81,7 @@ class ForumManager
 				}
 			}
 		}
-		
+
 		$permissions = ForumPermissions::getPermissions($currentUser->userID, array_keys($this->forumsData), null, $this->forumsData);
 		foreach ($permissions as $pForumID => $permission) {
 			$this->forumsData[$pForumID]['permissions'] = $permission;
@@ -498,4 +498,4 @@ public function displayForumRow($forumID)
 		return $details;
 	}
 }
-?> 
+?>
