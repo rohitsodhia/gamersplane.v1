@@ -32,54 +32,56 @@ class ForumManager
 			exit;
 		}
 
-			$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
+		$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON p.forumID = {$this->currentForum} AND (".(bindec($options&$this::NO_CHILDREN) == 0?"f.heritage LIKE CONCAT(p.heritage, '%') OR ":'')."p.heritage LIKE CONCAT(f.heritage, '%')) LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)");
 
-/*			$forumsToGet = [];
-			$forumsToGetR = $mysql->query("SELECT parentID FROM forums_heritage WHERE childID = {$this->currentForum}");
+/*		$forumsToGet = [];
+		$forumsToGetR = $mysql->query("SELECT parentID FROM forums_heritage WHERE childID = {$this->currentForum}");
+		foreach ($forumsToGetR as $forumID) {
+			$forumsToGet[] = $forumID;
+		}
+		if (bindec($options&$this::NO_CHILDREN) != 0) {
+			if ($this->currentForum == 2) {
+				$forumsToGet[] = 10;
+			} else {
+				$dontGetGames = '';
+				if ($this->currentForum == 0) {
+					$dontGetGames = " INNER JOIN forums_heritage g";
+				}
+			}
+			$forumsToGetR = $mysql->query("SELECT h.childID FROM forums_heritage h WHERE h.parentID = {$this->currentForum}");
 			foreach ($forumsToGetR as $forumID) {
 				$forumsToGet[] = $forumID;
 			}
-			if (bindec($options&$this::NO_CHILDREN) != 0) {
-				if ($this->currentForum == 2) {
-					$forumsToGet[] = 10;
-				} else {
-					$dontGetGames = '';
-					if ($this->currentForum == 0) {
-					    $dontGetGames = " INNER JOIN forums_heritage g";
-					}
-				}
-				$forumsToGetR = $mysql->query("SELECT h.childID FROM forums_heritage h WHERE h.parentID = {$this->currentForum}");
-				foreach ($forumsToGetR as $forumID) {
-					$forumsToGet[] = $forumID;
+		}
+		$forumsToGet[] = $this->currentForum;
+		$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)"); */
+		
+		foreach ($forumsR as $forum) {
+			$this->forumsData[$forum['forumID']] = $forum;
+		}
+		if ($loggedIn) {
+			$userGames = $mongo->games->find(
+				[
+					'retired' => null,
+					'players' => ['$elemMatch' => [
+						'user.userID' => $currentUser->userID,
+						'approved' => true
+					]]
+				],
+				['projection' => ['forumID' => true]]
+			);
+			$userGameForumIDs = [];
+			foreach ($userGames as $game) {
+				$userGameForumIDs[] = $game['forumID'];
+			}
+			if (sizeof($userGameForumIDs)) {
+				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE p.forumID IN (" . implode(', ', $userGameForumIDs) . ") ORDER BY LENGTH(f.heritage)");
+				foreach ($userGameForums as $forum) {
+					$this->forumsData[$forum['forumID']] = $forum;
 				}
 			}
-			$forumsToGet[] = $this->currentForum;
-			$forumsR = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID".($this->currentForum == 0 || $this->currentForum == 2?' WHERE f.heritage NOT LIKE CONCAT(LPAD(2, '.HERITAGE_PAD.', 0), "%") OR f.forumID IN (2, 10)':'')." ORDER BY LENGTH(f.heritage)"); */
-			foreach ($forumsR as $forum) {
-				$this->forumsData[$forum['forumID']] = $forum;
-			}
-			if ($loggedIn) {
-				$userGames = $mongo->games->find(
-					[
-						'retired' => null,
-						'players' => ['$elemMatch' => [
-							'user.userID' => $currentUser->userID,
-							'approved' => true
-						]]
-					],
-					['projection' => ['forumID' => true]]
-				);
-				$userGameForumIDs = [];
-				foreach ($userGames as $game) {
-					$userGameForumIDs[] = $game['forumID'];
-				}
-				if (sizeof($userGameForumIDs)) {
-					$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE p.forumID IN (" . implode(', ', $userGameForumIDs) . ") ORDER BY LENGTH(f.heritage)");
-					foreach ($userGameForums as $forum) {
-						$this->forumsData[$forum['forumID']] = $forum;
-					}
-				}
-			}
+		}
+		
 		$permissions = ForumPermissions::getPermissions($currentUser->userID, array_keys($this->forumsData), null, $this->forumsData);
 		foreach ($permissions as $pForumID => $permission) {
 			$this->forumsData[$pForumID]['permissions'] = $permission;
