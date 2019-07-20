@@ -13,5 +13,5 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=test123
       - MYSQL_DATABASE=gamersplane
-      - MYSQL_USER=dev
+      - MYSQL_USER=gamersplane
       - MYSQL_PASSWORD=test123
