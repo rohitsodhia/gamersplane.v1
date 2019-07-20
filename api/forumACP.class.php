@@ -17,7 +17,7 @@ class forumACP
 		} elseif ($pathOptions[1] == 'deleteForum' && isset($_POST['forumID'])) {
 			$this->deleteForum(intval($_POST['forumID']));
 		} elseif ($pathOptions[1] == 'createForum' && isset($_POST['parentID'], $_POST['name'])) {
-			$this->createForum((int)$_POST['parentID'], $_POST['name']);
+			$this->createForum((int) $_POST['parentID'], $_POST['name']);
 		} elseif ($pathOptions[1] == 'createGroup' && isset($_POST['forumID'], $_POST['name'])) {
 			$this->createGroup(intval($_POST['forumID']), $_POST['name']);
 		} elseif ($pathOptions[1] == 'editGroup' && isset($_POST['groupID'], $_POST['name'])) {
@@ -27,9 +27,9 @@ class forumACP
 		} elseif ($pathOptions[1] == 'savePermission' && isset($_POST['forumID'])) {
 			$this->savePermission(intval($_POST['forumID']), $_POST['permission']);
 		} elseif ($pathOptions[1] == 'addPermission' && isset($_POST['type'], $_POST['forumID'])) {
-			$this->addPermission($_POST['type'], (int)$_POST['forumID'], isset($_POST['typeID']) ? (int)$_POST['typeID'] : null);
+			$this->addPermission($_POST['type'], (int) $_POST['forumID'], isset($_POST['typeID']) ? (int) $_POST['typeID'] : null);
 		} elseif ($pathOptions[1] == 'deletePermission' && isset($_POST['type'], $_POST['typeID'], $_POST['forumID'])) {
-			$this->deletePermission($_POST['type'], (int)$_POST['typeID'], (int)$_POST['forumID']);
+			$this->deletePermission($_POST['type'], (int) $_POST['typeID'], (int) $_POST['forumID']);
 		} else {
 			displayJSON(['failed' => true]);
 		}
@@ -50,8 +50,8 @@ class forumACP
 		$lForumManager = new ForumManager(0, ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$list = $lForumManager->getAdminForums(0, $forumID);
 		$details = [
-			'forumID' => (int)$forumID,
-			'isGameForum' => (bool)$forum->isGameForum(),
+			'forumID' => (int) $forumID,
+			'isGameForum' => (bool) $forum->isGameForum(),
 			'gameDetails' => null,
 			'title' => $forum->getTitle(true),
 			'description' => $forum->getDescription(),
@@ -67,14 +67,14 @@ class forumACP
 			);
 			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameDetails['gameID']}")->fetchAll();
 			foreach ($groups as &$group) {
-				$group['groupID'] = (int)$group['groupID'];
+				$group['groupID'] = (int) $group['groupID'];
 			}
 			foreach ($gameDetails['players'] as &$player) {
 				$player = $player['user'];
 			}
 			$details['gameDetails'] = [
 				'forumID' => $gameForumID,
-				'groupID' => (int)$gameDetails['groupID'],
+				'groupID' => (int) $gameDetails['groupID'],
 				'groups' => $groups,
 				'players' => $gameDetails['players']
 			];
@@ -83,8 +83,8 @@ class forumACP
 			foreach ($forum->getChildren() as $order => $childID) {
 				$cForum = $forumManager->forums[$childID];
 				$details['children'][] = [
-					'forumID' => (int)$childID,
-					'order' => (int)$order,
+					'forumID' => (int) $childID,
+					'order' => (int) $order,
 					'type' => $cForum->getType(),
 					'title' => $cForum->getTitle(true)
 				];
@@ -139,11 +139,11 @@ class forumACP
 	{
 		foreach ($permissions as $key => &$value) {
 			if (!in_array($key, ['type', 'id', 'name', 'gameGroup', 'username'])) {
-				$value = (int)$value / $divideBy;
+				$value = (int) $value / $divideBy;
 			} elseif (in_array($key, array('id'))) {
-				$value = (int)$value;
+				$value = (int) $value;
 			} elseif ($key == 'gameGroup') {
-				$value = (bool)$value;
+				$value = (bool) $value;
 			}
 		}
 		return $permissions;
@@ -241,7 +241,7 @@ class forumACP
 		$addForum->bindValue(':title', sanitizeString($name));
 		$addForum->bindValue(':order', intval($forum->childCount) + 1);
 		$addForum->execute();
-		$forumID = (int)$mysql->lastInsertId();
+		$forumID = (int) $mysql->lastInsertId();
 		$mysql->query('UPDATE forums SET heritage = "' . $forum->getHeritage(true) . '-' . sql_forumIDPad($forumID) . '" WHERE forumID = ' . $forumID);
 		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES (' . $forumID . ')');
 
@@ -265,7 +265,7 @@ class forumACP
 			displayJSON(['failed' => true, 'errors' => ['noName']]);
 		}
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHI L DREN|ForumManager::NO_NEW P OSTS|ForumManager::ADMIN_FORUMS);
+		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
@@ -293,7 +293,7 @@ class forumACP
 		$mongo = DB::conn('mongo');
 
 		$gameInfo = $mongo->games->findOne(
-			['groupID' => (int)$groupID],
+			['groupID' => (int) $groupID],
 			['projection' => ['_id' => false, 'forumID' => true, 'groupID' => true]]
 		);
 		if ($gameInfo) {
@@ -303,7 +303,7 @@ class forumACP
 			displayJSON(['failed' => true, 'errors' => ['noName']]);
 		}
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHI L DREN|ForumManager::NO_NEW P OSTS|ForumManager::ADMIN_FORUMS);
+		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
@@ -327,14 +327,14 @@ class forumACP
 		$mongo = DB::conn('mongo');
 
 		$gameInfo = $mongo->games->findOne(
-			['groupID' => (int)$groupID],
-			['projection' => ['_id' => false, 'forumID' => true, 'groupID' => t
-		rue]]);
+			['groupID' => (int) $groupID],
+			['projection' => ['_id' => false, 'forumID' => true, 'groupID' => true]]
+		);
 		if ($gameInfo) {
 			displayJSON(['failed' => true, 'errors' => ['mainGroup']]);
 		}
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHI L DREN|ForumManager::NO_NEW P OSTS|ForumManager::ADMIN_FORUMS);
+		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
@@ -351,7 +351,7 @@ class forumACP
 		global $currentUser, $permissionTypes;
 		$mysql = DB::conn('mysql');
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHI L DREN|ForumManager::NO_NEW P OSTS|ForumManager::ADMIN_FORUMS);
+		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
@@ -367,7 +367,7 @@ class forumACP
 		$pFields = [];
 		foreach ($permissionTypes as $field => $label) {
 			if ($permission->type != 'general' || $field != 'moderate') {
-				$pFields[] = "`{$field} `  = ".(intval($permission->$field) * $multiplier);
+				$pFields[] = "`{$field}` = " . (intval($permission->$field) * $multiplier);
 			}
 		}
 		$query = "UPDATE forums_permissions_{$permission->type}" . ($permission->type != 'general' ? 's' : '') . " SET " . implode(', ', $pFields) . " WHERE forumID = {$forumID}" . ($permission->type != 'general' ? " AND {$permission->type}ID = {$permission->id}" : '');
@@ -400,7 +400,7 @@ class forumACP
 			displayJSON(['failed' => true, 'errors' => ['alreadyExists']]);
 		}
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHI L DREN|ForumManager::NO_NEW P OSTS|ForumManager::ADMIN_FORUMS);
+		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
 			displayJSON(['failed' => true, 'errors' =>
@@ -445,7 +445,7 @@ class forumACP
 			displayJSON(['failed' => true, 'errors' => ['doesntExist']]);
 		}
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHI L DREN|ForumManager::NO_NEW P OSTS|ForumManager::ADMIN_FORUMS);
+		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
@@ -459,4 +459,4 @@ class forumACP
 
 		displayJSON(['success' => true]);
 	}
- 
+}
