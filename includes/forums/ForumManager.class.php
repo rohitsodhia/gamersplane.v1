@@ -59,7 +59,7 @@ class ForumManager
 		foreach ($forumsR as $forum) {
 			$this->forumsData[$forum['forumID']] = $forum;
 		}
-		if ($loggedIn) {
+		if ($loggedIn && in_array($forumID, [0, 2])) {
 			$userGames = $mongo->games->find(
 				[
 					'retired' => null,
@@ -75,7 +75,7 @@ class ForumManager
 				$userGameForumIDs[] = $game['forumID'];
 			}
 			if (sizeof($userGameForumIDs)) {
-				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE p.forumID IN (" . implode(', ', $userGameForumIDs) . ") ORDER BY LENGTH(f.heritage)");
+				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE p.forumID IN (" . implode(', ', $userGameForumIDs) . ") ORDER BY LENGTH(f.heritage)");
 				foreach ($userGameForums as $forum) {
 					$this->forumsData[$forum['forumID']] = $forum;
 				}
