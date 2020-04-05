@@ -93,14 +93,15 @@
 
 			<div id="security">
 				<h2 class="headerbar hbDark" skew-element>Security</h2>
-				<div ng-if="admin" class="tr">
+				<!-- <div ng-if="admin" class="tr">
 					<label>Username</label>
 					<div><input type="text" ng-model="user.username"></div>
-				</div>
-				<div class="tr">
+				</div> -->
+				<!-- <div class="tr">
 					<label>Email Address</label>
 					<div><input type="text" ng-model="user.email"></div>
-				</div>
+				</div> -->
+				<div class="tr">If you're looking to change your username or email, please email contact@gamersplane.com; I've had to temporarily disable the automatic functionality.</div>
 				<div ng-if="user.userID == CurrentUser.userID" class="tr">
 					<label>Old Password</label>
 					<div><input type="password" ng-model="newPass.oldPassword" maxlength="32"></div>
