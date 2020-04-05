@@ -395,7 +395,7 @@
 			$user->updateUsermeta('gmMail', $details['gmMail'] === 'true' ? 1 : 0);
 
 			$errors = [];
-			$oldPass = $newPass['oldPass'];
+			$oldPass = $newPass['oldPassword'];
 			$password1 = $newPass['password1'];
 			$password2 = $newPass['password2'];
 			if (strlen($password1) && strlen($password2) ) {

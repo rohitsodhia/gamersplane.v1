@@ -38,6 +38,17 @@ function displayJSON($data, $exit = true)
 		exit;
 }
 
+function randomAlphaNum($length)
+{
+	$validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	$randomStr = "";
+	for ($count = 0; $count < $length; $count++) {
+		$randomStr .= $validChars[mt_rand(0, strlen($validChars) - 1)];
+	}
+
+	return $randomStr;
+}
+
 function sanitizeString($string)
 {
 	$options = func_get_args();
@@ -174,4 +185,3 @@ function getMongoSeconds($mongoDateTime)
 }
 
 /* Character Functions */
- 

@@ -101,7 +101,7 @@
 					<label>Email Address</label>
 					<div><input type="text" ng-model="user.email"></div>
 				</div>
-				<div ng-if="user.userID == CurrentUser.userID && !admin" class="tr">
+				<div ng-if="user.userID == CurrentUser.userID" class="tr">
 					<label>Old Password</label>
 					<div><input type="password" ng-model="newPass.oldPassword" maxlength="32"></div>
 				</div>
