@@ -1,0 +1,16 @@
+#!/bin/bash
+
+container=$1
+valid_containers=("mysql" "api" "proxy" "mongo")
+valid=0
+for valid_container in ${valid_containers[@]}; do
+	if [[ $container == $valid_container ]]; then
+		valid=1
+		break
+	fi
+done
+if [[ $valid == 0 ]]; then
+	echo "No valid container: mysql api proxy"
+	exit 1
+fi
+docker exec -it gamersplane-$container ash
