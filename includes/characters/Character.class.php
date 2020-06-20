@@ -1,4 +1,6 @@
 <?php
+	require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
+
 	abstract class Character {
 		protected $bodyClasses = [];
 
@@ -189,8 +191,6 @@
 		}
 
 		public function get($pr = false, $bb = false) {
-			require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
-
 			$char = get_object_vars($this);
 			if ($pr) {
 				$char = $this->prElement($char);
