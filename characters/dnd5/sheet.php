@@ -8,7 +8,7 @@
 				<div class="medText"><?=$this->getRace()?></div>
 				<div class="medText"><?=$this->getBackground()?></div>
 			</div>
-			
+
 			<div class="tr labelTR">
 				<label id="label_classes" class="longText">Class(es)</label>
 				<label id="label_alignment" class="medText">Alignment</label>
@@ -17,7 +17,7 @@
 				<div class="longText"><? $this->displayClasses(); ?></div>
 				<div class="longText"><?=$this->getAlignment()?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 					<div class="tr">
@@ -85,7 +85,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
@@ -105,13 +105,13 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="items" class="clearfix">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

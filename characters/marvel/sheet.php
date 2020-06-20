@@ -30,31 +30,31 @@
 			<label>Durability:</label>
 			<div><?=$this->getStat('dur')?></div>
 		</div>
-		
+
 		<div id="actions" class="clearfix">
 			<h2 class="headerbar hbDark">Actions</h2>
 			<div class="hbdMargined clearfix">
 <?	$this->displayActions(); ?>
 			</div>
 		</div>
-		
+
 		<div id="modifiers" class="clearfix">
 			<h2 class="headerbar hbDark">Modifiers</h2>
 			<div class="hbdMargined clearfix">
 <?	$this->displayModifiers(); ?>
 			</div>
 		</div>
-		
+
 		<div id="challenges" class="clearfix">
 			<h2 class="headerbar hbDark">Challenges</h2>
 			<div class="hbdMargined">
 <?	$this->displayChallenges(); ?>
 			</div>
 		</div>
-		
+
 		<div id="notes">
 			<h2 class="headerbar hbDark">Character Notes</h2>
 			<div class="hbdMargined">
-<? echo $this->getNotes(); ?>
+<? echo printReady(BBCode2Html($this->getNotes())); ?>
 			</div>
 		</div>

@@ -111,23 +111,23 @@
 				</div>
 				<div id="items" class="floatRight">
 					<h2 class="headerbar hbDark">Items</h2>
-					<div class="hbdMargined"><?=$this->getItems(true)?></div>
+					<div class="hbdMargined"><?=BBCode2Html($this->getItems(true))?></div>
 				</div>
 			</div>
 
 			<div class="clearfix">
 				<div id="motivations" class="floatLeft">
 					<h2 class="headerbar hbDark">Motivations</h2>
-					<div class="hbdMargined"><?=$this->getMotivations(true)?></div>
+					<div class="hbdMargined"><?=BBCode2Html($this->getMotivations(true))?></div>
 				</div>
 
 				<div id="obligations" class="floatRight">
 					<h2 class="headerbar hbDark">Obligation/Duty/Morality</h2>
-					<div class="hbdMargined"><?=$this->getObligations(true)?></div>
+					<div class="hbdMargined"><?=BBCode2Html($this->getObligations(true))?></div>
 				</div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=$this->getNotes(true)?></div>
+				<div class="hbdMargined"><?=BBCode2Html($this->getNotes(true))?></div>
 			</div>

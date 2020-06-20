@@ -4,7 +4,7 @@
 			<label class="textLabel">Story Points:</label>
 			<div><?=$this->getStoryPoints()?></div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div id="attributes" class="triCol first">
 				<h2 class="headerbar hbDark">Attributes</h2>
@@ -45,10 +45,10 @@
 		<div class="clearfix">
 			<div class="twoCol first">
 				<h2 class="headerbar hbDark">Posessions</h2>
-				<div class="hbdMargined"><?=$this->getEquipment(true)?></div>
+				<div class="hbdMargined"><?=BBCode2Html($this->getEquipment(true))?></div>
 			</div>
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=$this->getNotes(true)?></div>
+				<div class="hbdMargined"><?=BBCode2Html($this->getNotes(true))?></div>
 			</div>
 		</div>

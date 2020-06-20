@@ -8,7 +8,7 @@
 				<div class="medText"><?=$this->getRace()?></div>
 				<div class="medText"><?=$this->getAlignment()?></div>
 			</div>
-			
+
 			<div class="tr labelTR">
 				<label id="label_classes" class="longText">Class(es)</label>
 				<label id="label_paragon" class="medText">Paragon Path</label>
@@ -19,7 +19,7 @@
 				<div class="medText"><?=$this->getParagon()?></div>
 				<div class="medText"><?=$this->getEpic()?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 					<div class="tr labelTR">
@@ -40,7 +40,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="saves">
 					<div class="tr labelTR">
 						<div class="fillerBlock cell">&nbsp;</div>
@@ -81,7 +81,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="init">
 					<div class="tr labelTR">
 						<div class="fillerBlock cell shortText">&nbsp;</div>
@@ -99,7 +99,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="hpCol">
 					<div id="hp">
@@ -116,7 +116,7 @@
 							<div class="medNum alignCenter lrBuffer cell"><?=$this->getHP('surges')?></div>
 						</div>
 					</div>
-					
+
 					<div id="movement">
 						<div class="tr labelTR">
 							<div class="fillerBlock cell medNum">&nbsp;</div>
@@ -135,12 +135,12 @@
 							<div class="shortNum alignCenter lrBuffer cell"><?=$this->getSpeed('misc')?></div>
 						</div>
 					</div>
-					
+
 					<div id="actionPoints">
 						<label class="shortText leftLabel">Action Points</label>
 						<div class="shortNum alignCenter lrBuffer cell"><?=$this->getActionPoints()?></div>
 					</div>
-					
+
 					<div id="passiveSenses">
 						<div class="tr labelTR">
 							<div class="fillerBlock cell labelFiller">&nbsp;</div>
@@ -162,13 +162,13 @@
 						</div>
 					</div>
 				</div>
-			
+
 				<div id="attacks">
 					<h2 class="headerbar hbDark">Attack Bonuses</h2>
 <?	$this->displayAttacks(); ?>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
@@ -190,7 +190,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="powers" class="clearfix">
 				<h2 class="headerbar hbDark">Powers</h2>
 				<div class="hbdMargined">
@@ -208,24 +208,24 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="textDiv floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
-					<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getWeapons()))?></div>
 				</div>
 				<div id="armor" class="textDiv floatRight">
 					<h2 class="headerbar hbDark">Armor</h2>
-					<div class="hbdMargined"><?=printReady($this->getArmor())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getArmor()))?></div>
 				</div>
 			</div>
-			
+
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 			</div>
-			
+
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

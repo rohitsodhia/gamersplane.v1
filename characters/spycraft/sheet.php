@@ -6,7 +6,7 @@
 				<div class="medText"><?=$this->getName()?></div>
 				<div class="medText"><?=$this->getCodename()?></div>
 			</div>
-			
+
 			<div class="tr labelTR">
 				<label id="label_classes" class="longText">Class(es)</label>
 				<label id="label_alignment" class="shortText">Department</label>
@@ -15,7 +15,7 @@
 				<div class="longText"><? $this->displayClasses(); ?></div>
 				<div class="longText"><?=$this->getDepartment()?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 <?
@@ -29,7 +29,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="savingThrows">
 					<div class="tr labelTR">
 						<div class="fillerBlock cell">&nbsp;</div>
@@ -51,7 +51,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="hp">
 					<div class="tr">
 						<label class="leftLabel">Vitality</label>
@@ -66,7 +66,7 @@
 						<div><?=$this->getSpeed?></div>
 					</div>
 				</div>
-				
+
 				<div id="ac">
 					<div class="tr labelTR">
 						<label class="medNum">Total AC</label>
@@ -86,7 +86,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div class="col">
 					<div id="combatBonuses" class="clearFix">
@@ -128,7 +128,7 @@
 							<div class="shortNum lrBuffer"><?=showSign($this->getAttackBonus('misc', 'ranged'))?></div>
 						</div>
 					</div>
-					
+
 					<div id="actionDie">
 						<div class="tr labelTR">
 							<div class="shortText">&nbsp;</div>
@@ -141,7 +141,7 @@
 							<span class="medNum lrBuffer"><?=$this->getActionDie('type')?></span>
 						</div>
 					</div>
-					
+
 					<div id="extraStats">
 						<div class="tr labelTR">
 							<div class="shortText">&nbsp;</div>
@@ -171,7 +171,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="skills" class="floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
 				<div class="hbdMargined">
@@ -187,7 +187,7 @@
 <?	$this->displaySkills(); ?>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
@@ -202,13 +202,13 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="items">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div><?=$this->getItems()?></div>
+				<div><?=printReady(BBCode2Html($this->getItems()))?></div>
 			</div>
-			
+
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div><?=$this->getNotes()?></div>
+				<div><?=BBCode2Html($this->getNotes(true))?></div>
 			</div>

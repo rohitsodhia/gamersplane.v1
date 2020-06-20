@@ -2,7 +2,7 @@
 			<label>Name:</label>
 			<div><?=$this->getName()?></div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div id="stats" class="twoCol floatLeft">
 				<div class="statCol">
@@ -66,38 +66,38 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="langDiv" class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Languages</h2>
-				<div class="hbdMargined"><?=printReady($this->getLanguages())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getLanguages()))?></div>
 			</div>
 		</div>
 
 		<div class="clearfix">
 			<div class="twoCol floatLeft">
 				<h2 class="headerbar hbDark">Advantages</h2>
-				<div class="hbdMargined"><?=printReady($this->getAdvantages())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getAdvantages()))?></div>
 			</div>
-			
+
 			<div class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Disadvantages</h2>
-				<div class="hbdMargined"><?=printReady($this->getDisadvantages())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getDisadvantages()))?></div>
 			</div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div class="twoCol floatLeft">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbdMargined"><?=printReady($this->getSkills())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getSkills()))?></div>
 			</div>
-			
+
 			<div class="twoCol floatRight">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 			</div>
 		</div>
-		
+
 		<div id="notesDiv">
 			<h2 class="headerbar hbDark">Notes</h2>
-			<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+			<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 		</div>

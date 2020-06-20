@@ -8,7 +8,7 @@
 				<div class="medText"><?=$this->getRace()?></div>
 				<div class="shortNum alignCenter"><?=$this->getSize()?></div>
 			</div>
-			
+
 			<div class="tr labelTR">
 				<label id="label_classes" class="longText">Class(es)</label>
 				<label id="label_alignment" class="medText">Alignment</label>
@@ -17,7 +17,7 @@
 				<div class="longText"><? $this->displayClasses(); ?></div>
 				<div class="longText"><?=$this->getAlignment()?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 <?
@@ -31,7 +31,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="savingThrows">
 					<div class="tr labelTR">
 						<div class="fillerBlock">&nbsp;</div>
@@ -57,7 +57,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="hp" class="dataTR">
 					<label class="leftLabel textLabel">Total HP</label>
 					<div><?=$this->getHP('total')?></div>
@@ -65,7 +65,7 @@
 					<div><?=strlen($this->getDamageReduction())?$this->getDamageReduction():'&nbsp;'?></div>
 				</div>
 			</div>
-			
+
 			<div id="ac">
 				<div class="tr labelTR">
 					<label class="first">Total AC</label>
@@ -92,7 +92,7 @@
 					<div><?=showSign($this->getAC('misc'))?></div>
 				</div>
 			</div>
-			
+
 			<div id="combatBonuses" class="clearFix">
 				<div class="tr labelTR">
 					<div class="fillerBlock shortText">&nbsp;</div>
@@ -136,7 +136,7 @@
 					<div class="shortNum"><?=showSign($this->getAttackBonus('misc', 'ranged'))?></div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
@@ -158,7 +158,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
@@ -173,20 +173,20 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="items">
 					<h2 class="headerbar hbDark">Items</h2>
-					<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 				</div>
-				
+
 				<div id="spells">
 					<h2 class="headerbar hbDark">Spells</h2>
-					<div class="hbdMargined"><?=printReady($this->getSpells())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getSpells()))?></div>
 				</div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

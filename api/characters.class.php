@@ -281,7 +281,6 @@
 			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
 			if ($systemCheck) {
 				$system = $systemCheck['system'];
-				$systems = Systems::getInstance();
 				addPackage($system.'Character');
 				$charClass = Systems::systemClassName($system).'Character';
 				if ($character = new $charClass($characterID)) {

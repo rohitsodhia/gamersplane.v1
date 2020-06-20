@@ -44,12 +44,12 @@
 						<div class="col floatLeft">
 							<div id="merits">
 								<h3>Merits</h3>
-								<div><?=$this->getMerits()?></div>
+								<div><?=printReady(BBCode2Html($this->getMerits()))?></div>
 							</div>
 
 							<div id="flaws" class="marginTop">
 								<h3>Flaws</h3>
-								<div><?=$this->getFlaws()?></div>
+								<div><?=printReady(BBCode2Html($this->getFlaws()))?></div>
 							</div>
 						</div>
 						<div class="col floatRight">
@@ -95,11 +95,11 @@
 				<div id="itemsDiv">
 					<div id="weapons">
 						<h2 class="headerbar hbDark">Weapons</h2>
-						<div class="hbdMargined"><?=$this->getWeapons()?></div>
+						<div class="hbdMargined"><?=printReady(BBCode2Html($this->getWeapons()))?></div>
 					</div>
 					<div id="equipment">
 						<h2 class="headerbar hbDark">Equipment</h2>
-						<div class="hbdMargined"><?=$this->getEquipment()?></div>
+						<div class="hbdMargined"><?=printReady(BBCode2Html($this->getEquipment()))?></div>
 					</div>
 				</div>
 			</div>

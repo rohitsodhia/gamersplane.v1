@@ -2,7 +2,7 @@
 				<label>Name:</label>
 				<div><?=$this->getName?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div class="sidebar left">
 					<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
@@ -19,7 +19,7 @@
 						</div>
 <?	} ?>
 					</div>
-					
+
 					<div id="skills" class="hbdMargined">
 						<div class="skillHeader">Skills</div>
 <?		$this->displaySkills(); ?>
@@ -38,7 +38,7 @@
 					<div class="clearfix">
 						<div class="twoCol">
 							<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-							<div class="hbdMargined"><?=printReady($this->getEdgesHindrances())?></div>
+							<div class="hbdMargined"><?=printReady(BBCode2Html($this->getEdgesHindrances()))?></div>
 						</div>
 						<div class="twoCol lastTwoCol">
 							<h2 class="headerbar hbDark">Injuries</h2>
@@ -52,25 +52,25 @@
 									<div class="boxedValue borderBox"><?=$this->getFatigue()?></div>
 								</div>
 							</div>
-							<div class="hbdMargined"><?=printReady($this->getInjuries())?></div>
+							<div class="hbdMargined"><?=printReady(BBCode2Html($this->getInjuries()))?></div>
 						</div>
 					</div>
-						
+
 					<div class="clearfix">
 						<div class="twoCol">
 							<h2 class="headerbar hbDark">Weapons</h2>
-							<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
+							<div class="hbdMargined"><?=printReady(BBCode2Html($this->getWeapons()))?></div>
 						</div>
 						<div class="twoCol lastTwoCol">
 							<h2 class="headerbar hbDark">Spells</h2>
-							<div class="hbdMargined"><?=printReady($this->getSpells())?></div>
+							<div class="hbdMargined"><?=printReady(BBCode2Html($this->getSpells()))?></div>
 						</div>
 					</div>
-					
+
 					<h2 class="headerbar hbDark">Equipment</h2>
-					<div class="hbdMargined"><?=printReady($this->getEquipment())?></div>
-					
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getEquipment()))?></div>
+
 					<h2 class="headerbar hbDark">Background/Notes</h2>
-					<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 				</div>
 			</div>

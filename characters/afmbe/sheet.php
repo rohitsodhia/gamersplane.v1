@@ -2,7 +2,7 @@
 			<label>Name:</label>
 			<div><?=$this->getName()?></div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div id="primaryStatsCol">
 				<h2 class="headerbar hbDark">Primary Attributes</h2>
@@ -37,7 +37,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="secondaryStatsCol">
 				<h2 class="headerbar hbDark">Secondary Attributes</h2>
 				<div class="hbdMargined clearfix">
@@ -60,44 +60,44 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Qualities</h2>
-				<div class="hbdMargined"><?=printReady($this->getQualities())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getQualities()))?></div>
 			</div>
-			
+
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Drawbacks</h2>
-				<div class="hbdMargined"><?=printReady($this->getDrawbacks())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getDrawbacks()))?></div>
 			</div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Skills</h2>
-				<div class="hbdMargined"><?=printReady($this->getSkills())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getSkills()))?></div>
 			</div>
-			
+
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Powers</h2>
-				<div class="hbdMargined"><?=printReady($this->getPowers())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getPowers()))?></div>
 			</div>
 		</div>
-		
+
 		<div class="clearfix">
 			<div class="twoCol leftCol">
 				<h2 class="headerbar hbDark">Weapons</h2>
-				<div class="hbdMargined"><?=printReady($this->getWeapons())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getWeapons()))?></div>
 			</div>
-			
+
 			<div class="twoCol">
 				<h2 class="headerbar hbDark">Posessions</h2>
-				<div class="hbdMargined"><?=printReady($this->getPosessions())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getPosessions()))?></div>
 			</div>
 		</div>
-		
+
 		<div id="charInfoDiv" class="clearfix">
 			<h2 class="headerbar hbDark">Character Notes</h2>
-			<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+			<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 		</div>

@@ -81,11 +81,11 @@
 			<div class="clearfix">
 				<div id="uniqueThing" class="floatLeft">
 					<h2 class="headerbar hbDark">One Unique Thing</h2>
-					<div class="hbdMargined"><?=printReady($this->getUniqueThing())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getUniqueThing()))?></div>
 				</div>
 				<div id="iconRelationships" class="floatRight">
 					<h2 class="headerbar hbDark">Icon Relationships</h2>
-					<div class="hbdMargined"><?=printReady($this->getIconRelationships())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getIconRelationships()))?></div>
 				</div>
 			</div>
 			<div class="clearfix">
@@ -146,13 +146,13 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div id="items" class="clearfix">
 				<h2 class="headerbar hbDark">Items</h2>
-				<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

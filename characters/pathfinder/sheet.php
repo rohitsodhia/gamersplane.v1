@@ -221,16 +221,16 @@
 			<div class="clearfix">
 				<div id="items">
 					<h2 class="headerbar hbDark">Items</h2>
-					<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 				</div>
 
 				<div id="spells">
 					<h2 class="headerbar hbDark">Spells</h2>
-					<div class="hbdMargined"><?=printReady($this->getSpells())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getSpells()))?></div>
 				</div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

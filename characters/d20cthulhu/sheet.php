@@ -6,7 +6,7 @@
 				<div class="medText"><?=$this->getName()?></div>
 				<div class="medText"><? $this->displayClasses(); ?></div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="stats">
 <?
@@ -23,7 +23,7 @@
 	}
 ?>
 				</div>
-				
+
 				<div id="savingThrows">
 					<div class="tr labelTR">
 						<div class="fillerBlock cell">&nbsp;</div>
@@ -47,7 +47,7 @@
 					</div>
 <?	} ?>
 				</div>
-				
+
 				<div id="hp" class="dataTR">
 					<div class="tr">
 						<label class="leftLabel textLabel">Total HP</label>
@@ -63,7 +63,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="ac">
 					<div class="tr labelTR">
@@ -126,7 +126,7 @@
 					<div class="shortNum"><?=showSign($this->getAttackBonus('misc', 'ranged'))?></div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
 					<h2 class="headerbar hbDark">Skills</h2>
@@ -148,7 +148,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
 					<h2 class="headerbar hbDark">Weapons</h2>
@@ -157,20 +157,20 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="clearfix">
 				<div id="items">
 					<h2 class="headerbar hbDark">Items</h2>
-					<div class="hbdMargined"><?=printReady($this->getItems())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getItems()))?></div>
 				</div>
-				
+
 				<div id="spells">
 					<h2 class="headerbar hbDark">Spells</h2>
-					<div class="hbdMargined"><?=printReady($this->getSpells())?></div>
+					<div class="hbdMargined"><?=printReady(BBCode2Html($this->getSpells()))?></div>
 				</div>
 			</div>
 
 			<div id="notes">
 				<h2 class="headerbar hbDark">Notes</h2>
-				<div class="hbdMargined"><?=printReady($this->getNotes())?></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

@@ -36,7 +36,7 @@
 					<div class="clearfix">
 						<div id="extras">
 							<h2 class="headerbar hbDark">Extras</h2>
-							<div><?=$this->getExtras()?></div>
+							<div><?=printReady(BBCode2Html($this->getExtras()))?></div>
 						</div>
 						<div id="stunts">
 							<h2 class="headerbar hbDark">Stunts</h2>
@@ -70,10 +70,10 @@
 					</div>
 					<div id="consequences">
 						<h2 class="headerbar hbDark">Consequences</h2>
-						<div><?=$this->getConsequences()?></div>
+						<div><?=printReady(BBCode2Html($this->getConsequences()))?></div>
 					</div>
 				</div>
 			</div>
-			
+
 			<h2 class="headerbar hbDark">Background/Notes</h2>
-			<div><?=$this->getNotes()?></div>
+			<div><?=printReady(BBCode2Html($this->getNotes()))?></div>
