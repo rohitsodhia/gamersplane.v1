@@ -36,7 +36,10 @@
 			<div id="forumStats" class="userInfoBox">
 				<h2 class="headerbar hbDark" skew-element>Forum Stats</h2>
 				<div class="details clearfix" hb-margined>
-					<p>Total posts: {{posts.postCount}}</p>
+					<div class="tr">
+						<div class="title">Total Posts:</div>
+						<div>{{posts.postCount}}</div>
+					</div>
 				</div>
 			</div>
 
