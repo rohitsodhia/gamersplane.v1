@@ -465,6 +465,9 @@
 				global $currentUser;
 				$userID = $currentUser->userID;
 			}
+
+			$postCount = $mysql->query("SELECT COUNT(postID) FROM posts WHERE authorID = {$userID}")->fetchColumn();
+
 			$rCharacters = $mongo->characters->find(
 				['user.userID' => $userID, 'retired' => null],
 				['projection' => ['system' => true]]
@@ -518,6 +521,7 @@
 			}
 
 			displayJSON([
+				'posts' => ['count' => $postCount],
 				'characters' => ['numChars' => $numChars, 'list' => $characters],
 				'games' => ['numGames' => $numGames, 'list' => $games]
 			]);

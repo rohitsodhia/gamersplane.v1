@@ -33,6 +33,13 @@
 				</div>
 			</div>
 
+			<div id="forumStats" class="userInfoBox">
+				<h2 class="headerbar hbDark" skew-element>Forum Stats</h2>
+				<div class="details clearfix" hb-margined>
+					<p>Total posts: {{posts.postCount}}</p>
+				</div>
+			</div>
+
 			<div id="charStats" class="userInfoBox">
 				<h2 class="headerbar hbDark" skew-element>Characters Stats</h2>
 				<div class="details clearfix" ng-class="{ 'noInfo': charCount == 0 }" hb-margined>
