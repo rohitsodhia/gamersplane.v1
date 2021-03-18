@@ -13,7 +13,7 @@
 			$this->search = $search;
 			$forumManager = new ForumManager(0);
 			$this->forumManager = $forumManager;
-			if (is_array($searchIn) && sizeof($searchIn)) 
+			if (is_array($searchIn) && sizeof($searchIn))
 				$this->searchIn = $searchIn;
 			else $this->searchIn = null;
 		}

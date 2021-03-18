@@ -19,7 +19,7 @@ services:
     build:
       context: ./apache
       dockerfile: Dockerfile
-    container_name: gamersplane-proxy
+    container_name: gpv1-proxy
     ports:
       - 80:80
       - 443:443
@@ -32,7 +32,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile-php
-    container_name: gamersplane-api
+    container_name: gpv1-api
     volumes:
       - ../:/var/www
     depends_on:
@@ -40,13 +40,13 @@ services:
       - mongo
 
   mysql:
-    image: mysql:5.5
-    container_name: gamersplane-mysql
+    image: mysql:5.7
+    container_name: gpv1-mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=p2HR1IQGF8c!A&amp;f&amp;
+      - MYSQL_ROOT_PASSWORD=p2HR1IQGF8c!A&f&
       - MYSQL_DATABASE=gamersplane
       - MYSQL_USER=gamersplane
-      - MYSQL_PASSWORD=&amp;R6ivIqTS0b#wQ7e
+      - MYSQL_PASSWORD=&R6ivIqTS0b#wQ7e
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
@@ -54,6 +54,6 @@ services:
   mongo:
     build:
       context: ./mongo
-    container_name: gamersplane-mongo
+    container_name: gpv1-mongo
     volumes:
       - mongo_db:/data/db

@@ -13,4 +13,8 @@ if [[ $valid == 0 ]]; then
 	echo "No valid container: mysql api proxy"
 	exit 1
 fi
-docker exec -it gamersplane-$container ash
+shell="ash"
+if [[ $container == "mysql" || $container == "mongo" ]]; then
+	shell="bash"
+fi
+docker exec -it gpv1-$container $shell
