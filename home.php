@@ -160,26 +160,19 @@
 	$forumSearch->findThreads();
 	$forumSearch->displayLatestHP();
 ?>
-					<div id="latestPostsLink"><a href="/forums/search/?search=latestPosts">Latest Posts</a></div>
+					<div class="latestPostsLink"><a href="/forums/search/?search=latestPosts">Latest Posts</a></div>
 				</div>
 			</div>
 
-			<div id="partners" class="homeWidget">
-				<h3 class="headerbar">Partners</h3>
-<?php
-	$rand = randomFloat();
-	$partner = $mongo->links->findOne(
-		['level' => 'Partner', 'random' => ['$gte' => $rand]]
-	);
-	if ($partner == null) {
-		$partner = $mongo->links->findOne(
-			['level' => 'Partner', 'random' => ['$lte' => $rand]]
-		);
-	}
-?>
+			<div id="latestGamePosts" class="homeWidget">
+				<h3 class="headerbar">Latest Game Posts</h3>
 				<div class="widgetBody">
-					<a href="<?=$partner['url']?>" target="_blank"><img src="/images/links/<?=$partner['_id']?>.<?=$partner['image']?>"></a>
-					<p><a href="<?=$partner['url']?>" target="_blank"><?=$partner['title']?></a></p>
+<?php
+	$forumSearch = new ForumSearch('latestGamePosts');
+	$forumSearch->findThreads(1, 3);
+	$forumSearch->displayLatestHP();
+?>
+					<div class="latestPostsLink"><a href="/forums/search/?search=latestGamePosts">Latest Game Posts</a></div>
 				</div>
 			</div>
 		</div>
