@@ -1,0 +1,39 @@
+#!/bin/bash
+
+env="dev"
+for opt in $@; do
+	parsed=0
+	case $opt in
+	"-f")
+		FOLLOW="-f"
+		parsed=1
+		;;
+	"-e")
+		env=$2
+		valid=0
+		valid_envs=("dev" "prod")
+		for valid_env in ${valid_envs[@]}; do
+			if [[ $env == $valid_env ]]; then
+				valid=1
+				break
+			fi
+		done
+		if [ $valid == 0 ]; then
+			env="dev"
+		fi
+		shift
+		parsed=1
+		;;
+	esac
+
+	if [[ $parsed == 1 ]]; then
+		shift
+	fi
+done
+
+if [[ $# == 1 ]]; then
+	service=$1
+fi
+
+path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+docker-compose -f "$path/docker-compose.yml" -f "$path/docker-compose.$env.yml" logs $FOLLOW $service
