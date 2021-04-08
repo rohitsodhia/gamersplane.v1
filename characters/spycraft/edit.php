@@ -6,7 +6,7 @@
 					<input type="text" name="name" value="<?=$this->getName()?>" class="medText lrBuffer">
 					<input type="text" name="codename" value="<?=$this->getCodename()?>" class="medText lrBuffer">
 				</div>
-				
+
 				<div class="tr labelTR">
 					<label id="label_classes" class="medText lrBuffer borderBox shiftRight">Class(es)</label>
 					<label id="label_levels" class="shortNum lrBuffer borderBox">Level(s)</label>
@@ -36,7 +36,7 @@
 					</div>
 					<input id="department" type="text" name="department" value="<?=$this->getDepartment()?>" class="medText lrBuffer alignLeft">
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="stats">
 <?
@@ -50,7 +50,7 @@
 						</div>
 <?	} ?>
 					</div>
-					
+
 					<div id="savingThrows">
 						<div class="tr labelTR">
 							<div class="fillerBlock cell">&nbsp;</div>
@@ -76,7 +76,7 @@
 						</div>
 <?	} ?>
 					</div>
-					
+
 					<div id="hp">
 						<div class="tr">
 							<label class="leftLabel textLabel">Vitality</label>
@@ -91,27 +91,27 @@
 							<input type="text" name="speed" value="<?=$this->getSpeed()?>" class="shortNum">
 						</div>
 					</div>
-					
+
 					<div id="ac">
 						<div class="tr labelTR">
-							<label class="medText">Total Def</label>
+							<label class="medNum">Total Def</label>
 							<div class="fillerBlock cell medNum">&nbsp;</div>
-							<label class="lrBuffer">Class/ Armor</label>
-							<label class="lrBuffer">Dex</label>
-							<label class="lrBuffer">Size</label>
-							<label class="lrBuffer">Misc</label>
+							<label class="medNum lrBuffer">Class/ Armor</label>
+							<label class="shortNum lrBuffer">Dex</label>
+							<label class="shortNum lrBuffer">Size</label>
+							<label class="shortNum lrBuffer">Misc</label>
 						</div>
 						<div class="tr sumRow">
-							<span id="ac_total" class="total noSign addInt_10"><?=$this->getAC('total')?></span>
-							<span> = 10 + </span>
-							<input type="text" name="ac[armor]" value="<?=$this->getAC('armor')?>" class="acComponents lrBuffer">
+							<span id="ac_total" class="medNum total noSign addInt_10"><?=$this->getAC('total')?></span>
+							<span class="medNum"> = 10 + </span>
+							<div class="medNum lrBuffer"><input type="text" name="ac[armor]" value="<?=$this->getAC('armor')?>" class="acComponents"></div>
 							<input type="text" name="ac[dex]" value="<?=$this->getAC('dex')?>" class="acComponents lrBuffer">
 							<input type="text" name="ac[size]" value="<?=$this->getAC('size')?>" class="acComponents lrBuffer">
 							<input type="text" name="ac[misc]" value="<?=$this->getAC('misc')?>" class="acComponents lrBuffer">
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div class="col">
 						<div id="combatBonuses">
@@ -178,7 +178,7 @@
 								<input type="text" name="actionDie[type]" value="<?=$this->getActionDie('type')?>" class="medNum lrBuffer">
 							</div>
 						</div>
-						
+
 						<div id="extraStats">
 							<div class="tr labelTR">
 								<div class="fillerBlock cell shortText">&nbsp;</div>
@@ -208,7 +208,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div id="skills" class="floatLeft" data-type="skills">
 					<h2 class="headerbar hbDark">Skills <a id="addSkill" href="" class="addItem">[ Add Skill ]</a></h2>
 					<div class="hbdMargined">
@@ -226,7 +226,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="weapons" class="floatLeft">
 						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
@@ -241,12 +241,12 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div id="items">
 					<h2 class="headerbar hbDark">Items</h2>
 					<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
 				</div>
-				
+
 				<div id="notes">
 					<h2 class="headerbar hbDark">Notes</h2>
 					<textarea name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
