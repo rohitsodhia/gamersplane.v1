@@ -5,10 +5,10 @@ volumes:
   #   driver: local
   mysql_db:
     driver: local
-    name: gp_mysql_db
+    name: gpv1_mysql_db
   mongo_db:
     driver: local
-    name: gp_mongo_db
+    name: gpv1_mongo_db
 
 services:
   # memcached:
