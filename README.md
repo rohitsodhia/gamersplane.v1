@@ -2,6 +2,8 @@
 
 ## Setup
 
+First, create a copy of `.env.example` and rename it to `.env`. Look at any comments in the file to set any missing values.
+
 To run the dev version of GP locally, you need to install `docker` and `docker-compose` locally.
 
 Once both are setup, open your console to the GP root directory. From there, you can use the following commands to do put up and take down the environment, as well as some basic functionality.
