@@ -52,7 +52,10 @@
 						<label class="shortText leftLabel">Temp HP</label>
 						<div><?=$this->getHP('temp')?></div>
 					</div>
-
+					<div class="tr">
+						<label class="shortText leftLabel">Current HP</label>
+						<div><?=$this->getHP('current')?></div>
+					</div>
 					<div class="tr">
 						<label class="shortText leftLabel">AC</label>
 						<div><?=$this->getAC()?></div>
