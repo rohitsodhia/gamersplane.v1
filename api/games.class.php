@@ -316,7 +316,7 @@ class games
 		if ($details['postFrequency']['timesPer'] <= 0 || !($details['postFrequency']['perPeriod'] == 'd' || $details['postFrequency']['perPeriod'] == 'w')) {
 			$errors[] = 'invalidFreq';
 		}
-		if ($details['numPlayers'] < 2) {
+		if ($details['numPlayers'] < 1) {
 			$errors[] = 'invalidNumPlayers';
 		}
 
@@ -337,7 +337,7 @@ class games
 			]];
 			$details['decks'] = [];
 
-			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2');
+			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2 GROUP BY heritage');
 			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
 			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, 2, " . mt_rand(0, 9999) . ", {$order}, {$gameID})");
 			$addForum->execute([':title' => $details['title']]);
@@ -424,7 +424,7 @@ class games
 		if ($details['postFrequency']['timesPer'] <= 0 || !($details['postFrequency']['perPeriod'] == 'd' || $details['postFrequency']['perPeriod'] == 'w')) {
 			$errors[] = 'invalidFreq';
 		}
-		if ($details['numPlayers'] < 2) {
+		if ($details['numPlayers'] < 1) {
 			$errors[] = 'invalidNumPlayers';
 		}
 
