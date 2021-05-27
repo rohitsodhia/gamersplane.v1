@@ -248,7 +248,8 @@
 				'location' => $user->location,
 				'twitter' => $user->twitter,
 				'stream' => $user->stream,
-				'games' => $user->games
+				'games' => $user->games,
+				'theme' =>  $user->theme??''
 			];
 			if ($getAll) {
 				$details = array_merge($details, [
@@ -393,6 +394,10 @@
 			$user->updateUsermeta('pmMail', $details['pmMail'] === 'true' ? 1 : 0);
 			$user->updateUsermeta('newGameMail', $details['newGameMail'] === 'true' ? 1 : 0);
 			$user->updateUsermeta('gmMail', $details['gmMail'] === 'true' ? 1 : 0);
+			if ($details['theme'] == 'null') {
+				$details['theme'] = '';
+			}
+			$user->updateUsermeta('theme', sanitizeString($details['theme']),true);
 
 			$errors = [];
 			$oldPass = $newPass['oldPassword'];

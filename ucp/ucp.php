@@ -86,6 +86,10 @@
 						</label>
 					</div>
 				</div>
+				<div id="theme" class="tr">
+					<label>Theme</label>
+					<div><label for><pretty-radio radio="user.theme" r-value="''"></pretty-radio> Default</label> <label for><pretty-radio radio="user.theme" r-value="'dark'"></pretty-radio> Dark</label></div>
+				</div>
 				<div class="tr submitDiv">
 					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
 				</div>
