@@ -1,6 +1,7 @@
 <?php
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
+	$addJSFiles[] = 'forums/unsaved-work.js';
 
 	$noChat = false;
 	$firstPost = false;
