@@ -86,10 +86,7 @@
 						</label>
 					</div>
 				</div>
-				<div id="theme" class="tr">
-					<label>Theme</label>
-					<div><label for><pretty-radio radio="user.theme" r-value="''"></pretty-radio> Default</label> <label for><pretty-radio radio="user.theme" r-value="'dark'"></pretty-radio> Dark</label></div>
-				</div>
+				
 				<div class="tr submitDiv">
 					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
 				</div>
@@ -143,6 +140,14 @@
 							<pretty-radio radio="user.postSide" r-value="'c'"></pretty-radio> Conversation
 						</label>
 					</div>
+				</div>
+				<div id="theme" class="tr">
+					<label>Theme</label>
+					<div><label for><pretty-radio radio="user.theme" r-value="''"></pretty-radio> Default</label> <label for><pretty-radio radio="user.theme" r-value="'dark'"></pretty-radio> Dark</label></div>
+				</div>
+				<div id="warn" class="tr">
+					<label>Warn on leaving a post without saving</label>
+					<div><label for><pretty-radio radio="user.warnUnsaved" r-value="''"></pretty-radio> Yes</label> <label for><pretty-radio radio="user.warnUnsaved" r-value="'no'"></pretty-radio> No</label></div>
 				</div>
 				<div class="tr submitDiv">
 					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
