@@ -249,7 +249,8 @@
 				'twitter' => $user->twitter,
 				'stream' => $user->stream,
 				'games' => $user->games,
-				'theme' =>  $user->theme??''
+				'theme' =>  $user->theme??'',
+				'warnUnsaved' =>  $user->warnUnsaved??''
 			];
 			if ($getAll) {
 				$details = array_merge($details, [
@@ -398,6 +399,10 @@
 				$details['theme'] = '';
 			}
 			$user->updateUsermeta('theme', sanitizeString($details['theme']),true);
+			if ($details['warnUnsaved'] == 'null') {
+				$details['warnUnsaved'] = '';
+			}
+			$user->updateUsermeta('warnUnsaved', sanitizeString($details['warnUnsaved']),true);
 
 			$errors = [];
 			$oldPass = $newPass['oldPassword'];
