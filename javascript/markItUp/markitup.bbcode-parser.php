@@ -84,6 +84,7 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
 					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
 					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
@@ -103,6 +104,8 @@ function BBCode2Html($text) {
 					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler: \1</div><div class="hidden">\2</div></blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
+					 '<iframe width="560" height="315" src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
@@ -110,16 +113,23 @@ function BBCode2Html($text) {
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
 
 	$matches = null;
+	$text=preg_replace_callback("/\[map\](.*?)\[\/map\]/ms", function($matches){
+			$mapLink=preg_replace('/\s+/', '',$matches[1]);
+			return '<a class="mapLink" target="_blank" href="'.$mapLink.'"><img class="usrImg" src="'.$mapLink.'"/></a>';
+	},
+	$text);
+
+	$matches = null;
 	global $currentUser, $isGM, $post;
 	if ($post) {
 		$display = false;
 
-		$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<blockquote class="note"><div>Note to \1</div>\2</blockquote>', $text);
-		if (strpos($text, 'blockquote class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<blockquote class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/blockquote\>/ms', $text, $matches, PREG_SET_ORDER)) {
+		$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
+		if (strpos($text, 'aside class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
 				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
 				if (!in_array(strtolower($currentUser->username), $noteTo)) {
-					$text = str_replace($match[0], '<blockquote class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></blockquote>', $text);
+					$text = str_replace($match[0], '<aside class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></aside>', $text);
 				}
 			}
 		}

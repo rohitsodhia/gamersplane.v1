@@ -468,3 +468,15 @@ function getMongoSeconds($mongoDateTime)
 	return $mongoDateTime->toDateTime()->getTimestamp();
 }
  
+function getUserTheme()
+{
+	global $currentUser,$loggedIn;
+	if (isset($currentUser) && $loggedIn) {
+		$theme=$currentUser->usermeta['theme']??'';
+		if($theme=='dark'){
+			return '<link href="/styles/themeDark.css?v='.getStyleVersion('/styles/themeDark.css').'" rel="stylesheet">';
+		}
+	}
+
+	return "";
+}

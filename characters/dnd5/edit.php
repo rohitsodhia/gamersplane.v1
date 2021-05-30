@@ -77,6 +77,10 @@
 							<label class="shortText leftLabel textLabel">Temp HP</label>
 							<input type="text" name="hp[temp]" value="<?=$this->getHP('temp')?>" class="medNum">
 						</div>
+						<div class="tr">
+							<label class="shortText leftLabel textLabel">Current HP</label>
+							<input type="text" name="hp[current]" value="<?=$this->getHP('current')?>" class="medNum">
+						</div>
 					
 						<div class="tr">
 							<label class="shortText leftLabel">AC</label>

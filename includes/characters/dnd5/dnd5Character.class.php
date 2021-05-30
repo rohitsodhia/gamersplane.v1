@@ -341,6 +341,7 @@
 				}
 				$this->setHP('total', $data['hp']['total']);
 				$this->setHP('temp', $data['hp']['temp']);
+				$this->setHP('current', $data['hp']['current']);
 				$this->setAC(null, $data['ac']);
 				$this->setInitiative(null, $data['initiative']);
 				$this->setSpeed($data['speed']);
