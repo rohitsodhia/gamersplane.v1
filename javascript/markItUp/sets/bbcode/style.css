@@ -34,6 +34,17 @@
 .markItUp .markItUpButton10 a	{
 	background-image:url(images/notes.png);
 }
+.markItUp .playerNoteSelector li a	{
+	background-image:url(images/hr.png);
+}
+.markItUp .playerNoteSelector li.playerNoteSelected a	{
+	background-image:url(images/preview.png);
+}
+.markItUp .playerNoteSelector li.playerNoteAdd a	{
+	background-image:url(images/notes.png);
+}
+
+
 .markItUp .markItUpButton11 a	{
 	width: 32px;
 	background-image:url(images/ooc.png);
