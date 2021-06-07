@@ -102,8 +102,8 @@
 						$typeQuery = ' WHERE' . $typeQuery;
 					}
 				}
-				$valid = $mysql->query("SELECT {$fields} FROM users" . (strlen($search) ? " WHERE username LIKE '%{$search}%'" : '') . $typeQuery . ' LIMIT ' . (($page - 1) * $limit) . ', ' . $limit);
-				$numUsers = $mysql->query("SELECT COUNT(userID) numUsers FROM users" . (strlen($search) ? " WHERE username LIKE '%{$search}%'" : '') . $typeQuery)->fetchColumn();
+				$valid = $mysql->query("SELECT {$fields} FROM users" . (strlen($search) ? " WHERE (username='{$search}' OR username LIKE '%{$search}%')" : '') . $typeQuery .(strlen($search) ? " ORDER BY CASE WHEN username='{$search}' THEN 1 ELSE 2 END" : ''). ' LIMIT ' . (($page - 1) * $limit) . ', ' . $limit);
+				$numUsers = $mysql->query("SELECT COUNT(userID) numUsers FROM users" . (strlen($search) ? " WHERE (username='{$search}' OR username LIKE '%{$search}%')" : '') . $typeQuery)->fetchColumn();
 				if ($valid->rowCount()) {
 					$users = [];
 					foreach ($valid as $user) {
