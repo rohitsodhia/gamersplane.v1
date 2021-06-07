@@ -208,5 +208,27 @@
 			$mysql->query("DELETE FROM threads, posts, rolls, deckDraws USING threads LEFT JOIN posts ON threads.threadID = posts.threadID LEFT JOIN rolls ON posts.postID = rolls.postID LEFT JOIN deckDraws ON posts.postID = deckDraws.postID WHERE threads.threadID = {$this->threadID}");
 			$mysql->query("UPDATE forums SET threadCount = threadCount - 1 WHERE forumID = {$this->thread->forumID}");
 		}
+
+		public function displayBreadcrumbs($pathOptions,$post,$quoteID)
+		{
+			?>
+			<div id="breadcrumbs">
+				<? 
+				$this->forumManager->displayForumBreadcrumbs(); 
+
+				if ($pathOptions[0] == 'editPost') {
+					echo ">\t\t\t\t\t<a href=\"/forums/thread/".$this->getThreadID()."/?p=".$post->postID."#".$post->postID."\">" . printReady($this->getThreadProperty('title')) . "</a>";
+				} elseif ($pathOptions[0] == 'post' ) {
+					if($quoteID){
+						echo ">\t\t\t\t\t<a href=\"/forums/thread/".$this->getThreadID()."/?p=".$quoteID."#p".$quoteID."\">" . printReady($this->getThreadProperty('title')) . "</a>";
+					}
+					else{
+						echo ">\t\t\t\t\t<a href=\"/forums/thread/".$this->getThreadID()."/?view=newPost#newPost\">" . printReady($this->getThreadProperty('title')) . "</a>";
+					}
+				}
+				?>
+			</div>
+			<?
+		}
 	}
 ?>
