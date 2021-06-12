@@ -20,7 +20,11 @@
 <script type="text/javascript" src="/node_modules/rx-angular/dist/rx.angular.min.js?v=<?=getJSVersion('/node_modules/rx-angular/dist/rx.angular.min.js')?>"></script>
 <script type="text/javascript" src="/javascript/combobox.angular.js?v=<?=getJSVersion('/javascript/combobox.angular.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js?v=<?=getJSVersion('/javascript/markItUp/jquery.markitup.js')?>"></script>
+<?	if ($gameID) { ?>
+<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
+<?	} else {?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>
+<?	}?>
 <?	if ($pathAction == 'chat') { ?>
 <script type="text/javascript" src="/javascript/jquery.scrollTo-min.js?v=<?=getJSVersion('/javascript/jquery.scrollTo-min.js')?>"></script>
 <?	} elseif ($pathAction == 'tools') { ?>
