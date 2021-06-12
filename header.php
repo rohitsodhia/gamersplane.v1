@@ -12,7 +12,7 @@
 <header id="bodyHeader" ng-controller="header"<?=isset($contentClasses) && array_search('fullWidthBody', $contentClasses) >= 0?' class="fullWidthBody"':''?>>
 	<div id="headerBG"></div>
 	<div class="bodyContainer">
-		<a id="headerLogo" href="/"><img src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>
+		<a id="headerLogo" href="/"><img src="/images/bodyComponents/logo.png?1" alt="Gamers Plane Logo"></a>
 
 		<ul id="mainMenu">
 			<li>
