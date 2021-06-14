@@ -337,8 +337,8 @@ class games
 			]];
 			$details['decks'] = [];
 
-			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder, heritage FROM forums WHERE parentID = 2 GROUP BY heritage');
-			list($order, $heritage) = $forumInfo->fetch(PDO::FETCH_NUM);
+			$forumInfo = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder FROM forums WHERE parentID = 2');
+			list($order) = $forumInfo->fetch(PDO::FETCH_NUM);
 			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, 2, " . mt_rand(0, 9999) . ", {$order}, {$gameID})");
 			$addForum->execute([':title' => $details['title']]);
 			$forumID = $mysql->lastInsertId();
