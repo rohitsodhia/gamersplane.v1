@@ -20,9 +20,11 @@
 ?>
 <ul style="display:none" id="playerList">
 <?php if($gameID){
-	foreach ($game['players'] as $player){ ?>
+	foreach ($game['players'] as $player){ 
+		if($player['approved']){?>
 	<li><?= $player['user']['username']?></li>
 <?php } 
+	}
 }?>
 </ul>
 	<ul class="rightCol">
