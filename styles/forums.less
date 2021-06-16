@@ -829,14 +829,14 @@
 		.cross {
 			position: absolute;
 			left: 0;
-			top: 36px;
+			top: 34px;
 		}
 	}
 
 	.newRoll {
 		& > div > * {
 			display: inline-block;
-			vertical-align: middle;
+			vertical-align: top;
 		}
 
 		.headers > div {
@@ -860,6 +860,10 @@
 		}
 
 		&.starwarsffgRoll {
+			.roll {
+				width: 202px;
+			}
+
 			.dicePool {
 				position: relative;
 				padding-right: 30px;
@@ -1030,6 +1034,11 @@
 
 			input {
 				margin-top: 3px;
+			}
+
+			.prettyCheckbox {
+				position: relative;
+				top: 6px;
 			}
 		}
 
