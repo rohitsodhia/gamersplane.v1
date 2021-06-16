@@ -162,6 +162,10 @@
 
 			label {
 				margin-top: 6px;
+				text-align: left;
+			}
+			textarea{
+				width:100%;
 			}
 		}
 	}
@@ -313,6 +317,16 @@
 		.tr > * {
 			display: inline-block;
 			vertical-align: middle;
+		}
+
+		.tr.descriptionRow > * {
+			display: initial;
+			vertical-align: initial;
+		}
+
+		.tr > hr,
+		.tr.descriptionRow > hr{
+			display: block;
 		}
 
 		.textareaRow > * {
