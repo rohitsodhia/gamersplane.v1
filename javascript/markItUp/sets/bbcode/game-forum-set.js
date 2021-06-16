@@ -82,7 +82,7 @@ $(function() {
 
     $('body').on('click','.markItUpButton10 ul li.playerNoteAdd',function(e){
         var selectedPlayers=$('.markItUpButton10 ul li.playerNoteSelected').map(function(){return $.trim($(this).text());}).get().join();
-        $.markItUp({ openWith:'[note="'+selectedPlayers+'"]', closeWith:'[note]' } );
+        $.markItUp({ openWith:'[note="'+selectedPlayers+'"]', closeWith:'[/note]' } );
     });
 
 });
