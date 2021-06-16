@@ -184,7 +184,7 @@
 <?php	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
 		<h2>Preview:</h2>
 		<div id="preview">
-			<?=BBCode2Html(printReady($fillVars['message']))."\n"?>
+			<?=printReady(BBCode2Html($fillVars['message']))."\n"?>
 		</div>
 		<hr>
 
