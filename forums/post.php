@@ -1,6 +1,10 @@
 <?php
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
+	if($currentUser->addPostNavigateWarning()){
+		$addJSFiles[] = 'forums/unsaved-work.js';
+	}
+
 
 	$noChat = false;
 	$firstPost = false;
@@ -173,7 +177,7 @@
 		</ul></div>
 <?php
 	}
-	$threadManager->forumManager->displayBreadcrumbs();
+	$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);
 ?>
 		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
 

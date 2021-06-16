@@ -41,6 +41,7 @@ mySettings = {
 		{ separator: '---------------' },
 		{ name: 'Link', openWith: '[url=[![Url]!]]', closeWith: '[/url]', placeHolder: 'Your text to link here...' },
 		{ separator: '---------------' },
+
 /*		{name:'Size', key:'S', openWith:'[size=[![Text size]!]]', closeWith:'[/size]',
 		dropMenu :[
 			{name:'Big', openWith:'[size=200]', closeWith:'[/size]' },

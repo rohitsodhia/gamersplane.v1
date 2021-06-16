@@ -72,5 +72,7 @@
 	"/javascript/ucp/ucp.js": "2.1.3",
 	"/javascript/ucp/user.js": "1.0.5",
 	"/node_modules/rx/dist/rx.all.min.js": "4.1.0",
-	"/node_modules/rx-angular/dist/rx.angular.min.js": "1.1.3"
+	"/node_modules/rx-angular/dist/rx.angular.min.js": "1.1.3",
+	"/javascript/forums/unsaved-work.js": "1.0.0",
+	"/javascript/markItUp/sets/bbcode/game-forum-set": "1.0.1"
 }

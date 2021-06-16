@@ -287,5 +287,10 @@
 			}
 			return $returnImg ? "<img src=\"/images/sleeping.png\" title=\"{$diffStr}\" alt=\"{$diffStr}\">" : $diffStr;
 		}
+
+		public function addPostNavigateWarning()
+		{
+			return ($this->usermeta['warnUnsaved']!='no');
+		}
 	}
 ?>

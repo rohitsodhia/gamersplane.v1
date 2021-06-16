@@ -1,7 +1,10 @@
 <?php
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
-
+	if($currentUser->addPostNavigateWarning()){
+		$addJSFiles[] = 'forums/unsaved-work.js';
+	}
+	
 	$threadID = intval($pathOptions[1]);
 	if (!$threadID) { header('Location: /forums'); exit; }
 

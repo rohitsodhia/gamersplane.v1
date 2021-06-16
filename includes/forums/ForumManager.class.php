@@ -375,19 +375,24 @@ public function displayForumRow($forumID)
 	{
 		?>
         <div id="breadcrumbs">
-            <?
-			if ($this->currentForum != 0) {
-				$heritage = $this->forums[$this->currentForum]->heritage;
-				$fCounter = 0;
-				foreach ($heritage as $hForumID) {
-					echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">" . printReady($this->forums[$hForumID]->title) . "</a>" . ($fCounter != sizeof($heritage) - 1 ? ' > ' : '') . "\n";
-					$fCounter++;
-				}
-			}
+            <? 
+			$this->displayForumBreadcrumbs(); 
 			?>
         </div>
         <?
 	}
+
+	public function displayForumBreadcrumbs()
+	{
+		if ($this->currentForum != 0) {
+			$heritage = $this->forums[$this->currentForum]->heritage;
+			$fCounter = 0;
+			foreach ($heritage as $hForumID) {
+				echo "\t\t\t\t\t<a href=\"/forums/{$hForumID}\">" . printReady($this->forums[$hForumID]->title) . "</a>" . ($fCounter != sizeof($heritage) - 1 ? ' > ' : '') . "\n";
+				$fCounter++;
+			}
+		}
+	}	
 
 	public function getThreads($page = 1)
 	{

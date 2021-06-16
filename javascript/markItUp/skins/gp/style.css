@@ -88,6 +88,7 @@
 	border:1px solid #3C769D;
 	border-bottom: none;
 	height:inherit;
+	z-index: 7501;
 }
 .markItUpHeader ul ul li {
 	float:none;

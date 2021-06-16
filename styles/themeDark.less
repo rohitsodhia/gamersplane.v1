@@ -44,7 +44,7 @@ body #page_forum_thread .postContent
 background-color: #37393F;
 }
 
-body #page_forum_thread .postPoint 
+body #page_forum_thread .postRight .postPoint 
 {
     background-image: none;
     border:solid 20px transparent;
@@ -55,7 +55,7 @@ body #page_forum_thread .postPoint
     top:10px;
 }
 
-body #page_forum_thread .postPoint:after
+body #page_forum_thread .postRight .postPoint:after
 {
     display: block;
     content:' ';
@@ -65,6 +65,30 @@ body #page_forum_thread .postPoint:after
     width:0;
     height:0;
     left: -14px;
+    top: -18px;    
+}
+
+body #page_forum_thread .postLeft .postPoint 
+{
+    background-image: none;
+    border:solid 20px transparent;
+    border-left-color: #444;
+    width:0;
+    height:0;
+    right:-40px;
+    top:10px;
+}
+
+body #page_forum_thread .postLeft .postPoint:after
+{
+    display: block;
+    content:' ';
+    position: absolute;
+    border:solid 18px transparent;
+    border-left-color: #37393F;
+    width:0;
+    height:0;
+    left: -21px;
     top: -18px;    
 }
 
@@ -221,4 +245,31 @@ body .forumIcon{
 
 body .forumIcon.newPosts{
     visibility: visible;
+}
+
+#page_music #info
+{
+    background-color:#37393F;
+}
+
+#page_tools_dice #diceSpace
+{
+    background-color:#37393F;
+}
+
+#page_tools_dice #diceSpace .newestRolls
+{
+    background-color:#333;
+}
+
+#page_systems #systems .system
+{
+    background-color:#37393F;
+  
+}
+
+#starwarsffg_setback span,
+#starwarsffg_force span
+{
+    color: #ccc;
 }

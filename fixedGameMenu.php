@@ -18,6 +18,15 @@
 			);
 			$isGM = $game && $game['players'][0]['isGM'] ? true : false;
 ?>
+<ul style="display:none" id="playerList">
+<?php if($gameID){
+	foreach ($game['players'] as $player){ 
+		if($player['approved']){?>
+	<li><?= $player['user']['username']?></li>
+<?php } 
+	}
+}?>
+</ul>
 	<ul class="rightCol">
 		<li><a href="<?='/games/'.$gameID?>" class="menuLink" target="_blank">Game Details</a></li>
 	</ul>
