@@ -17,5 +17,6 @@
 	"/styles/tools.css": "1.2.0",
 	"/styles/ucp.css": "1.0.2",
 	"/javascript/markItUp/sets/bbcode/style.css": "1.2.0",
-	"/javascript/markItUp/skins/gp/style.css": "1.2.0"
+	"/javascript/markItUp/skins/gp/style.css": "1.2.0",
+	"/styles/themeDark.css":"1.0.1"
 }
