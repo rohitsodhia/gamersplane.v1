@@ -1,4 +1,6 @@
 <?php
+	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+
 	$gameID = intval($pathOptions[0]);
 
 	$gameInfo = $mongo->games->findOne(
@@ -11,7 +13,7 @@
 	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. " . ($gameInfo['description'] ? $gameInfo['description'] : 'No description provided.');
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
-		<h1 class="headerbar">Game Details <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
+		<h1 class="headerbar"><?=$gameInfo['title'] ?> <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 
 <?php	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
 		<div class="alertBox_error"><ul>
@@ -47,9 +49,15 @@
 				This game has been retired! That means it's no longer being run.
 			</div>
 			<div id="details">
+				<div class="tr clearfix descriptionRow">
+					<?=printReady(BBCode2Html($gameInfo['description'])) ?>
+				</div>
+				<div class="tr clearfix">
+					<hr/>
+				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Status</label></div>
-					<div class="infoCol">{{details.status.capitalizeFirstLetter()}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status == 'open' ? 'Close' : 'Open'}} Game ]</a></div>
+					<div class="infoCol">{{details.status == 'open' ? 'Open for game applications' : 'Closed for game applications'}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status == 'open' ? 'Close for applications' : 'Open to applications'}} ]</a></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Title</label></div>
@@ -82,10 +90,6 @@
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Number of Characters per Player</label></div>
 					<div class="infoCol">{{details.charsPerPlayer}}</div>
-				</div>
-				<div class="tr textareaRow clearfix">
-					<div class="labelCol"><label>Description</label></div>
-					<div class="infoCol" ng-bind-html="details.description | trustHTML"></div>
 				</div>
 				<div class="tr textareaRow clearfix">
 					<div class="labelCol"><label>Character Generation Info</label></div>

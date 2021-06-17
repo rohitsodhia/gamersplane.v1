@@ -200,7 +200,7 @@ class games
 		$gameInfo['gm']['lastActivity'] = User::inactive($mysql->query("SELECT lastActivity FROM users WHERE userID = {$gameInfo['gm']['userID']} LIMIT 1")->fetchColumn());
 		$gameInfo['title'] = printReady($gameInfo['title']);
 		$gameInfo['created'] = date('F j, Y g:i a', getMongoSeconds($gameInfo['created']));
-		$gameInfo['description'] = strlen($gameInfo['description']) ? printReady($gameInfo['description']) : 'None Provided';
+		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
 		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? printReady($gameInfo['charGenInfo']) : 'None Provided';
 		$gameInfo['approvedPlayers'] = 0;
 		foreach ($gameInfo['players'] as &$player) {
