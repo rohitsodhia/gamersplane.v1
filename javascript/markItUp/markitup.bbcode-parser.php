@@ -112,13 +112,80 @@ function BBCode2Html($text) {
 		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]\s*/s", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
 
+	//map
 	$matches = null;
 	$text=preg_replace_callback("/\[map\](.*?)\[\/map\]/ms", function($matches){
 			$mapLink=preg_replace('/\s+/', '',$matches[1]);
 			return '<a class="mapLink" target="_blank" href="'.$mapLink.'"><img class="usrImg" src="'.$mapLink.'"/></a>';
-	},
-	$text);
+	}, $text);
+	//end map
 
+	//spotify
+	$matches = null;
+	$text=preg_replace_callback("/\[spotify\]https:\/\/open.spotify.com\/([a-​zA-Z]*)\/([a-​zA-Z0-9_]*)\??([\=a-​zA-Z0-9_]*)\[\/spotify\]/ms", function($matches){
+		$height=80;
+		if($matches[1]=="episode" || $matches[1]=="show"){
+			$height=152;
+		}
+		return "<iframe src='https://open.spotify.com/embed/".$matches[1]."/".$matches[2]."?theme=0' width='100%' height='".$height."' frameBorder='0' allowtransparency='true' allow='encrypted-media'></iframe>";
+
+	}, $text);
+	//end spotify
+
+	//tables
+	$matches = null;
+	$text=preg_replace_callback("/\[table(=([\"a-zA-Z])*)?\](.*?)\[\/table\]/ms", function($matches){
+			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
+			$tableClass="";
+			if($tableType=="center"||$tableType=="centre"){
+				$tableClass=" bbTableCenter";
+			} else if($tableType=="right"){
+				$tableClass=" bbTableRight";
+			} else if($tableType=="stats"){
+				$tableClass=" bbTableStats";
+			}
+
+			$tableRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
+
+			//simple code to split cells on pipes
+			$ret="<table class='bbTable".$tableClass."'>";
+			foreach ($tableRows as $tableRow){
+				$ret=$ret."<tr><td>".str_replace("|","</td><td>",$tableRow)."</td></tr>";
+			}
+
+
+			//more involved implementation which uses colspans to distribute cells across the table
+			//I think it's too clever for its own good and prefer the naive implementation above
+			/*
+			$maxCols=0;
+			foreach ($tableRows as $tableRow){
+				$maxCols=max(substr_count($tableRow,"|")+1,$maxCols);
+			}
+
+			foreach ($tableRows as $tableRow){
+				$ret=$ret."<tr>";
+				$cells=explode("|",$tableRow);
+				$colsPerCell=$maxCols/count($cells);
+				$colNum=1;
+				$colsAdded=0;
+				foreach ($cells as $cell){
+					$colSpan=floor($colNum*$colsPerCell)-$colsAdded;
+					$ret=$ret.(($colSpan==1)?"<td>":"<td colspan='".$colSpan."'>");
+					$colsAdded+=$colSpan;
+					$colNum++;
+					$ret=$ret.$cell;
+					$ret=$ret."</td>";
+				}
+	
+				$ret=$ret."</tr>";
+			}*/
+
+			$ret=$ret."</table>";
+
+			return $ret;
+	}, $text);
+	//end tables
+	
 	$matches = null;
 	global $currentUser, $isGM, $post;
 	if ($post) {

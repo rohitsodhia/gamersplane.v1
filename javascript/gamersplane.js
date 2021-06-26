@@ -151,6 +151,9 @@ $(function() {
 		curPage = $('#content > div > div').attr('id').substring(5);
 	else
 		curPage = $('body > div').attr('id').substring(5);
+
+	//spoiler opening and closing
+	$('.spoiler .tag').on('click',function(){$(this).closest('.spoiler').toggleClass('closed');})
 });
 
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment', 'rsCombobox']);

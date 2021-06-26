@@ -3,51 +3,6 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-.quote, .note, .spoiler {
-	margin: 10px;
-	padding: 8px;
-	border: 1px solid #666;
-	background-color: #EEE;
-
-}
-
-.oocText {
-	margin: 1em 0 1em 20px;
-	font-style: italic;
-	color: #44B;
-}
-
-.quote, .note, .oocText, .spoiler {
-	div:first-child {
-		font-size: .85em;
-		line-height: 1em;
-		font-weight: bold;
-		margin: 0 0 .5em 0;
-		font-variant: small-caps;
-	}
-}
-
-.spoiler {
-	.tag {
-		cursor: pointer;
-	}
-
-	&.closed {
-		.hidden, .close {
-			display: none;
-		}
-	}
-
-	&:not(.closed) {
-		.open {
-			display: none;
-		}
-	}
-
-	& > div img {
-		width: 100%;
-	}
-}
 
 /* --------------------------------------------*/
 

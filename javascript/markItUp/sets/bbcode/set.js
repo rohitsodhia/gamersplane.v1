@@ -49,21 +49,4 @@ mySettings = {
 	]
 };
 
-window.onload = function () {
-	var spoilers = document.getElementsByClassName('spoiler');
-	for (var count = 0; count < spoilers.length; count++) {
-		var element = spoilers[count].getElementsByClassName('tag');
-		element[0].addEventListener('click', function () {
-			var spoiler = this.parentNode,
-				classes = spoiler.className.match(/\S+/g) || [],
-				index = classes.indexOf('closed');
 
-			if (index >= 0) {
-				classes.splice(index, 1);
-			} else {
-				classes.push('closed');
-			}
-			spoiler.className = classes.join(' ');
-		});
-	}
-};
