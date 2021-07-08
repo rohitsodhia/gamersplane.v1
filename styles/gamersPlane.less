@@ -1290,6 +1290,35 @@ br.gap {
 	max-width: 890px;
 }
 
+.bbTable {
+	width: 100%;
+
+	&.bbTableCenter	{
+		td{
+			text-align: center;
+		}
+	}
+
+	&.bbTableRight	{
+		td{
+			text-align: right;
+		}
+	}
+
+	&.bbTableStats	{
+		tr:first-of-type{
+			td{
+				background-color: #C60;
+				color: #fff;
+			}
+		}
+
+		td{
+			text-align: right;
+		}
+	}
+}
+
 br.clear {
 	clear: both;
 }
@@ -1425,6 +1454,55 @@ input[type="text"], textarea {
 	padding: 8px 7px 7px;
 	border-top: 0;
 	background: #EEE;
+}
+
+/* ----------------------------------------------------------------------------------------------*/
+/* Spoilers and quotes can also appear on char sheet notes */
+
+.quote, .note, .spoiler {
+	margin: 10px;
+	padding: 8px;
+	border: 1px solid #666;
+	background-color: #EEE;
+
+}
+
+.oocText {
+	margin: 1em 0 1em 20px;
+	font-style: italic;
+	color: #44B;
+}
+
+.quote, .note, .oocText, .spoiler {
+	div:first-child {
+		font-size: .85em;
+		line-height: 1em;
+		font-weight: bold;
+		margin: 0 0 .5em 0;
+		font-variant: small-caps;
+	}
+}
+
+.spoiler {
+	.tag {
+		cursor: pointer;
+	}
+
+	&.closed {
+		.hidden, .close {
+			display: none;
+		}
+	}
+
+	&:not(.closed) {
+		.open {
+			display: none;
+		}
+	}
+
+	& > div img {
+		width: 100%;
+	}
 }
 
 /* ----------------------------------------------------------------------------------------------*/

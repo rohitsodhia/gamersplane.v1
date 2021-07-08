@@ -331,6 +331,23 @@
 			return $this->spells;
 		}
 
+		public function getAC($key = null) {
+			$ac = parent::getAC($key);
+			if(is_numeric($ac) && $key=='total'){
+				$ac+=$this->getSize();
+			}
+			return $ac;
+		}
+
+		public function getAttackBonus($key = null, $type = null) {
+			$attackBonus=parent::getAttackBonus($key,$type);
+			if(is_numeric($attackBonus) && $key=='total'){
+				$attackBonus+=$this->getSize();
+			}
+
+			return $attackBonus;
+		}
+
 		public function save($bypass = false) {
 			$data = $_POST;
 

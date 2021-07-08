@@ -9,7 +9,7 @@
 	"/javascript/angular-moment.min.js": "1.0.0",
 	"/javascript/combobox.angular.js": "1.1.0",
 	"/javascript/html5shiv.js": "3.6.2pre",
-	"/javascript/gamersplane.js": "1.19.1",
+	"/javascript/gamersplane.js": "1.19.3",
 	"/javascript/gamersplane.functions.js": "1.2.0",
 	"/javascript/gamersplane.plugins.js": "1.1.0",
 	"/javascript/notifications.js": "1.0.1",
@@ -59,7 +59,7 @@
 	"/javascript/login/login.js": "1.1.0",
 	"/javascript/login/requesetReset.js": "1.1.0",
 	"/javascript/login/resetPass.js": "1.1.0",
-	"/javascript/markItUp/sets/bbcode/set.js": "1.4.1",
+	"/javascript/markItUp/sets/bbcode/set.js": "1.4.2",
 	"/javascript/pms/delete.js": "1.1.0",
 	"/javascript/pms/list.js": "2.1.0",
 	"/javascript/pms/send.js": "1.1.0",
@@ -74,5 +74,5 @@
 	"/node_modules/rx/dist/rx.all.min.js": "4.1.0",
 	"/node_modules/rx-angular/dist/rx.angular.min.js": "1.1.3",
 	"/javascript/forums/unsaved-work.js": "1.0.0",
-	"/javascript/markItUp/sets/bbcode/game-forum-set": "1.0.1"
+	"/javascript/markItUp/sets/bbcode/game-forum-set": "1.0.2"
 }
