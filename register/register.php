@@ -7,6 +7,7 @@
 
 		<form method="post" action="/register/process/register/">
 <?php
+	$errors = [];
 	if ($formErrors->getErrors('registration')) {
 		$errors = $formErrors->getErrors('registration');
 ?>
