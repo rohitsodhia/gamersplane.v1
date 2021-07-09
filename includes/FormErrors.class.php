@@ -29,7 +29,7 @@
 			if (strlen($for) && sizeof($this->errors)) {
 				$this->errorChecked = true;
 
-				unset($_SESSION['errors'][$for]);
+				unset($_SESSION['errors']);
 				$_SESSION['errors']['for'] = $for;
 				$_SESSION['errors']['errorCodes'] = $this->errors;
 				$_SESSION['errors']['errorTimer'] = time() + $this->errorTimer;
@@ -47,6 +47,8 @@
 				$this->errorChecked = true;
 				if (isset($_SESSION['errors']['errorVals'])) {
 					return $_SESSION['errors']['errorVals'];
+				} elseif (isset($_SESSION['errors']['errorCodes'])) {
+					return $_SESSION['errors']['errorCodes'];
 				} else {
 					return true;
 				}
