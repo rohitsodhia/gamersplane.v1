@@ -44,13 +44,22 @@
 		if (strlen($email) == 0) {
 			$formErrors->addError('emailBlank');
 		} else {
-			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-				$formErrors->addError('emailInvalid');
+			$blacklistedDomains = ['temporary-mail'];
+			foreach ($blacklistedDomains as $domain) {
+				if (strpos($email, '@'.$domain) !== FALSE) {
+					$formErrors->addError('emailInvalid');
+				}
 			}
-			$emailCheck = $mysql->prepare('SELECT userID from users WHERE LOWER(email) = ?');
-			$emailCheck->execute([strtolower($email)]);
-			if ($emailCheck->rowCount()) {
-				$formErrors->addError('emailTaken');
+			if (!$formErrors->checkError('emailInvalid')) {
+				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+					$formErrors->addError('emailInvalid');
+				} else {
+					$emailCheck = $mysql->prepare('SELECT userID from users WHERE LOWER(email) = ?');
+					$emailCheck->execute([strtolower($email)]);
+					if ($emailCheck->rowCount()) {
+						$formErrors->addError('emailTaken');
+					}
+				}
 			}
 		}
 
