@@ -1,15 +1,15 @@
 <?php
 	if ($loggedIn) { header('Location: /'); exit; }
 	$addExternalJSFiles[] = 'https://www.google.com/recaptcha/api.js';
-	if ($formErrors->getErrors('register')) {
-		$errors = $formErrors->getErrors('register');
-	}
 	require_once(FILEROOT.'/header.php');
 ?>
 		<h1 class="headerbar">Registration</h1>
 
 		<form method="post" action="/register/process/register/">
-<?php	if ($formErrors->getErrors('register')) { ?>
+<?php
+	if ($formErrors->getErrors('registration')) {
+		$errors = $formErrors->getErrors('registration');
+?>
 			<div class="alertBox_error">
 				There was a problem with your registration. Please see the errors below and try again.
 			</div>
@@ -19,10 +19,10 @@
 				<label class="textLabel">Username</label>
 				<input id="username" type="text" name="username" maxlength="24" value="<?=$username?>" tabindex="<?=tabOrder()?>" class="textfield">
 				<div class="alert">
-					<div id="userShort" class="<?=(isset($errors['userShort'])?'showDiv':'hideDiv')?>">Username must be more then 4 characters long</div>
-					<div id="userLong" class="<?=(isset($errors['userLong'])?'showDiv':'hideDiv')?>">Username can only be up to 24 characters</div>
-					<div id="userInvalid" class="<?=(isset($errors['userInvalid'])?'showDiv':'hideDiv')?>">Username Invalid</div>
-					<div id="userTaken" class="<?=(isset($errors['userTaken'])?'showDiv':'hideDiv')?>">Username Taken</div>
+					<div id="userShort" class="<?=(in_array('userShort', $errors)?'showDiv':'hideDiv')?>">Username must be more then 4 characters long</div>
+					<div id="userLong" class="<?=(in_array('userLong', $errors)?'showDiv':'hideDiv')?>">Username can only be up to 24 characters</div>
+					<div id="userInvalid" class="<?=(in_array('userInvalid', $errors)?'showDiv':'hideDiv')?>">Username Invalid</div>
+					<div id="userTaken" class="<?=(in_array('userTaken', $errors)?'showDiv':'hideDiv')?>">Username Taken</div>
 				</div>
 			</div>
 			<div>
@@ -34,9 +34,9 @@
 				<label class="textLabel">Password</label>
 				<input id="password1" type="password" name="password1" maxlength="32" tabindex="<?=tabOrder()?>" class="textfield">
 				<div class="alert">
-					<div id="passBlank" class="<?=(isset($errors['passBlank'])?'showDiv':'hideDiv')?>">Password cannot be blank</div>
-					<div id="passShort" class="<?=(isset($errors['passShort'])?'showDiv':'hideDiv')?>">Password too short</div>
-					<div id="passLong" class="<?=(isset($errors['passLong'])?'showDiv':'hideDiv')?>">Password too long</div>
+					<div id="passBlank" class="<?=(in_array('passBlank', $errors)?'showDiv':'hideDiv')?>">Password cannot be blank</div>
+					<div id="passShort" class="<?=(in_array('passShort', $errors)?'showDiv':'hideDiv')?>">Password too short</div>
+					<div id="passLong" class="<?=(in_array('passLong', $errors)?'showDiv':'hideDiv')?>">Password too long</div>
 				</div>
 			</div>
 			<div>
@@ -46,7 +46,7 @@
 				<label class="textLabel">Repeat Password</label>
 				<input id="password2" type="password" name="password2" maxlength="32" tabindex="<?=tabOrder()?>" class="textfield">
 				<div class="alert">
-					<div id="passMismatch" class="<?=(isset($errors['passMismatch'])?'showDiv':'hideDiv')?>">Passwords don't match</div>
+					<div id="passMismatch" class="<?=(in_array('passMismatch', $errors)?'showDiv':'hideDiv')?>">Passwords don't match</div>
 				</div>
 			</div>
 
@@ -54,9 +54,9 @@
 				<label class="textLabel">Email Address</label>
 				<input id="email" type="text" name="email" maxlength="100" value="<?=$email?>" tabindex="<?=tabOrder()?>" class="textfield">
 				<div class="alert">
-					<div id="emailBlank" class="<?=(isset($errors['emailBlank'])?'showDiv':'hideDiv')?>">Email cannot be blank</div>
-					<div id="emailInvalid" class="<?=(isset($errors['emailInvalid'])?'showDiv':'hideDiv')?>">Email Invalid</div>
-					<div id="emailTaken" class="<?=(isset($errors['emailTaken'])?'showDiv':'hideDiv')?>">Email Taken</div>
+					<div id="emailBlank" class="<?=(in_array('emailBlank', $errors)?'showDiv':'hideDiv')?>">Email cannot be blank</div>
+					<div id="emailInvalid" class="<?=(in_array('emailInvalid', $errors)?'showDiv':'hideDiv')?>">Email Invalid</div>
+					<div id="emailTaken" class="<?=(in_array('emailTaken', $errors)?'showDiv':'hideDiv')?>">Email Taken</div>
 				</div>
 			</div>
 
@@ -70,7 +70,7 @@
 			<div id="recaptchaDiv" class="tr">
 				<h2>Prove to me you're real!</h2>
 				<div class="g-recaptcha" data-sitekey="6LcT8gsTAAAAALlRVGdtM9iansESdnIdeCUIwoqG"></div>
-				<div class="alert <?=(isset($errors['captchaFailed']) ? 'showDiv' : 'hideDiv')?>">reCaptch failed!</div>
+				<div class="alert <?=(in_array('captchaFailed', $errors) ? 'showDiv' : 'hideDiv')?>">reCaptch failed!</div>
 			</div>
 <?php	} ?>
 
