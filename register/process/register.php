@@ -51,13 +51,18 @@
 				}
 			}
 			if (!$formErrors->checkError('emailInvalid')) {
-				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+				$disposable_json = file_get_contents('https://open.kickbox.com/v1/disposable/'.$email);
+				if (strpos($disposable_json, 'true') !== FALSE) {
 					$formErrors->addError('emailInvalid');
 				} else {
-					$emailCheck = $mysql->prepare('SELECT userID from users WHERE LOWER(email) = ?');
-					$emailCheck->execute([strtolower($email)]);
-					if ($emailCheck->rowCount()) {
-						$formErrors->addError('emailTaken');
+					if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+						$formErrors->addError('emailInvalid');
+					} else {
+						$emailCheck = $mysql->prepare('SELECT userID from users WHERE LOWER(email) = ?');
+						$emailCheck->execute([strtolower($email)]);
+						if ($emailCheck->rowCount()) {
+							$formErrors->addError('emailTaken');
+						}
 					}
 				}
 			}
