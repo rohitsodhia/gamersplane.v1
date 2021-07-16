@@ -426,17 +426,13 @@
 		line-height: 1.4em;
 		background: #FFF;
 
-		.post img {
-			max-width: 684px;
-			margin: .5em 0;
-		}
+		.post {
+			overflow: hidden;
 
-		.post .oocText img{
-			max-width: 664px;
-
-		}
-		.post .note img{
-			max-width: 648px;
+			img {
+				max-width: 100%;
+				margin: .5em 0;
+			}
 		}
 	}
 
@@ -511,6 +507,56 @@
 #page_forum_thread .rollInfo .hidden {
 	color: #666;
 }
+
+.parsedRolls{
+	cursor: pointer;
+	
+	i{
+		display: inline-block;
+		padding: 0 .2em;
+		&:after{
+			content:',';
+		}
+
+		&:last-child::after{
+			content:'';
+		}
+
+	}
+
+	.rollVal-bold{
+		font-weight: bold;
+	}
+	.rollVal-success{
+		color: #060;
+	}
+	.rollVal-fail{
+		color: #800;
+	}
+	.rollVal-info{
+		color: #009;
+	}
+
+	.rollVal-invert{
+		color: #fff;
+		background-color: #333;
+		&.rollVal-success{
+			background-color: #060;
+		}
+		&.rollVal-fail{
+			background-color: #800;
+		}
+		&.rollVal-info{
+			background-color: #009;
+		}
+	}
+
+	.rollVal-underline{
+		text-decoration:underline;
+	}
+
+}
+
 
 #page_forum_thread, #page_forum_post {
 	.rollResults {
@@ -1462,4 +1508,157 @@
 			}
 		}
 	}
+}
+
+/* --------------------------------------------*/
+/* char sheet integration */
+#charButtons
+{
+    margin-left:0.5em;
+}
+.rollForChar
+{
+    display: inline-block;
+    margin: 0 .5em;
+    background-color:#800;
+    color:#fff;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 80%;
+    padding:.25em .5em;
+    border-radius: 6px;
+}
+
+.rollForChar.sel
+{
+    color:#800;
+    border:solid 1px;
+    background-color: transparent;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-style: none;
+    z-index: 2;
+    background-color: #fff;
+    padding-bottom: 0.6em;
+
+}
+
+#charSheetRoller
+{
+    border:solid 1px #400;
+    padding:10px;
+    border-radius:0.5em;
+    margin-top:-1px;
+    z-index: 1;
+}
+
+#charSheetRoller h3
+{
+    color:#800;
+    border-top:solid 1px;
+}
+
+.roller
+{
+    white-space: nowrap;
+    display: inline-block;
+    width:290px;
+    margin-bottom: 1em;
+}
+.roller.skill
+{
+    width:210px;
+}
+
+.roller span
+{
+    display: block;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.rollerInit span
+{
+    display:none;
+}
+
+.roller .rollSel
+{
+    display: inline-block;
+    margin-left: 0;
+    margin-right:1em;
+}
+
+.roller .rollSel li
+{
+    display: inline-block;
+    border:solid 1px #888;
+    border-right-width: 0;
+    padding:.2em .5em;
+}
+
+.rollDice{
+	cursor: pointer;
+}
+
+td .rollDice{
+	display: inline-block;
+	padding: .2em 1em;
+	border:solid 1px #222;
+	border-radius: 5px;
+	background-color: #eee;
+}
+
+#charSheetRoller .bbTableRolls tr:hover{
+	background-color: #FFF2E0;
+}
+
+.roller .rollSel li:first-of-type
+{
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.roller .rollSel li:last-of-type
+{
+    border-right-width: 1px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+/* --------------------------------------------*/
+.editRollInfo{
+
+	&:after{
+		content: '';
+  		display: table;
+  		clear: both;		
+	}
+
+	.editRollInfoChangeVisibility{
+		float:left;
+		width:200px;
+	}
+
+	.editRollInfoRoll{
+		float: left;
+		width:680px;
+		padding-right: 20px;
+
+		p{
+			margin: 0;
+		}
+
+		margin-bottom: .5em;
+	}
+
+	border-bottom: solid 1px #ccc;
+
+	&:last-of-type{
+		border-bottom-style: none;
+	}
+}
+
+#page_forum_post #postedRolls .rollInfo.editRollInfo{
+	margin-bottom: .5em;
 }

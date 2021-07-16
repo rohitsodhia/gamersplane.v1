@@ -15,7 +15,9 @@ notesdropDown.push({ name: 'Add note', className: 'playerNoteAdd' });
 
 mySettings = {
 	previewParserPath: '', // path to your BBCode parser
-
+	afterInsert:function(){
+		$('textarea.markItUp').trigger('input').trigger('change');
+	},
 	markupSet: [
 		{ name: 'Bold', key: 'B', openWith: '[b]', closeWith: '[/b]' },
 		{ name: 'Italic', key: 'I', openWith: '[i]', closeWith: '[/i]' },

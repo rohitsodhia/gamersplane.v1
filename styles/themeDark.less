@@ -92,6 +92,11 @@ body #page_forum_thread .postLeft .postPoint:after
     top: -18px;    
 }
 
+#page_forum_thread div.postContent hr{
+    color: #888;
+    background-color: #888;
+}
+
 body #page_forum_thread .postHeader
 {
     border-bottom-color: #c54;
@@ -280,4 +285,70 @@ body.modal {
 
 .bbTable td{
     color: #fff;
+}
+
+.bbTable.bbTableRolls{
+    tr{
+        border-bottom: solid 1px #303136;
+
+    }
+}
+
+#charSheetRoller .bbTableRolls{
+    tr:hover{
+        background-color: #5D4733;
+    }
+    .rollDice{
+        background-color: #303136;
+    }        
+}
+
+.parsedRolls{
+	.rollVal-success{
+		color:#0c2;
+	}
+	.rollVal-fail{
+		color: #f44;
+	}
+	.rollVal-info{
+		color: #38f;
+	}
+
+	.rollVal-invert{
+		background-color: #fff;
+		color: #333;
+		&.rollVal-success{
+			background-color: #0a0;
+            color: #fff;
+		}
+		&.rollVal-fail{
+			background-color: #800;
+            color: #fff;
+		}
+		&.rollVal-info{
+			background-color: #38f;
+            color: #fff;
+		}
+	}
+
+	.rollVal-underline{
+		text-decoration:underline;
+	}
+
+}
+
+
+
+h1.customChar{
+    color: #c54;
+    border-color: #c54;
+}
+
+body.style-background #content {
+	>.bodyContainer {
+		&:before{
+			background-color: rgba(48,49, 54, 0.95);
+		}
+
+	}
 }

@@ -25,6 +25,8 @@
 		} elseif (!$threadManager->getPermissions('write')) {
 			$noChat = true;
 		}
+
+		$post->loadRolls();
 	} elseif ($pathOptions[0] == 'newThread') {
 		$firstPost = true;
 
@@ -123,6 +125,24 @@
 				$characters[$character['characterID']] = $character['name'];
 			}
 		}
+
+		$pcCharacters = [];
+		if($isGM){
+			$rPcCharacters = $mongo->characters->find(
+				[
+					'game.gameID' => $gameID,
+					'game.approved' => true,
+					'user.userID' => ['$ne'=>$currentUser->userID]
+				],
+				['projection' => ['characterID' => true, 'name' => true]]
+			);
+			foreach ($rPcCharacters as $character) {
+				if (strlen($character['name'])) {
+					$pcCharacters[$character['characterID']] = $character['name'];
+				}
+			}
+		}
+
 	} else {
 		$fixedGameMenu = false;
 	}
@@ -214,7 +234,7 @@
 						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder()?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
 					</div>
 <?php
-	if ($gameID && sizeof($characters)) {
+	if ($gameID && (sizeof($characters)||sizeof($pcCharacters))) {
 		$currentChar = $post->postAs;
 		if ($fillVars) {
 			$currentChar = $fillVars['postAs'];
@@ -226,10 +246,14 @@
 							<option value="p"<?=$currentChar == null ? ' selected="selected"' : ''?>>Player</option>
 <?php		foreach ($characters as $characterID => $name) { ?>
 							<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
-<?php		} ?>
+<?php		} 
+			if(sizeof($pcCharacters)){
+				foreach ($pcCharacters as $characterID => $name) { ?>
+							<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
+<?php			}} ?>
 						</select></div>
 					</div>
-<?php	} ?>
+<?php	}?>
 				</div>
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder()?>"><?=$fillVars ? $fillVars['message'] : $post->message?></textarea>
 			</div>
@@ -367,19 +391,22 @@
 					$showAll = $isGM || $currentUser->userID == $post->author->userID?true:false;
 					$hidden = false;
 ?>
-						<div class="rollInfo">
+						<div class="rollInfo editRollInfo">
+							<div class="editRollInfoRoll">
+<?php
+					$roll->showHTML($showAll);
+?>
+							</div>
+							<div class="editRollInfoChangeVisibility">
 							<select name="nVisibility[<?=$roll->getRollID()?>]" tabindex="<?=tabOrder()?>">
 								<option value="0"<?=$roll->getVisibility() == 0 ? ' selected="selected"' : ''?>>Hide Nothing</option>
 								<option value="1"<?=$roll->getVisibility() == 1 ? ' selected="selected"' : ''?>>Hide Roll/Result</option>
 								<option value="2"<?=$roll->getVisibility() == 2 ? ' selected="selected"' : ''?>>Hide Dice &amp; Roll</option>
 								<option value="3"<?=$roll->getVisibility() == 3 ? ' selected="selected"' : ''?>>Hide Everything</option>
 							</select>
-							<div>
-<?php
-					$roll->showHTML($showAll);
-?>
 							</div>
 							<input type="hidden" name="oVisibility[<?=$roll->getRollID()?>]" value="<?=$roll->getVisibility()?>">
+
 						</div>
 <?php				} ?>
 					</div>

@@ -229,3 +229,31 @@ function sumRow() {
 			$indivTotal.text(showSign(finalTotal));
 	});
 }
+
+// load custom game logo and apply styles
+var applyPageStyle=function(styleText)
+{
+	if(styleText)
+	{
+        try {
+			const styleObj=JSON.parse(styleText);
+			if(styleObj){
+				if(styleObj.background){
+					var bodyEle=$('body').addClass('style-background');
+					var contentEle=$('#content');
+					(!styleObj.background.image)||(contentEle.css({'background-image':'url('+styleObj.background.image+')'}));
+					(!styleObj.background.color)||(contentEle.css({'background-color':styleObj.background.color}));
+					(!styleObj.background.position)||(contentEle.css({'background-position':styleObj.background.position}));
+					(!styleObj.background.size)||(contentEle.css({'background-size':styleObj.background.size}));
+				}
+				if(styleObj.logo){
+					$('#charSheetLogo img').on('load',function(){$(this).parent().show();}).attr('src',styleObj.logo);
+				}
+			}
+			}catch(e){
+				//invalid Json
+			}
+	
+	}
+    
+};

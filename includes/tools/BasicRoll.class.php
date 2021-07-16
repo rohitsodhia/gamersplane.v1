@@ -92,7 +92,7 @@
 				$multipleRolls = sizeof($this->rolls) > 1?true:false;
 				foreach ($this->rolls as $count => $roll) {
 					$rollStrings[] = $roll['string'];
-					$rollValues[$count] = '<p class="rollResults">'.($this->visibility != 0 && $showAll?'<span class="hidden">':'').($multipleRolls?"{$roll['string']} - ":'').'( ';
+					$rollValues[$count] = '<p class="rollResults" data-rollstring="'.$roll['string'].'">'.($this->visibility != 0 && $showAll?'<span class="hidden">':'').($multipleRolls?"{$roll['string']} - ":'').'(<span class="rollValues">';
 					$results = array();
 					foreach ($roll['indivRolls'] as $key => $result) {
 						if (is_array($result))  {
@@ -100,7 +100,7 @@
 						}
 						else $results[$key] = $result;
 					}
-					$rollValues[$count] .= implode(', ', $results).' )';
+					$rollValues[$count] .= implode(', ', $results).'</span>)';
 					if ($roll['modifier'] < 0) $rollValues[$count] .= ' - '.abs($roll['modifier']);
 					elseif ($roll['modifier'] > 0) $rollValues[$count] .= ' + '.$roll['modifier'];
 					$rollValues[$count] .= ' = '.$roll['result'].($this->visibility != 0?'</span>':'').'</p>';

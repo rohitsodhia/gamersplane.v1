@@ -3,7 +3,11 @@
 	$playerID = intval($pathOptions[2]);
 	$pendingAction = $pathOptions[1] == 'approvePlayer' ? 'approve' : 'reject';
 	$game = $mongo->games->findOne(
-		['gameID' => $gameID, 'gm.userID' => $currentUser->userID],
+		['gameID' => $gameID, 
+		 'players' => ['$elemMatch' => [
+			'user.userID' => $currentUser->userID,
+			'isGM' => true
+		]]],
 		['projection' => ['title' => true]]
 	);
 	if (!$game) { header('Location: /403'); exit; }

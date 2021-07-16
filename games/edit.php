@@ -24,6 +24,10 @@
 					<combobox ng-if="state == 'new'" data="allSystems" change="setSystem(value)" select></combobox>
 					<div ng-if="state != 'new'" ng-bind-html="allSystems[game.system]"></div>
 				</div>
+				<div class="tr" ng-if="allSystems[game.system]=='Custom'">
+					<label>Custom Type</label>
+					<input id="customType" type="text" ng-model="game.customType"> 
+				</div>
 				<div class="tr">
 					<label>Allowed Character Sheets</label>
 					<div>
@@ -57,6 +61,13 @@
 					<label>Character Generation Info</label>
 					<textarea ng-model="game.charGenInfo"></textarea>
 				</div>
+				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Advanced rules definitions</div><div class="hidden">
+				<div class="tr textareaRow">
+					<p>See the release notes for configuring these rules</p>
+					<textarea id="gameOptions" ng-model="game.gameOptions"></textarea>
+					<p id="gameOptionsError" class="alertBox_error" style="display:none;">This is not valid JSON and will not be saved.</p>
+				</div>
+				</div></blockquote>
 
 				<div id="submitDiv"><button type="submit" class="fancyButton">{{state == 'new'?'Create':'Save'}}</button></div>
 			</form>

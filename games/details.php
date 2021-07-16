@@ -65,7 +65,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>System</label></div>
-					<div ng-bind-html="systems[details.system] | trustHTML"></div>
+					<div ng-bind-html="details.customType?details.customType:systems[details.system] | trustHTML"></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Allowed Character Sheets</label></div>

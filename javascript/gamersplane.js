@@ -153,7 +153,9 @@ $(function() {
 		curPage = $('body > div').attr('id').substring(5);
 
 	//spoiler opening and closing
-	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');})
+	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
+
+	applyPageStyle($('#gameOptions').html());
 });
 
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment', 'rsCombobox']);

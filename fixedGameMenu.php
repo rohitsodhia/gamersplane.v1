@@ -3,6 +3,7 @@
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?php
 		$gameID = (int) $gameID;
+		$isUserGm=false;
 		if ($gameID) {
 			$game = $mongo->games->findOne(
 				[
@@ -21,11 +22,19 @@
 <ul style="display:none" id="playerList">
 <?php if($gameID){
 	foreach ($game['players'] as $player){ 
+		if($player['isGM'] && $player['user']['userID']==$currentUser->userID){
+			$isUserGm=true;			
+		}
 		if($player['approved']){?>
 	<li><?= $player['user']['username']?></li>
 <?php } 
 	}
-}?>
+} if($gameID){ ?>
+	<script type="application/json" id="gameOptions">
+	<?= $game["gameOptions"] ?>
+	</script>
+
+<?php }?>
 </ul>
 	<ul class="rightCol">
 		<li><a href="<?='/games/'.$gameID?>" class="menuLink" target="_blank">Game Details</a></li>
@@ -108,7 +117,7 @@
 ?>
 		<li id="fm_characters">
 			<a href="" class="menuLink">Characters</a>
-			<ul class="submenu<?=$isGM ? ' isGM' : ''?>" data-menu-group="characters">
+			<ul class="submenu<?=$isUserGm ? ' isGM' : ''?>" data-menu-group="characters">
 <?php
 				$currentUserID = 0;
 				foreach ($characters as $charInfo) {
@@ -117,7 +126,7 @@
 							echo "				</li>\n";
 						}
 						$currentUserID = $charInfo['user']['userID'];
-						echo "				<li>\n";
+						echo "				<li".($currentUser->userID==$currentUserID?" class='thisUser'":"").">\n";
 						if ($isGM) {
 ?>
 					<p class="username"><a href="/user/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
@@ -136,7 +145,7 @@
 		if ($gameID && $pathAction != 'forums' && ($game['players'][0]['approved'] || $game['public'])) {
 ?>
 			<li><a href="/forums/<?=$game['forumID']?>/" target="_blank" class="menuLink">Forum</a></li>
-<?php		} ?>
+<?php	} ?>
 	</ul>
 </div></div>
 <?php } ?>

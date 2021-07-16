@@ -209,6 +209,16 @@
 			return $this->postID;
 		}
 
+		public function loadRolls(){
+			if($this->postID!=null){
+				$mysql = DB::conn('mysql');
+				$rolls = $mysql->query("SELECT postID, rollID, type, reason, roll, indivRolls, results, visibility, extras FROM rolls WHERE postID =".$this->postID." ORDER BY rollID");
+				foreach ($rolls as $rollInfo) {
+					$this->loadRoll($rollInfo);
+				}
+			}
+		}
+
 		public function getModified() {
 			return $this->modified;
 		}
