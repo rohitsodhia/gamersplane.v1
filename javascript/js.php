@@ -22,6 +22,7 @@
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js?v=<?=getJSVersion('/javascript/markItUp/jquery.markitup.js')?>"></script>
 <?	if ($gameID) { ?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
+<script type="text/javascript" src="/javascript/gameOptions.js?v=<?=getJSVersion('/javascript/gameOptions.js')?>"></script>
 <?	} else {?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>
 <?	}?>

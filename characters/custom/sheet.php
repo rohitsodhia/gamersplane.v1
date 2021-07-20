@@ -1,9 +1,7 @@
-			<div class="tr">
-				<label id="charLabel" class="leftCol">Character Name</label>
-				<div class="rightCol">{{character.name}}</div>
-			</div>
-			
-			<div class="tr">
-				<div id="charSheetLabel" class="leftCol">Character Sheet</div>
-				<div class="rightCol" ng-bind-html="character.notes | trustHTML"></div>
-			</div>
+	<div class="tr">
+		<h1 class="customChar"><?= $this->getName() ?></h2>
+	</div>
+	
+	<div class="tr">
+		<div class="customChar"><?= printReady(BBCode2Html($this->getNotes(false))) ?></div>
+	</div>

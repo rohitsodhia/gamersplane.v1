@@ -91,7 +91,8 @@ class games
 					'system' => true,
 					'gm' => true,
 					'status' => true,
-					'players' => true
+					'players' => true,
+					'customType' => true
 				]]
 			);
 		} else {
@@ -115,7 +116,8 @@ class games
 				'start' => true,
 				'numPlayers' => true,
 				'status' => true,
-				'players' => true
+				'players' => true,
+				'customType' => true
 			]];
 			if (isset($_GET['sort'])) {
 				$gameSearchOptions['sort'] = [$_GET['sort'] => !isset($_GET['sortOrder']) || $_GET['sortOrder'] == 1 ? 1 : -1];
@@ -303,6 +305,17 @@ class games
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
+		if($_POST['system']=="custom"){
+			$details['customType'] = sanitizeString($_POST['customType']);
+		}
+
+		$gameOptions=trim($_POST['gameOptions']?:"");
+		$jsonTest = json_decode($gameOptions);
+		if ($gameOptions=="" || json_last_error() === 0) {
+			// JSON is valid
+			$details['gameOptions']=$gameOptions;
+		}		
+
 		$details['status'] = 'open';
 		$details['public'] = true;
 
@@ -410,6 +423,14 @@ class games
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
+		$details['customType'] = sanitizeString($_POST['customType']);
+		
+		$gameOptions=trim($_POST['gameOptions']?:"");
+		$jsonTest = json_decode($gameOptions);
+		if ($gameOptions=="" || json_last_error() === 0) {
+			// JSON is valid
+			$details['gameOptions']=$gameOptions;
+		}
 
 		$errors = [];
 		if (strlen($details['title']) == 0) {

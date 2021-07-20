@@ -46,7 +46,7 @@
 		</div></div>
 <?php	} ?>
 <?php	if (file_exists(FILEROOT . '/images/logos/' . SYSTEM . '.png')) { ?>
-		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>
+		<div id="charSheetLogo" style="<?=SYSTEM=='custom'?"display:none;":"" ?>"><img src="/images/logos/<?=SYSTEM?>.png"></div>
 <?php	} ?>
 
 <?php	if ($noChar) { ?>

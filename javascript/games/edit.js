@@ -143,3 +143,24 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 		};
 	});
 }]);
+
+$(function () {
+
+	var isValidJson=function (str) {
+		try {
+			JSON.parse(str);
+		} catch (e) {
+			return false;
+		}
+		return true;
+	}	
+
+	$('#gameOptions').on('change keyup blur',function(){
+		$('#gameOptionsError').hide();
+		var testJson=$.trim($('#gameOptions').val());
+		if(testJson!='' && !isValidJson(testJson)){
+			$('#gameOptionsError').show();
+		}
+	});
+	
+});

@@ -2,6 +2,7 @@ function toggleNotes(e) {
 	e.preventDefault();
 
 	$(this).siblings('.notes').slideToggle();
+	$(this).toggleClass('open');
 }
 
 $(function () {
@@ -27,6 +28,8 @@ $(function () {
 	if ($('#feats').length) {
 		$('#feats').on('click', '.feat_notesLink', toggleNotes);
 	}
+
+	applyPageStyle($('.style:first').text());
 });
 
 controllers.controller('viewCharacter', ['$scope', 'CharactersService', function ($scope, CharactersService) {
@@ -44,3 +47,5 @@ controllers.controller('viewCharacter', ['$scope', 'CharactersService', function
 		$scope.loadChar();
 	});
 }]);
+
+

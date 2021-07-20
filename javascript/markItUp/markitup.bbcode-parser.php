@@ -85,6 +85,9 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
 					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
 					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
+					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
+					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
+					 "/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
@@ -102,10 +105,12 @@ function BBCode2Html($text) {
 //					 '<ul>\1</ul>',
 //					 '<li>\1</li>',
 					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
-					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler: \1</div><div class="hidden">\2</div></blockquote>',
+					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
 					 '<iframe width="560" height="315" src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-
+					 '<div class="layout-columns-2">\1</div>',
+					 '<div class="layout-column">\1</div>',
+					 '<div class="style" style="display:none;">\1</div>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
@@ -143,7 +148,12 @@ function BBCode2Html($text) {
 				$tableClass=" bbTableRight";
 			} else if($tableType=="stats"){
 				$tableClass=" bbTableStats";
+			} else if($tableType=="ht" || $tableType=="htl" || $tableType=="hl"){
+				$tableClass=" bbTable-".$tableType;
+			} else if($tableType=="rolls"){
+				$tableClass=" bbTableRolls";
 			}
+
 
 			$tableRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
 

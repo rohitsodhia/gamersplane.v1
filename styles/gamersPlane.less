@@ -1074,6 +1074,32 @@ div.prettySelect > div {
 	}
 }
 
+body.style-background #content {
+	>.bodyContainer {
+		&:before{
+			position: absolute;
+			top: -10px;
+			bottom: 0px;
+			left: -10px;
+			right: -10px;
+			content: " ";
+			display: block;
+			background-color: rgba(255, 255, 255, 0.95);
+			z-index: 0;
+		}
+
+		> div {
+			position: relative;
+		}	
+
+	}
+
+	background-size: cover;
+	background-attachment: fixed;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
 footer {
 	margin-bottom: 10px;
 	border-top: 5px solid #AAA;
@@ -1305,16 +1331,31 @@ br.gap {
 		}
 	}
 
-	&.bbTableStats	{
+	&.bbTableStats,&.bbTable-ht,&.bbTable-htl,&.bbTableRolls	{
 		tr:first-of-type{
 			td{
-				background-color: #C60;
+				background-color: #222;
 				color: #fff;
 			}
 		}
+	}
 
+	&&.bbTable-htl,&.bbTable-hl	{
+		tr td:first-of-type{
+			background-color: #222;
+			color: #fff;
+		}
+	}
+
+	&.bbTableStats	{
 		td{
 			text-align: right;
+		}
+	}
+
+	&.bbTableRolls{
+		tr{
+			border-bottom: solid 1px #eee;
 		}
 	}
 }
@@ -1500,9 +1541,13 @@ input[type="text"], textarea {
 		}
 	}
 
-	& > div img {
-		width: 100%;
+	& div img {
+		max-width: 100%;
 	}
+}
+
+#page_forum_thread .postContent .post .spoiler img{
+	max-width: 100%;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -3685,6 +3730,83 @@ div.forumIcon {
 	form {
 		img {
 			display: none;
+		}
+	}
+}
+
+/* --------------------------------------------*/
+#charDetails{
+	.layout-columns-2,.layout-columns-3
+	{
+		img{
+			max-width: 100%;
+		}
+
+		&:after{
+			content: '';
+			display: table;
+			clear: both;
+		}
+
+		.layout-column {
+			padding: 12px;
+			float: left;
+		}	
+	}
+
+	.layout-columns-2{
+		.layout-column {
+			width: 450px;
+		}	
+	}
+
+	.layout-columns-3{
+		.layout-column {
+			width: 300px;
+		}	
+	}
+
+	.hbdMargined{
+		.layout-columns-2{
+			.layout-column {
+				width: 426px;
+				img{
+					max-width: 100%;
+				}
+			}	
+		}
+	
+		.layout-columns-3{
+			.layout-column {
+				width: 284px;
+			}	
+		}
+	
+	}
+}
+
+/*--------------*/
+#page_characterSheet {
+	.feat {
+		position: relative;
+	}
+
+	.feat_name{
+		margin-left:1.5em;
+	}
+
+	.feat_notesLink{
+		position: absolute;
+		top:4px;
+		left:0;
+		font-size: 0;
+		&:before{
+			content: '\25B2';
+			font-size: 1rem;
+		}
+		
+		&.open:before{
+			content: '\25BC';
 		}
 	}
 }
