@@ -125,6 +125,19 @@
 				}
 			}
 
+			preg_match_all('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\][\n\r]*/ms', $message, $matches, PREG_SET_ORDER);
+			if (sizeof($matches)) {
+				foreach ($matches as $match) {
+					$noteTo = preg_split('/[^\w\.]+/', $match[1]);
+					if (!in_array($currentUser->username, $noteTo)) {
+						$message = str_replace($match[0], '', $message);
+					} else {
+						$message = str_replace($match[0], $match[2].chr(13), $message);
+					}
+					
+				}
+			}			
+
 			return trim($message);
 		}
 
