@@ -1,5 +1,5 @@
 $(function () {
-    
+
     var gameOptions=null;
     try{
         gameOptions=JSON.parse($('#gameOptions').html());
@@ -11,7 +11,7 @@ $(function () {
             return function( elem ) {
                 return $(elem).text()==arg;
             };
-        });        
+        });
 
         $.expr[':'].paired =  $.expr[':'].paired || $.expr.createPseudo(function() {
             return function( elem ) {
@@ -31,9 +31,9 @@ $(function () {
         //toggle ordering between original and numeric
         var orderRolls=function(parsedRolls){
             if(parsedRolls.hasClass('rollsOrderedByVal')){
-                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).data('rollorder'))-parseInt($(b).data('rollorder')); }).appendTo(parsedRolls);            
+                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).data('rollorder'))-parseInt($(b).data('rollorder')); }).appendTo(parsedRolls);
             }else{
-                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).text())-parseInt($(b).text()); }).appendTo(parsedRolls);            
+                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).text())-parseInt($(b).text()); }).appendTo(parsedRolls);
             }
             parsedRolls.toggleClass('rollsOrderedByVal');
         };
@@ -42,7 +42,7 @@ $(function () {
         var applyDiceRules=function(parsedRolls){
             var rollstring=parsedRolls.closest('.rollResults').data('rollstring');
 
-            for(let rule of gameOptions.diceRules){
+            for (rule of gameOptions.diceRules){
                 if(rollstring &&  rollstring.indexOf(rule.rolled)!=-1){
                     //rules highlighting
                     if(rule.highlight){
@@ -51,7 +51,7 @@ $(function () {
                         }).join(' ');
 
                         var selectorSuffix='';
-                        
+
                         //last die
                         if(rule.lastDie) {
                             selectorSuffix+=':last';
@@ -71,7 +71,7 @@ $(function () {
                         if(rule.d100double) {
                             selectorSuffix+=':d100double';
                         }
-                        
+
                         $('i'+selectorSuffix,parsedRolls).addClass(highlightClass);
                     }
 
@@ -90,7 +90,7 @@ $(function () {
 
             pThis.html('');
             var natOrder=1;
-            for(let roll of rolledNumbers){
+            for(roll of rolledNumbers){
                 $('<i></i>').text(roll).addClass('rval'+roll).data('rollorder',natOrder++).appendTo(pThis);
             }
 
