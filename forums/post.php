@@ -251,7 +251,7 @@
 				foreach ($pcCharacters as $characterID => $name) { ?>
 							<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
 <?php			}} ?>
-						</select></div>
+						</select> <span id="charSheetLink"></span></div>
 					</div>
 <?php	}?>
 				</div>

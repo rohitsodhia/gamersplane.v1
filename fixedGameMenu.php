@@ -134,7 +134,7 @@
 						}
 					}
 ?>
-					<p class="charName"><a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/"><?=$charInfo['label']?></a></p>
+					<p class="charName"><a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
 <?php				} ?>
 				</li>
 			</ul>
