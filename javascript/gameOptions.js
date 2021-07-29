@@ -42,7 +42,8 @@ $(function () {
         var applyDiceRules=function(parsedRolls){
             var rollstring=parsedRolls.closest('.rollResults').data('rollstring');
 
-            for (rule of gameOptions.diceRules){
+            for (var count = 0; count < gameOptions.diceRules.length; count++) {
+                var rule = gameOptions.diceRules[count];
                 if(rollstring &&  rollstring.indexOf(rule.rolled)!=-1){
                     //rules highlighting
                     if(rule.highlight){
@@ -90,7 +91,8 @@ $(function () {
 
             pThis.html('');
             var natOrder=1;
-            for(roll of rolledNumbers){
+            for (var count = 0; count < rolledNumbers.length; count++){
+                var roll = rolledNumbers[count];
                 $('<i></i>').text(roll).addClass('rval'+roll).data('rollorder',natOrder++).appendTo(pThis);
             }
 
