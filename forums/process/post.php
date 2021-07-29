@@ -33,10 +33,10 @@
 			$gameID = (int) $mysql->query("SELECT gameID FROM forums f WHERE forumID = ".intval($_POST['new'])." LIMIT 1")->fetchColumn();
 		}
 
-		if (preg_match_all('/\[note="?(\w[\w +;,]+?)"?](.*?)\[\/note\]/ms', $message, $matches, PREG_SET_ORDER)) {
+		if (preg_match_all('/\[(note|private)="?(\w[\w +;,]+?)"?](.*?)\[\/(note|private)\]/ms', $message, $matches, PREG_SET_ORDER)) {
 			$allUsers = [];
 			foreach ($matches as $match) {
-				foreach (preg_split('/[^\w]+/', $match[1]) as $eachUser) {
+				foreach (preg_split('/[^\w]+/', $match[2]) as $eachUser) {
 					$allUsers[] = $eachUser;
 				}
 			}
@@ -52,7 +52,7 @@
 				}
 			}
 			foreach ($matches as $match) {
-				$matchUsers = preg_split('/[^\w]+/', $match[1]);
+				$matchUsers = preg_split('/[^\w]+/', $match[2]);
 				$validUsers = [];
 				foreach ($matchUsers as $user) {
 					foreach ($allUsers as $realUser) {
@@ -61,7 +61,7 @@
 						}
 					}
 				}
-				$validNote = preg_replace('/\[note.*?\]/', '[note="'.implode(',', $validUsers).'"]', $match[0]);
+				$validNote = preg_replace('/\['.$match[1].'.*?\]/', '['.$match[1].'="'.implode(',', $validUsers).'"]', $match[0]);
 				$message = str_replace($match[0], $validNote, $message);
 			}
 		}

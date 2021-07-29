@@ -34,6 +34,10 @@
 function BBCode2Html($text) {
 	$text = trim($text);
 
+	//iOS uses smart quotes.  Replace those as they might be tag attributes.
+	$text = str_replace('“', '"', $text);
+	$text = str_replace('”', '"', $text);
+
 	// BBCode [code]
 	if (!function_exists('escape')) {
 		function escape($s) {
@@ -210,6 +214,19 @@ function BBCode2Html($text) {
 				}
 			}
 		}
+
+		$text = preg_replace('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\]\s*/s', '<aside class="private"><div>Privately: \1</div>\2</aside>', $text);
+		if (strpos($text, 'aside class="private"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
+				if (!in_array(strtolower($currentUser->username), $noteTo)) {
+					$text = str_replace($match[0], '', $text);
+				}
+				else{
+					$text = str_replace($match[0], $match[2].'<br/>', $text);
+				}
+			}
+		}		
 	}
 
 // paragraphs

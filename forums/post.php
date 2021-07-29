@@ -72,6 +72,10 @@
 								$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
 							}
 						}
+						else{
+							$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
+						}
+						
 						$post->message = '[quote="' . $quoteInfo['username'] . '"]' . $quoteInfo['message'] . '[/quote]';
 					}
 				}
