@@ -44,7 +44,7 @@ $(function () {
 
             for (var count = 0; count < gameOptions.diceRules.length; count++) {
                 var rule = gameOptions.diceRules[count];
-                if(rollstring &&  rollstring.indexOf(rule.rolled)!=-1){
+                if(rollstring && rule.rolled &&  rollstring.toLowerCase().indexOf(rule.rolled.toLowerCase())!=-1){
                     //rules highlighting
                     if(rule.highlight){
                         var highlightClass=rule.highlight.split(" ").map(function(item) {
