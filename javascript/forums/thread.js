@@ -22,4 +22,20 @@ $(function() {
 				$link.text('Unsubscribe from ' + $link.text().split(' ')[2]);
 		});
 	});
+
+	$('.keepUnread').click(function(){
+		var pThis=$(this);
+		var threadId=pThis.data('threadid');
+		$.ajax({
+			type: 'post',
+			url: API_HOST +'/forums/setLastPostUnread',
+			xhrFields: { 
+				withCredentials: true 
+			},
+			data:{ threadID: threadId},
+			success:function (data) {
+				pThis.remove();
+			}
+		});
+	});
 });
