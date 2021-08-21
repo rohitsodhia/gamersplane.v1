@@ -44,7 +44,7 @@
 		<div class="hbMargined">
 			<div id="threadMenu" class="clearfix">
 				<div class="leftCol">
-					<a href="/forums/<?=$threadManager->getThreadProperty('forumID')?>/">Back to the forums</a>
+					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
 				</div>
 				<div class="rightCol alignRight">
 <?php
