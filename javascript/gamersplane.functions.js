@@ -323,12 +323,15 @@ var fixDarkThemeColours=function(){
     if($('body').hasClass('dark')){
         $('span.userColor,span.userSize').each(function(){
             var pThis=$(this);
-            if((pThis.get(0).style.color)){
-				invertCssColorAttribute(pThis,'color');
-            }
-            if((pThis.get(0).style.backgroundColor)){
-				invertCssColorAttribute(pThis,'background-color');
-            }
+			var pEle=pThis.get(0);
+			if(pEle.style){
+				if((pEle.style.color)&&(!pEle.style.backgroundColor)){
+					invertCssColorAttribute(pThis,'color');
+				}
+				if((pEle.style.backgroundColor)&&(!pEle.style.color)){
+					invertCssColorAttribute(pThis,'background-color');
+				}
+			}
         });
     }
 };
