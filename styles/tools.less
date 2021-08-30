@@ -118,11 +118,11 @@
 	#roller {
 		width: 400px;
 		margin-right: 20px;
-		float: left;
 	}
 
 	.sectionControls {
 		overflow: visible;
+		justify-content: flex-end;
 
 		.prettySelect,
 		.prettySelectCurrent,
@@ -181,9 +181,7 @@
 	}
 
 	.dice_basic .cbWrapper {
-		display: inline-block;
-		margin-top: 3px;
-		margin-left: 10px;
+		margin-top: 6px;
 	}
 
 	#basic_indivDice {
@@ -286,6 +284,7 @@
 	}
 
 	#diceSpace {
+		flex-grow: 2;
 		height: 292px;
 		border: 1px solid #a00;
 		overflow: auto;
