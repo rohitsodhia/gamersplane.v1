@@ -1,10 +1,10 @@
-		<div id="landing_top" class="clearfix">
+		<div id="landing_top">
 			<div id="landing_top_content" class="contentContainer">
 				<header>
 					<h1>Scratch that RPG itch</h1>
 					<h2>Talk and play <strong>RPGs</strong> with <strong>hundreds of players</strong>!</h2>
 				</header>
-				<div id="landing_top_whiteBox" class="clearfix">
+				<div id="landing_top_whiteBox">
 					<div id="landing_latestGames">
 						<h1 class="headerbar" skew-element>Latest Games</h1>
 						<div hb-margined>
@@ -42,7 +42,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="landing_whatIs" class="contentContainer clearfix">
+		<div id="landing_whatIs" class="contentContainer flexWrapper">
 			<div id="landing_whatIs_logos">
 				<img ng-repeat="system in whatIsLogos" ng-attr-id="landing_whatIs_{{system}}" ng-src="/images/logos/{{system}}.png">
 			</div>
