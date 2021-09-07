@@ -50,10 +50,12 @@
 					</form>
 				</div>
 				<div class="dice_starwarsffg hideDiv">
-					<div class="clearfix">
+					<div class="flexWrapper">
 						<div class="dicePool"></div>
-						<div class="rollWrapper"><button id="starwarsffg_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button></div>
-						<a id="starwarsffg_clear" href="">Clear</a>
+						<div class="rollWrapper">
+							<button id="starwarsffg_roll" type="submit" name="roll" class="fancyButton rollBtn">Roll</button>
+							<a id="starwarsffg_clear" href="">Clear</a>
+						</div>
 					</div>
 					<p>Click on a die above to remove it from the dice pool.<br>Click on a die below to add it to the dice pool.</p>
 					<div class="clearfix">

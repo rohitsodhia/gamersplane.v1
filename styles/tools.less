@@ -198,12 +198,18 @@
 	}
 
 	.dice_starwarsffg {
+		& > .flexWrapper {
+			flex-wrap: nowrap;
+		}
+
 		.dicePool {
-			float: left;
-			min-height: 60px;
-			width: 245px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			min-height: 50px;
+			width: 302px;
 			margin: .5em 0;
-			padding: 0 10px 10px 0;
+			padding: 10px;
 			background: #ddf;
 			border: 1px solid #400;
 			border-bottom-color: #900;
@@ -214,19 +220,19 @@
 
 			.starwarsffg_dice {
 				display: block;
-				float: left;
-				margin: 10px 0 0 10px;
 			}
 		}
 
 		.rollWrapper {
 			display: inline-block;
-			margin: 20px 0 0 20px;
+			margin-top: 20px;
+			text-align: center;
+			flex-wrap: nowrap;
 		}
 
 		#starwarsffg_clear {
 			display: inline-block;
-			margin: 5px 0 0 45px;
+			margin-top: .5em;
 		}
 
 		.addDiceLink {
