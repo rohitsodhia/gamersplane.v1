@@ -218,14 +218,7 @@ class ForumManager
 			if (!$tableOpen) {
 				?>
 <div class="tableDiv">
-    <div class="clearfix">
-        <? if ($loggedIn && $childID == 2) { ?>
-        <div class="pubGameToggle hbdMargined">
-            <span>Show public games: </span>
-            <a href="/forums/process/togglePubGames/" class="ofToggle disable<?= $currentUser->showPubGames ? ' on' : '' ?>"></a>
-        </div>
-        <?
-	} ?>
+    <div class="groupTopper">
         <h2 class="trapezoid redTrapezoid"><?= $this->forums[$childID]->forumType == 'c' ? $this->forums[$childID]->title : 'Subforums' ?></h2>
     </div>
     <div class="tr headerTR headerbar hbDark">
@@ -375,8 +368,8 @@ public function displayForumRow($forumID)
 	{
 		?>
         <div id="breadcrumbs">
-            <? 
-			$this->displayForumBreadcrumbs(); 
+            <?
+			$this->displayForumBreadcrumbs();
 			?>
         </div>
         <?
@@ -392,7 +385,7 @@ public function displayForumRow($forumID)
 				$fCounter++;
 			}
 		}
-	}	
+	}
 
 	public function getThreads($page = 1)
 	{
