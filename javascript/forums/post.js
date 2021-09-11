@@ -12,7 +12,7 @@ $(function() {
 			$('span.' + oldOpen + ', div.' + oldOpen).hide();
 			$('span.' + newOpen + ', div.' + newOpen).show();
 
-			$('#addRoll .fancyButton').each(function () { wingMargins($(this)[0]); });
+			$('#addRoll .fancyButton').each(adjustSkewMargins);
 		}
 	});
 
@@ -76,7 +76,7 @@ $(function() {
 		try {
 			gameOptions = JSON.parse($('#gameOptions').html());
 		} catch (e) { }
-	
+
 		//charactersheer integration enabled
 		if (gameOptions && gameOptions.characterSheetIntegration) {
 
@@ -85,21 +85,21 @@ $(function() {
 				return function( elem ) {
 					return $.trim($(elem).text()).length==0;
 				};
-			}); 
+			});
 
 			$.expr[':'].multipleDice =  $.expr[':'].multipleDice || $.expr.createPseudo(function() {
 				return function( elem ) {
 					return $('.rollDice',elem).length>1;
 				};
-			}); 
-	
+			});
+
 			var isGm = $('#fm_characters ul.submenu').hasClass('isGM');
-	
+
 			//setup the gui containers
 			var charSection = $('<div><div id="charButtons"></div><div id="charSheetRoller" style="display:none;"></div></div>').insertAfter($('#rollExplination'));
 			var charList = $('#charButtons', charSection);
 			var charSheet = $('#charSheetRoller', charSection);
-	
+
 			//add the dice wizards for the characters
 			var charactersToAdd;
 			if (isGm) {
@@ -108,13 +108,13 @@ $(function() {
 			else {
 				charactersToAdd = $('#fm_characters .submenu>li.thisUser p.charName a');
 			}
-	
+
 			charactersToAdd.each(function () {
 				var addChar = $(this);
 				var hrefParts = addChar.attr('href').split('/');
 				$('<span class="rollForChar"></span>').text(addChar.text()).attr('charid', hrefParts[3]).attr('gamesys', hrefParts[2]).appendTo(charList);
 			});
-	
+
 			//clicked on a character
 			$('#rolls_decks').on('click', '.rollForChar', function () {
 				var rollerForChar = $(this);
@@ -129,7 +129,7 @@ $(function() {
 					var system = $(this).attr('gamesys');
 					$.get('/characters/' + system + '/' + charId, function (data) {
 						var charSheetContent = $(data);
-	
+
 						if (system == 'dnd5') {
 							addDnd5Rolls(charSheetContent);
 						}
@@ -154,7 +154,7 @@ $(function() {
 							var rollDice=$('.rollDice',td);
 							rollDice.attr('rolltext',rollDice.attr('rolltext')+' - '+$.trim(tableHeadings.eq(cellIndex).text()));
 						});
-						
+
 
 						rollsTable.appendTo(charSheet);
 
@@ -166,15 +166,15 @@ $(function() {
 								rollDice.attr('rolltext',charPrefix+rollDice.attr('rolltext'));
 							});
 						}
-						
+
 					});
-	
+
 
 					charSheet.show();
 				}
 				rollerForChar.toggleClass('sel');
 			});
-	
+
 			var prefixSign=function(str) {
 				var val=parseInt(str);
 				if(isNaN(val)){
@@ -186,18 +186,18 @@ $(function() {
 					return ''+val;
 				}
 			}
-	
+
 			//special code for dnd 5e
 			var addDnd5Rolls = function (charSheetContent) {
 				{
 					var roller = $('<div class="roller rollerInit"><span></span><ul class="rollSel"><li><small></small></li><li class="adv">A</li><li class="dis">D</li></ul></roller>').appendTo(charSheet);
 					var initiative = prefixSign($.trim($('div', $('#stats .tr label:contains(Initiative)', charSheetContent).closest('.tr')).text()));
-	
+
 					$('span', roller).text('Initiative');
 					$('ul li', roller).addClass('rollDice').attr('roll','1d20'+initiative).attr('rolltext','Initiative');
 					$('small', roller).text('Initiative ' + initiative);
 				}
-	
+
 				$('<h3>Abilities</h3>').appendTo(charSheet);
 				$('.abilityScore', charSheetContent).each(function () {
 					var abilityScore = $(this);
@@ -211,7 +211,7 @@ $(function() {
 					$('.check small', roller).text(check);
 					$('.save small', roller).text(save);
 				});
-	
+
 				$('<h3>Weapons</h3>').appendTo(charSheet);
 				$('.weapon', charSheetContent).each(function () {
 					var weapon = $(this);
@@ -225,7 +225,7 @@ $(function() {
 					$('ul.attack small', roller).text(toHit);
 					$('ul.dmg small', roller).text(dmg);
 				});
-	
+
 				$('<h3>Skills</h3>').appendTo(charSheet);
 				$('.skill', charSheetContent).each(function () {
 					var skill = $(this);
@@ -233,13 +233,13 @@ $(function() {
 					var bonus = $.trim($('.skill_stat', skill).text());
 					//extract the number from +1 (wis)
 					bonus = bonus.match(/[^\d\-\+]*([\-\+]\d+)[^\d\-\+]*/)[1];
-	
+
 					//if the number is hiding in the skill name (e.g. Medicine + 8) then use that
 					var labelBonus = label.match(/[^\d\-\+]*([\-\+]\d+)[^\d\-\+]*/);
 					if (labelBonus) {
 						bonus = labelBonus[1];
 					}
-	
+
 					{
 						var roller = $('<div class="roller skill"><span></span><ul class="rollSel"><li><small></small></li><li class="adv">A</li><li class="dis">D</li></ul></roller>').appendTo(charSheet);
 						$('span', roller).text(label);
@@ -249,8 +249,8 @@ $(function() {
 				});
 
 			};
-	
-	
+
+
 			var addRollToList = function (reason, roll) {
 
 				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'basic' }, function (data) {
@@ -261,15 +261,15 @@ $(function() {
 					$newRow.find('.roll input').val(roll);
 					$newRow.appendTo($newRolls);
 					rollCount += 1;
-				});				
+				});
 			};
-	
+
 			//clicking a roll
 			$('#rolls_decks').on('click', '.rollDice', function () {
 				var thisRoll = $(this);
 				var roll = thisRoll.attr('roll');
 				var reason=thisRoll.attr('rolltext');
-	
+
 				if (thisRoll.hasClass('adv')) {
 					reason += ' (advantage)';
 					roll = roll + ',' + roll;
@@ -280,10 +280,10 @@ $(function() {
 				}
 
 				addRollToList(reason, roll);
-	
+
 			});
-	
+
 		}
-	}	
+	}
 
 });

@@ -705,13 +705,7 @@
 				padding-bottom: .4em;
 			}
 		}
-	}
 
-	/*#basicPostInfo .tr > * {
-		display: inline-block;
-	}*/
-
-	#basicPostInfo {
 		label {
 			width: 75px;
 		}
@@ -730,21 +724,19 @@
 		margin-top: 0;
 	}
 
-	.sectionControls {
-		a {
-			float: left;
-		}
+	#optionControls {
+		display: flex;
+		justify-content: flex-end;
 	}
 
 	#poll {
 		label {
-			float: left;
 			width: 150px;
 			vertical-align: top;
 		}
 
 		& > div > div {
-			margin-left: 160px;
+			flex-grow: 2;
 		}
 	}
 
@@ -818,16 +810,17 @@
 	}
 
 	#addRoll {
+		display: flex;
+		align-items: center;
 		margin: 1em 0 .5em;
 
 		span {
 			margin-right: 10px;
 			font-weight: bold;
-			vertical-align: middle;
 		}
 
-		.fancyButton {
-			vertical-align: middle;
+		.prettySelect {
+			margin-right: 10px;
 		}
 	}
 
