@@ -59,22 +59,26 @@
 	}
 	if ($threadManager->getPermissions('moderate')) {
 ?>
-					<form id="threadOptions" method="post" action="/forums/process/modThread/">
+					<div>
+						<form id="threadOptions" method="post" action="/forums/process/modThread/">
 <?php
 	$sticky = $threadManager->thread->getStates('sticky') ? 'unsticky' : 'sticky';
 	$lock = $threadManager->thread->getStates('locked') ? 'unlock' : 'lock';
 ?>
-						<input type="hidden" name="threadID" value="<?=$threadID?>">
-						<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
-						<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread" class="<?=$lock?>"></button>
-					</form>
+							<input type="hidden" name="threadID" value="<?=$threadID?>">
+							<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
+							<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread" class="<?=$lock?>"></button>
+						</form>
 <?php	} ?>
-<?php	if ($threadManager->getPermissions('write')) { ?>
-					<a href="/forums/post/<?=$threadID?>/" class="fancyButton">Reply</a>
-<?php	} ?>
+<?php	if ($threadManager->getPermissions('write')) {
+			$threadManager->displayPagination();
+} ?>
+					</div>
 				</div>
 			</div>
-<?php	if (!$threadManager->getThreadProperty('states[locked]') && $threadManager->getPoll()) { ?>
+<?php
+	if (!$threadManager->getThreadProperty('states[locked]') && $threadManager->getPoll()) {
+?>
 			<form id="poll" method="post" action="/forums/process/vote/">
 				<input type="hidden" name="threadID" value="<?=$threadID?>">
 				<p id="poll_question"><?=printReady($threadManager->getPollProperty('question'))?></p>
@@ -91,7 +95,6 @@
 				<ul>
 <?php
 		foreach ($threadManager->getPollProperty('options') as $pollOptionID => $option) {
-			echo "					<li class=\"clearfix\">\n";
 			if ($allowVote) {
 				if ($threadManager->getPollProperty('optionsPerUser') == 1) {
 					echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"" . ($option->voted ? ' checked="checked"' : '') . "></div>\n";

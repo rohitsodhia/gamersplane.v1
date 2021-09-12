@@ -234,7 +234,6 @@
 #page_forum,
 #page_forum_search {
 	#paginateDiv {
-		float: none;
 		position: absolute;
 		right: 0;
 		bottom: 0;
@@ -244,25 +243,35 @@
 /* --------------------------------------------*/
 
 #page_forum_thread {
+	h1 {
+		margin-bottom: 0;
+	}
+
 	h2#noPosts {
 		margin: 4em 0;
 	}
 
 	#threadMenu {
-		position: relative;
-		margin: 1em 0;
+		display: flex;
+		margin: .5em 0;
+		justify-content: space-between;
 
-		& > div {
-			display: inline-block;
-			width: 49.5%;
+		.leftCol {
+			align-self: flex-end;
 		}
 
-		.rightCol > * {
-			vertical-align: middle;
+		.threadSub {
+			margin-top: 0;
+		}
 
-			.threadSub {
-				margin-top: 0;
-			}
+		.rightCol > div {
+			display: flex;
+			align-items: center;
+		}
+
+		.paginateDiv {
+			display: inline-block;
+			margin: 0 0 0 10px;
 		}
 	}
 
@@ -347,7 +356,7 @@
 	}
 
 	.postBlock {
-		margin: 10px 0 20px;
+		margin: 10px 0 15px;
 	}
 
 	.posterDetails {
