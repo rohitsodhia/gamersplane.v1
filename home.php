@@ -34,7 +34,8 @@
 					'system' => true,
 					'gm' => true,
 					'numPlayers' => true,
-					'players' => true
+					'players' => true,
+					'customType' => true
 				],
 				'sort' => ['start' => -1],
 				'limit' => 3
@@ -57,7 +58,7 @@
 ?>
 						<div class="gameInfo">
 							<p class="title"><a href="/games/<?=$gameInfo['gameID']?>"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-							<p class="details"><u><?=$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
+							<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
 						</div>
 <?php			} ?>
 					</div>
@@ -106,7 +107,8 @@
 					'system' => true,
 					'gm' => true,
 					'numPlayers' => true,
-					'players' => true
+					'players' => true,
+					'customType' => true
 				],
 				'sort' => ['start' => -1],
 				'limit' => 4
@@ -122,7 +124,8 @@
 					'system' => true,
 					'gm' => true,
 					'numPlayers' => true,
-					'players' => true
+					'players' => true,
+					'customType' => true
 				],
 				'sort' => ['start' => -1],
 				'limit' => 4
@@ -146,21 +149,21 @@
 ?>
 					<div class="gameInfo">
 						<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-						<p class="details"><u><?=$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
+						<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
 					</div>
 <?php	} ?>
 				</div>
 			</div>
 
 			<div id="latestPosts" class="homeWidget">
-				<h3 class="headerbar">Latest Posts</h3>
+				<h3 class="headerbar">Latest Community Posts</h3>
 				<div class="widgetBody">
 <?php
 	$forumSearch = new ForumSearch('homepage');
-	$forumSearch->findThreads();
+	$forumSearch->findThreads(1,3);
 	$forumSearch->displayLatestHP();
 ?>
-					<div class="latestPostsLink"><a href="/forums/search/?search=latestPosts">Latest Posts</a></div>
+					<div class="latestPostsLink"><a href="/forums/search/?search=latestPosts">All Latest Posts</a></div>
 				</div>
 			</div>
 

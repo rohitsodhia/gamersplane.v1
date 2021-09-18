@@ -25,7 +25,7 @@
 				<div class="clearfix hbdTopper"><a href="/games/list/" class="fancyButton smallButton" skew-element>Join a Game</a></div>
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Playing</h2>
 				<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
-					<li ng-repeat="game in games | filter: { isGM: false } | orderBy: ['system', 'title']" class="gamePlaying">
+					<li ng-repeat="game in games | filter: { isGM: false, isRetired:false } | orderBy: ['system', 'title']" class="gamePlaying">
 						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
 						><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div
 						><div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
@@ -38,12 +38,24 @@
 				<div class="clearfix hbdTopper"><a href="/games/new/" class="fancyButton smallButton" skew-element>Create a New Game</a></div>
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>
 				<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
-					<li ng-repeat="game in games | filter: { isGM : true } | orderBy: ['system', 'title']" class="gameRunning">
+					<li ng-repeat="game in games | filter: { isGM : true, isRetired:false } | orderBy: ['system', 'title']" class="gameRunning">
 						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
 						><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
 					</li>
 				</ul>
 				<div ng-hide="inGames.gm" class="noneFound">It seems you aren't running any games yet. <br>You might want to <a href="/games/new/">get started</a>!</div>
 			</div>
+
+			<div id="gamesRetired" ng-show="inGames.retired">
+				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Retired games</div><div class="hidden">
+					<ul class="gameList prettyList hbdMargined">
+						<li ng-repeat="game in games | filter: { isRetired:true } | orderBy: ['system', 'title']" class="gameRunning">
+							<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
+							><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
+						</li>
+					</ul>
+				</div></blockquote>
+			</div>
+
 		</div>
 <? require_once(FILEROOT.'/footer.php'); ?>

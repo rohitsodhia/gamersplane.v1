@@ -82,8 +82,7 @@ class games
 							'user.userID' => $currentUser->userID,
 							'approved' => true
 						]
-					],
-					'retired' => null
+					]
 				],
 				['projection' => [
 					'gameID' => true,
@@ -92,7 +91,8 @@ class games
 					'gm' => true,
 					'status' => true,
 					'players' => true,
-					'customType' => true
+					'customType' => true,
+					'retired'=>true
 				]]
 			);
 		} else {
@@ -141,6 +141,8 @@ class games
 			}
 			$game['system'] = $systems->getFullName($game['system']);
 			$game['isGM'] = false;
+			$game['isRetired'] = $game['retired']!=null;
+			unset($game['retired']);
 			$game['playerCount'] = -1;
 			foreach ($game['players'] as $player) {
 				if ($player['user']['userID'] == $currentUser->userID) {

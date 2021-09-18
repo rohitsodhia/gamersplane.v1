@@ -156,6 +156,7 @@ $(function() {
 	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
 
 	applyPageStyle($('#gameOptions').html());
+	fixDarkThemeColours();
 });
 
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment', 'rsCombobox']);

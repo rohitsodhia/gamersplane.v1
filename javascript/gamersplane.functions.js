@@ -257,3 +257,81 @@ var applyPageStyle=function(styleText)
 	}
     
 };
+
+var fixDarkThemeColours=function(){
+    // http://en.wikipedia.org/wiki/HSL_color_space
+    var rgbToHsl= function(r, g, b){
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        var max = Math.max(r, g, b);
+        var min = Math.min(r, g, b);
+        var h, s;
+        var l = (0.2989 * r) + (0.587 * g) + (0.114 * b);
+
+        if(max == min){
+            h = s = 0; // grey
+        }else{
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max){
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return {h:h, s:s, l:l};
+    };
+
+    var hslToRgb=function(h, s, l){
+        var r, g, b;
+
+        if(s == 0){
+            r = g = b = l; // grey
+        }else{
+            function hue2rgb(p, q, t){
+                if(t < 0) t += 1;
+                if(t > 1) t -= 1;
+                if(t < 1/6) return p + (q - p) * 6 * t;
+                if(t < 1/2) return q;
+                if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            }
+
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return {r: (r*255), g:(g*255), b:(b * 255)};
+    };
+
+	var invertCssColorAttribute=function(pThis,attribName){
+		var curColor=window.getComputedStyle(pThis.get(0), null)[attribName];
+		var parts = curColor.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+		if(parts && parts.length==4){
+			var hsl=rgbToHsl(parts[1],parts[2],parts[3]);
+			var rgbNew=hslToRgb(hsl.h, hsl.s, 1.0-hsl.l);
+			pThis.css(attribName,'rgb('+rgbNew.r+','+rgbNew.g+','+rgbNew.b+')');
+		}
+	};
+
+    if($('body').hasClass('dark')){
+        $('span.userColor,span.userSize').each(function(){
+            var pThis=$(this);
+			var pEle=pThis.get(0);
+			if(pEle.style){
+				if((pEle.style.color)&&(!pEle.style.backgroundColor)){
+					invertCssColorAttribute(pThis,'color');
+				}
+				if((pEle.style.backgroundColor)&&(!pEle.style.color)){
+					invertCssColorAttribute(pThis,'background-color');
+				}
+			}
+        });
+    }
+};

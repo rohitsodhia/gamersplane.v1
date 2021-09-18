@@ -6,7 +6,7 @@
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
 </head>
 
-<body<?=MODAL?' class="modal"':''?> data-modal-width="<?=$dispatchInfo['modalWidth']?>" ng-app="gamersplane" ng-controller="core">
+<body class='<?=getUserTheme().' '.(MODAL?'modal':'')?>' data-modal-width="<?=$dispatchInfo['modalWidth']?>" ng-app="gamersplane" ng-controller="core">
 	<div id="pageLoading"><loading-spinner pause="pageLoadingPause"></loading-spinner></div>
 <?	if (!MODAL) { ?>
 <header id="bodyHeader" ng-controller="header"<?=isset($contentClasses) && array_search('fullWidthBody', $contentClasses) >= 0?' class="fullWidthBody"':''?>>
