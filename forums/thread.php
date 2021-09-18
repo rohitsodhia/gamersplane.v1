@@ -157,7 +157,9 @@
 				<a name="newPost"></a>
 <?php
 			}
+			$isLastPost=false;
 			if ($threadManager->thread->getLastPost('postID') == $post->getPostID()) {
+				$isLastPost=true;
 ?>
 				<a name="lastPost"></a>
 <?php			} ?>
@@ -269,6 +271,9 @@
 				</div>
 				<div class="postActions">
 <?php
+			if($isLastPost){
+				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Unread</a>\n";
+			}
 			if ($threadManager->getPermissions('write')) echo "						<a href=\"/forums/post/{$threadID}/?quote={$post->postID}\">Quote</a>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {

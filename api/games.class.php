@@ -407,9 +407,16 @@ class games
 		$gameID = intval($_POST['gameID']);
 		$gameInfo = $mongo->games->findOne(
 			['gameID' => $gameID],
-			['projection' => ['forumID' => true, 'gm' => true]]
+			['projection' => ['forumID' => true, 'public' => true, 'players' => true]]
 		);
-		if ($currentUser->userID != $gameInfo['gm']['userID']) {
+		$isGM = false;
+		foreach ($gameInfo['players'] as $player) {
+			if ($currentUser->userID == $player['user']['userID'] && $player['isGM']) {
+				$isGM = true;
+				break;
+			}
+		}		
+		if (!$isGM) {
 			displayJSON(['unauthorized' => true]);
 		}
 
