@@ -5,7 +5,7 @@
 
 	$gameInfo = $mongo->games->findOne(
 		['gameID' => $gameID],
-		['projection' => ['title' => true, 'description' => true]]
+		['projection' => ['title' => true, 'description' => true, 'charGenInfo' => true]]
 	);
 	if (!$gameInfo) { header('Location: /games/list/'); exit; }
 
@@ -93,7 +93,7 @@
 				</div>
 				<div class="tr textareaRow clearfix">
 					<div class="labelCol"><label>Character Generation Info</label></div>
-					<div class="infoCol" ng-bind-html="details.charGenInfo | trustHTML"></div>
+					<div class="infoCol"><?=printReady(BBCode2Html($gameInfo['charGenInfo'])) ?></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Forums are</label></div>

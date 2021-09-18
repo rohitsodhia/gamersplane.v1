@@ -203,7 +203,7 @@ class games
 		$gameInfo['title'] = printReady($gameInfo['title']);
 		$gameInfo['created'] = date('F j, Y g:i a', getMongoSeconds($gameInfo['created']));
 		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
-		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? printReady($gameInfo['charGenInfo']) : 'None Provided';
+		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? $gameInfo['charGenInfo'] : 'None Provided';
 		$gameInfo['approvedPlayers'] = 0;
 		foreach ($gameInfo['players'] as &$player) {
 			$player['user']['username'] = printReady($player['user']['username']);
