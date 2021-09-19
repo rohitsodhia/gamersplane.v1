@@ -32,4 +32,4 @@
 	<link href="/styles/gamersPlane_ie8.css?v=<?=getStyleVersion('/styles/gamersPlane_ie8.css')?>" rel="stylesheet">
 	<![endif]-->
 
-<?=getUserTheme()?>
+<?=getUserThemeCss()?>

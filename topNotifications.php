@@ -1,4 +1,19 @@
 <?php
+	$invitedTo = $mongo->games->find(
+		[
+			'invites' => [
+				'$elemMatch' => [
+					'userID' => $currentUser->userID
+				]
+			]
+		],
+		['projection' => [
+			'gameID' => true,
+			'title' => true,
+			'players' => true
+		]]
+	)->toArray();
+
 	$pending = $mongo->games->find(
 		[
 			'players' => [
@@ -58,4 +73,15 @@
 		} }
 ?>
 		</div></ul>
-<?php	} ?>
+<?php	} 
+		if (sizeof($invitedTo)) { 
+			?><div id="topNotifications" class="alertBox_info"><ul><?
+			
+			foreach ($invitedTo as $game) {
+?>
+				<li>You have been invited to join <a href="/games/<?=$game['gameID']?>/"><?=$game['title']?></a></li>
+<?php
+		 	}
+?>
+		</div></ul>
+<?php	}?>

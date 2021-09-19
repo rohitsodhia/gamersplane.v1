@@ -18,7 +18,9 @@
 				$this->getSubscriptions();
 			} elseif ($pathOptions[0] == 'unsubscribe') {
 				$this->unsubscribe();
-			} else {
+			} elseif ($pathOptions[0] == 'setLastPostUnread') {
+				$this->setLastPostUnread($_POST['threadID']);
+			}else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -270,6 +272,21 @@
 			$mysql->query("DELETE FROM forumSubs WHERE userID = {$userID} AND type = '{$type}' AND ID = {$typeID} LIMIT 1");
 
 			displayJSON(['success' => true]);
+		}
+
+		public function setLastPostUnread($threadID){
+			global $currentUser;
+			$mysql = DB::conn('mysql');
+			$lastPosts=$mysql->query("SELECT postID FROM posts WHERE threadID = {$threadID} ORDER BY datePosted DESC LIMIT 2");
+
+			if($lastPosts->rowCount()==2){
+				$lastPosts->fetch(PDO::FETCH_OBJ);
+				$lastPostRead=$lastPosts->fetch(PDO::FETCH_OBJ);
+				$mysql->query("UPDATE forums_readData_threads SET lastRead = {$lastPostRead->postID} WHERE threadID = {$threadID} AND userID = {$currentUser->userID}");
+			}
+			else{
+				$mysql->query("DELETE FROM forums_readData_threads WHERE threadID = {$threadID} AND userID = {$currentUser->userID}");
+			}
 		}
 	}
 ?>
