@@ -167,33 +167,6 @@ function BBCode2Html($text) {
 				$ret=$ret."<tr><td>".str_replace("|","</td><td>",$tableRow)."</td></tr>";
 			}
 
-
-			//more involved implementation which uses colspans to distribute cells across the table
-			//I think it's too clever for its own good and prefer the naive implementation above
-			/*
-			$maxCols=0;
-			foreach ($tableRows as $tableRow){
-				$maxCols=max(substr_count($tableRow,"|")+1,$maxCols);
-			}
-
-			foreach ($tableRows as $tableRow){
-				$ret=$ret."<tr>";
-				$cells=explode("|",$tableRow);
-				$colsPerCell=$maxCols/count($cells);
-				$colNum=1;
-				$colsAdded=0;
-				foreach ($cells as $cell){
-					$colSpan=floor($colNum*$colsPerCell)-$colsAdded;
-					$ret=$ret.(($colSpan==1)?"<td>":"<td colspan='".$colSpan."'>");
-					$colsAdded+=$colSpan;
-					$colNum++;
-					$ret=$ret.$cell;
-					$ret=$ret."</td>";
-				}
-	
-				$ret=$ret."</tr>";
-			}*/
-
 			$ret=$ret."</table>";
 
 			return $ret;
@@ -202,32 +175,38 @@ function BBCode2Html($text) {
 	
 	$matches = null;
 	global $currentUser, $isGM, $post;
-	if ($post) {
-		$display = false;
 
-		$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
-		if (strpos($text, 'aside class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $match) {
-				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-				if (!in_array(strtolower($currentUser->username), $noteTo)) {
-					$text = str_replace($match[0], '<aside class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></aside>', $text);
-				}
+	$postAuthor=false;
+	$postAuthorName="";
+
+	if($post){
+		$postAuthor=$post->getAuthor('userID') == $currentUser->userID;
+		$postAuthorName=$post->getAuthor('username');
+	}
+
+	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
+	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
+			if (!in_array(strtolower($currentUser->username), $noteTo)) {
+				$text = str_replace($match[0], '<aside class="note"><div>'.$postAuthorName.' sent a note to '.$match[1].'</div></aside>', $text);
 			}
 		}
-
-		$text = preg_replace('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\]\s*/s', '<aside class="private"><div>Privately: \1</div>\2</aside>', $text);
-		if (strpos($text, 'aside class="private"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $match) {
-				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-				if (!in_array(strtolower($currentUser->username), $noteTo)) {
-					$text = str_replace($match[0], '', $text);
-				}
-				else{
-					$text = str_replace($match[0], $match[2].'<br/>', $text);
-				}
-			}
-		}		
 	}
+
+	$text = preg_replace('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\]\s*/s', '<aside class="private"><div>Privately: \1</div>\2</aside>', $text);
+	if (strpos($text, 'aside class="private"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
+			if (!in_array(strtolower($currentUser->username), $noteTo)) {
+				$text = str_replace($match[0], '', $text);
+			}
+			else{
+				$text = str_replace($match[0], $match[2].'<br/>', $text);
+			}
+		}
+	}		
+	
 
 // paragraphs
 //	$text = str_replace("\r", "", $text);
