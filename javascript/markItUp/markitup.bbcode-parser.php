@@ -47,6 +47,8 @@ function BBCode2Html($text) {
 			$code = htmlspecialchars($code);
 			$code = str_replace("[", "&#91;", $code);
 			$code = str_replace("]", "&#93;", $code);
+			$code = str_replace("\r\n", "\n", $code);
+			$code = str_replace("\n", "&#10;", $code);  //prevent adding BR
 			return '<pre><code>'.$code.'</code></pre>';
 		}
 	}
