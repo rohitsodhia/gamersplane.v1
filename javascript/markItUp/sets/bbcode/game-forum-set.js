@@ -69,15 +69,9 @@ mySettings = {
 	]
 };
 
-var imgurUpload = function (miu) {
-	$('#miuImageUpload').remove();
-	var imgFileSelector = $('<input type="file" id="miuImageUpload" accept="image/png, image/gif, image/jpeg" style="display:none;"/>').appendTo($(document.body));
+var ImgurHelper=(function(){
 
-	imgFileSelector.on('change', function () {
-
-		var pThis = $(this);
-
-		var files = pThis.get(0).files;
+	var uploadFiles=function(file){
 
 		var imgurApi = 'https://api.imgur.com/3/image';
 		var apiKey = '7de684608de179a';
@@ -94,7 +88,7 @@ var imgurUpload = function (miu) {
 		};
 
 		var formData = new FormData();
-		formData.append('image', files[0]);
+		formData.append('image', file);
 		settings.data = formData;
 
 		$.ajax(settings).done(function (response) {
@@ -110,7 +104,26 @@ var imgurUpload = function (miu) {
 			}
 
 
-		});
+		});		
+	};
+
+	return {
+        uploadFiles: uploadFiles
+    };
+})();
+
+
+var imgurUpload = function (miu) {
+	$('#miuImageUpload').remove();
+	var imgFileSelector = $('<input type="file" id="miuImageUpload" accept="image/png, image/gif, image/jpeg" style="display:none;"/>').appendTo($(document.body));
+
+	imgFileSelector.on('change', function () {
+
+		var pThis = $(this);
+
+		var files = pThis.get(0).files;
+
+		ImgurHelper.uploadFiles(files[0]);
 	});
 
 	imgFileSelector.click();
@@ -128,6 +141,23 @@ $(function () {
 		var selectedPlayers = $('.markItUpButton10 ul li.playerNoteSelected').map(function () { return $.trim($(this).text()); }).get().join();
 		$.markItUp({ openWith: '[note="' + selectedPlayers + '"]', closeWith: '[/note]' });
 		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
+	});
+
+	$('textarea#messageTextArea').on('paste',function(ev){
+		var clipboard=(ev.originalEvent.clipboardData || window.clipboardData);
+
+		if(clipboard && clipboard.items){
+			for(var i=0;i<clipboard.items.length;i++){
+				var item= clipboard.items[i];
+				if (item.type.indexOf("image") === 0){
+					var blob = item.getAsFile();
+					ImgurHelper.uploadFiles(blob);
+	
+					ev.preventDefault();
+				}		
+			}
+		}	
+
 	});
 
 });
