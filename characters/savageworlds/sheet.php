@@ -1,6 +1,6 @@
 			<div id="nameDiv" class="tr clearfix">
 				<label>Name:</label>
-				<div><?=$this->getName?></div>
+				<div><?=$this->getName()?></div>
 			</div>
 
 			<div class="clearfix">
