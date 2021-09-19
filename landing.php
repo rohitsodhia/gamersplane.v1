@@ -18,7 +18,7 @@
 									<a ng-href="/games/{{game.gameID}}/" ng-bind-html="game.title | trustHTML"></a> ({{game.playerCount}} / {{game.numPlayers}})
 								</div>
 								<div class="info">
-									<span class="system" ng-bind-html="game.system"></span> run by <user-link user="game.gm"></user-link>
+									<span class="system" ng-bind-html="game.customType?game.customType:game.system"></span> run by <user-link user="game.gm"></user-link>
 								</div>
 							</div>
 						</div>

@@ -104,7 +104,8 @@ body #page_forum_thread .postHeader
 
 body .note,
 body  .quote,
-body  .spoiler
+body  .spoiler,
+body  .private
 {
     background-color: #303136;   
 }
@@ -126,12 +127,17 @@ body #page_gameDetails .characters
 }
 
 body .hbAttachedList>li:hover,
+body .prettyList>li:hover,
 body #page_pms #pmList .tr:hover,
 body #page_pm_send #history, 
 body #page_pm_view #history
 {
     background-color: #37393F;   
    
+}
+
+.hbAttachedList > li:first-child:hover {
+    background-color: #37393F;   
 }
 
 body #page_gameDetails #playersInGame>li:hover .characters
@@ -351,4 +357,16 @@ body.style-background #content {
 		}
 
 	}
+}
+
+#page_forum_thread #poll{
+    background-color: #37393F;
+}
+
+footer {
+    border-color: #222;
+}
+
+#page_home .homeWidget hr {
+    background-color: #222;
 }

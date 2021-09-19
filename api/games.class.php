@@ -82,8 +82,7 @@ class games
 							'user.userID' => $currentUser->userID,
 							'approved' => true
 						]
-					],
-					'retired' => null
+					]
 				],
 				['projection' => [
 					'gameID' => true,
@@ -92,7 +91,8 @@ class games
 					'gm' => true,
 					'status' => true,
 					'players' => true,
-					'customType' => true
+					'customType' => true,
+					'retired'=>true
 				]]
 			);
 		} else {
@@ -141,6 +141,8 @@ class games
 			}
 			$game['system'] = $systems->getFullName($game['system']);
 			$game['isGM'] = false;
+			$game['isRetired'] = $game['retired']!=null;
+			unset($game['retired']);
 			$game['playerCount'] = -1;
 			foreach ($game['players'] as $player) {
 				if ($player['user']['userID'] == $currentUser->userID) {
@@ -203,7 +205,7 @@ class games
 		$gameInfo['title'] = printReady($gameInfo['title']);
 		$gameInfo['created'] = date('F j, Y g:i a', getMongoSeconds($gameInfo['created']));
 		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
-		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? printReady($gameInfo['charGenInfo']) : 'None Provided';
+		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? $gameInfo['charGenInfo'] : 'None Provided';
 		$gameInfo['approvedPlayers'] = 0;
 		foreach ($gameInfo['players'] as &$player) {
 			$player['user']['username'] = printReady($player['user']['username']);
@@ -407,9 +409,16 @@ class games
 		$gameID = intval($_POST['gameID']);
 		$gameInfo = $mongo->games->findOne(
 			['gameID' => $gameID],
-			['projection' => ['forumID' => true, 'gm' => true]]
+			['projection' => ['forumID' => true, 'public' => true, 'players' => true]]
 		);
-		if ($currentUser->userID != $gameInfo['gm']['userID']) {
+		$isGM = false;
+		foreach ($gameInfo['players'] as $player) {
+			if ($currentUser->userID == $player['user']['userID'] && $player['isGM']) {
+				$isGM = true;
+				break;
+			}
+		}		
+		if (!$isGM) {
 			displayJSON(['unauthorized' => true]);
 		}
 

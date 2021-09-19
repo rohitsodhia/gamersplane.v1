@@ -72,7 +72,6 @@ function sanitizeString($string)
 function printReady($input, $options = array('stripslashes', 'nl2br'))
 {
 	if (is_string($input)) {
-		$input = utf8_decode($input);
 		if (in_array('nl2br', $options)) {
 			$input = str_replace("\r\n", "\n", $input);
 			$input = nl2br($input);

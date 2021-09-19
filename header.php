@@ -6,7 +6,7 @@
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
 </head>
 
-<body<?=MODAL?' class="modal"':''?> data-modal-width="<?=$dispatchInfo['modalWidth']?>" ng-app="gamersplane" ng-controller="core">
+<body class='<?=getUserTheme().' '.(MODAL?'modal':'')?>' data-modal-width="<?=$dispatchInfo['modalWidth']?>" ng-app="gamersplane" ng-controller="core">
 	<div id="pageLoading"><loading-spinner pause="pageLoadingPause"></loading-spinner></div>
 <?	if (!MODAL) { ?>
 <header id="bodyHeader" ng-controller="header"<?=isset($contentClasses) && array_search('fullWidthBody', $contentClasses) >= 0?' class="fullWidthBody"':''?>>
@@ -58,10 +58,6 @@
 
 <div id="content"<?=isset($contentClasses)?' class="'.implode(' ', $contentClasses).'"':''?>><div class="bodyContainer clearfix">
 	<div id="page_<?=PAGE_ID?>"<?=sizeof($bodyClasses)?' class="'.implode(' ', $bodyClasses).'"':''?><?=strlen($dispatchInfo['ngController'])?" ng-controller=\"{$dispatchInfo['ngController']}\"":''?>>
-		<div id="stupidIE">
-			<p>Hm... seems like you're using IE. Can I suggest a better browser, such as <a href="http://www.mozilla.com/en-US/firefox/" target="_blank">Firefox</a>, <a href="http://www.googlechrome.com/" target="_blank">Chrome</a> or <a href="http://www.opera.com/" target="_blank">Opera</a>? There are other choices too.</p>
-			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
-		</div>
 <?	} else { ?>
 <div id="page_<?=PAGE_ID?>" class="clearfix<?=sizeof($bodyClasses)?' '.implode(' ', $bodyClasses):''?>"<?=strlen($dispatchInfo['ngController'])?" ng-controller=\"{$dispatchInfo['ngController']}\"":''?>>
 <?	} ?>
