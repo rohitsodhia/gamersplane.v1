@@ -257,7 +257,7 @@ public function displayForumRow($forumID)
 	?>
         <div class="tr<?= $this->newPosts($forumID) ? '' : ' noPosts' ?>">
             <div class="td icon">
-                <div class="forumIcon<?= $this->newPosts($forumID) ? ' newPosts' : '' ?>" title="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum" alt="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum"></div>
+				<a href="/forums/<?= $forum->forumID ?>/"><div class="forumIcon<?= $this->newPosts($forumID) ? ' newPosts' : '' ?>" title="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum" alt="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum"></div></a>
             </div>
             <div class="td name">
                 <a href="/forums/<?= $forum->forumID ?>/"><?= printReady($forum->title) ?></a>
@@ -426,7 +426,7 @@ public function displayForumRow($forumID)
 						?>
                 <div class="tr">
                     <div class="td icon">
-                        <div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div>
+						<a href="/forums/thread/<?= $thread->threadID ?>/?view=lastPost#lastPost"><div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div></a>
                     </div>
                     <div class="td threadInfo">
                         <? if ($thread->newPosts($maxRead)) { ?>

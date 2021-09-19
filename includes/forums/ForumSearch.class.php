@@ -69,7 +69,7 @@
 				$forumIcon = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?'new':'old';
 ?>
 				<div class="tr">
-					<div class="td icon"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></div>
+					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
 						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
@@ -120,7 +120,7 @@
 
 ?>
 					<div class="post">
-						<div class="forumIcon<?=$newPosts?' newPosts':''?>"></div>
+						<a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><div class="forumIcon<?=$newPosts?' newPosts':''?>"></div></a>
 						<div class="title"><a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><?=$result->title?></a></div>
 						<div class="byLine">by <a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a>, <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></div>
 						<div class="forum">in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a></div>
