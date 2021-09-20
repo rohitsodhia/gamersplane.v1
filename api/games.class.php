@@ -312,6 +312,7 @@ class games
 		}
 
 		$gameOptions=trim($_POST['gameOptions']?:"");
+		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions); 
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions=="" || json_last_error() === 0) {
 			// JSON is valid
@@ -435,6 +436,7 @@ class games
 		$details['customType'] = sanitizeString($_POST['customType']);
 		
 		$gameOptions=trim($_POST['gameOptions']?:"");
+		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions); 
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions=="" || json_last_error() === 0) {
 			// JSON is valid
