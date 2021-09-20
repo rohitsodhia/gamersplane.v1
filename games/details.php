@@ -105,7 +105,7 @@
 				</div>
 				<div ng-if="isPrimaryGM" class="slideToggle" ng-show="displayRetireConfirm">
 					<div class="infoCol shiftRight">
-						<div>Are you sure you want to retire this game? All characters in the game will be removed and you will no longer be able to access the game. Gamers' Plane admins may choose to make the game forums public, at their discretion.</div>
+						<div>Are you sure you want to retire this game? All characters in the game will be removed and it will be moved to your list of retired games. Gamers' Plane admins may choose to make the game forums public, at their discretion.</div>
 						<p>
 							<button type="submit" ng-click="confirmRetire()" class="fancyButton smallButton" skew-element>Retire</button>
 							<button type="submit" ng-click="toggleRetireConfirm()" class="fancyButton smallButton" skew-element>Cancel</button>
