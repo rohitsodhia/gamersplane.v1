@@ -58,8 +58,47 @@ function BBCode2Html($text) {
 	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
 			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
 			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
 			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
 	}, $text);
+
+	//ability sections
+	$matches = null;
+	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
+		$ret="<div class='abilities'>";
+		$ret=$ret.'<h2 class="headerbar hbDark">'.$matches[1].'</h2>';
+
+		$abilityLines = explode("\n", trim($matches[2]));
+
+		$abilityOpen=false;
+		$abilityRaw="";
+		foreach ($abilityLines as $abilityLine){
+
+			if(substr($abilityLine,0,1)=='#'){
+				if($abilityOpen){
+					$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
+				}
+
+				$ret=$ret.'<div class="ability"><span class="abilityName">'.substr($abilityLine,1).'</span><a href="" class="ability_notesLink">Notes</a><div class="abilityNotes notes">';
+				$abilityOpen=true;
+				$abilityRaw="";
+			}
+			else {
+				$ret=$ret.$abilityLine."\n";
+				$abilityRaw=$abilityRaw.str_replace(array("[","]"), array("&#91;", "&#93;"),  $abilityLine)."&#10;";
+			}
+		}
+
+		if($abilityOpen){
+			$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
+		}
+
+		$ret=$ret."</div>";  //close abilities
+
+		return $ret;
+
+	}, $text);
+	//end ability sections	
 
 	// Smileys to find...
 /*	$in = array( 	 ':)',
@@ -220,40 +259,7 @@ function BBCode2Html($text) {
 	}		
 	//end notes and private
 
-	//ability sections
-	$matches = null;
-	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
-		$ret="<div class='abilities'>";
-		$ret=$ret.'<h2 class="headerbar hbDark">'.$matches[1].'</h2>';
 
-		$abilityLines = explode("\n", trim(str_replace("<br />","",$matches[2])));
-
-		$abilityOpen=false;
-		foreach ($abilityLines as $abilityLine){
-
-			if(substr($abilityLine,0,1)=='#'){
-				if($abilityOpen){
-					$ret=$ret.'</div></div>'; //close open ability notes and ability
-				}
-
-				$ret=$ret.'<div class="ability"><span class="abilityName">'.substr($abilityLine,1,-1).'</span><a href="" class="ability_notesLink">Notes</a><div class="abilityNotes notes">';
-				$abilityOpen=true;
-			}
-			else if(strlen(trim($abilityLine))>0){
-				$ret=$ret.$abilityLine;
-			}
-		}
-
-		if($abilityOpen){
-			$ret=$ret.'</div></div>'; //close open ability notes and ability
-		}
-
-		$ret=$ret."</div>";  //close abilities
-
-		return $ret;
-
-	}, $text);
-	//end ability sections
 
 	
 

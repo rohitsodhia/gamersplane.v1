@@ -109,11 +109,25 @@ $(function() {
 				charactersToAdd = $('#fm_characters .submenu>li.thisUser p.charName a');
 			}
 	
-			charactersToAdd.each(function () {
-				var addChar = $(this);
-				var hrefParts = addChar.attr('href').split('/');
-				$('<span class="rollForChar"></span>').text(addChar.text()).attr('charid', hrefParts[3]).attr('gamesys', hrefParts[2]).appendTo(charList);
-			});
+			if(!gameOptions.characterSheetIntegration.gmExcludePcs){
+				charactersToAdd.each(function () {
+					var addChar = $(this);
+					var hrefParts = addChar.attr('href').split('/');
+					$('<span class="rollForChar"></span>').text(addChar.text()).attr('charid', hrefParts[3]).attr('gamesys', hrefParts[2]).appendTo(charList);
+				});
+			}
+
+			if(isGm && gameOptions.characterSheetIntegration.gmSheets && Array.isArray(gameOptions.characterSheetIntegration.gmSheets)){
+
+				for(var i=0;i<gameOptions.characterSheetIntegration.gmSheets.length;i++){
+					var char=gameOptions.characterSheetIntegration.gmSheets[i];
+					var keys=Object.keys(char);
+					if(keys.length>0){
+						var hrefParts = char[keys[0]].split('/');
+						$('<span class="rollForChar"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
+					}
+				}
+			}
 	
 			//clicked on a character
 			$('#rolls_decks').on('click', '.rollForChar', function () {
@@ -135,8 +149,9 @@ $(function() {
 						$('.feat',charSheetContent).each(function(){
 							var pThis=$(this);
 							var name=$.trim($('.feat_name',pThis).text());
-							if(name.length>0){
-								var notes=$.trim($('.notes',pThis).text());
+							var notes=$('.notes',pThis);
+							if(name.length>0 && notes.length>0){
+								var notes=$.trim(notes.html().replace(/(?:\r\n|\r|\n)/g, '').replace(/<br\s*[\/]?>/gi, '\n'));
 								$('<option></option>').text(name).data('notes',notes).appendTo($('select',featDiv));
 							}
 						});
@@ -145,8 +160,9 @@ $(function() {
 						$('.spell',charSheetContent).each(function(){
 							var pThis=$(this);
 							var name=$.trim($('.spell_name',pThis).text());
-							if(name.length>0){
-								var notes=$.trim($('.spell_notes',pThis).text());
+							var notes=$('.spell_notes',pThis);
+							if(name.length>0 && notes.length>0){
+								var notes=$.trim(notes.html().replace(/(?:\r\n|\r|\n)/g, '').replace(/<br\s*[\/]?>/gi, '\n'));
 								$('<option></option>').text(name).data('notes',notes).appendTo($('select',spellDiv));
 							}
 
@@ -162,7 +178,7 @@ $(function() {
 								var pThis=$(this);
 								var name=$.trim($('.abilityName',pThis).text());
 								if(name.length>0){
-									var notes=$.trim($('.abilityNotes',pThis).text());
+									var notes=$.trim($('.abilityBBCode',pThis).text());
 									$('<option></option>').text(name).data('notes',notes).appendTo($('select',abilityDiv));
 								}
 	
