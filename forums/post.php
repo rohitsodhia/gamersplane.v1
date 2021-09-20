@@ -43,7 +43,7 @@
 			$threadManager = new ThreadManager($threadID);
 			$post = new Post();
 
-			if ($threadManager->getThreadProperty('states[locked]') || !$threadManager->getPermissions('write')) {
+			if (($threadManager->getThreadProperty('states[locked]')&& !$threadManager->getPermissions('moderate')) || !$threadManager->getPermissions('write')) {
 				$noChat = true;
 			} else {
 				if (isset($_SESSION['message'])) {
