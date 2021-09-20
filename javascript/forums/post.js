@@ -130,6 +130,67 @@ $(function() {
 					$.get('/characters/' + system + '/' + charId, function (data) {
 						var charSheetContent = $(data);
 	
+						//features, spells and snippets
+						var featDiv=$('<div class="roller feats"><select class="featSelect shortcutSelector addAsSpoiler"><option>--Feats/Abilities--</option></select></div>').appendTo(charSheet);
+						$('.feat',charSheetContent).each(function(){
+							var pThis=$(this);
+							var name=$.trim($('.feat_name',pThis).text());
+							if(name.length>0){
+								var notes=$.trim($('.notes',pThis).text());
+								$('<option></option>').text(name).data('notes',notes).appendTo($('select',featDiv));
+							}
+						});
+
+						var spellDiv=$('<div class="roller feats"><select class="spellSelect shortcutSelector addAsSpoiler"><option>--Spells--</option></select></div>').appendTo(charSheet);
+						$('.spell',charSheetContent).each(function(){
+							var pThis=$(this);
+							var name=$.trim($('.spell_name',pThis).text());
+							if(name.length>0){
+								var notes=$.trim($('.spell_notes',pThis).text());
+								$('<option></option>').text(name).data('notes',notes).appendTo($('select',spellDiv));
+							}
+
+						});
+
+						$('.abilities',charSheetContent).each(function(){
+							var abilitySection=$(this);
+							var title=$('h2',abilitySection).text();
+
+							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector addAsSpoiler"><option></option></select></div>').appendTo(charSheet);
+							$('option',abilityDiv).text('--'+title+'--');
+							$('.ability',abilitySection).each(function(){
+								var pThis=$(this);
+								var name=$.trim($('.abilityName',pThis).text());
+								if(name.length>0){
+									var notes=$.trim($('.abilityNotes',pThis).text());
+									$('<option></option>').text(name).data('notes',notes).appendTo($('select',abilityDiv));
+								}
+	
+							});
+	
+						});
+
+						var snippetDiv=$('<div class="roller snippets"><select class="snippetSelect shortcutSelector"><option>--Snippets--</option></select></div>').appendTo(charSheet);
+						$('.spoiler.snippet',charSheetContent).each(function(){
+							var pThis=$(this);
+							var name=$.trim($('.snippetName',pThis).text());
+							var notes=$.trim($('.snippetBBCode',pThis).text());
+							if(name.length>0 && notes.length>0){
+								$('<option></option>').text(name).data('notes',notes).appendTo($('select',snippetDiv));
+							}
+
+						});
+
+						//remove unused roller dropdowns
+						$('.roller select',charSheet).each(function(){
+							var pThis=$(this);
+							if($('option',pThis).length<=1){
+								pThis.closest('.roller').remove();
+							}
+						});
+
+						$('<hr class="clear"/>').appendTo(charSheet);
+
 						if (system == 'dnd5') {
 							addDnd5Rolls(charSheetContent);
 						}
@@ -166,6 +227,8 @@ $(function() {
 								rollDice.attr('rolltext',charPrefix+rollDice.attr('rolltext'));
 							});
 						}
+
+						
 						
 					});
 	
@@ -282,7 +345,24 @@ $(function() {
 				addRollToList(reason, roll);
 	
 			});
+
+			$('#rolls_decks').on('change', '.shortcutSelector', function (ev) {
+				var pThis=$(this);
+				var text=pThis.val();
+				var selectedOption=pThis.find(":selected");
+				var notes=selectedOption.data('notes');
+				$('#messageTextArea').focus();
+				if(pThis.hasClass('addAsSpoiler')){
+					$.markItUp({ replaceWith: '[spoiler="'+text+'"]'+notes+'[/spoiler]' });
+				}
+				else{
+					$.markItUp({ replaceWith: notes });
+				}
+
+				$('option:first',pThis).prop("selected", true);
 	
+			});
+			
 		}
 	}	
 

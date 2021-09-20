@@ -54,6 +54,13 @@ function BBCode2Html($text) {
 	}
 	$text = preg_replace_callback('/\[code\](.*?)\[\/code\]/ms', "escape", $text);
 
+	$matches = null;
+	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
+			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
+			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
+	}, $text);
+
 	// Smileys to find...
 /*	$in = array( 	 ':)',
 					 ':D',
@@ -92,6 +99,7 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
 					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
+					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
 					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
 					 "/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
 	);
@@ -115,6 +123,7 @@ function BBCode2Html($text) {
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
 					 '<iframe width="560" height="315" src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
 					 '<div class="layout-columns-2">\1</div>',
+					 '<div class="layout-columns-3">\1</div>',
 					 '<div class="layout-column">\1</div>',
 					 '<div class="style" style="display:none;">\1</div>',
 	);
@@ -175,6 +184,7 @@ function BBCode2Html($text) {
 	}, $text);
 	//end tables
 	
+	//notes and private
 	$matches = null;
 	global $currentUser, $isGM, $post;
 
@@ -208,6 +218,43 @@ function BBCode2Html($text) {
 			}
 		}
 	}		
+	//end notes and private
+
+	//ability sections
+	$matches = null;
+	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
+		$ret="<div class='abilities'>";
+		$ret=$ret.'<h2 class="headerbar hbDark">'.$matches[1].'</h2>';
+
+		$abilityLines = explode("\n", trim(str_replace("<br />","",$matches[2])));
+
+		$abilityOpen=false;
+		foreach ($abilityLines as $abilityLine){
+
+			if(substr($abilityLine,0,1)=='#'){
+				if($abilityOpen){
+					$ret=$ret.'</div></div>'; //close open ability notes and ability
+				}
+
+				$ret=$ret.'<div class="ability"><span class="abilityName">'.substr($abilityLine,1,-1).'</span><a href="" class="ability_notesLink">Notes</a><div class="abilityNotes notes">';
+				$abilityOpen=true;
+			}
+			else if(strlen(trim($abilityLine))>0){
+				$ret=$ret.$abilityLine;
+			}
+		}
+
+		if($abilityOpen){
+			$ret=$ret.'</div></div>'; //close open ability notes and ability
+		}
+
+		$ret=$ret."</div>";  //close abilities
+
+		return $ret;
+
+	}, $text);
+	//end ability sections
+
 	
 
 // paragraphs
