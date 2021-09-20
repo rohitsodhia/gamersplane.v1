@@ -272,7 +272,7 @@
 				<div class="postActions">
 <?php
 			if($isLastPost){
-				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Unread</a>\n";
+				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Mark as unread</a>\n";
 			}
 			if ($threadManager->getPermissions('write')) echo "						<a href=\"/forums/post/{$threadID}/?quote={$post->postID}\">Quote</a>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
