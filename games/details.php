@@ -99,11 +99,11 @@
 					<div class="labelCol"><label>Game Forums are</label></div>
 					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
 				</div>
-				<div ng-if="isGM" id="deleteGame" class="tr clearfix">
+				<div ng-if="isPrimaryGM" id="deleteGame" class="tr clearfix">
 					<div class="labelCol"><label>Retire Game</label></div>
 					<div class="infoCol"><a href="" ng-click="toggleRetireConfirm()">I want to close and retire this game!</a></div>
 				</div>
-				<div ng-if="isGM" class="slideToggle" ng-show="displayRetireConfirm">
+				<div ng-if="isPrimaryGM" class="slideToggle" ng-show="displayRetireConfirm">
 					<div class="infoCol shiftRight">
 						<div>Are you sure you want to retire this game? All characters in the game will be removed and it will be moved to your list of retired games. Gamers' Plane admins may choose to make the game forums public, at their discretion.</div>
 						<p>
