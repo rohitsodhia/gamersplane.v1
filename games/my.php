@@ -26,7 +26,7 @@
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Playing</h2>
 				<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
 					<li ng-repeat="game in games | filter: { isGM: false, isRetired:false } | orderBy: ['system', 'title']" class="gamePlaying">
-						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}</a
 						><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div
 						><div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
 					</li>
@@ -39,7 +39,7 @@
 				<h2 class="headerbar hbDark hb_hasButton hb_hasList" skew-element>Games I'm Running</h2>
 				<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
 					<li ng-repeat="game in games | filter: { isGM : true, isRetired:false } | orderBy: ['system', 'title']" class="gameRunning">
-						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
+						<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}} <span ng-if="game.status=='open'" class="badge badge-gameOpen">Open</span></a
 						><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
 					</li>
 				</ul>
@@ -50,8 +50,7 @@
 				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Retired games</div><div class="hidden">
 					<ul class="gameList prettyList hbdMargined">
 						<li ng-repeat="game in games | filter: { isRetired:true } | orderBy: ['system', 'title']" class="gameRunning">
-							<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}{{game.status?'':' (Closed)'}}</a
-							><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
+							<a href="/games/{{game.gameID}}/" class="gameTitle">{{game.title}}</a><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
 						</li>
 					</ul>
 				</div></blockquote>

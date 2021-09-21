@@ -57,7 +57,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Status</label></div>
-					<div class="infoCol">{{details.status == 'open' ? 'Open for game applications' : 'Closed for game applications'}}  <a ng-if="isPrimaryGM" href="" ng-click="toggleGameStatus()">[ {{details.status == 'open' ? 'Close for applications' : 'Open to applications'}} ]</a></div>
+					<div class="infoCol">{{details.status == 'open' ? 'Open for game applications' : 'Closed for game applications'}}  <a ng-if="isGM" href="" ng-click="toggleGameStatus()">[ {{details.status == 'open' ? 'Close for applications' : 'Open to applications'}} ]</a></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Title</label></div>
@@ -97,13 +97,13 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Forums are</label></div>
-					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isPrimaryGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
+					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a></div>
 				</div>
-				<div ng-if="isPrimaryGM" id="deleteGame" class="tr clearfix">
+				<div ng-if="isGM" id="deleteGame" class="tr clearfix">
 					<div class="labelCol"><label>Retire Game</label></div>
 					<div class="infoCol"><a href="" ng-click="toggleRetireConfirm()">I want to close and retire this game!</a></div>
 				</div>
-				<div ng-if="isPrimaryGM" class="slideToggle" ng-show="displayRetireConfirm">
+				<div ng-if="isGM" class="slideToggle" ng-show="displayRetireConfirm">
 					<div class="infoCol shiftRight">
 						<div>Are you sure you want to retire this game? All characters in the game will be removed and it will be moved to your list of retired games. Gamers' Plane admins may choose to make the game forums public, at their discretion.</div>
 						<p>
@@ -129,9 +129,23 @@
 				</div>
 				<div ng-if="!details.retired && details.status=='open' && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.approvedPlayers" class="rightCol">
 					<h2 class="headerbar hbDark" skew-element>Join Game</h2>
+					<div ng-if="details.recruitmentThreadId">
+						<form action="{{'/forums/thread/'+details.recruitmentThreadId}}"  method="post">
+						<p class="hbMargined"><button type="submit" name="navigateToTavern" class="fancyButton" skew-element>Apply in Games Tavern</button></p>
+						</form>
+
+						<form action="{{'/pms/send/?userID='+details.gm.userID}}" method="post">
+							<p class="hbMargined"><button type="submit" name="pmTheGm" class="fancyButton" skew-element>Message the GM</button></p>
+						</form>
+					</div>
+					
 					<form ng-submit="applyToGame()" class="alignCenter">
 						<input type="hidden" name="gameID" value="<?=$gameID?>">
-						<button type="submit" name="apply" class="fancyButton" skew-element>Apply to Game</button>
+						<button type="submit" name="apply" class="fancyButton" ng-if="!details.recruitmentThreadId" skew-element>Apply to Game</button>
+						<div class="alignRight" ng-if="details.recruitmentThreadId">
+							<hr/>
+							<a href="" onclick="this.closest('form').submit();return false;">Apply to game</a>
+						</div>
 					</form>
 				</div>
 				<div ng-if="!details.retired && loggedIn && !pendingInvite && inGame && !approved" class="rightCol">
@@ -165,7 +179,7 @@
 							<div class="playerInfo clearfix" ng-class="{ 'hasChars': player.characters.length }">
 								<div class="player"><a href="/user/{{player.user.userID}}/" class="username">{{player.user.username}}</a> <img ng-if="player.isGM" src="/images/gm_icon.png"></div>
 								<div class="actionLinks">
-									<a ng-if="isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.user.userID}}/" colorbox>Remove player</a>
+									<a ng-if="player.user.userID != CurrentUser.userID && isGM && !player.primaryGM" href="/games/{{gameID}}/removePlayer/{{player.user.userID}}/" colorbox>Remove player</a>
 									<a ng-if="isPrimaryGM && !player.primaryGM" href="/games/{{gameID}}/toggleGM/{{player.user.userID}}/" colorbox>{{player.isGM?'Remove as':'Make'}} GM</a>
 									<a ng-if="player.user.userID == CurrentUser.userID && !player.primaryGM" href="/games/{{gameID}}/leaveGame/{{player.user.userID}}/" colorbox>Leave Game</a>
 								</div>

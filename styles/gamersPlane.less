@@ -3819,3 +3819,76 @@ div.forumIcon {
 		}
 	}
 }
+
+.badgeColor( @color ) {
+	background-color: @color;
+	&:before,&:after{
+		background-color: @color;		
+	}
+}
+
+.badge{
+	display:inline-block;
+	padding:0 .2rem;
+	background-color: #C60;
+	font-size: 90%;
+	color: #fff;
+	border-radius: .2rem;
+	font-family: Neuropol;
+	margin:0 10px;
+
+	position: relative;
+
+	white-space: nowrap;
+
+	&:before,&:after{
+		content: ' ';
+		display: block;
+		width: 10px;
+		top: 0;
+		bottom: 0;
+		position: absolute;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		background-color: #C60;
+	}
+
+	&:before{
+		left: -9px;
+		clip-path: polygon(100% 100%, 0% 100%, 100% 0%);		
+	}
+
+	&:after{
+		right: -9px;
+		clip-path: polygon(0% 0%, 0% 100%, 100% 0%);		
+	}
+
+	&.badge-gameOpen{
+		.badgeColor( rgb(0, 204, 0) );
+	}
+	&.badge-gameClosed{
+		.badgeColor( rgb(204, 0, 0));
+	}
+
+	&.badge-system{
+		.badgeColor( rgb(0, 129, 204));
+	}
+
+	&.badge-gamePublic{
+		.badgeColor( rgb(240, 211, 182));
+		color: #C60;
+	}	
+
+	&.badge-gamePrivate{
+		.badgeColor( #333);
+	}	
+
+	&.badge-gameFrequency{
+		.badgeColor( rgb(204, 0, 126));
+	}		
+
+	&.badge-gameGm{
+		.badgeColor( rgb(14, 0, 204));
+	}		
+
+}

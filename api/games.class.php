@@ -305,6 +305,10 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
+		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
+		if($details['recruitmentThreadId']==0){
+			$details['recruitmentThreadId']=null;
+		}
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		if($_POST['system']=="custom"){
@@ -319,7 +323,7 @@ class games
 			$details['gameOptions']=$gameOptions;
 		}		
 
-		$details['status'] = 'open';
+		$details['status'] = 'closed';
 		$details['public'] = true;
 
 		/*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
@@ -431,6 +435,10 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
+		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
+		if($details['recruitmentThreadId']==0){
+			$details['recruitmentThreadId']=null;
+		}
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		$details['customType'] = sanitizeString($_POST['customType']);

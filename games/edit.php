@@ -61,6 +61,10 @@
 					<label>Character Generation Info</label>
 					<textarea ng-model="game.charGenInfo"></textarea>
 				</div>
+				<div class="tr"><p>If you've created a recruitment thread in the <a href="/forums/10/" target="_blank">Games Tavern</a> link it to the game here.</p></div>
+				<div class="tr textareaRow">
+					<strong>https://gamersplane.com/forums/thread/<input id="recruitmentThreadId" type="number" ng-model="game.recruitmentThreadId"></strong>
+				</div>
 				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Advanced rules definitions</div><div class="hidden">
 				<div class="tr textareaRow">
 					<p>See the release notes for configuring these rules</p>

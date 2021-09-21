@@ -209,8 +209,7 @@
 			$mysql->query("UPDATE forums SET threadCount = threadCount - 1 WHERE forumID = {$this->thread->forumID}");
 		}
 
-		public function displayBreadcrumbs($pathOptions,$post,$quoteID)
-		{
+		public function displayBreadcrumbs($pathOptions,$post,$quoteID){
 			?>
 			<div id="breadcrumbs">
 				<? 
@@ -229,6 +228,56 @@
 				?>
 			</div>
 			<?
+		}
+
+		public function enrichThread(){
+			if($this->thread && $this->thread->forumID==10 && $this->page==1){  //games tavern
+
+				global $mysql;
+				$authorId=$mysql->query("SELECT AuthorId FROM posts WHERE postID = {$this->thread->firstPostID}")->fetchColumn();
+
+				if($authorId){
+					$mongo = DB::conn('mongo');
+					$gameInfo = $mongo->games->findOne(['recruitmentThreadId' => ($this->threadID),
+														'gm.userID' => (int)($authorId)]);
+
+														
+					if($gameInfo){
+
+						echo "<div class='tavernTags'>";
+						if($gameInfo['status']=='open'){
+							echo "<span class='badge badge-gameOpen'>Open</span>";
+						}
+						else{
+							echo "<span class='badge badge-gameClosed'>Closed</span>";
+						}
+
+						require_once(FILEROOT . '/includes/Systems.class.php');
+						$systems = Systems::getInstance();
+
+						echo "<span class='badge badge-system badge-system-".$gameInfo['system']."'>".($gameInfo["customType"]?$gameInfo["customType"]:$systems->getFullName($gameInfo['system']))."</span>";
+
+						if($gameInfo['public']){
+							echo "<span class='badge badge-gamePrivate'>Private</span>";
+						}
+						else{
+							echo "<span class='badge badge-gamePublic'>Public</span>";
+						}
+
+						echo "<span class='badge badge-gameFrequency'>".$gameInfo["postFrequency"]["timesPer"]." / ".($gameInfo["postFrequency"]["perPeriod"]=="d"?"day":"week")."</span>";
+
+						echo "<span class='badge badge-gameGm'>".$gameInfo["gm"]["username"]."</span>";
+
+						echo "</div>";
+
+						echo printReady(BBCode2Html($gameInfo['description']));
+
+						echo "<hr/>";
+						echo "<form action='/games/".$gameInfo['gameID']."/ method='post' class='alignRight'><button type='submit' name='visitGameDetails' class='fancyButton' skew-element>Game details</button></form>";
+						echo "<hr/>";
+					}
+				}  
+			}
 		}
 	}
 ?>
