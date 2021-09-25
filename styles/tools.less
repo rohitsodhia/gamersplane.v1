@@ -13,14 +13,14 @@
 			display: inline-block;
 			margin: 0 15px;
 			padding: 5px 15px;
-			border: 3px solid #A00;
+			border: 3px solid #a00;
 			-moz-border-radius: 10px;
 			-webkit-border-radius: 10px;
 			border-radius: 10px;
-			background: #FFF;
+			background: #fff;
 
 			&:hover {
-				background: #F8EEEE;
+				background: #f8eeee;
 			}
 
 			&:first-child {
@@ -39,12 +39,18 @@
 /* --------------------------------------------*/
 
 #page_tools_cards {
-	.cardControls {
-		width: 220px;
-		float: left;
+	& > .flexWrapper {
+		flex-wrap: nowrap;
 	}
 
-	.cardControls, .cardControls > * {
+	.cardControls {
+		flex-basis: 220px;
+		flex-grow: 0;
+		flex-shrink: 0;
+	}
+
+	.cardControls,
+	.cardControls > * {
 		text-align: center;
 	}
 
@@ -58,14 +64,15 @@
 	}
 
 	#dispArea {
-		margin: 2em 0 0 230px;
+		flex-grow: 2;
+		margin-left: 10px;
 	}
 
 	.newDeck {
 		margin-bottom: 2em;
 		padding: 5px 10px 10px;
-		border: 1px solid #CCC;
-		background-color: #EEE;
+		border: 1px solid #ccc;
+		background-color: #eee;
 		text-align: left;
 
 		h2 {
@@ -74,7 +81,7 @@
 			background: #444;
 			font-size: 2em;
 			font-family: 'AgencyFB';
-			color: #FFF;
+			color: #fff;
 		}
 	}
 
@@ -89,7 +96,7 @@
 	}
 
 	.cardSpace {
-		border: 1px solid #A00;
+		border: 1px solid #a00;
 		padding: 5px;
 		text-align: left;
 	}
@@ -111,18 +118,21 @@
 	#roller {
 		width: 400px;
 		margin-right: 20px;
-		float: left;
 	}
 
 	.sectionControls {
 		overflow: visible;
+		justify-content: flex-end;
 
-		.prettySelect, .prettySelectCurrent, .prettySelectOptions {
+		.prettySelect,
+		.prettySelectCurrent,
+		.prettySelectOptions {
 			background: #522;
 		}
 
-		.prettySelect, .prettySelectOptions {
-			color: #FDD;
+		.prettySelect,
+		.prettySelectOptions {
+			color: #fdd;
 			border: none;
 			border-top: .3em solid #222;
 			-webkit-border-radius: 0;
@@ -130,7 +140,9 @@
 			border-radius: 0;
 		}
 
-		.prettySelectCurrent, .prettySelectLongest, .prettySelectOptions li {
+		.prettySelectCurrent,
+		.prettySelectLongest,
+		.prettySelectOptions li {
 			padding: .3em 15px;
 		}
 
@@ -147,7 +159,7 @@
 
 		.prettySelectOptions li:hover {
 			background: #449;
-			color: #FFF	;
+			color: #fff;
 		}
 	}
 
@@ -169,9 +181,7 @@
 	}
 
 	.dice_basic .cbWrapper {
-		display: inline-block;
-		margin-top: 3px;
-		margin-left: 10px;
+		margin-top: 6px;
 	}
 
 	#basic_indivDice {
@@ -188,13 +198,19 @@
 	}
 
 	.dice_starwarsffg {
+		& > .flexWrapper {
+			flex-wrap: nowrap;
+		}
+
 		.dicePool {
-			float: left;
-			min-height: 60px;
-			width: 245px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			min-height: 50px;
+			width: 302px;
 			margin: .5em 0;
-			padding: 0 10px 10px 0;
-			background: #DDF;
+			padding: 10px;
+			background: #ddf;
 			border: 1px solid #400;
 			border-bottom-color: #900;
 			border-right-color: #900;
@@ -204,19 +220,19 @@
 
 			.starwarsffg_dice {
 				display: block;
-				float: left;
-				margin: 10px 0 0 10px;
 			}
 		}
 
 		.rollWrapper {
 			display: inline-block;
-			margin: 20px 0 0 20px;
+			margin-top: 20px;
+			text-align: center;
+			flex-wrap: nowrap;
 		}
 
 		#starwarsffg_clear {
 			display: inline-block;
-			margin: 5px 0 0 45px;
+			margin-top: .5em;
 		}
 
 		.addDiceLink {
@@ -230,7 +246,9 @@
 			line-height: 1em;
 		}
 
-		.addDiceLink, .addDiceLink:active, .addDiceLink:visited {
+		.addDiceLink,
+		.addDiceLink:active,
+		.addDiceLink:visited {
 			color: #000;
 		}
 
@@ -272,10 +290,11 @@
 	}
 
 	#diceSpace {
+		flex-grow: 2;
 		height: 292px;
-		border: 1px solid #A00;
+		border: 1px solid #a00;
 		overflow: auto;
-		background: #EEE;
+		background: #eee;
 
 		.roll {
 			margin: 0;
@@ -300,20 +319,22 @@
 
 		.newestRolls {
 			display: none;
-			border-bottom: 1px solid #D99;
-			background-color: #FFF;
+			border-bottom: 1px solid #d99;
+			background-color: #fff;
 		}
 
 		.newestRolls p.error {
 			font-weight: bold;
 		}
 
-		.starwarsffg_dice, .fate_dice {
+		.starwarsffg_dice,
+		.fate_dice {
 			margin-right: 10px;
 		}
 	}
 
-	.dice_fate, .dice_fengshui {
+	.dice_fate,
+	.dice_fengshui {
 		.rollWrapper {
 			display: inline-block;
 			margin-left: 5px;
@@ -328,7 +349,8 @@
 			vertical-align: middle;
 		}
 
-		.dice_fate, .dice_fengshui {
+		.dice_fate,
+		.dice_fengshui {
 			label {
 				display: inline-block;
 			}
@@ -351,8 +373,8 @@
 	#info {
 		margin-bottom: 10px;
 		padding: 10px;
-		border: 1px solid #BBB;
-		background-color: #EEE;
+		border: 1px solid #bbb;
+		background-color: #eee;
 	}
 
 	.sideWidget {
@@ -378,7 +400,7 @@
 		-webkit-border-radius: 6px;
 		-moz-border-radius: 6px;
 		border-radius: 6px;
-		background: #EEE;
+		background: #eee;
 
 		.pRow {
 			& > * {
@@ -390,7 +412,8 @@
 			}
 		}
 
-		label.spaceText .labelText, div.spaceText {
+		label.spaceText .labelText,
+		div.spaceText {
 			width: 80px;
 		}
 
@@ -445,13 +468,13 @@
 		}
 
 		.unapproved {
-			background-color: #FFB;
+			background-color: #ffb;
 		}
 
 		& > li {
 			&:first-child:hover {
 				padding: 7px 7px;
-				border: 1px solid #CCC;
+				border: 1px solid #ccc;
 			}
 
 			& > .clearfix > * {
@@ -478,7 +501,7 @@
 	}
 
 	.notes {
-		margin: 5px 0 0  20px;
+		margin: 5px 0 0 20px;
 	}
 }
 
@@ -490,7 +513,8 @@
 		width: 80px;
 	}
 
-	input, textarea {
+	input,
+	textarea {
 		width: 350px;
 	}
 

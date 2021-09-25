@@ -9,9 +9,10 @@
 	}
 
 	ul {
-		list-style: none;
-		margin-left: 0;
-		min-height: 197px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(171px, 1fr));
+		grid-auto-rows: auto;
+		grid-gap: 10px;
 	}
 
 	li {
@@ -20,18 +21,17 @@
 		float: left;
 		width: 159px;
 		height: 185px;
-		margin-right: 10px;
-		margin-bottom: 10px;
 		padding: 5px;
 		z-index: 0;
 		border: 1px solid #777;
 		-webkit-border-radius: 5px;
 		-moz-border-radius: 5px;
 		border-radius: 5px;
+		background-color: #fff;
 		text-align: center;
 
 		&:hover {
-			background-color: #EEE;
+			background-color: #eee;
 		}
 
 		&.last {

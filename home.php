@@ -1,5 +1,5 @@
 <?php	require_once(FILEROOT . '/topNotifications.php'); ?>
-		<div class="clearfix">
+		<div class="flexWrapper">
 			<div id="announcements">
 <?php
 	addPackage('forum');
@@ -44,45 +44,32 @@
 ?>
 				<div class="loggedIn<?=count($usersGames) ? '' : ' noGames'?>">
 					<h2>Your Games</h2>
-<?php		if (count($usersGames)) { ?>
 					<div class="games">
 <?php
-			foreach ($usersGames as $gameInfo) {
-				$gameInfo['playersInGame'] = -1;
-				foreach ($gameInfo['players'] as $player) {
-					if ($player['approved']) {
-						$gameInfo['playersInGame']++;
-					}
+		foreach ($usersGames as $gameInfo) {
+			$gameInfo['playersInGame'] = -1;
+			foreach ($gameInfo['players'] as $player) {
+				if ($player['approved']) {
+					$gameInfo['playersInGame']++;
 				}
-				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
+			}
+			$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 ?>
 						<div class="gameInfo">
 							<p class="title"><a href="/games/<?=$gameInfo['gameID']?>"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
 							<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
 						</div>
-<?php			} ?>
+<?php		} ?>
 					</div>
-<?php		} else { ?>
+<?php	} else { ?>
 					<p>You're not in any games yet.</p>
 					<div class="noGameLink"><a href="/games/list/">Join a game!</a></div>
-<?php		} ?>
-				</div>
-<?php	} else { ?>
-				<div class="loggedOut">
-					We're a gaming community<br>
-					Can't have community...<br>
-					Without you!
-
-					<div class="tr clearfix">
-						<a href="/login/" class="login loginLink">Login</a>
-						<a href="/register/" class="register">Register</a>
-					</div>
-				</div>
 <?php	} ?>
+				</div>
 			</div>
 		</div>
 
-		<div class="clearfix">
+		<div class="flexWrapper">
 			<div id="latestGames" class="homeWidget">
 				<h3 class="headerbar">Latest Games</h3>
 				<div class="widgetBody">
