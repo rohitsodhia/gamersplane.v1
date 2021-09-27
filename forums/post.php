@@ -1,4 +1,5 @@
 <?php
+	$responsivePage=true;
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
 	if($currentUser->addPostNavigateWarning()){
@@ -43,7 +44,7 @@
 			$threadManager = new ThreadManager($threadID);
 			$post = new Post();
 
-			if (($threadManager->getThreadProperty('states[locked]')&& !$threadManager->getPermissions('moderate')) || !$threadManager->getPermissions('write')) {
+			if ($threadManager->getThreadProperty('states[locked]') || !$threadManager->getPermissions('write')) {
 				$noChat = true;
 			} else {
 				if (isset($_SESSION['message'])) {
@@ -75,7 +76,7 @@
 						else{
 							$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
 						}
-						
+
 						$post->message = '[quote="' . $quoteInfo['username'] . '"]' . $quoteInfo['message'] . '[/quote]';
 					}
 				}
@@ -203,7 +204,7 @@
 	}
 	$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);
 ?>
-		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
+		<h1 class="headerbar"><i class="ra ra-quill-ink"></i> <?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
 
 <?php	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
 		<h2>Preview:</h2>
@@ -250,7 +251,7 @@
 							<option value="p"<?=$currentChar == null ? ' selected="selected"' : ''?>>Player</option>
 <?php		foreach ($characters as $characterID => $name) { ?>
 							<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
-<?php		} 
+<?php		}
 			if(sizeof($pcCharacters)){
 				foreach ($pcCharacters as $characterID => $name) { ?>
 							<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
@@ -263,16 +264,14 @@
 			</div>
 
 <?php	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
-			<div id="optionControls" class="clearfix"><div class="trapezoid sectionControls">
-				<div>
+			<div id="optionControls"><div class="trapezoid sectionControls flexWrapper">
 <?php		if ($firstPost) { ?>
-					<a href="" class="section_options<?=$firstPost ? ' current' : ''?>">Options</a>
-					<a href="" class="section_poll">Poll</a>
+				<a href="" class="section_options<?=$firstPost ? ' current' : ''?>">Options</a>
+				<a href="" class="section_poll">Poll</a>
 <?php		} ?>
 <?php		if ($rollsAllowed || $drawsAllowed) { ?>
-					<a href="" class="section_rolls_decks<?=!$firstPost ? ' current' : ''?>">Rolls and Decks</a>
+				<a href="" class="section_rolls_decks<?=!$firstPost ? ' current' : ''?>">Rolls and Decks</a>
 <?php		} ?>
-				</div>
 			</div></div>
 <?php	} ?>
 <?php	if (($firstPost) || $rollsAllowed || $drawsAllowed) { ?>
@@ -327,16 +326,16 @@
 
 			<div id="poll" class="section_poll hbdMargined hideDiv">
 <?php		if ($pathOptions[0] == 'editPost') { ?>
-				<div class="clearfix">
+				<div class="flexWrapper">
 					<label for="allowRevoting"><b>Delete Poll:</b></label>
 					<div><input id="deletePoll" type="checkbox" name="deletePoll"> If checked, your poll will be deleted and cannot be recovered.</div>
 				</div>
 <?php		} ?>
-				<div class="tr clearfix">
+				<div class="tr flexWrapper">
 					<label for="pollQuestion" class="textLabel"><b>Poll Question:</b></label>
 					<div><input id="pollQuestion" type="text" name="poll" value="<?=$fillVars ? $fillVars['poll'] : $threadManager->getPollProperty('question')?>" class="borderBox"></div>
 				</div>
-				<div class="tr clearfix">
+				<div class="tr flexWrapper">
 					<label for="pollOption" class="textLabel">
 						<b>Poll Options:</b>
 						<p>Place each option on a new line. You may enter up to <b>25</b> options.</p>
@@ -353,11 +352,11 @@
 			}
 ?></textarea></div>
 				</div>
-				<div class="tr clearfix">
+				<div class="tr flexWrapper">
 					<label for="optionsPerUser" class="textLabel"><b>Options per user:</b></label>
 					<div><input id="optionsPerUser" type="text" name="optionsPerUser" value="<?=$fillVars ? $fillVars['optionsPerUser'] : $threadManager->getPollProperty('optionsPerUser')?>" class="borderBox"></div>
 				</div>
-				<div class="tr clearfix">
+				<div class="tr flexWrapper">
 					<label for="allowRevoting"><b>Allow Revoting:</b></label>
 <?php
 		$allowRevoting = $threadManager->getPollProperty('allowRevoting');

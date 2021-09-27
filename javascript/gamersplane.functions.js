@@ -110,6 +110,8 @@ function addCSSRule(selector, rules, index) {
 }
 
 function skewElement() {
+	return;
+
 	$element = $(this);
 	if ($element.children('div.skewedDiv').length)
 		return;
@@ -158,8 +160,9 @@ function adjustSkewMargins() {
 }
 
 function trapezoidify() {
+	return;
 	$element = $(this);
-	$element.wrapInner('<div class="content"></div>').prepend('<div class="leftWing"></div><div class="rightWing"></div>');
+	$element.wrapInner('<div class="content"></div>').prepend('<div class="leftWing"></div>').append('<div class="rightWing"></div>');
 	if (typeof $element.data('skew') != 'undefined')
 		skewDeg = parseInt($element.data('skew'));
 	else
@@ -169,10 +172,10 @@ function trapezoidify() {
 	else
 		direction = 'down';
 	sideBorderWidth = Math.ceil(Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight());
-	$element.children('.content').css({
-		'margin-left'   : sideBorderWidth + 'px',
-		'margin-right'  : sideBorderWidth + 'px',
-	});
+	// $element.children('.content').css({
+	// 	'margin-left'   : sideBorderWidth + 'px',
+	// 	'margin-right'  : sideBorderWidth + 'px',
+	// });
 	$element.children('.leftWing').css({
 		'border-left-width' : sideBorderWidth + 'px',
 	});
@@ -253,9 +256,8 @@ var applyPageStyle=function(styleText)
 			}catch(e){
 				//invalid Json
 			}
-	
+
 	}
-    
 };
 
 var fixDarkThemeColours=function(){

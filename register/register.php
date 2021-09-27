@@ -1,4 +1,5 @@
 <?php
+	$responsivePage=true;
 	if ($loggedIn) { header('Location: /'); exit; }
 	$addExternalJSFiles[] = 'https://www.google.com/recaptcha/api.js';
 	require_once(FILEROOT.'/header.php');

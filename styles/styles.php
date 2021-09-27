@@ -1,4 +1,5 @@
 	<link href="/styles/reset.css?v=<?=getStyleVersion('/styles/reset.css')?>" rel="stylesheet">
+	<link href="/styles/rpgawesome/style.css?v=<?=getStyleVersion('/styles/rpgawesome/style.css')?>" rel="stylesheet">
 	<link href="/styles/gamersPlane.css?v=<?=getStyleVersion('/styles/gamersPlane.css')?>" rel="stylesheet">
 	<link href="/javascript/markItUp/skins/gp/style.css?v=<?=getStyleVersion('/javascript/markItUp/skins/gp/style.css')?>" rel="stylesheet">
 	<link href="/javascript/markItUp/sets/bbcode/style.css?v=<?=getStyleVersion('/javascript/markItUp/sets/bbcode/style.css')?>" rel="stylesheet">
@@ -20,6 +21,17 @@
 <? // if ($mobileDetect->isMobile()) { ?>
 <!--	<link href="/styles/mobile.css?v=<?=getStyleVersion('/styles/mobile.css')?>" rel="stylesheet"> -->
 <? // } ?>
+
+<?if($responsivePage){?>
+	<link href="/styles/responsive.css?v=<?=getStyleVersion('/styles/responsive.css')?>" rel="stylesheet">
+<?}else{?>
+	<link href="/styles/nonResponsive.css?v=<?=getStyleVersion('/styles/nonResponsive.css')?>" rel="stylesheet">
+<?}?>
+
+<?	if ($addExternalCSSFiles && !empty($addExternalCSSFiles)) { foreach ($addExternalCSSFiles as $file) { ?>
+	<link href="/styles/<?=$file?>.css?v=<?=getStyleVersion('/styles/'.$file.'.css')?>" rel="stylesheet">
+<?	} } ?>
+
 
 	<noscript><link href="/styles/noJS.css?v=<?=getStyleVersion('/styles/noJS.css')?>" rel="stylesheet"></noscript>
 	<!--[if IE]>

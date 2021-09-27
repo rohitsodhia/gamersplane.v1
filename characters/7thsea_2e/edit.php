@@ -32,7 +32,7 @@
 							</div>
 						</div>
 						<div id="arcana">
-							<h2 class="headerbar hbDark" skew-element>Arcana</h2>
+							<h2 class="headerbar hbDark">Arcana</h2>
 							<div hb-margined="dark">
 								<div ng-repeat="(type, arcana) in character.arcana" class="arcana" ng-class="{ 'first': $first }">
 									<div class="tr"><input type="text" ng-model="arcana.arcana" ng-placeholder="Arcana"></div>
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 						<div id="backgrounds">
-							<h2 class="headerbar hbDark" skew-element>Backgrounds <a ng-click="addItem('backgrounds')" href="">[ Add Background ]</a></h2>
+							<h2 class="headerbar hbDark">Backgrounds <a ng-click="addItem('backgrounds')" href="">[ Add Background ]</a></h2>
 							<div hb-margined="dark">
 								<div ng-repeat="background in character.backgrounds track by $index" class="background" ng-class="{ 'first': $first }">
 									<div class="tr"><input type="text" ng-model="background.name" ng-placeholder="Background"></div>
@@ -51,7 +51,7 @@
 							</div>
 						</div>
 						<div id="advantages">
-							<h2 class="headerbar hbDark" skew-element>Advantages <a ng-click="addItem('advantages')" href="">[ Add Advantage ]</a></h2>
+							<h2 class="headerbar hbDark">Advantages <a ng-click="addItem('advantages')" href="">[ Add Advantage ]</a></h2>
 							<div hb-margined="dark">
 								<div ng-repeat="advantage in character.advantages track by $index" class="advantage" ng-class="{ 'first': $first }">
 									<div class="tr"><input type="text" ng-model="advantage.name" ng-placeholder="Advantage"></div>
@@ -60,7 +60,7 @@
 							</div>
 						</div>
 						<div id="stories">
-							<h2 class="headerbar hbDark" skew-element>Stories <a href="" ng-click="addItem('stories')">[ Add Story ]</a></h2>
+							<h2 class="headerbar hbDark">Stories <a href="" ng-click="addItem('stories')">[ Add Story ]</a></h2>
 							<div hb-margined="dark">
 								<div ng-repeat="story in character.stories track by $index" class="story" ng-class="{ 'first': $first }">
 									<div class="tr">
@@ -93,7 +93,7 @@
 					</div>
 					<div class="column floatRight">
 						<div id="traits">
-							<h2 class="headerbar hbDark" skew-element>Traits</h2>
+							<h2 class="headerbar hbDark">Traits</h2>
 							<div hb-margined="dark">
 								<div class="tr rankLabels">
 									<label class="leftLabel"></label>
@@ -108,7 +108,7 @@
 							</div>
 						</div>
 						<div id="skills">
-							<h2 class="headerbar hbDark" skew-element>Skills</h2>
+							<h2 class="headerbar hbDark">Skills</h2>
 							<div hb-margined="dark">
 								<div class="tr rankLabels">
 									<label class="leftLabel"></label>
@@ -123,7 +123,7 @@
 							</div>
 						</div>
 						<div id="deathSpiral">
-							<h2 class="headerbar hbDark" skew-element>Death Spiral</h2>
+							<h2 class="headerbar hbDark">Death Spiral</h2>
 							<div hb-margined="dark">
 								<ol>
 									<li ng-class="{ inactive: !character.dramaticWounds[1] }"><pretty-checkbox checkbox="character.dramaticWounds[1]"></pretty-checkbox> +1 Bonus Die to all Risks</li>
@@ -142,6 +142,6 @@
 					</div>
 				</div>
 				<div id="notes">
-					<h2 class="headerbar hbDark" skew-element>Notes</h2>
+					<h2 class="headerbar hbDark">Notes</h2>
 					<div hb-margined="dark"><textarea ng-model="character.notes"></textarea></div>
 				</div>

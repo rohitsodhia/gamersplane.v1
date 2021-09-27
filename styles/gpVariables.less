@@ -1,0 +1,65 @@
+@gp-orange: #C60;
+@gp-red: #800;
+@gp-black: #222;
+
+@gp-gm-badge-color: rgb(204, 0, 126);
+@gp-system-badge-color: rgb(0, 129, 204);
+
+@mobile-breakpoint: 600px;
+@small-breakpoint: 900px;
+
+.border-radius(@radius: 6px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.box-shadow(@horizontal, @vertical, @color, @blur: 0px, @spread: 0px) {
+	-moz-box-shadow: @horizontal @vertical @blur @spread @color;
+	-webkit-box-shadow: @horizontal @vertical @blur @spread @color;
+	box-shadow: @horizontal @vertical @blur @spread @color;
+}
+
+.badgeColor( @color ) {
+	background-color: @color;
+	&:before,&:after{
+		background-color: @color;
+	}
+}
+
+.makeBadge(){
+	display:inline-block;
+	padding:0 .2rem;
+	background-color: @gp-orange;
+	font-size: 90%;
+	color: #fff;
+	border-radius: .2rem;
+	font-family: Neuropol;
+	margin:0 10px;
+
+	position: relative;
+
+	white-space: nowrap;
+
+	&:before,&:after{
+		content: ' ';
+		display: block;
+		width: 10px;
+		top: 0;
+		bottom: 0;
+		position: absolute;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		background-color: @gp-orange;
+	}
+
+	&:before{
+		left: -9px;
+		clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+	}
+
+	&:after{
+		right: -9px;
+		clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
+	}
+}

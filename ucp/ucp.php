@@ -1,10 +1,10 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar" skew-element>User Control Panel{{CurrentUser.userID != user.userID?' - ' + user.username:''}}</h1>
+		<h1 class="headerbar">User Control Panel{{CurrentUser.userID != user.userID?' - ' + user.username:''}}</h1>
 		<div ng-if="admin" id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
 
 		<form enctype="multipart/form-data">
 			<div id="profile">
-				<h2 class="headerbar hbDark" skew-element>Profile</h2>
+				<h2 class="headerbar hbDark">Profile</h2>
 				<div class="tr">
 					<label>User Since</label>
 					<div>{{user.joinDate | convertTZ:'YYYY-MM-DD HH:mm:ss':'MMMM D, YYYY h:mm a'}}</div>
@@ -86,14 +86,14 @@
 						</label>
 					</div>
 				</div>
-				
+
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
+					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
 				</div>
 			</div>
 
 			<div id="security">
-				<h2 class="headerbar hbDark" skew-element>Security</h2>
+				<h2 class="headerbar hbDark">Security</h2>
 				<!-- <div ng-if="admin" class="tr">
 					<label>Username</label>
 					<div><input type="text" ng-model="user.username"></div>
@@ -121,12 +121,12 @@
 				</div>
 				<div ng-show="passMismatch" class="error">Passwords don't match</div>
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
+					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
 				</div>
 			</div>
 
 			<div id="forumOptions">
-				<h2 class="headerbar hbDark" skew-element>Forum Options</h2>
+				<h2 class="headerbar hbDark">Forum Options</h2>
 				<div id="postSide" class="tr">
 					<label>Post Side</label>
 					<div>
@@ -150,7 +150,7 @@
 					<div><label for><pretty-radio radio="user.warnUnsaved" r-value="''"></pretty-radio> Yes</label> <label for><pretty-radio radio="user.warnUnsaved" r-value="'no'"></pretty-radio> No</label></div>
 				</div>
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton" skew-element>Save</button>
+					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
 				</div>
 			</div>
 		</form>

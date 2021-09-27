@@ -92,7 +92,8 @@ class games
 					'status' => true,
 					'players' => true,
 					'customType' => true,
-					'retired'=>true
+					'retired'=>true,
+					'forumID'=>true
 				]]
 			);
 		} else {

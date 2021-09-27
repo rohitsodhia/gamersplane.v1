@@ -25,7 +25,7 @@
 
 				<div class="clearfix">
 					<div id="stats" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Stats</h2>
+						<h2 class="headerbar hbDark">Stats</h2>
 						<div hb-margined>
 							<ul ng-repeat="column in [0, 1]" ng-class="{ 'first': $first }">
 								<li ng-repeat="label in labels.stats | limitTo: (labels.stats.length / 2):(column * labels.stats.length / 2)" class="tr">
@@ -38,7 +38,7 @@
 						</div>
 					</div>
 					<div id="limits" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Limits</h2>
+						<h2 class="headerbar hbDark">Limits</h2>
 						<div hb-margined>
 							<div ng-repeat="(label, limit) in character.limits" class="tr">
 								<label class="leftLabel">
@@ -49,7 +49,7 @@
 						</div>
 					</div>
 					<div id="damage" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Damage Tracks</h2>
+						<h2 class="headerbar hbDark">Damage Tracks</h2>
 						<div hb-margined>
 							<div class="clearfix">
 								<div ng-repeat="(track, stat) in { 'physical': 'body', 'stun': 'willpower' }" id="{{track}}Track" class="damageType floatLeft">
@@ -70,7 +70,7 @@
 				</div>
 				<div class="clearfix">
 					<div id="skills" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Skills <a href="" ng-click="addItem('skills')">[ Add Skill ]</a></h2>
+						<h2 class="headerbar hbDark">Skills <a href="" ng-click="addItem('skills')">[ Add Skill ]</a></h2>
 						<div hb-margined>
 							<div ng-repeat="skill in character.skills" class="skill tr">
 								<div ng-click="skill.type = skill.type == 'a'?'k':'a'" class="type">{{skill.type.toUpperCase()}}</div>
@@ -82,7 +82,7 @@
 					</div>
 					<div class="floatRight">
 						<div id="qualities">
-							<h2 class="headerbar hbDark" skew-element>Qualities <a href="" ng-click="addItem('qualities')">[ Add Quality ]</a></h2>
+							<h2 class="headerbar hbDark">Qualities <a href="" ng-click="addItem('qualities')">[ Add Quality ]</a></h2>
 							<div hb-margined>
 								<div ng-repeat="quality in character.qualities" class="quality tr">
 									<div ng-click="quality.type = quality.type == 'p'?'n':'p'" class="type">{{quality.type.toUpperCase()}}</div>
@@ -94,7 +94,7 @@
 							</div>
 						</div>
 						<div id="contacts">
-							<h2 class="headerbar hbDark" skew-element>Contacts <a href="" ng-click="addItem('contacts')">[ Add Contact ]</a></h2>
+							<h2 class="headerbar hbDark">Contacts <a href="" ng-click="addItem('contacts')">[ Add Contact ]</a></h2>
 							<div hb-margined>
 								<div class="labelTR">
 									<label class="name"></label>
@@ -115,7 +115,7 @@
 				</div>
 				<div class="clearfix">
 					<div id="rangedWeapons" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Ranged Weapons <a href="" ng-click="addItem('weapons.ranged')">[ Add Weapon ]</a></h2>
+						<h2 class="headerbar hbDark">Ranged Weapons <a href="" ng-click="addItem('weapons.ranged')">[ Add Weapon ]</a></h2>
 						<div hb-margined>
 							<div ng-repeat="weapon in character.weapons.ranged" class="weapon" ng-class="{ 'first': $first }">
 								<div class="labelTR row1">
@@ -149,7 +149,7 @@
 						</div>
 					</div>
 					<div id="meleeWeapons" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Melee Weapons <a href="" ng-click="addItem('weapons.melee')">[ Add Weapon ]</a></h2>
+						<h2 class="headerbar hbDark">Melee Weapons <a href="" ng-click="addItem('weapons.melee')">[ Add Weapon ]</a></h2>
 						<div hb-margined>
 							<div ng-repeat="weapon in character.weapons.melee" class="weapon" ng-class="{ 'first': $first }">
 								<div class="labelTR row1">
@@ -181,7 +181,7 @@
 						</div>
 					</div>
 					<div id="armor" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Armor <a href="" ng-click="addItem('armor')">[ Add Armor ]</a></h2>
+						<h2 class="headerbar hbDark">Armor <a href="" ng-click="addItem('armor')">[ Add Armor ]</a></h2>
 						<div hb-margined>
 							<div ng-repeat="armor in character.armor" class="armor" ng-class="{ 'first': $first }">
 								<div class="labelTR">
@@ -248,7 +248,7 @@
 						</div>
 					</div>
 					<div id="augments" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Augmentations <a href="" ng-click="addItem('augmentations')">[ Add Augment ]</a></h2>
+						<h2 class="headerbar hbDark">Augmentations <a href="" ng-click="addItem('augmentations')">[ Add Augment ]</a></h2>
 						<div hb-margined>
 							<div class="labelTR">
 								<label class="medText"></label>
@@ -268,7 +268,7 @@
 				</div>
 				<div class="clearfix">
 					<div id="sprcf" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Spells / Preparations / Rituals / Complex Forms <a href="" ng-click="addItem('sprcf')">[ Add SPRCF ]</a></h2>
+						<h2 class="headerbar hbDark">Spells / Preparations / Rituals / Complex Forms <a href="" ng-click="addItem('sprcf')">[ Add SPRCF ]</a></h2>
 						<div hb-margined>
 							<div ng-repeat="sprcf in character.sprcf" class="sprcf tr">
 								<div class="labelTR">
@@ -296,7 +296,7 @@
 						</div>
 					</div>
 					<div id="powers" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Powers/Abilities <a href="" ng-click="addItem('powers')">[ Add Power/Ability ]</a></h2>
+						<h2 class="headerbar hbDark">Powers/Abilities <a href="" ng-click="addItem('powers')">[ Add Power/Ability ]</a></h2>
 						<div hb-margined>
 							<div class="labelTR">
 								<label class="name medText lrBuffer"></label>
@@ -313,7 +313,7 @@
 					</div>
 				</div>
 				<div id="gear">
-					<h2 class="headerbar hbDark" skew-element>Gear <a href="" ng-click="addItem('gear')">[ Add Gear ]</a></h2>
+					<h2 class="headerbar hbDark">Gear <a href="" ng-click="addItem('gear')">[ Add Gear ]</a></h2>
 					<div class="clearfix" hb-margined>
 						<div class="labelTR">
 							<label class="name"></label>

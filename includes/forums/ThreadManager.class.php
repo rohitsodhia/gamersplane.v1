@@ -13,7 +13,7 @@
 				$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, t.allowRolls, t.allowDraws, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
 				$this->thread = $thread->fetch();
 	//			throw new Exception('No thread');
-				if (!$this->thread) 
+				if (!$this->thread)
 					return false;
 				$this->thread = new Thread($this->thread);
 
@@ -26,12 +26,12 @@
 		}
 
 		public function __get($key) {
-			if (property_exists($this, $key)) 
+			if (property_exists($this, $key))
 				return $this->$key;
 		}
 
 		public function __set($key, $value) {
-			if (property_exists($this, $key)) 
+			if (property_exists($this, $key))
 				$this->$key = $value;
 		}
 
@@ -40,11 +40,11 @@
 		}
 
 		public function getThreadProperty($property) {
-			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) 
+			if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches))
 				return $this->thread->{$matches[1]}[$matches[2]];
-			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) 
+			elseif (preg_match('/(\w+)->(\w+)/', $property, $matches))
 				return $this->thread->$matches[1]->$matches[2];
-			else 
+			else
 				return $this->thread->$property;
 		}
 
@@ -69,9 +69,9 @@
 		}
 
 		public function getThreadLastRead() {
-			if ($this->forumManager->maxRead($this->thread->forumID) > $this->getThreadProperty('lastRead')) 
+			if ($this->forumManager->maxRead($this->thread->forumID) > $this->getThreadProperty('lastRead'))
 				return $this->forumManager->maxRead($this->thread->forumID);
-			else 
+			else
 				return $this->getThreadProperty('lastRead');
 		}
 
@@ -90,7 +90,7 @@
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");
 				$numPrevPosts = $numPrevPosts->fetchColumn();
 				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
-			} else 
+			} else
 				$page = intval($_GET['page']);
 			$this->page = intval($page) > 0?intval($page):1;
 		}
@@ -106,19 +106,19 @@
 
 			$posts = $this->thread->getPosts($this->page);
 			$checkFor = '';
-			if (isset($_GET['view']) && $_GET['view'] == 'newPost') 
+			if (isset($_GET['view']) && $_GET['view'] == 'newPost')
 				$checkFor = 'newPost';
-			elseif (isset($_GET['p']) && intval($_GET['p'])) 
+			elseif (isset($_GET['p']) && intval($_GET['p']))
 				$checkFor = intval($_GET['p']);
-			elseif ($this->page != 1) 
+			elseif ($this->page != 1)
 				return $mysql->query("SELECT message FROM posts WHERE postID = {$this->thread->firstPostID}")->fetch();
-			else 
+			else
 				return $posts[$this->thread->firstPostID];
 
 			foreach ($posts as $post) {
-				if ($checkFor == 'newPost' && ($post->getPostID() > $this->getThreadLastRead() || $this->thread->getLastPost('postID') == $post->getPostID())) 
+				if ($checkFor == 'newPost' && ($post->getPostID() > $this->getThreadLastRead() || $this->thread->getLastPost('postID') == $post->getPostID()))
 					return $post;
-				elseif ($post->getPostID == $checkFor) 
+				elseif ($post->getPostID == $checkFor)
 					return $post;
 			}
 		}
@@ -172,7 +172,7 @@
 				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0)." WHERE threadID = ".$this->threadID);
 				$postID = $post->savePost();
 
-				if (intval($this->thread->getLastPost('postID')) < $postID) 
+				if (intval($this->thread->getLastPost('postID')) < $postID)
 					$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$this->threadID}");
 			}
 
@@ -183,7 +183,7 @@
 
 		public function updateLastRead($postID) {
 			global $loggedIn, $mysql, $currentUser;
-			if ($loggedIn && $postID > $this->getThreadProperty('lastRead')) 
+			if ($loggedIn && $postID > $this->getThreadProperty('lastRead'))
 				$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		}
 
@@ -212,8 +212,8 @@
 		public function displayBreadcrumbs($pathOptions,$post,$quoteID){
 			?>
 			<div id="breadcrumbs">
-				<? 
-				$this->forumManager->displayForumBreadcrumbs(); 
+				<?
+				$this->forumManager->displayForumBreadcrumbs();
 
 				if ($pathOptions[0] == 'editPost') {
 					echo ">\t\t\t\t\t<a href=\"/forums/thread/".$this->getThreadID()."/?p=".$post->postID."#".$post->postID."\">" . printReady($this->getThreadProperty('title')) . "</a>";
@@ -241,7 +241,7 @@
 					$gameInfo = $mongo->games->findOne(['recruitmentThreadId' => ($this->threadID),
 														'gm.userID' => (int)($authorId)]);
 
-														
+
 					if($gameInfo){
 
 						echo "<div class='tavernTags'>";
@@ -269,15 +269,21 @@
 						echo "<span class='badge badge-gameGm'>".$gameInfo["gm"]["username"]."</span>";
 
 						echo "</div>";
-
+						echo "<div class='tavernGame'>";
 						echo printReady(BBCode2Html($gameInfo['description']));
+						echo "</div>";
 
 						echo "<hr/>";
-						echo "<form action='/games/".$gameInfo['gameID']."/ method='post' class='alignRight'><button type='submit' name='visitGameDetails' class='fancyButton' skew-element>Game details</button></form>";
+						echo "<form action='/games/".$gameInfo['gameID']."/ method='post' class='alignRight'><button type='submit' name='visitGameDetails' class='fancyButton'>Game details</button></form>";
 						echo "<hr/>";
 					}
-				}  
+				}
 			}
 		}
+
+		public function addThreadIcon(){
+			$this->forumManager->addForumIcon($this->thread->forumID);
+		}
+
 	}
 ?>

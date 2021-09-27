@@ -1,137 +1,50 @@
-<?php	require_once(FILEROOT . '/topNotifications.php'); ?>
-		<div class="clearfix">
-			<div id="announcements">
+<?php	addPackage('forum');
+require_once(FILEROOT . '/includes/HomeManager.class.php');
+$homeManager = new HomeManager();?>
+
+	<?= $homeManager->addTopNotifications();?>
+
+	<div class="flexWrapper">
+		<?= $homeManager->addAnnouncement(3,'ra-gamers-plane',true);?>
+		<?= $homeManager->addAnnouncement(40,'ra-cat',false);?>
+
+	</div>
+
+		<div class="flexWrapper">
+			<div id="latestGames" class="homeWidget col-1-3 mob-col-1 mob-order-3">
+				<h3 class="headerbar"><i class="ra ra-all-for-one"></i> Latest Games</h3>
+				<div class="widgetBody">
 <?php
-	addPackage('forum');
-	$post = $mysql->query('SELECT t.firstPostID FROM threads t WHERE t.forumID = 3 ORDER BY threadID DESC LIMIT 1');
-	$post = new Post($post->fetchColumn());
-?>
-				<h2 class="headerbar"><a href="/forums/thread/<?=$post->getThreadID()?>/"><?=$post->getTitle()?></a></h2>
-				<h4><span class="convertTZ"><?=$post->getDatePosted('F j, Y g:i a')?></span> by <a href="/user/<?=$post->getAuthor('userID')?>/" class="username"><?=$post->getAuthor('username')?></a></h4>
-				<hr>
-<?=printReady(BBCode2Html(filterString($post->getMessage())))?>
-<?php	if ($loggedIn) { ?>
-				<div class="readMore">To comment to this post or to read what others thought, please <a href="/forums/thread/<?=$post->getThreadID()?>/">click here</a>.</div>
-<?php	} ?>
-			</div>
-			<div class="sideWidget">
-<?php
-	if ($loggedIn) {
-		$usersGames = $mongo->games->find(
-			[
-				'players' => [
+	$forumSearchGames = new ForumSearch('latestGamePosts');
+	$forumSearchGames->findThreads(1, 5);
+
+	$latestGames = $mongo->games->find(
+		[
+			'retired' => null,
+			'status'=>'open',
+			'players' => [
+				'$not' => [
 					'$elemMatch' => [
 						'user.userID' => $currentUser->userID,
 						'approved' => true
 					]
-				],
-				'retired' => null
-			],
-			[
-				'projection ' => [
-					'gameID' => true,
-					'title' => true,
-					'system' => true,
-					'gm' => true,
-					'numPlayers' => true,
-					'players' => true,
-					'customType' => true
-				],
-				'sort' => ['start' => -1],
-				'limit' => 3
-			]
-		)->toArray();
-?>
-				<div class="loggedIn<?=count($usersGames) ? '' : ' noGames'?>">
-					<h2>Your Games</h2>
-<?php		if (count($usersGames)) { ?>
-					<div class="games">
-<?php
-			foreach ($usersGames as $gameInfo) {
-				$gameInfo['playersInGame'] = -1;
-				foreach ($gameInfo['players'] as $player) {
-					if ($player['approved']) {
-						$gameInfo['playersInGame']++;
-					}
-				}
-				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
-?>
-						<div class="gameInfo">
-							<p class="title"><a href="/games/<?=$gameInfo['gameID']?>"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-							<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'], true)?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
-						</div>
-<?php			} ?>
-					</div>
-<?php		} else { ?>
-					<p>You're not in any games yet.</p>
-					<div class="noGameLink"><a href="/games/list/">Join a game!</a></div>
-<?php		} ?>
-				</div>
-<?php	} else { ?>
-				<div class="loggedOut">
-					We're a gaming community<br>
-					Can't have community...<br>
-					Without you!
-
-					<div class="tr clearfix">
-						<a href="/login/" class="login loginLink">Login</a>
-						<a href="/register/" class="register">Register</a>
-					</div>
-				</div>
-<?php	} ?>
-			</div>
-		</div>
-
-		<div class="clearfix">
-			<div id="latestGames" class="homeWidget">
-				<h3 class="headerbar">Latest Games</h3>
-				<div class="widgetBody">
-<?php
-	if ($loggedIn) {
-		$latestGames = $mongo->games->find(
-			[
-				'retired' => null,
-				'players' => [
-					'$not' => [
-						'$elemMatch' => [
-							'user.userID' => $currentUser->userID,
-							'approved' => true
-						]
-					]
 				]
+			]
+		],
+		[
+			'projection' => [
+				'gameID' => true,
+				'title' => true,
+				'system' => true,
+				'gm' => true,
+				'numPlayers' => true,
+				'players' => true,
+				'customType' => true
 			],
-			[
-				'projection' => [
-					'gameID' => true,
-					'title' => true,
-					'system' => true,
-					'gm' => true,
-					'numPlayers' => true,
-					'players' => true,
-					'customType' => true
-				],
-				'sort' => ['start' => -1],
-				'limit' => 4
-			]
-		);
-	} else {
-		$latestGames = $mongo->games->find(
-			['retired' => null],
-			[
-				'projection' => [
-					'gameID' => true,
-					'title' => true,
-					'system' => true,
-					'gm' => true,
-					'numPlayers' => true,
-					'players' => true,
-					'customType' => true
-				],
-				'sort' => ['start' => -1],
-				'limit' => 4
-			]
-		);
-	}
+			'sort' => ['start' => -1],
+			'limit' => ($forumSearchGames->getResultsCount()>0?2:5)
+		]
+	);
 	$first = true;
 	foreach ($latestGames as $gameInfo) {
 		$gameInfo['playersInGame'] = -1;
@@ -153,29 +66,49 @@
 					</div>
 <?php	} ?>
 				</div>
+				<?if($forumSearchGames->getResultsCount()>0){
+					?><br/><?
+					$forumSearchPublic = new ForumSearch('latestPublicPosts');
+					$forumSearchPublic->findThreads(1, 2);
+					$forumSearchPublic->displayLatestHPWidget('<i class="ra ra-horn-call"></i> Latest Public Posts','<a href="/forums/search/?search=latestPublicPosts">Latest Public Posts</a>','orange');
+				}?>
 			</div>
 
-			<div id="latestPosts" class="homeWidget">
-				<h3 class="headerbar">Latest Community Posts</h3>
-				<div class="widgetBody">
+<div id="latestPosts" class="homeWidget col-1-3 mob-col-1 mob-order-2">
 <?php
-	$forumSearch = new ForumSearch('homepage');
-	$forumSearch->findThreads(1,3);
-	$forumSearch->displayLatestHP();
+	$forumSearchCommunity = new ForumSearch('homepage');
+	$forumSearchCommunity->findThreads(1,5);
+	$forumSearchCommunity->displayLatestHPWidget('<i class="ra ra-campfire"></i> Community Posts','<a href="/forums/search/?search=latestPosts">All Latest Posts</a>','orange');
 ?>
-					<div class="latestPostsLink"><a href="/forums/search/?search=latestPosts">All Latest Posts</a></div>
-				</div>
-			</div>
+</div>
 
-			<div id="latestGamePosts" class="homeWidget">
-				<h3 class="headerbar">Latest Game Posts</h3>
-				<div class="widgetBody">
+<div id="latestPosts" class="homeWidget col-1-3 mob-col-1 mob-order-1">
 <?php
-	$forumSearch = new ForumSearch('latestGamePosts');
-	$forumSearch->findThreads(1, 3);
-	$forumSearch->displayLatestHP();
-?>
-					<div class="latestPostsLink"><a href="/forums/search/?search=latestGamePosts">Latest Game Posts</a></div>
-				</div>
+	if(!$forumSearchGames->displayLatestHPWidget('<i class="ra ra-d6"></i> Latest Game Posts','<a href="/forums/search/?search=latestGamePosts">Latest Game Posts</a>','red','gamesheaderbar')){
+		?>
+			<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Find a game</h3>
+			<div class="noGames">
+				<p>You're not in any games yet.</p>
+				<div class="noGameLink"><a href="/games/list/">Join a game!</a></div>
+				<p>...or read some of the public games below.</p>
 			</div>
-		</div>
+		<?php
+		$forumSearchPublic = new ForumSearch('latestPublicPosts');
+		$forumSearchPublic->findThreads(1, 3);
+		$forumSearchPublic->displayLatestHPWidget('<i class="ra ra-horn-call"></i> Latest Public Posts','<a href="/forums/search/?search=latestPublicPosts">Latest Public Posts</a>','orange');
+	}
+
+
+?>
+</div>
+</div>
+
+<div class="flexWrapper">
+	<div id="yourGames" class="col-1">
+		<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Your Games</h3>
+	<?php
+	$forumManager = new ForumManager(2);
+		$forumManager->displayForum();
+	?>
+	</div>
+</div>

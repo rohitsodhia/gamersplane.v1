@@ -18,7 +18,7 @@
 				<div class="clearfix">
 					<div class="clearfix">
 						<div id="aspects" class="floatLeft">
-							<h2 class="headerbar hbDark" skew-element>Aspects <a href="" ng-click="addItem('aspects')">[ Add Aspect ]</a></h2>
+							<h2 class="headerbar hbDark">Aspects <a href="" ng-click="addItem('aspects')">[ Add Aspect ]</a></h2>
 							<div id="aspectList" class="hbMargined">
 								<div class="aspect item tr clearfix">
 									<input type="text" ng-model="character.highConcept" class="aspectName width5 alignLeft" placeholder="High Concept">
@@ -33,7 +33,7 @@
 							</div>
 						</div>
 						<div id="approaches" class="floatLeft">
-							<h2 class="headerbar hbDark" skew-element>Approaches</h2>
+							<h2 class="headerbar hbDark">Approaches</h2>
 							<div class="hbMargined hb-margined">
 								<label ng-repeat="(approach, value) in character.approaches" class="tr">
 									<div class="labelText">{{approach.capitalizeFirstLetter()}}</div>
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 						<div id="stunts" class="floatLeft">
-							<h2 class="headerbar hbDark" skew-element>Stunts <a href="" ng-click="addItem('stunts')">[ Add Stunt ]</a></h2>
+							<h2 class="headerbar hbDark">Stunts <a href="" ng-click="addItem('stunts')">[ Add Stunt ]</a></h2>
 							<div id="stuntsList" class="hbMargined" hb-margined>
 								<div ng-repeat="stunt in character.stunts track by $index" class="stunt item tr clearfix">
 									<input type="text" ng-model="stunt.name" class="stuntName width5 alignLeft" placeholder="Stunt Name">

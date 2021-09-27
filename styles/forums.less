@@ -3,8 +3,10 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
-
 /* --------------------------------------------*/
+@import "rpgawesome/variables.less";
+@import "gpVariables.less";
+
 
 #page_forum_rules {
 	p {
@@ -39,15 +41,30 @@
 		font-size: 1.1em;
 	}
 
-	#topLinks > div > div {
-		margin-bottom: .5em;
+	#topLinks {
+		.flexWrapper {
+			justify-content: space-between;
+		}
+		.alignRight > div {
+			margin-bottom: .5em;
+		}
 	}
 }
 
-#page_forum, #page_forum_search {
+#page_forum,
+#page_forum_search {
 	.tableDiv {
 		margin-top: 15px;
 		padding-bottom: 5px;
+	}
+
+	.groupTopper {
+		text-align: right;
+	}
+
+	.groupTopperLeft{
+		text-align: left;
+		margin-left: 20px;
 	}
 
 	/*#page_forum .firstTableDiv {
@@ -55,7 +72,7 @@
 	}*/
 
 	h2 {
-		float: right;
+		display: inline-block;
 		margin: 0;
 		font-size: 1.8em;
 		line-height: 1.2em;
@@ -77,6 +94,7 @@
 		.td {
 			padding-top: 8px;
 			padding-bottom: 8px;
+			box-sizing: border-box;
 		}
 	}
 
@@ -87,14 +105,14 @@
 			padding-left: 8px;
 			padding-right: 8px;
 			border-style: solid;
-			border-color: #222;
+			border-color: @gp-black;
 			border-width: 1px 2px;
 			border-right-color: #944;
 			border-bottom-color: #944;
 		}
 
 		.tr:hover {
-			background-color: #FFF2E0;
+			background-color: #fff2e0;
 		}
 
 		.tr:last-child {
@@ -132,7 +150,8 @@
 		}
 	}
 
-	.threadTable th, .threadTable th {
+	.threadTable th,
+	.threadTable th {
 		padding-top: 6px;
 	}
 
@@ -142,11 +161,13 @@
 		vertical-align: middle;
 	}
 
-	.threadInfo, .threadInfo {
+	.threadInfo,
+	.threadInfo {
 		width: 535px;
 	}
 
-	.threadInfo, .threadInfo {
+	.threadInfo,
+	.threadInfo {
 		.threadAuthor {
 			margin-top: .2em;
 			font-size: .85em;
@@ -154,7 +175,9 @@
 	}
 }
 
-#page_forum .name, #page_forum .threadInfo, #page_forum_search .threadInfo {
+#page_forum .name,
+#page_forum .threadInfo,
+#page_forum_search .threadInfo {
 	padding-left: 5px;
 }
 
@@ -170,8 +193,9 @@
 }
 
 #page_forum_search {
-	.threadAuthor .forumName, .threadInfo .threadAuthor .forumName:hover {
-		color: #D60;
+	.threadAuthor .forumName,
+	.threadInfo .threadAuthor .forumName:hover {
+		color: #d60;
 	}
 
 	.tableDiv table .threadInfo .threadAuthor .forumName:hover {
@@ -179,7 +203,9 @@
 	}
 }
 
-#page_forum .numPosts, #page_forum .numThreads, #page_forum_search .numPosts {
+#page_forum .numPosts,
+#page_forum .numThreads,
+#page_forum_search .numPosts {
 	width: 120px;
 	text-align: center;
 }
@@ -195,7 +221,8 @@
 	background-color: transparent;
 }
 
-#page_forum , #page_forum_search {
+#page_forum,
+#page_forum_search {
 	.lastPost {
 		width: 180px;
 		text-align: center;
@@ -206,19 +233,16 @@
 	}
 }
 
-#page_forum, #page_forum_search {
+#page_forum,
+#page_forum_search {
 	#forumLinks {
 		margin: 1em 10px 0;
 	}
 }
 
-#page_forum #forumOptions {
-	float: left;
-}
-
-#page_forum, #page_forum_search {
+#page_forum,
+#page_forum_search {
 	#paginateDiv {
-		float: none;
 		position: absolute;
 		right: 0;
 		bottom: 0;
@@ -228,25 +252,35 @@
 /* --------------------------------------------*/
 
 #page_forum_thread {
+	h1 {
+		margin-bottom: 0;
+	}
+
 	h2#noPosts {
 		margin: 4em 0;
 	}
 
 	#threadMenu {
-		position: relative;
-		margin: 1em 0;
+		display: flex;
+		margin: .5em 0;
+		justify-content: space-between;
 
-		& > div {
-			display: inline-block;
-			width: 49.5%;
+		.leftCol {
+			align-self: flex-end;
 		}
 
-		.rightCol > * {
-			vertical-align: middle;
+		.threadSub {
+			margin-top: 0;
+		}
 
-			.threadSub {
-				margin-top: 0;
-			}
+		.rightCol > div {
+			display: flex;
+			align-items: center;
+		}
+
+		.paginateDiv {
+			display: inline-block;
+			margin: 0 0 0 10px;
 		}
 	}
 
@@ -286,7 +320,7 @@
 		border: 1px solid #444;
 		padding: 10px;
 		margin: 10px 0 20px;
-		background: #EEE;
+		background: #eee;
 
 		p {
 			font-size: .8em;
@@ -319,8 +353,8 @@
 		}
 
 		.poll_votesCast {
-			background-color: #B22;
-			color: #DDD;
+			background-color: #b22;
+			color: #ddd;
 			text-align: left;
 			padding: 1px 5px;
 		}
@@ -331,20 +365,30 @@
 	}
 
 	.postBlock {
-		margin: 10px 0 20px;
+		margin: 10px 0 15px;
+	}
+
+	.flexWrapper{
+		flex-wrap: nowrap;
 	}
 
 	.posterDetails {
 		width: 160px;
 		word-wrap: break-word;
+		flex-grow: 0;
+    	flex-shrink: 0;
+	}
+
+	.postBody {
+		flex-grow: 2;
 	}
 
 	.postRight .posterDetails {
-		float: left;
+		order: 0;
 	}
 
 	.postLeft .posterDetails {
-		float: right;
+		order: 2;
 	}
 
 	.posterDetails .avatar {
@@ -387,7 +431,8 @@
 	}
 
 	.posterDetails {
-		.posterName, .charName {
+		.posterName,
+		.charName {
 			font-size: 1.1em;
 			font-weight: bold;
 			text-align: center;
@@ -423,7 +468,7 @@
 		-moz-border-radius: 10px;
 		border-radius: 10px;
 		line-height: 1.4em;
-		background: #FFF;
+		background: #fff;
 
 		.post {
 			overflow: hidden;
@@ -432,18 +477,6 @@
 				max-width: 100%;
 				margin: .5em 0;
 			}
-		}
-	}
-
-	.postRight {
-		.postContent, .postActions {
-			margin-left: 180px;
-		}
-	}
-
-	.postLeft {
-		.postContent, .postActions {
-			margin-right: 180px;
 		}
 	}
 
@@ -467,7 +500,7 @@
 	.postHeader {
 		margin-bottom: .8em;
 		padding-bottom: .5em;
-		border-bottom: 1px solid #800;
+		border-bottom: 1px solid @gp-red;
 	}
 
 	.postedOn {
@@ -497,7 +530,8 @@
 	}
 }
 
-#page_forum_thread .postContent, #page_forum_post #postedRolls {
+#page_forum_thread .postContent,
+#page_forum_post #postedRolls {
 	.indent {
 		margin: .25em 0 .5em 30px;
 	}
@@ -507,64 +541,64 @@
 	color: #666;
 }
 
-.parsedRolls{
+.parsedRolls {
 	cursor: pointer;
-	
-	i{
+
+	i {
 		display: inline;
 		padding: 0 .2em;
-		&:after{
-			content:',';
+		&:after {
+			content: ',';
 		}
 
-		&:last-child::after{
-			content:'';
+		&:last-child::after {
+			content: '';
 		}
-
 	}
 
-	.rollVal-bold{
+	.rollVal-bold {
 		font-weight: bold;
 	}
-	.rollVal-success{
+	.rollVal-success {
 		color: #060;
 	}
-	.rollVal-fail{
-		color: #800;
+	.rollVal-fail {
+		color: @gp-red;
 	}
-	.rollVal-info{
+	.rollVal-info {
 		color: #009;
 	}
 
-	.rollVal-invert{
+	.rollVal-invert {
 		color: #fff;
 		background-color: #333;
-		&.rollVal-success{
+		&.rollVal-success {
 			background-color: #060;
 		}
-		&.rollVal-fail{
-			background-color: #800;
+		&.rollVal-fail {
+			background-color: @gp-red;
 		}
-		&.rollVal-info{
+		&.rollVal-info {
 			background-color: #009;
 		}
 	}
 
-	.rollVal-underline{
-		text-decoration:underline;
+	.rollVal-underline {
+		text-decoration: underline;
 	}
-
 }
 
-
-#page_forum_thread, #page_forum_post {
+#page_forum_thread,
+#page_forum_post {
 	.rollResults {
 		margin-left: 20px;
 	}
 }
 
-#page_forum_thread, #page_forum_post {
-	.starwarsffg_dice, .fate_dice {
+#page_forum_thread,
+#page_forum_post {
+	.starwarsffg_dice,
+	.fate_dice {
 		margin-left: 10px;
 	}
 }
@@ -614,16 +648,14 @@
 
 		a {
 			margin: 0 10px;
-
-			&.keepUnread {
-				float: left;
-			}
 		}
 	}
 
 	#quickMod {
-		margin-top: 1em;
-		float: right;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 8px;
 
 		button {
 			margin-left: 10px;
@@ -641,7 +673,8 @@
 	}
 }
 
-#page_forum_thread, #page_forum_post {
+#page_forum_thread,
+#page_forum_post {
 	textarea {
 		height: 10em;
 		width: 100%;
@@ -696,13 +729,7 @@
 				padding-bottom: .4em;
 			}
 		}
-	}
 
-	/*#basicPostInfo .tr > * {
-		display: inline-block;
-	}*/
-
-	#basicPostInfo {
 		label {
 			width: 75px;
 		}
@@ -721,21 +748,20 @@
 		margin-top: 0;
 	}
 
-	.sectionControls {
-		a {
-			float: left;
-		}
+	#optionControls {
+		display: flex;
+		justify-content: flex-end;
+		margin-right: 20px;
 	}
 
 	#poll {
 		label {
-			float: left;
 			width: 150px;
 			vertical-align: top;
 		}
 
 		& > div > div {
-			margin-left: 160px;
+			flex-grow: 2;
 		}
 	}
 
@@ -757,7 +783,8 @@
 		font-style: italic;
 	}
 
-	#postedRolls, #newRolls {
+	#postedRolls,
+	#newRolls {
 		margin-top: .3em;
 	}
 
@@ -780,11 +807,13 @@
 			}
 		}
 
-		input, textarea {
+		input,
+		textarea {
 			margin: 0 0 0 15px;
 		}
 
-		input[type="text"], textarea {
+		input[type="text"],
+		textarea {
 			width: 727px;
 		}
 
@@ -806,16 +835,17 @@
 	}
 
 	#addRoll {
+		display: flex;
+		align-items: center;
 		margin: 1em 0 .5em;
 
 		span {
 			margin-right: 10px;
 			font-weight: bold;
-			vertical-align: middle;
 		}
 
-		.fancyButton {
-			vertical-align: middle;
+		.prettySelect {
+			margin-right: 10px;
 		}
 	}
 
@@ -823,7 +853,7 @@
 		position: relative;
 		margin-top: 4px;
 		padding: 7px 15px 11px 25px;
-		border-top: 1px solid #AAA;
+		border-top: 1px solid #aaa;
 
 		&:first-of-type {
 			margin-top: 0;
@@ -838,6 +868,16 @@
 	}
 
 	.newRoll {
+		display: flex;
+		flex-wrap: wrap;
+		width:100%;
+
+		&>div{
+			display: flex;
+			flex-wrap: wrap;
+			width:100%;
+		}
+
 		& > div > * {
 			display: inline-block;
 			vertical-align: top;
@@ -853,19 +893,19 @@
 		}
 
 		.reason {
-			width: 400px;
+			width: 40%;
 			text-align: left;
 		}
 
 		.roll {
-			width: 180px;
+			width: 20%;
 			padding: 0 10px;
 			text-align: center;
 		}
 
 		&.starwarsffgRoll {
 			.roll {
-				width: 202px;
+				width: 20%;
 			}
 
 			.dicePool {
@@ -880,7 +920,7 @@
 				height: 26px;
 				width: 40px;
 				padding: 3px 5px;
-				border: 1px solid #A00;
+				border: 1px solid #a00;
 				background: #333;
 				text-align: right;
 				-webkit-border-radius: 6px;
@@ -902,7 +942,7 @@
 				min-height: 26px;
 				padding: 1px 5px;
 				vertical-align: middle;
-				background: #DDF;
+				background: #ddf;
 				border: 1px solid #400;
 				border-bottom-color: #900;
 				border-right-color: #900;
@@ -928,7 +968,7 @@
 				width: 140px;
 				height: 23px;
 				padding: 4px 0;
-				background: #EEE;
+				background: #eee;
 				border: 1px solid #444;
 				-webkit-border-radius: 4px;
 				-moz-border-radius: 4px;
@@ -949,7 +989,7 @@
 			position: absolute;
 			bottom: 2px;
 			left: -5px;
-			border-top: 6px solid #EEE;
+			border-top: 6px solid #eee;
 			border-left: 5px solid transparent;
 			border-right: 5px solid transparent;
 		}
@@ -989,12 +1029,14 @@
 	}
 
 	#newRolls {
-		.roll input, .starwarsffgRoll .selectedDice {
+		.roll input,
+		.starwarsffgRoll .selectedDice {
 			width: 100%;
 		}
 	}
 
-	#newRolls, #decksTable {
+	#newRolls,
+	#decksTable {
 		.reason input {
 			width: 100%;
 			margin: 0;
@@ -1031,7 +1073,7 @@
 		}
 
 		.reroll {
-			width: 90px;
+			width: 10%;
 			padding-right: 10px;
 			text-align: center;
 			vertical-align: middle;
@@ -1047,7 +1089,8 @@
 		}
 
 		.visibility {
-			width: 140px;
+			width: 15%;
+			min-width: 150px;
 		}
 
 		.indivRolls {
@@ -1092,7 +1135,8 @@
 /* --------------------------------------------*/
 
 #page_forumACP {
-	#forums, #forums ul {
+	#forums,
+	#forums ul {
 		list-style: none;
 	}
 
@@ -1111,13 +1155,16 @@
 		li {
 			position: relative;
 
-			div, a {
+			div,
+			a {
 				padding: 2px 0;
 			}
 
-			a, a:visited, a:active {
+			a,
+			a:visited,
+			a:active {
 				display: block;
-				color: #FFF;
+				color: #fff;
 			}
 
 			a:hover {
@@ -1125,9 +1172,11 @@
 			}
 
 			&.currentForum {
-				& > a, & > a:visited, & > a:active {
+				& > a,
+				& > a:visited,
+				& > a:active {
 					font-weight: bold;
-					color: #C00;
+					color: #c00;
 				}
 			}
 
@@ -1149,7 +1198,7 @@
 				position: absolute;
 				left: -10px;
 				top: 2px;
-				color: #FFF;
+				color: #fff;
 			}
 
 			li.notAdmin:before {
@@ -1157,7 +1206,7 @@
 			}
 
 			li.currentForum:before {
-				color: #C00;
+				color: #c00;
 			}
 		}
 	}
@@ -1166,29 +1215,31 @@
 		float: right;
 
 		.content {
-			background-color: #222;
+			background-color: @gp-black;
 		}
 
-		.leftWing, .rightWing {
-			border-bottom-color: #222;
+		.leftWing,
+		.rightWing {
+			border-bottom-color: @gp-black;
 		}
 
 		a {
 			display: inline-block;
 			padding: .3em 15px;
-			color: #FDD;
+			color: #fdd;
 			background: #522;
-			border-top: .3em solid #222;
-			border-left: 2px solid #222;
+			border-top: .3em solid @gp-black;
+			border-left: 2px solid @gp-black;
 		}
 
 		&:first-child {
 			border-left: none;
 		}
 
-		.current, a:hover {
-			color: #F00;
-			background: #222;
+		.current,
+		a:hover {
+			color: #f00;
+			background: @gp-black;
 		}
 	}
 
@@ -1214,7 +1265,7 @@
 			&.current {
 				top: -1px;
 				z-index: 100;
-				border: 1px solid #AAA;
+				border: 1px solid #aaa;
 				border-right-width: 0;
 				background: none;
 			}
@@ -1276,7 +1327,8 @@
 		}
 	}
 
-	#categories, #subforums {
+	#categories,
+	#subforums {
 		.tr {
 			& > * {
 				vertical-align: middle;
@@ -1293,11 +1345,12 @@
 			margin: .5em 0;
 			padding: 6px 10px;
 			border: 1px solid #900;
-			background-color: #EAA;
+			background-color: #eaa;
 		}
 	}
 
-	#categories .catNames, #subforums .forumNames {
+	#categories .catNames,
+	#subforums .forumNames {
 		display: inline-block;
 		margin-left: 10px;
 		padding: 2px 0;
@@ -1364,7 +1417,7 @@
 			}
 
 			.cancelDelete {
-				color: #3B3;
+				color: #3b3;
 			}
 
 			button {
@@ -1377,7 +1430,8 @@
 		margin-top: 1em;
 	}
 
-	.permission_edit, .permission_delete {
+	.permission_edit,
+	.permission_delete {
 		font-size: .85em;
 	}
 
@@ -1391,7 +1445,9 @@
 		}
 	}
 
-	.permission_label, .permission_type, .option {
+	.permission_label,
+	.permission_type,
+	.option {
 		display: inline-block;
 	}
 
@@ -1410,17 +1466,17 @@
 		cursor: pointer;
 
 		&.no {
-			background: #F66;
+			background: #f66;
 			border-color: #900;
 		}
 
 		&.inherit {
-			background: #FFF;
+			background: #fff;
 			border-color: #000;
 		}
 
 		&.yes {
-			background: #3C3;
+			background: #3c3;
 			border-color: #060;
 		}
 
@@ -1442,7 +1498,8 @@
 /* --------------------------------------------*/
 
 #page_forumACP_newPermission {
-	#optList, #permissionsList {
+	#optList,
+	#permissionsList {
 		display: inline-block;
 		vertical-align: top;
 	}
@@ -1459,7 +1516,8 @@
 		padding-top: 0;
 	}
 
-	.permission_label, .permission_type {
+	.permission_label,
+	.permission_type {
 		display: inline-block;
 	}
 
@@ -1515,140 +1573,125 @@
 
 /* --------------------------------------------*/
 /* char sheet integration */
-#charButtons
-{
-    margin-left:0.5em;
+#charButtons {
+	margin-left: 0.5em;
 }
-.rollForChar
-{
-    display: inline-block;
-    margin: 0 .5em;
-    background-color:#800;
-    color:#fff;
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 80%;
-    padding:.25em .5em;
-    border-radius: 6px;
+.rollForChar {
+	display: inline-block;
+	margin: 0 .5em;
+	background-color: @gp-red;
+	color: #fff;
+	cursor: pointer;
+	white-space: nowrap;
+	font-size: 80%;
+	padding: .25em .5em;
+	border-radius: 6px;
 }
 
-.rollForChar.sel
-{
-    color:#800;
-    border:solid 1px;
-    background-color: transparent;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-bottom-style: none;
-    z-index: 2;
-    background-color: #fff;
-    padding-bottom: 0.6em;
-
+.rollForChar.sel {
+	color: @gp-red;
+	border: solid 1px;
+	background-color: transparent;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	border-bottom-style: none;
+	z-index: 2;
+	background-color: #fff;
+	padding-bottom: 0.6em;
 }
 
-#charSheetRoller
-{
-    border:solid 1px #400;
-    padding:10px;
-    border-radius:0.5em;
-    margin-top:-1px;
-    z-index: 1;
+#charSheetRoller {
+	border: solid 1px #400;
+	padding: 10px;
+	border-radius: 0.5em;
+	margin-top: -1px;
+	z-index: 1;
 }
 
-#charSheetRoller h3
-{
-    color:#800;
-    border-top:solid 1px;
+#charSheetRoller h3 {
+	color: @gp-red;
+	border-top: solid 1px;
 }
 
-.roller
-{
-    white-space: nowrap;
-    display: inline-block;
-    width:290px;
-    margin-bottom: 1em;
+.roller {
+	white-space: nowrap;
+	display: inline-block;
+	width: 290px;
+	margin-bottom: 1em;
 }
-.roller.skill
-{
-    width:210px;
+.roller.skill {
+	width: 210px;
 }
 
-.roller span
-{
-    display: block;
-    font-weight: bold;
-    margin-bottom: 2px;
+.roller span {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 2px;
 }
 
-.rollerInit span
-{
-    display:none;
+.rollerInit span {
+	display: none;
 }
 
-.roller .rollSel
-{
-    display: inline-block;
-    margin-left: 0;
-    margin-right:1em;
+.roller .rollSel {
+	display: inline-block;
+	margin-left: 0;
+	margin-right: 1em;
 }
 
-.roller .rollSel li
-{
-    display: inline-block;
-    border:solid 1px #888;
-    border-right-width: 0;
-    padding:.2em .5em;
+.roller .rollSel li {
+	display: inline-block;
+	border: solid 1px #888;
+	border-right-width: 0;
+	padding: .2em .5em;
 }
 
-.rollDice{
+.rollDice {
 	cursor: pointer;
 }
 
-td .rollDice{
+td .rollDice {
 	display: inline-block;
 	padding: .2em 1em;
-	border:solid 1px #222;
+	border: solid 1px @gp-black;
 	border-radius: 5px;
 	background-color: #eee;
 }
 
-#charSheetRoller .bbTableRolls tr:hover{
-	background-color: #FFF2E0;
+#charSheetRoller .bbTableRolls tr:hover {
+	background-color: #fff2e0;
 }
 
-.roller .rollSel li:first-of-type
-{
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+.roller .rollSel li:first-of-type {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
 }
 
-.roller .rollSel li:last-of-type
-{
-    border-right-width: 1px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+.roller .rollSel li:last-of-type {
+	border-right-width: 1px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 /* --------------------------------------------*/
-.editRollInfo{
-
-	&:after{
+.editRollInfo {
+	&:after {
 		content: '';
-  		display: table;
-  		clear: both;		
+		display: table;
+		clear: both;
 	}
 
-	.editRollInfoChangeVisibility{
-		float:left;
-		width:200px;
-	}
-
-	.editRollInfoRoll{
+	.editRollInfoChangeVisibility {
 		float: left;
-		width:680px;
+		width: 200px;
+	}
+
+	.editRollInfoRoll {
+		float: left;
+		width: 680px;
 		padding-right: 20px;
 
-		p{
+		p {
 			margin: 0;
 		}
 
@@ -1657,21 +1700,210 @@ td .rollDice{
 
 	border-bottom: solid 1px #ccc;
 
-	&:last-of-type{
+	&:last-of-type {
 		border-bottom-style: none;
 	}
 }
 
-#page_forum_post #postedRolls .rollInfo.editRollInfo{
+#page_forum_post #postedRolls .rollInfo.editRollInfo {
 	margin-bottom: .5em;
 }
 
+//forum flex
+//flex
+#page_forum,#page_forum_search{
+
+	.tableDiv{
+
+		.tr{
+			display: flex;
+			width: 100%;
+			flex-wrap: nowrap;
+			box-sizing: border-box;
+		}
+
+		.icon{
+			flex:0 0 auto;
+			width:40px;
+		}
+
+		.threadInfo{
+			flex:0 0 auto;
+			width:40%;
+			display: flex;
+			flex-wrap: wrap;
+
+			.threadInfoNew{
+				width: 20px;
+				order:1;
+			}
+			.paginateDiv{
+				width: 45%;
+				order:3;
+				margin: 0;
+				white-space: nowrap;
+			}
+			.threadTitle{
+				width: 45%;
+				order:2;
+			}
+			.threadAuthor{
+				display: block;
+				width: 100%;
+				order: 4;
+				padding-left: 20px;
+			}
+		}
+		.numPosts{
+			flex:0 0 auto;
+			width:25%;
+		}
+		.lastPost{
+			flex:0 0 auto;
+			width:25%;
+		}
+	}
+}
+
+.keepUnread{
+	float:left;
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+    #page_forum,#page_forum_search{
+		.tableDiv{
+			.numPosts,.numThreads{
+				display: none;
+			}
+
+			.threadInfo{
+				width: ~"calc(75% - 40px)";
+			}
+
+		}
+    }
+
+	#page_forum_thread .postBlock{
+		.flexWrapper{
+			flex-direction: column;
+			.posterDetails{
+				display: flex;
+				flex-direction: row;
+				align-items: end;
+				width: 100%;
+			}
+		}
+		.postPoint{
+			background: none;
+		}
+
+		.postContent{
+			position: relative;
+			&:before,&:after{
+				content:' ';
+				position: absolute;
+				width:0px;
+				height:0px;
+				border:solid 10px transparent;
+				display: inline-block;
+			}
+			&:before{
+				border-bottom-color: #444;
+				top:-20px;
+			}
+			&:after{
+				border-bottom-color: #fff;
+				top:-18px;
+			}
+		}
+	}
+
+	#page_forum_thread .postBlock .posterDetails {
+		order:0;
+		.avatar {
+			img{
+				max-height: 40px;
+			}
+		}
+
+		.postNames{
+			display: flex;
+			flex-direction: column;
+			margin-left: 20px;
+		}
+	}
+
+	#page_forum_thread .postAsChar.withCharAvatar .posterDetails .avatar{
+		margin-top:0;
+		.userAvatar{
+			right:-10px !important;
+			top:-10px !important;
+
+			img{
+				max-height: 20px;
+			}
+		}
+	}
+
+	#page_forum_thread .postBlock.postRight .flexWrapper {
+		.postContent{
+			&:before,&:after{
+				right: 10px;
+			}
+		}
+
+		.posterDetails{
+			flex-direction: row-reverse;
+		}
+	}
+
+}
+
+.forumList.hbdMargined{
+	margin-left: 0;
+}
 
 .tavernTags{
 	margin-bottom: 1rem;
-	.badge{
-		font-size: 150%;
-		padding:0.2rem .5rem;
+	font-size:1.2em;
+}
 
+.tavernGame{
+	img{
+		max-width: 100%;
 	}
+}
+
+
+
+//forum icons
+.ra.forum-icon{
+	margin-right: .3em;
+	&:before{ //default communities
+		content: @ra-var-icon-campfire;
+	}
+}
+
+.ra.forum-root-6:before{ //game discussion
+	content: @ra-var-icon-pawn;
+}
+
+.ra.forum-root-20:before{ //guides
+	content: @ra-var-icon-wooden-sign;
+}
+
+.ra.forum-root-2:before{ //games
+	content: @ra-var-icon-d6;
+}
+
+.ra.forum-id-3:before{  //announcements
+	content: @ra-var-icon-gamers-plane;
+}
+
+.ra.forum-id-10:before{  //tavern
+	content: @ra-var-icon-beer;
+}
+
+.ra.forum-id-14:before{  //introductions
+	content: @ra-var-icon-hearts;
 }

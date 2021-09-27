@@ -1,12 +1,12 @@
-		<div id="landing_top" class="clearfix">
+<div id="landing_top">
 			<div id="landing_top_content" class="contentContainer">
 				<header>
 					<h1>Scratch that RPG itch</h1>
 					<h2>Talk and play <strong>RPGs</strong> with <strong>hundreds of players</strong>!</h2>
 				</header>
-				<div id="landing_top_whiteBox" class="clearfix">
+				<div id="landing_top_whiteBox">
 					<div id="landing_latestGames">
-						<h1 class="headerbar" skew-element>Latest Games</h1>
+						<h1 class="headerbar">Latest Games</h1>
 						<div hb-margined>
 							<div id="landing_systemSearch">
 								<div class="sprite magnifyingglass"></div>
@@ -24,9 +24,9 @@
 						</div>
 					</div>
 					<div id="landing_signup">
-						<p><a href="/register/" class="register fancyButton" skew-element>Sign up!</a></p>
+						<p><a href="/register/" class="register fancyButton">Sign up!</a></p>
 						<p>or if you're already a member...</p>
-						<p><a href="/login/" class="login fancyButton" skew-element colorbox>Log in</a></p>
+						<p><a href="/login/" class="login fancyButton" colorbox>Log in</a></p>
 <!--						<div id="landing_signup_username">
 							<span ng-show="signup.username.length == 0 && formFocus != 'username'" ng-click="setFormFocus('username')">Username</span>
 							<input type="text" ng-focus="setFormFocus('username')" ng-blur="setFormFocus('')" ng-model="signup.username">
@@ -36,13 +36,13 @@
 							<input type="password" ng-focus="setFormFocus('password')" ng-blur="setFormFocus('')" ng-model="signup.password">
 						</div>
 						<div class="alignCenter">
-							<a href="" class="fancyButton" skew-element>Sign Up</a> or <a href="" class="fancyButton" skew-element>Log In</a>
+							<a href="" class="fancyButton">Sign Up</a> or <a href="" class="fancyButton">Log In</a>
 						</div>-->
 					</div>
 				</div>
 			</div>
 		</div>
-		<div id="landing_whatIs" class="contentContainer clearfix">
+		<div id="landing_whatIs" class="contentContainer flexWrapper">
 			<div id="landing_whatIs_logos">
 				<img ng-repeat="system in whatIsLogos" ng-attr-id="landing_whatIs_{{system}}" ng-src="/images/logos/{{system}}.png">
 			</div>

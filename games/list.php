@@ -1,5 +1,7 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
-		<div class="sideWidget left">
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
+	<div class="flex-row">
+		<div class="sideWidget left small-order-2">
 			<h2>Filter</h2>
 			<form id="filterGames" ng-submit="filterGames()">
 				<div class="tr">
@@ -12,12 +14,12 @@
 				</ul>
 				<div id="toggleFullGames" class="tr"><div ng-click="slideToggle('showFullGames')" class="ofToggle mini" ng-class="{ 'on': filter.showFullGames }"></div> <span>Show full games</span></div>
 				<div id="toggleInactiveGMs" class="tr"><div ng-click="slideToggle('showInactiveGMs')" class="ofToggle mini" ng-class="{ 'on': filter.showInactiveGMs }"></div> <span>Show inactive GMs</span></div>
-				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton" skew-element>Filter</button></div>
+				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 			</form>
 		</div>
 
-		<div class="mainColumn right">
-			<h1 class="headerbar hb_hasList" skew-element>Join a Game</h1>
+		<div class="mainColumn right mlr-20 small-mlr-0">
+			<h1 class="headerbar hb_hasList"><i class="ra ra-d6"></i> Join a Game</h1>
 
 			<ul id="gamesList" class="hbAttachedList hbMargined" hb-margined>
 				<li ng-repeat="game in games | orderBy: orderBy " class="clearfix">
@@ -28,4 +30,5 @@
 				<li ng-hide="games.length" id="noResults">Doesn't seem like any games are available at this time.<br>Maybe you should <a href="/games/new/">make one</a>?</li>
 			</ul>
 		</div>
+	</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

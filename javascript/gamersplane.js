@@ -53,6 +53,7 @@ $(function() {
 		});
 	}
 
+	/*
 	$('.headerbar, .fancyButton').each(skewElement);
 	hbMargin = parseFloat($('.headerbar').data('skewedOut')) * 2;
 	$('.hbMargined:not(textarea)').css({ 'margin-left': Math.ceil(hbMargin) + 'px', 'margin-right': Math.ceil(hbMargin) + 'px' });
@@ -69,6 +70,7 @@ $(function() {
 		tWidth = $(this).parent().width();
 		$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
 	});
+	*/
 
 	$('.trapezoid').each(trapezoidify);
 
@@ -913,6 +915,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 		headerHeight = $header.height(),
 		scrollTimeout = null,
 		ratio = 1,
+		mobileAdjustment=($('#mainMenuTools:visible').length>0?1:0.666),
 		$mainMenu = $('#mainMenu');
 
 	$mainMenu.on('click', 'li', function ($event) {
@@ -928,7 +931,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	$timeout(function () {
 		$headerEles.height(scrollPos < 50?120 - scrollPos:70);
 		ratio = (scrollPos < 50?scrollPos:50) / 50;
-		$logo.height(100 - 47 * ratio);
+		$logo.height((100 - 47 * ratio)*mobileAdjustment);
 	});
 	$(window).scroll(function () {
 		scrollPos = $(this).scrollTop();
@@ -938,11 +941,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 //			scrollTimeout = setTimeout(function () {
 				$headerEles.height(scrollPos < 50?120 - scrollPos:70);
 				ratio = (scrollPos < 50?scrollPos:50) / 50;
-				$logo.height(100 - 47 * ratio);
+				$logo.height((100 - 47 * ratio)*mobileAdjustment);
 //			}, 100);
 		} else if ($headerEles.height() > 70) {
 			$headerEles.height(70);
-			$logo.height(53);
+			$logo.height(53*mobileAdjustment);
 		}
 	});
 }]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {

@@ -9,7 +9,7 @@
 			</div>
 			<div id="search" class="tr"><input type="text" ng-model="search" placeholder="Search"></div>
 		</div>
-		<ul id="links" class="clearfix">
+		<ul id="links" class="flexWrapper">
 			<li ng-repeat="link in links | intersect: 'categories' : filter | filter: { title: search } | orderBy: 'sortName'" equalize-heights="maxHeight.links">
 				<div class="image" ng-class="{ 'noImg': !link.image }">
 					<a href="{{link.url}}" target="_blank" ng-class="{ 'noImg': !link.image }">

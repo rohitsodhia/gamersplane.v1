@@ -79,7 +79,7 @@
 <span><span ng-bind-html="history.language.actor | trustHTML"></span> retired <span ng-bind-html="history.language.targetGM | trustHTML"></span> game: <span ng-bind-html="LanguageService.gameLink(history.game.gameID, history.game.title) | trustHTML"></span></span>
 </script>
 		<div ng-repeat="(datestamp, dateHistories) in histories">
-			<h2 class="headerbar hbDark" skew-element>{{datestamp | amParse: 'YYYY-MM-DD' | amDateFormat: 'MMMM D, YYYY'}}</h2>
+			<h2 class="headerbar hbDark">{{datestamp | amParse: 'YYYY-MM-DD' | amDateFormat: 'MMMM D, YYYY'}}</h2>
 			<div class="hbdMargined" hb-margined>
 				<div ng-repeat="history in dateHistories" class="notification tr">
 					<div class="timestamp">{{history.timestamp | amLocal | amDateFormat: 'h:mm A'}}</div>

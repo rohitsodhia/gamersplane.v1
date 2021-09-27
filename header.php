@@ -15,7 +15,7 @@
 		<a id="headerLogo" href="/"><img src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>
 
 		<ul id="mainMenu">
-			<li>
+			<li class="mob-hide" id="mainMenuTools">
 				<a href="/tools/" class="first">Tools</a>
 				<ul>
 					<li><a href="/tools/dice/">Dice</a></li>
@@ -23,24 +23,24 @@
 					<li><a href="/tools/music/">Music</a></li>
 				</ul>
 			</li>
-			<li><a href="/systems/">Systems</a></li>
+			<li class="small-hide"><a href="/systems/">Systems</a></li>
 			<li ng-show="loggedIn">
-				<a href="/characters/my/">Characters</a>
+				<a href="/characters/my/"><i class="ra ra-double-team hide mob-show-inline-block"></i><span class="mob-hide">Characters</span></a>
 				<ul ng-if="characters.length">
 					<li ng-repeat="char in characters | limitTo: 5"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
 					<li><a href="/characters/my/">All characters</a></li>
 				</ul>
 			</li>
 			<li>
-				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}">Games</a>
+				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}"><i class="ra ra-d6 hide mob-show-inline-block"></i><span class="mob-hide">Games</span></a>
 				<ul ng-if="loggedIn && games.length">
 					<li ng-repeat="game in games | limitTo: 5"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
 					<li><a href="/games/my/">All games</a></li>
 				</ul>
 			</li>
-			<li><a href="/forums/">Forums</a></li>
-			<li ng-show="loggedIn"><a href="/gamersList/">The Gamers</a></li>
-			<li><a href="/links/">Links</a></li>
+			<li><a href="/forums/"><i class="ra ra-campfire hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
+			<li ng-show="loggedIn"><a href="/gamersList/"><i class="ra ra-gamers-plane hide mob-show-inline-block"></i><span class="mob-hide">The Gamers</span></a></li>
+			<li class="small-hide"><a href="/links/">Links</a></li>
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
 			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" colorbox>Login</a></li>
 			<li ng-show="loggedIn" id="userMenu">
@@ -56,12 +56,8 @@
 	</div>
 </header>
 
-<div id="content"<?=isset($contentClasses)?' class="'.implode(' ', $contentClasses).'"':''?>><div class="bodyContainer clearfix">
+<div id="content"<?=isset($contentClasses)?' class="'.implode(' ', $contentClasses).'"':''?>><div class="bodyContainer">
 	<div id="page_<?=PAGE_ID?>"<?=sizeof($bodyClasses)?' class="'.implode(' ', $bodyClasses).'"':''?><?=strlen($dispatchInfo['ngController'])?" ng-controller=\"{$dispatchInfo['ngController']}\"":''?>>
-		<div id="stupidIE">
-			<p>Hm... seems like you're using IE. Can I suggest a better browser, such as <a href="http://www.mozilla.com/en-US/firefox/" target="_blank">Firefox</a>, <a href="http://www.googlechrome.com/" target="_blank">Chrome</a> or <a href="http://www.opera.com/" target="_blank">Opera</a>? There are other choices too.</p>
-			<p>If you wanna stick with IE, or can't switch, I'll warn you right now, while most of this site should work with IE, stuff might come up buggy, so you might not enjoy it as much...</p>
-		</div>
 <?	} else { ?>
-<div id="page_<?=PAGE_ID?>" class="clearfix<?=sizeof($bodyClasses)?' '.implode(' ', $bodyClasses):''?>"<?=strlen($dispatchInfo['ngController'])?" ng-controller=\"{$dispatchInfo['ngController']}\"":''?>>
+<div id="page_<?=PAGE_ID?>" class="<?=sizeof($bodyClasses)?implode(' ', $bodyClasses):''?>"<?=strlen($dispatchInfo['ngController'])?" ng-controller=\"{$dispatchInfo['ngController']}\"":''?>>
 <?	} ?>

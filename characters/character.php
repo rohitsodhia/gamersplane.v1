@@ -34,8 +34,11 @@
 		}
 	} else { header('Location: /404/'); exit; }
 ?>
-<?php	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Character Sheet</h1>
+<?php
+	if(SYSTEM=='custom'){$responsivePage=true;}
+
+	require_once(FILEROOT.'/header.php'); ?>
+	<h1 class="headerbar">Character Sheet</h1>
 <?php	if (!$noChar) { ?>
 		<div class="clearfix"><div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
 <?php		if ($charPermissions == 'edit') { ?>

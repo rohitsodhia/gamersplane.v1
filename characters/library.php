@@ -5,13 +5,13 @@
 				<ul class="clearfix">
 					<li ng-repeat="system in systems | orderBy: 'name'"><label><pretty-checkbox checkbox="search.systems" value="system.slug"></pretty-checkbox><span ng-bind-html="system.name"></span></label></li>
 				</ul>
-				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton" skew-element>Filter</button></div>
+				<div class="alignCenter"><button name="filter" value="filter" class="fancyButton">Filter</button></div>
 			</form>
 		</div>
 
 		<div class="mainColumn right">
 			<h1 class="headerbar hb_hasList">Character Library</h1>
-			
+
 			<ul id="charList" ng-show="characters.length" class="hbAttachedList hbMargined">
 				<li ng-repeat="character in characters | orderBy: ['system.name', 'label']" class="clearfix">
 					<a href="/characters/{{character.system.slug}}/{{character.characterID}}/" class="charLabel" ng-bind-html="character.label"></a

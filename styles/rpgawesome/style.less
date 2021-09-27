@@ -1,0 +1,2519 @@
+@import "variables";
+
+@font-face {
+  font-family: '@{rpgawesome-font-family}';
+  src:  url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.eot?vakywp');
+  src:  url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.eot?vakywp#iefix') format('embedded-opentype'),
+    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.ttf?vakywp') format('truetype'),
+    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.woff?vakywp') format('woff'),
+    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.svg?vakywp#@{rpgawesome-font-family}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+i.ra {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: '@{rpgawesome-font-family}' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+    display: inline-block;
+}
+
+.ra-acid {
+  &:before {
+    content: @ra-var-icon-acid;
+  }
+}
+.ra-acorn {
+  &:before {
+    content: @ra-var-icon-acorn;
+  }
+}
+.ra-alien-fire {
+  &:before {
+    content: @ra-var-icon-alien-fire;
+  }
+}
+.ra-all-for-one {
+  &:before {
+    content: @ra-var-icon-all-for-one;
+  }
+}
+.ra-alligator-clip {
+  &:before {
+    content: @ra-var-icon-alligator-clip;
+  }
+}
+.ra-ammo-bag {
+  &:before {
+    content: @ra-var-icon-ammo-bag;
+  }
+}
+.ra-anchor {
+  &:before {
+    content: @ra-var-icon-anchor;
+  }
+}
+.ra-angel-wings {
+  &:before {
+    content: @ra-var-icon-angel-wings;
+  }
+}
+.ra-ankh {
+  &:before {
+    content: @ra-var-icon-ankh;
+  }
+}
+.ra-anvil {
+  &:before {
+    content: @ra-var-icon-anvil;
+  }
+}
+.ra-apple {
+  &:before {
+    content: @ra-var-icon-apple;
+  }
+}
+.ra-aquarius {
+  &:before {
+    content: @ra-var-icon-aquarius;
+  }
+}
+.ra-arcane-mask {
+  &:before {
+    content: @ra-var-icon-arcane-mask;
+  }
+}
+.ra-archer {
+  &:before {
+    content: @ra-var-icon-archer;
+  }
+}
+.ra-archery-target {
+  &:before {
+    content: @ra-var-icon-archery-target;
+  }
+}
+.ra-arena {
+  &:before {
+    content: @ra-var-icon-arena;
+  }
+}
+.ra-aries {
+  &:before {
+    content: @ra-var-icon-aries;
+  }
+}
+.ra-arrow-cluster {
+  &:before {
+    content: @ra-var-icon-arrow-cluster;
+  }
+}
+.ra-arrow-flights {
+  &:before {
+    content: @ra-var-icon-arrow-flights;
+  }
+}
+.ra-arson {
+  &:before {
+    content: @ra-var-icon-arson;
+  }
+}
+.ra-aura {
+  &:before {
+    content: @ra-var-icon-aura;
+  }
+}
+.ra-aware {
+  &:before {
+    content: @ra-var-icon-aware;
+  }
+}
+.ra-axe {
+  &:before {
+    content: @ra-var-icon-axe;
+  }
+}
+.ra-axe-swing {
+  &:before {
+    content: @ra-var-icon-axe-swing;
+  }
+}
+.ra-ball {
+  &:before {
+    content: @ra-var-icon-ball;
+  }
+}
+.ra-barbed-arrow {
+  &:before {
+    content: @ra-var-icon-barbed-arrow;
+  }
+}
+.ra-barrier {
+  &:before {
+    content: @ra-var-icon-barrier;
+  }
+}
+.ra-bat-sword {
+  &:before {
+    content: @ra-var-icon-bat-sword;
+  }
+}
+.ra-battered-axe {
+  &:before {
+    content: @ra-var-icon-battered-axe;
+  }
+}
+.ra-batteries {
+  &:before {
+    content: @ra-var-icon-batteries;
+  }
+}
+.ra-battery-0 {
+  &:before {
+    content: @ra-var-icon-battery-0;
+  }
+}
+.ra-battery-25 {
+  &:before {
+    content: @ra-var-icon-battery-25;
+  }
+}
+.ra-battery-50 {
+  &:before {
+    content: @ra-var-icon-battery-50;
+  }
+}
+.ra-battery-75 {
+  &:before {
+    content: @ra-var-icon-battery-75;
+  }
+}
+.ra-battery-100 {
+  &:before {
+    content: @ra-var-icon-battery-100;
+  }
+}
+.ra-battery-black {
+  &:before {
+    content: @ra-var-icon-battery-black;
+  }
+}
+.ra-battery-negative {
+  &:before {
+    content: @ra-var-icon-battery-negative;
+  }
+}
+.ra-battery-positive {
+  &:before {
+    content: @ra-var-icon-battery-positive;
+  }
+}
+.ra-battery-white {
+  &:before {
+    content: @ra-var-icon-battery-white;
+  }
+}
+.ra-batwings {
+  &:before {
+    content: @ra-var-icon-batwings;
+  }
+}
+.ra-beam-wake {
+  &:before {
+    content: @ra-var-icon-beam-wake;
+  }
+}
+.ra-bear-trap {
+  &:before {
+    content: @ra-var-icon-bear-trap;
+  }
+}
+.ra-beer {
+  &:before {
+    content: @ra-var-icon-beer;
+  }
+}
+.ra-beetle {
+  &:before {
+    content: @ra-var-icon-beetle;
+  }
+}
+.ra-bell {
+  &:before {
+    content: @ra-var-icon-bell;
+  }
+}
+.ra-biohazard {
+  &:before {
+    content: @ra-var-icon-biohazard;
+  }
+}
+.ra-bird-claw {
+  &:before {
+    content: @ra-var-icon-bird-claw;
+  }
+}
+.ra-bird-mask {
+  &:before {
+    content: @ra-var-icon-bird-mask;
+  }
+}
+.ra-blade-bite {
+  &:before {
+    content: @ra-var-icon-blade-bite;
+  }
+}
+.ra-blast {
+  &:before {
+    content: @ra-var-icon-blast;
+  }
+}
+.ra-blaster {
+  &:before {
+    content: @ra-var-icon-blaster;
+  }
+}
+.ra-bleeding-eye {
+  &:before {
+    content: @ra-var-icon-bleeding-eye;
+  }
+}
+.ra-bleeding-hearts {
+  &:before {
+    content: @ra-var-icon-bleeding-hearts;
+  }
+}
+.ra-bolt-shield {
+  &:before {
+    content: @ra-var-icon-bolt-shield;
+  }
+}
+.ra-bomb-explosion {
+  &:before {
+    content: @ra-var-icon-bomb-explosion;
+  }
+}
+.ra-bombs {
+  &:before {
+    content: @ra-var-icon-bombs;
+  }
+}
+.ra-bone-bite {
+  &:before {
+    content: @ra-var-icon-bone-bite;
+  }
+}
+.ra-bone-knife {
+  &:before {
+    content: @ra-var-icon-bone-knife;
+  }
+}
+.ra-book {
+  &:before {
+    content: @ra-var-icon-book;
+  }
+}
+.ra-boomerang {
+  &:before {
+    content: @ra-var-icon-boomerang;
+  }
+}
+.ra-boot-stomp {
+  &:before {
+    content: @ra-var-icon-boot-stomp;
+  }
+}
+.ra-bottled-bolt {
+  &:before {
+    content: @ra-var-icon-bottled-bolt;
+  }
+}
+.ra-bottle-vapors {
+  &:before {
+    content: @ra-var-icon-bottle-vapors;
+  }
+}
+.ra-bottom-right {
+  &:before {
+    content: @ra-var-icon-bottom-right;
+  }
+}
+.ra-bowie-knife {
+  &:before {
+    content: @ra-var-icon-bowie-knife;
+  }
+}
+.ra-bowling-pin {
+  &:before {
+    content: @ra-var-icon-bowling-pin;
+  }
+}
+.ra-brain-freeze {
+  &:before {
+    content: @ra-var-icon-brain-freeze;
+  }
+}
+.ra-brandy-bottle {
+  &:before {
+    content: @ra-var-icon-brandy-bottle;
+  }
+}
+.ra-bridge {
+  &:before {
+    content: @ra-var-icon-bridge;
+  }
+}
+.ra-broadhead-arrow {
+  &:before {
+    content: @ra-var-icon-broadhead-arrow;
+  }
+}
+.ra-broadsword {
+  &:before {
+    content: @ra-var-icon-broadsword;
+  }
+}
+.ra-broken-bone {
+  &:before {
+    content: @ra-var-icon-broken-bone;
+  }
+}
+.ra-broken-bottle {
+  &:before {
+    content: @ra-var-icon-broken-bottle;
+  }
+}
+.ra-broken-heart {
+  &:before {
+    content: @ra-var-icon-broken-heart;
+  }
+}
+.ra-broken-shield {
+  &:before {
+    content: @ra-var-icon-broken-shield;
+  }
+}
+.ra-broken-skull {
+  &:before {
+    content: @ra-var-icon-broken-skull;
+  }
+}
+.ra-bubbling-potion {
+  &:before {
+    content: @ra-var-icon-bubbling-potion;
+  }
+}
+.ra-bullets {
+  &:before {
+    content: @ra-var-icon-bullets;
+  }
+}
+.ra-burning-book {
+  &:before {
+    content: @ra-var-icon-burning-book;
+  }
+}
+.ra-burning-embers {
+  &:before {
+    content: @ra-var-icon-burning-embers;
+  }
+}
+.ra-burning-eye {
+  &:before {
+    content: @ra-var-icon-burning-eye;
+  }
+}
+.ra-burning-meteor {
+  &:before {
+    content: @ra-var-icon-burning-meteor;
+  }
+}
+.ra-burst-blob {
+  &:before {
+    content: @ra-var-icon-burst-blob;
+  }
+}
+.ra-butterfly {
+  &:before {
+    content: @ra-var-icon-butterfly;
+  }
+}
+.ra-campfire {
+  &:before {
+    content: @ra-var-icon-campfire;
+  }
+}
+.ra-cancel {
+  &:before {
+    content: @ra-var-icon-cancel;
+  }
+}
+.ra-cancer {
+  &:before {
+    content: @ra-var-icon-cancer;
+  }
+}
+.ra-candle {
+  &:before {
+    content: @ra-var-icon-candle;
+  }
+}
+.ra-candle-fire {
+  &:before {
+    content: @ra-var-icon-candle-fire;
+  }
+}
+.ra-cannon-shot {
+  &:before {
+    content: @ra-var-icon-cannon-shot;
+  }
+}
+.ra-capitol {
+  &:before {
+    content: @ra-var-icon-capitol;
+  }
+}
+.ra-capricorn {
+  &:before {
+    content: @ra-var-icon-capricorn;
+  }
+}
+.ra-carrot {
+  &:before {
+    content: @ra-var-icon-carrot;
+  }
+}
+.ra-castle-emblem {
+  &:before {
+    content: @ra-var-icon-castle-emblem;
+  }
+}
+.ra-castle-flag {
+  &:before {
+    content: @ra-var-icon-castle-flag;
+  }
+}
+.ra-cat {
+  &:before {
+    content: @ra-var-icon-cat;
+  }
+}
+.ra-chain {
+  &:before {
+    content: @ra-var-icon-chain;
+  }
+}
+.ra-cheese {
+  &:before {
+    content: @ra-var-icon-cheese;
+  }
+}
+.ra-chemical-arrow {
+  &:before {
+    content: @ra-var-icon-chemical-arrow;
+  }
+}
+.ra-chessboard {
+  &:before {
+    content: @ra-var-icon-chessboard;
+  }
+}
+.ra-chicken-leg {
+  &:before {
+    content: @ra-var-icon-chicken-leg;
+  }
+}
+.ra-circle-of-circles {
+  &:before {
+    content: @ra-var-icon-circle-of-circles;
+  }
+}
+.ra-circular-saw {
+  &:before {
+    content: @ra-var-icon-circular-saw;
+  }
+}
+.ra-circular-shield {
+  &:before {
+    content: @ra-var-icon-circular-shield;
+  }
+}
+.ra-cloak-and-dagger {
+  &:before {
+    content: @ra-var-icon-cloak-and-dagger;
+  }
+}
+.ra-clockwork {
+  &:before {
+    content: @ra-var-icon-clockwork;
+  }
+}
+.ra-clover {
+  &:before {
+    content: @ra-var-icon-clover;
+  }
+}
+.ra-clovers {
+  &:before {
+    content: @ra-var-icon-clovers;
+  }
+}
+.ra-clovers-card {
+  &:before {
+    content: @ra-var-icon-clovers-card;
+  }
+}
+.ra-cluster-bomb {
+  &:before {
+    content: @ra-var-icon-cluster-bomb;
+  }
+}
+.ra-coffee-mug {
+  &:before {
+    content: @ra-var-icon-coffee-mug;
+  }
+}
+.ra-cog {
+  &:before {
+    content: @ra-var-icon-cog;
+  }
+}
+.ra-cog-wheel {
+  &:before {
+    content: @ra-var-icon-cog-wheel;
+  }
+}
+.ra-cold-heart {
+  &:before {
+    content: @ra-var-icon-cold-heart;
+  }
+}
+.ra-compass {
+  &:before {
+    content: @ra-var-icon-compass;
+  }
+}
+.ra-corked-tube {
+  &:before {
+    content: @ra-var-icon-corked-tube;
+  }
+}
+.ra-crab-claw {
+  &:before {
+    content: @ra-var-icon-crab-claw;
+  }
+}
+.ra-cracked-helm {
+  &:before {
+    content: @ra-var-icon-cracked-helm;
+  }
+}
+.ra-cracked-shield {
+  &:before {
+    content: @ra-var-icon-cracked-shield;
+  }
+}
+.ra-croc-sword {
+  &:before {
+    content: @ra-var-icon-croc-sword;
+  }
+}
+.ra-crossbow {
+  &:before {
+    content: @ra-var-icon-crossbow;
+  }
+}
+.ra-crossed-axes {
+  &:before {
+    content: @ra-var-icon-crossed-axes;
+  }
+}
+.ra-crossed-bones {
+  &:before {
+    content: @ra-var-icon-crossed-bones;
+  }
+}
+.ra-crossed-pistols {
+  &:before {
+    content: @ra-var-icon-crossed-pistols;
+  }
+}
+.ra-crossed-sabres {
+  &:before {
+    content: @ra-var-icon-crossed-sabres;
+  }
+}
+.ra-crossed-swords {
+  &:before {
+    content: @ra-var-icon-crossed-swords;
+  }
+}
+.ra-crown {
+  &:before {
+    content: @ra-var-icon-crown;
+  }
+}
+.ra-crowned-heart {
+  &:before {
+    content: @ra-var-icon-crowned-heart;
+  }
+}
+.ra-crown-of-thorns {
+  &:before {
+    content: @ra-var-icon-crown-of-thorns;
+  }
+}
+.ra-crush {
+  &:before {
+    content: @ra-var-icon-crush;
+  }
+}
+.ra-crystal-ball {
+  &:before {
+    content: @ra-var-icon-crystal-ball;
+  }
+}
+.ra-crystal-cluster {
+  &:before {
+    content: @ra-var-icon-crystal-cluster;
+  }
+}
+.ra-crystals {
+  &:before {
+    content: @ra-var-icon-crystals;
+  }
+}
+.ra-crystal-wand {
+  &:before {
+    content: @ra-var-icon-crystal-wand;
+  }
+}
+.ra-cubes {
+  &:before {
+    content: @ra-var-icon-cubes;
+  }
+}
+.ra-cut-palm {
+  &:before {
+    content: @ra-var-icon-cut-palm;
+  }
+}
+.ra-cycle {
+  &:before {
+    content: @ra-var-icon-cycle;
+  }
+}
+.ra-d6 {
+  &:before {
+    content: @ra-var-icon-d6;
+    top: .05em;
+    position: relative;
+  }
+}
+.ra-daggers {
+  &:before {
+    content: @ra-var-icon-daggers;
+  }
+}
+.ra-daisy {
+  &:before {
+    content: @ra-var-icon-daisy;
+  }
+}
+.ra-dead-tree {
+  &:before {
+    content: @ra-var-icon-dead-tree;
+  }
+}
+.ra-death-skull {
+  &:before {
+    content: @ra-var-icon-death-skull;
+  }
+}
+.ra-decapitation {
+  &:before {
+    content: @ra-var-icon-decapitation;
+  }
+}
+.ra-defibrillate {
+  &:before {
+    content: @ra-var-icon-defibrillate;
+  }
+}
+.ra-demolish {
+  &:before {
+    content: @ra-var-icon-demolish;
+  }
+}
+.ra-dervish-swords {
+  &:before {
+    content: @ra-var-icon-dervish-swords;
+  }
+}
+.ra-desert-skull {
+  &:before {
+    content: @ra-var-icon-desert-skull;
+  }
+}
+.ra-diamond {
+  &:before {
+    content: @ra-var-icon-diamond;
+  }
+}
+.ra-diamonds {
+  &:before {
+    content: @ra-var-icon-diamonds;
+  }
+}
+.ra-diamonds-card {
+  &:before {
+    content: @ra-var-icon-diamonds-card;
+  }
+}
+.ra-dice-five {
+  &:before {
+    content: @ra-var-icon-dice-five;
+  }
+}
+.ra-dice-four {
+  &:before {
+    content: @ra-var-icon-dice-four;
+  }
+}
+.ra-dice-one {
+  &:before {
+    content: @ra-var-icon-dice-one;
+  }
+}
+.ra-dice-six {
+  &:before {
+    content: @ra-var-icon-dice-six;
+  }
+}
+.ra-dice-three {
+  &:before {
+    content: @ra-var-icon-dice-three;
+  }
+}
+.ra-dice-two {
+  &:before {
+    content: @ra-var-icon-dice-two;
+  }
+}
+.ra-dinosaur {
+  &:before {
+    content: @ra-var-icon-dinosaur;
+  }
+}
+.ra-divert {
+  &:before {
+    content: @ra-var-icon-divert;
+  }
+}
+.ra-diving-dagger {
+  &:before {
+    content: @ra-var-icon-diving-dagger;
+  }
+}
+.ra-doubled {
+  &:before {
+    content: @ra-var-icon-doubled;
+  }
+}
+.ra-double-team {
+  &:before {
+    content: @ra-var-icon-double-team;
+  }
+}
+.ra-dragon {
+  &:before {
+    content: @ra-var-icon-dragon;
+  }
+}
+.ra-dragon-breath {
+  &:before {
+    content: @ra-var-icon-dragon-breath;
+  }
+}
+.ra-dragonfly {
+  &:before {
+    content: @ra-var-icon-dragonfly;
+  }
+}
+.ra-dragon-wing {
+  &:before {
+    content: @ra-var-icon-dragon-wing;
+  }
+}
+.ra-drill {
+  &:before {
+    content: @ra-var-icon-drill;
+  }
+}
+.ra-dripping-blade {
+  &:before {
+    content: @ra-var-icon-dripping-blade;
+  }
+}
+.ra-dripping-knife {
+  &:before {
+    content: @ra-var-icon-dripping-knife;
+  }
+}
+.ra-dripping-sword {
+  &:before {
+    content: @ra-var-icon-dripping-sword;
+  }
+}
+.ra-droplet {
+  &:before {
+    content: @ra-var-icon-droplet;
+  }
+}
+.ra-droplets {
+  &:before {
+    content: @ra-var-icon-droplets;
+  }
+}
+.ra-droplet-splash {
+  &:before {
+    content: @ra-var-icon-droplet-splash;
+  }
+}
+.ra-duel {
+  &:before {
+    content: @ra-var-icon-duel;
+  }
+}
+.ra-egg {
+  &:before {
+    content: @ra-var-icon-egg;
+  }
+}
+.ra-eggplant {
+  &:before {
+    content: @ra-var-icon-eggplant;
+  }
+}
+.ra-egg-pod {
+  &:before {
+    content: @ra-var-icon-egg-pod;
+  }
+}
+.ra-emerald {
+  &:before {
+    content: @ra-var-icon-emerald;
+  }
+}
+.ra-energise {
+  &:before {
+    content: @ra-var-icon-energise;
+  }
+}
+.ra-explosion {
+  &:before {
+    content: @ra-var-icon-explosion;
+  }
+}
+.ra-explosive-materials {
+  &:before {
+    content: @ra-var-icon-explosive-materials;
+  }
+}
+.ra-eyeball {
+  &:before {
+    content: @ra-var-icon-eyeball;
+  }
+}
+.ra-eye-monster {
+  &:before {
+    content: @ra-var-icon-eye-monster;
+  }
+}
+.ra-eye-shield {
+  &:before {
+    content: @ra-var-icon-eye-shield;
+  }
+}
+.ra-fairy {
+  &:before {
+    content: @ra-var-icon-fairy;
+  }
+}
+.ra-fairy-wand {
+  &:before {
+    content: @ra-var-icon-fairy-wand;
+  }
+}
+.ra-fall-down {
+  &:before {
+    content: @ra-var-icon-fall-down;
+  }
+}
+.ra-falling {
+  &:before {
+    content: @ra-var-icon-falling;
+  }
+}
+.ra-fast-ship {
+  &:before {
+    content: @ra-var-icon-fast-ship;
+  }
+}
+.ra-feathered-wing {
+  &:before {
+    content: @ra-var-icon-feathered-wing;
+  }
+}
+.ra-feather-wing {
+  &:before {
+    content: @ra-var-icon-feather-wing;
+  }
+}
+.ra-fedora {
+  &:before {
+    content: @ra-var-icon-fedora;
+  }
+}
+.ra-fire {
+  &:before {
+    content: @ra-var-icon-fire;
+  }
+}
+.ra-fireball-sword {
+  &:before {
+    content: @ra-var-icon-fireball-sword;
+  }
+}
+.ra-fire-bomb {
+  &:before {
+    content: @ra-var-icon-fire-bomb;
+  }
+}
+.ra-fire-breath {
+  &:before {
+    content: @ra-var-icon-fire-breath;
+  }
+}
+.ra-fire-ring {
+  &:before {
+    content: @ra-var-icon-fire-ring;
+  }
+}
+.ra-fire-shield {
+  &:before {
+    content: @ra-var-icon-fire-shield;
+  }
+}
+.ra-fire-symbol {
+  &:before {
+    content: @ra-var-icon-fire-symbol;
+  }
+}
+.ra-fish {
+  &:before {
+    content: @ra-var-icon-fish;
+  }
+}
+.ra-fizzing-flask {
+  &:before {
+    content: @ra-var-icon-fizzing-flask;
+  }
+}
+.ra-flame-symbol {
+  &:before {
+    content: @ra-var-icon-flame-symbol;
+  }
+}
+.ra-flaming-arrow {
+  &:before {
+    content: @ra-var-icon-flaming-arrow;
+  }
+}
+.ra-flaming-claw {
+  &:before {
+    content: @ra-var-icon-flaming-claw;
+  }
+}
+.ra-flaming-trident {
+  &:before {
+    content: @ra-var-icon-flaming-trident;
+  }
+}
+.ra-flask {
+  &:before {
+    content: @ra-var-icon-flask;
+  }
+}
+.ra-flat-hammer {
+  &:before {
+    content: @ra-var-icon-flat-hammer;
+  }
+}
+.ra-flower {
+  &:before {
+    content: @ra-var-icon-flower;
+  }
+}
+.ra-flowers {
+  &:before {
+    content: @ra-var-icon-flowers;
+  }
+}
+.ra-fluffy-swirl {
+  &:before {
+    content: @ra-var-icon-fluffy-swirl;
+  }
+}
+.ra-focused-lightning {
+  &:before {
+    content: @ra-var-icon-focused-lightning;
+  }
+}
+.ra-food-chain {
+  &:before {
+    content: @ra-var-icon-food-chain;
+  }
+}
+.ra-footprint {
+  &:before {
+    content: @ra-var-icon-footprint;
+  }
+}
+.ra-forging {
+  &:before {
+    content: @ra-var-icon-forging;
+  }
+}
+.ra-forward {
+  &:before {
+    content: @ra-var-icon-forward;
+  }
+}
+.ra-fox {
+  &:before {
+    content: @ra-var-icon-fox;
+  }
+}
+.ra-frost-emblem {
+  &:before {
+    content: @ra-var-icon-frost-emblem;
+  }
+}
+.ra-frostfire {
+  &:before {
+    content: @ra-var-icon-frostfire;
+  }
+}
+.ra-frozen-arrow {
+  &:before {
+    content: @ra-var-icon-frozen-arrow;
+  }
+}
+.ra-gamepad-cross {
+  &:before {
+    content: @ra-var-icon-gamepad-cross;
+  }
+}
+.ra-gamers-plane {
+  &:before {
+    content: @ra-var-icon-gamers-plane;
+  }
+}
+.ra-gavel {
+  &:before {
+    content: @ra-var-icon-gavel;
+  }
+}
+.ra-gear-hammer {
+  &:before {
+    content: @ra-var-icon-gear-hammer;
+  }
+}
+.ra-gear-heart {
+  &:before {
+    content: @ra-var-icon-gear-heart;
+  }
+}
+.ra-gears {
+  &:before {
+    content: @ra-var-icon-gears;
+  }
+}
+.ra-gecko {
+  &:before {
+    content: @ra-var-icon-gecko;
+  }
+}
+.ra-gem {
+  &:before {
+    content: @ra-var-icon-gem;
+  }
+}
+.ra-gemini {
+  &:before {
+    content: @ra-var-icon-gemini;
+  }
+}
+.ra-gem-pendant {
+  &:before {
+    content: @ra-var-icon-gem-pendant;
+  }
+}
+.ra-glass-heart {
+  &:before {
+    content: @ra-var-icon-glass-heart;
+  }
+}
+.ra-gloop {
+  &:before {
+    content: @ra-var-icon-gloop;
+  }
+}
+.ra-gold-bar {
+  &:before {
+    content: @ra-var-icon-gold-bar;
+  }
+}
+.ra-grappling-hook {
+  &:before {
+    content: @ra-var-icon-grappling-hook;
+  }
+}
+.ra-grass {
+  &:before {
+    content: @ra-var-icon-grass;
+  }
+}
+.ra-grass-patch {
+  &:before {
+    content: @ra-var-icon-grass-patch;
+  }
+}
+.ra-grenade {
+  &:before {
+    content: @ra-var-icon-grenade;
+  }
+}
+.ra-groundbreaker {
+  &:before {
+    content: @ra-var-icon-groundbreaker;
+  }
+}
+.ra-guarded-tower {
+  &:before {
+    content: @ra-var-icon-guarded-tower;
+  }
+}
+.ra-guillotine {
+  &:before {
+    content: @ra-var-icon-guillotine;
+  }
+}
+.ra-halberd {
+  &:before {
+    content: @ra-var-icon-halberd;
+  }
+}
+.ra-hammer {
+  &:before {
+    content: @ra-var-icon-hammer;
+  }
+}
+.ra-hammer-drop {
+  &:before {
+    content: @ra-var-icon-hammer-drop;
+  }
+}
+.ra-hand {
+  &:before {
+    content: @ra-var-icon-hand;
+  }
+}
+.ra-hand-emblem {
+  &:before {
+    content: @ra-var-icon-hand-emblem;
+  }
+}
+.ra-hand-saw {
+  &:before {
+    content: @ra-var-icon-hand-saw;
+  }
+}
+.ra-harpoon-trident {
+  &:before {
+    content: @ra-var-icon-harpoon-trident;
+  }
+}
+.ra-health {
+  &:before {
+    content: @ra-var-icon-health;
+  }
+}
+.ra-health-decrease {
+  &:before {
+    content: @ra-var-icon-health-decrease;
+  }
+}
+.ra-health-increase {
+  &:before {
+    content: @ra-var-icon-health-increase;
+  }
+}
+.ra-heart-bottle {
+  &:before {
+    content: @ra-var-icon-heart-bottle;
+  }
+}
+.ra-heartburn {
+  &:before {
+    content: @ra-var-icon-heartburn;
+  }
+}
+.ra-hearts {
+  &:before {
+    content: @ra-var-icon-hearts;
+  }
+}
+.ra-hearts-card {
+  &:before {
+    content: @ra-var-icon-hearts-card;
+  }
+}
+.ra-heart-tower {
+  &:before {
+    content: @ra-var-icon-heart-tower;
+  }
+}
+.ra-heat-haze {
+  &:before {
+    content: @ra-var-icon-heat-haze;
+  }
+}
+.ra-heavy-fall {
+  &:before {
+    content: @ra-var-icon-heavy-fall;
+  }
+}
+.ra-heavy-shield {
+  &:before {
+    content: @ra-var-icon-heavy-shield;
+  }
+}
+.ra-helmet {
+  &:before {
+    content: @ra-var-icon-helmet;
+  }
+}
+.ra-help {
+  &:before {
+    content: @ra-var-icon-help;
+  }
+}
+.ra-hive-emblem {
+  &:before {
+    content: @ra-var-icon-hive-emblem;
+  }
+}
+.ra-hole-ladder {
+  &:before {
+    content: @ra-var-icon-hole-ladder;
+  }
+}
+.ra-honeycomb {
+  &:before {
+    content: @ra-var-icon-honeycomb;
+  }
+}
+.ra-hood {
+  &:before {
+    content: @ra-var-icon-hood;
+  }
+}
+.ra-horn-call {
+  &:before {
+    content: @ra-var-icon-horn-call;
+  }
+}
+.ra-horns {
+  &:before {
+    content: @ra-var-icon-horns;
+  }
+}
+.ra-horseshoe {
+  &:before {
+    content: @ra-var-icon-horseshoe;
+  }
+}
+.ra-hospital-cross {
+  &:before {
+    content: @ra-var-icon-hospital-cross;
+  }
+}
+.ra-hot-surface {
+  &:before {
+    content: @ra-var-icon-hot-surface;
+  }
+}
+.ra-hourglass {
+  &:before {
+    content: @ra-var-icon-hourglass;
+  }
+}
+.ra-hydra {
+  &:before {
+    content: @ra-var-icon-hydra;
+  }
+}
+.ra-hydra-shot {
+  &:before {
+    content: @ra-var-icon-hydra-shot;
+  }
+}
+.ra-ice-cube {
+  &:before {
+    content: @ra-var-icon-ice-cube;
+  }
+}
+.ra-implosion {
+  &:before {
+    content: @ra-var-icon-implosion;
+  }
+}
+.ra-incense {
+  &:before {
+    content: @ra-var-icon-incense;
+  }
+}
+.ra-insect-jaws {
+  &:before {
+    content: @ra-var-icon-insect-jaws;
+  }
+}
+.ra-interdiction {
+  &:before {
+    content: @ra-var-icon-interdiction;
+  }
+}
+.ra-jetpack {
+  &:before {
+    content: @ra-var-icon-jetpack;
+  }
+}
+.ra-jigsaw-piece {
+  &:before {
+    content: @ra-var-icon-jigsaw-piece;
+  }
+}
+.ra-kaleidoscope {
+  &:before {
+    content: @ra-var-icon-kaleidoscope;
+  }
+}
+.ra-kettlebell {
+  &:before {
+    content: @ra-var-icon-kettlebell;
+  }
+}
+.ra-key {
+  &:before {
+    content: @ra-var-icon-key;
+  }
+}
+.ra-key-basic {
+  &:before {
+    content: @ra-var-icon-key-basic;
+  }
+}
+.ra-kitchen-knives {
+  &:before {
+    content: @ra-var-icon-kitchen-knives;
+  }
+}
+.ra-knife {
+  &:before {
+    content: @ra-var-icon-knife;
+  }
+}
+.ra-knife-fork {
+  &:before {
+    content: @ra-var-icon-knife-fork;
+  }
+}
+.ra-knight-helmet {
+  &:before {
+    content: @ra-var-icon-knight-helmet;
+  }
+}
+.ra-kunai {
+  &:before {
+    content: @ra-var-icon-kunai;
+  }
+}
+.ra-lantern-flame {
+  &:before {
+    content: @ra-var-icon-lantern-flame;
+  }
+}
+.ra-large-hammer {
+  &:before {
+    content: @ra-var-icon-large-hammer;
+  }
+}
+.ra-laser-blast {
+  &:before {
+    content: @ra-var-icon-laser-blast;
+  }
+}
+.ra-laser-site {
+  &:before {
+    content: @ra-var-icon-laser-site;
+  }
+}
+.ra-lava {
+  &:before {
+    content: @ra-var-icon-lava;
+  }
+}
+.ra-leaf {
+  &:before {
+    content: @ra-var-icon-leaf;
+  }
+}
+.ra-leo {
+  &:before {
+    content: @ra-var-icon-leo;
+  }
+}
+.ra-level-four {
+  &:before {
+    content: @ra-var-icon-level-four;
+  }
+}
+.ra-level-four-advanced {
+  &:before {
+    content: @ra-var-icon-level-four-advanced;
+  }
+}
+.ra-level-three {
+  &:before {
+    content: @ra-var-icon-level-three;
+  }
+}
+.ra-level-three-advanced {
+  &:before {
+    content: @ra-var-icon-level-three-advanced;
+  }
+}
+.ra-level-two {
+  &:before {
+    content: @ra-var-icon-level-two;
+  }
+}
+.ra-level-two-advanced {
+  &:before {
+    content: @ra-var-icon-level-two-advanced;
+  }
+}
+.ra-lever {
+  &:before {
+    content: @ra-var-icon-lever;
+  }
+}
+.ra-libra {
+  &:before {
+    content: @ra-var-icon-libra;
+  }
+}
+.ra-light-bulb {
+  &:before {
+    content: @ra-var-icon-light-bulb;
+  }
+}
+.ra-lighthouse {
+  &:before {
+    content: @ra-var-icon-lighthouse;
+  }
+}
+.ra-lightning {
+  &:before {
+    content: @ra-var-icon-lightning;
+  }
+}
+.ra-lightning-bolt {
+  &:before {
+    content: @ra-var-icon-lightning-bolt;
+  }
+}
+.ra-lightning-storm {
+  &:before {
+    content: @ra-var-icon-lightning-storm;
+  }
+}
+.ra-lightning-sword {
+  &:before {
+    content: @ra-var-icon-lightning-sword;
+  }
+}
+.ra-lightning-trio {
+  &:before {
+    content: @ra-var-icon-lightning-trio;
+  }
+}
+.ra-lion {
+  &:before {
+    content: @ra-var-icon-lion;
+  }
+}
+.ra-lit-candelabra {
+  &:before {
+    content: @ra-var-icon-lit-candelabra;
+  }
+}
+.ra-load {
+  &:before {
+    content: @ra-var-icon-load;
+  }
+}
+.ra-locked-fortress {
+  &:before {
+    content: @ra-var-icon-locked-fortress;
+  }
+}
+.ra-love-howl {
+  &:before {
+    content: @ra-var-icon-love-howl;
+  }
+}
+.ra-maggot {
+  &:before {
+    content: @ra-var-icon-maggot;
+  }
+}
+.ra-magnet {
+  &:before {
+    content: @ra-var-icon-magnet;
+  }
+}
+.ra-mass-driver {
+  &:before {
+    content: @ra-var-icon-mass-driver;
+  }
+}
+.ra-match {
+  &:before {
+    content: @ra-var-icon-match;
+  }
+}
+.ra-meat {
+  &:before {
+    content: @ra-var-icon-meat;
+  }
+}
+.ra-meat-hook {
+  &:before {
+    content: @ra-var-icon-meat-hook;
+  }
+}
+.ra-medical-pack {
+  &:before {
+    content: @ra-var-icon-medical-pack;
+  }
+}
+.ra-metal-gate {
+  &:before {
+    content: @ra-var-icon-metal-gate;
+  }
+}
+.ra-microphone {
+  &:before {
+    content: @ra-var-icon-microphone;
+  }
+}
+.ra-mine-wagon {
+  &:before {
+    content: @ra-var-icon-mine-wagon;
+  }
+}
+.ra-mining-diamonds {
+  &:before {
+    content: @ra-var-icon-mining-diamonds;
+  }
+}
+.ra-mirror {
+  &:before {
+    content: @ra-var-icon-mirror;
+  }
+}
+.ra-monster-skull {
+  &:before {
+    content: @ra-var-icon-monster-skull;
+  }
+}
+.ra-montains {
+  &:before {
+    content: @ra-var-icon-montains;
+  }
+}
+.ra-moon-sun {
+  &:before {
+    content: @ra-var-icon-moon-sun;
+  }
+}
+.ra-mp5 {
+  &:before {
+    content: @ra-var-icon-mp5;
+  }
+}
+.ra-muscle-fat {
+  &:before {
+    content: @ra-var-icon-muscle-fat;
+  }
+}
+.ra-muscle-up {
+  &:before {
+    content: @ra-var-icon-muscle-up;
+  }
+}
+.ra-musket {
+  &:before {
+    content: @ra-var-icon-musket;
+  }
+}
+.ra-nails {
+  &:before {
+    content: @ra-var-icon-nails;
+  }
+}
+.ra-nodular {
+  &:before {
+    content: @ra-var-icon-nodular;
+  }
+}
+.ra-noose {
+  &:before {
+    content: @ra-var-icon-noose;
+  }
+}
+.ra-nuclear {
+  &:before {
+    content: @ra-var-icon-nuclear;
+  }
+}
+.ra-ocarina {
+  &:before {
+    content: @ra-var-icon-ocarina;
+  }
+}
+.ra-ocean-emblem {
+  &:before {
+    content: @ra-var-icon-ocean-emblem;
+  }
+}
+.ra-octopus {
+  &:before {
+    content: @ra-var-icon-octopus;
+  }
+}
+.ra-omega {
+  &:before {
+    content: @ra-var-icon-omega;
+  }
+}
+.ra-on-target {
+  &:before {
+    content: @ra-var-icon-on-target;
+  }
+}
+.ra-ophiuchus {
+  &:before {
+    content: @ra-var-icon-ophiuchus;
+  }
+}
+.ra-overhead {
+  &:before {
+    content: @ra-var-icon-overhead;
+  }
+}
+.ra-overmind {
+  &:before {
+    content: @ra-var-icon-overmind;
+  }
+}
+.ra-palm-tree {
+  &:before {
+    content: @ra-var-icon-palm-tree;
+  }
+}
+.ra-pawn {
+  &:before {
+    content: @ra-var-icon-pawn;
+  }
+}
+.ra-pawprint {
+  &:before {
+    content: @ra-var-icon-pawprint;
+  }
+}
+.ra-perspective-dice-five {
+  &:before {
+    content: @ra-var-icon-perspective-dice-five;
+  }
+}
+.ra-perspective-dice-four {
+  &:before {
+    content: @ra-var-icon-perspective-dice-four;
+  }
+}
+.ra-perspective-dice-one {
+  &:before {
+    content: @ra-var-icon-perspective-dice-one;
+  }
+}
+.ra-perspective-dice-random {
+  &:before {
+    content: @ra-var-icon-perspective-dice-random;
+  }
+}
+.ra-perspective-dice-six {
+  &:before {
+    content: @ra-var-icon-perspective-dice-six;
+  }
+}
+.ra-perspective-dice-six-two {
+  &:before {
+    content: @ra-var-icon-perspective-dice-six-two;
+  }
+}
+.ra-perspective-dice-three {
+  &:before {
+    content: @ra-var-icon-perspective-dice-three;
+  }
+}
+.ra-pill {
+  &:before {
+    content: @ra-var-icon-pill;
+  }
+}
+.ra-pills {
+  &:before {
+    content: @ra-var-icon-pills;
+  }
+}
+.ra-pine-tree {
+  &:before {
+    content: @ra-var-icon-pine-tree;
+  }
+}
+.ra-ping-pong {
+  &:before {
+    content: @ra-var-icon-ping-pong;
+  }
+}
+.ra-pisces {
+  &:before {
+    content: @ra-var-icon-pisces;
+  }
+}
+.ra-plain-dagger {
+  &:before {
+    content: @ra-var-icon-plain-dagger;
+  }
+}
+.ra-player {
+  &:before {
+    content: @ra-var-icon-player;
+  }
+}
+.ra-player-despair {
+  &:before {
+    content: @ra-var-icon-player-despair;
+  }
+}
+.ra-player-dodge {
+  &:before {
+    content: @ra-var-icon-player-dodge;
+  }
+}
+.ra-player-king {
+  &:before {
+    content: @ra-var-icon-player-king;
+  }
+}
+.ra-player-lift {
+  &:before {
+    content: @ra-var-icon-player-lift;
+  }
+}
+.ra-player-pain {
+  &:before {
+    content: @ra-var-icon-player-pain;
+  }
+}
+.ra-player-pyromaniac {
+  &:before {
+    content: @ra-var-icon-player-pyromaniac;
+  }
+}
+.ra-player-shot {
+  &:before {
+    content: @ra-var-icon-player-shot;
+  }
+}
+.ra-player-teleport {
+  &:before {
+    content: @ra-var-icon-player-teleport;
+  }
+}
+.ra-player-thunder-struck {
+  &:before {
+    content: @ra-var-icon-player-thunder-struck;
+  }
+}
+.ra-podium {
+  &:before {
+    content: @ra-var-icon-podium;
+  }
+}
+.ra-poison-cloud {
+  &:before {
+    content: @ra-var-icon-poison-cloud;
+  }
+}
+.ra-potion {
+  &:before {
+    content: @ra-var-icon-potion;
+  }
+}
+.ra-pyramids {
+  &:before {
+    content: @ra-var-icon-pyramids;
+  }
+}
+.ra-queen-crown {
+  &:before {
+    content: @ra-var-icon-queen-crown;
+  }
+}
+.ra-quill-ink {
+  &:before {
+    content: @ra-var-icon-quill-ink;
+  }
+}
+.ra-rabbit {
+  &:before {
+    content: @ra-var-icon-rabbit;
+  }
+}
+.ra-radar-dish {
+  &:before {
+    content: @ra-var-icon-radar-dish;
+  }
+}
+.ra-radial-balance {
+  &:before {
+    content: @ra-var-icon-radial-balance;
+  }
+}
+.ra-radioactive {
+  &:before {
+    content: @ra-var-icon-radioactive;
+  }
+}
+.ra-raven {
+  &:before {
+    content: @ra-var-icon-raven;
+  }
+}
+.ra-reactor {
+  &:before {
+    content: @ra-var-icon-reactor;
+  }
+}
+.ra-recycle {
+  &:before {
+    content: @ra-var-icon-recycle;
+  }
+}
+.ra-regeneration {
+  &:before {
+    content: @ra-var-icon-regeneration;
+  }
+}
+.ra-relic-blade {
+  &:before {
+    content: @ra-var-icon-relic-blade;
+  }
+}
+.ra-repair {
+  &:before {
+    content: @ra-var-icon-repair;
+  }
+}
+.ra-reverse {
+  &:before {
+    content: @ra-var-icon-reverse;
+  }
+}
+.ra-revolver {
+  &:before {
+    content: @ra-var-icon-revolver;
+  }
+}
+.ra-rifle {
+  &:before {
+    content: @ra-var-icon-rifle;
+  }
+}
+.ra-ringing-bell {
+  &:before {
+    content: @ra-var-icon-ringing-bell;
+  }
+}
+.ra-roast-chicken {
+  &:before {
+    content: @ra-var-icon-roast-chicken;
+  }
+}
+.ra-robot-arm {
+  &:before {
+    content: @ra-var-icon-robot-arm;
+  }
+}
+.ra-round-bottom-flask {
+  &:before {
+    content: @ra-var-icon-round-bottom-flask;
+  }
+}
+.ra-round-shield {
+  &:before {
+    content: @ra-var-icon-round-shield;
+  }
+}
+.ra-rss {
+  &:before {
+    content: @ra-var-icon-rss;
+  }
+}
+.ra-rune-stone {
+  &:before {
+    content: @ra-var-icon-rune-stone;
+  }
+}
+.ra-sagittarius {
+  &:before {
+    content: @ra-var-icon-sagittarius;
+  }
+}
+.ra-sapphire {
+  &:before {
+    content: @ra-var-icon-sapphire;
+  }
+}
+.ra-satellite {
+  &:before {
+    content: @ra-var-icon-satellite;
+  }
+}
+.ra-save {
+  &:before {
+    content: @ra-var-icon-save;
+  }
+}
+.ra-scorpio {
+  &:before {
+    content: @ra-var-icon-scorpio;
+  }
+}
+.ra-scroll-unfurled {
+  &:before {
+    content: @ra-var-icon-scroll-unfurled;
+  }
+}
+.ra-scythe {
+  &:before {
+    content: @ra-var-icon-scythe;
+  }
+}
+.ra-seagull {
+  &:before {
+    content: @ra-var-icon-seagull;
+  }
+}
+.ra-sea-serpent {
+  &:before {
+    content: @ra-var-icon-sea-serpent;
+  }
+}
+.ra-shark {
+  &:before {
+    content: @ra-var-icon-shark;
+  }
+}
+.ra-sheep {
+  &:before {
+    content: @ra-var-icon-sheep;
+  }
+}
+.ra-sheriff {
+  &:before {
+    content: @ra-var-icon-sheriff;
+  }
+}
+.ra-shield {
+  &:before {
+    content: @ra-var-icon-shield;
+  }
+}
+.ra-ship-emblem {
+  &:before {
+    content: @ra-var-icon-ship-emblem;
+  }
+}
+.ra-shoe-prints {
+  &:before {
+    content: @ra-var-icon-shoe-prints;
+  }
+}
+.ra-shotgun-shell {
+  &:before {
+    content: @ra-var-icon-shotgun-shell;
+  }
+}
+.ra-shot-through-the-heart {
+  &:before {
+    content: @ra-var-icon-shot-through-the-heart;
+  }
+}
+.ra-shovel {
+  &:before {
+    content: @ra-var-icon-shovel;
+  }
+}
+.ra-shuriken {
+  &:before {
+    content: @ra-var-icon-shuriken;
+  }
+}
+.ra-sickle {
+  &:before {
+    content: @ra-var-icon-sickle;
+  }
+}
+.ra-sideswipe {
+  &:before {
+    content: @ra-var-icon-sideswipe;
+  }
+}
+.ra-site {
+  &:before {
+    content: @ra-var-icon-site;
+  }
+}
+.ra-skull {
+  &:before {
+    content: @ra-var-icon-skull;
+  }
+}
+.ra-skull-trophy {
+  &:before {
+    content: @ra-var-icon-skull-trophy;
+  }
+}
+.ra-slash-ring {
+  &:before {
+    content: @ra-var-icon-slash-ring;
+  }
+}
+.ra-small-fire {
+  &:before {
+    content: @ra-var-icon-small-fire;
+  }
+}
+.ra-snail {
+  &:before {
+    content: @ra-var-icon-snail;
+  }
+}
+.ra-snake {
+  &:before {
+    content: @ra-var-icon-snake;
+  }
+}
+.ra-snorkel {
+  &:before {
+    content: @ra-var-icon-snorkel;
+  }
+}
+.ra-snowflake {
+  &:before {
+    content: @ra-var-icon-snowflake;
+  }
+}
+.ra-soccer-ball {
+  &:before {
+    content: @ra-var-icon-soccer-ball;
+  }
+}
+.ra-spades {
+  &:before {
+    content: @ra-var-icon-spades;
+  }
+}
+.ra-spades-card {
+  &:before {
+    content: @ra-var-icon-spades-card;
+  }
+}
+.ra-spawn-node {
+  &:before {
+    content: @ra-var-icon-spawn-node;
+  }
+}
+.ra-spear-head {
+  &:before {
+    content: @ra-var-icon-spear-head;
+  }
+}
+.ra-speech-bubble {
+  &:before {
+    content: @ra-var-icon-speech-bubble;
+  }
+}
+.ra-speech-bubbles {
+  &:before {
+    content: @ra-var-icon-speech-bubbles;
+  }
+}
+.ra-spider-face {
+  &:before {
+    content: @ra-var-icon-spider-face;
+  }
+}
+.ra-spikeball {
+  &:before {
+    content: @ra-var-icon-spikeball;
+  }
+}
+.ra-spiked-mace {
+  &:before {
+    content: @ra-var-icon-spiked-mace;
+  }
+}
+.ra-spiked-tentacle {
+  &:before {
+    content: @ra-var-icon-spiked-tentacle;
+  }
+}
+.ra-spinning-sword {
+  &:before {
+    content: @ra-var-icon-spinning-sword;
+  }
+}
+.ra-spiral-shell {
+  &:before {
+    content: @ra-var-icon-spiral-shell;
+  }
+}
+.ra-splash {
+  &:before {
+    content: @ra-var-icon-splash;
+  }
+}
+.ra-spray-can {
+  &:before {
+    content: @ra-var-icon-spray-can;
+  }
+}
+.ra-sprout {
+  &:before {
+    content: @ra-var-icon-sprout;
+  }
+}
+.ra-sprout-emblem {
+  &:before {
+    content: @ra-var-icon-sprout-emblem;
+  }
+}
+.ra-stopwatch {
+  &:before {
+    content: @ra-var-icon-stopwatch;
+  }
+}
+.ra-suckered-tentacle {
+  &:before {
+    content: @ra-var-icon-suckered-tentacle;
+  }
+}
+.ra-suits {
+  &:before {
+    content: @ra-var-icon-suits;
+  }
+}
+.ra-sun {
+  &:before {
+    content: @ra-var-icon-sun;
+  }
+}
+.ra-sunbeams {
+  &:before {
+    content: @ra-var-icon-sunbeams;
+  }
+}
+.ra-sun-symbol {
+  &:before {
+    content: @ra-var-icon-sun-symbol;
+  }
+}
+.ra-super-mushroom {
+  &:before {
+    content: @ra-var-icon-super-mushroom;
+  }
+}
+.ra-supersonic-arrow {
+  &:before {
+    content: @ra-var-icon-supersonic-arrow;
+  }
+}
+.ra-surveillance-camera {
+  &:before {
+    content: @ra-var-icon-surveillance-camera;
+  }
+}
+.ra-syringe {
+  &:before {
+    content: @ra-var-icon-syringe;
+  }
+}
+.ra-target-arrows {
+  &:before {
+    content: @ra-var-icon-target-arrows;
+  }
+}
+.ra-targeted {
+  &:before {
+    content: @ra-var-icon-targeted;
+  }
+}
+.ra-target-laser {
+  &:before {
+    content: @ra-var-icon-target-laser;
+  }
+}
+.ra-taurus {
+  &:before {
+    content: @ra-var-icon-taurus;
+  }
+}
+.ra-telescope {
+  &:before {
+    content: @ra-var-icon-telescope;
+  }
+}
+.ra-tentacle {
+  &:before {
+    content: @ra-var-icon-tentacle;
+  }
+}
+.ra-tesla {
+  &:before {
+    content: @ra-var-icon-tesla;
+  }
+}
+.ra-thorn-arrow {
+  &:before {
+    content: @ra-var-icon-thorn-arrow;
+  }
+}
+.ra-thorny-vine {
+  &:before {
+    content: @ra-var-icon-thorny-vine;
+  }
+}
+.ra-three-keys {
+  &:before {
+    content: @ra-var-icon-three-keys;
+  }
+}
+.ra-tic-tac-toe {
+  &:before {
+    content: @ra-var-icon-tic-tac-toe;
+  }
+}
+.ra-toast {
+  &:before {
+    content: @ra-var-icon-toast;
+  }
+}
+.ra-tombstone {
+  &:before {
+    content: @ra-var-icon-tombstone;
+  }
+}
+.ra-tooth {
+  &:before {
+    content: @ra-var-icon-tooth;
+  }
+}
+.ra-torch {
+  &:before {
+    content: @ra-var-icon-torch;
+  }
+}
+.ra-tower {
+  &:before {
+    content: @ra-var-icon-tower;
+  }
+}
+.ra-trail {
+  &:before {
+    content: @ra-var-icon-trail;
+  }
+}
+.ra-trefoil-lily {
+  &:before {
+    content: @ra-var-icon-trefoil-lily;
+  }
+}
+.ra-trident {
+  &:before {
+    content: @ra-var-icon-trident;
+  }
+}
+.ra-triforce {
+  &:before {
+    content: @ra-var-icon-triforce;
+  }
+}
+.ra-trophy {
+  &:before {
+    content: @ra-var-icon-trophy;
+  }
+}
+.ra-turd {
+  &:before {
+    content: @ra-var-icon-turd;
+  }
+}
+.ra-two-dragons {
+  &:before {
+    content: @ra-var-icon-two-dragons;
+  }
+}
+.ra-two-hearts {
+  &:before {
+    content: @ra-var-icon-two-hearts;
+  }
+}
+.ra-uncertainty {
+  &:before {
+    content: @ra-var-icon-uncertainty;
+  }
+}
+.ra-underhand {
+  &:before {
+    content: @ra-var-icon-underhand;
+  }
+}
+.ra-unplugged {
+  &:before {
+    content: @ra-var-icon-unplugged;
+  }
+}
+.ra-vase {
+  &:before {
+    content: @ra-var-icon-vase;
+  }
+}
+.ra-venomous-snake {
+  &:before {
+    content: @ra-var-icon-venomous-snake;
+  }
+}
+.ra-vest {
+  &:before {
+    content: @ra-var-icon-vest;
+  }
+}
+.ra-vial {
+  &:before {
+    content: @ra-var-icon-vial;
+  }
+}
+.ra-vine-whip {
+  &:before {
+    content: @ra-var-icon-vine-whip;
+  }
+}
+.ra-virgo {
+  &:before {
+    content: @ra-var-icon-virgo;
+  }
+}
+.ra-water-drop {
+  &:before {
+    content: @ra-var-icon-water-drop;
+  }
+}
+.ra-wifi {
+  &:before {
+    content: @ra-var-icon-wifi;
+  }
+}
+.ra-wireless-signal {
+  &:before {
+    content: @ra-var-icon-wireless-signal;
+  }
+}
+.ra-wolf-head {
+  &:before {
+    content: @ra-var-icon-wolf-head;
+  }
+}
+.ra-wolf-howl {
+  &:before {
+    content: @ra-var-icon-wolf-howl;
+  }
+}
+.ra-wooden-sign {
+  &:before {
+    content: @ra-var-icon-wooden-sign;
+  }
+}
+.ra-wrench {
+  &:before {
+    content: @ra-var-icon-wrench;
+  }
+}
+.ra-wyvern {
+  &:before {
+    content: @ra-var-icon-wyvern;
+  }
+}
+.ra-x-mark {
+  &:before {
+    content: @ra-var-icon-x-mark;
+  }
+}
+.ra-zebra-shield {
+  &:before {
+    content: @ra-var-icon-zebra-shield;
+  }
+}
+.ra-zigzag-leaf {
+  &:before {
+    content: @ra-var-icon-zigzag-leaf;
+  }
+}
+

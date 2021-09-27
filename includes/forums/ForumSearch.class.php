@@ -48,6 +48,9 @@
 			} elseif ($this->search == 'latestGamePosts') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID INNER JOIN forums f ON t.forumID = f.forumID WHERE t.forumID IN (".implode(', ', $this->forumManager->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL")->rowCount();
 				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->forumManager->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
+			} elseif ($this->search == 'latestPublicPosts') {
+				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL")->rowCount();
+				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE fpg.read=1 AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
 			} elseif ($this->search == 'homepage') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID WHERE t.forumID IN (".implode(', ', $this->forumManager->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK ")->rowCount();
 				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->forumManager->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
@@ -72,8 +75,8 @@
 					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
-						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
-<?				} ?>
+						<a class="threadInfoNew" href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+<?				} else {?><span class="threadInfoNew"></span><?} ?>
 						<div class="paginateDiv">
 <?
 				if ($result->postCount > PAGINATE_PER_PAGE) {
@@ -94,7 +97,7 @@
 ?>
 							<a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
 						</div>
-						<a href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><br>
+						<a class="threadTitle" href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><br>
 						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$result->postCount?></div>
@@ -127,6 +130,32 @@
 					</div>
 <?
 			}
+		}
+
+		public function displayLatestHPWidget($header,$footer,$sectionclass,$headerbarclass=''){
+			if($this->getResultsCount()>0){
+				echo '<h3 class="headerbar '.$headerbarclass.'">';
+				echo $header;
+				echo '</h3><div class="widgetBody widget-'.$sectionclass.'">';
+				$this->displayLatestHP();
+				echo '<div class="latestPostsLink">';
+				echo $footer;
+				echo '</div></div>';
+
+				return true;
+			}
+			return false;
+		}
+
+		public function displayHeader(){
+			if ($this->search == 'latestGamePosts') {
+				echo '<h1 class="headerbar"><i class="ra ra-d6"></i> Latest Game Posts</h1>';
+			} elseif ($this->search == 'latestPublicPosts') {
+				echo '<h1 class="headerbar"><i class="ra ra-horn-call"></i> Lastest Public Game Posts</h1>';
+			} else{
+				echo '<h1 class="headerbar"><i class="ra ra-campfire"></i> Latest Posts</h1>';
+			}
+
 		}
 	}
 ?>

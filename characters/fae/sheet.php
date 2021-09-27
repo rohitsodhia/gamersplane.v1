@@ -26,7 +26,7 @@
 						</div>
 					</div>
 					<div id="approaches" class="floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Approaches</h2>
+						<h2 class="headerbar hbDark">Approaches</h2>
 						<div class="hbMargined hb-margined">
 							<label ng-repeat="(approach, value) in character.approaches" class="tr">
 								<div class="labelText">{{approach.capitalizeFirstLetter()}}</div>
@@ -35,7 +35,7 @@
 						</div>
 					</div>
 					<div id="stunts" class="itemizedList floatLeft">
-						<h2 class="headerbar hbDark" skew-element>Stunts</h2>
+						<h2 class="headerbar hbDark">Stunts</h2>
 						<div id="stuntsList" class="hbMargined" hb-margined>
 							<div ng-repeat="stunt in character.stunts" class="stunt item tr clearfix">{{stunt.name}}</div>
 						</div>

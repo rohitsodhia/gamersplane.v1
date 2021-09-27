@@ -8,7 +8,7 @@ body
     color:#ddd;
 }
 
-body .fauxLink, 
+body .fauxLink,
 body a,
 body  a:active,
 body  a:visited,
@@ -28,9 +28,9 @@ body   a.username:visited
     color:#89c;
 }
 
-body #page_home #announcements 
+body #page_home .announcements
 {
-    background-color: #37393F;   
+    background-color: #37393F;
 }
 
 body .headerbar a, body .headerbar a:active, body .headerbar a:hover, body .headerbar a:visited, body div.headerbar
@@ -44,7 +44,7 @@ body #page_forum_thread .postContent
 background-color: #37393F;
 }
 
-body #page_forum_thread .postRight .postPoint 
+body #page_forum_thread .postRight .postPoint
 {
     background-image: none;
     border:solid 20px transparent;
@@ -65,10 +65,10 @@ body #page_forum_thread .postRight .postPoint:after
     width:0;
     height:0;
     left: -14px;
-    top: -18px;    
+    top: -18px;
 }
 
-body #page_forum_thread .postLeft .postPoint 
+body #page_forum_thread .postLeft .postPoint
 {
     background-image: none;
     border:solid 20px transparent;
@@ -89,7 +89,7 @@ body #page_forum_thread .postLeft .postPoint:after
     width:0;
     height:0;
     left: -21px;
-    top: -18px;    
+    top: -18px;
 }
 
 #page_forum_thread div.postContent hr{
@@ -107,7 +107,7 @@ body  .quote,
 body  .spoiler,
 body  .private
 {
-    background-color: #303136;   
+    background-color: #303136;
 }
 
 body .oocText
@@ -115,12 +115,12 @@ body .oocText
     color:#89c;
 }
 
-body #page_forum .sudoTable .tr:hover, 
+body #page_forum .sudoTable .tr:hover,
 body #page_forum_search .sudoTable .tr:hover {
     background-color: #37393F;
 }
 
-body #page_gameDetails .characters 
+body #page_gameDetails .characters
 {
     background-color: #37393F;
 
@@ -129,21 +129,21 @@ body #page_gameDetails .characters
 body .hbAttachedList>li:hover,
 body .prettyList>li:hover,
 body #page_pms #pmList .tr:hover,
-body #page_pm_send #history, 
+body #page_pm_send #history,
 body #page_pm_view #history
 {
-    background-color: #37393F;   
-   
+    background-color: #37393F;
+
 }
 
 .hbAttachedList > li:first-child:hover {
-    background-color: #37393F;   
+    background-color: #37393F;
 }
 
 body #page_gameDetails #playersInGame>li:hover .characters
 {
-    background-color: #303136;   
-   
+    background-color: #303136;
+
 }
 
 body .markItUpButton,
@@ -178,25 +178,25 @@ body #page_forum_thread div.postBlockFound
     background-color: transparent;
 }
 
-body #page_forum_thread div.postBlockFound .postContent 
+body #page_forum_thread div.postBlockFound .postContent
 {
     border-color: #c54;
 }
 
 body #page_forum_thread div.postBlockFound .postPoint
 {
-    border-right-color: #c54;   
+    border-right-color: #c54;
 }
 
-body input[type=text], 
-body input[type=number], 
-body input[type=password], 
-body input[type=button], 
-body input[type=file], 
-body select, 
+body input[type=text],
+body input[type=number],
+body input[type=password],
+body input[type=button],
+body input[type=file],
+body select,
 body textarea
 {
-    background-color: #37393F;   
+    background-color: #37393F;
     color:#fff;
     border-color: #444;
 }
@@ -205,14 +205,14 @@ body .prettySelectOptions,
 body  div.prettySelect,
 body .prettySelectCurrent
 {
-    background-color: #37393F;   
+    background-color: #37393F;
     color:#fff;
     border-color: #444;
 }
 
 body #charSheetRoller
 {
-    background-color: #37393F;   
+    background-color: #37393F;
     border-color: #ddd;
 }
 
@@ -224,7 +224,7 @@ body #charSheetRoller h3
 
 body .rollForChar.sel
 {
-    background-color: #37393F;   
+    background-color: #37393F;
     color:#ddd;
 }
 
@@ -235,12 +235,12 @@ body #topNotifications
 
 body #page_user .gameInfo
 {
-    color: #303136;      
+    color: #303136;
 }
 
 body input[type=file].imageFileUpload
 {
-    background-color: transparent;   
+    background-color: transparent;
     color:transparent;
     border-color: transparent;
 }
@@ -268,7 +268,7 @@ body #primaryTraits .trait
 #page_systems #systems .system
 {
     background-color:#37393F;
-  
+
 }
 
 #starwarsffg_setback span,
@@ -298,7 +298,7 @@ body.modal {
     }
     .rollDice{
         background-color: #303136;
-    }        
+    }
 }
 
 .parsedRolls{
@@ -353,4 +353,18 @@ body.style-background #content {
 
 #page_forum_thread #poll{
     background-color: #37393F;
+}
+
+div.forumIcon{
+    &:before{
+        color: #555;
+    }
+
+    &.newPosts:before{
+        color: #c54;
+    }
+}
+
+footer{
+    border-top-color: #222;
 }

@@ -2,6 +2,8 @@
 	Games CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "rpgawesome/variables.less";
+@import "gpVariables.less";
 
 .border-radius(@radius: 6px) {
 	-webkit-border-radius: @radius;
@@ -324,6 +326,13 @@
 			vertical-align: initial;
 		}
 
+		.tr.descriptionRow{
+			img,
+			iframe{
+				max-width: 100%;
+			}
+		}
+
 		.tr > hr,
 		.tr.descriptionRow > hr{
 			display: block;
@@ -347,7 +356,6 @@
 		}
 
 		.infoCol {
-			width: 590px;
 
 			&.shiftRight {
 				margin-left: 330px;
@@ -377,27 +385,11 @@
 		text-align: center;
 	}
 
-	#playerDetails {
-		.leftCol {
-			float: left;
-			width: 630px;
-		}
-
-		.rightCol {
-			float: right;
-			width: 300px;
-		}
-	}
-
 	#invites {
 		margin: 10px 0;
 
 		label {
 			display: inline-block;
-		}
-
-		button {
-			margin-left: 12px;
 		}
 
 		.error {
@@ -411,8 +403,14 @@
 		padding: 0;
 	}*/
 
-	.playerInfo > div, .characters li > div {
-		float: left;
+	.playerInfo , .characters >li {
+		display: flex;
+
+		& > div{
+			width:50%;
+			flex: 0 0 auto;
+			box-sizing: border-box;
+		}
 	}
 
 /*	.playerInfo {
@@ -552,9 +550,6 @@
 		margin: 0 10px;
 	}
 
-	#decks {
-		width: 470px;
-	}
 
 	.deckLabel {
 		width: 205px;
@@ -641,5 +636,43 @@
 	#buttonDiv {
 		margin-top: 1em;
 		text-align: center;
+	}
+}
+
+
+@media only screen and (max-width: @mobile-breakpoint) {
+	#page_gameDetails #details .labelCol{
+		text-align: left;
+	}
+
+	#gamesList{
+
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+		border-bottom: solid 1px @gp-black;
+
+		li{
+			margin-bottom: .2rem;
+			.gameTitle{
+				display: block;
+				font-size: 1.2em;
+				width: auto;
+				margin-bottom: .2rem;
+			}
+			.systemType{
+				border-style: none;
+				width: auto;
+				.makeBadge;
+				.badgeColor(@gp-system-badge-color);
+				margin-left: 0;
+			}
+			.gmLink{
+				.makeBadge;
+				.badgeColor(@gp-gm-badge-color);
+				a{
+					color: #fff;
+				}
+			}
+		}
 	}
 }

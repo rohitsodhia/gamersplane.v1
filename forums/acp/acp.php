@@ -41,7 +41,7 @@
 				><a ng-if="forumID != 0" id="ml_permissions" href="" ng-class="{ 'current': currentSection == 'groups' }" ng-click="setSection('groups')">Groups</a
 				><a ng-if="details.isGameForum" href="" ng-class="{ 'current': currentSection == 'permissions' }" ng-click="setSection('permissions')">Permissions</a>
 			</div></div>
-			<h2 class="headerbar hbDark" skew-element ng-class="{ 'hb_hasList': currentSection == 'groups' }">
+			<h2 class="headerbar hbDark" ng-class="{ 'hb_hasList': currentSection == 'groups' }">
 				<span ng-if="forumID != 0" ng-show="currentSection == 'details'" class="section_details">Details</span>
 				<span ng-show="currentSection == 'subforums'" class="section_subforums">Subforums</span>
 				<span ng-if="details.isGameForum" ng-show="currentSection == 'groups'">Groups</span>
@@ -60,7 +60,7 @@
 					<label class="textLabel">Forum description:</label>
 					<textarea name="description" ng-model="editDetails.description"></textarea>
 				</div>
-				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton" skew-element>Update</button></div>
+				<div class="buttonPanel"><button type="submit" name="update" class="fancyButton">Update</button></div>
 			</form>
 
 			<div id="subforums"  ng-class="{ 'currentSection': currentSection == 'subforums', 'hideSection': currentSection != 'subforums' }" class="hbMargined" hb-margined>
@@ -76,8 +76,8 @@
 							<p>Are you sure you want to delete <strong>{{forum.title}}</strong>? This cannot be reversed!</p>
 							<p>This will delete all threads, posts, and relating content in this forum, as well as in any subforums and the subforums themselves.</p>
 							<div class="buttonPanel alignCenter">
-								<button type="submit" name="delete" class="fancyButton smallButton" skew-element ng-click="confirmForumDelete(forum, key)">Delete</button>
-								<button type="submit" name="cancel" class="fancyButton smallButton" skew-element ng-click="cancelForumDelete()">Cancel</button>
+								<button type="submit" name="delete" class="fancyButton smallButton" ng-click="confirmForumDelete(forum, key)">Delete</button>
+								<button type="submit" name="cancel" class="fancyButton smallButton" ng-click="cancelForumDelete()">Cancel</button>
 							</div>
 						</div>
 					</div>
@@ -87,7 +87,7 @@
 				<form id="newForum" ng-submit="createForum()">
 					<label>New Forum</label>
 					<input type="text" name="newForum" ng-model="newForum.name" maxlength="50">
-					<button type="submit" name="addForum" class="fancyButton" skew-element>Add</button>
+					<button type="submit" name="addForum" class="fancyButton">Add</button>
 				</form>
 			</div>
 
@@ -106,7 +106,7 @@
 				</ul>
 
 				<form id="newGroup" ng-if="details.gameDetails.groups.length < 5" ng-submit="createGroup()">
-					Create a new group: <input type="text" ng-model="newGroup.name"> <button type="submit" class="fancyButton smallButton" skew-element>Create</button>
+					Create a new group: <input type="text" ng-model="newGroup.name"> <button type="submit" class="fancyButton smallButton">Create</button>
 				</form>
 			</div>
 
@@ -120,7 +120,7 @@
 					<h3 class="gapAbove">Groups</h3>
 					<div ng-repeat="permission in permissions.group" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
 					<form ng-if="details.isGameForum && newGroupPermission.data.length" class="newPermission" ng-submit="addGroupPermission()">
-						Add permission for <combobox data="newGroupPermission.data" change="setNewGroup(search, value)" select></combobox> <button type="submit" class="fancyButton smallButton" skew-element>Add</button>
+						Add permission for <combobox data="newGroupPermission.data" change="setNewGroup(search, value)" select></combobox> <button type="submit" class="fancyButton smallButton">Add</button>
 					</form>
 				</div>
 

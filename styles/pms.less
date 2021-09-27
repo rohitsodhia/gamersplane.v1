@@ -2,6 +2,8 @@
 	Characters CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "rpgawesome/variables.less";
+@import "gpVariables.less";
 
 #page_pms {
 	#controlsContainer {
@@ -9,7 +11,7 @@
 		margin-top: 2em;
 
 		.shape {
-			border-bottom-color: #222;
+			border-bottom-color: @gp-black;
 		}
 	}
 
@@ -37,7 +39,7 @@
 			top: -1px;
 			padding: 0;
 			border-style: solid;
-			border-color: #222;
+			border-color: @gp-black;
 			border-width: 1px 2px;
 			border-right-color: #A66;
 			border-bottom-color: #A66;
@@ -48,13 +50,13 @@
 		}
 
 		.headerTR {
-			top: 0;	
+			top: 0;
 			border: none;
 			padding: 2px 2px;
 		}
 
 		.headerTR:hover {
-			background-color: #222;
+			background-color: @gp-black;
 		}
 
 		.lastTR {
