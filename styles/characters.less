@@ -61,7 +61,6 @@
 	}
 
 	.editing .charType {
-		width: 60px;
 
 		.combobox input {
 			width: 60px;
@@ -522,6 +521,36 @@ h1.customChar{
 	margin-right:40px;
 }
 
+#userChars{
+	display: flex;
+	flex-direction: column;
+	li{
+		width:100%;
+		display: flex;
+
+		&>*{
+			box-sizing: border-box;
+			flex-shrink: 0;
+		}
+
+		.label{
+			width:~"calc(100% - 500px)";
+
+		}
+		.systemType {
+			width:230px;
+		}
+
+		.links{
+			width: 170px;
+		}
+
+		.charType{
+			width:100px;
+		}
+	}
+}
+
 @media only screen and (max-width: @mobile-breakpoint){
 	#charDetails{
 		.layout-columns-2,.layout-columns-3{
@@ -533,5 +562,59 @@ h1.customChar{
 			}
 		}
 
+	}
+
+	#userChars{
+		li{
+			flex-wrap: wrap;
+			align-items: center;
+
+			.label{
+				width:~"calc(100% - 165px)";
+				border-right-style: none;
+				order:1;
+			}
+			.charType {
+				order:3;
+				text-align: left;
+				width: auto;
+				.makeBadge;
+				border-right-style: none;
+				margin-top:.1rem;
+			}
+
+			.systemType{
+				order:4;
+				border-right-style: none;
+				width: auto;
+				.makeBadge;
+				.badgeColor(@gp-system-badge-color);
+				margin-top:.1rem;
+			}
+
+			.links{
+				width: 140px;
+				order:2;
+			}
+
+			.label input{
+				width:160px;
+			}
+
+		}
+	}
+
+	#page_myCharacters #newChar {
+		input[type="text"]{
+			width: 100%;
+		}
+
+		label{
+			text-align: left;
+		}
+
+		.combobox{
+			width:100%;
+		}
 	}
 }

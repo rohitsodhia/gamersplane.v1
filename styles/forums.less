@@ -406,7 +406,6 @@
 		img {
 			max-width: 100px;
 			max-height: 100px;
-			border: 1px solid #888;
 			-webkit-border-radius: 6px;
 			-moz-border-radius: 6px;
 			border-radius: 6px;
@@ -1772,14 +1771,16 @@ td .rollDice {
 @media only screen and (max-width: @mobile-breakpoint){
     #page_forum,#page_forum_search{
 		.tableDiv{
-			.numPosts,.numThreads{
+			.numPosts,.numThreads,.paginateDiv{
 				display: none;
 			}
 
 			.threadInfo{
 				width: ~"calc(75% - 40px)";
+				.threadTitle{
+					width: ~"calc(100% - 20px)";
+				}
 			}
-
 		}
     }
 
@@ -1859,7 +1860,8 @@ td .rollDice {
 
 }
 
-.forumList.hbdMargined{
+.forumList.hbdMargined,
+.threadList.hbdMargined{
 	margin-left: 0;
 }
 
@@ -1869,6 +1871,7 @@ td .rollDice {
 }
 
 .tavernGame{
+	iframe,
 	img{
 		max-width: 100%;
 	}

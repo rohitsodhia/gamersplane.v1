@@ -1,4 +1,5 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">{{headerTitle}}</h1>
 
 		<form ng-submit="sendPM()">
@@ -17,7 +18,7 @@
 			<div id="messageRequired" class="alert" ng-hide="formError.validMessage">Message required!</div>
 			<div id="submitDiv" class="alignCenter"><button type="submit" name="send" class="fancyButton">Send</button></div>
 		</form>
-		
+
 		<div id="history" ng-if="hasHistory">
 			<div ng-repeat="pm in history" class="historyPM" ng-class="{'first': $first}">
 				<p ng-if="hasAccess" class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></p>

@@ -1,5 +1,7 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">{{user.username}}</h1>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
+	<h1 class="headerbar">{{user.username}}</h1>
+	<div class="flex-row">
 		<div id="leftCol">
 			<img ng-src="{{user.avatar.url}}" class="avatar">
 			<div id="actions">
@@ -45,8 +47,8 @@
 
 			<div id="charStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">Characters Stats</h2>
+				<p ng-if="charCount > 0">{{user.username}} has made {{charCount}} character<span ng-if="charCount > 1">s</span> so far.</p>
 				<div class="details clearfix" ng-class="{ 'noInfo': charCount == 0 }" hb-margined>
-					<p ng-if="charCount > 0">{{user.username}} has made {{charCount}} character<span ng-if="charCount > 1">s</span> so far.</p>
 					<div ng-repeat="system in characters | orderBy: ['-numChars', 'system.name']" class="game" ng-class="{ 'third': $index % 3 == 2 }">
 						<div class="gameLogo"><img ng-src="/images/logos/{{system.system.slug}}.png"></div>
 						<div class="gameInfo">
@@ -60,8 +62,8 @@
 
 			<div id="gameStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">GM Stats</h2>
+				<p ng-if="games.length">{{user.username}} has run {{gameCount}} game<span ng-if="gameCount > 1">s</span> so far.</p>
 				<div class="details clearfix" ng-class="{ 'noInfo': !games.length }">
-					<p ng-if="games.length">{{user.username}} has run {{gameCount}} game<span ng-if="gameCount > 1">s</span> so far.</p>
 					<div ng-repeat="system in games | orderBy: ['-numGames', 'system.name']" class="game" ng-class="{ 'third': $index % 3 == 2 }">
 						<div class="gameLogo"><img ng-src="/images/logos/{{system.system.slug}}.png"></div>
 						<div class="gameInfo">
@@ -73,4 +75,5 @@
 				</div>
 			</div>
 		</div>
+	</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

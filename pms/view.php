@@ -1,6 +1,7 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">Private Message</h1>
-		
+
 		<div id="buttonsDiv">
 			<a href="/pms/reply/{{pmID}}/" class="fancyButton">Reply</a>
 			<a class="fancyButton deletePM" ng-show="allowDelete" ng-click="delete()">Delete</a>

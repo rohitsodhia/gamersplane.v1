@@ -1,6 +1,7 @@
 <?
+	$responsivePage=true;
 	header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
-	
+
 	$errorPage = TRUE;
 ?>
 <? require_once(FILEROOT.'/header.php'); ?>

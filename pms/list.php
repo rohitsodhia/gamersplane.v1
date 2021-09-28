@@ -1,4 +1,5 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
 <?	if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
 		<div class="alertBox_success">
 <?

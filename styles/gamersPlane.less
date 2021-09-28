@@ -1606,14 +1606,19 @@ textarea {
 	}
 
 	&.closed {
-		.hidden,
-		.close {
+		&>.hidden{
+			display: none;
+		}
+	}
+
+	&.closed {
+		&>.tag>.close {
 			display: none;
 		}
 	}
 
 	&:not(.closed) {
-		.open {
+		&>.tag>.open {
 			display: none;
 		}
 	}
@@ -3514,6 +3519,11 @@ div.forumIcon {
 	}
 }
 
+.spoiler.snippet
+{
+	background-color: #fec;
+}
+
 /*--------------*/
 #page_characterSheet {
 	.feat,.ability {
@@ -3551,6 +3561,7 @@ div.forumIcon {
 
 	&.badge-gameOpen{
 		.badgeColor( rgb(0, 204, 0) );
+		animation: pulse 2s infinite;
 	}
 
 	&.badge-gameClosed{

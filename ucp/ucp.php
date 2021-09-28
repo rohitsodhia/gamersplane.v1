@@ -1,4 +1,5 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar">User Control Panel{{CurrentUser.userID != user.userID?' - ' + user.username:''}}</h1>
 		<div ng-if="admin" id="acpLink" class="alignRight hbMargined"><a href="/acp/users/">Users ACP</a></div>
 

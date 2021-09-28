@@ -58,6 +58,7 @@ function BBCode2Html($text) {
 	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
 			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
 			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
 			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
 			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
 	}, $text);
@@ -98,7 +99,7 @@ function BBCode2Html($text) {
 		return $ret;
 
 	}, $text);
-	//end ability sections	
+	//end ability sections
 
 	// Smileys to find...
 /*	$in = array( 	 ':)',
@@ -222,7 +223,7 @@ function BBCode2Html($text) {
 			return $ret;
 	}, $text);
 	//end tables
-	
+
 	//notes and private
 	$matches = null;
 	global $currentUser, $isGM, $post;
@@ -256,12 +257,12 @@ function BBCode2Html($text) {
 				$text = str_replace($match[0], $match[2].'<br/>', $text);
 			}
 		}
-	}		
+	}
 	//end notes and private
 
 
 
-	
+
 
 // paragraphs
 //	$text = str_replace("\r", "", $text);
