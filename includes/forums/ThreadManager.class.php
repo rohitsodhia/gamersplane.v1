@@ -21,6 +21,7 @@
 			} elseif (intval($forumID)) {
 				$this->thread = new Thread();
 				$this->thread->forumID = $forumID;
+				$this->thread->setAllowRolls(true);
 				$this->forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS);
 			}
 		}
