@@ -67,6 +67,16 @@
 					'players' => true
 				]]
 			)->toArray();
+
+			$mentions = $mongo->users->findOne(
+				[
+					'userID' => $currentUser->userID
+				],
+				['projection' => [
+					'mentions' => true
+				]]
+			);
+
 			if (count($pending)) {
 				$pendingIDs = [];
 				$pendingPlayers = [];
@@ -131,6 +141,13 @@
 				$notifications[]=$notification;
 			}
 
+			if($mentions && is_countable($mentions["mentions"])){
+				foreach ($mentions["mentions"] as $mention) {
+					$notification=$notification.'<div class="notify notifyMention col-1-2 mob-col-1"><a data-postid="'.$mention['postID'].'" href="/forums/thread/'.$mention['threadID'].'/?p='.$mention['postID'].'#p'.$mention['postID'].'">'.$mention['forumTitle'].' &gt; '.$mention['threadTitle'].'</a></div>';
+					$notifications[]=$notification;
+				}
+
+			}
 
 			if(!empty($notifications)){
 				echo '<div class="flexWrapper"><div id="notifications" class="col-1">';

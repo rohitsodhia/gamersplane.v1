@@ -134,9 +134,9 @@
 					} else {
 						$message = str_replace($match[0], $match[2].chr(13), $message);
 					}
-					
+
 				}
-			}			
+			}
 
 			return trim($message);
 		}
@@ -219,6 +219,8 @@
 				}
 			}
 
+			$this->addMentions();
+
 			return $this->postID;
 		}
 
@@ -234,6 +236,52 @@
 
 		public function getModified() {
 			return $this->modified;
+		}
+
+		private function addMentions(){
+			global $mysql;
+			$mongo = DB::conn('mongo');
+			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $this->message, $matches, PREG_SET_ORDER);
+
+			$mongo->users->updateMany(
+				[],
+				['$pull' => [
+					'mentions' => ['postID'=>((int) $this->postID)]
+					]
+				]
+			);
+
+			if (sizeof($matches)) {
+
+				$mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
+
+				//strip "Re: " if present
+				$postTitle=$this->title;
+				if(substr($postTitle,0,4)=='Re: '){
+					$postTitle=substr($postTitle,4);
+				}
+
+				$threadIdAsInt=(int)$this->threadID;
+				$forumName=$mysql->query("SELECT f.title FROM forums f INNER JOIN threads t ON f.forumID = t.forumID WHERE t.threadID={$threadIdAsInt}")->fetchColumn();
+
+				foreach ($matches as $match) {
+
+					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
+					if($mentionUserId){
+						$mongo->users->updateOne(
+							['userID' => ((int)$mentionUserId)],
+							['$push' => [
+								'mentions' => [
+									'threadID' => $threadIdAsInt,
+									'postID' => ((int) $this->postID),
+									'forumTitle'=>$forumName,
+									'threadTitle' => $postTitle
+								]
+							]]
+						);
+					}
+				}
+			}
 		}
 
 		public function delete() {

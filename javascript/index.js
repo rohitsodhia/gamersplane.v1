@@ -24,5 +24,16 @@ $(function() {
 
     });
 
+    $('.notifyMention a').on('click',function(){
+        var postId=$(this).data('postid');
+		$.ajax({
+			type: 'post',
+			url: API_HOST +'/users/removeMention',
+			xhrFields: {
+				withCredentials: true
+			},
+			data:{ postID: postId}
+		});
+    });
 
 });

@@ -27,7 +27,9 @@
 				$this->getLFG();
 			} elseif ($pathOptions[0] == 'saveLFG') {
 				$this->saveLFG();
-			} else {
+			} elseif ($pathOptions[0] == 'removeMention') {
+				$this->removeMention($_POST['postID']);
+			}else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -587,6 +589,19 @@
 				$mongo->systems->updateOne(['_id' => $system], ['$inc' => ['lfg' => $count]]);
 			}
 			$mongo->users->updateOne(['userID' => $userID], ['$set' => ['lfg' => $lfg]]);
+		}
+
+		public function removeMention($postId){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+			$mongo->users->updateMany(
+				['userID' => $currentUser->userID],
+				['$pull' => [
+					'mentions' => ['postID'=>((int) $postId)]
+					]
+				]
+			);
+
 		}
 	}
 ?>
