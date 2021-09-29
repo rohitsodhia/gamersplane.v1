@@ -6,10 +6,15 @@
 		}
 
 
-        public function addAnnouncement($forumId,$iconClass,$addHeaderFooter){
+        public function addAnnouncement($forumId,$iconClass,$addHeaderFooter,$randomPinned){
             global $mysql;
-            $post = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId}  ORDER BY threadID DESC LIMIT 1");
-            $post = new Post($post->fetchColumn());
+			if($randomPinned){
+				$postQuery = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId} AND sticky=1 ORDER BY RAND() LIMIT 1");
+			}else{
+				$postQuery = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId}  ORDER BY threadID DESC LIMIT 1");
+			}
+
+            $post = new Post($postQuery->fetchColumn());
 ?>
 			<div class="announcements col-1-2 mob-col-1">
 				<h2 class="headerbar announcementsheaderbar"><i class="ra <?=$iconClass?>"></i> <a href="/forums/thread/<?=$post->getThreadID()?>/"><?=$post->getTitle()?></a> <i class="openClose openClose-open" data-announce="<?=$forumId?>" data-threadid='<?=$post->getThreadID()?>'></i></h2>
@@ -55,7 +60,6 @@
 						]
 					],
 					'retired' => null
-
 				],
 				['projection' => [
 					'gameID' => true,

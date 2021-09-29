@@ -1,12 +1,23 @@
 <?php	addPackage('forum');
 require_once(FILEROOT . '/includes/HomeManager.class.php');
-$homeManager = new HomeManager();?>
+$homeManager = new HomeManager();
+$forumSearchGames = new ForumSearch('latestGamePosts');
+$forumSearchGames->findThreads(1, 5);
+?>
+
 
 	<?= $homeManager->addTopNotifications();?>
 
 	<div class="flexWrapper">
-		<?= $homeManager->addAnnouncement(3,'ra-gamers-plane',true);?>
-		<?= $homeManager->addAnnouncement(40,'ra-cat',false);?>
+		<?= $homeManager->addAnnouncement(3,'ra-gamers-plane',true,false);
+		if($forumSearchGames->getResultsCount()>0){
+			//tips for users in games (using guides forum at the moment, but this should change)
+			$homeManager->addAnnouncement(21,'ra-vial',false,true);
+		}
+		else{
+			//tips for users without games
+			$homeManager->addAnnouncement(21,'ra-wooden-sign',false,true);
+		}?>
 
 	</div>
 
@@ -15,8 +26,6 @@ $homeManager = new HomeManager();?>
 				<h3 class="headerbar"><i class="ra ra-all-for-one"></i> Latest Games</h3>
 				<div class="widgetBody">
 <?php
-	$forumSearchGames = new ForumSearch('latestGamePosts');
-	$forumSearchGames->findThreads(1, 5);
 
 	$latestGames = $mongo->games->find(
 		[
