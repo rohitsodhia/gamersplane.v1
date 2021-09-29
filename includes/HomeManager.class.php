@@ -143,10 +143,21 @@
 
 			if($mentions && is_countable($mentions["mentions"])){
 				foreach ($mentions["mentions"] as $mention) {
-					$notification=$notification.'<div class="notify notifyMention col-1-2 mob-col-1"><a data-postid="'.$mention['postID'].'" href="/forums/thread/'.$mention['threadID'].'/?p='.$mention['postID'].'#p'.$mention['postID'].'">'.$mention['forumTitle'].' &gt; '.$mention['threadTitle'].'</a></div>';
+					$notification='<div class="notify notifyMention col-1-2 mob-col-1"><a data-postid="'.$mention['postID'].'" href="/forums/thread/'.$mention['threadID'].'/?p='.$mention['postID'].'#p'.$mention['postID'].'">'.$mention['forumTitle'].' &gt; '.$mention['threadTitle'].'</a></div>';
 					$notifications[]=$notification;
 				}
 
+			}
+
+			//new users suggest making an introduction
+			if (strtotime('-14 Days') < strtotime($currentUser->joinDate)){
+				$mysql = DB::conn('mysql');
+				$introPosts=$mysql->query("SELECT count(p.postID) FROM posts p INNER JOIN threads t ON p.threadID = t.threadID WHERE t.forumID=14 AND authorID={$currentUser->userID}")->fetchColumn();
+
+				if($introPosts==0){
+					$notification='<div class="notify notifyIntroduction col-1-2 mob-col-1">Say hello in the <a href="/forums/14">Introductions</a> forum</div>';
+					$notifications[]=$notification;
+				}
 			}
 
 			if(!empty($notifications)){
