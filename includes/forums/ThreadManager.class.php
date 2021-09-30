@@ -24,6 +24,11 @@
 				$this->thread->setAllowRolls(true);
 				$this->forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS);
 			}
+
+			$pageSize = intval($_GET['pageSize']);
+			if($pageSize && $pageSize>20){
+				$this->thread->pageSize=$pageSize;
+			}
 		}
 
 		public function __get($key) {
@@ -82,15 +87,15 @@
 			if (isset($_GET['view']) && $_GET['view'] == 'newPost') {
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) numPosts FROM posts WHERE threadID = {$this->threadID} AND postID <= ".$this->getThreadLastRead());
 				$numPrevPosts = $numPrevPosts->fetchColumn() + 1;
-				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
+				$page = $numPrevPosts?ceil($numPrevPosts / $this->thread->pageSize):1;
 			} elseif (isset($_GET['view']) && $_GET['view'] == 'lastPost') {
 				$numPrevPosts = $this->getThreadProperty('postCount');
-				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
+				$page = $numPrevPosts?ceil($numPrevPosts / $this->thread->pageSize):1;
 			} elseif (isset($_GET['p']) && intval($_GET['p'])) {
 				$post = intval($_GET['p']);
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");
 				$numPrevPosts = $numPrevPosts->fetchColumn();
-				$page = $numPrevPosts?ceil($numPrevPosts / PAGINATE_PER_PAGE):1;
+				$page = $numPrevPosts?ceil($numPrevPosts / $this->thread->pageSize):1;
 			} else
 				$page = intval($_GET['page']);
 			$this->page = intval($page) > 0?intval($page):1;
@@ -189,7 +194,7 @@
 		}
 
 		public function displayPagination() {
-			ForumView::displayPagination($this->getThreadProperty('postCount'), $this->page);
+			ForumView::displayPagination($this->getThreadProperty('postCount'), $this->page,array(), $this->thread->pageSize,true);
 		}
 
 		public function deletePost($post) {

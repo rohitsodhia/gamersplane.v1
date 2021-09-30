@@ -60,6 +60,6 @@
 				<p><a href="/forums/subscriptions/">Manage Subscriptions</a></p>
 <?	} ?>
 			</div>
-<?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page']); ?>
+<?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page'], array()); ?>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>
