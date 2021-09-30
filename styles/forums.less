@@ -29,16 +29,18 @@
 }
 
 /* --------------------------------------------*/
+#breadcrumbs {
+	margin-bottom: .75em;
+	color: #666;
+	font-size: 1.1em;
+	a{
+		white-space: nowrap;
+	}
+}
 
 #page_forum {
 	h1 {
 		margin-bottom: .3em;
-	}
-
-	#breadcrumbs {
-		margin-bottom: .75em;
-		color: #666;
-		font-size: 1.1em;
 	}
 
 	#topLinks {
@@ -1907,6 +1909,16 @@ td .rollDice {
 	.editRollInfo .editRollInfoRoll{
 		width: auto;
 		float: none;
+	}
+
+	#page_forum_thread {
+		#threadMenu {
+			flex-direction: column;
+
+			.leftCol {
+				align-self: flex-start;
+			}
+		}
 	}
 
 }

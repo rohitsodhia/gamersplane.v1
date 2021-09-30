@@ -3,7 +3,9 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
 	if($currentUser->addPostNavigateWarning()){
-		$addJSFiles[] = 'forums/unsaved-work.js';
+		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js');
+	}else{
+		$addJSFiles[] = 'forums/postingPage.js';
 	}
 
 

@@ -45,7 +45,7 @@
 <?	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
 <script type="text/javascript" src="/javascript/tools/cards.js?v=<?=getJSVersion('/javascript/tools/cards.js')?>"></script>
 <?	} ?>
-<?	if (sizeof($addJSFiles)) { foreach ($addJSFiles as $file) { ?>
+<?	if ($addJSFiles) { foreach ($addJSFiles as $file) { ?>
 <script type="text/javascript" src="/javascript/<?=$file?>?v=<?=getJSVersion('/javascript/'.$file)?>"></script>
 <?	} } ?>
 <?	if ($addExternalJSFiles && !empty($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>

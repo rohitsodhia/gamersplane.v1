@@ -1,3 +1,6 @@
+@import "rpgawesome/variables.less";
+@import "gpVariables.less";
+
 body #content
 {
     background-color: #303136;
@@ -367,4 +370,25 @@ div.forumIcon{
 
 footer{
     border-top-color: #222;
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+    body #page_forum_thread .postBlock  .postPoint{
+        display: none;
+    }
+
+    #page_forum_thread .postBlock .postContent:after{
+        border-bottom-color: #37393F;
+    }
+
+    #page_forum_thread .postBlock .postContent:before{
+        border-bottom-color: #444;
+    }
+
+    body .markItUpHeader ul .markItUpSeparator
+    {
+        border-left-width:6px;
+        border-right-width:6px;
+    }
+
 }

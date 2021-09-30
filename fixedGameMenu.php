@@ -129,12 +129,12 @@
 						echo "				<li".($currentUser->userID==$currentUserID?" class='thisUser'":"").">\n";
 						if ($isGM) {
 ?>
-					<p class="username"><a href="/user/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
+					<p class="username"><i class="ra ra-quill-ink"></i> <a href="/user/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
 <?php
 						}
 					}
 ?>
-					<p class="charName"><a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
+					<p class="charName"><i class="ra ra-quill-ink"></i> <a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
 <?php				} ?>
 				</li>
 			</ul>
