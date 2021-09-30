@@ -42,7 +42,7 @@
         text-align: right;
         font-size: .85em;
         margin-top: 1.5em;
-        border-top:solid 1px #700;
+        border-top:solid 1px @gp-red;
     }
 
     .openClose{
@@ -70,9 +70,9 @@
 
 #notificationMsgs{
     margin: 1px 20px .5rem 20px;
-    background-color: #ddf;
+    background-color: @gp-notify-bg;
     padding: 1rem;
-    color: #05e;
+    color: contrast(@gp-notify-bg);
 
     .notify{
         padding-left: 2em;
@@ -203,8 +203,6 @@
     }
 }
 
-//experimental colored headers
-
 h2,h3{
     &.announcementsheaderbar{
         background-color: @gp-orange;
@@ -214,11 +212,11 @@ h2,h3{
     }
 
     &.notificationsheaderbar{
-        background-color: #ddf;
-        color: #05e;
+        background-color: @gp-notify-header;
+        color: contrast(@gp-notify-header);
         margin-bottom: 0;
         &:before,&:after{
-            background-color: #ddf;
+            background-color: @gp-notify-header;
         }
     }
 

@@ -1,9 +1,34 @@
+@gp-orange-dark: #A75300;
 @gp-orange: #C60;
-@gp-red: #800;
+
+@gp-red-darkest: #7d0e00;
+@gp-red-dark: #a71300;
+@gp-red: #A71300;
+@gp-red-light: #F83117;
+@gp-red-lightest: #FF614D;
+
+@gp-green-darkest:#005D19;
+@gp-green:#009828;
+@gp-green-lightest:#39Bf5d;
+
 @gp-black: #222;
 
-@gp-gm-badge-color: rgb(204, 0, 126);
-@gp-system-badge-color: rgb(0, 129, 204);
+@gp-complement-darkest: #013F4D;
+@gp-complement-mid: #04677E;
+@gp-complement-lightest: #338A9E;
+
+@gp-notify-bg: #eee;
+@gp-notify-fg: @gp-green-darkest;
+@gp-notify-header: @gp-green-darkest;
+
+@gp-gm-badge-color: @gp-black;
+@gp-system-badge-color: @gp-complement-mid;
+@gp-open-badge-color:@gp-red;
+@gp-closed-badge-color:@gp-green;
+
+@gp-public-badge-color:@gp-green-lightest;
+@gp-private-badge-color:@gp-orange-dark;
+@gp-frequency-badge-color:@gp-black;
 
 @mobile-breakpoint: 600px;
 @small-breakpoint: 900px;
@@ -34,6 +59,7 @@
 
 .badgeColor( @color ) {
 	background-color: @color;
+	color:contrast(@color);
 	&:before,&:after{
 		background-color: @color;
 	}

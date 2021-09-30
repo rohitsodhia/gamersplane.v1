@@ -1144,6 +1144,15 @@ div.prettySelect > div {
 		}
 	}
 
+	#mainMenuTools ul{
+		left:-5px;
+		&:before,
+		&:after{
+			left:25px;
+		}
+
+	}
+
 	#userMenu {
 		a.avatar,
 		a.avatar:active {
@@ -2722,10 +2731,16 @@ textarea {
 	}
 
 	.currentPage {
-		border: 1px solid #aaa;
-		background: #222;
-		color: #aaa;
+		border: 1px solid #ccc;
+		//background: #222;
+		//color: #aaa;
 		white-space: nowrap;
+		border-radius: 5px;
+	}
+
+	.page{
+		background-color: fade(@gp-orange,20%);
+		border-radius: 5px;
 	}
 }
 
@@ -3625,12 +3640,12 @@ div.forumIcon {
 	.makeBadge;
 
 	&.badge-gameOpen{
-		.badgeColor( rgb(0, 204, 0) );
+		.badgeColor( @gp-open-badge-color );
 		animation: pulse 2s infinite;
 	}
 
 	&.badge-gameClosed{
-		.badgeColor( rgb(204, 0, 0));
+		.badgeColor( @gp-closed-badge-color);
 	}
 
 	&.badge-system{
@@ -3638,16 +3653,15 @@ div.forumIcon {
 	}
 
 	&.badge-gamePublic{
-		.badgeColor( rgb(240, 211, 182));
-		color: @gp-orange;
+		.badgeColor( @gp-public-badge-color);
 	}
 
 	&.badge-gamePrivate{
-		.badgeColor( #333);
+		.badgeColor( @gp-private-badge-color);
 	}
 
 	&.badge-gameFrequency{
-		.badgeColor( rgb(14, 0, 204));
+		.badgeColor( @gp-frequency-badge-color);
 	}
 
 	&.badge-gameGm{
