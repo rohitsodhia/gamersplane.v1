@@ -87,7 +87,7 @@ $forumSearchGames->findThreads(1, 5);
 <?php
 	$forumSearchCommunity = new ForumSearch('homepage');
 	$forumSearchCommunity->findThreads(1,5);
-	$forumSearchCommunity->displayLatestHPWidget('<i class="ra ra-campfire"></i> Community Posts','<a href="/forums/search/?search=latestPosts">All Latest Posts</a>','orange');
+	$forumSearchCommunity->displayLatestHPWidget('<i class="ra ra-speech-bubble"></i> Community Posts','<a href="/forums/search/?search=latestPosts">All Latest Posts</a>','orange');
 ?>
 </div>
 

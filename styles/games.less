@@ -645,7 +645,7 @@
 		text-align: left;
 	}
 
-	#gamesList{
+	#gamesList,#page_myGames .gameList{
 
 		margin-bottom: 1rem;
 		padding-bottom: 1rem;
@@ -658,6 +658,7 @@
 				font-size: 1.2em;
 				width: auto;
 				margin-bottom: .2rem;
+				border-right-style: none;
 			}
 			.systemType{
 				border-style: none;
@@ -666,7 +667,8 @@
 				.badgeColor(@gp-system-badge-color);
 				margin-left: 0;
 			}
-			.gmLink{
+			.gmLink,.gmInfo{
+				width: auto;
 				.makeBadge;
 				.badgeColor(@gp-gm-badge-color);
 				a{

@@ -922,11 +922,12 @@ app.config(['$httpProvider', function ($httpProvider) {
 		$event.stopPropagation();
 		if ($(this).parent()[0] == $mainMenu[0] && $(this).children('ul').length) {
 			$event.preventDefault();
-			$(this).children('ul').stop(true, true).slideDown();
+			$('ul',(this).closest('ul#mainMenu')).hide();
+			$(this).children('ul').stop(true, true).show();
 		}
 	});
 	$('html').click(function ($event) {
-		$mainMenu.find('li').children('ul').stop(true, true).slideUp();
+		$mainMenu.find('li').children('ul').stop(true, true).hide();
 	});
 	$timeout(function () {
 		$headerEles.height(scrollPos < 50?120 - scrollPos:70);

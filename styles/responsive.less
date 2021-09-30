@@ -140,6 +140,7 @@ h2.headerbar,h3.headerbar,h4.headerbar
             margin-bottom: 1.1rem;
             margin-left: 8px;
             margin-right: 0;
+
             li{
                 a, a:visited, a:active{
                     height: auto;
@@ -156,9 +157,33 @@ h2.headerbar,h3.headerbar,h4.headerbar
                     top:5px;
                     display: block;
 
+                    ul{
+                        left: auto;
+                        top: 55px;
+                        right: 0;
+
+                        &:after,
+                        &:before{
+                            left:auto;
+                            right:10px;
+                        }
+                    }
+
                     .mail{
                         left:-12px;
                         right:auto;
+                    }
+                }
+
+                ul{
+                    left: -50px;
+                    top: 35px;
+
+                    li{
+                        a,
+                        a:active{
+                            padding: 7px 13px 7px 8px;
+                        }
                     }
                 }
 
@@ -189,5 +214,6 @@ h2.headerbar,h3.headerbar,h4.headerbar
     footer .bodyContainer{
         padding:10px;
     }
+
 }
 

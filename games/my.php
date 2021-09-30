@@ -5,11 +5,11 @@ require_once(FILEROOT.'/header.php'); ?>
 			<div class="mainColumn">
 				<h1 class="headerbar">My Games</h1>
 				<div id="gamesPlaying">
-					<div class="clearfix hbdTopper"><a href="/games/list/" class="fancyButton smallButton">Join a Game</a></div>
+					<div class="clearfix hbdTopper"><a href="/games/list/" class="fancyButton smallButton">Join a Game</a><a href="/forums/10/" class="fancyButton smallButton buttonSecondary"><i class="ra ra-beer"></i> <span class="mob-hide">Visit the </span>Games Tavern</a></div>
 					<h2 class="headerbar hbDark hb_hasButton hb_hasList">Games I'm Playing</h2>
 					<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
 						<li ng-repeat="game in games | filter: { isGM: false, isRetired:false } | orderBy: ['system', 'title']" class="gamePlaying">
-							<span class="gameTitle"><a href="/forums/{{game.forumID}}"><i class="ra ra-d6"></i></a> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span
+							<span class="gameTitle"><a href="/forums/{{game.forumID}}"><i class="ra ra-speech-bubble"></i></a> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span
 							><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div
 							><div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
 						</li>
@@ -22,7 +22,7 @@ require_once(FILEROOT.'/header.php'); ?>
 					<h2 class="headerbar hbDark hb_hasButton hb_hasList">Games I'm Running</h2>
 					<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
 						<li ng-repeat="game in games | filter: { isGM : true, isRetired:false } | orderBy: ['system', 'title']" class="gameRunning">
-							<span class="gameTitle"><a href="/forums/{{game.forumID}}"><i class="ra ra-d6"></i></a> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span
+							<span class="gameTitle"><a href="/forums/{{game.forumID}}"><i class="ra ra-speech-bubble"></i></a> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span
 							><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div><span ng-if="game.status=='open'" class="badge badge-gameOpen">Open</span>
 						</li>
 					</ul>
@@ -33,7 +33,7 @@ require_once(FILEROOT.'/header.php'); ?>
 					<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Retired games</div><div class="hidden">
 						<ul class="gameList prettyList hbdMargined">
 							<li ng-repeat="game in games | filter: { isRetired:true } | orderBy: ['system', 'title']" class="gameRunning">
-							<span  class="gameTitle"><a href="/forums/{{game.forumID}}"><i class="ra ra-d6"></i></a> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span
+							<span  class="gameTitle"><a href="/forums/{{game.forumID}}"><i class="ra ra-speech-bubble"></i></a> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span
 							><div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
 							</li>
 						</ul>

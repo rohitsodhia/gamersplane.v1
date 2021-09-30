@@ -21,13 +21,13 @@
 ?>
 <ul style="display:none" id="playerList">
 <?php if($gameID){
-	foreach ($game['players'] as $player){ 
+	foreach ($game['players'] as $player){
 		if($player['isGM'] && $player['user']['userID']==$currentUser->userID){
-			$isUserGm=true;			
+			$isUserGm=true;
 		}
 		if($player['approved']){?>
 	<li><?= $player['user']['username']?></li>
-<?php } 
+<?php }
 	}
 } if($gameID){ ?>
 	<script type="application/json" id="gameOptions">
@@ -42,7 +42,7 @@
 <?php		} ?>
 	<ul class="leftCol">
 <?php		if ($isGM || $pathAction == 'characters') { ?>
-		<li id="fm_tools">
+		<li id="fm_tools" class="mob-hide">
 			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
 				<li id="fm_diceRoller">
@@ -144,7 +144,7 @@
 		}
 		if ($gameID && $pathAction != 'forums' && ($game['players'][0]['approved'] || $game['public'])) {
 ?>
-			<li><a href="/forums/<?=$game['forumID']?>/" target="_blank" class="menuLink">Forum</a></li>
+			<li><a href="/forums/<?=$game['forumID']?>/" class="menuLink">Forum</a></li>
 <?php	} ?>
 	</ul>
 </div></div>

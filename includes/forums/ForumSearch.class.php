@@ -153,7 +153,7 @@
 			} elseif ($this->search == 'latestPublicPosts') {
 				echo '<h1 class="headerbar"><i class="ra ra-horn-call"></i> Lastest Public Game Posts</h1>';
 			} else{
-				echo '<h1 class="headerbar"><i class="ra ra-campfire"></i> Latest Posts</h1>';
+				echo '<h1 class="headerbar"><i class="ra ra-speech-bubble"></i> Latest Posts</h1>';
 			}
 
 		}

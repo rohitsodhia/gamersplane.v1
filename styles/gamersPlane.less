@@ -381,6 +381,15 @@ a.fancyButton:active,
 	background-color: @gp-red;
 	color: #fff;
 	padding: 3px 8px;
+
+	&.buttonSecondary
+	{
+		background-color: @gp-orange;
+		&:before,
+		&:after{
+			background-color: @gp-orange;
+		}
+	}
 }
 
 .hbdMargined{
@@ -1062,23 +1071,51 @@ div.prettySelect > div {
 	ul {
 		display: none;
 		position: absolute;
-		left: 7px;
-		top: 32px;
+		left: -25px;
+		top: 40px;
 		width: auto;
 		margin-left: 0;
-		border: 1px solid #444;
+		border: 1px solid @gp-black;
 		border-top: none;
 		background: #fff;
-		color: #000;
+		color: @gp-black;
 		white-space: nowrap;
 		z-index: 6002;
+		border-radius: 4px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+
+		&:before,
+		&:after{
+			content: ' ';
+			display: block;
+			width:0;
+			height:0;
+			border:solid 10px transparent;
+			left:55px;
+			position: absolute;
+		}
+
+		&:before{
+			top:-20px;
+			border-bottom-color: @gp-black;
+		}
+		&:after{
+			top:-19px;
+			border-bottom-color: #fff;
+		}
 
 		li {
 			display: block;
 			padding: 0;
-			border-top: 1px solid #444;
+			border-top: 1px solid #ddd;
 
 			a {
+				padding: 3px 0;
+
+				i.ra{
+					margin-right: .2rem;
+				}
+
 				&,
 				&:visited,
 				&:hover {
@@ -1092,6 +1129,10 @@ div.prettySelect > div {
 					color: #fff;
 					text-decoration: none;
 				}
+			}
+
+			&:first-of-type{
+				border-top-color: @gp-black;
 			}
 		}
 
@@ -1130,8 +1171,8 @@ div.prettySelect > div {
 		}
 
 		ul {
-			top: 42px;
-			right: 0;
+			top: 55px;
+			right: -30px;
 			left: auto;
 		}
 	}

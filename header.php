@@ -27,18 +27,18 @@
 			<li ng-show="loggedIn">
 				<a href="/characters/my/"><i class="ra ra-double-team hide mob-show-inline-block"></i><span class="mob-hide">Characters</span></a>
 				<ul ng-if="characters.length">
-					<li ng-repeat="char in characters | limitTo: 5"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
-					<li><a href="/characters/my/">All characters</a></li>
+				<li><a href="/characters/my/"><i class="ra ra-double-team"></i>All characters</a></li>
+					<li ng-repeat="char in characters | limitTo: 10"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
 				</ul>
 			</li>
 			<li>
 				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}"><i class="ra ra-d6 hide mob-show-inline-block"></i><span class="mob-hide">Games</span></a>
 				<ul ng-if="loggedIn && games.length">
-					<li ng-repeat="game in games | limitTo: 5"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
-					<li><a href="/games/my/">All games</a></li>
+				<li><a href="/games/my/"><i class="ra ra-d6"></i> All games</a></li>
+					<li ng-repeat="game in games | limitTo: 10"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
 				</ul>
 			</li>
-			<li><a href="/forums/"><i class="ra ra-campfire hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
+			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
 			<li ng-show="loggedIn"><a href="/gamersList/"><i class="ra ra-gamers-plane hide mob-show-inline-block"></i><span class="mob-hide">The Gamers</span></a></li>
 			<li class="small-hide"><a href="/links/">Links</a></li>
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
