@@ -152,12 +152,14 @@
 					$character = $characters[$post->getPostAs()];
 				} else {
 					$postAsChar = false;
+					$npc = $post->getNpc();
 				}
 			} else {
 				$postAsChar = false;
+				$npc = $post->getNpc();
 			}
 ?>
-			<div class="postBlock post<?=$postSide?><?=$postAsChar ? ' postAsChar' . ($character->getAvatar() ? ' withCharAvatar' : '') : ''?>">
+			<div class="postBlock post<?=$postSide?><?=$postAsChar ? ' postAsChar' . ($character->getAvatar() ? ' withCharAvatar' : '') : ($npc ? ' withSingleNpc postAsChar withCharAvatar':'')?>">
 				<a name="p<?=$post->getPostID()?>"></a>
 <?php
 			if (!$newPostMarked && ($post->getPostID() > $threadManager->getThreadLastRead() || $threadManager->thread->getLastPost('postID') == $post->getPostID())) {
@@ -179,7 +181,10 @@
 			if ($postAsChar) {
 				$character->load();
 			}
+
+			$postedCharAvatar = false;
 			if ($postAsChar && $character->getAvatar()) {
+				$postedCharAvatar = true;
 				if ($character->checkPermissions()) {
 ?>
 							<a href="/characters/<?=$character::SYSTEM?>/<?=$character->getID()?>/"><img src="<?=$character->getAvatar()?>"></a>
@@ -202,14 +207,24 @@
 					$finalHeight = 40;
 				}
 			}
+			else if($npc && $npc["avatar"]){
+				$postedCharAvatar = true;
+				$finalHeight=40;
+				$finalWidth=40;
+				?><img src="<?=$npc['avatar']?>"><?php
+			}
+
 ?>
-							<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postAsChar && $character->getAvatar() ? ' style="top: -' . ($finalHeight / 2) . 'px; right: -' . ($finalWidth / 2) . 'px;"' : ''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
+							<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postedCharAvatar ? ' style="top: -' . ($finalHeight / 2) . 'px; right: -' . ($finalWidth / 2) . 'px;"' : ''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
 						</div></div>
 						<div class="postNames">
 <?php
 			if ($postAsChar) {
 				$character->getForumTop($post->author, in_array($post->author->userID, $gms));
 			} else {
+				if($npc){
+					?> <p class="charName"><?=$npc["name"]?></p> <?php
+				}
 ?>
 						<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=in_array($post->author->userID, $gms)?' <img src="/images/gm_icon.png">':''?><?=User::inactive($post->author->lastActivity)?></p>
 <?php			} ?>
