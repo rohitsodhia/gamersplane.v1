@@ -64,7 +64,8 @@
 				['projection' => [
 					'gameID' => true,
 					'title' => true,
-					'players' => true
+					'players' => true,
+					'status' => true
 				]]
 			)->toArray();
 
@@ -77,11 +78,19 @@
 				]]
 			);
 
+			$notifications = Array();
+
 			if (count($pending)) {
 				$pendingIDs = [];
 				$pendingPlayers = [];
 				$pendingChars = [];
+				$openGames = 0;
 				foreach ($pending as $game) {
+
+					if($game['status']=='open'){
+						$openGames++;
+					}
+
 					$pendingIDs[] = $game['gameID'];
 					foreach ($game['players'] as $player) {
 						if (!$player['approved']) {
@@ -102,9 +111,14 @@
 						}
 					}
 				}
+
+				if($openGames > 0){
+					$notification='<div class="notify notifyOpenGames col-1-2 mob-col-1">You have <a href="/games/my/">'.$openGames.' game'.($openGames!=1?'s':'').' open for applications</a></div>';
+					$notifications[]=$notification;
+				}
 			}
 
-			$notifications = Array();
+
 			if (($pendingPlayers && sizeof($pendingPlayers) > 0) || ($pendingChars && sizeof($pendingChars) > 0)) {
 				$notification='';
 				if (sizeof($pendingPlayers) || sizeof($pendingChars)) {
