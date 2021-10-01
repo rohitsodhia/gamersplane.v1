@@ -96,7 +96,7 @@ $(function() {
 			var isGm = $('#fm_characters ul.submenu').hasClass('isGM');
 
 			//setup the gui containers
-			var charSection = $('<div><div id="charButtons"></div><div id="charSheetRoller" style="display:none;"></div></div>').insertAfter($('#rollExplination'));
+			var charSection = $('<div><div id="charButtons"></div><div id="charSheetRoller" style="display:none;"></div></div>').insertAfter($('#rolls'));
 			var charList = $('#charButtons', charSection);
 			var charSheet = $('#charSheetRoller', charSection);
 
