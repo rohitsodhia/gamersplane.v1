@@ -142,6 +142,7 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
 					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
 					 "/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
+					 "/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
@@ -166,6 +167,7 @@ function BBCode2Html($text) {
 					 '<div class="layout-columns-3">\1</div>',
 					 '<div class="layout-column">\1</div>',
 					 '<div class="style" style="display:none;">\1</div>',
+					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><div class="inlineNpcAvatar" style="background-image:url(\2)"></div><div class="inlineNpcName">\1</div></div>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))

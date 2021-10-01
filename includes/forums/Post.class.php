@@ -138,6 +138,8 @@
 				}
 			}
 
+			$message = preg_replace("/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms", "", $message);
+
 			return trim($message);
 		}
 
@@ -324,6 +326,16 @@
 					);
 				}
 			}
+		}
+
+		public function getNpc(){
+			preg_match_all('/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]/ms', $this->message, $matches, PREG_SET_ORDER);
+
+			if ($matches && count($matches)==1) {
+				return array('name' => $matches[0][1],'avatar'=>$matches[0][2]);
+			}
+
+			return null;
 		}
 
 		public function delete() {

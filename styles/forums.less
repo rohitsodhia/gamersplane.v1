@@ -1771,6 +1771,37 @@ td .rollDice {
 	float:left;
 }
 
+.inlineNpcPrefix{
+	&:after{
+		content: '';
+		display: table;
+		clear: both;
+	}
+}
+
+.inlineNpc{
+	float: left;
+	margin: 0 1rem 0.5rem 0;
+
+	.inlineNpcAvatar{
+		width:100px;
+		height:100px;
+		background-repeat: no-repeat;
+		background-size: contain;
+		background-position: center center;
+	}
+
+	.inlineNpcName{
+		text-align: center;
+		font-weight: bold;
+		max-width: 100px;
+	}
+}
+
+.withSingleNpc .inlineNpc{
+	display: none;
+}
+
 @media only screen and (max-width: @mobile-breakpoint){
     #page_forum,#page_forum_search{
 		.tableDiv{
