@@ -177,7 +177,8 @@ function BBCode2Html($text) {
 	//map
 	$matches = null;
 	$text=preg_replace_callback("/\[map\](.*?)\[\/map\]/ms", function($matches){
-			$mapLink=preg_replace('/\s+/', '',$matches[1]);
+			$mapLink=preg_replace('/^[\s]*(--).*?$/ms', '',$matches[1]); 	//remove -- comments
+			$mapLink=preg_replace('/\s+/', '',$mapLink);					//remove spaces
 			return '<a class="mapLink" target="_blank" href="'.$mapLink.'"><img class="usrImg" src="'.$mapLink.'"/></a>';
 	}, $text);
 	//end map
