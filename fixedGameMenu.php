@@ -37,7 +37,7 @@
 <?php }?>
 </ul>
 	<ul class="rightCol">
-		<li><a href="<?='/games/'.$gameID?>" class="menuLink" target="_blank">Game Details</a></li>
+		<li><a href="<?='/games/'.$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
 <?php		} ?>
 	<ul class="leftCol">
