@@ -104,7 +104,7 @@
 				}
 			}
 
-			$notifications=Array();
+			$notifications = Array();
 			if (($pendingPlayers && sizeof($pendingPlayers) > 0) || ($pendingChars && sizeof($pendingChars) > 0)) {
 				$notification='';
 				if (sizeof($pendingPlayers) || sizeof($pendingChars)) {

@@ -193,6 +193,9 @@
 				$addPost->execute();
 				$this->postID = $mysql->lastInsertId();
 			} else {
+
+				$this->removeOldMentions();
+
 				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = " . ($this->postAs ? $this->postAs : 'NULL') . ($this->edited ? ", lastEdit = NOW(), timesEdited = {$this->timesEdited}" : '') . " WHERE postID = {$this->postID}");
 				$updatePost->bindValue(':title', $this->title);
 				$updatePost->bindValue(':message', $this->message);
@@ -238,11 +241,29 @@
 			return $this->modified;
 		}
 
-		private function addMentions(){
+		private static function getUserIdsFromMentions($message)
+		{
 			global $mysql;
-			$mongo = DB::conn('mongo');
-			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $this->message, $matches, PREG_SET_ORDER);
 
+			$ret = Array();
+			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $message, $matches, PREG_SET_ORDER);
+
+			if (sizeof($matches)) {
+				foreach ($matches as $match) {
+					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
+					if($mentionUserId && !in_array($mentionUserId,$ret)){
+						$ret[] = $mentionUserId;
+					}
+				}
+			}
+
+			return $ret;
+		}
+
+		private function removeOldMentions(){
+
+//It is possible that this can simply be replaced with the code below - but without indexes I'm leery of performance
+/*
 			$mongo->users->updateMany(
 				[],
 				['$pull' => [
@@ -250,10 +271,34 @@
 					]
 				]
 			);
+*/
 
-			if (sizeof($matches)) {
+			global $mysql;
+			$mongo = DB::conn('mongo');
 
-				$mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
+			$oldMessage = $mysql->query("SELECT message FROM posts WHERE postID = {$this->postID}")->fetchColumn();
+
+			$userIds = Post::getUserIdsFromMentions($oldMessage);
+
+			foreach ($userIds as $userId) {
+				$mongo->users->updateOne(
+					['userID' => ((int)$userId)],
+					['$pull' => [
+						'mentions' => ['postID'=>((int) $this->postID)]
+						]
+					]
+				);
+			}
+
+		}
+
+		private function addMentions(){
+			global $mysql;
+			$mongo = DB::conn('mongo');
+
+			$userIds = Post::getUserIdsFromMentions($this->message);
+
+			if (count($userIds)>0) {
 
 				//strip "Re: " if present
 				$postTitle=$this->title;
@@ -261,25 +306,22 @@
 					$postTitle=substr($postTitle,4);
 				}
 
-				$threadIdAsInt=(int)$this->threadID;
-				$forumName=$mysql->query("SELECT f.title FROM forums f INNER JOIN threads t ON f.forumID = t.forumID WHERE t.threadID={$threadIdAsInt}")->fetchColumn();
 
-				foreach ($matches as $match) {
+				$threadIdAsInt = (int)$this->threadID;
+				$forumName = $mysql->query("SELECT f.title FROM forums f INNER JOIN threads t ON f.forumID = t.forumID WHERE t.threadID={$threadIdAsInt}")->fetchColumn();
 
-					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
-					if($mentionUserId){
-						$mongo->users->updateOne(
-							['userID' => ((int)$mentionUserId)],
-							['$push' => [
-								'mentions' => [
-									'threadID' => $threadIdAsInt,
-									'postID' => ((int) $this->postID),
-									'forumTitle'=>$forumName,
-									'threadTitle' => $postTitle
-								]
-							]]
-						);
-					}
+				foreach ($userIds as $mentionUserId) {
+					$mongo->users->updateOne(
+						['userID' => ((int)$mentionUserId)],
+						['$push' => [
+							'mentions' => [
+								'threadID' => $threadIdAsInt,
+								'postID' => ((int) $this->postID),
+								'forumTitle'=>$forumName,
+								'threadTitle' => $postTitle
+							]
+						]]
+					);
 				}
 			}
 		}
