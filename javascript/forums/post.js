@@ -183,6 +183,23 @@ $(function() {
 							});
 						});
 
+						$('.npcs',charSheetContent).each(function(){
+							var npcSection=$(this);
+							var title=$('h3',npcSection).text();
+
+							var npcDiv=$('<div class="roller npcs"><select class="abilitySelect shortcutSelector shortcutSelector"><option></option></select></div>').appendTo(charSheet);
+							$('option',npcDiv).text('--'+title+'--');
+							$('.npcList_item',npcSection).each(function(){
+								var pThis=$(this);
+								var name=$.trim($('.npcList_itemName',pThis).text());
+								if(name.length>0){
+									var notes=$.trim($('.npcList_itemAvatar',pThis).data('avatar'));
+									var bbCode='[npc="'+name+'"]'+notes+'[/npc]';
+									$('<option></option>').text(name).data('notes',bbCode).appendTo($('select',npcDiv));
+								}
+							});
+						});
+
 						var snippetDiv=$('<div class="roller snippets"><select class="snippetSelect shortcutSelector"><option>--Snippets--</option></select></div>').appendTo(charSheet);
 						$('.spoiler.snippet',charSheetContent).each(function(){
 							var pThis=$(this);

@@ -227,6 +227,34 @@ function BBCode2Html($text) {
 	}, $text);
 	//end tables
 
+	//npc list
+	$matches = null;
+	$text=preg_replace_callback("/\[npcs(=([\"a-zA-Z])*)?\](.*?)\[\/npcs\]/ms", function($matches){
+			$npcTitle=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
+
+			$npcRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
+
+			$ret = "<div class='npcs'>";
+			if($npcTitle){
+				$ret = $ret."<h3>".$npcTitle."</h3>";
+			}else{
+				$ret = $ret."<h3>NPCs</h3>";
+			}
+
+			$ret = $ret."<div class='npcList'>";
+			foreach ($npcRows as $npcRow){
+				$npcElements=explode('|',$npcRow,2);
+				if(count($npcElements) == 2){
+					$ret=$ret."<div class='npcList_item'><div class='npcList_itemAvatar' data-avatar='".$npcElements[1]."' style='background-image:url(".$npcElements[1].");'></div><div class='npcList_itemName'>".$npcElements[0]."</div></div>";
+				}
+			}
+
+			$ret=$ret."</div></div>";
+
+			return $ret;
+	}, $text);
+	//end npc list
+
 	//notes and private
 	$matches = null;
 	global $currentUser, $isGM, $post;
