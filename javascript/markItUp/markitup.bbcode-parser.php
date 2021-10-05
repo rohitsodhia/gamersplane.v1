@@ -229,10 +229,10 @@ function BBCode2Html($text) {
 
 	//npc list
 	$matches = null;
-	$text=preg_replace_callback("/\[npcs(=([\"a-zA-Z])*)?\](.*?)\[\/npcs\]/ms", function($matches){
+	$text=preg_replace_callback("/\[npcs=\"?(.*?)\"?\](.*?)\[\/npcs\]/ms", function($matches){
 			$npcTitle=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 
-			$npcRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
+			$npcRows = explode("\n", trim(str_replace("<br />","",$matches[2])));
 
 			$ret = "<div class='npcs'>";
 			if($npcTitle){
