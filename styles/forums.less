@@ -395,6 +395,7 @@
 
 	.posterDetails .avatar {
 		text-align: center;
+		min-width: 50px;
 
 		& > div {
 			position: relative;
@@ -1827,6 +1828,22 @@ td .rollDice {
     }
 
 	#page_forum_thread .postBlock{
+
+		.postHeader{
+			margin-bottom: 0;
+			padding-bottom: 0;
+			border-bottom-style: none;
+
+			.postedOn{
+				margin-top: -40px;
+			}
+
+			.subject{
+				display: none;
+			}
+
+		}
+
 		.flexWrapper{
 			flex-direction: column;
 			.posterDetails{
@@ -1863,6 +1880,7 @@ td .rollDice {
 
 	#page_forum_thread .postBlock .posterDetails {
 		order:0;
+		gap:0 1rem;
 		.avatar {
 			img{
 				max-height: 40px;
@@ -1872,7 +1890,11 @@ td .rollDice {
 		.postNames{
 			display: flex;
 			flex-direction: column;
-			margin-left: 20px;
+		}
+
+		.charName,
+		.posterName{
+			text-align: left;
 		}
 	}
 
@@ -1888,7 +1910,7 @@ td .rollDice {
 		}
 	}
 
-	#page_forum_thread .postBlock.postRight .flexWrapper {
+	#page_forum_thread .postBlock.postLeft .flexWrapper {
 		.postContent{
 			&:before,&:after{
 				right: 10px;
@@ -1897,6 +1919,17 @@ td .rollDice {
 
 		.posterDetails{
 			flex-direction: row-reverse;
+
+			.charName,
+			.posterName{
+				text-align: right;
+			}
+		}
+
+		.postHeader{
+			.postedOn{
+				float: left;
+			}
 		}
 	}
 
