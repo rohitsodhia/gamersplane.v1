@@ -185,7 +185,7 @@
 
 #page_forum {
 	.name {
-		width: 405px;
+		width: 100%;
 	}
 
 	.description {
@@ -1738,9 +1738,10 @@ td .rollDice {
 
 		.threadInfo{
 			flex:0 0 auto;
-			width:40%;
+			width:100%;
 			display: flex;
 			flex-wrap: wrap;
+			flex-shrink: 1;
 
 			.threadInfoNew{
 				width: 20px;
@@ -1765,11 +1766,9 @@ td .rollDice {
 		}
 		.numPosts{
 			flex:0 0 auto;
-			width:25%;
 		}
 		.lastPost{
 			flex:0 0 auto;
-			width:25%;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
