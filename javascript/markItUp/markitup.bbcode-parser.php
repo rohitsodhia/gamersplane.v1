@@ -162,7 +162,7 @@ function BBCode2Html($text) {
 					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
-					 '<iframe width="560" height="315" src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+					 '<div class="youtube_bb"><iframe src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>',
 					 '<div class="layout-columns-2">\1</div>',
 					 '<div class="layout-columns-3">\1</div>',
 					 '<div class="layout-column">\1</div>',
