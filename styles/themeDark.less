@@ -31,9 +31,18 @@ body   a.username:visited
     color:#89c;
 }
 
-body #page_home .announcements
+body #notificationMsgs
 {
+    color: #fff;
     background-color: #37393F;
+
+    .notify{
+        &.notifyOpenGames{
+            &:before{
+                color: @gp-red-light;
+            }
+        }
+    }
 }
 
 body .headerbar a, body .headerbar a:active, body .headerbar a:hover, body .headerbar a:visited, body div.headerbar
