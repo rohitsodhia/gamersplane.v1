@@ -1,8 +1,7 @@
-				<div class="tr">
-					<label id="name" class="leftCol">Character Name</label>
-					<div class="rightCol"><input id="name" type="text" ng-model="character.name" class="midText alignLeft"></div>
-				</div>
-				<div class="tr">
-					<div class="leftCol">Character Sheet</div>
-					<div class="rightCol"><textarea ng-model="character.notes" class="markItUp"></textarea></div>
-				</div>
+
+<div class="flex-row">
+	<label id="name">Character Name</label>
+	<div class="col-1"><input id="name" type="text" ng-model="character.name" class="midText alignLeft"></div>
+	<label>Character Sheet</label>
+	<div class="col-1"><textarea ng-model="character.notes" class="markItUp"></textarea></div>
+</div>
