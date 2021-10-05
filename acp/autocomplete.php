@@ -46,6 +46,7 @@
 								<a href="" ng-click="processUAI(item, 'reject')" class="sprite cross"></a>
 							</div>
 						</div>
+					</div>
 				</div>
 			</div>
 		</div>
