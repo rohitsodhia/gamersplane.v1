@@ -7,11 +7,11 @@
 		protected $resultsCount = 0;
 		protected $page = 1;
 
-		public function __construct($search, $searchIn = array()) {
+		public function __construct($search, $searchIn = array(), $useForumManager = null) {
 			global $mysql, $currentUser;
 
 			$this->search = $search;
-			$forumManager = new ForumManager(0);
+			$forumManager = $useForumManager ? $useForumManager: new ForumManager(0);
 			$this->forumManager = $forumManager;
 			if (is_array($searchIn) && sizeof($searchIn))
 				$this->searchIn = $searchIn;

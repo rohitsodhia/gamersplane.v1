@@ -1,7 +1,8 @@
 <?php	addPackage('forum');
 require_once(FILEROOT . '/includes/HomeManager.class.php');
 $homeManager = new HomeManager();
-$forumSearchGames = new ForumSearch('latestGamePosts');
+$forumManager = new ForumManager(0);
+$forumSearchGames = new ForumSearch('latestGamePosts',array(),$forumManager);
 $forumSearchGames->findThreads(1, 5);
 ?>
 
@@ -77,7 +78,7 @@ $forumSearchGames->findThreads(1, 5);
 				</div>
 				<?if($forumSearchGames->getResultsCount()>0){
 					?><br/><?
-					$forumSearchPublic = new ForumSearch('latestPublicPosts');
+					$forumSearchPublic = new ForumSearch('latestPublicPosts' , array() , $forumManager);
 					$forumSearchPublic->findThreads(1, 2);
 					$forumSearchPublic->displayLatestHPWidget('<i class="ra ra-horn-call"></i> Latest Public Posts','<a href="/forums/search/?search=latestPublicPosts">Latest Public Posts</a>','orange');
 				}?>
@@ -85,7 +86,7 @@ $forumSearchGames->findThreads(1, 5);
 
 <div id="latestPosts" class="homeWidget col-1-3 mob-col-1 mob-order-2">
 <?php
-	$forumSearchCommunity = new ForumSearch('homepage');
+	$forumSearchCommunity = new ForumSearch('homepage' , array() , $forumManager);
 	$forumSearchCommunity->findThreads(1,5);
 	$forumSearchCommunity->displayLatestHPWidget('<i class="ra ra-speech-bubble"></i> Community Posts','<a href="/forums/search/?search=latestPosts">All Latest Posts</a>','orange');
 ?>
@@ -102,7 +103,7 @@ $forumSearchGames->findThreads(1, 5);
 				<p>...or read some of the public games below.</p>
 			</div>
 		<?php
-		$forumSearchPublic = new ForumSearch('latestPublicPosts');
+		$forumSearchPublic = new ForumSearch('latestPublicPosts' , array() , $forumManager);
 		$forumSearchPublic->findThreads(1, 3);
 		$forumSearchPublic->displayLatestHPWidget('<i class="ra ra-horn-call"></i> Latest Public Posts','<a href="/forums/search/?search=latestPublicPosts">Latest Public Posts</a>','orange');
 	}
@@ -116,8 +117,8 @@ $forumSearchGames->findThreads(1, 5);
 	<div id="yourGames" class="col-1">
 		<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Your Games</h3>
 	<?php
-	$forumManager = new ForumManager(2);
-		$forumManager->displayForum();
+		$forumManagerGames = new ForumManager(2);
+		$forumManagerGames->displayForum();
 	?>
 	</div>
 </div>
