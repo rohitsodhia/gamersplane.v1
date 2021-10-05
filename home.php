@@ -99,7 +99,7 @@ $forumSearchGames->findThreads(1, 5);
 			<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Find a game</h3>
 			<div class="noGames">
 				<p>You're not in any games yet.</p>
-				<div class="noGameLink"><a href="/games/list/">Join a game!</a></div>
+				<div class="noGameLink"><a href="/forums/10/">Join a game!</a></div>
 				<p>...or read some of the public games below.</p>
 			</div>
 		<?php
