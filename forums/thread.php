@@ -60,21 +60,8 @@
 <?php
 		}
 	}
-	if ($threadManager->getPermissions('moderate')) {
-?>
-					<div>
-						<form id="threadOptions" method="post" action="/forums/process/modThread/">
-<?php
-	$sticky = $threadManager->thread->getStates('sticky') ? 'unsticky' : 'sticky';
-	$lock = $threadManager->thread->getStates('locked') ? 'unlock' : 'lock';
-?>
-							<input type="hidden" name="threadID" value="<?=$threadID?>">
-							<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
-							<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread" class="<?=$lock?>"></button>
-						</form>
-					</div>
-<?php	} ?>
-<?php	if ($threadManager->getPermissions('write')) {
+	$threadManager->addModerationButtons();
+	if ($threadManager->getPermissions('write')) {
 			$threadManager->displayPagination();
 } ?>
 				</div>
@@ -332,23 +319,12 @@
 		$threadManager->displayPagination();
 	}
 
-	if ($threadManager->getPermissions('moderate')) {
-?>
-			<form id="quickMod" method="post" action="/forums/process/modThread/">
-<?php
-	$sticky = $threadManager->thread->getStates('sticky') ? 'Unsticky' : 'Sticky';
-	$lock = $threadManager->thread->getStates('locked') ? 'Unlock' : 'Lock';
-?>
-				Quick Mod Actions:
-				<input type="hidden" name="threadID" value="<?=$threadID?>">
-				<select name="action">
-					<option value="lock"><?=ucwords($lock)?> Thread</option>
-					<option value="sticky"><?=ucwords($sticky)?> Thread</option>
-					<option value="move">Move Thread</option>
-				</select>
-				<button type="submit" name="go">Go</button>
-			</form>
-<?php	} ?>
+	?>
+	<div class="rightCol alignRight">
+	<?php
+	$threadManager->addModerationButtons();
+	?>
+	</div>
 		</div>
 
 <?php

@@ -48,27 +48,27 @@
 			</div>
 			<div id="landing_whatIs_text">
 				<h2>What is Play-by-Post?</h2>
-				<p>While tabletop RPGs are the most fun face to face, not everyone has the time for protracted sesions, or might not live near other players into the same games as them. Starting in the early days of computers, play-by-post (PbP) gaming is simply playing the RPGs you know and love over a forum. Rather than saying your actions aloud, you just type them up!</p>
-				<p>Playing via forum means you don’t need to set side a dedicated few hours to game and can play at your convience. You can log in and respond to other players/the GM whenever you have a few minutes to spare, and the nature of PbP makes for a robust, RP friendliy environment. You can play with old friends, or make new friends around the world!</p>
-				<p>Gamers’ Plane offers you a PbP experience you won’t get anywhere else, focused around a community of gamers, with tools to make the experience as close to tabletop as you can get!</p>
+				<p>Play-By-Post is a different way to experience tabletop RPGs. Rather than dedicating a few hours at a time to sit together around a table, you can play at your own convenience. Log in and respond to other players and the GM whenever you have a few minutes to spare.</p>
+
+				<p>Gamers' Plane offers you a PbP experience you won’t get anywhere else, focused around a community of gamers, with tools to make the experience as smooth as possible. You can play with old friends, or make new friends around the world!</p>
 			</div>
 		</div>
 		<div id="landing_features">
 			<div class="contentContainer">
 				<div id="landing_features_tools">
-					<div class="icon"><span></span></div>
-					<h3>Tools</h3>
-					<p>With dice rollers and card decks built straight into the forums, the random factor is easy to include!</p>
+					<div class="icon"><i class="ra ra-three-keys"></i></div>
+					<h3>Any RPG</h3>
+					<p>Support for <em>all</em> table top RPGs - mainstream favorites, old classics, indie, small press and home-brew games.</p>
 				</div>
 				<div id="landing_features_library">
-					<div class="icon"><span></span></div>
-					<h3>Character Library</h3>
-					<p>Need an idea for a new character? Trying to build a big baddie? See what other people share in the library!</p>
+					<div class="icon"><i class="ra ra-perspective-dice-six"></i></div>
+					<h3>Integrated tools</h3>
+					<p>Dedicated game forums, post as your character, integrated character sheets, dice rollers and playing cards.</p>
 				</div>
 				<div id="landing_features_sheets">
-					<div class="icon"><span></span></div>
-					<h3>Character Sheets</h3>
-					<p>Every character sheet is a digital replica of its real life version, so what you see online is the same as off line!</p>
+					<div class="icon"><i class="ra ra-double-team"></i></div>
+					<h3>Community</h3>
+					<p>A diverse and friendly community that welcomes RPG veterans and newcomers alike to the wonderful world of playing RPGs by Post.</p>
 				</div>
 			</div>
 		</div>

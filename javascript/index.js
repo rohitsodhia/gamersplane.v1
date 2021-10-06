@@ -4,9 +4,18 @@ $(function() {
     $('.announcements .openClose').on('click',function(){
         var pThis=$(this);
         pThis.toggleClass('openClose-open');
-        pThis.closest('.announcements').toggleClass('annoucementClosed');
+        var announements=pThis.closest('.announcements');
+        /*
+        if(announements.hasClass('annoucementClosed')){
+            $('.announcementPost',announements).slideOpen();
+        }
+        else{
+            $('.announcementPost',announements).slideClosed();
+        }*/
+        $('.announcementPost',announements).slideToggle();
+        announements.toggleClass('annoucementClosed');
 
-        var storageKey='announcement-'+pThis.data('announce');
+        var storageKey='announcement-'+pThis.data('announce')+'-'+pThis.data('threadid');
         if(pThis.hasClass('openClose-open')){
             storage.removeItem(storageKey);
         } else {
@@ -16,8 +25,8 @@ $(function() {
 
     $('.announcements .openClose').each(function(){
         var pThis=$(this);
-        var storageKey='announcement-'+pThis.data('announce');
         var threadId=pThis.data('threadid');
+        var storageKey='announcement-'+pThis.data('announce')+'-'+threadId;
         if(storage.getItem(storageKey)==threadId){
             pThis.click();
         }

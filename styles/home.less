@@ -1,10 +1,14 @@
-@import "rpgawesome/variables.less";
 @import "gpVariables.less";
 
 .widget-orange{
     div.forumIcon.newPosts:before{
         color: @gp-orange;
     }
+}
+
+#hompageRows{
+    display: flex;
+    flex-direction: column;
 }
 
 .announcements{
@@ -61,11 +65,7 @@
         }
     }
 
-    &.annoucementClosed{
-        .announcementPost{
-            display: none;
-        }
-    }
+
 }
 
 #notificationMsgs{

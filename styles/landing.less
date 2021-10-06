@@ -1,4 +1,3 @@
-@import "rpgawesome/variables.less";
 @import "gpVariables.less";
 
 .fullWidthBody .bodyContainer, .fullWidthBody .contentContainer, .fullWidthBody #fixedMenu > div{
@@ -179,7 +178,7 @@
 #landing_whatIs {
     padding:1rem;
 	max-width: 960px;
-	& > * {
+	#landing_whatIs_text {
 		//float: left;
 		margin: 40px 0;
 	}
@@ -284,7 +283,7 @@ footer .bodyContainer
 		& > * {
 			position: relative;
 			width: 300px;
-			height: 220px;
+			height: 230px;
 			padding: 50px 30px 0;
             box-sizing: border-box;
 			border: 1px solid #dbb;
@@ -306,7 +305,6 @@ footer .bodyContainer
 	}
 
 	h3 {
-		margin-bottom: 1em;
 		font-family: OpenSans_Regular;
 		font-size: 20px;
 		text-transform: uppercase;
@@ -325,13 +323,14 @@ footer .bodyContainer
 #landing_features_tools,
 #landing_features_library,
 #landing_features_sheets {
-	span {
+	i {
 		display: inline-block;
-		background: url('../images/sprites.png') top left no-repeat;
 		vertical-align: middle;
+		color: #fff;
+		font-size: 3rem;
 	}
 }
-
+/*
 #landing_features_tools {
 	span {
 		width: 42px;
@@ -357,7 +356,7 @@ footer .bodyContainer
 		background-position: -155px -56px;
 	}
 }
-
+*/
 .bodyContainer, .fullWidthBody .contentContainer, #fixedMenu > div{
     max-width: none;
 

@@ -30,6 +30,7 @@
 	</ul>
 </li>
 </script>
+	<div class="forumAcpManagement">
 		<div class="sideWidget left"><ul id="forums">
 			<li ng-repeat="forum in list" ng-include="'forumList'"></li>
 		</ul></div>
@@ -138,4 +139,5 @@
 				</div>
 			</div>
 		</div>
+	</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

@@ -4,7 +4,6 @@
 */
 
 /* --------------------------------------------*/
-@import "rpgawesome/variables.less";
 @import "gpVariables.less";
 
 
@@ -293,25 +292,36 @@
 			height: 24px;
 			width: 24px;
 			padding: 0;
-			background-image: url('../images/forums/threadActions.png');
-			background-repeat: no-repeat;
+
+			&:before{
+				font-family: '@{rpgawesome-font-family}';
+			}
 		}
 	}
 
-	.sticky {
-		background-position: top left;
+	.sticky:before {
+		color: #ccc;
+		content: @gp-icon-sticky;
 	}
 
-	.unsticky {
-		background-position: top right;
+	.unsticky:before {
+		color: @gp-red;
+		content: @gp-icon-sticky;
 	}
 
-	.lock {
-		background-position: bottom left;
+	.lock:before {
+		color: #ccc;
+		content: @gp-icon-locked;
 	}
 
-	.unlock {
-		background-position: bottom right;
+	.unlock:before {
+		color: @gp-red;
+		content: @gp-icon-locked;
+	}
+
+	.move:before {
+		color: @gp-red;
+		content: @ra-var-icon-sideswipe;
 	}
 
 	#threadMenu .fancyButton {
@@ -1143,6 +1153,10 @@
 /* --------------------------------------------*/
 
 #page_forumACP {
+	.forumAcpManagement{
+		display: flex;
+	}
+
 	#forums,
 	#forums ul {
 		list-style: none;
@@ -1221,6 +1235,7 @@
 
 	.sectionControls {
 		float: right;
+		margin-right: 20px;
 
 		.content {
 			background-color: @gp-black;
@@ -2016,6 +2031,7 @@ td .rollDice {
 //forum icons
 .ra.forum-icon{
 	margin-right: .3em;
+	vertical-align: text-bottom;
 	&:before{ //default communities
 		content: @ra-var-icon-speech-bubble;
 	}

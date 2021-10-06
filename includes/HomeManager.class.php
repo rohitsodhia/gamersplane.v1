@@ -6,17 +6,21 @@
 		}
 
 
-        public function addAnnouncement($forumId,$iconClass,$addHeaderFooter,$randomPinned){
+        public function addAnnouncement($forumId, $iconClass, $announcementClass, $addHeaderFooter,$randomPinned){
             global $mysql;
+			$postItem = null;
+
 			if($randomPinned){
-				$postQuery = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId} AND sticky=1 ORDER BY RAND() LIMIT 1");
-			}else{
-				$postQuery = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId}  ORDER BY threadID DESC LIMIT 1");
+				$postItem = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId} AND sticky=1 ORDER BY RAND() LIMIT 1")->fetchColumn();
 			}
 
-            $post = new Post($postQuery->fetchColumn());
+			if(!$postItem) {
+				$postItem = $mysql->query("SELECT t.firstPostID FROM threads t WHERE t.forumID = {$forumId}  ORDER BY threadID DESC LIMIT 1")->fetchColumn();
+			}
+
+            $post = new Post($postItem);
 ?>
-			<div class="announcements col-1-2 mob-col-1">
+			<div class="announcements <?=$announcementClass?>">
 				<h2 class="headerbar announcementsheaderbar"><i class="ra <?=$iconClass?>"></i> <a href="/forums/thread/<?=$post->getThreadID()?>/"><?=$post->getTitle()?></a> <i class="openClose openClose-open" data-announce="<?=$forumId?>" data-threadid='<?=$post->getThreadID()?>'></i></h2>
 				<div class="announcementPost">
 					<?if($addHeaderFooter){?>
@@ -31,6 +35,58 @@
 			</div>
 <?
         }
+
+		public function addLatestGames($showCount){
+			global $mongo,$currentUser,$systems;
+
+			$latestGames = $mongo->games->find(
+				[
+					'retired' => null,
+					'status'=>'open',
+					'players' => [
+						'$not' => [
+							'$elemMatch' => [
+								'user.userID' => $currentUser->userID,
+								'approved' => true
+							]
+						]
+					]
+				],
+				[
+					'projection' => [
+						'gameID' => true,
+						'title' => true,
+						'system' => true,
+						'gm' => true,
+						'numPlayers' => true,
+						'players' => true,
+						'customType' => true
+					],
+					'sort' => ['start' => -1],
+					'limit' => $showCount
+				]
+			);
+			$first = true;
+			foreach ($latestGames as $gameInfo) {
+				$gameInfo['playersInGame'] = -1;
+				foreach ($gameInfo['players'] as $player) {
+					if ($player['approved']) {
+						$gameInfo['playersInGame']++;
+					}
+				}
+				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
+				if (!$first) {
+					echo "					<hr>\n";
+				} else {
+					$first = false;
+				}
+		?>
+							<div class="gameInfo">
+								<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
+								<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
+							</div>
+		<?php	}
+		}
 
 		public function addTopNotifications(){
 			global $mongo,$currentUser;
