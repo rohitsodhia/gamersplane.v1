@@ -44,21 +44,19 @@ $forumSearchGames->findThreads(1, 5);
 				?>
 					<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Find a game</h3>
 					<div class="noGames">
-						<p>You're not in any games yet.</p>
+						<p>You're not in any active games.</p>
 						<div class="noGameLink"><a href="/forums/10/">Join a game!</a></div>
-						<p>...or read some of the public games below.</p>
 					</div>
+					<h3 class="headerbar"><a href="/forums/10/"><i class="ra ra-beer"></i> Games Tavern</a></h3>
 				<?php
-				$forumSearchPublic = new ForumSearch('latestPublicPosts' , array() , $forumManager);
-				$forumSearchPublic->findThreads(1, 3);
-				$forumSearchPublic->displayLatestHPWidget('<i class="ra ra-horn-call"></i> Latest in Public Games','<a href="/forums/search/?search=latestPublicPosts">Latest in Public Games</a>','orange');
+				$homeManager->addLatestPosts($forumManager,10,3);
 			}
 
 
 		?>
 		</div>
 	</div>
-
+	<?php if($forumSearchGames->getResultsCount()>0){ ?>
 	<div class="flexWrapper mob-order-2">
 		<div id="yourGames" class="col-1">
 			<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Your Games</h3>
@@ -68,5 +66,6 @@ $forumSearchGames->findThreads(1, 5);
 		?>
 		</div>
 	</div>
+	<?php } ?>
 
 </div>

@@ -94,7 +94,7 @@ class forumACP
 		if (!$details['isGameForum']) {
 			$permissions['general'] = $this->castPermissions($mysql->query("SELECT 'general' as `type`, `read`, `write`, editPost, deletePost, createThread, deleteThread, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}")->fetch());
 		}
-		if (!$details['isGameForum'] && !$permissions['general']) {
+		if (!$details['isGameForum'] && (!$permissions || !$permissions['general'])) {
 			$permissions['general'] = array('type' => 'general');
 			global $permissionTypes;
 			foreach ($permissionTypes as $key => $value) {
@@ -137,13 +137,15 @@ class forumACP
 
 	private function castPermissions($permissions, $divideBy = 1)
 	{
-		foreach ($permissions as $key => &$value) {
-			if (!in_array($key, ['type', 'id', 'name', 'gameGroup', 'username'])) {
-				$value = (int) $value / $divideBy;
-			} elseif (in_array($key, array('id'))) {
-				$value = (int) $value;
-			} elseif ($key == 'gameGroup') {
-				$value = (bool) $value;
+		if($permissions){
+			foreach ($permissions as $key => &$value) {
+				if (!in_array($key, ['type', 'id', 'name', 'gameGroup', 'username'])) {
+					$value = (int) $value / $divideBy;
+				} elseif (in_array($key, array('id'))) {
+					$value = (int) $value;
+				} elseif ($key == 'gameGroup') {
+					$value = (bool) $value;
+				}
 			}
 		}
 		return $permissions;

@@ -121,6 +121,11 @@
 
 				$newPosts = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?true:false;
 
+				ForumSearch::displayLatestPostResultHP($result,$newPosts);
+			}
+		}
+
+		public static function displayLatestPostResultHP($result,$newPosts) {
 ?>
 					<div class="post">
 						<a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><div class="forumIcon<?=$newPosts?' newPosts':''?>"></div></a>
@@ -129,8 +134,8 @@
 						<div class="forum">in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a></div>
 					</div>
 <?
-			}
 		}
+
 
 		public function displayLatestHPWidget($header,$footer,$sectionclass,$headerbarclass=''){
 			if($this->getResultsCount()>0){

@@ -241,5 +241,21 @@
 				echo "</div></div></div>";
 			}
 		}
+
+		public function addLatestPosts($forumManager,$forumId,$showCount){
+			global $mysql, $currentUser;
+			$results=$mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID={$forumId} ORDER BY lp.datePosted DESC LIMIT {$showCount}")->fetchAll(PDO::FETCH_OBJ);
+
+			$first = true;
+			$forumReadId=$forumManager->getForumProperty($forumId, 'markedRead');
+			foreach ($results as $result) {
+				if (!$first) echo "					<hr>\n";
+				else $first = false;
+
+				$newPosts = $result->lastPostID > $forumReadId && $result->lastPostID > $result->lastRead?true:false;
+
+				ForumSearch::displayLatestPostResultHP($result,$newPosts);
+			}
+		}
     }
 ?>
