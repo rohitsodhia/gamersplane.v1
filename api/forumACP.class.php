@@ -94,7 +94,7 @@ class forumACP
 		if (!$details['isGameForum']) {
 			$permissions['general'] = $this->castPermissions($mysql->query("SELECT 'general' as `type`, `read`, `write`, editPost, deletePost, createThread, deleteThread, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}")->fetch());
 		}
-		if (!$details['isGameForum'] && !sizeof($permissions['general'])) {
+		if (!$details['isGameForum'] && !$permissions['general']) {
 			$permissions['general'] = array('type' => 'general');
 			global $permissionTypes;
 			foreach ($permissionTypes as $key => $value) {

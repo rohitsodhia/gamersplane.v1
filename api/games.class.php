@@ -102,7 +102,7 @@ class games
 				'status' => 'open',
 				'retired' => null
 			];
-			if ($_GET['systems'] && sizeof($_GET['systems'])) {
+			if ($_GET['systems']) {
 				$systems = $_GET['systems'];
 				if (is_string($systems)) {
 					$systems = explode(',', $systems);
@@ -317,12 +317,12 @@ class games
 		}
 
 		$gameOptions=trim($_POST['gameOptions']?:"");
-		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions); 
+		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions=="" || json_last_error() === 0) {
 			// JSON is valid
 			$details['gameOptions']=$gameOptions;
-		}		
+		}
 
 		$details['status'] = 'closed';
 		$details['public'] = true;
@@ -423,7 +423,7 @@ class games
 				$isGM = true;
 				break;
 			}
-		}		
+		}
 		if (!$isGM) {
 			displayJSON(['unauthorized' => true]);
 		}
@@ -443,9 +443,9 @@ class games
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		$details['customType'] = sanitizeString($_POST['customType']);
-		
+
 		$gameOptions=trim($_POST['gameOptions']?:"");
-		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions); 
+		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions=="" || json_last_error() === 0) {
 			// JSON is valid
