@@ -1,4 +1,5 @@
 <?php
+	$responsivePage=true;
 	if ($loggedIn) { header('Location: /'); exit; }
 
 	$activateHash = $pathOptions[1];
