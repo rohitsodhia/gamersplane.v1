@@ -590,18 +590,5 @@
 			}
 			$mongo->users->updateOne(['userID' => $userID], ['$set' => ['lfg' => $lfg]]);
 		}
-
-		public function removeMention($postId){
-			global $currentUser;
-			$mongo = DB::conn('mongo');
-			$mongo->users->updateMany(
-				['userID' => $currentUser->userID],
-				['$pull' => [
-					'mentions' => ['postID'=>((int) $postId)]
-					]
-				]
-			);
-
-		}
 	}
 ?>
