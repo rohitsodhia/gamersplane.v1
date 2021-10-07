@@ -50,7 +50,7 @@
 				<h2>What is Play-by-Post?</h2>
 				<p>Play-By-Post is a different way to experience tabletop RPGs. Rather than dedicating a few hours at a time to sit together around a table, you can play at your own convenience. Log in and respond to other players and the GM whenever you have a few minutes to spare.</p>
 
-				<p>Gamers' Plane offers you a PbP experience you won’t get anywhere else, focused around a community of gamers, with tools to make the experience as smooth as possible. You can play with old friends, or make new friends around the world!</p>
+				<p>Gamers' Plane offers you a PbP experience you won’t get anywhere else, focused around a community of gamers, with tools to make the experience as smooth as possible. You can play with old friends, or make new ones around the world!</p>
 			</div>
 		</div>
 		<div id="landing_features">
