@@ -13,7 +13,7 @@
 			'str' => ['dice' => '', 'skills' => ''],
 			'qui' => ['dice' => '', 'skills' => ''],
 			'vig' => ['dice' => '', 'skills' => '']
-		);
+		];
 		protected $edgesHindrances = '';
 		protected $nightmare = '';
 		protected $wounds = ['head' => 0, 'leftHand' => 0, 'rightHand' => 0, 'guts' => 0, 'leftLeg' => 0, 'rightLeg' => 0];
