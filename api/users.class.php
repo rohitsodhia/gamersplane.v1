@@ -27,8 +27,6 @@
 				$this->getLFG();
 			} elseif ($pathOptions[0] == 'saveLFG') {
 				$this->saveLFG();
-			} elseif ($pathOptions[0] == 'removeMention') {
-				$this->removeMention($_POST['postID']);
 			}else {
 				displayJSON(['failed' => true]);
 			}
