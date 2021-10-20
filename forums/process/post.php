@@ -294,8 +294,6 @@
 				$email = ob_get_contents();
 				ob_end_clean();
 
-				file_put_contents( "php://stdout",$email);
-
 				foreach ($subs as $sub)
 					mail($sub, "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 			}
