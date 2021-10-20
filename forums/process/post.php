@@ -17,10 +17,12 @@
 			if (!$threadManager->getPermissions('write') || ($locked && $threadManager->getPermissions('moderate'))) { header('Location: /forums/'.$forumID.'/'); exit; }
 		}
 
+		$minorChange=false;
 		if ($_POST['edit']) {
 			$postID = intval($_POST['edit']);
 			$post = new Post($postID);
 			$threadID = intval($post->threadID);
+			$minorChange=isset($_POST['minorChange']);
 		} else {
 			$post = new Post();
 		}
@@ -176,7 +178,7 @@
 
 			$post->setThreadID($threadID);
 			if (strlen($post->getTitle()) == 0) {
-				$title = 'Re: '.$threadManager->getThreadProperty('title');
+				$title = $threadManager->getThreadProperty('title');
 			}
 			if (strlen($post->getMessage()) == 0) {
 				$formErrors->addError('noMessage');
@@ -266,9 +268,13 @@
 					}
 				}
 			}
+
+			if(!$minorChange){
+				$threadManager->thread->majorChange($post->getPostID());
+			}
 		}
 
-		if (!isset($_POST['edit'])) {
+		if (!isset($_POST['edit']) || !$minorChange) {
 			$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE s.userID != {$currentUser->userID} AND ((s.type = 'f' AND s.ID = {$threadManager->getThreadProperty('forumID')}) OR (s.type = 't' AND s.ID = {$threadManager->getThreadID()}))");
 			$subs = [];
 			if ($subbedUsers->rowCount()) {
@@ -279,9 +285,17 @@
 			if (sizeof($subs)) {
 				$subs = array_unique($subs);
 				ob_start();
-				include('forums/process/threadSubEmail.php');
+				if(!isset($_POST['edit'])){
+					include('forums/process/threadSubEmail.php');
+				}
+				else{
+					include('forums/process/majorEditSubEmail.php');
+				}
 				$email = ob_get_contents();
 				ob_end_clean();
+
+				file_put_contents( "php://stdout",$email);
+
 				foreach ($subs as $sub)
 					mail($sub, "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 			}

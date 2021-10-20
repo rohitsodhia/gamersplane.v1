@@ -229,7 +229,7 @@
 	if ($fillVars) {
 		$title = printReady($fillVars['title']);
 	} elseif (!strlen($post->getTitle()) && $threadManager->getThreadID()) {
-		$title = 'Re: '.$threadManager->getThreadProperty('title');
+		$title = $threadManager->getThreadProperty('title');
 	} else {
 		$title = printReady($post->title, ['stripslashes']);
 	}
@@ -263,6 +263,9 @@
 <?php	}?>
 				</div>
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder()?>"><?=$fillVars ? $fillVars['message'] : $post->message?></textarea>
+				<?php if ($editPost) {?>
+				<p><input type="checkbox" name="minorChange" checked="checked"> This is a minor edit</p>
+				<?php }?>
 			</div>
 
 <?php	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
@@ -486,5 +489,6 @@
 				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
 				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton">Preview</button>
             </div>
+
 		</form>
 <?php require_once(FILEROOT.'/footer.php'); ?>

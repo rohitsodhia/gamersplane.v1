@@ -227,7 +227,7 @@
 <?php
 			echo "\t\t\t\t\t\t\t<div class=\"post\">\n";
 			echo printReady(BBCode2Html($post->message)) . "\n";
-			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . '</span>, a total of ' . $post->timesEdited . ' time' . (($post->timesEdited > 1) ? 's' : '') . "</div>\n"; }
+			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . "</span></div>\n"; }
 			echo "\t\t\t\t\t\t\t</div>\n";
 
 			if (sizeof($post->rolls)) {
@@ -350,7 +350,7 @@
 		<form id="quickReply" method="post" action="/forums/process/post/">
 			<h2 class="headerbar hbDark"><i class="ra ra-quill-ink"></i> Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
-			<input type="hidden" name="title" value="Re: <?=htmlspecialchars($threadManager->getThreadProperty('title'))?>">
+			<input type="hidden" name="title" value="<?=htmlspecialchars($threadManager->getThreadProperty('title'))?>">
 			<div class="">
 <?php		if (sizeof($characters)) { ?>
 				<div id="charSelect" class="tr">

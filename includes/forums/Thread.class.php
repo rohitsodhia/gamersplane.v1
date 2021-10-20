@@ -165,5 +165,19 @@
 		public function getVoteMax() {
 			return $this->poll->getVoteMax();
 		}
+
+		public function majorChange($postId){
+			global $currentUser;
+			$mysql = DB::conn('mysql');
+			$lastPosts=$mysql->query("SELECT postID FROM posts WHERE threadID = {$this->threadID} AND postID<{$postId} ORDER BY datePosted DESC LIMIT 1");
+
+			if($lastPosts->rowCount()==1){
+				$lastPostRead=$lastPosts->fetch(PDO::FETCH_OBJ);
+				$mysql->query("UPDATE forums_readData_threads SET lastRead = {$lastPostRead->postID} WHERE lastRead>{$postId} AND threadID = {$this->threadID} AND userID <> {$currentUser->userID}");
+			}
+			else{
+				$mysql->query("DELETE FROM forums_readData_threads WHERE threadID = {$this->threadID} AND userID <> {$currentUser->userID}");
+			}
+		}
 	}
 ?>
