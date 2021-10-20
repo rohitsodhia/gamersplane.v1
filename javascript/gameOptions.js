@@ -40,7 +40,7 @@ $(function () {
 
         //apply dice rules
         var applyDiceRules=function(parsedRolls){
-            var rollstring=parsedRolls.closest('.rollResults').data('rollstring');
+            var rollstring=parsedRolls.data('rollstring');
 
             for (var count = 0; count < gameOptions.diceRules.length; count++) {
                 var rule = gameOptions.diceRules[count];
