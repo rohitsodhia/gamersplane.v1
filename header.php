@@ -47,7 +47,7 @@
 				<a href="/ucp/" class="avatar"><img ng-src="{{avatar}}"></a>
 				<a ng-if="pmCount > 0" href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>
 				<ul>
-					<li><a href="/ucp/">Profile</a></li>
+					<li><a href="/ucp/">Settings</a></li>
 					<li><a href="/pms/">Messages ({{pmCount}})</a></li>
 					<li><a href="/logout/" class="last">Logout</a></li>
 				</ul>
