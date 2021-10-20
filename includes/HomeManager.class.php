@@ -125,6 +125,15 @@
 				]]
 			)->toArray();
 
+			$mentions = $mongo->users->findOne(
+				[
+					'userID' => $currentUser->userID
+				],
+				['projection' => [
+					'mentions' => true
+				]]
+			);
+
 			$notifications = Array();
 
 			if (count($pending)) {
@@ -200,6 +209,14 @@
 				}
 				$notification=$notification.'';
 				$notifications[]=$notification;
+			}
+
+			if($mentions && is_countable($mentions["mentions"])){
+				foreach ($mentions["mentions"] as $mention) {
+					$notification='<div class="notify notifyMention col-1-2 mob-col-1"><a data-postid="'.$mention['postID'].'" href="/forums/thread/'.$mention['threadID'].'/?p='.$mention['postID'].'#p'.$mention['postID'].'">'.$mention['forumTitle'].' &gt; '.$mention['threadTitle'].'</a></div>';
+					$notifications[]=$notification;
+				}
+
 			}
 
 			//new users suggest making an introduction
