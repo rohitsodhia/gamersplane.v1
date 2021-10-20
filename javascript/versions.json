@@ -44,6 +44,7 @@
 	"/javascript/forums/postingPage.js": "3.0.0",
 	"/javascript/forums/thread.js": "1.1.1",
 	"/javascript/forums/unsaved-work.js": "3.0.0",
+	"/javascript/gameOptions.js": "3.0.0",
 	"/javascript/games/details.js": "2.5.0",
 	"/javascript/games/edit.js": "3.0.0",
 	"/javascript/games/leaveGame.js": "1.1.0",
@@ -76,6 +77,5 @@
 	"/javascript/ucp/ucp.js": "2.1.3",
 	"/javascript/ucp/user.js": "1.0.5",
 	"/node_modules/rx/dist/rx.all.min.js": "4.1.0",
-	"/node_modules/rx-angular/dist/rx.angular.min.js": "1.1.3",
-	"/javascript/gameOptions.js": "1.0.2"
+	"/node_modules/rx-angular/dist/rx.angular.min.js": "1.1.3"
 }
