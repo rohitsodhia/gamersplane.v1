@@ -67,7 +67,7 @@
 				</div>
 				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Advanced rules definitions</div><div class="hidden">
 				<div class="tr textareaRow">
-					<p>See the release notes for configuring these rules</p>
+					<p>See the <a href="/forums/thread/22053/" target="guidesForum">guides forum</a> for help configuring these rules</p>
 					<textarea id="gameOptions" ng-model="game.gameOptions"></textarea>
 					<p id="gameOptionsError" class="alertBox_error" style="display:none;">This is not valid JSON and will not be saved.</p>
 				</div>
