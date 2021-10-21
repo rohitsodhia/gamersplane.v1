@@ -2,7 +2,12 @@
 	<link href="/styles/rpgawesome/style.css?v=<?=getStyleVersion('/styles/rpgawesome/style.css')?>" rel="stylesheet">
 	<link href="/styles/gamersPlane.css?v=<?=getStyleVersion('/styles/gamersPlane.css')?>" rel="stylesheet">
 	<link href="/javascript/markItUp/skins/gp/style.css?v=<?=getStyleVersion('/javascript/markItUp/skins/gp/style.css')?>" rel="stylesheet">
+
+<?	if($characterMarkitUp) {?>
+	<link href="/javascript/markItUp/sets/bbcode/character-style.css?v=<?=getStyleVersion('/javascript/markItUp/sets/bbcode/character-style.css')?>" rel="stylesheet">
+<?	} else {?>
 	<link href="/javascript/markItUp/sets/bbcode/style.css?v=<?=getStyleVersion('/javascript/markItUp/sets/bbcode/style.css')?>" rel="stylesheet">
+<?	} ?>
 <?
 	if (file_exists(FILEROOT.'/styles/'.$pathAction.'.css')) {
 ?>

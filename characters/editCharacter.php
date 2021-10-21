@@ -1,6 +1,7 @@
 <?php
 	$characterID = intval($pathOptions[1]);
 	$noChar = true;
+	$characterMarkitUp = true;
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->verifySystem(SYSTEM)) {
