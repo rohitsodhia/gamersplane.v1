@@ -18,9 +18,10 @@
 		</ul></div>
 <?	} ?>
 		<div id="characterList">
-			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters</h2>
+			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters <input type="text" ng-model="filter.search" placeholder="Search..." class="headerSearch"/></h2>
 			<ul ng-if="characters != null" id="userChars" class="hbMargined hbAttachedList" hb-margined>
-				<li ng-repeat="character in characters | orderBy: ['system.short', 'label']" class="clearfix character" ng-class="{ 'editing': character.characterID == editing.characterID }">
+				<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate>
+				<li ng-repeat="character in characters | filter:{ $ : filter.search } | orderBy: ['system.short', 'label'] | paginateItems: 25:(pagination.current - 1) * 10" class="clearfix character" ng-class="{ 'editing': character.characterID == editing.characterID }">
 					<div class="label"><a href="/characters/{{character.system.short}}/{{character.characterID}}/" ng-bind-html="character.label | trustHTML" ng-show="editing.characterID != character.characterID"></a><input type="text" ng-model="editing.new.label" ng-show="editing.characterID == character.characterID"></div
 					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><combobox ng-show="editing.characterID == character.characterID" data="charTypes" change="updateCharType(character, value)" select></combobox></div
 					><div class="systemType" ng-bind-html="character.system.name | trustHTML"></div
@@ -41,6 +42,7 @@
 						</span>
 					</div>
 				</li>
+				<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate>
 			</ul>
 			<div ng-if="characters == null" class="noItems">It seems you don't have any characters yet. You might wanna get started!</div>
 		</div>
