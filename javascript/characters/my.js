@@ -33,7 +33,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', '$filter'
 		$scope.editBasic = function (character) {
 			$scope.editing.characterID = character.characterID;
 			$scope.editing.new.label = character.label;
-			$scope.editing.new.cCharType = { 'value': character.charType, 'display': character.charType };
+			$scope.editing.new.cCharType = character.charType ;
 		};
 		$scope.updateCharType = function (character, type) {
 			$scope.editing.new.cCharType = type;
