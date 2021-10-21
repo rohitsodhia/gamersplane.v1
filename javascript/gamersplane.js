@@ -22,7 +22,7 @@ $.cssHooks.backgroundColor = {
 };
 
 $(function() {
-	$('select').prettySelect();
+	$('select:not(.notPretty)').prettySelect();
 	$('input[type="checkbox"]').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 

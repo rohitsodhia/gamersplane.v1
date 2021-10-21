@@ -1,14 +1,4 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<div ng-if="state == 'new'" class="sideWidget">
-			<h2>LFGs</h2>
-			<div class="widgetBody">
-				<p>Players want to play (top 10)...</p>
-				<ul ng-if="lfg.length">
-					<li ng-repeat="system in lfg | orderBy: ['-count', '+name']"><span ng-bind-html="system.name"></span> - {{system.count}}</li>
-				</ul>
-			</div>
-		</div>
-
 		<div class="mainColumn" ng-class="{ 'fullWidth': state == 'edit' }">
 			<h1 class="headerbar">{{state.capitalizeFirstLetter()}} Game</h1>
 
@@ -42,8 +32,7 @@
 				</div>
 				<div class="tr">
 					<label>Post Frequency</label>
-					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per
-					<combobox inputID="perPeriod" data="combobox.periods" change="setPeriod(value)" select></combobox>
+					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per <select class="notPretty" ng-model="game.postFrequency.perPeriod"><option value="d">day</option><option value="w">week</option></select>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>

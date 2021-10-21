@@ -20,7 +20,6 @@
 		<div id="characterList">
 			<h2 class="headerbar hbDark hb_hasButton hb_hasList">Characters <input type="text" ng-model="filter.search" placeholder="Search..." class="headerSearch"/></h2>
 			<ul ng-if="characters != null" id="userChars" class="hbMargined hbAttachedList" hb-margined>
-				<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate>
 				<li ng-repeat="character in characters | filter:{ $ : filter.search } | orderBy: ['system.short', 'label'] | paginateItems: 25:(pagination.current - 1) * 10" class="clearfix character" ng-class="{ 'editing': character.characterID == editing.characterID }">
 					<div class="label"><a href="/characters/{{character.system.short}}/{{character.characterID}}/" ng-bind-html="character.label | trustHTML" ng-show="editing.characterID != character.characterID"></a><input type="text" ng-model="editing.new.label" ng-show="editing.characterID == character.characterID"></div
 					><div class="charType"><span ng-show="editing.characterID != character.characterID">{{character.charType}}</span><select ng-show="editing.characterID == character.characterID" ng-model="editing.new.cCharType"><option ng-repeat="option in charTypes" value="{{option}}">{{option}}</option></select></div
