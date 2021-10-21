@@ -12,6 +12,7 @@
 
 var notesdropDown = $('#playerList li').map(function () { return { name: $.trim($(this).text()) }; }).get();
 notesdropDown.push({ name: 'Add note', className: 'playerNoteAdd' });
+notesdropDown.push({ name: 'Private', className: 'playerPrivateAdd' });
 
 mySettings = {
 	previewParserPath: '', // path to your BBCode parser
@@ -37,7 +38,8 @@ mySettings = {
 			name: 'Image', replaceWith: '[img][![Url]!][/img]',
 			dropMenu: [
 				{ name: 'By URL...', replaceWith: '[img][![Url]!][/img]' },
-				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } }
+				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } },
+				{ name: 'YouTube...', replaceWith: '[youtube][![YouTube share link]!][/youtube]' },
 			]
 		},
 		{ separator: '---------------' },
@@ -104,7 +106,7 @@ var ImgurHelper=(function(){
 			}
 
 
-		});		
+		});
 	};
 
 	return {
@@ -132,14 +134,18 @@ var imgurUpload = function (miu) {
 
 
 $(function () {
-	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd)', function (e) {
+	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd)', function (e) {
 		$(this).toggleClass('playerNoteSelected');
 		e.stopPropagation();
 	});
 
-	$('body').on('click', '.markItUpButton10 ul li.playerNoteAdd', function (e) {
+	$('body').on('click', '.markItUpButton10 ul li.playerNoteAdd,.markItUpButton10 ul li.playerPrivateAdd', function (e) {
 		var selectedPlayers = $('.markItUpButton10 ul li.playerNoteSelected').map(function () { return $.trim($(this).text()); }).get().join();
-		$.markItUp({ openWith: '[note="' + selectedPlayers + '"]', closeWith: '[/note]' });
+		if($(this).hasClass('playerPrivateAdd')){
+			$.markItUp({ openWith: '[private="' + selectedPlayers + '"]', closeWith: '[/private]' });
+		} else {
+			$.markItUp({ openWith: '[note="' + selectedPlayers + '"]', closeWith: '[/note]' });
+		}
 		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
 	});
 
@@ -152,11 +158,11 @@ $(function () {
 				if (item.type.indexOf("image") === 0){
 					var blob = item.getAsFile();
 					ImgurHelper.uploadFiles(blob);
-	
+
 					ev.preventDefault();
-				}		
+				}
 			}
-		}	
+		}
 
 	});
 
