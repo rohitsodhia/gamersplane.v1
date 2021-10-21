@@ -26,7 +26,7 @@
 				</div>
 				<div class="tr" ng-if="allSystems[game.system]=='Custom'">
 					<label>Custom Type</label>
-					<input id="customType" type="text" ng-model="game.customType"> 
+					<input id="customType" type="text" ng-model="game.customType">
 				</div>
 				<div class="tr">
 					<label>Allowed Character Sheets</label>
@@ -55,11 +55,11 @@
 				</div>
 				<div class="tr textareaRow">
 					<label>Description</label>
-					<textarea ng-model="game.description"></textarea>
+					<textarea ng-model="game.description" id="gameDescription" class="markItUp"></textarea>
 				</div>
 				<div class="tr textareaRow">
 					<label>Character Generation Info</label>
-					<textarea ng-model="game.charGenInfo"></textarea>
+					<textarea ng-model="game.charGenInfo"  id="gameCharGenInfo" class="markItUp"></textarea>
 				</div>
 				<div class="tr"><p>If you've created a recruitment thread in the <a href="/forums/10/" target="_blank">Games Tavern</a> link it to the game here.</p></div>
 				<div class="tr textareaRow">

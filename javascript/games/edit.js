@@ -154,7 +154,7 @@ $(function () {
 			return false;
 		}
 		return true;
-	}	
+	}
 
 	$('#gameOptions').on('change keyup blur',function(){
 		$('#gameOptionsError').hide();
@@ -163,5 +163,6 @@ $(function () {
 			$('#gameOptionsError').show();
 		}
 	});
-	
+
+	$('.markItUp').markItUp(mySettings);
 });
