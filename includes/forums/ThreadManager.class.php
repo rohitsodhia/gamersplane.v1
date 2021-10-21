@@ -160,8 +160,14 @@
 			return $this->thread->getVoteMax();
 		}
 
-		public function saveThread($post) {
+		public function saveThread($post, $majorEdit = false) {
 			global $mysql;
+
+			$newPost=!($post->getPostID());
+
+			if(!$newPost){
+				$this->removeOldMentions($post);
+			}
 
 			if ($this->threadID == null) {
 				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1");
@@ -174,8 +180,10 @@
 				$mysql->query("UPDATE forums SET threadCount = threadCount + 1 WHERE forumID = {$this->thread->forumID}");
 
 				$this->updateLastRead($postID);
+
 			} else {
 				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0)." WHERE threadID = ".$this->threadID);
+
 				$postID = $post->savePost();
 
 				if (intval($this->thread->getLastPost('postID')) < $postID)
@@ -183,6 +191,16 @@
 			}
 
 			$this->thread->savePoll($this->threadID);
+
+			if($newPost){
+				$this->addThreadNotification(ThreadNotificationTypeEnum::NEW_POST,$post);
+			}
+
+			if($majorEdit){
+				$this->majorChange($post);
+			}
+
+			$this->addMentions($post);
 
 			return $postID;
 		}
@@ -306,8 +324,175 @@
 			</span>
 			<?php
 			}
-
 		}
 
+		public function majorChange($post){
+			$postId = $post->getPostID();
+			global $mysql, $currentUser;
+			$lastPosts=$mysql->query("SELECT postID FROM posts WHERE threadID = {$this->threadID} AND postID<{$postId} ORDER BY datePosted DESC LIMIT 1");
+
+			if($lastPosts->rowCount()==1){
+				$lastPostRead=$lastPosts->fetch(PDO::FETCH_OBJ);
+				$mysql->query("UPDATE forums_readData_threads SET lastRead = {$lastPostRead->postID} WHERE lastRead>{$postId} AND threadID = {$this->threadID} AND userID <> {$currentUser->userID}");
+			}
+			else{
+				$mysql->query("DELETE FROM forums_readData_threads WHERE threadID = {$this->threadID} AND userID <> {$currentUser->userID}");
+			}
+
+			$this->addThreadNotification(ThreadNotificationTypeEnum::MAJOR_EDIT,$post);
+		}
+
+		private static function getUserIdsFromMentions($message)
+		{
+			global $mysql;
+
+			$ret = Array();
+			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $message, $matches, PREG_SET_ORDER);
+
+			if (sizeof($matches)) {
+				foreach ($matches as $match) {
+					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
+					if($mentionUserId && !in_array($mentionUserId,$ret)){
+						$ret[] = $mentionUserId;
+					}
+				}
+			}
+
+			return $ret;
+		}
+
+		private function removeOldMentions($post){
+
+			//It is possible that this can simply be replaced with the code below - but without indexes I'm leery of performance
+			/*
+						$mongo->users->updateMany(
+							[],
+							['$pull' => [
+								'mentions' => ['postID'=>((int) $this->postID)]
+								]
+							]
+						);
+			*/
+			global $mysql;
+			$mongo = DB::conn('mongo');
+
+			$oldMessage = $mysql->query("SELECT message FROM posts WHERE postID = {$post->postID}")->fetchColumn();
+
+			$userIds = ThreadManager::getUserIdsFromMentions($oldMessage);
+
+			foreach ($userIds as $userId) {
+				$mongo->users->updateOne(
+					['userID' => ((int)$userId)],
+					['$pull' => [
+						'threadNotifications' => ['postID'=>((int) $post->getPostID())]
+						]
+					]
+				);
+			}
+		}
+
+		private function addMentions($post){
+			global $mysql;
+			$mongo = DB::conn('mongo');
+
+			$userIds = ThreadManager::getUserIdsFromMentions($post->message);
+
+			if (count($userIds)>0) {
+
+				//strip "Re: " if present
+				$postTitle=$post->getTitle();
+				if(substr($postTitle,0,4)=='Re: '){
+					$postTitle=substr($postTitle,4);
+				}
+
+
+				foreach ($userIds as $mentionUserId) {
+					$mongo->users->updateOne(
+						['userID' => ((int)$mentionUserId)],
+						['$push' => [
+							'threadNotifications' => [
+								'threadID' => (int)$this->threadID,
+								'postID' => ((int) $post->getPostID()),
+								'forumTitle'=>$this->getForumProperty('title'),
+								'threadTitle' => $postTitle,
+								'notificationType' => ThreadNotificationTypeEnum::MENTION
+							]
+						]]
+					);
+				}
+			}
+		}
+
+
+		private function addThreadNotification($notificationType, $post){
+
+			if($notificationType==ThreadNotificationTypeEnum::NEW_POST){
+				return;  //Not putting these on the homepage.  But if we use push notifications then this would be the point to intercept them
+			}
+
+			$gameID=$this->forumManager->forums[$this->thread->forumID]->getGameID();
+			if($gameID){
+				global $mysql, $currentUser, $mongo;
+
+				$threadIdAsInt = (int)$this->threadID;
+				$postIdAsInt = (int)$post->getPostID();
+
+				$gameInfo = $mongo->games->findOne(
+					['gameID' => $gameID]
+				);
+
+				if($notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT){
+					$pull = ['$pull' => [
+						'threadNotifications' => ['postID'=>$postIdAsInt]
+						]
+					];
+				}
+				else if($notificationType==ThreadNotificationTypeEnum::NEW_POST){
+					$pull = ['$pull' => [
+						'threadNotifications' => ['threadID'=>$threadIdAsInt,'notificationType'=>$notificationType]
+						]
+					];
+				}
+
+				//strip "Re: " if present
+				$postTitle=$post->getTitle();
+				if(substr($postTitle,0,4)=='Re: '){
+					$postTitle=substr($postTitle,4);
+				}
+
+
+				foreach ($gameInfo['players'] as &$player) {
+					$playerUserId=$player['user']['userID'];
+					if($playerUserId!=$currentUser->userID && $player['approved']){
+
+						//pull previous notifications
+						$mongo->users->updateOne(
+							['userID' => ((int)$playerUserId)],
+							$pull
+						);
+
+						$mongo->users->updateOne(
+							['userID' => ((int)$playerUserId)],
+							['$push' => [
+								'threadNotifications' => [
+									'threadID' => $threadIdAsInt,
+									'postID' => $postIdAsInt,
+									'forumTitle'=>$this->getForumProperty('title'),
+									'threadTitle' => $postTitle,
+									'notificationType' => $notificationType
+								]
+							]]
+						);
+					}
+				}
+			}
+		}
 	}
+
+	abstract class ThreadNotificationTypeEnum{
+		const NEW_POST = 1;
+		const MAJOR_EDIT = 2;
+		const MENTION = 3;
+	}
+
 ?>

@@ -22,7 +22,8 @@
 	"/styles/tools.css": "3.0.0",
 	"/styles/ucp.css": "3.0.0",
 	"/styles/user.css": "3.0.0",
-	"/javascript/markItUp/sets/bbcode/style.css": "1.2.1",
+	"/javascript/markItUp/sets/bbcode/character-style.css": "3.0.0",
+	"/javascript/markItUp/sets/bbcode/style.css": "3.0.0",
 	"/javascript/markItUp/skins/gp/style.css": "1.2.0",
 	"/styles/themeDark.css": "3.0.0"
 }

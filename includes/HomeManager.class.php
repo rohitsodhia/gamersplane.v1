@@ -125,12 +125,12 @@
 				]]
 			)->toArray();
 
-			$mentions = $mongo->users->findOne(
+			$threadNotifications = $mongo->users->findOne(
 				[
 					'userID' => $currentUser->userID
 				],
 				['projection' => [
-					'mentions' => true
+					'threadNotifications' => true
 				]]
 			);
 
@@ -211,12 +211,11 @@
 				$notifications[]=$notification;
 			}
 
-			if($mentions && is_countable($mentions["mentions"])){
-				foreach ($mentions["mentions"] as $mention) {
-					$notification='<div class="notify notifyMention col-1-2 mob-col-1"><a data-postid="'.$mention['postID'].'" href="/forums/thread/'.$mention['threadID'].'/?p='.$mention['postID'].'#p'.$mention['postID'].'">'.$mention['forumTitle'].' &gt; '.$mention['threadTitle'].'</a></div>';
+			if($threadNotifications && is_countable($threadNotifications["threadNotifications"])){
+				foreach ($threadNotifications["threadNotifications"] as $threadNotification) {
+					$notification='<div class="notify notifyThread notifyThread-'.$threadNotification['notificationType'].' col-1-2 mob-col-1"><a data-postid="'.$threadNotification['postID'].'" href="/forums/thread/'.$threadNotification['threadID'].'/?p='.$threadNotification['postID'].'#p'.$threadNotification['postID'].'">'.$threadNotification['forumTitle'].' &gt; '.$threadNotification['threadTitle'].'</a></div>';
 					$notifications[]=$notification;
 				}
-
 			}
 
 			//new users suggest making an introduction

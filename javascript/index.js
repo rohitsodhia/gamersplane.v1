@@ -33,11 +33,11 @@ $(function() {
 
     });
 
-    $('.notifyMention a').on('click',function(){
+    $('.notifyThread a').on('click',function(){
         var postId=$(this).data('postid');
 		$.ajax({
 			type: 'post',
-			url: API_HOST +'/users/removeMention',
+			url: API_HOST +'/users/removeThreadNotification',
 			xhrFields: {
 				withCredentials: true
 			},

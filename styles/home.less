@@ -103,7 +103,20 @@
                 content: @ra-var-icon-scroll-unfurled;
             }
         }
-        &.notifyMention{
+
+        &.notifyThread-1{
+            &:before{
+                content: @ra-var-icon-quill-ink;
+            }
+        }
+
+        &.notifyThread-2{
+            &:before{
+                content: @ra-var-icon-cycle;
+            }
+        }
+
+        &.notifyThread-3{
             &:before{
                 font-family: inherit;
                 content: '@';
@@ -120,7 +133,8 @@
             &:before{
                 content: @ra-var-icon-d6;
                 color: @gp-open-badge-color;
-                animation: pulse 2s infinite;            }
+                animation: pulse 2s infinite;
+            }
         }
 
     }

@@ -27,8 +27,8 @@
 				$this->getLFG();
 			} elseif ($pathOptions[0] == 'saveLFG') {
 				$this->saveLFG();
-			} elseif ($pathOptions[0] == 'removeMention') {
-				$this->removeMention($_POST['postID']);
+			} elseif ($pathOptions[0] == 'removeThreadNotification') {
+				$this->removeThreadNotification($_POST['postID']);
 			}else {
 				displayJSON(['failed' => true]);
 			}
@@ -591,13 +591,13 @@
 			$mongo->users->updateOne(['userID' => $userID], ['$set' => ['lfg' => $lfg]]);
 		}
 
-		public function removeMention($postId){
+		public function removeThreadNotification($postId){
 			global $currentUser;
 			$mongo = DB::conn('mongo');
 			$mongo->users->updateMany(
 				['userID' => $currentUser->userID],
 				['$pull' => [
-					'mentions' => ['postID'=>((int) $postId)]
+					'threadNotifications' => ['postID'=>((int) $postId)]
 					]
 				]
 			);

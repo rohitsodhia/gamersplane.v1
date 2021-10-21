@@ -189,10 +189,7 @@
 				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
 				exit;
 			} else {
-				$postID = $post->savePost();
-				$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$threadID}");
-				$threadManager->updatePostCount();
-				$threadManager->updateLastRead($postID);
+				$postID = $threadManager->saveThread($post);
 			}
 		} elseif ($_POST['edit']) {
 			$threadManager = new ThreadManager($post->getThreadID());
@@ -251,14 +248,13 @@
 					if (isset($_POST['deletePoll'])) {
 						$threadManager->deletePoll();
 					}
-
-					$threadManager->saveThread($post);
 				} else {
 					$allowRolls = $postInfo['allowRolls'];
 					$allowDraws = $postInfo['allowDraws'];
 
-					$post->savePost();
 				}
+
+				$threadManager->saveThread($post,!$minorChange);
 
 				if (isset($_POST['nVisibility'])) {
 					foreach ($_POST['nVisibility'] as $rollID => $nVisibility) {
@@ -267,10 +263,6 @@
 						}
 					}
 				}
-			}
-
-			if(!$minorChange){
-				$threadManager->thread->majorChange($post->getPostID());
 			}
 		}
 
