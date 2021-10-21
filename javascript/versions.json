@@ -63,6 +63,7 @@
 	"/javascript/login/login.js": "1.1.0",
 	"/javascript/login/requesetReset.js": "1.1.0",
 	"/javascript/login/resetPass.js": "1.1.0",
+	"/javascript/markItUp/sets/bbcode/character-set.js": "3.0.0",
 	"/javascript/markItUp/sets/bbcode/set.js": "1.4.3",
 	"/javascript/markItUp/sets/bbcode/game-forum-set.js": "3.0.0",
 	"/javascript/pms/delete.js": "1.1.0",
