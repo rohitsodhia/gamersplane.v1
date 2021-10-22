@@ -20,7 +20,11 @@
 				$this->unsubscribe();
 			} elseif ($pathOptions[0] == 'setLastPostUnread') {
 				$this->setLastPostUnread($_POST['threadID']);
-			}else {
+			} elseif ($pathOptions[0] == 'getPostQuote') {
+				displayJSON($this->getPostQuote($_POST['postID']));
+			} elseif ($pathOptions[0] == 'getPostPreview') {
+				displayJSON($this->getPostPreview($_POST['postText']));
+			} else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -287,6 +291,53 @@
 			else{
 				$mysql->query("DELETE FROM forums_readData_threads WHERE threadID = {$threadID} AND userID = {$currentUser->userID}");
 			}
+		}
+
+		public function getPostQuote($postID){
+
+			global $currentUser,$mongo;
+
+			$ret = '';
+
+			$post = new Post($postID);
+			$threadManager = new ThreadManager($post->getThreadID());
+
+			if (!$threadManager->getThreadProperty('states[locked]')  && $threadManager->getPermissions('write')){
+				$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
+				if ($gameID) {
+					$game = $mongo->games->findOne(
+						[
+							'gameID' => (int) $gameID,
+							'players' => ['$elemMatch' => [
+								'user.userID' => $currentUser->userID,
+								'isGM' => true
+							]]
+						],
+						['projection' => ['players.$' => true]]
+					);
+					$isGM = $game['players'][0]['isGM'];
+					if (!$isGM) {
+						$ret = Post::cleanNotes($post->message);
+					}
+					else{
+						$ret = $post->message;
+					}
+				}
+				else{
+					$ret = Post::cleanNotes($post->message);
+				}
+
+				$ret='[quote="'.$post->getAuthor('username').'"]'.$ret.'[/quote]';
+
+			}
+
+			return $ret;
+		}
+
+		public function getPostPreview($postText){
+			global $isGM;
+			$isGM=true;
+			return printReady(BBCode2Html($postText));
 		}
 	}
 ?>

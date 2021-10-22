@@ -289,7 +289,7 @@
 			if($isLastPost){
 				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Mark as unread</a>\n";
 			}
-			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<a href=\"/forums/post/{$threadID}/?quote={$post->postID}\">Quote</a>\n";
+			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'\">Quote</span>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";
@@ -315,11 +315,23 @@
 				$postSide = $postSide == 'Right'?'Left':'Right';
 			}
 		}
-
+?>
+			<div class="postBlock post<?=$postSide?> postPreview" style="display:none;">
+				<div class="flexWrapper">
+					<div class="posterDetails">Preview</div>
+					<div class="postBody">
+						<div class="postContent">
+							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
+							<div class="post"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+<?php
 		$threadManager->displayPagination();
 	}
 
-	?>
+?>
 	<div class="rightCol alignRight">
 	<?php
 	$threadManager->addModerationButtons();
@@ -346,7 +358,12 @@
 				}
 			}
 		}
+
+		$rollsAllowed = $threadManager->getThreadProperty('allowRolls') ? true : false;
 ?>
+
+<?php /*  ------ START REPLY ----- */ ?>
+
 		<form id="quickReply" method="post" action="/forums/process/post/">
 			<h2 class="headerbar hbDark"><i class="ra ra-quill-ink"></i> Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
@@ -364,12 +381,48 @@
 				</div>
 <?php		} ?>
 				<textarea id="messageTextArea" name="message"></textarea>
+				<div class="alignRight"><span id="previewPost" class="fancyButton">Preview</span></div>
 			</div>
+
+<?php /*  ------ START REPLY ROLLS ----- */ ?>
+			<?php if ($rollsAllowed) { ?>
+				<h3 class="headerbar"><i class="ra ra-perspective-dice-random"></i> Rolls</h2>
+				<div id="rolls_decks">
+					<div id="rolls">
+						<div id="addRoll">
+							<span>Add new roll: </span>
+							<select>
+								<option value="basic">Basic</option>
+								<option value="starwarsffg">Star Wars FFG</option>
+								<option value="fate">Fate</option>
+								<option value="fengshui">Feng Shui</option>
+							</select>
+							<button type="submit" class="fancyButton">Add</button>
+						</div>
+						<div id="newRolls">
+	<?php
+				if (isset($fillVars['rolls'])) {
+					foreach ($fillVars['rolls'] as $count => $roll) {
+						rollTR($count, (object) $roll);
+					}
+				}
+	?>
+						</div>
+					</div>
+				</div>
+<?php		} ?>
+<?php /*  ------ END OF REPLY ROLLS ----- */ ?>
+
+
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" class="fancyButton">Post</button>
 				<button type="submit" name="advanced" class="fancyButton">Advanced</button>
 			</div>
 		</form>
+
+
+<?php /*  ------ END OF REPLY ----- */ ?>
+
 <?php
 	} elseif ($threadManager->getThreadProperty('states[locked]')) {
 		echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";
