@@ -31,9 +31,9 @@ $(function () {
         //toggle ordering between original and numeric
         var orderRolls=function(parsedRolls){
             if(parsedRolls.hasClass('rollsOrderedByVal')){
-                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).data('rollorder'))-parseInt($(b).data('rollorder')); }).appendTo(parsedRolls);
+                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).data('ro'))-parseInt($(b).data('ro')); }).appendTo(parsedRolls);
             }else{
-                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).text())-parseInt($(b).text()); }).appendTo(parsedRolls);
+                $('i', parsedRolls).sort(function (a, b) { return parseInt($(a).data('rv'))-parseInt($(b).data('rv')); }).appendTo(parsedRolls);
             }
             parsedRolls.toggleClass('rollsOrderedByVal');
         };
@@ -87,16 +87,8 @@ $(function () {
         //convert the text into spans and apply the rules
         $('.rollValues').each(function(){
             var pThis=$(this);
-            var rolledNumbers=pThis.text().split(",").map(function(item) { return item.trim(); });
 
-            pThis.html('');
-            var natOrder=1;
-            for (var count = 0; count < rolledNumbers.length; count++){
-                var roll = rolledNumbers[count];
-                $('<i></i>').text(roll).addClass('rval'+roll).data('rollorder',natOrder++).appendTo(pThis);
-            }
-
-            pThis.addClass('parsedRolls').on('click',function(){orderRolls($(this));});
+            pThis.on('click',function(){orderRolls($(this));});
 
             if(gameOptions.diceRules){
                 applyDiceRules(pThis);

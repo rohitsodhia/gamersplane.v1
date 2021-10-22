@@ -103,6 +103,39 @@
 		function getResults() {
 		}
 
+		function resultsToText($rolls){
+			$ret='';
+			if(is_array($rolls)){
+				foreach($rolls as $index=>$roll){
+					if(is_array($roll)){
+						$rollCount = count($roll);
+						if($rollCount>0){
+							$rollTotal=0;
+							$raHtml='';
+							foreach($roll as $rerolledAce){
+								if(--$rollCount>0){
+									$raHtml.='<s>'.$rerolledAce.'</s>';
+								}
+								else{
+									$raHtml.=$rerolledAce;
+								}
+
+								$rollTotal+=$rerolledAce;
+							}
+							$ret.='<i data-ro="'.$index.'" data-rv="'.$rollTotal.'">';
+							$ret.=$raHtml;
+							$ret.='</i>';
+						}
+					} else {
+						$ret.='<i data-ro="'.$index.'" data-rv="'.$roll.'">'.$roll.'</i>';
+					}
+				}
+			} else {
+				$ret.='<i data-ro="0" data-rv="'.$rolls.'">'.$rolls.'</i>';
+			}
+			return $ret;
+		}
+
 		function showHTML($showAll = false) {
 			if (sizeof($this->rolls)) {
 				$hidden = false;
@@ -118,11 +151,11 @@
 					if(is_array($roll['indivRolls']) && count($roll['indivRolls']) && is_array($roll['indivRolls'][0])){
 						//new multidice
 						foreach ($roll['indivRolls'] as $key => $result) {
-							$results[$key]='(<span class="rollValues" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.implode(', ', $result).'</span>)';
+							$results[$key]='(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.$this->resultsToText($result).'</span>)';
 						}
 					}else{
 						//old data
-						$results[0] = '(<span class="rollValues" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.implode(', ', $roll['indivRolls']).'</span>)';
+						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.$this->resultsToText($roll['indivRolls']).'</span>)';
 					}
 
 					$rollValues[$count] .= implode(' + ', $results);
