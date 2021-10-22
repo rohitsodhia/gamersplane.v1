@@ -40,6 +40,7 @@ mySettings = {
 				{ name: 'By URL...', replaceWith: '[img][![Url]!][/img]' },
 				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } },
 				{ name: 'YouTube...', replaceWith: '[youtube][![YouTube share link]!][/youtube]' },
+				{ name: 'OtFBM', replaceWith: '[map]\nhttps://otfbm.io\n\n--Map size, cell size, and panning\n/26x14/@c60/b5:10x6\n\n--Tokens\n/f7-Alice\n/h8-Bob\n\n--Background image\n?bg=https://i.imgur.com/jIpAjkT.jpg\n[/map]' },
 			]
 		},
 		{ separator: '---------------' },
@@ -95,6 +96,7 @@ var ImgurHelper=(function(){
 
 		$.ajax(settings).done(function (response) {
 			var responseObj = JSON.parse(response);
+			$('#messageTextArea').focus();
 			$.markItUp({ replaceWith: '[img]' + responseObj.data.link+ '[/img]' });
 		}).fail(function (errorReason) {
 			if(errorReason && errorReason.responseText){
