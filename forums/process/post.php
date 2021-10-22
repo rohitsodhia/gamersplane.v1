@@ -168,7 +168,7 @@
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
-				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
+				header('Location: /forums/newThread/'.$forumID.'/?errors=1');
 				exit;
 			} else {
 				$postID = $threadManager->saveThread($post);
@@ -186,7 +186,7 @@
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
-				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
+				header('Location: /forums/post/'.$threadID.'/?errors=1' );
 				exit;
 			} else {
 				$postID = $threadManager->saveThread($post);
@@ -231,7 +231,7 @@
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
-				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
+				header('Location: /forums/editPost/'.$post->getPostID().'/?errors=1');
 				exit;
 			} else {
 				if (((time() + 300) > strtotime($post->getDatePosted()) || (time() + 60) > strtotime($post->getLastEdit())) && !$threadManager->getPermissions('moderate') && $post->getModified()) {
