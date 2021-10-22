@@ -186,8 +186,13 @@
 
 				$postID = $post->savePost();
 
-				if (intval($this->thread->getLastPost('postID')) < $postID)
+				if($newPost){
 					$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$this->threadID}");
+				}
+
+				$this->updatePostCount();
+				$this->updateLastRead($postID);
+
 			}
 
 			$this->thread->savePoll($this->threadID);
