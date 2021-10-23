@@ -35,7 +35,7 @@ mySettings = {
 		{name:'Code',
         dropMenu :[
 			{name:'Snippet', openWith:'[snippet="[![Snippet title]!]"]', closeWith:'[/snippet]' },
-			{name:'Abilities', openWith:'[abilities="Abilities"]\n# Example ability 1\nExample ability 1 description\nSupports multiline and BBCode\n# Example ability 2\nExample ability 2 description\n\n', closeWith:'[/abilities]' },
+			{name:'Abilities', openWith:'[abilities="Abilities"]\n# Example heading 1\nExample ability 1 description\nSupports multiline and BBCode\n# Example heading 2\nExample ability 2 description\n\n', closeWith:'[/abilities]' },
 			{name:'NPCs', openWith:'[npcs="NPC list"]\nExample NPC | https://gamersplane.com/ucp/avatars/avatar.png\n', closeWith:'[/npcs]' },
 			{name:'Table', openWith:'[table]\n', closeWith:'\n[/table]' },
 			{name:'Roll Table', openWith:'[table="rolls"]\nName | Roll\ne.g. Percentile | 1d100', closeWith:'\n[/table]' },
