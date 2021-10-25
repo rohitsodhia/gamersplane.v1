@@ -291,6 +291,14 @@ function BBCode2Html($text) {
 	}
 	//end notes and private
 
+	$text = preg_replace_callback('/(\@[0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', function($matches){
+		global $currentUser;
+		if('@'.strtolower($currentUser->username)==strtolower($matches[1]))
+			return '<span class="atHighlight">'.$matches[1].'</span>';
+		else
+			return $matches[1];
+	}, $text);
+
 
 
 

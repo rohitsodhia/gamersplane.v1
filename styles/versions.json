@@ -12,7 +12,7 @@
 	"/styles/forums.css": "3.0.0",
 	"/styles/games.css": "3.0.0",
 	"/styles/gamersList.css": "3.0.0",
-	"/styles/gamersPlane.css": "3.0.0",
+	"/styles/gamersPlane.css": "3.0.1",
 	"/styles/home.css": "3.0.0",
 	"/styles/landing.css": "3.0.0",
 	"/styles/nonResponsive.css": "3.0.0",
@@ -25,5 +25,5 @@
 	"/javascript/markItUp/sets/bbcode/character-style.css": "3.0.0",
 	"/javascript/markItUp/sets/bbcode/style.css": "3.0.0",
 	"/javascript/markItUp/skins/gp/style.css": "1.2.0",
-	"/styles/themeDark.css": "3.0.0"
+	"/styles/themeDark.css": "3.0.1"
 }

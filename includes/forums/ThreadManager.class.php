@@ -352,7 +352,7 @@
 			global $mysql;
 
 			$ret = Array();
-			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $message, $matches, PREG_SET_ORDER);
+			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', $message, $matches, PREG_SET_ORDER);
 
 			if (sizeof($matches)) {
 				foreach ($matches as $match) {
