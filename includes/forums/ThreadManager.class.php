@@ -352,11 +352,12 @@
 			global $mysql;
 
 			$ret = Array();
-			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', $message, $matches, PREG_SET_ORDER);
+			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $message, $matches, PREG_SET_ORDER);
 
 			if (sizeof($matches)) {
 				foreach ($matches as $match) {
-					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$match[1]}'")->fetchColumn();
+					$checkUsername=rtrim($match[1],".-_ \n\r\t\v\0");
+					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$checkUsername}'")->fetchColumn();
 					if($mentionUserId && !in_array($mentionUserId,$ret)){
 						$ret[] = $mentionUserId;
 					}
