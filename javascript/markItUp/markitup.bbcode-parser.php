@@ -230,7 +230,7 @@ function BBCode2Html($text) {
 	//npc list
 	$matches = null;
 	$text=preg_replace_callback("/\[npcs=\"?(.*?)\"?\](.*?)\[\/npcs\]/ms", function($matches){
-			$npcTitle=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
+			$npcTitle=trim(str_replace("=","",str_replace("\"","",$matches[1])));
 
 			$npcRows = explode("\n", trim(str_replace("<br />","",$matches[2])));
 
@@ -257,7 +257,7 @@ function BBCode2Html($text) {
 
 	//notes and private
 	$matches = null;
-	global $currentUser, $isGM, $post;
+	global $currentUser, $isGM, $post, $postAuthor;
 
 	$postAuthor=false;
 	$postAuthorName="";
@@ -290,6 +290,54 @@ function BBCode2Html($text) {
 		}
 	}
 	//end notes and private
+
+	//start polls
+	if($post){
+		$matches = null;
+		$text=preg_replace_callback("/\[poll=\"?(.*?)?\"([^\]]*)\](.*?)\[\/poll\]/ms", function($matches){
+			global $post, $postAuthor, $isGM;
+
+			$pollResults=$post->getPollResults();
+
+			$pollTitle=$matches[1];
+
+			$pollQuestions = explode("\n", trim(str_replace("<br />","",$matches[3])));
+
+			$multipleVotes = (stripos($matches[2],'multi')!=false);
+			$showBeforeVote = (stripos($matches[2],'show')!=false);
+
+
+
+			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"")."' data-postid='".$post->getPostID()."'>";
+			$ret .= "<h3>".$pollTitle."</h3>";
+
+			$ret .= "<div class='pollQuestions'>";
+			$answerNumber=1;
+			foreach ($pollQuestions as $pollQuestion){
+				$pollQuestion=trim($pollQuestion);
+				if(strlen($pollQuestion)>0){
+					$ret .= "<div class='pollQuestion ".($pollResults['votes'][$answerNumber]["me"]?" pollMyVote":"")."' data-q='".$answerNumber."'><div class='pollQuestionLabel'>".$pollQuestion."</div>";
+					$ret .= "<div class='pollQuestionResults'>";
+					if($pollResults['voted'] || $showBeforeVote || $postAuthor || $isGM){
+						$ret .= str_repeat('<i class="ra ra-gamers-plane"></i>', (int)($pollResults['votes'][$answerNumber]['votes']));
+					}
+					else{
+						$ret .='<div class="voteToView">Vote to view results.</div>';
+
+					}
+					$ret .= "</div></div>";
+					$answerNumber++;
+				}
+			}
+
+			$ret.="</div></div>";
+
+			return $ret;
+
+
+		}, $text, $limit=1);
+	}
+	//end polls
 
 	$text = preg_replace_callback('/(\@[0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', function($matches){
 		global $currentUser;

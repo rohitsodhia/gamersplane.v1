@@ -1,0 +1,54 @@
+@import "gpVariables.less";
+
+//polls
+.postPoll{
+
+	border-left:solid 3px @gp-orange;
+
+	h3{
+		color: @gp-red;
+		padding-left: 0.5rem;
+	}
+
+	.pollQuestion{
+		cursor: pointer;
+		padding: .2rem .2rem .2rem 1rem;
+
+		.pollQuestionResults{
+			min-height: 25px;
+			font-size: 180%;
+			color: @gp-orange;
+			padding: .2rem 0;
+
+			.ra{
+				margin-right: .1rem;
+			}
+		}
+
+		&:hover{
+			background-color: fade(@gp-orange-lightest,50%);
+		}
+
+		&.pollMyVote{
+			.pollQuestionLabel{
+				color:@gp-red;
+				font-weight: bold;
+			}
+
+			.pollQuestionResults{
+				i.ra:first-child{
+					color: @gp-red;
+				}
+			}
+		}
+
+		.voteToView{
+			color: #888;
+			font-size: 50%;
+		}
+	}
+
+	&.thinking{
+		background-color: rgba(0,0,0,.1);
+	}
+}

@@ -1,4 +1,5 @@
 <?php	addPackage('forum');
+$addJSFiles = Array('postPolls.js');
 require_once(FILEROOT . '/includes/HomeManager.class.php');
 $homeManager = new HomeManager();
 $forumManager = new ForumManager(0);

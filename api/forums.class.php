@@ -24,6 +24,8 @@
 				displayJSON($this->getPostQuote($_POST['postID']));
 			} elseif ($pathOptions[0] == 'getPostPreview') {
 				displayJSON($this->getPostPreview($_POST['postText']));
+			} elseif ($pathOptions[0] == 'pollVote') {
+				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti']));
 			} else {
 				displayJSON(['failed' => true]);
 			}
@@ -338,6 +340,65 @@
 			global $isGM;
 			$isGM=true;
 			return printReady(BBCode2Html($postText));
+		}
+
+		public function pollVote($postID, $vote, $addVote, $isMulti){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+			$post = new Post($postID);
+			$threadManager = new ThreadManager($post->getThreadID());
+
+			if ($threadManager->getPermissions('write')){
+
+				if($isMulti){
+					$mongo->threads->updateOne(
+						['threadID' => ((int)$post->getThreadID())],
+						['$pull' => [
+							'votes' => [
+								'postID' => (int)$postID,
+								'userID' => $currentUser->userID,
+								'vote' => (int)$vote
+							]
+						]],
+						['upsert' => true]
+					);
+
+				}
+				else{
+					$mongo->threads->updateOne(
+						['threadID' => ((int)$post->getThreadID())],
+						['$pull' => [
+							'votes' => [
+								'postID' => (int)$postID,
+								'userID' => $currentUser->userID
+							]
+						]],
+						['upsert' => true]
+					);
+				}
+
+
+				if($addVote || !$isMulti){
+					$mongo->threads->updateOne(
+						['threadID' => ((int)$post->getThreadID())],
+						['$push' => [
+							'votes' => [
+								'postID' => (int)$postID,
+								'userID' => $currentUser->userID,
+								'vote' => (int)$vote,
+							]
+						]],
+						['upsert' => true]
+					);
+				}
+
+				return $post->getPollResults();
+			}
+			else
+			{
+				return null;
+			}
+
 		}
 	}
 ?>

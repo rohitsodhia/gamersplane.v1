@@ -7,7 +7,7 @@
 
 
         public function addAnnouncement($forumId, $iconClass, $announcementClass, $addHeaderFooter,$randomPinned){
-            global $mysql;
+            global $mysql,$post;
 			$postItem = null;
 
 			if($randomPinned){
