@@ -337,8 +337,9 @@
 		}
 
 		public function getPostPreview($postText){
-			global $isGM;
+			global $isGM,$post;
 			$isGM=true;
+			$post = new Post(0);
 			return printReady(BBCode2Html($postText));
 		}
 

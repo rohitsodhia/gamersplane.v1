@@ -256,18 +256,20 @@
 			$voteCollection=$mongo->threads->findOne(['threadID' => ((int)$this->getThreadID())]);
 
 			$ret = array('voted'=>false,'votes'=>array());
-			if($voteCollection && is_countable($voteCollection["votes"])){
-				foreach ($voteCollection["votes"] as $voteItem) {
-					if($voteItem['postID']==$this->postID){
-						$voteNum=(int)$voteItem['vote'];
-						if(!array_key_exists($voteNum,$ret['votes'])){
-							$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false);
-						}
+			if($this->postID){
+				if($voteCollection && is_countable($voteCollection["votes"])){
+					foreach ($voteCollection["votes"] as $voteItem) {
+						if($voteItem['postID']==$this->postID){
+							$voteNum=(int)$voteItem['vote'];
+							if(!array_key_exists($voteNum,$ret['votes'])){
+								$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false);
+							}
 
-						$ret['votes'][$voteNum]['votes']=$ret['votes'][$voteNum]['votes']+1;
-						if($voteItem['userID']==$currentUser->userID){
-							$ret['votes'][$voteNum]['me']=true;
-							$ret['voted']=true;
+							$ret['votes'][$voteNum]['votes']=$ret['votes'][$voteNum]['votes']+1;
+							if($voteItem['userID']==$currentUser->userID){
+								$ret['votes'][$voteNum]['me']=true;
+								$ret['voted']=true;
+							}
 						}
 					}
 				}
