@@ -21,9 +21,9 @@
 						<div class="explanation">Only images at least 150px by 150px will be accepted, with a maximum file size of 1MB.<br>The images may be shrunk for GP use.</div>
 					</div>
 				</div>
-				<div id="gender" class="tr">
-					<label>Gender</label>
-					<div><label for><pretty-radio radio="user.gender" r-value="'m'"></pretty-radio> Male</label> <label for><pretty-radio radio="user.gender" r-value="'f'"></pretty-radio> Female</label> <label for><pretty-radio radio="user.gender" r-value="'n'"></pretty-radio> Don't display</label></div>
+				<div class="tr">
+					<label>Pronouns</label>
+					<div><input type="text" ng-model="user.pronoun"></div>
 				</div>
 				<div class="tr">
 					<label>Birthday</label>

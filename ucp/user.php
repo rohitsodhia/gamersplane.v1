@@ -20,9 +20,9 @@
 						<div class="title">Inactive</div>
 						<div ng-bind-html="user.lastActivity | trustHTML"></div>
 					</div>
-					<div ng-if="user.gender != 'n'" class="tr">
-						<div class="title">Gender</div>
-						<div>{{user.gender == 'm'?'Male':'Female'}}</div>
+					<div ng-if="user.pronoun" class="tr">
+						<div class="title">Pronouns</div>
+						<div>{{user.pronoun}}</div>
 					</div>
 					<div ng-if="user.birthday.showAge" class="tr">
 						<div class="title">Age</div>
