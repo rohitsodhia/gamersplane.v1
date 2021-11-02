@@ -293,7 +293,7 @@
 			<div id="threadOptions" class="section_options hbdMargined">
 <?php
 		if ($threadManager->getPermissions('moderate')) {
-			$sticky = $threadManager->getThreadProperty('sticky');
+			$sticky = $threadManager->getThreadProperty('states[sticky]');
 			if ($fillVars) {
 				$sticky = $fillVars['sticky'];
 			}
