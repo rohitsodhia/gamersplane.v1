@@ -68,7 +68,6 @@
 			</div>
 
 			<?php $threadManager->enrichThread(); ?>
-
 <?php
 	if (!$threadManager->getThreadProperty('states[locked]') && $threadManager->getPoll()) {
 ?>

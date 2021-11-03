@@ -1,4 +1,4 @@
-<div id="landing_top">
+		<div id="landing_top">
 			<div id="landing_top_content" class="contentContainer">
 				<header>
 					<h1>Scratch that RPG itch</h1>

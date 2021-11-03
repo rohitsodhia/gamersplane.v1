@@ -30,7 +30,6 @@ $forumSearchGames->findThreads(1, 5);
 			?>
 		</div>
 
-
 		<div id="latestPosts" class="homeWidget col-1-3 mob-col-1 mob-order-2">
 		<?php
 			$forumSearchCommunity = new ForumSearch('homepage' , array() , $forumManager);
