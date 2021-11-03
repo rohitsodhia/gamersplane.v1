@@ -148,12 +148,13 @@ $(function () {
 
 	var isValidJson=function (str) {
 		try {
+			str= str.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 			JSON.parse(str);
 		} catch (e) {
 			return false;
 		}
 		return true;
-	}	
+	}
 
 	$('#gameOptions').on('change keyup blur',function(){
 		$('#gameOptionsError').hide();
@@ -162,5 +163,6 @@ $(function () {
 			$('#gameOptionsError').show();
 		}
 	});
-	
+
+	$('.markItUp').markItUp(mySettings);
 });

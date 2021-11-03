@@ -11,6 +11,6 @@
 			<div class="option inherit" ng-class="{ 'selected': permission[pType.key] == 0 }" ng-click="changePermission(permission.ref, pType.key, 0)">Inherit</div>
 			<div class="option no" ng-class="{ 'selected': permission[pType.key] < 0 }" ng-click="changePermission(permission.ref, pType.key, -1)">No</div>
 		</div>
-		<div class="permissionSave"><button type="submit" class="fancyButton" ng-click="savePermission(permission)" skew-element>Save</button></div>
+		<div class="permissionSave"><button type="submit" class="fancyButton" ng-click="savePermission(permission)">Save</button></div>
 	</div>
 </div>

@@ -1,4 +1,5 @@
 <?php
+	$responsivePage=true;
 	if ($loggedIn) { header('Location: /'); exit; }
 	$addExternalJSFiles[] = 'https://www.google.com/recaptcha/api.js';
 	require_once(FILEROOT.'/header.php');
@@ -67,7 +68,7 @@
 				<div class="alert"></div>
 			</div>
 
-<?php	if ($_SERVER['HTTP_HOST'] != 'gamersplane.local') { ?>
+<?php	if (strtolower($_SERVER['HTTP_HOST']) == 'gamersplane.com') { ?>
 			<div id="recaptchaDiv" class="tr">
 				<h2>Prove to me you're real!</h2>
 				<div class="g-recaptcha" data-sitekey="6LcT8gsTAAAAALlRVGdtM9iansESdnIdeCUIwoqG"></div>

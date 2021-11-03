@@ -2,6 +2,7 @@
 	Gamers Plane Main CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "gpVariables.less";
 
 #page_register {
 	form {
@@ -97,5 +98,27 @@
 	#submitDiv {
 		margin-top: .5em;
 		margin-left: 50px;
+	}
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+	#page_register{
+		form{
+			width:auto;
+		}
+
+		.notice,
+		#resendActivation{
+			margin-left: 0;
+		}
+
+		.textfield{
+			width: 100%;
+		}
+	}
+
+	#page_register .inputTR>label{
+		display: block;
+		text-align: left;
 	}
 }

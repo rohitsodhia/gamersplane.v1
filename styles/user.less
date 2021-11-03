@@ -2,10 +2,10 @@
 	Users CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "gpVariables.less";
 
 #page_user {
 	#leftCol {
-		float: left;
 		width: 280px;
 		text-align: center;
 	}
@@ -29,8 +29,7 @@
 	}
 
 	#rightCol {
-		float: right;
-		width: 670px;
+		width: ~"calc(100% - 280px)";
 	}
 
 	h2 {
@@ -43,8 +42,16 @@
 	}
 
 	.details {
-		width: 600px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(171px, 1fr));
+		grid-auto-rows: auto;
+		grid-gap: 10px;
+
 		margin: 0 auto;
+
+		.title{
+			float: none;
+		}
 	}
 
 	.noInfo {
@@ -70,7 +77,6 @@
 	}
 
 	.game {
-		float: left;
 		width: 168px;
 		margin-right: 20px;
 		margin-bottom: 15px;
@@ -109,5 +115,17 @@
 
 	#gmStats {
 		margin-bottom: 10px;
+	}
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+	#page_user {
+		#leftCol {
+			width: 100%;
+			margin-bottom: 1rem;
+		}
+		#rightCol {
+			width:100%;
+		}
 	}
 }

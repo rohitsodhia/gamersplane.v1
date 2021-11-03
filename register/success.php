@@ -1,4 +1,5 @@
 <?
+	$responsivePage=true;
 	$username = $pathOptions[1];
 	require_once(FILEROOT.'/header.php');
 ?>

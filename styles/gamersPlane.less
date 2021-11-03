@@ -6,6 +6,7 @@
 /*
 	z-index blocks:
 */
+@import "gpVariables.less";
 
 @font-face {
 	font-family: 'AgencyFB';
@@ -69,20 +70,6 @@
 		url('fonts/opensans-regular-webfont.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
-}
-
-/* ----------------------------------------------------------------------------------------------*/
-
-.border-radius(@radius: 6px) {
-	-webkit-border-radius: @radius;
-	-moz-border-radius: @radius;
-	border-radius: @radius;
-}
-
-.box-shadow(@horizontal, @vertical, @color, @blur: 0px, @spread: 0px) {
-	-moz-box-shadow: @horizontal @vertical @blur @spread @color;
-	-webkit-box-shadow: @horizontal @vertical @blur @spread @color;
-	box-shadow: @horizontal @vertical @blur @spread @color;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
@@ -227,12 +214,12 @@ ul {
 
 h1 {
 	margin: 0 0 .4em;
-	font-family: "AgencyFB";
+	font-family: @gp-header-font;
 	font-size: 2.6em;
 	font-weight: bold;
 	line-height: 1.6em;
 	text-align: center;
-	color: #b00;
+	color: @gp-red;
 }
 
 h2 {
@@ -243,7 +230,7 @@ h2 {
 }
 
 h3 {
-	font-family: "AgencyFB";
+	font-family: @gp-header-font;
 	font-size: 1.8em;
 	line-height: 1.2em;
 	margin-bottom: .35em;
@@ -255,9 +242,13 @@ h2.headerbar,
 h3.headerbar,
 h4.headerbar {
 	margin: .5em 0;
-	font-family: "AgencyFB";
+
+  
+  
+  enhancement/qol2
+	font-family: @gp-header-font;
 	color: #fff;
-	background: #c60;
+	background: @gp-orange;
 	text-align: left;
 }
 
@@ -354,7 +345,7 @@ button.normal,
 button.normal:visited,
 button.normal:active {
 	text-decoration: none;
-	color: #b00;
+	color: @gp-link-color;
 	outline: none;
 	cursor: pointer;
 }
@@ -379,8 +370,10 @@ a.username:active {
 	color: #06f;
 }
 
-a.username:hover {
-	text-decoration: underline;
+a.username,a.charName{
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 a.fancyButton,
@@ -390,8 +383,22 @@ a.fancyButton:active,
 	font-family: Neuropol;
 	font-size: 1.6em;
 	line-height: 1.2em;
-	background-color: #800;
+	background-color: @gp-red;
 	color: #fff;
+	padding: 3px 8px;
+
+	&.buttonSecondary
+	{
+		background-color: @gp-orange;
+		&:before,
+		&:after{
+			background-color: @gp-orange;
+		}
+	}
+}
+
+.hbdMargined{
+	margin-left:20px;
 }
 
 .fancyButton.smallButton {
@@ -405,8 +412,7 @@ a.fancyButton:active,
 
 .hbTopper .fancyButton,
 .hbdTopper .fancyButton {
-	display: block;
-	float: left;
+	margin-left: 40px;
 }
 
 .redWing {
@@ -435,7 +441,7 @@ a.button:visited,
 a.button:active {
 	width: auto;
 	height: auto;
-	color: #b00;
+	color: @gp-link-color;
 	background: none;
 	outline: none;
 	font-family: Neuropol;
@@ -468,11 +474,12 @@ button.normal:active {
 button.fancyButton,
 button.fancyButton:visited,
 button.fancyButton:active {
-	padding: 3px 8px;
-	background: #800;
+	padding: 4px;
+	background: @gp-red;
 	font-size: 1.5em;
 	line-height: 1.2em;
 	color: #fff;
+	margin:0 20px;
 }
 
 .fancyButton.disabled button,
@@ -496,7 +503,7 @@ button.fancyButton:active {
 .fancyButton .dlWing {
 	left: 0;
 	border-top: 45px solid transparent;
-	border-right: 32px solid #800;
+	border-right: 32px solid @gp-red;
 }
 
 .fancyButton.disabled .dlWing {
@@ -505,7 +512,7 @@ button.fancyButton:active {
 
 .fancyButton .urWing {
 	right: 0;
-	border-top: 45px solid #800;
+	border-top: 45px solid @gp-red;
 	border-right: 32px solid transparent;
 }
 
@@ -797,16 +804,49 @@ div.prettySelect > div {
 		}
 	}
 
-	&.redTrapezoid {
-		background: none;
+	&.trapezoid {
+		background-color: #222;
+		position: relative;
+		padding: 2px 4px;
 
-		.content {
-			background-color: #800;
+		&:before,&:after{
+			content: ' ';
+			display: block;
+			width: 20px;
+			top: 0;
+			bottom: 0;
+			position: absolute;
+			background-color: #222;
 		}
 
-		.leftWing,
-		.rightWing {
-			border-bottom-color: #800;
+		&:before{
+			left: -19.5px;
+			clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+		}
+
+		&:after{
+			right: -19.5px;
+			clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+		}
+
+		&.facingUp{
+			&:before{
+				left: -19.5px;
+				clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+			}
+
+			&:after{
+				right: -19.5px;
+				clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+			}
+
+		}
+	}
+
+	&.redTrapezoid{
+		background-color: @gp-red;
+		&:before,&:after{
+			background-color: @gp-red;
 		}
 	}
 }
@@ -1001,6 +1041,7 @@ div.prettySelect > div {
 #mainMenu {
 	flex-grow: 1;
 	text-align: right;
+	margin-right: 20px;
 
 	& > * {
 		vertical-align: middle;
@@ -1035,22 +1076,51 @@ div.prettySelect > div {
 	ul {
 		display: none;
 		position: absolute;
-		left: 7px;
-		top: 32px;
+		left: -25px;
+		top: 40px;
 		width: auto;
 		margin-left: 0;
-		border: 1px solid #444;
+		border: 1px solid @gp-black;
 		border-top: none;
 		background: #fff;
-		color: #000;
+		color: @gp-black;
 		white-space: nowrap;
+		z-index: 6002;
+		border-radius: 4px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+
+		&:before,
+		&:after{
+			content: ' ';
+			display: block;
+			width:0;
+			height:0;
+			border:solid 10px transparent;
+			left:55px;
+			position: absolute;
+		}
+
+		&:before{
+			top:-20px;
+			border-bottom-color: @gp-black;
+		}
+		&:after{
+			top:-19px;
+			border-bottom-color: #fff;
+		}
 
 		li {
 			display: block;
 			padding: 0;
-			border-top: 1px solid #444;
+			border-top: 1px solid #ddd;
 
 			a {
+				padding: 3px 0;
+
+				i.ra{
+					margin-right: .2rem;
+				}
+
 				&,
 				&:visited,
 				&:hover {
@@ -1065,6 +1135,10 @@ div.prettySelect > div {
 					text-decoration: none;
 				}
 			}
+
+			&:first-of-type{
+				border-top-color: @gp-black;
+			}
 		}
 
 		img {
@@ -1073,8 +1147,18 @@ div.prettySelect > div {
 		}
 	}
 
+	#mainMenuTools ul{
+		left:-5px;
+		&:before,
+		&:after{
+			left:25px;
+		}
+
+	}
+
 	#userMenu {
-		.avatar {
+		a.avatar,
+		a.avatar:active {
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -1102,8 +1186,8 @@ div.prettySelect > div {
 		}
 
 		ul {
-			top: 42px;
-			right: 0;
+			top: 55px;
+			right: -30px;
 			left: auto;
 		}
 	}
@@ -1131,7 +1215,7 @@ div.prettySelect > div {
 
 #content {
 	padding-top: 125px;
-	background: #fff;
+	background: @gp-content-back;
 	clear: both;
 
 	&.underHeader {
@@ -1149,8 +1233,8 @@ body.style-background #content {
 			position: absolute;
 			top: -10px;
 			bottom: 0px;
-			left: -10px;
-			right: -10px;
+			left: 0px;
+			right: 0px;
 			content: " ";
 			display: block;
 			background-color: rgba(255, 255, 255, 0.95);
@@ -1578,14 +1662,19 @@ textarea {
 	}
 
 	&.closed {
-		.hidden,
-		.close {
+		&>.hidden{
+			display: none;
+		}
+	}
+
+	&.closed {
+		&>.tag>.close {
 			display: none;
 		}
 	}
 
 	&:not(.closed) {
-		.open {
+		&>.tag>.open {
 			display: none;
 		}
 	}
@@ -2382,7 +2471,6 @@ textarea {
 	a:visited:not(.username),
 	a:active:not(.username) {
 		color: #fff;
-		text-decoration: underline;
 	}
 
 	a:hover:not(.username) {
@@ -2483,7 +2571,7 @@ textarea {
 	width: 550px;
 
 	h3 {
-		font-family: "AgencyFB";
+		font-family: @gp-header-font;
 		font-size: 1.8em;
 		line-height: 1.2em;
 		margin-bottom: .15em;
@@ -2542,6 +2630,7 @@ textarea {
 #fm_characters {
 	.submenu {
 		left: 0;
+		column-count: 2;
 	}
 
 	li {
@@ -2551,10 +2640,30 @@ textarea {
 	p {
 		margin: 0;
 		line-height: 1.2em;
+		white-space: nowrap;
+		padding-bottom: 3px;
+
+		i.ra{
+			visibility: hidden;
+			cursor: pointer;
+		}
 
 		&.username {
-			margin-bottom: .3em;
+			margin-top: .3em;
 			font-size: 1.15em;
+			color: #fa0;
+
+			a{
+				color: #fa0;
+				font-weight: bold;
+			}
+		}
+
+		&.charname{
+			a {
+				text-decoration: none;
+			}
+
 		}
 	}
 
@@ -2584,7 +2693,7 @@ textarea {
 .alertBox_error {
 	border-color: #900;
 	background-image: url('../images/alerts/error.png');
-	background-color: #d33;
+	background-color: @gp-red-lightest;
 }
 
 .alertBox_success {
@@ -2624,9 +2733,15 @@ textarea {
 	}
 
 	.currentPage {
-		border: 1px solid #aaa;
-		background: #222;
-		color: #aaa;
+		border: 1px solid #ccc;
+		white-space: nowrap;
+		border-radius: 5px;
+		margin-right: .5rem;
+	}
+
+	.page{
+		background-color: fade(@gp-orange,20%);
+		border-radius: 5px;
 	}
 }
 
@@ -2636,26 +2751,33 @@ textarea {
 div.forumIcon {
 	height: 30px;
 	width: 30px;
-	background: url('../images/forums/forum_icons.png') 0px 0px no-repeat;
-
-	&.newPosts {
-		background-position: -30px 0px;
+	font-size: 24px;
+    padding-top: 10px;
+	//background: url('../images/forums/forum_icons.png') 0px 0px no-repeat;
+	&:before{
+		font-family: '@{rpgawesome-font-family}';
+		content: @ra-var-icon-d6;
+		color: #ccc;
 	}
 
-	&.sticky {
-		background-position: 0px -30px;
+	&.newPosts:before {
+		color: @gp-red;
+	}
+
+	&.sticky:before {
+		content: @gp-icon-sticky;
 	}
 
 	&.newPosts.sticky {
-		background-position: -30px -30px;
+		//background-position: -30px -30px;
 	}
 
-	&.locked {
-		background-position: 0px -60px;
+	&.locked:before {
+		content: @gp-icon-locked;
 	}
 
 	&.newPosts.locked {
-		background-position: -30px -60px;
+		//background-position: -30px -60px;
 	}
 }
 
@@ -2716,17 +2838,12 @@ div.forumIcon {
 	position: relative;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 10px #fff;
-	-moz-box-shadow: inset 0 0 10px #fff;
-	box-shadow: inset 0 0 10px #fff;
-	width: 23%;
+	border-radius: 4px;
 	padding: 10px 15px;
 	background: #222;
 	color: #fff;
 
 	&.left {
-		order: -1;
 		margin-right: 10px;
 		margin-left: 0;
 	}
@@ -2737,7 +2854,7 @@ div.forumIcon {
 
 	h2 {
 		margin-bottom: .1em;
-		font-family: "AgencyFB";
+		font-family: @gp-header-font;
 		font-size: 2em;
 		text-align: center;
 	}
@@ -2758,12 +2875,12 @@ div.forumIcon {
 				display: block;
 				width: 95px;
 				margin-top: 10px;
-				border: 1px solid #b00;
+				border: 1px solid @gp-link-color;
 				background: #ccc;
 				font-family: AgencyFB;
 				line-height: 1.2em;
 				text-align: center;
-				color: #b00;
+				color: @gp-link-color;
 			}
 		}
 
@@ -2804,8 +2921,6 @@ div.forumIcon {
 	}
 
 	.homeWidget {
-		width: 310px;
-		margin-left: 10px;
 
 		&:first-child {
 			margin-left: 0;
@@ -2912,409 +3027,6 @@ div.forumIcon {
 
 /* --------------------------------------------*/
 
-#page_home.landingPage {
-	&,
-	td,
-	input,
-	select,
-	textarea {
-		font-size: 14px;
-		font-family: 'OpenSans_Regular', 'Lucida Grande', Verdana, Arial, Sans-Serif;
-		color: #000;
-		line-height: 1.3em;
-	}
-
-	#landing_top {
-		background: url('../images/landing_top_bg.jpg') top center no-repeat;
-	}
-
-	#landing_top_content {
-		padding-top: 120px;
-		padding-bottom: 30px;
-
-		header {
-			margin: 30px 0 30px 60px;
-
-			h1,
-			h2 {
-				margin: 0;
-				font-family: 'OpenSans_Regular';
-				color: #fff;
-				text-align: left;
-				line-height: 1em;
-			}
-
-			h1 {
-				margin-bottom: .5em;
-				font-size: 40px;
-				font-weight: normal;
-			}
-
-			h2 {
-				margin-left: 50px;
-				font-size: 26px;
-			}
-		}
-	}
-
-	#landing_top_whiteBox {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 20px 10px;
-		background: #fff;
-
-		& > * {
-			display: inline-block;
-			width: 560px;
-			padding: 0 20px;
-
-			h1 {
-				margin-bottom: 0;
-				font-weight: normal;
-				text-align: center;
-
-				& > div {
-					padding: 5px 8px;
-				}
-			}
-		}
-	}
-
-	#landing_systemSearch {
-		padding: 6px 12px;
-		border: 2px solid #bbb;
-		border-top: 0;
-
-		& > * {
-			vertical-align: middle;
-		}
-
-		.sprite {
-			margin-right: 10px;
-		}
-
-		.combobox {
-			width: 420px;
-
-			input {
-				border: 1px solid #fff;
-				.border-radius(0);
-				background: none;
-			}
-
-			&.resultsOpen input,
-			.results {
-				border-color: #999;
-			}
-
-			&.resultsOpen input {
-				border-bottom-color: #ccc;
-			}
-
-			.results {
-				border-top: none;
-
-				a {
-					padding: 6px 9px;
-					background: none;
-
-					&:hover,
-					&.selected {
-						background: #fcc;
-					}
-				}
-			}
-		}
-	}
-
-	.game {
-		padding: 8px 30px;
-		border-top: 1px solid #ccc;
-
-		&.first {
-			border-top: none;
-		}
-
-		.title {
-			margin-bottom: 5px;
-
-			a {
-				font-weight: bold;
-			}
-		}
-
-		.info {
-			margin-left: 20px;
-		}
-
-		.system {
-			text-decoration: underline;
-		}
-	}
-
-	#landing_signup {
-		& > * {
-			text-align: center;
-		}
-
-		a {
-			font-size: 1.4em;
-		}
-
-		.register {
-			font-size: 2em;
-		}
-
-		.login {
-			background-color: #742;
-		}
-
-		p {
-			margin-bottom: 1.4em;
-		}
-	}
-
-	/*	#landing_signup {
-		& > div {
-			position: relative;
-			display: flex;
-			align-items: center;
-			.borderBox;
-			width: 400px;
-			height: 55px;
-			padding: 11px 18px;
-			margin: 0 auto;
-			border: 1px solid #FBB;
-			.border-radius(0);
-
-			&::before {
-				position: absolute;
-				display: inline-block;
-				content: " ";
-				background: url('../images/sprites.png') top left no-repeat;
-			}
-
-			& > * {
-				margin-left: 45px;
-				font-size: 1.3em;
-			}
-
-			input {
-				width: 100%;
-				.border-radius(0);
-				border: none;
-				background: none;
-			}
-
-			span {
-				position: absolute;
-				top: 17px;
-				left: 18px;
-				color: #888;
-			}
-		}
-	}
-
-	#landing_signup_username {
-		&::before {
-			top: 12px;
-			left: 18px;
-			width: 27px;
-			height: 28px;
-			background-position: -23px -56px !important;
-		}
-	}
-
-	#landing_signup_password {
-		border-top: none !important;
-
-		&::before {
-			top: 11px;
-			left: 21px;
-			width: 23px;
-			height: 31px;
-			background-position: -50px -56px !important;
-		}
-	}*/
-}
-
-#landing_whatIs {
-	& > * {
-		float: left;
-		margin: 40px 0;
-	}
-}
-
-#landing_whatIs_logos {
-	position: relative;
-	height: 410px;
-	width: 540px;
-	padding: 0 30px;
-
-	& > * {
-		position: absolute;
-	}
-}
-
-#landing_whatIs_dnd5 {
-	top: 40px;
-	left: 34px;
-	width: 309px;
-}
-
-#landing_whatIs_thestrange {
-	top: 17px;
-	left: 387px;
-	width: 167px;
-}
-
-#landing_whatIs_pathfinder {
-	top: 126px;
-	left: 82px;
-	width: 195px;
-}
-
-#landing_whatIs_starwarsffg {
-	top: 102px;
-	left: 336px;
-	width: 173px;
-}
-
-#landing_whatIs_13thage {
-	top: 227px;
-	left: 142px;
-	width: 89px;
-}
-
-#landing_whatIs_numenera {
-	top: 222px;
-	left: 270px;
-	width: 280px;
-}
-
-#landing_whatIs_shadowrun5 {
-	top: 331px;
-	left: 39px;
-	width: 191px;
-}
-
-#landing_whatIs_fate {
-	top: 325px;
-	left: 286px;
-	width: 113px;
-}
-
-#landing_whatIs_savageworlds {
-	top: 295px;
-	left: 433px;
-	width: 121px;
-}
-
-#landing_whatIs_text {
-	width: 570px;
-
-	h2 {
-		margin-bottom: .5em;
-		font-family: AgencyFB;
-		font-size: 48px;
-		line-height: 1em;
-	}
-
-	p {
-		margin: 1.2em 0 0;
-		line-height: 1.4em;
-	}
-}
-
-#landing_features {
-	padding: 75px 0 55px;
-	background-color: #ddd;
-
-	.contentContainer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-
-		& > * {
-			position: relative;
-			width: 380px;
-			height: 220px;
-			padding: 50px 30px 0;
-			.borderBox;
-			border: 1px solid #dbb;
-			background-color: #fff;
-		}
-	}
-
-	.icon {
-		position: absolute;
-		top: -36px;
-		left: 190px;
-		width: 72px;
-		height: 72px;
-		margin-left: -36px;
-		background-color: #c31d29;
-		.border-radius(36px);
-		text-align: center;
-		line-height: 68px;
-	}
-
-	h3 {
-		margin-bottom: 1em;
-		font-family: OpenSans_Regular;
-		font-size: 20px;
-		text-transform: uppercase;
-		font-weight: bold;
-		text-align: center;
-	}
-
-	p {
-		margin: 0;
-		font-size: 1.2em;
-		line-height: 1.5em;
-		text-align: center;
-	}
-}
-
-#landing_features_tools,
-#landing_features_library,
-#landing_features_sheets {
-	span {
-		display: inline-block;
-		background: url('../images/sprites.png') top left no-repeat;
-		vertical-align: middle;
-	}
-}
-
-#landing_features_tools {
-	span {
-		width: 42px;
-		height: 40px;
-		margin-right: 2px;
-		background-position: -73px -56px;
-	}
-}
-
-#landing_features_library {
-	span {
-		width: 40px;
-		height: 31px;
-		background-position: -115px -56px;
-	}
-}
-
-#landing_features_sheets {
-	span {
-		width: 29px;
-		height: 40px;
-		margin-left: 2px;
-		background-position: -155px -56px;
-	}
-}
-
-/* --------------------------------------------*/
-
 #page_contact {
 	.animationFrame {
 		position: relative;
@@ -3410,7 +3122,7 @@ div.forumIcon {
 	form {
 		margin: 0 0 1em;
 		padding: 10px 0;
-		border: 2px solid #c60;
+		border: 2px solid @gp-orange;
 		border-top: 0;
 	}
 
@@ -3798,6 +3510,16 @@ div.forumIcon {
 	}
 }
 
+input[type="text"].headerSearch{
+	vertical-align: text-bottom;
+	min-width: 10rem;
+	text-align: left;
+}
+
+select.notPretty{
+	padding:4px 5px;
+}
+
 /* --------------------------------------------*/
 #charDetails {
 	.layout-columns-2,
@@ -3848,17 +3570,74 @@ div.forumIcon {
 	}
 }
 
+// skew elements
+.headerbar,.fancyButton{
+	position: relative;
+
+	&:before,&:after{
+		content:' ';
+		position:absolute;
+		top:0;
+		bottom: 0;
+		width:20px;
+		background-color: @gp-orange;
+	}
+	&:before{
+		clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+		left:-19.5px;
+	}
+	&:after{
+		clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
+		right:-19.5px;
+	}
+
+	&.hbDark{
+		&:before,&:after{
+			background-color: #222;
+		}
+	}
+	&.fancyButton{
+		&:before,&:after{
+			background-color: @gp-red;
+		}
+	}
+}
+
+.spoiler.snippet
+{
+	background-color: #fec;
+}
+
+.youtube_bb{
+	position: relative;
+    padding-bottom: 56.25%; //Youtube radio of 315 / 560
+    height: auto;
+    overflow: hidden;
+    max-width: 100%;
+	display: block !important;
+
+	iframe,
+	object,
+	embed{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
 /*--------------*/
 #page_characterSheet {
-	.feat {
+	.feat,.ability {
 		position: relative;
 	}
 
-	.feat_name {
-		margin-left: 1.5em;
+	.feat_name,.abilityName{
+		margin-left:1.5em;
 	}
 
-	.feat_notesLink {
+	.feat_notesLink,.ability_notesLink{
 		position: absolute;
 		top: 4px;
 		left: 0;
@@ -3868,8 +3647,56 @@ div.forumIcon {
 			font-size: 1rem;
 		}
 
-		&.open:before {
+		&.open:before{
 			content: '\25BC';
 		}
 	}
+}
+
+//header icons
+.headerbar i.fa {
+    min-width: 1.4em;
+}
+
+.badge{
+
+	.makeBadge;
+
+	&.badge-gameOpen{
+		.badgeColor( @gp-open-badge-color );
+	}
+
+	&.badge-gameClosed{
+		.badgeColor( @gp-closed-badge-color);
+	}
+
+	&.badge-system{
+		.badgeColor( @gp-system-badge-color);
+	}
+
+	&.badge-gamePublic{
+		.badgeColor( @gp-public-badge-color);
+	}
+
+	&.badge-gamePrivate{
+		.badgeColor( @gp-private-badge-color);
+	}
+
+	&.badge-gameFrequency{
+		.badgeColor( @gp-frequency-badge-color);
+	}
+
+	&.badge-gameGm{
+		.badgeColor( @gp-gm-badge-color);
+	}
+
+}
+
+.atHighlight{
+	background-color: lighten(@gp-complement-mid,65%);
+	text-decoration: double;
+}
+
+.hide{
+	display:none !important;
 }

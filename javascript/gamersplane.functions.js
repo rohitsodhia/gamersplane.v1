@@ -110,6 +110,8 @@ function addCSSRule(selector, rules, index) {
 }
 
 function skewElement() {
+	return;
+
 	$element = $(this);
 	if ($element.children('div.skewedDiv').length)
 		return;
@@ -158,6 +160,7 @@ function adjustSkewMargins() {
 }
 
 function trapezoidify() {
+	return;
 	$element = $(this);
 	$element.wrapInner('<div class="content"></div>').prepend('<div class="leftWing"></div>').append('<div class="rightWing"></div>');
 	if (typeof $element.data('skew') != 'undefined')

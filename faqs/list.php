@@ -7,7 +7,7 @@
 			<div class="mainColumn">
 				<div ng-repeat="(slug, category) in catMap" ng-if="aFAQs[slug].length">
 					<a name="{{slug}}"></a>
-					<h2 class="headerbar hbDark" skew-element>{{category}}</h2>
+					<h2 class="headerbar hbDark">{{category}}</h2>
 					<div class="faqs" hb-margined>
 						<div ng-repeat="faq in aFAQs[slug] | orderBy: 'order'" class="faq">
 							<div class="question">{{faq.question}}</div>

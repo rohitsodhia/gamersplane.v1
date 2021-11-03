@@ -1,6 +1,7 @@
 <?php
 	$characterID = intval($pathOptions[1]);
 	$noChar = true;
+	$characterMarkitUp = true;
 
 	define('SYSTEM', $pathOptions[0]);
 	if ($systems->verifySystem(SYSTEM)) {
@@ -30,7 +31,8 @@
 		}
 	} else { header('Location: /404/'); exit; }
 ?>
-<?php	require_once(FILEROOT . '/header.php'); ?>
+<?php	if(SYSTEM=='custom'){$responsivePage=true;}
+		require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar">Edit Character Sheet</h1>
 <?php	if (file_exists(FILEROOT . '/images/logos/' . SYSTEM . '.png')) { ?>
 		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>

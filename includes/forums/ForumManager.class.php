@@ -218,9 +218,11 @@ class ForumManager
 			if (!$tableOpen) {
 				?>
 <div class="tableDiv">
-    <div class="groupTopper">
-        <h2 class="trapezoid redTrapezoid"><?= $this->forums[$childID]->forumType == 'c' ? $this->forums[$childID]->title : 'Subforums' ?></h2>
-    </div>
+	<?if($this->forums[$childID]->forumType == 'c'){?>
+		<div class="groupTopper groupTopperLeft"><h2 class="trapezoid redTrapezoid"><?$this->addForumIcon($childID)?><?=$this->forums[$childID]->title?></h2></div>
+	<?}else{?>
+		<div class="groupTopper"><h2 class="trapezoid redTrapezoid"> Subforums</h2></div>
+	<?}?>
     <div class="tr headerTR headerbar hbDark">
         <div class="td icon">&nbsp;</div>
         <div class="td name">Forum</div>
@@ -250,7 +252,7 @@ public function displayForumRow($forumID)
 	?>
         <div class="tr<?= $this->newPosts($forumID) ? '' : ' noPosts' ?>">
             <div class="td icon">
-                <div class="forumIcon<?= $this->newPosts($forumID) ? ' newPosts' : '' ?>" title="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum" alt="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum"></div>
+				<a href="/forums/<?= $forum->forumID ?>/"><div class="forumIcon<?= $this->newPosts($forumID) ? ' newPosts' : '' ?>" title="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum" alt="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum"></div></a>
             </div>
             <div class="td name">
                 <a href="/forums/<?= $forum->forumID ?>/"><?= printReady($forum->title) ?></a>
@@ -419,13 +421,13 @@ public function displayForumRow($forumID)
 						?>
                 <div class="tr">
                     <div class="td icon">
-                        <div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div>
+						<a href="/forums/thread/<?= $thread->threadID ?>/?view=lastPost#lastPost"><div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div></a>
                     </div>
                     <div class="td threadInfo">
                         <? if ($thread->newPosts($maxRead)) { ?>
-                        <a href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+                        <a class="threadInfoNew" href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
                         <?
-					} ?>
+					} else {?><span class="threadInfoNew"></span><?} ?>
                         <div class="paginateDiv">
                             <?
 							if ($thread->postCount > PAGINATE_PER_PAGE) {
@@ -450,7 +452,7 @@ public function displayForumRow($forumID)
 				?>
                             <a href="/forums/thread/<?= $thread->threadID ?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
                         </div>
-                        <a href="/forums/thread/<?= $thread->threadID ?>/"><?= $thread->title ?></a><br>
+                        <a href="/forums/thread/<?= $thread->threadID ?>/" class="threadTitle"><?= $thread->title ?></a><br>
                         <span class="threadAuthor">by <a href="/user/<?= $thread->authorID ?>/" class="username"><?= $thread->authorUsername ?></a> on <span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->datePosted)) ?></span></span>
                     </div>
                     <div class="td numPosts"><?= $thread->postCount ?></div>
@@ -494,6 +496,11 @@ public function displayForumRow($forumID)
 		}
 
 		return $details;
+	}
+
+	public function addForumIcon($forumID=null){
+		$forumID=$forumID?$forumID:$this->currentForum;
+		echo "<i class='ra forum-icon forum-root-".$this->forums[$forumID]->rootHeritage()." forum-id-".$forumID."'></i> ";
 	}
 }
 ?>

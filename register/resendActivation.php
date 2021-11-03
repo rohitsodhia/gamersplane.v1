@@ -1,4 +1,5 @@
 <?
+	$responsivePage=true;
 	$formErrors->getErrors('resendActivation');
 	require_once(FILEROOT.'/header.php');
 ?>

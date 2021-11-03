@@ -1,5 +1,6 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar" skew-element>GP's Gamers</h1>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
+		<h1 class="headerbar"><i class="ra ra-gamers-plane"></i> GP's Gamers</h1>
 
 		<p class="hbMargined" hb-margined>
 			<label>

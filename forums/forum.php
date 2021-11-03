@@ -1,4 +1,5 @@
 <?
+	$responsivePage=true;
 	addPackage('forum');
 
 	$forumID = intval($pathOptions[0]);
@@ -16,13 +17,13 @@
 		$dispatchInfo['title'] = $forumManager->getForumProperty($forumID, 'title').' | '.$dispatchInfo['title'];
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar">Forum<?=$forumID?' - '.$forumManager->getForumProperty($forumID, 'title'):'s'?></h1>
+		<h1 class="headerbar"><?$forumManager->addForumIcon($forumID)?> <?=$forumID?$forumManager->getForumProperty($forumID, 'title'):'Forums'?></h1>
 
 		<div id="topLinks" class="hbMargined">
 <?	$forumManager->displayBreadcrumbs(); ?>
 			<div class="flexWrapper">
 				<div class="alignLeft">
-					<div>Be sure to read and follow the <a href="/forums/rules">guidelines for our forums</a>.</div>
+					<div class="mob-hide">Be sure to read and follow the <a href="/forums/rules">guidelines for our forums</a>.</div>
 				</div>
 				<div class="alignRight">
 <?	if ($forumID == 0) { ?>
@@ -59,6 +60,6 @@
 				<p><a href="/forums/subscriptions/">Manage Subscriptions</a></p>
 <?	} ?>
 			</div>
-<?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page']); ?>
+<?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page'], array()); ?>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

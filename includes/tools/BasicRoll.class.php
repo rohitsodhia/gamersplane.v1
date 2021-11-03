@@ -10,35 +10,55 @@
 		}
 
 		function parseRolls($diceString) {
-			preg_match_all('/(\d*)[dD](\d+)([+-]\d+)?/', $diceString, $rolls, PREG_SET_ORDER);
-			if (sizeof($rolls)) {
-				foreach ($rolls as $roll) {
-					if ($roll[1] == '') {
-						$roll[1] = 1;
-						$roll[0] = '1'.$roll[0];
-					}
-					if (!isset($roll[3])) $roll[3] = 0;
-					else $roll[3] = intval($roll[3]);
+			$diceString=str_replace(" ", "", $diceString);  //remove spaces, easier here than in the regex
 
-					$this->rolls[] = array('string' => $roll[0], 'number' => $roll[1], 'sides' => $roll[2], 'modifier' => $roll[3], 'indivRolls' => array(), 'result' => 0);
-					$this->dice[$roll[2]] = new BasicDie($roll[2]);
+			$hasDiceParts=false;
+
+			$diceParts=explode(",",$diceString);
+
+			foreach ($diceParts as $dicePart){
+				preg_match_all('/(([\+\-]?)(\d*)([dD])?(\d+))/', $dicePart, $rolls, PREG_SET_ORDER);
+
+				$totalModifier=0;
+				$diceSides=$diceNumber=array();
+
+				if(count($rolls)){
+					foreach ($rolls as $roll){
+						if(($roll[4]=="d"||$roll[4]=="D")){
+							$diceNumber[]=intval($roll[3]?$roll[3]:1);
+							$diceSize=intval($roll[5]);
+							$diceSides[]=$diceSize;
+							$this->dice[$diceSize]=new BasicDie($diceSize);
+						}
+						else{
+							$mod=intval($roll[1]);
+							if($mod){
+								$totalModifier=$totalModifier+$mod;
+							}
+						}
+					}
+					$this->rolls[] = array('string' => $dicePart, 'number' => $diceNumber, 'sides' => $diceSides, 'modifier' => $totalModifier, 'indivRolls' => array(), 'result' => 0);
+					$hasDiceParts = true;
 				}
 
-				return true;
-			} else return false;
+			}
+
+			return $hasDiceParts;
 		}
 
 		function roll() {
 			foreach ($this->rolls as $key => &$roll) {
-				for ($count = 0; $count < $roll['number']; $count++) {
-					$result = $this->dice[$roll['sides']]->roll();
+				for ($handful=0;$handful<count($roll['number']);$handful++){
+					for ($count = 0; $count < $roll['number'][$handful]; $count++) {
+						$result = $this->dice[$roll['sides'][$handful]]->roll();
 
-					if (isset($roll['indivRolls'][$count]) && is_array($roll['indivRolls'][$count])) $roll['indivRolls'][$count][] = $result;
-					elseif ($result == $roll['sides'] && $this->rerollAces) $roll['indivRolls'][$count] = array($result);
-					else $roll['indivRolls'][$count] = $result;
-					$roll['result'] += $result;
+						if (isset($roll['indivRolls'][$handful][$count]) && is_array($roll['indivRolls'][$handful][$count])) $roll['indivRolls'][$handful][$count][] = $result;
+						elseif ($result == $roll['sides'][$handful] && $this->rerollAces) $roll['indivRolls'][$handful][$count] = array($result);
+						else $roll['indivRolls'][$handful][$count] = $result;
+						$roll['result'] += $result;
 
-					if ($this->rerollAces && $result == $roll['sides']) $count -= 1;
+						if ($this->rerollAces && $result == $roll['sides'][$handful]) $count -= 1;
+					}
 				}
 				$roll['result'] += $roll['modifier'];
 			}
@@ -83,6 +103,39 @@
 		function getResults() {
 		}
 
+		function resultsToText($rolls){
+			$ret='';
+			if(is_array($rolls)){
+				foreach($rolls as $index=>$roll){
+					if(is_array($roll)){
+						$rollCount = count($roll);
+						if($rollCount>0){
+							$rollTotal=0;
+							$raHtml='';
+							foreach($roll as $rerolledAce){
+								if(--$rollCount>0){
+									$raHtml.='<s>'.$rerolledAce.'</s>';
+								}
+								else{
+									$raHtml.=$rerolledAce;
+								}
+
+								$rollTotal+=$rerolledAce;
+							}
+							$ret.='<i data-ro="'.$index.'" data-rv="'.$rollTotal.'">';
+							$ret.=$raHtml;
+							$ret.='</i>';
+						}
+					} else {
+						$ret.='<i data-ro="'.$index.'" data-rv="'.$roll.'">'.$roll.'</i>';
+					}
+				}
+			} else {
+				$ret.='<i data-ro="0" data-rv="'.$rolls.'">'.$rolls.'</i>';
+			}
+			return $ret;
+		}
+
 		function showHTML($showAll = false) {
 			if (sizeof($this->rolls)) {
 				$hidden = false;
@@ -92,17 +145,21 @@
 				$multipleRolls = sizeof($this->rolls) > 1?true:false;
 				foreach ($this->rolls as $count => $roll) {
 					$rollStrings[] = $roll['string'];
-					$rollValues[$count] = '<p class="rollResults" data-rollstring="'.$roll['string'].'">'.($this->visibility != 0 && $showAll?'<span class="hidden">':'').($multipleRolls?"{$roll['string']} - ":'').'(<span class="rollValues">';
+					$rollValues[$count] = '<p class="rollResults"">'.($this->visibility != 0 && $showAll?'<span class="hidden">':'').($multipleRolls?"{$roll['string']} : ":'');
 					$results = array();
-					foreach ($roll['indivRolls'] as $key => $result) {
-						if (is_array($result))  {
-							$results[$key] = '[ '.implode(', ', $result).' ]';
+
+					if(is_array($roll['indivRolls']) && count($roll['indivRolls']) && is_array($roll['indivRolls'][0])){
+						//new multidice
+						foreach ($roll['indivRolls'] as $key => $result) {
+							$results[$key]='(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.$this->resultsToText($result).'</span>)';
 						}
-						else $results[$key] = $result;
+					}else{
+						//old data
+						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.$this->resultsToText($roll['indivRolls']).'</span>)';
 					}
-					$rollValues[$count] .= implode(', ', $results).'</span>)';
-					if ($roll['modifier'] < 0) $rollValues[$count] .= ' - '.abs($roll['modifier']);
-					elseif ($roll['modifier'] > 0) $rollValues[$count] .= ' + '.$roll['modifier'];
+
+					$rollValues[$count] .= implode(' + ', $results);
+					$rollValues[$count] .= ($roll['modifier'] == 0 ? "" : ($roll['modifier'] < 0 ? " - " : " + ").abs($roll['modifier']));
 					$rollValues[$count] .= ' = '.$roll['result'].($this->visibility != 0?'</span>':'').'</p>';
 				}
 				echo '<p class="rollString">';

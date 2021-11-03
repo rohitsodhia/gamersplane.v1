@@ -1,14 +1,4 @@
 <?	require_once(FILEROOT.'/header.php'); ?>
-		<div ng-if="state == 'new'" class="sideWidget">
-			<h2>LFGs</h2>
-			<div class="widgetBody">
-				<p>Players want to play (top 10)...</p>
-				<ul ng-if="lfg.length">
-					<li ng-repeat="system in lfg | orderBy: ['-count', '+name']"><span ng-bind-html="system.name"></span> - {{system.count}}</li>
-				</ul>
-			</div>
-		</div>
-
 		<div class="mainColumn" ng-class="{ 'fullWidth': state == 'edit' }">
 			<h1 class="headerbar">{{state.capitalizeFirstLetter()}} Game</h1>
 
@@ -26,7 +16,7 @@
 				</div>
 				<div class="tr" ng-if="allSystems[game.system]=='Custom'">
 					<label>Custom Type</label>
-					<input id="customType" type="text" ng-model="game.customType"> 
+					<input id="customType" type="text" ng-model="game.customType">
 				</div>
 				<div class="tr">
 					<label>Allowed Character Sheets</label>
@@ -42,8 +32,7 @@
 				</div>
 				<div class="tr">
 					<label>Post Frequency</label>
-					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per
-					<combobox inputID="perPeriod" data="combobox.periods" change="setPeriod(value)" select></combobox>
+					<input id="timesPer" type="number" ng-model="game.postFrequency.timesPer" maxlength="2" min="1"> time(s) per <select class="notPretty" ng-model="game.postFrequency.perPeriod"><option value="d">day</option><option value="w">week</option></select>
 				</div>
 				<div class="tr">
 					<label>Number of Players</label>
@@ -55,15 +44,19 @@
 				</div>
 				<div class="tr textareaRow">
 					<label>Description</label>
-					<textarea ng-model="game.description"></textarea>
+					<textarea ng-model="game.description" id="gameDescription" class="markItUp"></textarea>
 				</div>
 				<div class="tr textareaRow">
 					<label>Character Generation Info</label>
-					<textarea ng-model="game.charGenInfo"></textarea>
+					<textarea ng-model="game.charGenInfo"  id="gameCharGenInfo" class="markItUp"></textarea>
+				</div>
+				<div class="tr"><p>If you've created a recruitment thread in the <a href="/forums/10/" target="_blank">Games Tavern</a> link it to the game here.</p></div>
+				<div class="tr textareaRow">
+					<strong>https://gamersplane.com/forums/thread/<input id="recruitmentThreadId" type="number" ng-model="game.recruitmentThreadId"></strong>
 				</div>
 				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Advanced rules definitions</div><div class="hidden">
 				<div class="tr textareaRow">
-					<p>See the release notes for configuring these rules</p>
+					<p>See the <a href="/forums/thread/22053/" target="guidesForum">guides forum</a> for help configuring these rules</p>
 					<textarea id="gameOptions" ng-model="game.gameOptions"></textarea>
 					<p id="gameOptionsError" class="alertBox_error" style="display:none;">This is not valid JSON and will not be saved.</p>
 				</div>

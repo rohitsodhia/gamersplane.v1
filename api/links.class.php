@@ -28,7 +28,7 @@
 					$_POST['level'] = [$_POST['level']];
 				}
 				foreach ($_POST['level'] as $level) {
-					if (in_array($level, self::$levels)) {
+					if (in_array($level, $this->levels)) {
 						$search['level'][] = $level;
 					}
 				}

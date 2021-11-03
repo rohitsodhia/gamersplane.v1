@@ -20,10 +20,10 @@
 			}
 			$queryColumn['permissions'] = substr($queryColumn['permissions'], 0, -2);
 			$queryColumn['permissionSums'] = substr($queryColumn['permissionSums'], 0, -2);
-			
+
 			$allForumIDs = $forumIDs;
 			$heritages = array();
-			if (sizeof($forumsData)) {
+			if (is_array($forumsData) && sizeof($forumsData)) {
 				foreach ($allForumIDs as $forumID) {
 					$heritages[$forumID] = explode('-', $forumsData[$forumID]['heritage']);
 					array_walk($heritages[$forumID], function (&$value, $key) { $value = intval($value); });
@@ -51,15 +51,15 @@
 					if (sizeof(array_intersect($heritages[$forumID], $adminForums)) || $superFAdmin) $permissions[$forumID] = array_merge($aTemplate, array('admin' => 4));
 					else $getPermissionsFor[] = $forumID;
 				}
-				foreach ($getPermissionsFor as $forumID) 
+				foreach ($getPermissionsFor as $forumID)
 					$getPermissionsFor = array_merge($getPermissionsFor, $heritages[$forumID]);
 				$getPermissionsFor = array_unique($getPermissionsFor);
 				sort($getPermissionsFor);
-			} else 
+			} else
 				$getPermissionsFor = $allForumIDs;
 
 			if (sizeof($getPermissionsFor)) {
-				if (sizeof($getPermissionsFor) == 1) 
+				if (sizeof($getPermissionsFor) == 1)
 					$forumString = '= '.$getPermissionsFor[0];
 				else {
 					$forumString = implode(', ', $getPermissionsFor);
@@ -76,7 +76,7 @@
 						foreach ($rawPermission as $sKey => $indivPermission) {
 							foreach ($indivPermission as $permission => $setAt) {
 								$setAt = (int) $setAt;
-								if ($permission != 'pType' && abs($setAt) > abs($rawPermissions[$key][$permission])) 
+								if ($permission != 'pType' && abs($setAt) > abs($rawPermissions[$key][$permission]))
 									$rawPermissions[$key][$permission] = $setAt;
 							}
 						}
@@ -84,15 +84,15 @@
 				}
 
 				foreach ($forumIDs as $forumID) {
-					if (isset($rawPermissions[$forumID])) 
+					if (isset($rawPermissions[$forumID]))
 						$permissions[$forumID] = $rawPermissions[$forumID];
 					elseif (!isset($permissions[$forumID]))
 						$permissions[$forumID] = $bTemplate;
 					foreach (array_reverse($heritages[$forumID]) as $heritage) {
 						if ($heritage == $forumID) continue;
-						if (isset($rawPermissions[$heritage])) 
-							foreach ($types as $type) 
-								if (abs($rawPermissions[$heritage][$type]) > abs($permissions[$forumID][$type])) 
+						if (isset($rawPermissions[$heritage]))
+							foreach ($types as $type)
+								if (abs($rawPermissions[$heritage][$type]) > abs($permissions[$forumID][$type]))
 									$permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
 					}
 				}
@@ -101,12 +101,12 @@
 			global $loggedIn;
 			foreach ($forumIDs as $forumID) {
 				foreach ($permissions[$forumID] as $type => $value) {
-					if ($value < 1 || (!$loggedIn && $type != 'read')) 
+					if ($value < 1 || (!$loggedIn && $type != 'read'))
 						$permissions[$forumID][$type] = false;
-					else 
+					else
 						$permissions[$forumID][$type] = true;
 				}
-				if (!isset($permissions[$forumID]['admin']) || $permissions[$forumID]['admin'] != true) 
+				if (!isset($permissions[$forumID]['admin']) || $permissions[$forumID]['admin'] != true)
 					$permissions[$forumID]['admin'] = false;
 			}
 

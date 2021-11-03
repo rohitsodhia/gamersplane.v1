@@ -106,7 +106,9 @@ function sanitizeString($string)
 	}
 
 	$string = trim($string);
+
 	if (!in_array('!strip_tags', $options)) {
+		$string = str_replace(array("<",">"), array("&lt;", "&gt;"),  $string);
 		$string = strip_tags($string);
 	}
 	if (in_array('lower', $options)) {

@@ -92,7 +92,8 @@ class games
 					'status' => true,
 					'players' => true,
 					'customType' => true,
-					'retired'=>true
+					'retired'=>true,
+					'forumID'=>true
 				]]
 			);
 		} else {
@@ -101,7 +102,7 @@ class games
 				'status' => 'open',
 				'retired' => null
 			];
-			if ($_GET['systems'] && sizeof($_GET['systems'])) {
+			if ($_GET['systems']) {
 				$systems = $_GET['systems'];
 				if (is_string($systems)) {
 					$systems = explode(',', $systems);
@@ -305,6 +306,10 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
+		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
+		if($details['recruitmentThreadId']==0){
+			$details['recruitmentThreadId']=null;
+		}
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		if($_POST['system']=="custom"){
@@ -312,13 +317,14 @@ class games
 		}
 
 		$gameOptions=trim($_POST['gameOptions']?:"");
+		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions=="" || json_last_error() === 0) {
 			// JSON is valid
 			$details['gameOptions']=$gameOptions;
-		}		
+		}
 
-		$details['status'] = 'open';
+		$details['status'] = 'closed';
 		$details['public'] = true;
 
 		/*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
@@ -417,7 +423,7 @@ class games
 				$isGM = true;
 				break;
 			}
-		}		
+		}
 		if (!$isGM) {
 			displayJSON(['unauthorized' => true]);
 		}
@@ -430,11 +436,16 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
+		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
+		if($details['recruitmentThreadId']==0){
+			$details['recruitmentThreadId']=null;
+		}
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		$details['customType'] = sanitizeString($_POST['customType']);
-		
+
 		$gameOptions=trim($_POST['gameOptions']?:"");
+		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions=="" || json_last_error() === 0) {
 			// JSON is valid

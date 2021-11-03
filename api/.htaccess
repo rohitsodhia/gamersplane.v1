@@ -2,7 +2,7 @@ ErrorDocument 401 errors/401
 ErrorDocument 403 errors/403
 ErrorDocument 404 errors/404
 
-Options -Indexes +FollowSymLinks 
+Options -Indexes +FollowSymLinks
 RewriteEngine On
 
 RewriteBase /
@@ -11,4 +11,4 @@ RewriteBase /
 #RewriteCond %{REQUEST_URI} !^(.*)/$
 #RewriteRule ^(.*)$ /$1/ [L,R=301]
 
-RewriteRule !\.(css|jpg|js|gif|png|ico|eot|woff|ttff|svg|psd)$ dispatch.php
+RewriteRule !\.(css|jpg|js|gif|png|ico|eot|woff|ttf|ttff|svg|psd)$ dispatch.php

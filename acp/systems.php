@@ -8,8 +8,8 @@
 		<div class="mainColumn right">
 			<form id="loadSystem" ng-submit="loadSystem()" class="borderBottom">
 				<combobox data="selectSystem.data" change="setSelectSystem(value)" placeholder="System"></combobox>
-				<button type="submit" class="fancyButton" skew-element>Load</button>
-				<a href="" ng-click="setNewSystem()" class="fancyButton" skew-element>New</a>
+				<button type="submit" class="fancyButton">Load</button>
+				<a href="" ng-click="setNewSystem()" class="fancyButton">New</a>
 			</form>
 			<form ng-submit="saveSystem()">
 				<div class="tr">
@@ -51,8 +51,8 @@
 					System saved!
 				</div>
 				<div id="buttonDiv">
-					<button type="submit" ng-click="setEditBtn('save')" class="fancyButton" skew-element>Save</button>
-					<button type="cancel" ng-click="setEditBtn('cancel')" class="fancyButton" skew-element>Cancel</button>
+					<button type="submit" ng-click="setEditBtn('save')" class="fancyButton">Save</button>
+					<button type="cancel" ng-click="setEditBtn('cancel')" class="fancyButton">Cancel</button>
 				</div>
 			</form>
 		</div>

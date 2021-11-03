@@ -28,11 +28,11 @@
 							<pretty-checkbox checkbox="filter.lyrics" value="'noLyrics'"></pretty-checkbox> <div class="labelText">No Lyrics</div>
 						</label></li>
 					</ul>
-					<div class="alignCenter"><button class="fancyButton" skew-element>Filter</button></div>
+					<div class="alignCenter"><button class="fancyButton">Filter</button></div>
 				</form>
 			</div>
 			<div class="mainColumn right">
-				<a ng-if="loggedIn" class="fancyButton smallButton" ng-click="toggleAddSong()" skew-element>Add Music</a>
+				<a ng-if="loggedIn" class="fancyButton smallButton" ng-click="toggleAddSong()">Add Music</a>
 				<music-form ng-if="addSong" data="newSong"></music-form>
 				<div ng-show="songSubmitted" class="alertBox_success">Song submitted!</div>
 				<div class="relativeWrapper">

@@ -1,4 +1,4 @@
-<?
+<? $responsivePage=true;
 	addPackage('forum');
 
 	$search = $_GET['search'];
@@ -7,12 +7,12 @@
 
 	require_once(FILEROOT.'/header.php');
 ?>
-		<h1 class="headerbar">Search Results</h1>
-		
-		<p id="rules">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
-	
+	<?=$forumSearch->displayHeader()?>
+
+		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
+
 <?=$forumSearch->displayResults()?>
-				
+
 		<div id="forumLinks">
 			<div id="forumOptions">
 			</div>

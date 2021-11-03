@@ -23,6 +23,8 @@
 <?	if ($gameID) { ?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
 <script type="text/javascript" src="/javascript/gameOptions.js?v=<?=getJSVersion('/javascript/gameOptions.js')?>"></script>
+<?	} else if($characterMarkitUp) {?>
+<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/character-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/character-set.js')?>"></script>
 <?	} else {?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>
 <?	}?>
@@ -45,9 +47,9 @@
 <?	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
 <script type="text/javascript" src="/javascript/tools/cards.js?v=<?=getJSVersion('/javascript/tools/cards.js')?>"></script>
 <?	} ?>
-<?	if (sizeof($addJSFiles)) { foreach ($addJSFiles as $file) { ?>
+<?	if ($addJSFiles) { foreach ($addJSFiles as $file) { ?>
 <script type="text/javascript" src="/javascript/<?=$file?>?v=<?=getJSVersion('/javascript/'.$file)?>"></script>
 <?	} } ?>
-<?	if ($addExternalJSFiles && sizeof($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
+<?	if ($addExternalJSFiles && !empty($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
 <script src="<?=$file?>"></script>
 <?	} } ?>

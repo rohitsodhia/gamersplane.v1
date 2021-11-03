@@ -27,7 +27,9 @@
 				$this->getLFG();
 			} elseif ($pathOptions[0] == 'saveLFG') {
 				$this->saveLFG();
-			} else {
+			} elseif ($pathOptions[0] == 'removeThreadNotification') {
+				$this->removeThreadNotification($_POST['postID']);
+			}else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -241,7 +243,8 @@
 					'url' => User::getAvatar($user->userID, $user->avatarExt),
 					'avatarExt' => $user->avatarExt
 				],
-				'gender' => $user->gender ? $user->gender : 'n',
+				//'gender' => $user->gender ? $user->gender : 'n',
+				'pronoun' => $user->pronoun,
 				'birthday' => [
 					'showAge' => $user->showAge?true:false
 				],
@@ -365,12 +368,20 @@
 			}
 
 //			$user->updateUsermeta('showAvatars', isset($data->showAvatars)?1:0);
+/*
 			if ($details['gender'] == 'n') {
 				$gender = '';
 			} else {
 				$gender = $details['gender'] == 'm' ? 'm' : 'f';
 			}
 			$user->updateUsermeta('gender', $gender);
+			*/
+			if ($details['pronoun'] == 'null') {
+				$details['pronoun'] = '';
+			}
+			$user->updateUsermeta('pronoun', sanitizeString($details['pronoun']));
+
+
 			$birthday = intval($details['birthday']['date']['year']) . '-' . (intval($details['birthday']['date']['month']) <= 9 ? '0' : '') . intval($details['birthday']['date']['month']) . '-' . (intval($details['birthday']['date']['day']) <= 9 ? '0' : '') . intval($details['birthday']['date']['day']);
 			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) {
 				$user->updateUsermeta('birthday', $birthday);
@@ -587,6 +598,19 @@
 				$mongo->systems->updateOne(['_id' => $system], ['$inc' => ['lfg' => $count]]);
 			}
 			$mongo->users->updateOne(['userID' => $userID], ['$set' => ['lfg' => $lfg]]);
+		}
+
+		public function removeThreadNotification($postId){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+			$mongo->users->updateMany(
+				['userID' => $currentUser->userID],
+				['$pull' => [
+					'threadNotifications' => ['postID'=>((int) $postId)]
+					]
+				]
+			);
+
 		}
 	}
 ?>

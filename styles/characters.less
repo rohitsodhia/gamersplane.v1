@@ -2,6 +2,7 @@
 	Gamers Plane Characters CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "gpVariables.less";
 
 .border-radius(@radius: 6px) {
 	-webkit-border-radius: @radius;
@@ -59,7 +60,6 @@
 	}
 
 	.editing .charType {
-		width: 60px;
 
 		.combobox input {
 			width: 60px;
@@ -87,7 +87,7 @@
 			background-color: #FFD;
 			border: 1px solid #000;
 			padding: 4px 0 4px 10px;
-			.border-radius(); 
+			.border-radius();
 		}
 	}
 
@@ -404,7 +404,7 @@ label.leftLabel {
 	padding: 2px 0;
 }
 
-.feat {
+.feat,.ability {
 	padding: 4px 0;
 }
 
@@ -465,7 +465,7 @@ label.leftLabel {
 	resize: vertical;
 }
 
-.feat .notes {
+.feat .notes,.ability .notes {
 	padding: 4px;
 	border: 1px solid #888;
 	-webkit-border-radius: 5px;
@@ -513,5 +513,129 @@ label.leftLabel {
 }
 
 h1.customChar{
-	border-bottom: solid 1px #B00;
+	border-bottom: solid 1px @gp-red;
+}
+
+#sheetActions{
+	margin-right:40px;
+}
+
+#userChars{
+	display: flex;
+	flex-direction: column;
+	li{
+		width:100%;
+		display: flex;
+
+		&>*{
+			box-sizing: border-box;
+			flex-shrink: 0;
+		}
+
+		.label{
+			width:~"calc(100% - 500px)";
+
+		}
+		.systemType {
+			width:230px;
+		}
+
+		.links{
+			width: 170px;
+		}
+
+		.charType{
+			width:100px;
+		}
+	}
+}
+
+.npcList{
+	display: grid;
+    grid-template-columns: repeat(auto-fit, 100px);
+    grid-auto-rows: auto;
+    grid-gap: 10px;
+
+	.npcList_item{
+		padding:10px;
+		text-align: center;
+		.npcList_itemAvatar{
+			width:80px;
+			height:80px;
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: contain;
+		}
+		.npcList_itemName{
+			font-weight: bold;
+		}
+	}
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+	#charDetails{
+		.layout-columns-2,.layout-columns-3{
+			display: flex;
+			flex-direction: column;
+
+			.layout-column{
+				width:100%;
+			}
+		}
+
+	}
+
+	#userChars{
+		li{
+			flex-wrap: wrap;
+			align-items: center;
+
+			.label{
+				width:~"calc(100% - 165px)";
+				border-right-style: none;
+				order:1;
+			}
+			.charType {
+				order:3;
+				text-align: left;
+				width: auto;
+				.makeBadge;
+				border-right-style: none;
+				margin-top:.1rem;
+			}
+
+			.systemType{
+				order:4;
+				border-right-style: none;
+				width: auto;
+				.makeBadge;
+				.badgeColor(@gp-system-badge-color);
+				margin-top:.1rem;
+			}
+
+			.links{
+				width: 140px;
+				order:2;
+			}
+
+			.label input{
+				width:160px;
+			}
+
+		}
+	}
+
+	#page_myCharacters #newChar {
+		input[type="text"]{
+			width: 100%;
+		}
+
+		label{
+			text-align: left;
+		}
+
+		.combobox{
+			width:100%;
+		}
+	}
 }

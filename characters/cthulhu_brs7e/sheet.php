@@ -9,7 +9,7 @@
 
 			<div class="clearfix">
 				<div id="characteristics" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Characteristics</h2>
+					<h2 class="headerbar hbDark">Characteristics</h2>
 					<ul hb-margined>
 						<li ng-repeat="(label, characteristic) in character.characteristics" class="tr" ng-class="{ 'third': $index % 3 == 2 }">
 							<label class="leftLabel">{{label.toUpperCase()}}</label>
@@ -22,7 +22,7 @@
 					</ul>
 				</div>
 				<div id="stats" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Stats</h2>
+					<h2 class="headerbar hbDark">Stats</h2>
 					<div hb-margined>
 						<div ng-repeat="stat in labels.stats" ng-id="stat.key" class="tr stat">
 							<h3>{{stat.value}}</h3>
@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<div id="skills" class="clearfix">
-				<h2 class="headerbar hbDark" skew-element>Skills</h2>
+				<h2 class="headerbar hbDark">Skills</h2>
 				<div hb-margined>
 					<p class="note">Skills in grey italics are default values</p>
 					<ul ng-repeat="colRange in colRanges" ng-class="{ 'first': $first }">
@@ -61,7 +61,7 @@
 			</div>
 			<div class="clearfix">
 				<div id="weapons" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Weapons</h2>
+					<h2 class="headerbar hbDark">Weapons</h2>
 					<div hb-margined>
 						<div ng-repeat="weapon in character.weapons" class="weapon" ng-class="{ 'first': $first }">
 							<div class="labelTR">
@@ -96,7 +96,7 @@
 					</div>
 				</div>
 				<div id="combat" class="floatRight">
-					<h2 class="headerbar hbDark" skew-element>Combat</h2>
+					<h2 class="headerbar hbDark">Combat</h2>
 					<div hb-margined>
 						<div class="tr">
 							<h3>Damage Bonus</h3>
@@ -114,7 +114,7 @@
 				</div>
 			</div>
 			<div id="items">
-				<h2 class="headerbar hbDark" skew-element>Items</h2>
+				<h2 class="headerbar hbDark">Items</h2>
 				<div class="clearfix" hb-margined>
 					<div ng-repeat="item in character.items" class="item tr">
 						<div class="name">{{item.name}}</div>

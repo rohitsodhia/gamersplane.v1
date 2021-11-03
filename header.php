@@ -15,7 +15,7 @@
 		<a id="headerLogo" href="/"><img src="/images/bodyComponents/logo.png" alt="Gamers Plane Logo"></a>
 
 		<ul id="mainMenu">
-			<li>
+			<li class="mob-hide" id="mainMenuTools">
 				<a href="/tools/" class="first">Tools</a>
 				<ul>
 					<li><a href="/tools/dice/">Dice</a></li>
@@ -23,31 +23,31 @@
 					<li><a href="/tools/music/">Music</a></li>
 				</ul>
 			</li>
-			<li><a href="/systems/">Systems</a></li>
+			<li class="small-hide"><a href="/systems/">Systems</a></li>
 			<li ng-show="loggedIn">
-				<a href="/characters/my/">Characters</a>
+				<a href="/characters/my/"><i class="ra ra-double-team hide mob-show-inline-block"></i><span class="mob-hide">Characters</span></a>
 				<ul ng-if="characters.length">
-					<li ng-repeat="char in characters | limitTo: 5"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
-					<li><a href="/characters/my/">All characters</a></li>
+				<li><a href="/characters/my/"><i class="ra ra-double-team"></i>All characters</a></li>
+					<li ng-repeat="char in characters | limitTo: 10"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
 				</ul>
 			</li>
 			<li>
-				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}">Games</a>
+				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}"><i class="ra ra-d6 hide mob-show-inline-block"></i><span class="mob-hide">Games</span></a>
 				<ul ng-if="loggedIn && games.length">
-					<li ng-repeat="game in games | limitTo: 5"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
-					<li><a href="/games/my/">All games</a></li>
+				<li><a href="/games/my/"><i class="ra ra-d6"></i> All games</a></li>
+					<li ng-repeat="game in games | limitTo: 10"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
 				</ul>
 			</li>
-			<li><a href="/forums/">Forums</a></li>
-			<li ng-show="loggedIn"><a href="/gamersList/">The Gamers</a></li>
-			<li><a href="/links/">Links</a></li>
+			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
+			<li ng-show="loggedIn"><a href="/gamersList/"><i class="ra ra-gamers-plane hide mob-show-inline-block"></i><span class="mob-hide">The Gamers</span></a></li>
+			<li class="small-hide"><a href="/links/">Links</a></li>
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
 			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" colorbox>Login</a></li>
 			<li ng-show="loggedIn" id="userMenu">
 				<a href="/ucp/" class="avatar"><img ng-src="{{avatar}}"></a>
 				<a ng-if="pmCount > 0" href="/pms/" class="mail"><img src="/images/envelope.jpg" title="Private Messages" alt="Private Messages"></a>
 				<ul>
-					<li><a href="/ucp/">Profile</a></li>
+					<li><a href="/ucp/">Settings</a></li>
 					<li><a href="/pms/">Messages ({{pmCount}})</a></li>
 					<li><a href="/logout/" class="last">Logout</a></li>
 				</ul>

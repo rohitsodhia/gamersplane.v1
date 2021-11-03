@@ -3,7 +3,7 @@
 		addPackage('forum');
 		$threadID = intval($_POST['threadID']);
 		if (!$threadID) { header('Location: /forums'); exit; }
-		
+
 		$threadManager = new ThreadManager($threadID);
 		if ($threadManager->getPermissions('admin') == false) { header('Location: /403'); exit; }
 
@@ -14,6 +14,6 @@
 		$mysql->query("UPDATE forums SET threadCount = threadCount + 1 WHERE forumID = {$destinationID}");
 
 		header("Location: /forums/thread/{$threadID}/");
-	} else 
+	} else
 		header('Location: /forums/');
 ?>

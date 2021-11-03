@@ -2,6 +2,7 @@
 	Characters CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "gpVariables.less";
 
 #controls {
 	float: right;
@@ -80,7 +81,7 @@ input[type="text"], input[type="password"] {
 }
 
 .error {
-	color: #B00;
+	color: @gp-red;
 }
 
 #avatar label {
@@ -129,4 +130,21 @@ input[type="checkbox"] {
 
 .submitDiv {
 	margin-left: 235px;
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+	.tr>*{
+		text-align: left;
+		display: block;
+	}
+
+	label{
+		width: auto;
+		padding-bottom: .2rem;
+	}
+
+	input[type="text"],
+	input[type="password"]{
+		width:100%;
+	}
 }

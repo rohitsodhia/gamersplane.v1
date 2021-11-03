@@ -13,7 +13,7 @@
 		<div id="loginFailed" class="alertBox_error<?=!isset($_GET['failed'])?' hideDiv':''?>">
 			Your login attempt failed. Please try again.<br>
 			<br class="gap">
-			Make sure you have registered an account and have activiated your account. If you'd like us to resend you an activation email, <a href="/register/resendActivation/">click here</a>.
+			Make sure you have registered an account and have activated your account. If you'd like us to resend you an activation email, <a href="/register/resendActivation/">click here</a>.
 		</div>
 
 		<div id="formWrapper">

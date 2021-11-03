@@ -1,0 +1,115 @@
+@import "rpgawesome/variables.less";
+
+@gp-content-back:#fff;
+
+@gp-header-font: "AgencyFB";
+
+@gp-orange-dark: #A75300;
+@gp-orange: #C60;
+@gp-orange-lightest:#E6A656;
+
+@gp-red-darkest: #7d0e00;
+@gp-red-dark: #a71300;
+@gp-red: #A71300;
+@gp-red-light: #F83117;
+@gp-red-lightest: #FF614D;
+
+@gp-link-color:#b00;
+
+@gp-green-darkest:#005D19;
+@gp-green:#009828;
+@gp-green-lightest:#39Bf5d;
+
+@gp-black: #222;
+
+@gp-complement-darkest: #013F4D;
+@gp-complement-mid: #04677E;
+@gp-complement-lightest: #338A9E;
+
+@gp-notify-bg: #eee;
+@gp-notify-header: @gp-complement-mid;
+
+@gp-gm-badge-color: @gp-black;
+@gp-system-badge-color: @gp-complement-mid;
+@gp-open-badge-color:@gp-red;
+@gp-closed-badge-color:@gp-green;
+
+@gp-public-badge-color:@gp-green-lightest;
+@gp-private-badge-color:@gp-orange-dark;
+@gp-frequency-badge-color:@gp-black;
+
+@mobile-breakpoint: 600px;
+@small-breakpoint: 900px;
+
+@gp-icon-sticky: @ra-var-icon-thumbtack;
+@gp-icon-locked: @ra-var-icon-lock;
+
+.border-radius(@radius: 6px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.box-shadow(@horizontal, @vertical, @color, @blur: 0px, @spread: 0px) {
+	-moz-box-shadow: @horizontal @vertical @blur @spread @color;
+	-webkit-box-shadow: @horizontal @vertical @blur @spread @color;
+	box-shadow: @horizontal @vertical @blur @spread @color;
+}
+
+@keyframes pulse {
+	0% {
+	  opacity: 1;
+	}
+	50% {
+		opacity: 0.6;
+	}
+	100% {
+		opacity: 1;
+	}
+  }
+
+.badgeColor( @color ) {
+	background-color: @color;
+	color:contrast(@color);
+	&:before,&:after{
+		background-color: @color;
+	}
+}
+
+.makeBadge(){
+	display:inline-block;
+	padding:0 .2rem;
+	background-color: @gp-orange;
+	font-size: 90%;
+	color: #fff;
+	border-radius: .2rem;
+	font-family: Neuropol;
+	margin:0 10px;
+
+	position: relative;
+
+	white-space: nowrap;
+
+	&:before,&:after{
+		content: ' ';
+		display: block;
+		width: 10px;
+		top: 0;
+		bottom: 0;
+		position: absolute;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		background-color: @gp-orange;
+	}
+
+	&:before{
+		left: -9px;
+		clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+	}
+
+	&:after{
+		right: -9px;
+		clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
+	}
+}
+

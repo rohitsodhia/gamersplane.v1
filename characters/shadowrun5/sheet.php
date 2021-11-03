@@ -25,7 +25,7 @@
 
 			<div class="clearfix">
 				<div id="stats" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Stats</h2>
+					<h2 class="headerbar hbDark">Stats</h2>
 					<div hb-margined>
 						<ul ng-repeat="column in [0, 1]" ng-class="{ 'first': $first }">
 							<li ng-repeat="label in labels.stats | limitTo: (labels.stats.length / 2):(column * labels.stats.length / 2)" class="tr">
@@ -36,7 +36,7 @@
 					</div>
 				</div>
 				<div id="limits" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Limits</h2>
+					<h2 class="headerbar hbDark">Limits</h2>
 					<div hb-margined>
 						<div ng-repeat="(label, limit) in character.limits" class="tr">
 							<label class="leftLabel">{{label.capitalizeFirstLetter()}}</label>
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 				<div id="damage" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Damage Tracks</h2>
+					<h2 class="headerbar hbDark">Damage Tracks</h2>
 					<div hb-margined>
 						<div class="clearfix">
 							<div ng-repeat="(track, stat) in { 'physical': 'body', 'stun': 'willpower' }" id="{{track}}Track" class="damageType floatLeft">
@@ -65,7 +65,7 @@
 
 			<div class="clearfix">
 				<div id="skills" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Skills</h2>
+					<h2 class="headerbar hbDark">Skills</h2>
 					<div hb-margined>
 						<div ng-repeat="skill in character.skills" class="skill tr">
 							<div class="type">{{skill.type.toUpperCase()}}</div>
@@ -76,7 +76,7 @@
 				</div>
 				<div class="floatRight">
 					<div id="qualities">
-						<h2 class="headerbar hbDark" skew-element>Qualities</h2>
+						<h2 class="headerbar hbDark">Qualities</h2>
 						<div hb-margined>
 							<div ng-repeat="quality in character.qualities" class="quality tr">
 								<div class="type">{{quality.type.toUpperCase()}}</div>
@@ -87,7 +87,7 @@
 						</div>
 					</div>
 					<div id="contacts">
-						<h2 class="headerbar hbDark" skew-element>Contacts</h2>
+						<h2 class="headerbar hbDark">Contacts</h2>
 						<div hb-margined>
 							<div class="labelTR">
 								<label class="name"></label>
@@ -107,7 +107,7 @@
 			</div>
 			<div class="clearfix">
 				<div id="rangedWeapons" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Ranged Weapons</h2>
+					<h2 class="headerbar hbDark">Ranged Weapons</h2>
 					<div hb-margined>
 						<div ng-repeat="weapon in character.weapons.ranged" class="weapon" ng-class="{ 'first': $first }">
 							<div class="labelTR row1">
@@ -140,7 +140,7 @@
 					</div>
 				</div>
 				<div id="meleeWeapons" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Melee Weapons</h2>
+					<h2 class="headerbar hbDark">Melee Weapons</h2>
 					<div hb-margined>
 						<div ng-repeat="weapon in character.weapons.melee" class="weapon" ng-class="{ 'first': $first }">
 							<div class="labelTR row1">
@@ -171,7 +171,7 @@
 					</div>
 				</div>
 				<div id="armor" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Armor</h2>
+					<h2 class="headerbar hbDark">Armor</h2>
 					<div hb-margined>
 						<div ng-repeat="armor in character.armor" class="armor" ng-class="{ 'first': $first }">
 							<div class="labelTR">
@@ -235,7 +235,7 @@
 					</div>
 				</div>
 				<div id="augments" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Augmentations</h2>
+					<h2 class="headerbar hbDark">Augmentations</h2>
 					<div hb-margined>
 						<div class="labelTR">
 							<label class="name medText"></label>
@@ -254,7 +254,7 @@
 			</div>
 			<div class="clearfix">
 				<div id="sprcf" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Spells / Preparations / Rituals / Complex Forms</h2>
+					<h2 class="headerbar hbDark">Spells / Preparations / Rituals / Complex Forms</h2>
 					<div hb-margined>
 						<div ng-repeat="sprcf in character.sprcf" class="sprcf tr">
 							<div class="labelTR">
@@ -281,7 +281,7 @@
 					</div>
 				</div>
 				<div id="powers" class="floatLeft">
-					<h2 class="headerbar hbDark" skew-element>Powers/Abilities</h2>
+					<h2 class="headerbar hbDark">Powers/Abilities</h2>
 					<div hb-margined>
 						<div class="labelTR">
 							<label class="name medText lrBuffer">&nbsp;</label>
@@ -297,7 +297,7 @@
 				</div>
 			</div>
 			<div id="gear">
-				<h2 class="headerbar hbDark" skew-element>Gear</h2>
+				<h2 class="headerbar hbDark">Gear</h2>
 				<div class="clearfix" hb-margined>
 					<div class="labelTR">
 						<label class="name"></label>

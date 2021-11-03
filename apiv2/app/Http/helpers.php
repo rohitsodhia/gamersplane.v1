@@ -9,6 +9,7 @@ function sanitizeString($string) {
 	}
 
 	$string = trim($string);
+	//$string = str_replace(array("<",">"), array("&lt;", "&gt;"),  $string);
 	$string = strip_tags($string);
 	// $string = utf8_decode($string);
 	if (in_array('lower', $options)) $string = strtolower($string);

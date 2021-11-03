@@ -1,4 +1,5 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
 <?	if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
 		<div class="alertBox_success">
 <?
@@ -8,16 +9,16 @@
 		</div>
 <?	} ?>
 		<h1 class="headerbar">Private Messages - {{box}}</h1>
-		
+
 		<div id="controlsContainer" class="hbTopper clearfix" hb-margined="dark">
-			<a href="/pms/send/" class="fancyButton" skew-element>New PM</a>
+			<a href="/pms/send/" class="fancyButton">New PM</a>
 			<div class="trapezoid sectionControls">
 				<a href="/pms/" class="borderBox" ng-class="{'current': box == 'Inbox'}" ng-click="switchBox($event, 'inbox')">Inbox</a
 				><a href="/pms/outbox" class="borderBox" ng-class="{'current': box == 'Outbox'}" ng-click="switchBox($event, 'outbox')">Outbox</a>
 			</div>
 		</div>
 		<div id="pms">
-			<div class="tr headerTR headerbar hbDark" skew-element>
+			<div class="tr headerTR headerbar hbDark">
 				<div class="delCol"></div>
 				<div class="info">Message</div>
 			</div>

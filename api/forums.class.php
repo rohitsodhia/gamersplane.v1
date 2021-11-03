@@ -20,7 +20,13 @@
 				$this->unsubscribe();
 			} elseif ($pathOptions[0] == 'setLastPostUnread') {
 				$this->setLastPostUnread($_POST['threadID']);
-			}else {
+			} elseif ($pathOptions[0] == 'getPostQuote') {
+				displayJSON($this->getPostQuote($_POST['postID']));
+			} elseif ($pathOptions[0] == 'getPostPreview') {
+				displayJSON($this->getPostPreview($_POST['postText']));
+			} elseif ($pathOptions[0] == 'pollVote') {
+				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti']));
+			} else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -287,6 +293,113 @@
 			else{
 				$mysql->query("DELETE FROM forums_readData_threads WHERE threadID = {$threadID} AND userID = {$currentUser->userID}");
 			}
+		}
+
+		public function getPostQuote($postID){
+
+			global $currentUser,$mongo;
+
+			$ret = '';
+
+			$post = new Post($postID);
+			$threadManager = new ThreadManager($post->getThreadID());
+
+			if (!$threadManager->getThreadProperty('states[locked]')  && $threadManager->getPermissions('write')){
+				$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
+				if ($gameID) {
+					$game = $mongo->games->findOne(
+						[
+							'gameID' => (int) $gameID,
+							'players' => ['$elemMatch' => [
+								'user.userID' => $currentUser->userID,
+								'isGM' => true
+							]]
+						],
+						['projection' => ['players.$' => true]]
+					);
+					$isGM = $game['players'][0]['isGM'];
+					if (!$isGM) {
+						$ret = Post::cleanNotes($post->message);
+					}
+					else{
+						$ret = $post->message;
+					}
+				}
+				else{
+					$ret = Post::cleanNotes($post->message);
+				}
+
+				$ret='[quote="'.$post->getAuthor('username').'"]'.$ret.'[/quote]';
+
+			}
+
+			return $ret;
+		}
+
+		public function getPostPreview($postText){
+			global $isGM,$post;
+			$isGM=true;
+			$post = new Post(0);
+			return printReady(BBCode2Html($postText));
+		}
+
+		public function pollVote($postID, $vote, $addVote, $isMulti){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+			$post = new Post($postID);
+			$threadManager = new ThreadManager($post->getThreadID());
+
+			if ($threadManager->getPermissions('write')){
+
+				if($isMulti){
+					$mongo->threads->updateOne(
+						['threadID' => ((int)$post->getThreadID())],
+						['$pull' => [
+							'votes' => [
+								'postID' => (int)$postID,
+								'userID' => $currentUser->userID,
+								'vote' => (int)$vote
+							]
+						]],
+						['upsert' => true]
+					);
+
+				}
+				else{
+					$mongo->threads->updateOne(
+						['threadID' => ((int)$post->getThreadID())],
+						['$pull' => [
+							'votes' => [
+								'postID' => (int)$postID,
+								'userID' => $currentUser->userID
+							]
+						]],
+						['upsert' => true]
+					);
+				}
+
+
+				if($addVote || !$isMulti){
+					$mongo->threads->updateOne(
+						['threadID' => ((int)$post->getThreadID())],
+						['$push' => [
+							'votes' => [
+								'postID' => (int)$postID,
+								'userID' => $currentUser->userID,
+								'vote' => (int)$vote,
+							]
+						]],
+						['upsert' => true]
+					);
+				}
+
+				return $post->getPollResults();
+			}
+			else
+			{
+				return null;
+			}
+
 		}
 	}
 ?>

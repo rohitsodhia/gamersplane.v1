@@ -47,10 +47,59 @@ function BBCode2Html($text) {
 			$code = htmlspecialchars($code);
 			$code = str_replace("[", "&#91;", $code);
 			$code = str_replace("]", "&#93;", $code);
+			$code = str_replace("\r\n", "\n", $code);
+			$code = str_replace("\n", "&#10;", $code);  //prevent adding BR
 			return '<pre><code>'.$code.'</code></pre>';
 		}
 	}
 	$text = preg_replace_callback('/\[code\](.*?)\[\/code\]/ms', "escape", $text);
+
+	$matches = null;
+	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
+			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
+			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
+			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
+			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
+	}, $text);
+
+	//ability sections
+	$matches = null;
+	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
+		$ret="<div class='abilities'>";
+		$ret=$ret.'<h2 class="headerbar hbDark">'.$matches[1].'</h2>';
+
+		$abilityLines = explode("\n", trim($matches[2]));
+
+		$abilityOpen=false;
+		$abilityRaw="";
+		foreach ($abilityLines as $abilityLine){
+
+			if(substr($abilityLine,0,1)=='#'){
+				if($abilityOpen){
+					$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
+				}
+
+				$ret=$ret.'<div class="ability"><span class="abilityName">'.substr($abilityLine,1).'</span><a href="" class="ability_notesLink">Notes</a><div class="abilityNotes notes">';
+				$abilityOpen=true;
+				$abilityRaw="";
+			}
+			else {
+				$ret=$ret.$abilityLine."\n";
+				$abilityRaw=$abilityRaw.str_replace(array("[","]"), array("&#91;", "&#93;"),  $abilityLine)."&#10;";
+			}
+		}
+
+		if($abilityOpen){
+			$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
+		}
+
+		$ret=$ret."</div>";  //close abilities
+
+		return $ret;
+
+	}, $text);
+	//end ability sections
 
 	// Smileys to find...
 /*	$in = array( 	 ':)',
@@ -90,8 +139,10 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
 					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
+					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
 					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
 					 "/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
+					 "/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
 	);
 	// And replace them by...
 	$out = array(	 '<strong>\1</strong>',
@@ -111,10 +162,12 @@ function BBCode2Html($text) {
 					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
 					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
-					 '<iframe width="560" height="315" src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+					 '<div class="youtube_bb"><iframe src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>',
 					 '<div class="layout-columns-2">\1</div>',
+					 '<div class="layout-columns-3">\1</div>',
 					 '<div class="layout-column">\1</div>',
 					 '<div class="style" style="display:none;">\1</div>',
+					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><div class="inlineNpcAvatar" style="background-image:url(\2)"></div><div class="inlineNpcName">\1</div></div>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
@@ -124,7 +177,8 @@ function BBCode2Html($text) {
 	//map
 	$matches = null;
 	$text=preg_replace_callback("/\[map\](.*?)\[\/map\]/ms", function($matches){
-			$mapLink=preg_replace('/\s+/', '',$matches[1]);
+			$mapLink=preg_replace('/^[\s]*(--).*?$/ms', '',$matches[1]); 	//remove -- comments
+			$mapLink=preg_replace('/\s+/', '',$mapLink);					//remove spaces
 			return '<a class="mapLink" target="_blank" href="'.$mapLink.'"><img class="usrImg" src="'.$mapLink.'"/></a>';
 	}, $text);
 	//end map
@@ -167,67 +221,135 @@ function BBCode2Html($text) {
 				$ret=$ret."<tr><td>".str_replace("|","</td><td>",$tableRow)."</td></tr>";
 			}
 
-
-			//more involved implementation which uses colspans to distribute cells across the table
-			//I think it's too clever for its own good and prefer the naive implementation above
-			/*
-			$maxCols=0;
-			foreach ($tableRows as $tableRow){
-				$maxCols=max(substr_count($tableRow,"|")+1,$maxCols);
-			}
-
-			foreach ($tableRows as $tableRow){
-				$ret=$ret."<tr>";
-				$cells=explode("|",$tableRow);
-				$colsPerCell=$maxCols/count($cells);
-				$colNum=1;
-				$colsAdded=0;
-				foreach ($cells as $cell){
-					$colSpan=floor($colNum*$colsPerCell)-$colsAdded;
-					$ret=$ret.(($colSpan==1)?"<td>":"<td colspan='".$colSpan."'>");
-					$colsAdded+=$colSpan;
-					$colNum++;
-					$ret=$ret.$cell;
-					$ret=$ret."</td>";
-				}
-	
-				$ret=$ret."</tr>";
-			}*/
-
 			$ret=$ret."</table>";
 
 			return $ret;
 	}, $text);
 	//end tables
-	
-	$matches = null;
-	global $currentUser, $isGM, $post;
-	if ($post) {
-		$display = false;
 
-		$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
-		if (strpos($text, 'aside class="note"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $match) {
-				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-				if (!in_array(strtolower($currentUser->username), $noteTo)) {
-					$text = str_replace($match[0], '<aside class="note"><div>'.$post->getAuthor('username').' sent a note to '.$match[1].'</div></aside>', $text);
+	//npc list
+	$matches = null;
+	$text=preg_replace_callback("/\[npcs=\"?(.*?)\"?\](.*?)\[\/npcs\]/ms", function($matches){
+			$npcTitle=trim(str_replace("=","",str_replace("\"","",$matches[1])));
+
+			$npcRows = explode("\n", trim(str_replace("<br />","",$matches[2])));
+
+			$ret = "<div class='npcs'>";
+			if($npcTitle){
+				$ret = $ret."<h3>".$npcTitle."</h3>";
+			}else{
+				$ret = $ret."<h3>NPCs</h3>";
+			}
+
+			$ret = $ret."<div class='npcList'>";
+			foreach ($npcRows as $npcRow){
+				$npcElements=explode('|',$npcRow,2);
+				if(count($npcElements) == 2){
+					$ret=$ret."<div class='npcList_item'><div class='npcList_itemAvatar' data-avatar='".$npcElements[1]."' style='background-image:url(".$npcElements[1].");'></div><div class='npcList_itemName'>".$npcElements[0]."</div></div>";
 				}
+			}
+
+			$ret=$ret."</div></div>";
+
+			return $ret;
+	}, $text);
+	//end npc list
+
+	//notes and private
+	$matches = null;
+	global $currentUser, $isGM, $post, $postAuthor;
+
+	$postAuthor=false;
+	$postAuthorName="";
+
+	if($post){
+		$postAuthor=$post->getAuthor('userID') == $currentUser->userID;
+		$postAuthorName=$post->getAuthor('username');
+	}
+
+	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
+	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
+			if (!in_array(strtolower($currentUser->username), $noteTo)) {
+				$text = str_replace($match[0], '<aside class="note"><div>'.$postAuthorName.' sent a note to '.$match[1].'</div></aside>', $text);
 			}
 		}
+	}
 
-		$text = preg_replace('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\]\s*/s', '<aside class="private"><div>Privately: \1</div>\2</aside>', $text);
-		if (strpos($text, 'aside class="private"') !== false && !$isGM && $post->getAuthor('userID') != $currentUser->userID && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $match) {
-				$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-				if (!in_array(strtolower($currentUser->username), $noteTo)) {
-					$text = str_replace($match[0], '', $text);
-				}
-				else{
-					$text = str_replace($match[0], $match[2].'<br/>', $text);
+	$text = preg_replace('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\]\s*/s', '<aside class="private"><div>Privately: \1</div>\2</aside>', $text);
+	if (strpos($text, 'aside class="private"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
+			if (!in_array(strtolower($currentUser->username), $noteTo)) {
+				$text = str_replace($match[0], '', $text);
+			}
+			else{
+				$text = str_replace($match[0], $match[2].'<br/>', $text);
+			}
+		}
+	}
+	//end notes and private
+
+	//start polls
+	if($post){
+		$matches = null;
+		$text=preg_replace_callback("/\[poll=\"?(.*?)?\"([^\]]*)\](.*?)\[\/poll\]/ms", function($matches){
+			global $post, $postAuthor, $isGM;
+
+			$pollResults=$post->getPollResults();
+
+			$pollTitle=$matches[1];
+
+			$pollQuestions = explode("\n", trim(str_replace("<br />","",$matches[3])));
+
+			$multipleVotes = (stripos($matches[2],'multi')!=false);
+			$showBeforeVote = (stripos($matches[2],'show')!=false);
+
+
+
+			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"")."' data-postid='".$post->getPostID()."'>";
+			$ret .= "<h3>".$pollTitle."</h3>";
+
+			$ret .= "<div class='pollQuestions'>";
+			$answerNumber=1;
+			foreach ($pollQuestions as $pollQuestion){
+				$pollQuestion=trim($pollQuestion);
+				if(strlen($pollQuestion)>0){
+					$ret .= "<div class='pollQuestion ".($pollResults['votes'][$answerNumber]["me"]?" pollMyVote":"")."' data-q='".$answerNumber."'><div class='pollQuestionLabel'>".$pollQuestion."</div>";
+					$ret .= "<div class='pollQuestionResults'>";
+					if($pollResults['voted'] || $showBeforeVote || $postAuthor || $isGM){
+						$ret .= str_repeat('<i class="ra ra-gamers-plane"></i>', (int)($pollResults['votes'][$answerNumber]['votes']));
+					}
+					else{
+						$ret .='<div class="voteToView">Vote to view results.</div>';
+
+					}
+					$ret .= "</div></div>";
+					$answerNumber++;
 				}
 			}
-		}		
+
+			$ret.="</div></div>";
+
+			return $ret;
+
+
+		}, $text, $limit=1);
 	}
+	//end polls
+
+	$text = preg_replace_callback('/(\@[0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', function($matches){
+		global $currentUser;
+		if('@'.strtolower($currentUser->username)==strtolower($matches[1]))
+			return '<span class="atHighlight">'.$matches[1].'</span>';
+		else
+			return $matches[1];
+	}, $text);
+
+
+
+
 
 // paragraphs
 //	$text = str_replace("\r", "", $text);

@@ -4,6 +4,9 @@
 */
 
 /* --------------------------------------------*/
+@import "gpVariables.less";
+
+@import "postPolls.less";
 
 #page_forum_rules {
 	p {
@@ -26,16 +29,18 @@
 }
 
 /* --------------------------------------------*/
+#breadcrumbs {
+	margin-bottom: .75em;
+	color: #666;
+	font-size: 1.1em;
+	a{
+		white-space: nowrap;
+	}
+}
 
 #page_forum {
 	h1 {
 		margin-bottom: .3em;
-	}
-
-	#breadcrumbs {
-		margin-bottom: .75em;
-		color: #666;
-		font-size: 1.1em;
 	}
 
 	#topLinks {
@@ -57,6 +62,11 @@
 
 	.groupTopper {
 		text-align: right;
+	}
+
+	.groupTopperLeft{
+		text-align: left;
+		margin-left: 20px;
 	}
 
 	/*#page_forum .firstTableDiv {
@@ -86,6 +96,7 @@
 		.td {
 			padding-top: 8px;
 			padding-bottom: 8px;
+			box-sizing: border-box;
 		}
 	}
 
@@ -96,7 +107,7 @@
 			padding-left: 8px;
 			padding-right: 8px;
 			border-style: solid;
-			border-color: #222;
+			border-color: @gp-black;
 			border-width: 1px 2px;
 			border-right-color: #944;
 			border-bottom-color: #944;
@@ -174,7 +185,7 @@
 
 #page_forum {
 	.name {
-		width: 405px;
+		width: 100%;
 	}
 
 	.description {
@@ -282,25 +293,36 @@
 			height: 24px;
 			width: 24px;
 			padding: 0;
-			background-image: url('../images/forums/threadActions.png');
-			background-repeat: no-repeat;
+
+			&:before{
+				font-family: '@{rpgawesome-font-family}';
+			}
 		}
 	}
 
-	.sticky {
-		background-position: top left;
+	.sticky:before {
+		color: #ccc;
+		content: @gp-icon-sticky;
 	}
 
-	.unsticky {
-		background-position: top right;
+	.unsticky:before {
+		color: @gp-red;
+		content: @gp-icon-sticky;
 	}
 
-	.lock {
-		background-position: bottom left;
+	.lock:before {
+		color: #ccc;
+		content: @gp-icon-locked;
 	}
 
-	.unlock {
-		background-position: bottom right;
+	.unlock:before {
+		color: @gp-red;
+		content: @gp-icon-locked;
+	}
+
+	.move:before {
+		color: @gp-red;
+		content: @ra-var-icon-sideswipe;
 	}
 
 	#threadMenu .fancyButton {
@@ -359,9 +381,19 @@
 		margin: 10px 0 15px;
 	}
 
+	.flexWrapper{
+		flex-wrap: nowrap;
+	}
+
 	.posterDetails {
 		width: 160px;
 		word-wrap: break-word;
+		flex-grow: 0;
+    	flex-shrink: 0;
+	}
+
+	.postBody {
+		flex-grow: 2;
 	}
 
 	.postBody {
@@ -378,6 +410,7 @@
 
 	.posterDetails .avatar {
 		text-align: center;
+		min-width: 50px;
 
 		& > div {
 			position: relative;
@@ -391,7 +424,6 @@
 		img {
 			max-width: 100px;
 			max-height: 100px;
-			border: 1px solid #888;
 			-webkit-border-radius: 6px;
 			-moz-border-radius: 6px;
 			border-radius: 6px;
@@ -454,6 +486,7 @@
 		border-radius: 10px;
 		line-height: 1.4em;
 		background: #fff;
+		min-height: 30px;
 
 		.post {
 			overflow: hidden;
@@ -485,7 +518,7 @@
 	.postHeader {
 		margin-bottom: .8em;
 		padding-bottom: .5em;
-		border-bottom: 1px solid #800;
+		border-bottom: 1px solid @gp-red;
 	}
 
 	.postedOn {
@@ -539,6 +572,14 @@
 		&:last-child::after {
 			content: '';
 		}
+
+		s {
+			margin-right: .2em;
+			text-decoration: none;
+			&:after {
+				content: '\2794';
+			}
+		}
 	}
 
 	.rollVal-bold {
@@ -548,7 +589,7 @@
 		color: #060;
 	}
 	.rollVal-fail {
-		color: #800;
+		color: @gp-red;
 	}
 	.rollVal-info {
 		color: #009;
@@ -561,7 +602,7 @@
 			background-color: #060;
 		}
 		&.rollVal-fail {
-			background-color: #800;
+			background-color: @gp-red;
 		}
 		&.rollVal-info {
 			background-color: #009;
@@ -634,6 +675,12 @@
 		a {
 			margin: 0 10px;
 		}
+
+		.quotePost{
+			color: @gp-link-color;
+			cursor: pointer;
+			margin: 0 10px;
+		}
 	}
 
 	#quickMod {
@@ -683,22 +730,23 @@
 			margin-right: 10px;
 		}
 	}
-
-	#markItUpMessageTextArea {
-		margin-bottom: 1em;
-	}
 }
 
 /* --------------------------------------------*/
 
-#page_forum_post {
+#page_forum_post,#page_forum_thread {
 	#preview {
 		clear: both;
 		margin: 10px 0;
+
+		&:after{
+			content: '';
+			display: table;
+			clear: both;
+		}
 	}
 
 	hr {
-		width: 800px;
 		margin: 1.25em auto;
 		background-color: #444;
 		color: #444;
@@ -736,6 +784,7 @@
 	#optionControls {
 		display: flex;
 		justify-content: flex-end;
+		margin-right: 20px;
 	}
 
 	#poll {
@@ -852,6 +901,16 @@
 	}
 
 	.newRoll {
+		display: flex;
+		flex-wrap: wrap;
+		width:100%;
+
+		&>div{
+			display: flex;
+			flex-wrap: wrap;
+			width:100%;
+		}
+
 		& > div > * {
 			display: inline-block;
 			vertical-align: top;
@@ -867,19 +926,19 @@
 		}
 
 		.reason {
-			width: 400px;
+			width: 40%;
 			text-align: left;
 		}
 
 		.roll {
-			width: 180px;
+			width: 20%;
 			padding: 0 10px;
 			text-align: center;
 		}
 
 		&.starwarsffgRoll {
 			.roll {
-				width: 202px;
+				width: 20%;
 			}
 
 			.dicePool {
@@ -1047,7 +1106,7 @@
 		}
 
 		.reroll {
-			width: 90px;
+			width: 10%;
 			padding-right: 10px;
 			text-align: center;
 			vertical-align: middle;
@@ -1063,7 +1122,8 @@
 		}
 
 		.visibility {
-			width: 140px;
+			width: 15%;
+			min-width: 150px;
 		}
 
 		.indivRolls {
@@ -1108,7 +1168,11 @@
 /* --------------------------------------------*/
 
 #page_forumACP {
-	#forums,
+	.forumAcpManagement{
+		display: flex;
+	}
+
+  #forums,
 	#forums ul {
 		list-style: none;
 	}
@@ -1186,14 +1250,15 @@
 
 	.sectionControls {
 		float: right;
+		margin-right: 20px;
 
 		.content {
-			background-color: #222;
+			background-color: @gp-black;
 		}
 
 		.leftWing,
 		.rightWing {
-			border-bottom-color: #222;
+			border-bottom-color: @gp-black;
 		}
 
 		a {
@@ -1201,8 +1266,8 @@
 			padding: .3em 15px;
 			color: #fdd;
 			background: #522;
-			border-top: .3em solid #222;
-			border-left: 2px solid #222;
+			border-top: .3em solid @gp-black;
+			border-left: 2px solid @gp-black;
 		}
 
 		&:first-child {
@@ -1212,7 +1277,7 @@
 		.current,
 		a:hover {
 			color: #f00;
-			background: #222;
+			background: @gp-black;
 		}
 	}
 
@@ -1552,7 +1617,7 @@
 .rollForChar {
 	display: inline-block;
 	margin: 0 .5em;
-	background-color: #800;
+	background-color: @gp-red;
 	color: #fff;
 	cursor: pointer;
 	white-space: nowrap;
@@ -1562,7 +1627,7 @@
 }
 
 .rollForChar.sel {
-	color: #800;
+	color: @gp-red;
 	border: solid 1px;
 	background-color: transparent;
 	border-bottom-right-radius: 0px;
@@ -1582,7 +1647,7 @@
 }
 
 #charSheetRoller h3 {
-	color: #800;
+	color: @gp-red;
 	border-top: solid 1px;
 }
 
@@ -1626,7 +1691,7 @@
 td .rollDice {
 	display: inline-block;
 	padding: .2em 1em;
-	border: solid 1px #222;
+	border: solid 1px @gp-black;
 	border-radius: 5px;
 	background-color: #eee;
 }
@@ -1680,4 +1745,361 @@ td .rollDice {
 
 #page_forum_post #postedRolls .rollInfo.editRollInfo {
 	margin-bottom: .5em;
+	padding-bottom: .5em;
 }
+
+//forum flex
+//flex
+#page_forum,#page_forum_search{
+
+	.tableDiv{
+
+		.tr{
+			display: flex;
+			width: 100%;
+			flex-wrap: nowrap;
+			box-sizing: border-box;
+		}
+
+		.icon{
+			flex:0 0 auto;
+			width:40px;
+		}
+
+		.threadInfo{
+			flex:0 0 auto;
+			width:100%;
+			display: flex;
+			flex-wrap: wrap;
+			flex-shrink: 1;
+
+			.threadInfoNew{
+				width: 20px;
+				order:1;
+			}
+			.paginateDiv{
+				width: 45%;
+				order:3;
+				margin: 0;
+				white-space: nowrap;
+			}
+			.threadTitle{
+				width: 45%;
+				order:2;
+			}
+			.threadAuthor{
+				display: block;
+				width: 100%;
+				order: 4;
+				padding-left: 20px;
+			}
+		}
+		.numPosts{
+			flex:0 0 auto;
+		}
+		.lastPost{
+			flex:0 0 auto;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+.keepUnread{
+	float:left;
+}
+
+.inlineNpcPrefix{
+	&:after{
+		content: '';
+		display: table;
+		clear: both;
+	}
+}
+
+.inlineNpc{
+	float: left;
+	margin: 0 1rem 0.5rem 0;
+
+	.inlineNpcAvatar{
+		width:100px;
+		height:100px;
+		background-repeat: no-repeat;
+		background-size: contain;
+		background-position: center center;
+	}
+
+	.inlineNpcName{
+		text-align: center;
+		font-weight: bold;
+		max-width: 100px;
+	}
+}
+
+.withSingleNpc .inlineNpc{
+	display: none;
+}
+
+#page_forum_thread .postBlock.postPreview .posterDetails{
+	font-size: 1.1em;
+	font-weight: bold;
+	padding-top: 40px;
+	text-align: center;
+}
+
+#page_forum_thread #previewPost{
+	background-color: @gp-red;
+    color: #fff;
+    padding: 3px 2px;
+	margin-right: 20px;
+	cursor: pointer;
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+    #page_forum,#page_forum_search{
+		.tableDiv{
+			.numPosts,.numThreads,.paginateDiv{
+				display: none;
+			}
+
+			.threadInfo{
+				width: ~"calc(75% - 40px)";
+				.threadTitle{
+					width: ~"calc(100% - 20px)";
+				}
+			}
+		}
+    }
+
+	#page_forum_thread .postBlock{
+
+		.postHeader{
+			margin-bottom: 0;
+			padding-bottom: 0;
+			border-bottom-style: none;
+
+			.postedOn{
+				margin-top: -40px;
+			}
+
+			.subject{
+				display: none;
+			}
+
+		}
+
+		.flexWrapper{
+			flex-direction: column;
+			.posterDetails{
+				display: flex;
+				flex-direction: row;
+				align-items: end;
+				width: 100%;
+			}
+		}
+		.postPoint{
+			background: none;
+		}
+
+		.postContent{
+			position: relative;
+			&:before,&:after{
+				content:' ';
+				position: absolute;
+				width:0px;
+				height:0px;
+				border:solid 10px transparent;
+				display: inline-block;
+			}
+			&:before{
+				border-bottom-color: #444;
+				top:-20px;
+			}
+			&:after{
+				border-bottom-color: #fff;
+				top:-18px;
+			}
+		}
+	}
+
+	#page_forum_thread .postBlock .posterDetails {
+		order:0;
+		gap:0 1rem;
+		.avatar {
+			img{
+				max-height: 40px;
+			}
+		}
+
+		.postNames{
+			display: flex;
+			flex-direction: column;
+		}
+
+		.charName,
+		.posterName{
+			text-align: left;
+		}
+	}
+
+	#page_forum_thread .postAsChar.withCharAvatar .posterDetails .avatar{
+		margin-top:0;
+		.userAvatar{
+			right:-10px !important;
+			top:-10px !important;
+
+			img{
+				max-height: 20px;
+			}
+		}
+	}
+
+	#page_forum_thread .postBlock.postLeft .flexWrapper {
+		.postContent{
+			&:before,&:after{
+				right: 10px;
+			}
+		}
+
+		.posterDetails{
+			flex-direction: row-reverse;
+
+			.charName,
+			.posterName{
+				text-align: right;
+			}
+		}
+
+		.postHeader{
+			.postedOn{
+				float: left;
+			}
+		}
+	}
+
+	#rolls_decks{
+		margin-left: 0;
+
+		#newRolls{
+			.newRoll{
+
+				flex-wrap: nowrap;
+
+				&>div{
+					flex-direction: column;
+					width: auto;
+					flex-grow: 1;
+
+					.reroll,
+					.reason,
+					.roll,
+					.visibility,
+					.av,
+					.modifier{
+						text-align: left;
+						min-width: auto;
+						padding-left: 0;
+						width: auto;
+						margin-bottom: .2rem;
+						min-height: 30px;
+						padding-bottom: 0;
+						box-sizing: border-box;
+						padding-right: 5px;
+					}
+
+				}
+
+				&>div.headers
+				{
+					flex-grow: 0;
+					&>div{
+						padding-top: 5px;
+					}
+
+				}
+			}
+		}
+	}
+
+	.editRollInfo .editRollInfoChangeVisibility,
+	.editRollInfo .editRollInfoRoll{
+		width: auto;
+		float: none;
+	}
+
+	#page_forum_thread {
+		#threadMenu {
+			flex-direction: column;
+
+			.leftCol {
+				align-self: flex-start;
+			}
+		}
+	}
+
+	#page_forum_thread .postBlock.postPreview .posterDetails{
+		padding-top: 0px;
+		padding-bottom: 10px;
+	}
+}
+
+
+
+
+
+.forumList.hbdMargined,
+.threadList.hbdMargined{
+	margin-left: 0;
+}
+
+.tavernTags{
+	margin-bottom: 1rem;
+	font-size:1.2em;
+}
+
+.tavernGame{
+	iframe,
+	img{
+		max-width: 100%;
+	}
+}
+
+
+
+//forum icons
+.ra.forum-icon{
+	margin-right: .3em;
+	vertical-align: text-bottom;
+	&:before{ //default communities
+		content: @ra-var-icon-speech-bubble;
+	}
+}
+
+.ra.forum-root-6:before{ //game discussion
+	content: @ra-var-icon-pawn;
+}
+
+.ra.forum-root-20:before{ //guides
+	content: @ra-var-icon-wooden-sign;
+}
+
+.ra.forum-root-22:before{ //management
+	content: @ra-var-icon-sheriff;
+}
+
+.ra.forum-root-2:before{ //games
+	content: @ra-var-icon-d6;
+}
+
+.ra.forum-id-3:before{  //announcements
+	content: @ra-var-icon-gamers-plane;
+}
+
+.ra.forum-id-10:before{  //tavern
+	content: @ra-var-icon-beer;
+}
+
+.ra.forum-id-14:before{  //introductions
+	content: @ra-var-icon-hearts;
+}
+

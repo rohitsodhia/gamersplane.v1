@@ -17,10 +17,12 @@
 			if (!$threadManager->getPermissions('write') || ($locked && $threadManager->getPermissions('moderate'))) { header('Location: /forums/'.$forumID.'/'); exit; }
 		}
 
+		$minorChange=false;
 		if ($_POST['edit']) {
 			$postID = intval($_POST['edit']);
 			$post = new Post($postID);
 			$threadID = intval($post->threadID);
+			$minorChange=isset($_POST['minorChange']);
 		} else {
 			$post = new Post();
 		}
@@ -166,7 +168,7 @@
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
-				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
+				header('Location: /forums/newThread/'.$forumID.'/?errors=1');
 				exit;
 			} else {
 				$postID = $threadManager->saveThread($post);
@@ -176,7 +178,7 @@
 
 			$post->setThreadID($threadID);
 			if (strlen($post->getTitle()) == 0) {
-				$title = 'Re: '.$threadManager->getThreadProperty('title');
+				$title = $threadManager->getThreadProperty('title');
 			}
 			if (strlen($post->getMessage()) == 0) {
 				$formErrors->addError('noMessage');
@@ -184,13 +186,10 @@
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
-				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
+				header('Location: /forums/post/'.$threadID.'/?errors=1' );
 				exit;
 			} else {
-				$postID = $post->savePost();
-				$mysql->query("UPDATE threads SET lastPostID = {$postID} WHERE threadID = {$threadID}");
-				$threadManager->updatePostCount();
-				$threadManager->updateLastRead($postID);
+				$postID = $threadManager->saveThread($post);
 			}
 		} elseif ($_POST['edit']) {
 			$threadManager = new ThreadManager($post->getThreadID());
@@ -232,7 +231,7 @@
 
 			if ($formErrors->errorsExist()) {
 				$formErrors->setErrors('post', $_POST);
-				header('Location: ' . $_SESSION['lastURL'] . '?errors=1');
+				header('Location: /forums/editPost/'.$post->getPostID().'/?errors=1');
 				exit;
 			} else {
 				if (((time() + 300) > strtotime($post->getDatePosted()) || (time() + 60) > strtotime($post->getLastEdit())) && !$threadManager->getPermissions('moderate') && $post->getModified()) {
@@ -249,14 +248,13 @@
 					if (isset($_POST['deletePoll'])) {
 						$threadManager->deletePoll();
 					}
-
-					$threadManager->saveThread($post);
 				} else {
 					$allowRolls = $postInfo['allowRolls'];
 					$allowDraws = $postInfo['allowDraws'];
 
-					$post->savePost();
 				}
+
+				$threadManager->saveThread($post,!$minorChange);
 
 				if (isset($_POST['nVisibility'])) {
 					foreach ($_POST['nVisibility'] as $rollID => $nVisibility) {
@@ -268,7 +266,7 @@
 			}
 		}
 
-		if (!isset($_POST['edit'])) {
+		if (!isset($_POST['edit']) || !$minorChange) {
 			$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE s.userID != {$currentUser->userID} AND ((s.type = 'f' AND s.ID = {$threadManager->getThreadProperty('forumID')}) OR (s.type = 't' AND s.ID = {$threadManager->getThreadID()}))");
 			$subs = [];
 			if ($subbedUsers->rowCount()) {
@@ -279,9 +277,15 @@
 			if (sizeof($subs)) {
 				$subs = array_unique($subs);
 				ob_start();
-				include('forums/process/threadSubEmail.php');
+				if(!isset($_POST['edit'])){
+					include('forums/process/threadSubEmail.php');
+				}
+				else{
+					include('forums/process/majorEditSubEmail.php');
+				}
 				$email = ob_get_contents();
 				ob_end_clean();
+
 				foreach ($subs as $sub)
 					mail($sub, "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
 			}

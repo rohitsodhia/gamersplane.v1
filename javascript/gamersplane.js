@@ -22,7 +22,7 @@ $.cssHooks.backgroundColor = {
 };
 
 $(function() {
-	$('select').prettySelect();
+	$('select:not(.notPretty)').prettySelect();
 	$('input[type="checkbox"]').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 
@@ -53,6 +53,7 @@ $(function() {
 		});
 	}
 
+	/*
 	$('.headerbar, .fancyButton').each(skewElement);
 	hbMargin = parseFloat($('.headerbar').data('skewedOut')) * 2;
 	$('.hbMargined:not(textarea)').css({ 'margin-left': Math.ceil(hbMargin) + 'px', 'margin-right': Math.ceil(hbMargin) + 'px' });
@@ -69,6 +70,7 @@ $(function() {
 		tWidth = $(this).parent().width();
 		$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
 	});
+	*/
 
 	$('.trapezoid').each(trapezoidify);
 
@@ -138,7 +140,7 @@ $(function() {
 	});
 
 	$('.convertTZ').each(function () {
-		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMMM D, YYYY h:mm a';
+		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, YYYY h:mm a';
 		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
 		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
 		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
@@ -913,22 +915,24 @@ app.config(['$httpProvider', function ($httpProvider) {
 		headerHeight = $header.height(),
 		scrollTimeout = null,
 		ratio = 1,
+		mobileAdjustment=($('#mainMenuTools:visible').length>0?1:0.666),
 		$mainMenu = $('#mainMenu');
 
 	$mainMenu.on('click', 'li', function ($event) {
 		$event.stopPropagation();
 		if ($(this).parent()[0] == $mainMenu[0] && $(this).children('ul').length) {
 			$event.preventDefault();
-			$(this).children('ul').stop(true, true).slideDown();
+			$('ul',(this).closest('ul#mainMenu')).hide();
+			$(this).children('ul').stop(true, true).show();
 		}
 	});
 	$('html').click(function ($event) {
-		$mainMenu.find('li').children('ul').stop(true, true).slideUp();
+		$mainMenu.find('li').children('ul').stop(true, true).hide();
 	});
 	$timeout(function () {
 		$headerEles.height(scrollPos < 50?120 - scrollPos:70);
 		ratio = (scrollPos < 50?scrollPos:50) / 50;
-		$logo.height(100 - 47 * ratio);
+		$logo.height((100 - 47 * ratio)*mobileAdjustment);
 	});
 	$(window).scroll(function () {
 		scrollPos = $(this).scrollTop();
@@ -938,11 +942,11 @@ app.config(['$httpProvider', function ($httpProvider) {
 //			scrollTimeout = setTimeout(function () {
 				$headerEles.height(scrollPos < 50?120 - scrollPos:70);
 				ratio = (scrollPos < 50?scrollPos:50) / 50;
-				$logo.height(100 - 47 * ratio);
+				$logo.height((100 - 47 * ratio)*mobileAdjustment);
 //			}, 100);
 		} else if ($headerEles.height() > 70) {
 			$headerEles.height(70);
-			$logo.height(53);
+			$logo.height(53*mobileAdjustment);
 		}
 	});
 }]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {

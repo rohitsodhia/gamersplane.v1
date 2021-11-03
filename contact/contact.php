@@ -18,7 +18,7 @@
 				<div class="tr">
 					<textarea ng-model="form.comment" placeholder="Comments" ng-class="{ 'error': errors.empty.indexOf('comment') > -1 }"></textarea>
 				</div>
-				<div class="alignCenter"><button type="submit" class="fancyButton" skew-element>Submit</button></div>
+				<div class="alignCenter"><button type="submit" class="fancyButton">Submit</button></div>
 			</form>
 			<div ng-hide="dispForm" class="slideUp">
 				<p class="firstLine"><strong>Thanks for sending us your thoughts!</strong></p>

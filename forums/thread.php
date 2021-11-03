@@ -1,8 +1,11 @@
 <?php
+	$responsivePage=true;
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
 	if($currentUser->addPostNavigateWarning()){
-		$addJSFiles[] = 'forums/unsaved-work.js';
+		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js','postPolls.js');
+	}else{
+		$addJSFiles = Array('forums/postingPage.js','postPolls.js');
 	}
 
 	$threadID = intval($pathOptions[1]);
@@ -40,7 +43,7 @@
 	$dispatchInfo['description'] = $threadManager->getKeyPost()->message;
 ?>
 <?php	require_once(FILEROOT.'/header.php'); ?>
-		<h1 class="headerbar"><?=$threadManager->getThreadProperty('title')?></h1>
+		<h1 class="headerbar"> <?$threadManager->addThreadIcon()?><?=$threadManager->getThreadProperty('title')?></h1>
 		<div class="hbMargined">
 			<div id="threadMenu">
 				<div class="leftCol">
@@ -57,25 +60,14 @@
 <?php
 		}
 	}
-	if ($threadManager->getPermissions('moderate')) {
-?>
-					<div>
-						<form id="threadOptions" method="post" action="/forums/process/modThread/">
-<?php
-	$sticky = $threadManager->thread->getStates('sticky') ? 'unsticky' : 'sticky';
-	$lock = $threadManager->thread->getStates('locked') ? 'unlock' : 'lock';
-?>
-							<input type="hidden" name="threadID" value="<?=$threadID?>">
-							<button type="submit" name="sticky" title="<?=ucwords($sticky)?> Thread" alt="<?=ucwords($sticky)?> Thread" class="<?=$sticky?>"></button>
-							<button type="submit" name="lock" title="<?=ucwords($lock)?> Thread" alt="<?=ucwords($lock)?> Thread" class="<?=$lock?>"></button>
-						</form>
-<?php	} ?>
-<?php	if ($threadManager->getPermissions('write')) {
+	$threadManager->addModerationButtons();
+	if ($threadManager->getPermissions('write')) {
 			$threadManager->displayPagination();
 } ?>
-					</div>
 				</div>
 			</div>
+
+			<?php $threadManager->enrichThread(); ?>
 <?php
 	if (!$threadManager->getThreadProperty('states[locked]') && $threadManager->getPoll()) {
 ?>
@@ -146,12 +138,14 @@
 					$character = $characters[$post->getPostAs()];
 				} else {
 					$postAsChar = false;
+					$npc = $post->getNpc();
 				}
 			} else {
 				$postAsChar = false;
+				$npc = $post->getNpc();
 			}
 ?>
-			<div class="postBlock post<?=$postSide?><?=$postAsChar ? ' postAsChar' . ($character->getAvatar() ? ' withCharAvatar' : '') : ''?>">
+			<div class="postBlock post<?=$postSide?><?=$postAsChar ? ' postAsChar' . ($character->getAvatar() ? ' withCharAvatar' : '') : ($npc ? ' withSingleNpc postAsChar withCharAvatar':'')?>">
 				<a name="p<?=$post->getPostID()?>"></a>
 <?php
 			if (!$newPostMarked && ($post->getPostID() > $threadManager->getThreadLastRead() || $threadManager->thread->getLastPost('postID') == $post->getPostID())) {
@@ -173,7 +167,10 @@
 			if ($postAsChar) {
 				$character->load();
 			}
+
+			$postedCharAvatar = false;
 			if ($postAsChar && $character->getAvatar()) {
+				$postedCharAvatar = true;
 				if ($character->checkPermissions()) {
 ?>
 							<a href="/characters/<?=$character::SYSTEM?>/<?=$character->getID()?>/"><img src="<?=$character->getAvatar()?>"></a>
@@ -196,16 +193,28 @@
 					$finalHeight = 40;
 				}
 			}
+			else if($npc && $npc["avatar"]){
+				$postedCharAvatar = true;
+				$finalHeight=40;
+				$finalWidth=40;
+				?><img src="<?=$npc['avatar']?>"><?php
+			}
+
 ?>
-							<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postAsChar && $character->getAvatar() ? ' style="top: -' . ($finalHeight / 2) . 'px; right: -' . ($finalWidth / 2) . 'px;"' : ''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
+							<a href="/user/<?=$post->author->userID?>/" class="userAvatar"<?=$postedCharAvatar ? ' style="top: -' . ($finalHeight / 2) . 'px; right: -' . ($finalWidth / 2) . 'px;"' : ''?>><img src="<?=User::getAvatar($post->author->userID, $post->author->avatarExt)?>"></a>
 						</div></div>
+						<div class="postNames">
 <?php
 			if ($postAsChar) {
 				$character->getForumTop($post->author, in_array($post->author->userID, $gms));
 			} else {
+				if($npc){
+					?> <p class="charName"><?=$npc["name"]?></p> <?php
+				}
 ?>
 						<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=in_array($post->author->userID, $gms)?' <img src="/images/gm_icon.png">':''?><?=User::inactive($post->author->lastActivity)?></p>
 <?php			} ?>
+						</div>
 					</div>
 					<div class="postBody">
 						<div class="postContent">
@@ -217,7 +226,7 @@
 <?php
 			echo "\t\t\t\t\t\t\t<div class=\"post\">\n";
 			echo printReady(BBCode2Html($post->message)) . "\n";
-			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . '</span>, a total of ' . $post->timesEdited . ' time' . (($post->timesEdited > 1) ? 's' : '') . "</div>\n"; }
+			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . "</span></div>\n"; }
 			echo "\t\t\t\t\t\t\t</div>\n";
 
 			if (sizeof($post->rolls)) {
@@ -277,9 +286,9 @@
 						<div class="postActions">
 <?php
 			if($isLastPost){
-				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Unread</a>\n";
+				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Mark as unread</a>\n";
 			}
-			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<a href=\"/forums/post/{$threadID}/?quote={$post->postID}\">Quote</a>\n";
+			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'\">Quote</span>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";
@@ -305,27 +314,28 @@
 				$postSide = $postSide == 'Right'?'Left':'Right';
 			}
 		}
-
+?>
+			<div class="postBlock post<?=$postSide?> postPreview" style="display:none;">
+				<div class="flexWrapper">
+					<div class="posterDetails">Preview</div>
+					<div class="postBody">
+						<div class="postContent">
+							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
+							<div class="post"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+<?php
 		$threadManager->displayPagination();
 	}
 
-	if ($threadManager->getPermissions('moderate')) {
 ?>
-			<form id="quickMod" method="post" action="/forums/process/modThread/">
-<?php
-	$sticky = $threadManager->thread->getStates('sticky') ? 'Unsticky' : 'Sticky';
-	$lock = $threadManager->thread->getStates('locked') ? 'Unlock' : 'Lock';
-?>
-				Quick Mod Actions:
-				<input type="hidden" name="threadID" value="<?=$threadID?>">
-				<select name="action">
-					<option value="lock"><?=ucwords($lock)?> Thread</option>
-					<option value="sticky"><?=ucwords($sticky)?> Thread</option>
-					<option value="move">Move Thread</option>
-				</select>
-				<button type="submit" name="go">Go</button>
-			</form>
-<?php	} ?>
+	<div class="rightCol alignRight">
+	<?php
+	$threadManager->addModerationButtons();
+	?>
+	</div>
 		</div>
 
 <?php
@@ -347,12 +357,17 @@
 				}
 			}
 		}
+
+		$rollsAllowed = $threadManager->getThreadProperty('allowRolls') ? true : false;
 ?>
+
+<?php /*  ------ START REPLY ----- */ ?>
+
 		<form id="quickReply" method="post" action="/forums/process/post/">
-			<h2 class="headerbar hbDark">Quick Reply</h2>
+			<h2 class="headerbar hbDark"><i class="ra ra-quill-ink"></i> Quick Reply</h2>
 			<input type="hidden" name="threadID" value="<?=$threadID?>">
-			<input type="hidden" name="title" value="Re: <?=htmlspecialchars($threadManager->getThreadProperty('title'))?>">
-			<div class="hbdMargined">
+			<input type="hidden" name="title" value="<?=htmlspecialchars($threadManager->getThreadProperty('title'))?>">
+			<div class="">
 <?php		if (sizeof($characters)) { ?>
 				<div id="charSelect" class="tr">
 					<label>Post As:</label>
@@ -365,12 +380,48 @@
 				</div>
 <?php		} ?>
 				<textarea id="messageTextArea" name="message"></textarea>
+				<div class="alignRight"><span id="previewPost" class="fancyButton">Preview</span></div>
 			</div>
+
+<?php /*  ------ START REPLY ROLLS ----- */ ?>
+			<?php if ($rollsAllowed) { ?>
+				<h3 class="headerbar"><i class="ra ra-perspective-dice-random"></i> Rolls</h2>
+				<div id="rolls_decks">
+					<div id="rolls">
+						<div id="addRoll">
+							<span>Add new roll: </span>
+							<select>
+								<option value="basic">Basic</option>
+								<option value="starwarsffg">Star Wars FFG</option>
+								<option value="fate">Fate</option>
+								<option value="fengshui">Feng Shui</option>
+							</select>
+							<button type="submit" class="fancyButton">Add</button>
+						</div>
+						<div id="newRolls">
+	<?php
+				if (isset($fillVars['rolls'])) {
+					foreach ($fillVars['rolls'] as $count => $roll) {
+						rollTR($count, (object) $roll);
+					}
+				}
+	?>
+						</div>
+					</div>
+				</div>
+<?php		} ?>
+<?php /*  ------ END OF REPLY ROLLS ----- */ ?>
+
+
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" class="fancyButton">Post</button>
 				<button type="submit" name="advanced" class="fancyButton">Advanced</button>
 			</div>
 		</form>
+
+
+<?php /*  ------ END OF REPLY ----- */ ?>
+
 <?php
 	} elseif ($threadManager->getThreadProperty('states[locked]')) {
 		echo "\t\t\t<h2 class=\"alignCenter\">Thread locked</h2>\n";

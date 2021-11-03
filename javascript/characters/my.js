@@ -1,4 +1,4 @@
-app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentUser', 'CharactersService', 'SystemsService', function ($scope, $http, $sce, $timeout, CurrentUser, CharactersService, SystemsService) {
+app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', '$filter', 'CurrentUser', 'CharactersService', 'SystemsService', function ($scope, $http, $sce, $timeout, $filter, CurrentUser, CharactersService, SystemsService) {
 	$scope.characters = [];
 	$scope.library = [];
 	$scope.systems = [];
@@ -13,6 +13,8 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 	};
 	$scope.deleting = null;
 	$scope.activeRequests = [];
+	$scope.pagination = { numItems: 0, itemsPerPage: 25 };
+	$scope.filter = { search: '' };
 
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
@@ -20,6 +22,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 			$scope.$emit('pageLoading');
 			$scope.characters = typeof data.characters != 'undefined'?data.characters:null;
 			$scope.library = typeof data.library != 'undefined'?data.library:null;
+			$scope.pagination.numItems = $scope.characters.length;
 		});
 		SystemsService.get({ 'getAll': true }).then(function (data) {
 			for (var key in data.systems)
@@ -30,7 +33,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 		$scope.editBasic = function (character) {
 			$scope.editing.characterID = character.characterID;
 			$scope.editing.new.label = character.label;
-			$scope.editing.new.cCharType = { 'value': character.charType, 'display': character.charType };
+			$scope.editing.new.cCharType = character.charType ;
 		};
 		$scope.updateCharType = function (character, type) {
 			$scope.editing.new.cCharType = type;
@@ -113,5 +116,11 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', 'CurrentU
 				}
 			});
 		};
+
+		$scope.$watch(function () { return $scope.filter.search; }, function () {
+			$scope.pagination.numItems = $filter('filter')($scope.characters, { $: $scope.filter.search }).length;
+			$scope.pagination.current = 1;
+		});
+
 	});
 }]);

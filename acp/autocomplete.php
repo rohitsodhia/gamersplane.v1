@@ -6,8 +6,8 @@
 ?>
 
 		<div class="mainColumn right">
-			<h1 class="headerbar" skew-element>Manage Autocomplete</h1>
-			<h2 class="headerbar hbDark" skew-element>Skills</h2>
+			<h1 class="headerbar">Manage Autocomplete</h1>
+			<h2 class="headerbar hbDark">Skills</h2>
 			<div class="hbdMargined">
 				<div id="newItems">
 					<h3>New Items</h3>
@@ -46,6 +46,7 @@
 								<a href="" ng-click="processUAI(item, 'reject')" class="sprite cross"></a>
 							</div>
 						</div>
+					</div>
 				</div>
 			</div>
 		</div>

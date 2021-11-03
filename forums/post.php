@@ -1,8 +1,11 @@
 <?php
+	$responsivePage=true;
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
 	if($currentUser->addPostNavigateWarning()){
-		$addJSFiles[] = 'forums/unsaved-work.js';
+		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js','postPolls.js');
+	}else{
+		$addJSFiles = Array('forums/postingPage.js','postPolls.js');
 	}
 
 
@@ -203,7 +206,7 @@
 	}
 	$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);
 ?>
-		<h1 class="headerbar"><?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
+		<h1 class="headerbar"><i class="ra ra-quill-ink"></i> <?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
 
 <?php	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
 		<h2>Preview:</h2>
@@ -226,7 +229,7 @@
 	if ($fillVars) {
 		$title = printReady($fillVars['title']);
 	} elseif (!strlen($post->getTitle()) && $threadManager->getThreadID()) {
-		$title = 'Re: '.$threadManager->getThreadProperty('title');
+		$title = $threadManager->getThreadProperty('title');
 	} else {
 		$title = printReady($post->title, ['stripslashes']);
 	}
@@ -260,6 +263,9 @@
 <?php	}?>
 				</div>
 				<textarea id="messageTextArea" name="message" tabindex="<?=tabOrder()?>"><?=$fillVars ? $fillVars['message'] : $post->message?></textarea>
+				<?php if ($editPost) {?>
+				<p><input type="checkbox" name="minorChange" checked="checked"> This is a minor edit</p>
+				<?php }?>
 			</div>
 
 <?php	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
@@ -287,7 +293,7 @@
 			<div id="threadOptions" class="section_options hbdMargined">
 <?php
 		if ($threadManager->getPermissions('moderate')) {
-			$sticky = $threadManager->getThreadProperty('sticky');
+			$sticky = $threadManager->getThreadProperty('states[sticky]');
 			if ($fillVars) {
 				$sticky = $fillVars['sticky'];
 			}
@@ -483,5 +489,6 @@
 				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
 				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton">Preview</button>
             </div>
+
 		</form>
 <?php require_once(FILEROOT.'/footer.php'); ?>

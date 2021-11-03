@@ -29,7 +29,7 @@
 						</div>
 					</div>
 					<div id="arcana">
-						<h2 class="headerbar hbDark" skew-element>Arcana</h2>
+						<h2 class="headerbar hbDark">Arcana</h2>
 						<div hb-margined="dark">
 							<div ng-repeat="(type, arcana) in character.arcana" class="arcana" ng-class="{ 'first': $first }">
 								<h3 ng-hide="type == 'hubris' && character.arcana.virtue.arcana == character.arcana.hubris.arcana" ng-bind-html="arcana.arcana | trustHTML"></h3>
@@ -39,7 +39,7 @@
 						</div>
 					</div>
 					<div id="backgrounds">
-						<h2 class="headerbar hbDark" skew-element>Backgrounds</h2>
+						<h2 class="headerbar hbDark">Backgrounds</h2>
 						<div hb-margined="dark">
 							<div ng-repeat="background in character.backgrounds track by $index" class="background" ng-class="{ 'first': $first }">
 								<div class="tr" ng-bind-html="background.name | trustHTML"></div>
@@ -48,7 +48,7 @@
 						</div>
 					</div>
 					<div id="advantages">
-						<h2 class="headerbar hbDark" skew-element>Advantages</h2>
+						<h2 class="headerbar hbDark">Advantages</h2>
 						<div hb-margined="dark">
 							<div ng-repeat="advantage in character.advantages track by $index" class="advantage" ng-class="{ 'first': $first }">
 								<div class="tr" ng-bind-html="advantage.name | trustHTML"></div>
@@ -57,7 +57,7 @@
 						</div>
 					</div>
 					<div id="stories">
-						<h2 class="headerbar hbDark" skew-element>Stories</h2>
+						<h2 class="headerbar hbDark">Stories</h2>
 						<div hb-margined="dark">
 							<div ng-repeat="story in character.stories" class="story" ng-class="{ 'first': $first }">
 								<div class="tr">
@@ -82,7 +82,7 @@
 				</div>
 				<div class="column floatRight">
 					<div id="traits">
-						<h2 class="headerbar hbDark" skew-element>Traits</h2>
+						<h2 class="headerbar hbDark">Traits</h2>
 						<div hb-margined="dark">
 							<div ng-repeat="(trait, rank) in character.traits" class="tr traits">
 								<label class="leftLabel">{{trait.capitalizeFirstLetter()}}</label>
@@ -93,7 +93,7 @@
 						</div>
 					</div>
 					<div id="skills">
-						<h2 class="headerbar hbDark" skew-element>Skills</h2>
+						<h2 class="headerbar hbDark">Skills</h2>
 						<div hb-margined="dark">
 							<div ng-repeat="(skill, rank) in character.skills" class="tr skills">
 								<label class="leftLabel">{{skill.capitalizeFirstLetter()}}</label>
@@ -104,7 +104,7 @@
 						</div>
 					</div>
 					<div id="deathSpiral">
-						<h2 class="headerbar hbDark" skew-element>Death Spiral</h2>
+						<h2 class="headerbar hbDark">Death Spiral</h2>
 						<div hb-margined="dark">
 							<ol>
 								<li ng-class="{ inactive: !character.dramaticWounds[1] }">+1 Bonus Die to all Risks</li>
@@ -121,6 +121,6 @@
 				</div>
 			</div>
 			<div id="notes">
-				<h2 class="headerbar hbDark" skew-element>Notes</h2>
+				<h2 class="headerbar hbDark">Notes</h2>
 				<div hb-margined="dark"><span ng-bind-html="character.notes | trustHTML"></span></div>
 			</div>

@@ -1,0 +1,417 @@
+@import "gpVariables.less";
+
+.fullWidthBody .bodyContainer, .fullWidthBody .contentContainer, .fullWidthBody #fixedMenu > div{
+    width: auto;
+}
+
+#page_home.landingPage {
+	&,
+	td,
+	input,
+	select,
+	textarea {
+		font-size: 14px;
+		font-family: 'OpenSans_Regular', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+		color: #000;
+		line-height: 1.3em;
+	}
+
+	#landing_top {
+		background: url('../images/landing_top_bg.jpg') top center no-repeat;
+		background-size: cover;
+	}
+
+	#landing_top_content {
+		padding-top: 120px;
+		padding-bottom: 30px;
+
+		header {
+			margin: 30px 0 30px 60px;
+
+			h1,
+			h2 {
+				margin: 0;
+				font-family: 'OpenSans_Regular';
+				color: #fff;
+				text-align: left;
+				line-height: 1em;
+			}
+
+			h1 {
+				margin-bottom: .5em;
+				font-size: 40px;
+				font-weight: normal;
+			}
+
+			h2 {
+				margin-left: 50px;
+				font-size: 26px;
+			}
+		}
+	}
+
+	#landing_top_whiteBox {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 20px 10px;
+		background: #fff;
+        max-width: 960px;
+        margin: 0 auto;
+
+		& > * {
+			display: inline-block;
+			width: 50%;
+			padding: 0 20px;
+
+			h1 {
+				margin-bottom: 0;
+				font-weight: normal;
+				text-align: center;
+
+				& > div {
+					padding: 5px 8px;
+				}
+			}
+		}
+	}
+
+	#landing_systemSearch {
+		padding: 6px 12px;
+		border: 2px solid #bbb;
+		border-top: 0;
+
+		& > * {
+			vertical-align: middle;
+		}
+
+		.sprite {
+			margin-right: 10px;
+		}
+
+		.combobox {
+			width: ~"calc(100% - 40px)";
+
+			input {
+				border: 1px solid #fff;
+				.border-radius(0);
+				background: none;
+			}
+
+			&.resultsOpen input,
+			.results {
+				border-color: #999;
+			}
+
+			&.resultsOpen input {
+				border-bottom-color: #ccc;
+			}
+
+			.results {
+				border-top: none;
+
+				a {
+					padding: 6px 9px;
+					background: none;
+
+					&:hover,
+					&.selected {
+						background: #fcc;
+					}
+				}
+			}
+		}
+	}
+
+	.game {
+		padding: 8px 30px;
+		border-top: 1px solid #ccc;
+
+		&.first {
+			border-top: none;
+		}
+
+		.title {
+			margin-bottom: 5px;
+
+			a {
+				font-weight: bold;
+			}
+		}
+
+		.info {
+			margin-left: 20px;
+		}
+
+		.system {
+			text-decoration: underline;
+		}
+	}
+
+	#landing_signup {
+		& > * {
+			text-align: center;
+		}
+
+		a {
+			font-size: 1.4em;
+		}
+
+		.register {
+			font-size: 2em;
+		}
+
+		.login {
+			background-color: #742;
+            &:before,&:after{
+                background-color: #742;
+            }
+		}
+
+		p {
+			margin-bottom: 1.4em;
+		}
+	}
+
+}
+
+#landing_whatIs {
+    padding:1rem;
+	max-width: 960px;
+	#landing_whatIs_text {
+		//float: left;
+		margin: 40px 0;
+	}
+}
+
+#landing_whatIs_logos {
+	position: relative;
+	height: 410px;
+	width: 540px;
+	padding: 0 30px;
+
+	& > * {
+		position: absolute;
+	}
+}
+
+#landing_whatIs_dnd5 {
+	top: 40px;
+	left: 34px;
+	width: 309px;
+}
+
+#landing_whatIs_thestrange {
+	top: 17px;
+	left: 387px;
+	width: 167px;
+}
+
+#landing_whatIs_pathfinder {
+	top: 126px;
+	left: 82px;
+	width: 195px;
+}
+
+#landing_whatIs_starwarsffg {
+	top: 102px;
+	left: 336px;
+	width: 173px;
+}
+
+#landing_whatIs_13thage {
+	top: 227px;
+	left: 142px;
+	width: 89px;
+}
+
+#landing_whatIs_numenera {
+	top: 222px;
+	left: 270px;
+	width: 280px;
+}
+
+#landing_whatIs_shadowrun5 {
+	top: 331px;
+	left: 39px;
+	width: 191px;
+}
+
+#landing_whatIs_fate {
+	top: 325px;
+	left: 286px;
+	width: 113px;
+}
+
+#landing_whatIs_savageworlds {
+	top: 295px;
+	left: 433px;
+	width: 121px;
+}
+
+#landing_whatIs_text {
+	width: ~"calc(100% - 600px)";
+
+	h2 {
+		margin-bottom: .5em;
+		font-family: AgencyFB;
+		font-size: 48px;
+		line-height: 1em;
+	}
+
+	p {
+		margin: 1.2em 0 0;
+		line-height: 1.4em;
+	}
+}
+
+footer .bodyContainer
+{
+	max-width: 960px;
+}
+
+#landing_features {
+	padding: 75px 0 55px;
+	background-color: #ddd;
+
+	.contentContainer {
+		max-width: 960px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		& > * {
+			position: relative;
+			width: 300px;
+			height: 230px;
+			padding: 50px 30px 0;
+            box-sizing: border-box;
+			border: 1px solid #dbb;
+			background-color: #fff;
+		}
+	}
+
+	.icon {
+		position: absolute;
+		top: -36px;
+		left: 150px;
+		width: 72px;
+		height: 72px;
+		margin-left: -36px;
+		background-color: #c31d29;
+		.border-radius(36px);
+		text-align: center;
+		line-height: 68px;
+	}
+
+	h3 {
+		font-family: OpenSans_Regular;
+		font-size: 20px;
+		text-transform: uppercase;
+		font-weight: bold;
+		text-align: center;
+	}
+
+	p {
+		margin: 0;
+		font-size: 1.2em;
+		line-height: 1.5em;
+		text-align: center;
+	}
+}
+
+#landing_features_tools,
+#landing_features_library,
+#landing_features_sheets {
+	i {
+		display: inline-block;
+		vertical-align: middle;
+		color: #fff;
+		font-size: 3rem;
+	}
+}
+/*
+#landing_features_tools {
+	span {
+		width: 42px;
+		height: 40px;
+		margin-right: 2px;
+		background-position: -73px -56px;
+	}
+}
+
+#landing_features_library {
+	span {
+		width: 40px;
+		height: 31px;
+		background-position: -115px -56px;
+	}
+}
+
+#landing_features_sheets {
+	span {
+		width: 29px;
+		height: 40px;
+		margin-left: 2px;
+		background-position: -155px -56px;
+	}
+}
+*/
+.bodyContainer, .fullWidthBody .contentContainer, #fixedMenu > div{
+    max-width: none;
+
+}
+
+#content .bodyContainer{
+    padding:0;
+}
+
+#page_home.landingPage #landing_systemSearch{
+    margin-right: 20px;
+}
+
+
+@media only screen and (max-width: @mobile-breakpoint){
+
+    #page_home.landingPage #landing_top_whiteBox{
+        flex-wrap: wrap;
+
+        #landing_signup{
+            order:1;
+            width: 100%;
+        }
+
+        #landing_latestGames{
+            order:2;
+            width: 100%;
+        }
+    }
+
+	#page_home.landingPage #landing_top_content header{
+		margin-left: 30px;
+	}
+}
+
+@media only screen and (max-width: 960px){
+
+	footer .bodyContainer{
+		padding: 10px;
+	}
+
+    #landing_whatIs_logos{
+        display: none;
+    }
+
+    #landing_whatIs_text{
+        width:100%;
+    }
+
+    #landing_features .contentContainer{
+        flex-direction: column;
+
+        & > *{
+            margin-bottom: 4rem;
+        }
+    }
+}
+

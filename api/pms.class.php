@@ -108,7 +108,7 @@
 						['$set' => ['recipients.$.read' => true]]
 					);
 				}
-				if (sizeof($history) || $includeSelfHistory) {
+				if (($history && sizeof($history)) || $includeSelfHistory) {
 					$pm['history'] = [];
 					if ($includeSelfHistory) {
 						$pm['history'][] = [
@@ -121,7 +121,7 @@
 							'replyTo' => $pm['replyTo'],
 						];
 					}
-					if (sizeof($history)) {
+					if ($history && sizeof($history)) {
 						foreach ($history as $pmID) {
 							$hPM = $mongo->pms->findOne(
 								[

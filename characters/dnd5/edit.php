@@ -8,7 +8,7 @@
 					<input type="text" name="race" value="<?=$this->getRace()?>" class="medText lrBuffer">
 					<input type="text" name="background" value="<?=$this->getBackground()?>" class="medText lrBuffer">
 				</div>
-				
+
 				<div class="tr labelTR">
 					<label id="label_classes" class="medText lrBuffer borderBox shiftRight">Class(es)</label>
 					<label id="label_levels" class="shortNum lrBuffer borderBox">Level(s)</label>
@@ -42,7 +42,7 @@
 <?	} ?>
 					</select>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="stats">
 						<div class="tr">
@@ -68,7 +68,7 @@
 							<span class="saveProficient"><input type="checkbox" name="statProf[<?=$short?>]"<?=$this->getSaveProf($short)?' checked="checked"':''?>></span>
 						</div>
 <?	} ?>
-						
+
 						<div class="tr">
 							<label class="shortText leftLabel textLabel">Total HP</label>
 							<input type="text" name="hp[total]" value="<?=$this->getHP('total')?>" class="medNum">
@@ -81,7 +81,7 @@
 							<label class="shortText leftLabel textLabel">Current HP</label>
 							<input type="text" name="hp[current]" value="<?=$this->getHP('current')?>" class="medNum">
 						</div>
-					
+
 						<div class="tr">
 							<label class="shortText leftLabel">AC</label>
 							<input type="text" name="ac" value="<?=$this->getAC()?>">
@@ -115,7 +115,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="clearfix">
 					<div id="weapons" class="floatLeft">
 						<h2 class="headerbar hbDark">Weapons <a id="addWeapon" href="">[ Add Weapon ]</a></h2>
@@ -130,7 +130,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div id="items" class="clearfix">
 					<h2 class="headerbar hbDark">Items</h2>
 					<textarea name="items" class="hbdMargined"><?=$this->getItems()?></textarea>
@@ -138,5 +138,5 @@
 
 				<div id="notes">
 					<h2 class="headerbar hbDark">Notes</h2>
-					<textarea name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
+					<textarea name="notes" class="hbdMargined markItUp"><?=$this->getNotes()?></textarea>
 				</div>

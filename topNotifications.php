@@ -5,7 +5,8 @@
 				'$elemMatch' => [
 					'userID' => $currentUser->userID
 				]
-			]
+			],
+			'retired' => null
 		],
 		['projection' => [
 			'gameID' => true,
@@ -21,7 +22,9 @@
 					'user.userID' => $currentUser->userID,
 					'isGM' => true
 				]
-			]
+			],
+			'retired' => null
+
 		],
 		['projection' => [
 			'gameID' => true,
