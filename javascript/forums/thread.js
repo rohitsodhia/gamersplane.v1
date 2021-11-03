@@ -70,7 +70,7 @@ $(function() {
 			},
 			data:{ postText: $('#messageTextArea').val()},
 			success:function (data) {
-				$('.postPreview .post').html(data);
+				$('.postPreview .post').html(data).darkModeColorize();
 				$(".postPreview")[0].scrollIntoView();
 			}
 		});
