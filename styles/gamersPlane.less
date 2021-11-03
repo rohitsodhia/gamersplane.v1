@@ -242,10 +242,6 @@ h2.headerbar,
 h3.headerbar,
 h4.headerbar {
 	margin: .5em 0;
-
-  
-  
-  enhancement/qol2
 	font-family: @gp-header-font;
 	color: #fff;
 	background: @gp-orange;
@@ -370,7 +366,8 @@ a.username:active {
 	color: #06f;
 }
 
-a.username,a.charName{
+a.username,
+a.charName {
 	&:hover {
 		text-decoration: underline;
 	}
@@ -387,18 +384,17 @@ a.fancyButton:active,
 	color: #fff;
 	padding: 3px 8px;
 
-	&.buttonSecondary
-	{
+	&.buttonSecondary {
 		background-color: @gp-orange;
 		&:before,
-		&:after{
+		&:after {
 			background-color: @gp-orange;
 		}
 	}
 }
 
-.hbdMargined{
-	margin-left:20px;
+.hbdMargined {
+	margin-left: 20px;
 }
 
 .fancyButton.smallButton {
@@ -479,7 +475,7 @@ button.fancyButton:active {
 	font-size: 1.5em;
 	line-height: 1.2em;
 	color: #fff;
-	margin:0 20px;
+	margin: 0 20px;
 }
 
 .fancyButton.disabled button,
@@ -809,7 +805,8 @@ div.prettySelect > div {
 		position: relative;
 		padding: 2px 4px;
 
-		&:before,&:after{
+		&:before,
+		&:after {
 			content: ' ';
 			display: block;
 			width: 20px;
@@ -819,33 +816,33 @@ div.prettySelect > div {
 			background-color: #222;
 		}
 
-		&:before{
+		&:before {
 			left: -19.5px;
 			clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
 		}
 
-		&:after{
+		&:after {
 			right: -19.5px;
 			clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
 		}
 
-		&.facingUp{
-			&:before{
+		&.facingUp {
+			&:before {
 				left: -19.5px;
 				clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
 			}
 
-			&:after{
+			&:after {
 				right: -19.5px;
 				clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
 			}
-
 		}
 	}
 
-	&.redTrapezoid{
+	&.redTrapezoid {
 		background-color: @gp-red;
-		&:before,&:after{
+		&:before,
+		&:after {
 			background-color: @gp-red;
 		}
 	}
@@ -1090,22 +1087,22 @@ div.prettySelect > div {
 		box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
 
 		&:before,
-		&:after{
+		&:after {
 			content: ' ';
 			display: block;
-			width:0;
-			height:0;
-			border:solid 10px transparent;
-			left:55px;
+			width: 0;
+			height: 0;
+			border: solid 10px transparent;
+			left: 55px;
 			position: absolute;
 		}
 
-		&:before{
-			top:-20px;
+		&:before {
+			top: -20px;
 			border-bottom-color: @gp-black;
 		}
-		&:after{
-			top:-19px;
+		&:after {
+			top: -19px;
 			border-bottom-color: #fff;
 		}
 
@@ -1117,7 +1114,7 @@ div.prettySelect > div {
 			a {
 				padding: 3px 0;
 
-				i.ra{
+				i.ra {
 					margin-right: .2rem;
 				}
 
@@ -1136,7 +1133,7 @@ div.prettySelect > div {
 				}
 			}
 
-			&:first-of-type{
+			&:first-of-type {
 				border-top-color: @gp-black;
 			}
 		}
@@ -1147,13 +1144,12 @@ div.prettySelect > div {
 		}
 	}
 
-	#mainMenuTools ul{
-		left:-5px;
+	#mainMenuTools ul {
+		left: -5px;
 		&:before,
-		&:after{
-			left:25px;
+		&:after {
+			left: 25px;
 		}
-
 	}
 
 	#userMenu {
@@ -1662,19 +1658,19 @@ textarea {
 	}
 
 	&.closed {
-		&>.hidden{
+		& > .hidden {
 			display: none;
 		}
 	}
 
 	&.closed {
-		&>.tag>.close {
+		& > .tag > .close {
 			display: none;
 		}
 	}
 
 	&:not(.closed) {
-		&>.tag>.open {
+		& > .tag > .open {
 			display: none;
 		}
 	}
@@ -2643,7 +2639,7 @@ textarea {
 		white-space: nowrap;
 		padding-bottom: 3px;
 
-		i.ra{
+		i.ra {
 			visibility: hidden;
 			cursor: pointer;
 		}
@@ -2653,17 +2649,16 @@ textarea {
 			font-size: 1.15em;
 			color: #fa0;
 
-			a{
+			a {
 				color: #fa0;
 				font-weight: bold;
 			}
 		}
 
-		&.charname{
+		&.charname {
 			a {
 				text-decoration: none;
 			}
-
 		}
 	}
 
@@ -2739,8 +2734,8 @@ textarea {
 		margin-right: .5rem;
 	}
 
-	.page{
-		background-color: fade(@gp-orange,20%);
+	.page {
+		background-color: fade(@gp-orange, 20%);
 		border-radius: 5px;
 	}
 }
@@ -2752,9 +2747,9 @@ div.forumIcon {
 	height: 30px;
 	width: 30px;
 	font-size: 24px;
-    padding-top: 10px;
+	padding-top: 10px;
 	//background: url('../images/forums/forum_icons.png') 0px 0px no-repeat;
-	&:before{
+	&:before {
 		font-family: '@{rpgawesome-font-family}';
 		content: @ra-var-icon-d6;
 		color: #ccc;
@@ -2921,7 +2916,6 @@ div.forumIcon {
 	}
 
 	.homeWidget {
-
 		&:first-child {
 			margin-left: 0;
 		}
@@ -3510,14 +3504,14 @@ div.forumIcon {
 	}
 }
 
-input[type="text"].headerSearch{
+input[type="text"].headerSearch {
 	vertical-align: text-bottom;
 	min-width: 10rem;
 	text-align: left;
 }
 
-select.notPretty{
-	padding:4px 5px;
+select.notPretty {
+	padding: 4px 5px;
 }
 
 /* --------------------------------------------*/
@@ -3571,54 +3565,57 @@ select.notPretty{
 }
 
 // skew elements
-.headerbar,.fancyButton{
+.headerbar,
+.fancyButton {
 	position: relative;
 
-	&:before,&:after{
-		content:' ';
-		position:absolute;
-		top:0;
+	&:before,
+	&:after {
+		content: ' ';
+		position: absolute;
+		top: 0;
 		bottom: 0;
-		width:20px;
+		width: 20px;
 		background-color: @gp-orange;
 	}
-	&:before{
+	&:before {
 		clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
-		left:-19.5px;
+		left: -19.5px;
 	}
-	&:after{
+	&:after {
 		clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
-		right:-19.5px;
+		right: -19.5px;
 	}
 
-	&.hbDark{
-		&:before,&:after{
+	&.hbDark {
+		&:before,
+		&:after {
 			background-color: #222;
 		}
 	}
-	&.fancyButton{
-		&:before,&:after{
+	&.fancyButton {
+		&:before,
+		&:after {
 			background-color: @gp-red;
 		}
 	}
 }
 
-.spoiler.snippet
-{
+.spoiler.snippet {
 	background-color: #fec;
 }
 
-.youtube_bb{
+.youtube_bb {
 	position: relative;
-    padding-bottom: 56.25%; //Youtube radio of 315 / 560
-    height: auto;
-    overflow: hidden;
-    max-width: 100%;
+	padding-bottom: 56.25%; //Youtube radio of 315 / 560
+	height: auto;
+	overflow: hidden;
+	max-width: 100%;
 	display: block !important;
 
 	iframe,
 	object,
-	embed{
+	embed {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -3629,15 +3626,18 @@ select.notPretty{
 
 /*--------------*/
 #page_characterSheet {
-	.feat,.ability {
+	.feat,
+	.ability {
 		position: relative;
 	}
 
-	.feat_name,.abilityName{
-		margin-left:1.5em;
+	.feat_name,
+	.abilityName {
+		margin-left: 1.5em;
 	}
 
-	.feat_notesLink,.ability_notesLink{
+	.feat_notesLink,
+	.ability_notesLink {
 		position: absolute;
 		top: 4px;
 		left: 0;
@@ -3647,7 +3647,7 @@ select.notPretty{
 			font-size: 1rem;
 		}
 
-		&.open:before{
+		&.open:before {
 			content: '\25BC';
 		}
 	}
@@ -3655,48 +3655,46 @@ select.notPretty{
 
 //header icons
 .headerbar i.fa {
-    min-width: 1.4em;
+	min-width: 1.4em;
 }
 
-.badge{
-
+.badge {
 	.makeBadge;
 
-	&.badge-gameOpen{
+	&.badge-gameOpen {
 		.badgeColor( @gp-open-badge-color );
 	}
 
-	&.badge-gameClosed{
+	&.badge-gameClosed {
 		.badgeColor( @gp-closed-badge-color);
 	}
 
-	&.badge-system{
+	&.badge-system {
 		.badgeColor( @gp-system-badge-color);
 	}
 
-	&.badge-gamePublic{
+	&.badge-gamePublic {
 		.badgeColor( @gp-public-badge-color);
 	}
 
-	&.badge-gamePrivate{
+	&.badge-gamePrivate {
 		.badgeColor( @gp-private-badge-color);
 	}
 
-	&.badge-gameFrequency{
+	&.badge-gameFrequency {
 		.badgeColor( @gp-frequency-badge-color);
 	}
 
-	&.badge-gameGm{
+	&.badge-gameGm {
 		.badgeColor( @gp-gm-badge-color);
 	}
-
 }
 
-.atHighlight{
-	background-color: lighten(@gp-complement-mid,65%);
+.atHighlight {
+	background-color: lighten(@gp-complement-mid, 65%);
 	text-decoration: double;
 }
 
-.hide{
-	display:none !important;
+.hide {
+	display: none !important;
 }
