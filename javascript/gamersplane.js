@@ -146,6 +146,13 @@ $(function() {
 		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
 	});
 
+	$('.convertTZshort').each(function () {
+		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, h:mm a';
+		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
+		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
+		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
+	});
+
 
 	/* Individual Pages */
 	var curPage;

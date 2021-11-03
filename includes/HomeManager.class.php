@@ -21,7 +21,7 @@
             $post = new Post($postItem);
 ?>
 			<div class="announcements <?=$announcementClass?>">
-				<h2 class="headerbar announcementsheaderbar"><i class="ra <?=$iconClass?>"></i> <a href="/forums/thread/<?=$post->getThreadID()?>/"><?=$post->getTitle()?></a> <i class="openClose openClose-open" data-announce="<?=$forumId?>" data-threadid='<?=$post->getThreadID()?>'></i></h2>
+				<h3 class="headerbar announcementsheaderbar"><i class="ra <?=$iconClass?>"></i> <a href="/forums/thread/<?=$post->getThreadID()?>/"><?=$post->getTitle()?></a> <i class="openClose openClose-open" data-announce="<?=$forumId?>" data-threadid='<?=$post->getThreadID()?>'></i></h3>
 				<div class="announcementPost">
 					<?if($addHeaderFooter){?>
 					<h4><span class="convertTZ"><?=$post->getDatePosted('F j, Y g:i a')?></span> by <a href="/user/<?=$post->getAuthor('userID')?>/" class="username"><?=$post->getAuthor('username')?></a></h4>

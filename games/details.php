@@ -178,7 +178,7 @@
 					</div>
 					<div id="gameFeatures" class="clearfix">
 						<div id="decks">
-							<div ng-if="!details.retired && isGM" class="clearfix" hb-topper><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton">New Deck</a></div>
+							<div ng-if="!details.retired && isGM" class="clearfix hbdTopper"><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton">New Deck</a></div>
 							<h2 class="headerbar hbDark hb_hasList" ng-class="{ 'hb_hasButton': isGM }"><i class="ra ra-spades-card"></i> Decks</h2>
 							<div class="hbdMargined">
 								<div ng-if="decks.length" class="tr clearfix headers">

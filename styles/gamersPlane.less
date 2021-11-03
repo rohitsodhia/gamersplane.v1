@@ -409,6 +409,12 @@ a.fancyButton:active,
 .hbTopper .fancyButton,
 .hbdTopper .fancyButton {
 	margin-left: 40px;
+	&:before{
+		clip-path: polygon(100% 100%,  0% 100%, 70% 0%,100% 0%);
+	}
+	&:after{
+		clip-path: polygon(0% 0%, 0% 100%, 70% 0%);
+	}
 }
 
 .redWing {

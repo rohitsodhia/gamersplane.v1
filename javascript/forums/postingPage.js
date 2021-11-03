@@ -203,6 +203,22 @@ $(function() {
 							});
 						});
 
+						$('.snippets',charSheetContent).each(function(){
+							var abilitySection=$(this);
+							var title=$('h2',abilitySection).text();
+
+							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector"><option></option></select></div>').appendTo(charSheet);
+							$('option',abilityDiv).text('--'+title+'--');
+							$('.ability',abilitySection).each(function(){
+								var pThis=$(this);
+								var name=$.trim($('.abilityName',pThis).text());
+								if(name.length>0){
+									var notes=$.trim($('.abilityBBCode',pThis).text());
+									$('<option></option>').text(name).data('notes',notes).appendTo($('select',abilityDiv));
+								}
+							});
+						});
+
 						$('.npcs',charSheetContent).each(function(){
 							var npcSection=$(this);
 							var title=$('h3',npcSection).text();

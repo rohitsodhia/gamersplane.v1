@@ -30,6 +30,39 @@
 // ----------------------------------------------------------------------------
 
 //define ("EMOTICONS_DIR", "/images/emoticons/");
+function splitByHeader($title,$text,$cssClass){
+	$ret="<div class='".$cssClass."'>";
+	$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
+
+	$abilityLines = explode("\n", trim($text));
+
+	$abilityOpen=false;
+	$abilityRaw="";
+	foreach ($abilityLines as $abilityLine){
+
+		if(substr($abilityLine,0,1)=='#'){
+			if($abilityOpen){
+				$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
+			}
+
+			$ret=$ret.'<div class="ability"><span class="abilityName">'.substr($abilityLine,1).'</span><a href="" class="ability_notesLink">Notes</a><div class="abilityNotes notes">';
+			$abilityOpen=true;
+			$abilityRaw="";
+		}
+		else {
+			$ret=$ret.$abilityLine."\n";
+			$abilityRaw=$abilityRaw.str_replace(array("[","]"), array("&#91;", "&#93;"),  $abilityLine)."&#10;";
+		}
+	}
+
+	if($abilityOpen){
+		$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
+	}
+
+	$ret=$ret."</div>";  //close abilities
+
+	return $ret;
+}
 
 function BBCode2Html($text) {
 	$text = trim($text);
@@ -66,38 +99,14 @@ function BBCode2Html($text) {
 	//ability sections
 	$matches = null;
 	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
-		$ret="<div class='abilities'>";
-		$ret=$ret.'<h2 class="headerbar hbDark">'.$matches[1].'</h2>';
+		return splitByHeader($matches[1],$matches[2],"abilities");
+	}, $text);
+	//end ability sections
 
-		$abilityLines = explode("\n", trim($matches[2]));
-
-		$abilityOpen=false;
-		$abilityRaw="";
-		foreach ($abilityLines as $abilityLine){
-
-			if(substr($abilityLine,0,1)=='#'){
-				if($abilityOpen){
-					$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
-				}
-
-				$ret=$ret.'<div class="ability"><span class="abilityName">'.substr($abilityLine,1).'</span><a href="" class="ability_notesLink">Notes</a><div class="abilityNotes notes">';
-				$abilityOpen=true;
-				$abilityRaw="";
-			}
-			else {
-				$ret=$ret.$abilityLine."\n";
-				$abilityRaw=$abilityRaw.str_replace(array("[","]"), array("&#91;", "&#93;"),  $abilityLine)."&#10;";
-			}
-		}
-
-		if($abilityOpen){
-			$ret=$ret.'</div><div style="display:none" class="abilityBBCode">'.$abilityRaw.'</div></div>'; //close open ability notes and ability
-		}
-
-		$ret=$ret."</div>";  //close abilities
-
-		return $ret;
-
+	//snippet group sections
+	$matches = null;
+	$text=preg_replace_callback("/\[snippets=\"?(.*?)\"?\](.*?)\[\/snippets\]/ms", function($matches){
+		return splitByHeader($matches[1],$matches[2],"snippets");
 	}, $text);
 	//end ability sections
 
@@ -231,8 +240,10 @@ function BBCode2Html($text) {
 	$matches = null;
 	$text=preg_replace_callback("/\[npcs=\"?(.*?)\"?\](.*?)\[\/npcs\]/ms", function($matches){
 			$npcTitle=trim(str_replace("=","",str_replace("\"","",$matches[1])));
-
-			$npcRows = explode("\n", trim(str_replace("<br />","",$matches[2])));
+			$lines=$matches[2];
+			$lines=str_replace("<br />","",$lines);
+			$lines=str_replace("\r","",$lines);
+			$npcRows = explode("\n", trim($lines));
 
 			$ret = "<div class='npcs'>";
 			if($npcTitle){
