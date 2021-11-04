@@ -91,10 +91,6 @@
 					<div class="labelCol"><label>Number of Characters per Player</label></div>
 					<div class="infoCol">{{details.charsPerPlayer}}</div>
 				</div>
-				<div class="tr textareaRow clearfix">
-					<div class="labelCol"><label>Character Generation Info</label></div>
-					<div class="infoCol"><?=printReady(BBCode2Html($gameInfo['charGenInfo'])) ?></div>
-				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Forums are</label></div>
 					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a><span ng-if="!isGM && details.readPermissions "><a  href="/forums/{{details.forumID}}"> (Read the forum)</a></span></div>
@@ -110,6 +106,11 @@
 							<button type="submit" ng-click="confirmRetire()" class="fancyButton smallButton">Retire</button>
 							<button type="submit" ng-click="toggleRetireConfirm()" class="fancyButton smallButton">Cancel</button>
 					</div>
+				</div>
+				<div class="tr textareaRow clearfix charGenRow">
+					<hr/>
+					<div class="labelCol"><label>Character Generation Info</label></div>
+					<div class="infoCol"><?=printReady(BBCode2Html($gameInfo['charGenInfo'])) ?></div>
 				</div>
 			</div>
 
