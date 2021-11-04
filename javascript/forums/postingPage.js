@@ -144,7 +144,7 @@ $(function() {
 					var keys=Object.keys(char);
 					if(keys.length>0){
 						var hrefParts = char[keys[0]].split('/');
-						$('<span class="rollForChar"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
+						$('<span class="rollForChar gmSheet"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
 					}
 				}
 			}
