@@ -72,7 +72,7 @@
 				$forumIcon = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?'new':'old';
 ?>
 				<div class="tr">
-					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
+					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
 						<a class="threadInfoNew" href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
