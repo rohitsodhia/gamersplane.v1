@@ -1,5 +1,7 @@
 @import "gpVariables.less";
 
+@theme-gp-red:#c54;
+
 body #content
 {
     background-color: #303136;
@@ -18,7 +20,7 @@ body  button.normal,
 body  button.normal:active,
 body  button.normal:visited
 {
-    color:#c54;
+    color:@theme-gp-red;
 }
 
 
@@ -110,7 +112,7 @@ body #page_forum_thread .postLeft .postPoint:after
 
 body #page_forum_thread .postHeader
 {
-    border-bottom-color: #c54;
+    border-bottom-color: @theme-gp-red;
 }
 
 body .note,
@@ -191,12 +193,12 @@ body #page_forum_thread div.postBlockFound
 
 body #page_forum_thread div.postBlockFound .postContent
 {
-    border-color: #c54;
+    border-color: @theme-gp-red;
 }
 
 body #page_forum_thread div.postBlockFound .postPoint
 {
-    border-right-color: #c54;
+    border-right-color: @theme-gp-red;
 }
 
 body input[type=text],
@@ -349,8 +351,8 @@ body.modal {
 
 
 h1.customChar{
-    color: #c54;
-    border-color: #c54;
+    color: @theme-gp-red;
+    border-color: @theme-gp-red;
 }
 
 body.style-background #content {
@@ -372,7 +374,7 @@ div.forumIcon{
     }
 
     &.newPosts:before{
-        color: #c54;
+        color: @theme-gp-red;
     }
 }
 
@@ -411,27 +413,44 @@ footer{
 }
 
 #page_forum_thread div.postActions .quotePost {
-    color: #c54;
+    color: @theme-gp-red;
 }
 
 .postPoll{
 
 	h3{
-		color: #c54;
+		color: @theme-gp-red;
 	}
 
 	.pollQuestion{
 
 		&.pollMyVote{
 			.pollQuestionLabel{
-				color:#c54;
+				color:@theme-gp-red;
 			}
 
 			.pollQuestionResults{
 				i.ra:first-child{
-					color: #c54;
+					color: @theme-gp-red;
 				}
 			}
 		}
 	}
+}
+
+#page_forum_thread{
+    .unsticky,
+    .unlock,
+    .move{
+        &:before{
+            color: @theme-gp-red;
+        }
+    }
+
+    .sticky,
+    .lock{
+        &:before{
+            color: #5a5a5a;
+        }
+    }
 }
