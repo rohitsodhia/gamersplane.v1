@@ -78,6 +78,7 @@ function BBCode2Html($text) {
 			$text = strip_tags($text);
 			$code = $s[1];
 			$code = htmlspecialchars($code);
+			$code = str_replace("\\", "\\\\", $code);
 			$code = str_replace("[", "&#91;", $code);
 			$code = str_replace("]", "&#93;", $code);
 			$code = str_replace("\r\n", "\n", $code);
