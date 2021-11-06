@@ -144,7 +144,7 @@ $(function() {
 					var keys=Object.keys(char);
 					if(keys.length>0){
 						var hrefParts = char[keys[0]].split('/');
-						$('<span class="rollForChar"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
+						$('<span class="rollForChar gmSheet"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
 					}
 				}
 			}
@@ -192,6 +192,22 @@ $(function() {
 							var title=$('h2',abilitySection).text();
 
 							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector addAsSpoiler"><option></option></select></div>').appendTo(charSheet);
+							$('option',abilityDiv).text('--'+title+'--');
+							$('.ability',abilitySection).each(function(){
+								var pThis=$(this);
+								var name=$.trim($('.abilityName',pThis).text());
+								if(name.length>0){
+									var notes=$.trim($('.abilityBBCode',pThis).text());
+									$('<option></option>').text(name).data('notes',notes).appendTo($('select',abilityDiv));
+								}
+							});
+						});
+
+						$('.snippets',charSheetContent).each(function(){
+							var abilitySection=$(this);
+							var title=$('h2',abilitySection).text();
+
+							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector"><option></option></select></div>').appendTo(charSheet);
 							$('option',abilityDiv).text('--'+title+'--');
 							$('.ability',abilitySection).each(function(){
 								var pThis=$(this);

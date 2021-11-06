@@ -91,10 +91,6 @@
 					<div class="labelCol"><label>Number of Characters per Player</label></div>
 					<div class="infoCol">{{details.charsPerPlayer}}</div>
 				</div>
-				<div class="tr textareaRow clearfix">
-					<div class="labelCol"><label>Character Generation Info</label></div>
-					<div class="infoCol"><?=printReady(BBCode2Html($gameInfo['charGenInfo'])) ?></div>
-				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Forums are</label></div>
 					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a><span ng-if="!isGM && details.readPermissions "><a  href="/forums/{{details.forumID}}"> (Read the forum)</a></span></div>
@@ -110,6 +106,11 @@
 							<button type="submit" ng-click="confirmRetire()" class="fancyButton smallButton">Retire</button>
 							<button type="submit" ng-click="toggleRetireConfirm()" class="fancyButton smallButton">Cancel</button>
 					</div>
+				</div>
+				<div class="tr textareaRow clearfix charGenRow">
+					<hr/>
+					<div class="labelCol"><label>Character Generation Info</label></div>
+					<div class="infoCol"><?=printReady(BBCode2Html($gameInfo['charGenInfo'])) ?></div>
 				</div>
 			</div>
 
@@ -178,7 +179,7 @@
 					</div>
 					<div id="gameFeatures" class="clearfix">
 						<div id="decks">
-							<div ng-if="!details.retired && isGM" class="clearfix" hb-topper><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton">New Deck</a></div>
+							<div ng-if="!details.retired && isGM" class="clearfix hbdTopper"><a id="newDeck" href="/games/{{gameID}}/decks/new/" colorbox class="fancyButton smallButton">New Deck</a></div>
 							<h2 class="headerbar hbDark hb_hasList" ng-class="{ 'hb_hasButton': isGM }"><i class="ra ra-spades-card"></i> Decks</h2>
 							<div class="hbdMargined">
 								<div ng-if="decks.length" class="tr clearfix headers">

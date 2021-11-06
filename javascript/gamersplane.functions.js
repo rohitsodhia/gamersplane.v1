@@ -322,18 +322,24 @@ var fixDarkThemeColours=function(){
 		}
 	};
 
-    if($('body').hasClass('dark')){
-        $('span.userColor,span.userSize').each(function(){
-            var pThis=$(this);
-			var pEle=pThis.get(0);
-			if(pEle.style){
-				if((pEle.style.color)&&(!pEle.style.backgroundColor)){
-					invertCssColorAttribute(pThis,'color');
+	jQuery.fn.darkModeColorize = function (){
+		if($('body').hasClass('dark')){
+			$('span.userColor,span.userSize',this).each(function(){
+				var pThis=$(this);
+				var pEle=pThis.get(0);
+				if(pEle.style){
+					if((pEle.style.color)&&(!pEle.style.backgroundColor)){
+						invertCssColorAttribute(pThis,'color');
+					}
+					if((pEle.style.backgroundColor)&&(!pEle.style.color)){
+						invertCssColorAttribute(pThis,'background-color');
+					}
 				}
-				if((pEle.style.backgroundColor)&&(!pEle.style.color)){
-					invertCssColorAttribute(pThis,'background-color');
-				}
-			}
-        });
-    }
+			});
+		}
+		return this;
+	};
+
+	$('body').darkModeColorize();
+
 };

@@ -25,7 +25,7 @@ $(function () {
 		});
 	});
 
-	$('#feats,.abilities').on('click', '.feat_notesLink,.ability_notesLink', toggleNotes);
+	$('#feats,.abilities,.snippets').on('click', '.feat_notesLink,.ability_notesLink', toggleNotes);
 
 	applyPageStyle($('.style:first').text());
 });

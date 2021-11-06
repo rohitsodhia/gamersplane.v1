@@ -72,7 +72,7 @@
 				$forumIcon = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?'new':'old';
 ?>
 				<div class="tr">
-					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
+					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><div class="forumIcon<?=$forumIcon == 'new'?' newPosts':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
 						<a class="threadInfoNew" href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
@@ -98,11 +98,11 @@
 							<a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
 						</div>
 						<a class="threadTitle" href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a><br>
-						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
+						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZshort"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
 					</div>
 					<div class="td numPosts"><?=$result->postCount?></div>
 					<div class="td lastPost">
-						<a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a><br><span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span>
+					<a href="/forums/<?=$result->forumID?>/" class="forumDisplay"><?=$result->forum?></a><a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a><br><span class="convertTZshort"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span>
 					</div>
 				</div>
 <?			} } else { ?>

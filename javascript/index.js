@@ -5,13 +5,6 @@ $(function() {
         var pThis=$(this);
         pThis.toggleClass('openClose-open');
         var announements=pThis.closest('.announcements');
-        /*
-        if(announements.hasClass('annoucementClosed')){
-            $('.announcementPost',announements).slideOpen();
-        }
-        else{
-            $('.announcementPost',announements).slideClosed();
-        }*/
         $('.announcementPost',announements).slideToggle();
         announements.toggleClass('annoucementClosed');
 
@@ -33,7 +26,9 @@ $(function() {
 
     });
 
-    $('.notifyThread a').on('click',function(){
+    $('.notifyThread a').on('click',function(event){
+        var navigateTo=$(this).attr('href');
+        event.preventDefault();
         var postId=$(this).data('postid');
 		$.ajax({
 			type: 'post',
@@ -42,7 +37,9 @@ $(function() {
 				withCredentials: true
 			},
 			data:{ postID: postId}
-		});
+		}).always(function() {
+            location.href = navigateTo;
+        });
     });
 
 });

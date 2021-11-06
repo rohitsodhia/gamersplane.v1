@@ -239,7 +239,9 @@
 		}
 
 		public function getNpc(){
-			preg_match_all('/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]/ms', $this->message, $matches, PREG_SET_ORDER);
+			$text=$this->message;
+			$text=preg_replace('/\[code\](.*?)\[\/code\]/ms', "", $text);
+			preg_match_all('/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]/ms', $text, $matches, PREG_SET_ORDER);
 
 			if ($matches && count($matches)==1) {
 				return array('name' => $matches[0][1],'avatar'=>$matches[0][2]);
