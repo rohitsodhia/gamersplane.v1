@@ -97,8 +97,13 @@ $(function() {
 			gameOptions = JSON.parse($('#gameOptions').html());
 		} catch (e) { }
 
+		var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
+		if (gameOptions && gameOptions.characterSheetIntegration){
+			$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
+		}
+
 		//charactersheer integration enabled
-		if (gameOptions && gameOptions.characterSheetIntegration) {
+		if (characterSheetIntegration) {
 
 			//jquery helper selectors
 			$.expr[':'].emptyContent =  $.expr[':'].emptyContent || $.expr.createPseudo(function() {
@@ -129,7 +134,7 @@ $(function() {
 				charactersToAdd = $('#fm_characters .submenu>li.thisUser p.charName a');
 			}
 
-			if(!gameOptions.characterSheetIntegration.gmExcludePcs){
+			if(!characterSheetIntegration.gmExcludePcs){
 				charactersToAdd.each(function () {
 					var addChar = $(this);
 					var hrefParts = addChar.attr('href').split('/');
@@ -137,10 +142,18 @@ $(function() {
 				});
 			}
 
-			if(isGm && gameOptions.characterSheetIntegration.gmSheets && Array.isArray(gameOptions.characterSheetIntegration.gmSheets)){
+			if(isGm && !characterSheetIntegration.gmExcludeNpcs){
+				$('#fm_characters .submenu>li.thisUser p.charName a').each(function () {
+					var addChar = $(this);
+					var hrefParts = addChar.attr('href').split('/');
+					$('<span class="rollForChar gmSheet"></span>').text(addChar.text()).attr('charid', hrefParts[3]).attr('gamesys', hrefParts[2]).appendTo(charList);
+				});
+			}
 
-				for(var i=0;i<gameOptions.characterSheetIntegration.gmSheets.length;i++){
-					var char=gameOptions.characterSheetIntegration.gmSheets[i];
+			if(isGm && characterSheetIntegration.gmSheets && Array.isArray(characterSheetIntegration.gmSheets)){
+
+				for(var i=0;i<characterSheetIntegration.gmSheets.length;i++){
+					var char=characterSheetIntegration.gmSheets[i];
 					var keys=Object.keys(char);
 					if(keys.length>0){
 						var hrefParts = char[keys[0]].split('/');
