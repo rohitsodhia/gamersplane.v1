@@ -125,5 +125,5 @@
 			</div>
 			<div id="notes">
 				<h2 class="headerbar hbDark">Background/Notes</h2>
-				<div ng-bind-html="character.notes | trustHTML" hb-margined></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>
