@@ -164,6 +164,21 @@ $(function() {
 	//spoiler opening and closing
 	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
 
+	//dark theme toggle
+	$('#userMenu').on('click','#toggleDarkMode',function(){
+		var stylesheet=$('#darkmodecss');
+		if(stylesheet.length==0){
+			$('<link id="darkmodecss" href="/styles/themeDark.css?v='+(Math.floor(Math.random() * 100000))+'" type="text/css" rel="stylesheet"/>').appendTo($('head'));
+		}else{
+			stylesheet.remove();
+		}
+		var darkTheme=$('#darkmodecss').length>0;
+		$.ajax({type: 'post', url: API_HOST +'/users/setUserTheme', xhrFields: {withCredentials: true},data:{ darkTheme: darkTheme?1:0}});
+		$('#toggleDarkMode').text((darkTheme?"Light theme":"Dark theme"));
+		event.preventDefault();
+	});
+	$('#toggleDarkMode').text(($('#darkmodecss').length>0?"Light theme":"Dark theme"));
+
 	applyPageStyle($('#gameOptions').html());
 	fixDarkThemeColours();
 });
