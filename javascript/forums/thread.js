@@ -86,7 +86,7 @@ $(function() {
 
 		$.get(basePage + '?page=' + $(prevPages[0]).text(), function (data) {
 			var block=$('.postBlock', $(data));
-			(block.clone().insertAfter(pThis)).addClass('postBlockFound');
+			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize();
 			var newHeight=$(document).height()
 
 			$(window).scrollTop(startScroll+(newHeight-startHeight));
