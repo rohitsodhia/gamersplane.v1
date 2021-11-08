@@ -2184,3 +2184,20 @@ td .rollDice {
 	content: @ra-var-icon-hearts;
 }
 
+//backfill
+#backfill{
+	color: #888;
+	text-align: center;
+	cursor: pointer;
+	span{
+		&:before,&:after{
+			content: "    ";
+			height:1px;
+			border-bottom:solid 1px;
+			width: 100px;
+			display: inline-block;
+			margin: 0 10px;
+			vertical-align: middle;;
+		}
+	}
+}

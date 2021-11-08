@@ -101,6 +101,10 @@
 			$this->page = intval($page) > 0?intval($page):1;
 		}
 
+		public function getPage(){
+			return $this->page;
+		}
+
 		public function getPosts() {
 			global $mysql;
 

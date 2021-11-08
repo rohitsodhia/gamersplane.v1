@@ -126,6 +126,11 @@
 		$hitLastRead = true;
 	}
 	$lastPostID = 0;
+	if($threadManager->getPage() && $threadManager->getPage()>1){
+		?>
+		<div id="backfill"><span>load previous</span></div>
+		<?php
+	}
 	if (sizeof($threadManager->getPosts())) {
 		foreach ($threadManager->getPosts() as $post) {
 			$lastPostID = $post->getPostID();
