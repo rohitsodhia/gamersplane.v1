@@ -35,7 +35,7 @@ mySettings = {
 				{ name: 'YouTube...', replaceWith: '[youtube][![YouTube share link]!][/youtube]' }
 			]
 		},
-		{name:'Link', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
+		{name:'Link', key:'K', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
 		{separator:'---------------' },
 /*		{name:'Size', key:'S', openWith:'[size=[![Text size]!]]', closeWith:'[/size]',
 		dropMenu :[

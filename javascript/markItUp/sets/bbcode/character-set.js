@@ -34,7 +34,7 @@ mySettings = {
 				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } }
 			]
 		},
-		{name:'Link', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
+		{name:'Link',  key:'K', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
 		{separator:'---------------' },
 		{name:'Note', openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]'},
 		{name:'Spoiler', openWith:'[spoiler="[![Tag]!]"]', closeWith:'[/spoiler]'},
