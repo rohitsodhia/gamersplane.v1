@@ -242,6 +242,7 @@ h2.headerbar,
 h3.headerbar,
 h4.headerbar {
 	margin: .5em 0;
+	padding: .05em .1em;
 	font-family: @gp-header-font;
 	color: #fff;
 	background: @gp-orange;
@@ -252,6 +253,21 @@ h2.hbDark,
 h3.hbDark,
 h4.hbDark {
 	background: #222;
+}
+
+h1.headerbar .ra,
+h2.headerbar .ra,
+h3.headerbar .ra,
+h4.headerbar .ra {
+	margin-right: .2em;
+}
+
+h3 .ra {
+	font-size: .9em;
+}
+
+h3 .ra.ra-gamers-plane {
+	font-size: 1em;
 }
 
 div.headerbar {
@@ -409,10 +425,10 @@ a.fancyButton:active,
 .hbTopper .fancyButton,
 .hbdTopper .fancyButton {
 	margin-left: 40px;
-	&:before{
-		clip-path: polygon(100% 100%,  0% 100%, 70% 0%,100% 0%);
+	&:before {
+		clip-path: polygon(100% 100%, 0% 100%, 70% 0%, 100% 0%);
 	}
-	&:after{
+	&:after {
 		clip-path: polygon(0% 0%, 0% 100%, 70% 0%);
 	}
 }
@@ -976,16 +992,8 @@ div.prettySelect > div {
 .fullWidthBody .contentContainer,
 #fixedMenu > div {
 	position: relative;
-	width: 950px;
+	width: 960px;
 	margin: 0 auto;
-}
-
-.fullWidthBody {
-	.bodyContainer,
-	.contentContainer,
-	#fixedMenu > div {
-		width: 1200px;
-	}
 }
 
 #content.fullWidthBody .bodyContainer {

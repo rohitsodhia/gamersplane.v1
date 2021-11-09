@@ -1,249 +1,252 @@
 @import "gpVariables.less";
 @import "postPolls.less";
 
-.widget-orange{
-    div.forumIcon.newPosts:before{
-        color: @gp-orange;
-    }
+.widget-orange {
+	div.forumIcon.newPosts:before {
+		color: @gp-orange;
+	}
 }
 
-#hompageRows{
-    display: flex;
-    flex-direction: column;
+#hompageRows {
+	display: flex;
+	flex-direction: column;
 }
 
-.announcements{
+.announcements {
+	.announcementsheaderbar {
+		& > a {
+			padding-right: 1em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
 
-    .announcementsheaderbar{
-        &>a{
-            padding-right: 1em;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            position: absolute;
-            right: .5em;
-            left: 1.5em;
-            white-space: nowrap;
-        }
-    }
+	.announcementPost {
+		padding: 0 2rem 0 1rem;
+	}
 
-    .announcementPost{
-        padding: 0 2rem 0 1rem;
-    }
+	.announcementMsg {
+		padding: .5rem 1rem;
 
-    .announcementMsg{
-        padding: .5rem 1rem;
+		img {
+			max-width: 100%;
+			margin: .5em 0;
+		}
 
-        img {
-            max-width: 100%;
-            margin: .5em 0;
-        }
+		iframe {
+			max-width: 400px;
+		}
+	}
 
-        iframe{
-            max-width: 400px;
-        }
-    }
+	div.readMore {
+		text-align: right;
+		font-size: .85em;
+		margin-top: 1.5em;
+		border-top: solid 1px @gp-red;
+	}
 
-    div.readMore {
-        text-align: right;
-        font-size: .85em;
-        margin-top: 1.5em;
-        border-top:solid 1px @gp-red;
-    }
-
-    .openClose{
-        position: absolute;
-        top:0px;
-        right:0px;
-        &:before{
+	.openClose {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		&:before {
 			content: '\25B2';
-            cursor: pointer;
-        }
+			cursor: pointer;
+		}
 
-        &.openClose-open{
-            &:before{
-                content: '\25BC';
-            }
-        }
-    }
-
-
+		&.openClose-open {
+			&:before {
+				content: '\25BC';
+			}
+		}
+	}
 }
 
-#notificationMsgs{
-    margin: 1px 20px .5rem 20px;
-    background-color: @gp-notify-bg;
-    padding: 1rem;
-    color: contrast(@gp-notify-bg);
+#notificationMsgs {
+	margin: 1px 20px .5rem 20px;
+	background-color: @gp-notify-bg;
+	padding: 1rem;
+	color: contrast(@gp-notify-bg);
 
-    .notify{
-        padding-left: 2em;
-        padding: .2rem;
-        padding-left: 2.2em;
+	.notify {
+		padding-left: 2em;
+		padding: .2rem;
+		padding-left: 2.2em;
 
-        a{
-            font-size: 1.1em;
-        }
+		a {
+			font-size: 1.1em;
+		}
 
-        &:before{
-            content: "\f01c";
-            font-family: '@{rpgawesome-font-family}';
-            display: inline-block;
-            min-width: 2.2em;
-            margin-left: -2.2em;
-            text-align: center;
-            font-size: 1.1em;
-        }
+		&:before {
+			content: "\f01c";
+			font-family: '@{rpgawesome-font-family}';
+			display: inline-block;
+			min-width: 2.2em;
+			margin-left: -2.2em;
+			text-align: center;
+			font-size: 1.1em;
+		}
 
-        &.notifyWaiting{
-            &:before{
-                content: @ra-var-icon-hourglass;
-            }
-        }
-        &.notifyJoin{
-            &:before{
-                content: @ra-var-icon-scroll-unfurled;
-            }
-        }
+		&.notifyWaiting {
+			&:before {
+				content: @ra-var-icon-hourglass;
+			}
+		}
+		&.notifyJoin {
+			&:before {
+				content: @ra-var-icon-scroll-unfurled;
+			}
+		}
 
-        &.notifyThread-1{
-            &:before{
-                content: @ra-var-icon-quill-ink;
-            }
-        }
+		&.notifyThread-1 {
+			&:before {
+				content: @ra-var-icon-quill-ink;
+			}
+		}
 
-        &.notifyThread-2{
-            &:before{
-                content: @ra-var-icon-cycle;
-            }
-        }
+		&.notifyThread-2 {
+			&:before {
+				content: @ra-var-icon-cycle;
+			}
+		}
 
-        &.notifyThread-3{
-            &:before{
-                font-family: inherit;
-                content: '@';
-            }
-        }
+		&.notifyThread-3 {
+			&:before {
+				font-family: inherit;
+				content: '@';
+			}
+		}
 
-        &.notifyIntroduction{
-            &:before{
-                content: @ra-var-icon-hand;
-            }
-        }
+		&.notifyIntroduction {
+			&:before {
+				content: @ra-var-icon-hand;
+			}
+		}
 
-        &.notifyOpenGames{
-            &:before{
-                content: @ra-var-icon-d6;
-                color: @gp-open-badge-color;
-            }
-        }
-
-    }
+		&.notifyOpenGames {
+			&:before {
+				content: @ra-var-icon-d6;
+				color: @gp-open-badge-color;
+			}
+		}
+	}
 }
 
-#yourGames{
-    .trapezoid,.hbDark{display:none;}
+#yourGames {
+	.trapezoid,
+	.hbDark {
+		display: none;
+	}
 
-    .sudoTable{
-        display: flex;
-        flex-wrap: wrap;
-        margin-left:9px !important;
-        margin-right:9px !important;
+	.sudoTable {
+		display: flex;
+		flex-wrap: wrap;
+		margin-left: 9px !important;
+		margin-right: 9px !important;
 
-        .tr:first-child{
-            .forumIcon:before{
-                content:@ra-var-icon-beer;
-            }
-        }
+		.tr:first-child {
+			.forumIcon:before {
+				content: @ra-var-icon-beer;
+			}
+		}
 
-        .tr{
-            width: 33.333333%;
-            flex:0 0 auto;
-            position: relative;
-            margin-bottom: .5rem;
+		.tr {
+			width: 33.333333%;
+			flex: 0 0 auto;
+			position: relative;
+			margin-bottom: .5rem;
 
-            .td{
-                display: inline-block;
-            }
+			.td {
+				display: inline-block;
+			}
 
-            .td.icon{
-                width: 35px;
-                text-align: center;
-                vertical-align: middle;
-                position: absolute;
-                left: 0;
-                top: 0;
-                .forumIcon{
-                    top:4px;
-                }
-            }
+			.td.icon {
+				width: 35px;
+				text-align: center;
+				vertical-align: middle;
+				position: absolute;
+				left: 0;
+				top: 0;
+				.forumIcon {
+					top: 4px;
+				}
+			}
 
-            .td.name{
-                display: block;
-                padding-left: 40px;
-                //white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+			.td.name {
+				display: block;
+				padding-left: 40px;
+				//white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 
-            .td.name .description,
-            .td.numThreads,
-            .numPosts{
-                display:none;
-            }
+			.td.name .description,
+			.td.numThreads,
+			.numPosts {
+				display: none;
+			}
 
-            .td.lastPost{
-                padding-left: 40px;
-                font-size: .85em;
-                br{display: none;}
-                a {margin-right:.5em;}
-            }
-        }
-    }
+			.td.lastPost {
+				padding-left: 40px;
+				font-size: .85em;
+				br {
+					display: none;
+				}
+				a {
+					margin-right: .5em;
+				}
+			}
+		}
+	}
 }
 
-.noGames{
-    font-style: italic;
-    margin: 1rem 0 3rem 0;
-    .noGameLink{
-        font-style: normal;
-        font-size: 1.5rem;
-        margin: 1.5rem 0;
-        text-align: center;
-    }
+.noGames {
+	font-style: italic;
+	margin: 1rem 0 3rem 0;
+	.noGameLink {
+		font-style: normal;
+		font-size: 1.5rem;
+		margin: 1.5rem 0;
+		text-align: center;
+	}
 }
 
-@media only screen and (max-width: @mobile-breakpoint){
-    #yourGames .sudoTable .tr{
-        width: 100%;
-    }
+@media only screen and (max-width: @mobile-breakpoint) {
+	#yourGames .sudoTable .tr {
+		width: 100%;
+	}
 
-    .noGames{
-        margin: 0;
-    }
+	.noGames {
+		margin: 0;
+	}
 }
 
-h2,h3{
-    &.announcementsheaderbar{
-        background-color: @gp-orange;
-        &:before,&:after{
-            background-color: @gp-orange;
-        }
-    }
+h2,
+h3 {
+	&.announcementsheaderbar {
+		background-color: @gp-orange;
+		&:before,
+		&:after {
+			background-color: @gp-orange;
+		}
+	}
 
-    &.notificationsheaderbar{
-        background-color: @gp-notify-header;
-        color: contrast(@gp-notify-header);
-        margin-bottom: 0;
-        &:before,&:after{
-            background-color: @gp-notify-header;
-        }
-    }
+	&.notificationsheaderbar {
+		background-color: @gp-notify-header;
+		color: contrast(@gp-notify-header);
+		margin-bottom: 0;
+		&:before,
+		&:after {
+			background-color: @gp-notify-header;
+		}
+	}
 
-    &.gamesheaderbar{
-        background-color: @gp-red;
-        &:before,&:after{
-            background-color: @gp-red;
-        }
-    }
+	&.gamesheaderbar {
+		background-color: @gp-red;
+		&:before,
+		&:after {
+			background-color: @gp-red;
+		}
+	}
 }
-
