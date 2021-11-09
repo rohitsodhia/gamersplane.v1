@@ -169,8 +169,10 @@ $(function() {
 		var stylesheet=$('#darkmodecss');
 		if(stylesheet.length==0){
 			$('<link id="darkmodecss" href="/styles/themeDark.css?v='+(Math.floor(Math.random() * 100000))+'" type="text/css" rel="stylesheet"/>').appendTo($('head'));
+			$('body').addClass('dark').darkModeColorize();
 		}else{
 			stylesheet.remove();
+			$('body').removeClass('dark').darkModeColorizeRevert();
 		}
 		var darkTheme=$('#darkmodecss').length>0;
 		$.ajax({type: 'post', url: API_HOST +'/users/setUserTheme', xhrFields: {withCredentials: true},data:{ darkTheme: darkTheme?1:0}});

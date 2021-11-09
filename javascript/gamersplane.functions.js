@@ -319,8 +319,17 @@ var fixDarkThemeColours=function(){
 			var hsl=rgbToHsl(parts[1],parts[2],parts[3]);
 			var rgbNew=hslToRgb(hsl.h, hsl.s, 1.0-hsl.l);
 			pThis.css(attribName,'rgb('+rgbNew.r+','+rgbNew.g+','+rgbNew.b+')');
+			pThis.data('orig-'+attribName,curColor);
 		}
 	};
+
+	var revertCssColorAttribute=function(pThis,attribName){
+		var origColor=pThis.data('orig-'+attribName);
+		if(origColor){
+			pThis.css(attribName,origColor);
+		}
+	};
+
 
 	jQuery.fn.darkModeColorize = function (){
 		if($('body').hasClass('dark')){
@@ -339,6 +348,18 @@ var fixDarkThemeColours=function(){
 		}
 		return this;
 	};
+
+	jQuery.fn.darkModeColorizeRevert = function (){
+		if(!$('body').hasClass('dark')){
+			$('span.userColor,span.userSize',this).each(function(){
+				var pThis=$(this);
+				revertCssColorAttribute(pThis,'color');
+				revertCssColorAttribute(pThis,'background-color');
+			});
+		}
+		return this;
+	};
+
 
 	$('body').darkModeColorize();
 
