@@ -165,4 +165,92 @@ $(function () {
 	});
 
 	$('.markItUp').markItUp(mySettings);
+
+	$.get( '/forums/thread/22053/?pageSize=10000', function( data ) {
+		var diceRuleSection=$('#diceRules');
+		var diceRegex=/[\"\']diceRules[\"\'][\s]*:[\s]*(\[.*?\])/gms
+		$('.post blockquote.spoiler', $(data)).each(function(){
+			var spoiler=$(this);
+			var ruleTitle=$('.tag',spoiler).text();
+			var ruleText=$('.hidden',spoiler).text();
+			var matchRules = ruleText.match(diceRegex);
+			if(matchRules && matchRules.length==1){
+
+				ruleTitle=ruleTitle.substring(6).trim();
+				var ruleJson='{'+matchRules[0]+'}';
+				if(isValidJson(ruleJson)){
+					var ruleObj=JSON.parse(ruleJson);
+					if(ruleObj && ruleObj.diceRules && Array.isArray(ruleObj.diceRules)){
+						var shortCutDiv=$('<li class="diceRule"></li>').appendTo(diceRuleSection);
+						shortCutDiv.text(ruleTitle);
+						shortCutDiv.data('rulejson',ruleJson);
+					}
+				}
+			}
+		});
+	});
+
+	$.get( '/forums/thread/23143/?pageSize=10000', function( data ) {
+		var gmSheetSection=$('#customSheets');
+		var gmSheetRegex=/{[\s]*[\"\'](.+?)[\"\'][\s]*:[\s]*[\"\'](.+?)\/([0-9]+)[\s]*[\"\']}/gm
+		$('.post', $(data)).each(function(){
+			var postText=$(this).text();
+			var matchRules = postText.match(gmSheetRegex);
+			if(matchRules){
+				for(var i=0;i<matchRules.length;i++){
+					var gmSheet=matchRules[i];
+					if(isValidJson(gmSheet)){
+						var shortCutDiv=$('<li class="gmSheet"></li>').appendTo(gmSheetSection);
+						shortCutDiv.text(gmSheet);
+						shortCutDiv.data('rulejson',gmSheet);
+					}
+				}
+			}
+		});
+	});
+
+	var getCurrentAdr=function(){
+		var curJson=$.trim($('#gameOptions').val());
+		if(!curJson || isValidJson(curJson)){
+			if(!curJson){
+				curObject={};
+			} else {
+				curObject=JSON.parse(curJson);
+			}
+
+			$.extend(true,curObject,{background:{image:""},diceRules:[],characterSheetIntegration:{gmSheets:[],gmExcludeNpcs:false,gmExcludePcs:false}});
+
+			return curObject;
+		}
+
+		return null;
+	};
+
+	$('#adrBackground').on('blur change keyup',function(){
+		var curObject=getCurrentAdr();
+		if(curObject){
+			curObject.background.image=$('#adrBackground').val();
+			$('#gameOptions').val(JSON.stringify(curObject,null, 2));
+		}
+
+	});
+
+	$('#diceRules').on('click','.diceRule',function(){
+		var curObject=getCurrentAdr();
+		if(curObject){
+			var diceJson=$(this).data('rulejson');
+			curObject.diceRules=JSON.parse(diceJson).diceRules;
+			$('#gameOptions').val(JSON.stringify(curObject,null, 2));
+		}
+	});
+
+	$('#customSheets').on('click','.gmSheet',function(){
+		var curObject=getCurrentAdr();
+		if(curObject){
+			var sheetJson=$(this).data('rulejson');
+			curObject.characterSheetIntegration.gmSheets.push(JSON.parse(sheetJson));
+			$('#gameOptions').val(JSON.stringify(curObject,null, 2));
+		}
+	});
+
 });
