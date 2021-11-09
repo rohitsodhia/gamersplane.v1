@@ -26,7 +26,9 @@
 				displayJSON($this->getPostPreview($_POST['postText']));
 			} elseif ($pathOptions[0] == 'pollVote') {
 				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti']));
-			} else {
+			} elseif ($pathOptions[0] == 'ftReindex') {
+				displayJSON($this->ftReindex( $_POST['fromId'], $_POST['toId']));
+			}else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -363,7 +365,6 @@
 						]],
 						['upsert' => true]
 					);
-
 				}
 				else{
 					$mongo->threads->updateOne(
@@ -395,11 +396,23 @@
 
 				return $post->getPollResults();
 			}
-			else
-			{
+			else {
 				return null;
 			}
+		}
 
+		public function ftReindex($fromId, $toId){
+			global $mysql;
+
+			for($i = $fromId; $i < $toId; $i++){
+				$message = $mysql->query("SELECT message FROM posts WHERE postID = {$i}")->fetchColumn();
+				$message = Post::extractFullText($message);
+				$updatePost = $mysql->prepare("UPDATE posts SET messageFullText = :messageFullText WHERE postID = {$i}");
+				$updatePost->bindValue(':messageFullText', $message);
+				$updatePost->execute();
+			}
+
+			return null;
 		}
 	}
 ?>

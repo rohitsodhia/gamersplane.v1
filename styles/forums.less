@@ -2197,7 +2197,61 @@ td .rollDice {
 			width: 100px;
 			display: inline-block;
 			margin: 0 10px;
-			vertical-align: middle;;
+			vertical-align: middle;
 		}
 	}
+}
+
+h1.forumSearch{
+	display: flex;
+	.searchTitle{
+		padding-right: 2rem;
+	}
+	.forumSearchForm{
+		flex-grow: 1;
+		display: inline-block;
+		text-align: right;
+
+		input[type="text"]{
+			border-radius: 6px;
+			border:none;
+			width: 100%;
+			max-width: 250px;
+			vertical-align: text-top;
+			font-size: 17px;
+			margin-top: 3px;
+		}
+	}
+}
+
+.ft_search{
+	list-style-type: none;
+	li{
+		.ft_post_info{
+			display: flex;
+			flex-wrap: nowrap;
+			.ft_forum{
+				font-size: 110%;
+			}
+			.ft_poster{
+				text-align: right;
+				white-space: nowrap;
+				flex-grow: 1;
+				a.username{
+					margin-right: 0.5em;
+				}
+			}
+		}
+		p.ft_snippet{
+			margin-bottom: 1rem;
+			margin-left: 1.6rem;
+		}
+
+		margin-bottom: 2.5rem;
+
+		&:last-of-type{
+			margin-bottom: 0;
+		}
+	}
+
 }
