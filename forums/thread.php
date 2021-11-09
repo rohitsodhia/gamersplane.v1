@@ -48,6 +48,7 @@
 			<div id="threadMenu">
 				<div class="leftCol">
 					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
+					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
 				</div>
 				<div class="rightCol alignRight">
 <?php
@@ -385,7 +386,7 @@
 				</div>
 <?php		} ?>
 				<textarea id="messageTextArea" name="message"></textarea>
-				<div class="alignRight"><span id="previewPost" class="fancyButton">Preview</span></div>
+				<div class="alignRight"><span id="previewPost" class="fancyButton" accesskey="p">Preview</span></div>
 			</div>
 
 <?php /*  ------ START REPLY ROLLS ----- */ ?>

@@ -206,6 +206,7 @@
 	}
 	$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);
 ?>
+		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
 		<h1 class="headerbar"><i class="ra ra-quill-ink"></i> <?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
 
 <?php	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
@@ -487,7 +488,7 @@
 
 			<div id="submitDiv" class="alignCenter">
 				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
-				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton">Preview</button>
+				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton" accesskey="p">Preview</button>
             </div>
 
 		</form>
