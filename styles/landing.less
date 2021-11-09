@@ -1,9 +1,5 @@
 @import "gpVariables.less";
 
-.fullWidthBody .bodyContainer, .fullWidthBody .contentContainer, .fullWidthBody #fixedMenu > div{
-    width: auto;
-}
-
 #page_home.landingPage {
 	&,
 	td,
@@ -56,8 +52,8 @@
 		align-items: center;
 		padding: 20px 10px;
 		background: #fff;
-        max-width: 960px;
-        margin: 0 auto;
+		max-width: 960px;
+		margin: 0 auto;
 
 		& > * {
 			display: inline-block;
@@ -163,20 +159,20 @@
 
 		.login {
 			background-color: #742;
-            &:before,&:after{
-                background-color: #742;
-            }
+			&:before,
+			&:after {
+				background-color: #742;
+			}
 		}
 
 		p {
 			margin-bottom: 1.4em;
 		}
 	}
-
 }
 
 #landing_whatIs {
-    padding:1rem;
+	padding: 1rem;
 	max-width: 960px;
 	#landing_whatIs_text {
 		//float: left;
@@ -265,8 +261,7 @@
 	}
 }
 
-footer .bodyContainer
-{
+footer .bodyContainer {
 	max-width: 960px;
 }
 
@@ -285,7 +280,7 @@ footer .bodyContainer
 			width: 300px;
 			height: 230px;
 			padding: 50px 30px 0;
-            box-sizing: border-box;
+			box-sizing: border-box;
 			border: 1px solid #dbb;
 			background-color: #fff;
 		}
@@ -357,61 +352,56 @@ footer .bodyContainer
 	}
 }
 */
-.bodyContainer, .fullWidthBody .contentContainer, #fixedMenu > div{
-    max-width: none;
-
+#content.fullWidthBody .bodyContainer {
+	max-width: 100%;
 }
 
-#content .bodyContainer{
-    padding:0;
+#content .bodyContainer {
+	padding: 0;
 }
 
-#page_home.landingPage #landing_systemSearch{
-    margin-right: 20px;
+#page_home.landingPage #landing_systemSearch {
+	margin-right: 20px;
 }
 
+@media only screen and (max-width: @mobile-breakpoint) {
+	#page_home.landingPage #landing_top_whiteBox {
+		flex-wrap: wrap;
 
-@media only screen and (max-width: @mobile-breakpoint){
+		#landing_signup {
+			order: 1;
+			width: 100%;
+		}
 
-    #page_home.landingPage #landing_top_whiteBox{
-        flex-wrap: wrap;
+		#landing_latestGames {
+			order: 2;
+			width: 100%;
+		}
+	}
 
-        #landing_signup{
-            order:1;
-            width: 100%;
-        }
-
-        #landing_latestGames{
-            order:2;
-            width: 100%;
-        }
-    }
-
-	#page_home.landingPage #landing_top_content header{
+	#page_home.landingPage #landing_top_content header {
 		margin-left: 30px;
 	}
 }
 
-@media only screen and (max-width: 960px){
-
-	footer .bodyContainer{
+@media only screen and (max-width: 960px) {
+	footer .bodyContainer {
 		padding: 10px;
 	}
 
-    #landing_whatIs_logos{
-        display: none;
-    }
+	#landing_whatIs_logos {
+		display: none;
+	}
 
-    #landing_whatIs_text{
-        width:100%;
-    }
+	#landing_whatIs_text {
+		width: 100%;
+	}
 
-    #landing_features .contentContainer{
-        flex-direction: column;
+	#landing_features .contentContainer {
+		flex-direction: column;
 
-        & > *{
-            margin-bottom: 4rem;
-        }
-    }
+		& > * {
+			margin-bottom: 4rem;
+		}
+	}
 }
-
