@@ -135,6 +135,7 @@
 	if (sizeof($threadManager->getPosts())) {
 		foreach ($threadManager->getPosts() as $post) {
 			$lastPostID = $post->getPostID();
+			$npc=null;
 			if ($post->getPostAs()) {
 				$charSystem = getCharacterClass($post->getPostAs());
 				require_once(FILEROOT . "/includes/packages/{$charSystem}Character.package.php");
