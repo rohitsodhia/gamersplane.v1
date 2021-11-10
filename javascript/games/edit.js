@@ -63,8 +63,10 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 					if ($scope.game.charGenInfo == 'None Provided') {
 						$scope.game.charGenInfo = '';
 					}
+					$('#gameOptions').updateFields($scope.game.gameOptions);
 				});
 			}
+
 
 		});
 
@@ -164,6 +166,11 @@ $(function () {
 		}
 	});
 
+	$('#gameOptions').on('blur',function(){
+		$('#gameOptions').updateFields();
+	});
+
+
 	$('.markItUp').markItUp(mySettings);
 
 	$.get( '/forums/thread/22053/?pageSize=10000', function( data ) {
@@ -183,16 +190,27 @@ $(function () {
 					if(ruleObj && ruleObj.diceRules && Array.isArray(ruleObj.diceRules)){
 						var shortCutDiv=$('<li class="diceRule"></li>').appendTo(diceRuleSection);
 						shortCutDiv.text(ruleTitle);
-						shortCutDiv.data('rulejson',ruleJson);
+						shortCutDiv.data('rulejson',JSON.stringify(ruleObj));
 					}
 				}
 			}
+			$('#gameOptions').updateFields();
 		});
 	});
+
+	var getGmSheetLocation=function (obj){
+		var sheetPropNames=Object.getOwnPropertyNames(obj);
+		if(sheetPropNames.length==1){
+			return obj[sheetPropNames[0]].toLowerCase();
+		}else{
+			return null;
+		}
+	}
 
 	$.get( '/forums/thread/23143/?pageSize=10000', function( data ) {
 		var gmSheetSection=$('#customSheets');
 		var gmSheetRegex=/{[\s]*[\"\'](.+?)[\"\'][\s]*:[\s]*[\"\'](.+?)\/([0-9]+)[\s]*[\"\']}/gm
+		var discoveredLocations=[];
 		$('.post', $(data)).each(function(){
 			var postText=$(this).text();
 			var matchRules = postText.match(gmSheetRegex);
@@ -200,12 +218,18 @@ $(function () {
 				for(var i=0;i<matchRules.length;i++){
 					var gmSheet=matchRules[i];
 					if(isValidJson(gmSheet)){
-						var shortCutDiv=$('<li class="gmSheet"></li>').appendTo(gmSheetSection);
-						shortCutDiv.text(gmSheet);
-						shortCutDiv.data('rulejson',gmSheet);
+						var gmSheetObject=JSON.parse(gmSheet);
+						var location=getGmSheetLocation(gmSheetObject);
+						if(!discoveredLocations.includes(location)){
+							var shortCutDiv=$('<li class="gmSheet"></li>').appendTo(gmSheetSection);
+							shortCutDiv.text(gmSheet);
+							shortCutDiv.data('rulejson', JSON.stringify(gmSheetObject));
+							discoveredLocations.push(location);
+						}
 					}
 				}
 			}
+			$('#gameOptions').updateFields();
 		});
 	});
 
@@ -218,7 +242,11 @@ $(function () {
 				curObject=JSON.parse(curJson);
 			}
 
-			$.extend(true,curObject,{background:{image:""},diceRules:[],characterSheetIntegration:{gmSheets:[],gmExcludeNpcs:false,gmExcludePcs:false}});
+			$.extend(true,curObject,{background:{},diceRules:[],characterSheetIntegration:{gmSheets:[],gmExcludeNpcs:false,gmExcludePcs:false}});
+
+			if(!curObject.background.image){
+				curObject.background.image='';
+			}
 
 			return curObject;
 		}
@@ -230,9 +258,8 @@ $(function () {
 		var curObject=getCurrentAdr();
 		if(curObject){
 			curObject.background.image=$('#adrBackground').val();
-			$('#gameOptions').val(JSON.stringify(curObject,null, 2));
+			setAdrText(curObject);
 		}
-
 	});
 
 	$('#diceRules').on('click','.diceRule',function(){
@@ -240,17 +267,85 @@ $(function () {
 		if(curObject){
 			var diceJson=$(this).data('rulejson');
 			curObject.diceRules=JSON.parse(diceJson).diceRules;
-			$('#gameOptions').val(JSON.stringify(curObject,null, 2));
+			setAdrText(curObject);
+			$('#gameOptions').updateFields();
 		}
 	});
 
 	$('#customSheets').on('click','.gmSheet',function(){
 		var curObject=getCurrentAdr();
 		if(curObject){
+			var pThis=$(this);
 			var sheetJson=$(this).data('rulejson');
-			curObject.characterSheetIntegration.gmSheets.push(JSON.parse(sheetJson));
-			$('#gameOptions').val(JSON.stringify(curObject,null, 2));
+			var jsonObj=JSON.parse(sheetJson);
+			if(pThis.hasClass('jsonRuleSel')){
+				var removeLocation=getGmSheetLocation(jsonObj);
+				for(var i=0;i<curObject.characterSheetIntegration.gmSheets.length;i++){
+					if(getGmSheetLocation(curObject.characterSheetIntegration.gmSheets[i])==removeLocation){
+						curObject.characterSheetIntegration.gmSheets.splice(i, 1);
+					}
+				}
+			}
+			else{
+				curObject.characterSheetIntegration.gmSheets.push(jsonObj);
+			}
+
+			setAdrText(curObject);
+			$('#gameOptions').updateFields();
 		}
 	});
 
+	var setAdrText=function(obj){
+		var val=JSON.stringify(obj,null, 2);
+		val=val.replace(/{\s*/gms, "{");
+		val=val.replace(/\s*}/gms, "}");
+		val=val.replace(/([\S^}^\]]),\s*"/gms, '\$1,"');
+		val=val.replace(/},"/gms, '},\n"');
+		val=val.replace(/],"/gms, '],\n"');
+		val=val.replace(/}}/gms, '}\n}');
+
+		$('#gameOptions').val(val).change();
+	}
+
+
+	jQuery.fn.updateFields=function(gameOptionJson){
+		$('#customSheets .gmSheet').removeClass('jsonRuleSel');
+		$('#diceRules .diceRule').removeClass('jsonRuleSel');
+		$('#adrBackground').val('');
+
+		var curJson=gameOptionJson || $.trim($('#gameOptions').val());
+		if(curJson && isValidJson(curJson)){
+			var gameOptions=JSON.parse(curJson);
+			if(gameOptions && gameOptions.background && gameOptions.background.image){
+				$('#adrBackground').val(gameOptions.background.image);
+			}
+
+			if(gameOptions && gameOptions.diceRules){
+				var existingDiceRulesJson=JSON.stringify({diceRules:gameOptions.diceRules});
+				$('#diceRules .diceRule').each(function(){
+					var pThis=$(this);
+					if(pThis.data('rulejson')==existingDiceRulesJson){
+						pThis.addClass('jsonRuleSel');
+					}else{
+						pThis.removeClass('jsonRuleSel');
+					}
+				});
+			}
+
+			if(gameOptions && gameOptions.characterSheetIntegration && gameOptions.characterSheetIntegration.gmSheets && Array.isArray(gameOptions.characterSheetIntegration.gmSheets)){
+				for(var i=0;i<gameOptions.characterSheetIntegration.gmSheets.length;i++){
+					var sheetPropName=getGmSheetLocation(gameOptions.characterSheetIntegration.gmSheets[i]);
+					if(sheetPropName) {
+						$('#customSheets .gmSheet').each(function(){
+							var pThis=$(this);
+							var communitySheet=JSON.parse(pThis.data('rulejson'));
+							if(getGmSheetLocation(communitySheet)==sheetPropName){
+								pThis.addClass('jsonRuleSel');
+							}
+						});
+					}
+				}
+			}
+		}
+	};
 });
