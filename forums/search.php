@@ -4,13 +4,14 @@
 	$search = $_GET['search'];
 	$forumSearch = new ForumSearch($search);
 	$searchText = $_GET['q'];
-	$forumSearch->searchText($searchText);
+	$gameID = $_GET['gameID'];
+	$forumSearch->searchText($searchText, $gameID);
 	$forumSearch->findThreads($_GET['page']);
 
 	require_once(FILEROOT.'/header.php');
 ?>
 	<?if($search=="text"){?>
-		<h1 class="headerbar forumSearch"><span class="searchTitle"><i class="ra ra-telescope"></i> Search</span><form class="forumSearchForm" method="get" action="/forums/search/?search=text"><input type="hidden" name="search" value="text"/><input name="q" type="text" value="<?=htmlspecialchars($searchText)?>" placeholder="Search..."/></form></h1>
+		<h1 class="headerbar forumSearch"><?=$forumSearch->displayHeader();?><form class="forumSearchForm" method="get" action="/forums/search/?search=text"><input type="hidden" name="gameID" value="<?=$gameID?>"/><input type="hidden" name="search" value="text"/><input name="q" type="text" value="<?=htmlspecialchars($searchText)?>" placeholder="Search..."/></form></h1>
 	<?}
 	else{
 		$forumSearch->displayHeader();

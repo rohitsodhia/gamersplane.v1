@@ -1866,7 +1866,7 @@ td .rollDice {
 	cursor: pointer;
 }
 
-@media only screen and (max-width: @mobile-breakpoint){
+@media only screen and (max-width: @mobile-breakpoint),print{
     #page_forum,#page_forum_search{
 		.tableDiv{
 			.tr{
@@ -2124,6 +2124,42 @@ td .rollDice {
 	}
 }
 
+@media print{
+	#bodyHeader,
+	.postActions,
+	#page_forum_thread .postBlock .postHeader .postedOn,
+	#page_forum_thread #threadMenu,
+	#quickReply,
+	footer.withFixedMenu,
+	.editInfoDiv,
+	#threadOptions,
+	#page_forum_thread .postBlock .postContent:before,
+	#page_forum_thread .postBlock .postContent:after{
+		display: none;
+	}
+
+	#page_forum_thread .postContent,
+	.quote, .note, .spoiler, .private{
+		border: none;
+	}
+
+	#page_forum_thread .post{
+		margin-top: 0;
+	}
+
+	#page_forum_thread .postContent{
+		padding-top: .2rem;
+	}
+
+	.oocText{
+		margin-top: .1rem;
+	}
+
+	#content{
+		padding-top: 0;
+		background-image: none !important;
+	}
+}
 
 
 
@@ -2206,6 +2242,9 @@ h1.forumSearch{
 	display: flex;
 	.searchTitle{
 		padding-right: 2rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.forumSearchForm{
 		flex-grow: 1;

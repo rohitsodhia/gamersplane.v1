@@ -17,8 +17,8 @@
 		$dispatchInfo['title'] = $forumManager->getForumProperty($forumID, 'title').' | '.$dispatchInfo['title'];
 ?>
 <?	require_once(FILEROOT.'/header.php'); ?>
-<?	if ($forumID == 0) { ?>
-		<h1 class="headerbar forumSearch"><span class="searchTitle"><?$forumManager->addForumIcon($forumID)?> <?=$forumID?$forumManager->getForumProperty($forumID, 'title'):'Forums'?></span><form class="forumSearchForm" method="get" action="/forums/search/?search=text"><input type="hidden" name="search" value="text"/><input name="q" type="text" placeholder="Search..."/></form></h1>
+<?	if ($forumID == 0 || $gameID) { ?>
+		<h1 class="headerbar forumSearch"><span class="searchTitle"><?$forumManager->addForumIcon($forumID)?> <?=$forumID?$forumManager->getForumProperty($forumID, 'title'):'Forums'?></span><form class="forumSearchForm" method="get" action="/forums/search/?search=text"><input type="hidden" name="search" value="text"/><input type="hidden" name="gameID" value="<?=$gameID?>"/><input name="q" type="text" placeholder="Search..."/></form></h1>
 <?	} else { ?>
 	<h1 class="headerbar"><?$forumManager->addForumIcon($forumID)?> <?=$forumID?$forumManager->getForumProperty($forumID, 'title'):'Forums'?></h1>
 <?	}?>
