@@ -487,8 +487,8 @@
 			<input type="hidden" name="postURL" value="<?=$_SESSION['currentURL']?>">
 
 			<div id="submitDiv" class="alignCenter">
-				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton"><?=$editPost?'Save':'Post'?></button>
-				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton" accesskey="p">Preview</button>
+				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton submitButton"><?=$editPost?'Save':'Post'?></button>
+				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton submitButton" accesskey="p">Preview</button>
             </div>
 
 		</form>

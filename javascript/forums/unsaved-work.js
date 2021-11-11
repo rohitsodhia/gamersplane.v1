@@ -1,5 +1,5 @@
 var _isSubmitting=false;
-$('#submitDiv button').on('click',function(){
+$('button.submitButton').on('click',function(){
     _isSubmitting=true;
 })
 

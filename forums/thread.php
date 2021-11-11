@@ -388,8 +388,8 @@
 <?php		} ?>
 				<textarea id="messageTextArea" name="message"></textarea>
 				<div class="alignRight">
-				<button id="previewPost" class="fancyButton" accesskey="p" type="button">Preview</button>
-				<button id="postPost" type="submit" name="post" class="fancyButton">Post</button>
+				<button id="previewPost" class="fancyButton submitButton" accesskey="p" type="button">Preview</button>
+				<button id="postPost" type="submit" name="post" class="fancyButton submitButton">Post</button>
 				</div>
 			</div>
 
@@ -424,7 +424,7 @@
 
 
 			<div id="submitDiv" class="alignCenter">
-				<button id="advancedPost" type="submit" name="advanced" class="fancyButton">Advanced</button>
+				<button id="advancedPost" type="submit" name="advanced" class="fancyButton submitButton">Advanced</button>
 			</div>
 		</form>
 
