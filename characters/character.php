@@ -38,7 +38,6 @@
 	if(SYSTEM=='custom'){$responsivePage=true;}
 
 	require_once(FILEROOT.'/header.php'); ?>
-	<h1 class="headerbar">Character Sheet</h1>
 <?php	if (!$noChar) { ?>
 		<div class="clearfix"><div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
 <?php		if ($charPermissions == 'edit') { ?>
@@ -54,10 +53,16 @@
 
 <?php	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
-<?php	} else { ?>
+<?php	} else {
+		$characterAvatar = $character->getAvatar(true);
+		if ($characterAvatar){?>
+			<div class="avatarPreview avatarPreview-<?=SYSTEM?>"><img src="<?=$characterAvatar?>" alt="avatar"/></div>
+<?php
+		}?>
+
 		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 
-		<div id="charDetails"<?=$angular?" ng-controller=\"{$angular}\"":''?>>
+		<div id="charDetails" class="<?=$characterAvatar?("avatarSheet avatarSheet-".SYSTEM):""?>" <?=$angular?" ng-controller=\"{$angular}\"":''?>>
 		<span id="charDetailsName" style="display:none"><?=$character->getName()?></span>
 <?php		$character->showSheet(); ?>
 		</div>
