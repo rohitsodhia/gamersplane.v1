@@ -17,24 +17,27 @@ services:
 
   proxy:
     build:
-      context: ./apache
+      context: ./docker/apache
       dockerfile: Dockerfile
     container_name: gpv1-proxy
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ../:/var/www
+      - .:/var/www
+      - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./docker/apache/extra:/usr/local/apache2/conf/extra
+      - ./docker/apache/vhosts/vhosts.${ENVIRONMENT}.conf:/usr/local/apache2/conf/vhosts.conf
     depends_on:
       - api
 
   api:
     build:
       context: ./
-      dockerfile: Dockerfile-php
+      dockerfile: docker/Dockerfile-php
     container_name: gpv1-api
     volumes:
-      - ../:/var/www
+      - ./:/var/www
     depends_on:
       - mysql
       - mongo
@@ -43,17 +46,17 @@ services:
     image: mysql:5.5
     container_name: gpv1-mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=p2HR1IQGF8c!A&f&
-      - MYSQL_DATABASE=gamersplane
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=gamersplane
-      - MYSQL_PASSWORD=&R6ivIqTS0b#wQ7e
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ./mysql:/docker-entrypoint-initdb.d
+      - ./docker/mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
 
   mongo:
     build:
-      context: ./mongo
+      context: ./docker/mongo
     container_name: gpv1-mongo
     volumes:
       - mongo_db:/data/db
