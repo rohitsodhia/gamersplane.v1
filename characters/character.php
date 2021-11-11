@@ -58,6 +58,7 @@
 		<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 
 		<div id="charDetails"<?=$angular?" ng-controller=\"{$angular}\"":''?>>
+		<span id="charDetailsName" style="display:none"><?=$character->getName()?></span>
 <?php		$character->showSheet(); ?>
 		</div>
 <?php	} ?>

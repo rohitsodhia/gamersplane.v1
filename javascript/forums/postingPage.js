@@ -174,8 +174,12 @@ $(function() {
 					charSheet.html('');
 					var charId = $(this).attr('charid');
 					var system = $(this).attr('gamesys');
-					$.get('/characters/' + system + '/' + charId, function (data) {
+					var charUrl='/characters/' + system + '/' + charId;
+					$.get(charUrl, function (data) {
 						var charSheetContent = $(data);
+
+						var charName=$('#charDetailsName',charSheetContent).text();
+						$('<a target="_blank"><i class="ra ra-scroll-unfurled"></i></a>').attr('href',charUrl).prependTo(($('<h3 class="charName"></h3>').text(charName).appendTo(charSheet)));
 
 						//features, spells and snippets
 						var featDiv=$('<div class="roller feats"><select class="featSelect shortcutSelector addAsSpoiler"><option>--Feats/Abilities--</option></select></div>').appendTo(charSheet);
@@ -267,7 +271,9 @@ $(function() {
 							}
 						});
 
-						$('<hr class="clear"/>').appendTo(charSheet);
+						if($('.roller select',charSheet).length>0){
+							$('<hr class="clear"/>').appendTo(charSheet);
+						}
 
 						if (system == 'dnd5') {
 							addDnd5Rolls(charSheetContent);
@@ -298,7 +304,8 @@ $(function() {
 
 						//multiple characters - prefix the rolls with the name
 						if($('#charButtons .rollForChar').length>1){
-							var charPrefix=rollerForChar.text()+': ';
+							var charPrefix=$('.rollForChar.sel').hasClass('gmSheet')?'':(charName+': ');
+
 							$('.rollDice',charSheet).each(function(){
 								var rollDice=$(this);
 								rollDice.attr('rolltext',charPrefix+rollDice.attr('rolltext'));

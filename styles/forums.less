@@ -552,6 +552,10 @@
 			margin: 1.5em 0 .25em;
 		}
 	}
+
+	#advancedPost{
+		font-size: 1em;
+	}
 }
 
 #page_forum_thread .postContent,
@@ -1622,44 +1626,50 @@
 }
 .rollForChar {
 	display: inline-block;
-	margin: 0 .5em;
-	background-color: @gp-red;
+	margin: 0 2px;
+	background-color: #666;
 	color: #fff;
 	cursor: pointer;
 	white-space: nowrap;
-	font-size: 80%;
+	font-size: 90%;
 	padding: .25em .5em;
 	border-radius: 6px;
-	margin-top: 2px;
+	margin-top: 4px;
 
 	&.gmSheet{
-		background-color: @gp-red-darkest;
+		background-color: #444;
 	}
 }
 
 .rollForChar.sel {
 	color: @gp-red;
 	border: solid 1px;
-	background-color: transparent;
-	border-bottom-right-radius: 0px;
-	border-bottom-left-radius: 0px;
-	border-bottom-style: none;
 	z-index: 2;
 	background-color: #fff;
-	padding-bottom: 0.6em;
 }
 
 #charSheetRoller {
 	border: solid 1px #400;
 	padding: 10px;
 	border-radius: 0.5em;
-	margin-top: -1px;
+	margin-top: .2rem;
 	z-index: 1;
-}
 
-#charSheetRoller h3 {
-	color: @gp-red;
-	border-top: solid 1px;
+	h3 {
+		color: @gp-red;
+		border-top: solid 1px;
+
+		&.charName{
+			border-top: none;
+			border-bottom: solid 1px;
+			font-weight: bold;
+			margin-bottom: .7em;
+
+			a{
+				margin-right: 1rem;
+			}
+		}
+	}
 }
 
 .roller {
@@ -1856,14 +1866,6 @@ td .rollDice {
 	font-weight: bold;
 	padding-top: 40px;
 	text-align: center;
-}
-
-#page_forum_thread #previewPost{
-	background-color: @gp-red;
-    color: #fff;
-    padding: 3px 2px;
-	margin-right: 20px;
-	cursor: pointer;
 }
 
 @media only screen and (max-width: @mobile-breakpoint),print{
