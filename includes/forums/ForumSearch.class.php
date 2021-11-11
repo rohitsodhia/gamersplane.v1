@@ -104,8 +104,8 @@
 				$heritageRoot=ltrim($heritageArray[0], '0');
 				?>
 				<li>
-					<h3><a href="/forums/thread/<?=$result->threadID?>/?p=<?=$result->postID?>#p<?=$result->postID?>"><?=$postTitle?></a></h3>
-					<div class="ft_post_info"><a href="/forums/<?=$result->forumID?>/" class="ft_forum"><i class="ra forum-icon forum-root-<?=$heritageRoot?> forum-id-<?=$result->forumID?>"></i> <?=$result->forum?></a> <span class="ft_poster"><a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a><span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span></span></div>
+					<h3><a href="/forums/thread/<?=$result->threadID?>/?p=<?=$result->postID?>#p<?=$result->postID?>"><i class="ra forum-icon forum-root-<?=$heritageRoot?> forum-id-<?=$result->forumID?>"></i> <?=$postTitle?></a></h3>
+					<div class="ft_post_info"><a href="/forums/<?=$result->forumID?>/" class="ft_forum"><?=$result->forum?></a> <span class="ft_poster"><a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a> <span class="convertTZdate"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span></span></div>
 					<p class="ft_snippet"><?=$this->getTextSnippet($result->messageFullText,200)?></p>
 				</li>
 				<?

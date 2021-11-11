@@ -2268,16 +2268,25 @@ h1.forumSearch{
 .ft_search{
 	list-style-type: none;
 	li{
+		h3{
+			.ra.forum-icon{
+				vertical-align: baseline;
+			}
+		}
 		.ft_post_info{
 			display: flex;
 			flex-wrap: nowrap;
 			.ft_forum{
 				font-size: 110%;
+				flex-grow: 1;
 			}
 			.ft_poster{
 				text-align: right;
-				white-space: nowrap;
 				flex-grow: 1;
+
+				.convertTZdate{
+					white-space: nowrap;
+				}
 				a.username{
 					margin-right: 0.5em;
 				}
@@ -2295,4 +2304,10 @@ h1.forumSearch{
 		}
 	}
 
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+	.ft_search li .ft_post_info .ft_poster a.username{
+		display: block;
+	}
 }
