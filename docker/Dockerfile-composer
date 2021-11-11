@@ -1,4 +1,4 @@
-FROM gamers_plane_api
+FROM gamersplanev1_api
 
 WORKDIR /
 
