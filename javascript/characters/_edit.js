@@ -131,6 +131,7 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 			if (typeof blanks != 'undefined') {
 				CharactersService.loadBlanks($scope.character, blanks);
 			}
+			$(document).trigger('gp.characterloaded',$scope.character);
 		});
 	};
 	$scope.addItem = function (key) {
