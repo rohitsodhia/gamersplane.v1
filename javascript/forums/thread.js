@@ -96,7 +96,7 @@ $(function() {
 	});
 
 //forums menu
-	var newMenu=$('<li id="fm_forumthreads"><a class="menuLink">Forum</a><ul class="submenu"></li></li>').appendTo($('#fixedMenu_window .leftCol'));
+	var newMenu=$('<li id="fm_forumthreads"><a class="menuLink">Threads</a><ul class="submenu"></li></li>').appendTo($('#fixedMenu_window .leftCol'));
 	$('.menuLink',newMenu).on('click',function(){
 		var submenu=$('.submenu',$(this).parent());
 		$('#fixedMenu .submenu.fm_smOpen').not(submenu).slideUp(250).removeClass('fm_smOpen');
