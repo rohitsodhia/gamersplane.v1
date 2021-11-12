@@ -451,6 +451,7 @@
 
 
 			<div id="submitDiv" class="alignCenter">
+				<hr/>
 				<button id="advancedPost" type="submit" name="advanced" class="fancyButton submitButton">Advanced</button>
 			</div>
 		</form>
