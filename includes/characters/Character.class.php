@@ -171,8 +171,12 @@
 		}
 
 		public function getAvatar($showTS = true) {
-			if (file_exists(FILEROOT . "/characters/avatars/{$this->characterID}.jpg")) {
-				return "/characters/avatars/{$this->characterID}.jpg" . ($showTS ? '?' . time() : '');
+			return Character::getCharacterAvatar($this->characterID,$showTS);
+		}
+
+		public static function getCharacterAvatar($characterID,$showTS = true) {
+			if (file_exists(FILEROOT . "/characters/avatars/{$characterID}.jpg")) {
+				return "/characters/avatars/{$characterID}.jpg" . ($showTS ? '?' . time() : '');
 			} else {
 				return false;
 			}

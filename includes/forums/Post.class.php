@@ -243,6 +243,10 @@
 
 		public function getNpc(){
 			$text=$this->message;
+			return Post::extractPostingNpc($text);
+		}
+
+		public static function extractPostingNpc($text){
 			$text=preg_replace('/\[code\](.*?)\[\/code\]/ms', "", $text);
 			preg_match_all('/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]/ms', $text, $matches, PREG_SET_ORDER);
 

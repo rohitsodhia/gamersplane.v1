@@ -322,9 +322,15 @@
 			}
 		}
 ?>
-			<div class="postBlock post<?=$postSide?> postPreview" style="display:none;">
+			<div class="postBlock post<?=$postSide?> postPreview postAsChar" style="display:none;">
 				<div class="flexWrapper">
-					<div class="posterDetails">Preview</div>
+					<div class="posterDetails">
+						<div class="avatar"><div><img src=""/></div></div>
+						<div class="postNames">
+							<p class="charName"></p>
+							<p class="posterName"><span>Preview</span></p>
+						</div>
+					</div>
 					<div class="postBody">
 						<div class="postContent">
 							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
@@ -348,6 +354,7 @@
 <?php
 	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 		$characters = [];
+		$playerCharacters = [];
 		if ($gameID) {
 			$rCharacters = $mongo->characters->find(
 				[
@@ -361,6 +368,22 @@
 			foreach ($rCharacters as $character) {
 				if (strlen($character['name'])) {
 					$characters[$character['characterID']] = $character['name'];
+				}
+			}
+			if($isGM){
+				$rPlayerCharacters = $mongo->characters->find(
+					[
+						'game.gameID' => $gameID,
+						'game.approved' => true,
+						'user.userID' => ['$ne'=>$currentUser->userID]
+					],
+					['projection' => ['characterID' => true, 'name' => true]]
+				);
+				$playerCharacters = [];
+				foreach ($rPlayerCharacters as $rPlayerCharacter) {
+					if (strlen($rPlayerCharacter['name'])) {
+						$playerCharacters[$rPlayerCharacter['characterID']] = $rPlayerCharacter['name'];
+					}
 				}
 			}
 		}
@@ -381,6 +404,9 @@
 					<div><select name="postAs">
 						<option value="p"<?=$currentChar == null ? ' selected="selected"' : ''?>>Player</option>
 <?php			foreach ($characters as $characterID => $name) { ?>
+						<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
+<?php			}
+				foreach ($playerCharacters as $characterID => $name) { ?>
 						<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
 <?php			} ?>
 					</select> <span id="charSheetLink"></span></div>
