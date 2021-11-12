@@ -23,7 +23,7 @@ $.cssHooks.backgroundColor = {
 
 $(function() {
 	$('select:not(.notPretty)').prettySelect();
-	$('input[type="checkbox"]').prettyCheckbox();
+	$('input[type="checkbox"]:not(.notPretty)').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 
 	$('.loginLink').colorbox();

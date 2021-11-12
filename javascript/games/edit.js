@@ -242,7 +242,7 @@ $(function () {
 				curObject=JSON.parse(curJson);
 			}
 
-			$.extend(true,curObject,{background:{},diceRules:[],characterSheetIntegration:{gmSheets:[],gmExcludeNpcs:false,gmExcludePcs:false}});
+			$.extend(true,curObject,{background:{},diceRules:[],characterSheetIntegration:{gmSheets:[]}});
 
 			if(!curObject.background.image){
 				curObject.background.image='';
@@ -295,6 +295,24 @@ $(function () {
 		}
 	});
 
+	$('input#gmExcludeNpcs').on('click',function(){
+		var curObject=getCurrentAdr();
+		if(curObject){
+			curObject.characterSheetIntegration.gmExcludeNpcs=$(this).prop('checked');
+			setAdrText(curObject);
+			$('#gameOptions').updateFields();
+		}
+	});
+
+	$('input#gmExcludePcs').on('click',function(){
+		var curObject=getCurrentAdr();
+		if(curObject){
+			curObject.characterSheetIntegration.gmExcludePcs=$(this).prop('checked');
+			setAdrText(curObject);
+			$('#gameOptions').updateFields();
+		}
+	});
+
 	var setAdrText=function(obj){
 		var val=JSON.stringify(obj,null, 2);
 		val=val.replace(/{\s*/gms, "{");
@@ -312,6 +330,8 @@ $(function () {
 		$('#customSheets .gmSheet').removeClass('jsonRuleSel');
 		$('#diceRules .diceRule').removeClass('jsonRuleSel');
 		$('#adrBackground').val('');
+		$('input#gmExcludeNpcs').prop('checked',false);
+		$('input#gmExcludePcs').prop('checked',false);
 
 		var curJson=gameOptionJson || $.trim($('#gameOptions').val());
 		if(curJson && isValidJson(curJson)){
@@ -330,6 +350,14 @@ $(function () {
 						pThis.removeClass('jsonRuleSel');
 					}
 				});
+			}
+
+			if(gameOptions && gameOptions.characterSheetIntegration && gameOptions.characterSheetIntegration.gmExcludeNpcs){
+				$('input#gmExcludeNpcs').prop('checked',true);
+			}
+
+			if(gameOptions && gameOptions.characterSheetIntegration && gameOptions.characterSheetIntegration.gmExcludePcs){
+				$('input#gmExcludePcs').prop('checked',true);
 			}
 
 			if(gameOptions && gameOptions.characterSheetIntegration && gameOptions.characterSheetIntegration.gmSheets && Array.isArray(gameOptions.characterSheetIntegration.gmSheets)){
