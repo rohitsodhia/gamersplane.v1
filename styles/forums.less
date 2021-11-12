@@ -1861,15 +1861,26 @@ td .rollDice {
 	display: none;
 }
 
-#page_forum_thread .postBlock.postPreview{
-	.posterDetails .posterName span{
-		font-size: 90%;
-		background-color: #000;
-		border:solid 1px #76761C;
-		border-radius: 5px;
+body #page_forum_thread .postBlock.postPreview{
+	.posterDetails{
+		.charName{
+			color: #76761C;
+		}
+
+		.posterName span{
+			font-size: 90%;
+			background-color: #000;
+			border:solid 1px #76761C;
+			border-radius: 5px;
+			color: #76761C;
+			text-transform: uppercase;
+			padding: 1px 4px;
+		}
+	}
+
+	.postHeader{
 		color: #76761C;
-		text-transform: uppercase;
-		padding: 1px 4px;
+		border-bottom-color: #76761C;
 	}
 
 }

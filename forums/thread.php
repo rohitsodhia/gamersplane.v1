@@ -334,6 +334,7 @@
 					<div class="postBody">
 						<div class="postContent">
 							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
+							<header class="postHeader"><div class="subject">Post Preview</div></header>
 							<div class="post"></div>
 						</div>
 					</div>
