@@ -27,6 +27,7 @@ services:
       - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./docker/apache/extra:/usr/local/apache2/conf/extra
       - ./docker/apache/vhosts/vhosts.${ENVIRONMENT}.conf:/usr/local/apache2/conf/vhosts.conf
+      - ./logs/proxy:/var/log/
     depends_on:
       - api
 
