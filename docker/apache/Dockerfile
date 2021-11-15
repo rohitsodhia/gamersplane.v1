@@ -1,8 +1,9 @@
-FROM httpd:2.4-alpine
+FROM httpd:2.4
 
-RUN apk update
-RUN apk add \
-    npm
+RUN apt-get update
+RUN apt-get install -y \
+    npm \
+    cronolog
 RUN npm i -g grunt-cli
 
 EXPOSE 80
