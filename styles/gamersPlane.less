@@ -1243,8 +1243,8 @@ body.style-background #content {
 			position: absolute;
 			top: -10px;
 			bottom: 0px;
-			left: 0px;
-			right: 0px;
+			left: -10px;
+			right: -10px;
 			content: " ";
 			display: block;
 			background-color: rgba(255, 255, 255, 0.95);
@@ -2681,6 +2681,24 @@ textarea {
 	}
 }
 
+#fm_forumthreads{
+	.submenu{
+		li{
+			padding: 0.2rem 1rem;
+
+			h3{
+				color: @gp-orange-lightest;
+				margin-bottom: 0;
+			}
+
+			a{
+				white-space: nowrap;
+			}
+		}
+	}
+
+}
+
 /* ----------------------------------------------------------------------------------------------*/
 
 /* Alert Boxes */
@@ -2734,7 +2752,7 @@ textarea {
 	div,
 	a {
 		display: inline-block;
-		padding: 3px 5px;
+		padding: 0px 5px;
 	}
 
 	a > * {

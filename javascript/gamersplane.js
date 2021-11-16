@@ -23,7 +23,7 @@ $.cssHooks.backgroundColor = {
 
 $(function() {
 	$('select:not(.notPretty)').prettySelect();
-	$('input[type="checkbox"]').prettyCheckbox();
+	$('input[type="checkbox"]:not(.notPretty)').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
 
 	$('.loginLink').colorbox();
@@ -153,6 +153,12 @@ $(function() {
 		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
 	});
 
+	$('.convertTZdate').each(function () {
+		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, YYYY';
+		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
+		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
+		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
+	});
 
 	/* Individual Pages */
 	var curPage;
@@ -163,6 +169,23 @@ $(function() {
 
 	//spoiler opening and closing
 	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
+
+	//dark theme toggle
+	$('#userMenu').on('click','#toggleDarkMode',function(){
+		var stylesheet=$('#darkmodecss');
+		if(stylesheet.length==0){
+			$('<link id="darkmodecss" href="/styles/themeDark.css?v='+(Math.floor(Math.random() * 100000))+'" type="text/css" rel="stylesheet"/>').appendTo($('head'));
+			$('body').addClass('dark').darkModeColorize();
+		}else{
+			stylesheet.remove();
+			$('body').removeClass('dark').darkModeColorizeRevert();
+		}
+		var darkTheme=$('#darkmodecss').length>0;
+		$.ajax({type: 'post', url: API_HOST +'/users/setUserTheme', xhrFields: {withCredentials: true},data:{ darkTheme: darkTheme?1:0}});
+		$('#toggleDarkMode').text((darkTheme?"Light theme":"Dark theme"));
+		event.preventDefault();
+	});
+	$('#toggleDarkMode').text(($('#darkmodecss').length>0?"Light theme":"Dark theme"));
 
 	applyPageStyle($('#gameOptions').html());
 	fixDarkThemeColours();

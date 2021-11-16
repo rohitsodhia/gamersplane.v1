@@ -27,8 +27,15 @@ mySettings = {
 			{name:'Green', openWith:'[color="green"]', closeWith:'[/color]' }
 		]},
 		{separator:'---------------' },
-		{name:'Image', replaceWith:'[img][![Url]!][/img]'},
-		{name:'Link', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
+		{
+			name: 'Image', replaceWith: '[img][![Url]!][/img]',
+			dropMenu: [
+				{ name: 'By URL...', replaceWith: '[img][![Url]!][/img]' },
+				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } },
+				{ name: 'YouTube...', replaceWith: '[youtube][![YouTube share link]!][/youtube]' }
+			]
+		},
+		{name:'Link', key:'K', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...'},
 		{separator:'---------------' },
 /*		{name:'Size', key:'S', openWith:'[size=[![Text size]!]]', closeWith:'[/size]',
 		dropMenu :[

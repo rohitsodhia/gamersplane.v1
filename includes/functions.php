@@ -484,7 +484,7 @@ function getUserThemeCss()
 {
 	$theme=getUserTheme();
 	if($theme=='dark'){
-		return '<link href="/styles/themeDark.css?v='.getStyleVersion('/styles/themeDark.css').'" rel="stylesheet">';
+		return '<link id="darkmodecss" href="/styles/themeDark.css?v='.getStyleVersion('/styles/themeDark.css').'" rel="stylesheet">';
 	}
 
 	return "";

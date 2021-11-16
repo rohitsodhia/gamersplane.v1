@@ -1,4 +1,6 @@
 <?php
+	require_once(FILEROOT . '/includes/characters/Character.class.php');
+
 	class forums {
 		function __construct() {
 			global $pathOptions;
@@ -23,10 +25,12 @@
 			} elseif ($pathOptions[0] == 'getPostQuote') {
 				displayJSON($this->getPostQuote($_POST['postID']));
 			} elseif ($pathOptions[0] == 'getPostPreview') {
-				displayJSON($this->getPostPreview($_POST['postText']));
+				displayJSON($this->getPostPreview($_POST['postText'],$_POST['postAsId'], $_POST['postAsName']));
 			} elseif ($pathOptions[0] == 'pollVote') {
 				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti']));
-			} else {
+			} elseif ($pathOptions[0] == 'ftReindex') {
+				displayJSON($this->ftReindex( $_POST['fromId'], $_POST['toId']));
+			}else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -336,11 +340,28 @@
 			return $ret;
 		}
 
-		public function getPostPreview($postText){
-			global $isGM,$post;
+		public function getPostPreview($postText, $postAsId, $postAsName){
+			global $isGM, $post, $currentUser;
 			$isGM=true;
 			$post = new Post(0);
-			return printReady(BBCode2Html($postText));
+			$ret = null;
+
+			$postAsId= ($postAsId=='p') ? false:$postAsId;  //coalesce 'p' to false
+
+			if($postAsId){
+				$avatar = Character::getCharacterAvatar($postAsId,true);
+				$avatar = $avatar ? $avatar : User::getAvatar($currentUser->userID);
+				$ret=array('post' => printReady(BBCode2Html($postText)), 'avatar'=>$avatar, 'name'=>$postAsName, 'npcPoster'=>false);
+			} else {
+				$npc = Post::extractPostingNpc($postText);
+
+				if ($npc) {
+					$ret = array('post' => printReady(BBCode2Html($postText)), 'avatar'=>$npc["avatar"], 'name'=>$npc["name"],'npcPoster'=>true);
+				} else {
+					$ret = array('post' => printReady(BBCode2Html($postText)),'avatar'=> User::getAvatar($currentUser->userID),'name'=>$currentUser->username,'npcPoster'=>false);
+				}
+			}
+			return $ret;
 		}
 
 		public function pollVote($postID, $vote, $addVote, $isMulti){
@@ -363,7 +384,6 @@
 						]],
 						['upsert' => true]
 					);
-
 				}
 				else{
 					$mongo->threads->updateOne(
@@ -395,11 +415,23 @@
 
 				return $post->getPollResults();
 			}
-			else
-			{
+			else {
 				return null;
 			}
+		}
 
+		public function ftReindex($fromId, $toId){
+			global $mysql;
+
+			for($i = $fromId; $i < $toId; $i++){
+				$message = $mysql->query("SELECT message FROM posts WHERE postID = {$i}")->fetchColumn();
+				$message = Post::extractFullText($message);
+				$updatePost = $mysql->prepare("UPDATE posts SET messageFullText = :messageFullText WHERE postID = {$i}");
+				$updatePost->bindValue(':messageFullText', $message);
+				$updatePost->execute();
+			}
+
+			return null;
 		}
 	}
 ?>

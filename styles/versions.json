@@ -1,6 +1,6 @@
 {
 	"/styles/acp.css": "3.0.0",
-	"/styles/characters.css": "3.0.0",
+	"/styles/characters.css": "3.0.1",
 	"/styles/characters/7thsea_2e.css": "1.1.0",
 	"/styles/characters/custom.css": "3.0.0",
 	"/styles/characters/deadlands.css": "1.0.2",
@@ -9,10 +9,10 @@
 	"/styles/characters/shadowrun5.css": "1.0.3",
 	"/styles/characters/tor.css": "1.0.1",
 	"/styles/characters/wod.css": "1.0.1",
-	"/styles/forums.css": "3.0.6",
-	"/styles/games.css": "3.0.1",
+	"/styles/forums.css": "3.0.14",
+	"/styles/games.css": "3.0.4",
 	"/styles/gamersList.css": "3.0.0",
-	"/styles/gamersPlane.css": "3.0.5",
+	"/styles/gamersPlane.css": "3.0.6",
 	"/styles/home.css": "3.0.4",
 	"/styles/landing.css": "3.0.2",
 	"/styles/nonResponsive.css": "3.0.0",
@@ -26,5 +26,5 @@
 	"/javascript/markItUp/sets/bbcode/character-style.css": "3.0.0",
 	"/javascript/markItUp/sets/bbcode/style.css": "3.0.0",
 	"/javascript/markItUp/skins/gp/style.css": "1.2.0",
-	"/styles/themeDark.css": "3.0.5"
+	"/styles/themeDark.css": "3.0.6"
 }

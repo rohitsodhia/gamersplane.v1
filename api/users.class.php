@@ -29,7 +29,9 @@
 				$this->saveLFG();
 			} elseif ($pathOptions[0] == 'removeThreadNotification') {
 				$this->removeThreadNotification($_POST['postID']);
-			}else {
+			} elseif ($pathOptions[0] == 'setUserTheme') {
+				$this->setUserTheme($_POST['darkTheme']);
+			} else {
 				displayJSON(['failed' => true]);
 			}
 		}
@@ -611,6 +613,17 @@
 				]
 			);
 
+		}
+
+		public function setUserTheme($darkTheme){
+			global $currentUser;
+			if((int)$darkTheme){
+				$currentUser->updateUsermeta('theme', 'dark', true);
+			}else{
+				$currentUser->updateUsermeta('theme', '', true);
+			}
+
+			return true;
 		}
 	}
 ?>

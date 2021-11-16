@@ -33,14 +33,19 @@
 ?>
 <?php	if(SYSTEM=='custom'){$responsivePage=true;}
 		require_once(FILEROOT . '/header.php'); ?>
-		<h1 class="headerbar">Edit Character Sheet</h1>
+
 <?php	if (file_exists(FILEROOT . '/images/logos/' . SYSTEM . '.png')) { ?>
 		<div id="charSheetLogo"><img src="/images/logos/<?=SYSTEM?>.png"></div>
 <?php	} ?>
 
 <?php	if ($noChar) { ?>
 		<h2 id="noCharFound">No Character Found</h2>
-<?php	} else { ?>
+<?php	} else {
+		$characterAvatar = $character->getAvatar(true);
+		if ($characterAvatar){?>
+			<div class="avatarPreview avatarPreview-<?=SYSTEM?>"><img src="<?=$characterAvatar?>" alt="avatar"/></div>
+<?php
+		}?>
 		<form<?=$angular?" ng-controller=\"{$angular}\" ng-submit=\"save()\"":' method="post" action="/characters/process/editCharacter/"'?>>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">

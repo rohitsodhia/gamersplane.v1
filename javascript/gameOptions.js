@@ -1,6 +1,6 @@
 $(function () {
 
-    var gameOptions=null;
+    var gameOptions={diceRules:[]};
     try{
         gameOptions=JSON.parse($('#gameOptions').html());
     }catch(e){}

@@ -218,5 +218,5 @@
 			</div>
 			<div id="notes">
 				<h2>- Notes -</h2>
-				<div id="notes" ng-bind-html="character.notes" class="hbdMargined"></div>
+				<div class="hbdMargined"><?=printReady(BBCode2Html($this->getNotes()))?></div>
 			</div>

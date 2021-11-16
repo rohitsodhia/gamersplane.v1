@@ -188,16 +188,19 @@
 			$mongo = DB::conn('mongo');
 
 			if ($this->postID == null) {
-				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = {$this->threadID}, title = :title, authorID = {$currentUser->userID}, message = :message, datePosted = :datePosted, postAs = ".($this->postAs?$this->postAs:'NULL'));
+				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = {$this->threadID}, title = :title, authorID = {$currentUser->userID}, message = :message, messageFullText = :messageFullText, datePosted = :datePosted, postAs = ".($this->postAs?$this->postAs:'NULL'));
 				$addPost->bindValue(':title', $this->title);
 				$addPost->bindValue(':message', $this->message);
+				$addPost->bindValue(':messageFullText', Post::extractFullText($this->message));
 				$addPost->bindValue(':datePosted', date('Y-m-d H:i:s'));
 				$addPost->execute();
 				$this->postID = $mysql->lastInsertId();
 			} else {
-				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, postAs = " . ($this->postAs ? $this->postAs : 'NULL') . ($this->edited ? ", lastEdit = NOW(), timesEdited = {$this->timesEdited}" : '') . " WHERE postID = {$this->postID}");
+				$updatePost = $mysql->prepare("UPDATE posts SET title = :title, message = :message, messageFullText = :messageFullText, postAs = " . ($this->postAs ? $this->postAs : 'NULL') . ($this->edited ? ", lastEdit = NOW(), timesEdited = {$this->timesEdited}" : '') . " WHERE postID = {$this->postID}");
 				$updatePost->bindValue(':title', $this->title);
 				$updatePost->bindValue(':message', $this->message);
+				$updatePost->bindValue(':messageFullText', Post::extractFullText($this->message));
+
 				$updatePost->execute();
 			}
 
@@ -240,6 +243,10 @@
 
 		public function getNpc(){
 			$text=$this->message;
+			return Post::extractPostingNpc($text);
+		}
+
+		public static function extractPostingNpc($text){
 			$text=preg_replace('/\[code\](.*?)\[\/code\]/ms', "", $text);
 			preg_match_all('/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]/ms', $text, $matches, PREG_SET_ORDER);
 
@@ -277,8 +284,39 @@
 				}
 			}
 			return $ret;
+		}
+
+		public static function extractFullText($message) {
+
+			//remove notes and private
+			$message = Post::cleanNotes($message);
+
+			//remove the contents of these tags
+			$in = array(
+				'/\[code\](.*?)\[\/code\]/ms',
+				'/\[img\](.*?)\[\/img\]/ms',
+				"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
+				"/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
+				"/\[map\](.*?)\[\/map\]/ms",
+				"/\[spotify\](.*?)\[\/spotify\]/ms"
+				);
+			$out = array('','','','','','');
+
+
+			$message = preg_replace($in, $out, $message);
+
+			//replace all other tags
+			$message = preg_replace('/\[.*?\]/ms', ' ', $message);
+			//collapse the whitespae
+			$message = str_replace("\r\n", "\n", $message);
+			$message = str_replace("\n", " ", $message);
+			$message = preg_replace('/\s+/', ' ', $message);
+			$message = trim($message);
+
+			return $message;
 
 		}
+
 
 		public function delete() {
 			$mysql = DB::conn('mysql');

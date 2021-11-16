@@ -1,4 +1,5 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?	$responsivePage=true;
+	require_once(FILEROOT.'/header.php'); ?>
 		<div class="mainColumn" ng-class="{ 'fullWidth': state == 'edit' }">
 			<h1 class="headerbar">{{state.capitalizeFirstLetter()}} Game</h1>
 
@@ -52,14 +53,27 @@
 				</div>
 				<div class="tr"><p>If you've created a recruitment thread in the <a href="/forums/10/" target="_blank">Games Tavern</a> link it to the game here.</p></div>
 				<div class="tr textareaRow">
-					<strong>https://gamersplane.com/forums/thread/<input id="recruitmentThreadId" type="number" ng-model="game.recruitmentThreadId"></strong>
+					<strong><span class="mob-hide">https://gamersplane.com</span>/forums/thread/<input id="recruitmentThreadId" type="number" ng-model="game.recruitmentThreadId"></strong>
 				</div>
 				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Advanced rules definitions</div><div class="hidden">
-				<div class="tr textareaRow">
+				<section class="tr textareaRow">
 					<p>See the <a href="/forums/thread/22053/" target="guidesForum">guides forum</a> for help configuring these rules</p>
+					<div id="ardHelpers">
+					<hr/>
+						<strong>Background image:</strong> <input type="text" id="adrBackground"/><br/>
+						<br/>
+						<strong>Choose from community dice rules</strong>
+						<ul id="diceRules"></ul>
+						<br/>
+						<strong>Add community supplied gm sheets</strong>
+						<ul id="customSheets"></ul>
+						<div class="checkedRow"><label>GM - exclude NPC sheets:</label> <input type="checkbox" class="notPretty" id="gmExcludeNpcs"/></div>
+						<div class="checkedRow"><label>GM - exclude PC sheets:</label> <input type="checkbox" class="notPretty" id="gmExcludePcs"/></div>
+						<hr/>
+					</div>
 					<textarea id="gameOptions" ng-model="game.gameOptions"></textarea>
 					<p id="gameOptionsError" class="alertBox_error" style="display:none;">This is not valid JSON and will not be saved.</p>
-				</div>
+				</section>
 				</div></blockquote>
 
 				<div id="submitDiv"><button type="submit" class="fancyButton">{{state == 'new'?'Create':'Save'}}</button></div>

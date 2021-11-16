@@ -48,6 +48,7 @@
 			<div id="threadMenu">
 				<div class="leftCol">
 					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
+					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
 				</div>
 				<div class="rightCol alignRight">
 <?php
@@ -126,9 +127,15 @@
 		$hitLastRead = true;
 	}
 	$lastPostID = 0;
+	if($threadManager->getPage() && $threadManager->getPage()>1){
+		?>
+		<div id="backfill"><span>load previous</span></div>
+		<?php
+	}
 	if (sizeof($threadManager->getPosts())) {
 		foreach ($threadManager->getPosts() as $post) {
 			$lastPostID = $post->getPostID();
+			$npc=null;
 			if ($post->getPostAs()) {
 				$charSystem = getCharacterClass($post->getPostAs());
 				require_once(FILEROOT . "/includes/packages/{$charSystem}Character.package.php");
@@ -315,12 +322,19 @@
 			}
 		}
 ?>
-			<div class="postBlock post<?=$postSide?> postPreview" style="display:none;">
+			<div class="postBlock post<?=$postSide?> postPreview postAsChar" style="display:none;">
 				<div class="flexWrapper">
-					<div class="posterDetails">Preview</div>
+					<div class="posterDetails">
+						<div class="avatar"><div><img src=""/></div></div>
+						<div class="postNames">
+							<p class="charName"></p>
+							<p class="posterName"><span>Preview</span></p>
+						</div>
+					</div>
 					<div class="postBody">
 						<div class="postContent">
 							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
+							<header class="postHeader"><div class="subject">Post Preview</div></header>
 							<div class="post"></div>
 						</div>
 					</div>
@@ -341,6 +355,7 @@
 <?php
 	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 		$characters = [];
+		$playerCharacters = [];
 		if ($gameID) {
 			$rCharacters = $mongo->characters->find(
 				[
@@ -354,6 +369,22 @@
 			foreach ($rCharacters as $character) {
 				if (strlen($character['name'])) {
 					$characters[$character['characterID']] = $character['name'];
+				}
+			}
+			if($isGM){
+				$rPlayerCharacters = $mongo->characters->find(
+					[
+						'game.gameID' => $gameID,
+						'game.approved' => true,
+						'user.userID' => ['$ne'=>$currentUser->userID]
+					],
+					['projection' => ['characterID' => true, 'name' => true]]
+				);
+				$playerCharacters = [];
+				foreach ($rPlayerCharacters as $rPlayerCharacter) {
+					if (strlen($rPlayerCharacter['name'])) {
+						$playerCharacters[$rPlayerCharacter['characterID']] = $rPlayerCharacter['name'];
+					}
 				}
 			}
 		}
@@ -375,12 +406,18 @@
 						<option value="p"<?=$currentChar == null ? ' selected="selected"' : ''?>>Player</option>
 <?php			foreach ($characters as $characterID => $name) { ?>
 						<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
+<?php			}
+				foreach ($playerCharacters as $characterID => $name) { ?>
+						<option value="<?=$characterID?>"<?=$currentChar == $characterID ? ' selected="selected"' : ''?>><?=$name?></option>
 <?php			} ?>
 					</select> <span id="charSheetLink"></span></div>
 				</div>
 <?php		} ?>
 				<textarea id="messageTextArea" name="message"></textarea>
-				<div class="alignRight"><span id="previewPost" class="fancyButton">Preview</span></div>
+				<div class="alignRight">
+				<button id="previewPost" class="fancyButton" accesskey="p" type="button">Preview</button>
+				<button id="postPost" type="submit" name="post" class="fancyButton submitButton">Post</button>
+				</div>
 			</div>
 
 <?php /*  ------ START REPLY ROLLS ----- */ ?>
@@ -414,8 +451,8 @@
 
 
 			<div id="submitDiv" class="alignCenter">
-				<button type="submit" name="post" class="fancyButton">Post</button>
-				<button type="submit" name="advanced" class="fancyButton">Advanced</button>
+				<hr/>
+				<button id="advancedPost" type="submit" name="advanced" class="fancyButton submitButton">Advanced</button>
 			</div>
 		</form>
 

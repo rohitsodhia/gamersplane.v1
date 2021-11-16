@@ -97,8 +97,13 @@ $(function() {
 			gameOptions = JSON.parse($('#gameOptions').html());
 		} catch (e) { }
 
+		var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
+		if (gameOptions && gameOptions.characterSheetIntegration){
+			$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
+		}
+
 		//charactersheer integration enabled
-		if (gameOptions && gameOptions.characterSheetIntegration) {
+		if (characterSheetIntegration) {
 
 			//jquery helper selectors
 			$.expr[':'].emptyContent =  $.expr[':'].emptyContent || $.expr.createPseudo(function() {
@@ -129,7 +134,7 @@ $(function() {
 				charactersToAdd = $('#fm_characters .submenu>li.thisUser p.charName a');
 			}
 
-			if(!gameOptions.characterSheetIntegration.gmExcludePcs){
+			if(!characterSheetIntegration.gmExcludePcs){
 				charactersToAdd.each(function () {
 					var addChar = $(this);
 					var hrefParts = addChar.attr('href').split('/');
@@ -137,10 +142,18 @@ $(function() {
 				});
 			}
 
-			if(isGm && gameOptions.characterSheetIntegration.gmSheets && Array.isArray(gameOptions.characterSheetIntegration.gmSheets)){
+			if(isGm && !characterSheetIntegration.gmExcludeNpcs){
+				$('#fm_characters .submenu>li.thisUser p.charName a').each(function () {
+					var addChar = $(this);
+					var hrefParts = addChar.attr('href').split('/');
+					$('<span class="rollForChar gmSheet"></span>').text(addChar.text()).attr('charid', hrefParts[3]).attr('gamesys', hrefParts[2]).appendTo(charList);
+				});
+			}
 
-				for(var i=0;i<gameOptions.characterSheetIntegration.gmSheets.length;i++){
-					var char=gameOptions.characterSheetIntegration.gmSheets[i];
+			if(isGm && characterSheetIntegration.gmSheets && Array.isArray(characterSheetIntegration.gmSheets)){
+
+				for(var i=0;i<characterSheetIntegration.gmSheets.length;i++){
+					var char=characterSheetIntegration.gmSheets[i];
 					var keys=Object.keys(char);
 					if(keys.length>0){
 						var hrefParts = char[keys[0]].split('/');
@@ -161,8 +174,12 @@ $(function() {
 					charSheet.html('');
 					var charId = $(this).attr('charid');
 					var system = $(this).attr('gamesys');
-					$.get('/characters/' + system + '/' + charId, function (data) {
+					var charUrl='/characters/' + system + '/' + charId;
+					$.get(charUrl, function (data) {
 						var charSheetContent = $(data);
+
+						var charName=$('#charDetailsName',charSheetContent).text();
+						$('<a target="_blank"><i class="ra ra-scroll-unfurled"></i></a>').attr('href',charUrl).prependTo(($('<h3 class="charName"></h3>').text(charName).appendTo(charSheet)));
 
 						//features, spells and snippets
 						var featDiv=$('<div class="roller feats"><select class="featSelect shortcutSelector addAsSpoiler"><option>--Feats/Abilities--</option></select></div>').appendTo(charSheet);
@@ -254,7 +271,9 @@ $(function() {
 							}
 						});
 
-						$('<hr class="clear"/>').appendTo(charSheet);
+						if($('.roller select',charSheet).length>0){
+							$('<hr class="clear"/>').appendTo(charSheet);
+						}
 
 						if (system == 'dnd5') {
 							addDnd5Rolls(charSheetContent);
@@ -285,7 +304,8 @@ $(function() {
 
 						//multiple characters - prefix the rolls with the name
 						if($('#charButtons .rollForChar').length>1){
-							var charPrefix=rollerForChar.text()+': ';
+							var charPrefix=$('.rollForChar.sel').hasClass('gmSheet')?'':(charName+': ');
+
 							$('.rollDice',charSheet).each(function(){
 								var rollDice=$(this);
 								rollDice.attr('rolltext',charPrefix+rollDice.attr('rolltext'));

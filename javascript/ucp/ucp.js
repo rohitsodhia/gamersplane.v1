@@ -2,7 +2,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
 		$scope.CurrentUser = CurrentUser.get();
-		$scope.admin = !isUndefined($scope.CurrentUser.acpPermissions) && $scope.CurrentUser.acpPermissions !== null && ($scope.CurrentUser.acpPermissions.indexOf('users') || $scope.CurrentUser.acpPermissions.indexOf('all'))?true:false;
+		$scope.admin = !isUndefined($scope.CurrentUser.acpPermissions) && $scope.CurrentUser.acpPermissions !== null && ($scope.CurrentUser.acpPermissions.indexOf('users')!=-1 || $scope.CurrentUser.acpPermissions.indexOf('all')!=-1)?true:false;
 		var userID = null;
 		var pathElements = getPathElements();
 		if (!isUndefined(pathElements[1])) {
