@@ -10,6 +10,7 @@
 	}
 
 	require('../includes/connect.php');
+	define('ENVIRONMENT', getenv('ENVIRONMENT'));
 	define('PVAR', getenv('PVAR'));
 	define('PAGINATE_PER_PAGE', (int) getenv('PAGINATE_PER_PAGE'));
 	define('HERITAGE_PAD', (int) getenv('HERITAGE_PAD'));
@@ -63,7 +64,7 @@
 
 	$moddedPath = $pathAction ? $pathAction : '';
 
-	header("Access-Control-Allow-Origin: http://".substr(COOKIE_DOMAIN, 1));
+	header("Access-Control-Allow-Origin: http".(ENVIRONMENT != 'dev'?'s':'')."://".substr(COOKIE_DOMAIN, 1));
 	header('Access-Control-Allow-Credentials: true');
 	if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 		if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
