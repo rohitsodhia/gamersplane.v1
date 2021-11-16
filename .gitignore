@@ -21,6 +21,7 @@ styles/**/*.css
 _backup/
 Thumbs.db
 test*.php
+docker-compose.override.yml
 
 # Folders
 blog/
@@ -40,3 +41,4 @@ oneRunScripts/
 ucp/avatars/
 vendor/
 docker/apache/ssl/
+logs/
