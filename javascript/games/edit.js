@@ -222,7 +222,7 @@ $(function () {
 						var location=getGmSheetLocation(gmSheetObject);
 						if(!discoveredLocations.includes(location)){
 							var shortCutDiv=$('<li class="gmSheet"></li>').appendTo(gmSheetSection);
-							shortCutDiv.text(gmSheet);
+							shortCutDiv.text(Object.getOwnPropertyNames(gmSheetObject)[0]);
 							shortCutDiv.data('rulejson', JSON.stringify(gmSheetObject));
 							discoveredLocations.push(location);
 						}
