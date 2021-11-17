@@ -253,7 +253,7 @@
 	 		}
 
 			if (sizeof($post->draws)) {
-				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]'];
+				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]', '[Hidden Reason]'];
 				$hidden = false;
 ?>
 							<h4>Deck Draws</h4>
@@ -295,7 +295,7 @@
 			if($isLastPost){
 				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Mark as unread</a>\n";
 			}
-			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'\">Quote</span>\n";
+			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'>Quote</span>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";

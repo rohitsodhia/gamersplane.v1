@@ -392,7 +392,7 @@
 					<div id="postedRolls">
 						<h3>Posted Rolls</h3>
 <?php
-				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]'];
+				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]', '[Hidden Reason]'];
 				$hidden = false;
 				$showAll = false;
 				$first = true;
@@ -412,6 +412,7 @@
 								<option value="1"<?=$roll->getVisibility() == 1 ? ' selected="selected"' : ''?>>Hide Roll/Result</option>
 								<option value="2"<?=$roll->getVisibility() == 2 ? ' selected="selected"' : ''?>>Hide Dice &amp; Roll</option>
 								<option value="3"<?=$roll->getVisibility() == 3 ? ' selected="selected"' : ''?>>Hide Everything</option>
+								<option value="4"<?=$roll->getVisibility() == 4 ? ' selected="selected"' : ''?>>Hide Reason</option>
 							</select>
 							</div>
 							<input type="hidden" name="oVisibility[<?=$roll->getRollID()?>]" value="<?=$roll->getVisibility()?>">

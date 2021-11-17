@@ -57,7 +57,7 @@
 						else $roll['indivRolls'][$handful][$count] = $result;
 						$roll['result'] += $result;
 
-						if ($this->rerollAces && $result == $roll['sides'][$handful]) $count -= 1;
+						if ($this->rerollAces && $result == $roll['sides'][$handful] && $result!=1) $count -= 1;
 					}
 				}
 				$roll['result'] += $roll['modifier'];
@@ -167,11 +167,11 @@
 				if ($this->visibility <= 2) echo $this->reason;
 				elseif ($showAll) { echo '<span class="hidden">'.($this->reason != ''?"{$this->reason}":''); $hidden = true; }
 				else echo 'Secret Roll';
-				if ($this->visibility > 1 && $showAll && !$hidden) {
+				if ($this->visibility > 1 && $this->visibility <4 && $showAll && !$hidden) {
 					echo '<span class="hidden">';
 					$hidden = true;
 				}
-				if ($this->visibility <= 1 || $showAll) {
+				if ($this->visibility <= 1 || $this->visibility == 4 || $showAll) {
 					if (strlen($this->reason)) echo ' - (';
 					echo implode(', ', $rollStrings);
 					if ($this->rerollAces) echo (strlen($this->reason)?', ':'').(strlen($this->reason) == 0?' [ ':'').'RA'.(strlen($this->reason) == 0?' ]':'');
@@ -179,7 +179,7 @@
 				}
 				echo $hidden?'</span>':'';
 				echo '</p>';
-				if ($this->visibility == 0 || $showAll) echo implode('', $rollValues);
+				if ($this->visibility == 0 || $this->visibility == 4 || $showAll) echo implode('', $rollValues);
 				echo '</div>';
 			}
 		}

@@ -25,7 +25,7 @@
 					$roll = $this->die->roll();
 					$this->rolls['n'][] = $roll;
 				} while ($roll == 6);
-				if ($this->type == 'fortune') 
+				if ($this->type == 'fortune')
 					$this->rolls['e'] = $this->die->roll();
 			} elseif ($this->type == 'closed') {
 				$this->rolls['p'][] = $this->die->roll();
@@ -68,20 +68,20 @@
 				else echo 'Secret Roll';
 				echo $hidden?'</span>':'';
 				echo '</p>';
-				if ($this->visibility <= 1 || $showAll) {
+				if ($this->visibility <= 1 || $this->visibility == 4 || $showAll) {
 					echo '<div class="rollResults">';
 					echo $this->roll;
 					if ($this->type != 'closed') {
 						echo ' + [ '.implode(', ', $this->rolls['p']).' ]';
 						echo ' - [ '.implode(', ', $this->rolls['n']).' ]';
-						if ($this->rolls['e']) 
+						if ($this->rolls['e'])
 							echo ' + '.$this->rolls['e'];
 					} else {
 						echo ' + '.$this->rolls['p'][0];
 						echo ' - '.$this->rolls['n'][0];
 					}
 					$sum = $this->roll + array_sum($this->rolls['p']) - array_sum($this->rolls['n']);
-					if ($this->rolls['e']) 
+					if ($this->rolls['e'])
 						$sum += $this->rolls['e'];
 					echo ' = '.$sum;
 					echo '</div>';
