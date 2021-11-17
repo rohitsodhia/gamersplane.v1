@@ -39,7 +39,7 @@ $(function() {
 		});
 	});
 
-	$('.quotePost').click(function(){
+	$('body').on('click','.quotePost',function(){
 
 		var pThis=$(this);
 		var postId=pThis.data('postid');
