@@ -57,7 +57,7 @@
 						else $roll['indivRolls'][$handful][$count] = $result;
 						$roll['result'] += $result;
 
-						if ($this->rerollAces && $result == $roll['sides'][$handful] && $result!=1) $count -= 1;
+						if ($this->rerollAces && $result == $roll['sides'][$handful] && $result>1) $count -= 1;
 					}
 				}
 				$roll['result'] += $roll['modifier'];
