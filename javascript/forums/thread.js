@@ -88,6 +88,10 @@ $(function() {
 
 				$('.postPreview .charName').text(data.name);
 				$(".postPreview")[0].scrollIntoView();
+				var startScroll = $(window).scrollTop()-100;
+				if(startScroll>0){
+					$(window).scrollTop(startScroll);
+				}
 			}
 		});
 	});
@@ -101,7 +105,7 @@ $(function() {
 		var startHeight=$(document ).height()
 
 		$.get(basePage + '?page=' + $(prevPages[0]).text(), function (data) {
-			var block=$('.postBlock', $(data));
+			var block=$('.postBlock:not(.postPreview)', $(data));
 			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize();
 			var newHeight=$(document).height()
 
