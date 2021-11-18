@@ -1,5 +1,15 @@
 $(function() {
 
+	var gameOptions = null;
+	try {
+		gameOptions = JSON.parse($('#gameOptions').html());
+	} catch (e) { }
+
+	var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
+	if (gameOptions && gameOptions.characterSheetIntegration){
+		$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
+	}
+
     var updateCharLink=function(postAs){
         var charPost=$('#fm_characters .charid-'+postAs.val());
         var charSheetLink=$('#charSheetLink').html('');
@@ -49,6 +59,11 @@ $(function() {
 
 		$.post('/forums/ajax/addRoll/', { count: rollCount, type: $addRoll_type.val() }, function (data) {
 			$newRow = $(data);
+
+			if(gameOptions && gameOptions.diceDefaults && gameOptions.diceDefaults.rerollAces){
+				$newRow.find('.reroll input[type="checkbox"]').prop('checked',true)	;
+			}
+
 			$newRow.find('input[type="checkbox"]').prettyCheckbox();
 			$newRow.find('select').prettySelect();
 			$newRow.appendTo($newRolls);
@@ -92,16 +107,6 @@ $(function() {
 
 	//character sheet integration
 	{
-		var gameOptions = null;
-		try {
-			gameOptions = JSON.parse($('#gameOptions').html());
-		} catch (e) { }
-
-		var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
-		if (gameOptions && gameOptions.characterSheetIntegration){
-			$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
-		}
-
 		//charactersheer integration enabled
 		if (characterSheetIntegration) {
 
@@ -398,6 +403,9 @@ $(function() {
 
 				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'basic' }, function (data) {
 					$newRow = $(data);
+					if(gameOptions && gameOptions.diceDefaults && gameOptions.diceDefaults.rerollAces){
+						$newRow.find('.reroll input[type="checkbox"]').prop('checked',true)	;
+					}
 					$newRow.find('input[type="checkbox"]').prettyCheckbox();
 					$newRow.find('select').prettySelect();
 					$newRow.find('.reason input').val(reason);

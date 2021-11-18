@@ -69,6 +69,7 @@
 						<ul id="customSheets"></ul>
 						<div class="checkedRow"><label>GM - exclude NPC sheets:</label> <input type="checkbox" class="notPretty" id="gmExcludeNpcs"/></div>
 						<div class="checkedRow"><label>GM - exclude PC sheets:</label> <input type="checkbox" class="notPretty" id="gmExcludePcs"/></div>
+						<div class="checkedRow"><label>Reroll aces by default:</label> <input type="checkbox" class="notPretty" id="rerollAcesDefault"/></div>
 						<hr/>
 					</div>
 					<textarea id="gameOptions" ng-model="game.gameOptions"></textarea>
