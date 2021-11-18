@@ -227,7 +227,8 @@
 						<div class="postContent">
 							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
 							<header class="postHeader">
-								<div class="postedOn convertTZ"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
+								<div class="postedOn convertTZ mob-hide"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
+								<div class="postedOn non-mob-hide"><a class="convertTZ" href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></a></div>
 								<div class="subject"><a href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=strlen($post->title) ? printReady($post->title) : '&nbsp'?></a></div>
 							</header>
 <?php
