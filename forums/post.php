@@ -268,6 +268,10 @@
 				<p><input type="checkbox" name="minorChange" checked="checked"> This is a minor edit</p>
 				<?php }?>
 			</div>
+			<div id="submitDiv" class="alignRight">
+				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton submitButton" accesskey="p">Preview</button>
+				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton submitButton"><?=$editPost?'Save':'Post'?></button>
+            </div>
 
 <?php	if ($firstPost || $rollsAllowed || $drawsAllowed) { ?>
 			<div id="optionControls"><div class="trapezoid sectionControls flexWrapper">
@@ -486,11 +490,6 @@
 	}
 ?>
 			<input type="hidden" name="postURL" value="<?=$_SESSION['currentURL']?>">
-
-			<div id="submitDiv" class="alignCenter">
-				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton submitButton"><?=$editPost?'Save':'Post'?></button>
-				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton submitButton" accesskey="p">Preview</button>
-            </div>
 
 		</form>
 <?php require_once(FILEROOT.'/footer.php'); ?>
