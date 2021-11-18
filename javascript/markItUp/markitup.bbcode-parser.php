@@ -137,8 +137,6 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[linebreak\][\r\n]*/",
 					 '/\[img\](.*?)\[\/img\]/ms',
 					 '/\[email\](.*?)\[\/email\]/ms',
-					 '/\[url\="?(.*?)"?\](.*?)\[\/url\]/ms',
-					 '/\[url\](.*?)\[\/url\]/ms',
 					 '/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
 					 '/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
@@ -162,8 +160,6 @@ function BBCode2Html($text) {
 					 '<hr>',
 					 '<img src="\1" alt="\1" class="usrImg">',
 					 '<a href="mailto:\1">\1</a>',
-					 '<a href="\1" target="_blank" rel="nofollow">\2</a>',
-					 '<a href="\1" target="_blank" rel="nofollow">\1</a>',
 					 '<span class="userSize" style="font-size:\1%">\2</span>',
 					 '<span class="userColor" style="color:\1">\2</span>',
 //					 '<ol start="\1">\2</ol>',
@@ -192,6 +188,23 @@ function BBCode2Html($text) {
 			return '<a class="mapLink" target="_blank" href="'.$mapLink.'"><img class="usrImg" src="'.$mapLink.'"/></a>';
 	}, $text);
 	//end map
+
+	//urls
+	$matches = null;
+	$text=preg_replace_callback(array('/\[url\="?(.*?)"?\](.*?)\[\/url\]/ms','/\[url\](.*?)\[\/url\]/ms'), function($matches){
+		$url=$matches[1];
+		$target=' target="_blank"';
+		if(substr( $url, 0, 1 ) === "/" || substr( strtolower($url), 0, 23 ) === "https://gamersplane.com" ){
+			$target='';
+		}
+		$linkText=$url;
+		if($matches[2]){
+			$linkText=$matches[2];
+		}
+
+		return '<a href="'.$url.'" '.$target.' rel="nofollow">'.$linkText.'</a>';
+	}, $text);
+	//end urls
 
 	//spotify
 	$matches = null;
