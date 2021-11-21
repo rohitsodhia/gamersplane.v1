@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: gpv1-proxy
     ports:
-      - 80:80
+      - 80
     volumes:
       - .:/var/www
       - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
@@ -45,6 +45,8 @@ services:
   mysql:
     image: mysql:5.5
     container_name: gpv1-mysql
+    ports:
+      - 3306
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -58,5 +60,7 @@ services:
     build:
       context: ./docker/mongo
     container_name: gpv1-mongo
+    ports:
+      - 5432
     volumes:
       - mongo_db:/data/db
