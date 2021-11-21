@@ -7,6 +7,7 @@ RUN apk add \
 	g++ \
 	gcc \
 	zlib-dev \
+	libpng-dev \
 	make \
 	libmemcached-dev \
 	&& pecl install memcached \
@@ -16,5 +17,5 @@ RUN pecl install xdebug-2.7.0RC2 \
 RUN pecl install mongodb \
 	&& docker-php-ext-enable mongodb
 RUN docker-php-ext-install pdo_mysql
-
+RUN docker-php-ext-install gd
 WORKDIR /var/www
