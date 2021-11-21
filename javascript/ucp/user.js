@@ -7,7 +7,7 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 
 		pathElements = getPathElements();
 		userID = null;
-		if (!isUndefined(pathElements[1])) 
+		if (!isUndefined(pathElements[1]))
 			userID = parseInt(pathElements[1]);
 		UsersService.get(userID).then(function (data) {
 			if (data) {
@@ -16,7 +16,9 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 				$http.post(API_HOST + '/users/stats/', { userID: userID }).then(function (response) {
 					$scope.characters = response.data.characters.list;
 					$scope.posts = {
-						postCount: response.data.posts.count
+						postCount: response.data.posts.count,
+						communityPostCount: response.data.posts.communityCount,
+						gamePostCount: response.data.posts.gameCount
 					};
 					$scope.charCount = response.data.characters.numChars;
 					$scope.characters.forEach(function (ele) {
@@ -27,6 +29,7 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 					$scope.games.forEach(function (ele) {
 						ele.percentage = Math.round(ele.numGames / $scope.gameCount * 100);
 					});
+					$scope.activeGames = response.data.activeGames;
 				});
 				$scope.$emit('pageLoading');
 			}

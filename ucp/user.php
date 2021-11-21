@@ -42,7 +42,28 @@
 						<div class="title">Total Posts:</div>
 						<div>{{posts.postCount}}</div>
 					</div>
+					<div class="tr">
+						<div class="title">Community Posts:</div>
+						<div>{{posts.communityPostCount}}</div>
+					</div>
+					<div class="tr">
+						<div class="title">Game Posts:</div>
+						<div>{{posts.gamePostCount}}</div>
+					</div>
 				</div>
+			</div>
+			<div class="activeGames"  ng-if="activeGames.length">
+				<h2 class="headerbar hbDark">Active Games</h2>
+				<p>Game activity this week</p>
+				<ul>
+					<li  ng-repeat="activeGame in activeGames">
+						<img src="/images/gm_icon.png" ng-if="activeGame.isGM" class="ag-isGM"/>
+						<a href="/games/{{activeGame.gameID}}" class="ag-title">{{activeGame.title}}</a>
+						<span class="ag-posts">{{activeGame.posts}} post<span ng-if="activeGame.posts > 1">s</span></span>
+						<span class="ag-system" ng-bind-html="activeGame.system"></span>
+						<a  class="ag-forum badge badge-gamePublic" href="/forums/{{activeGame.forumID}}" ng-if="activeGame.forumID">Public</a>
+					</li>
+				</ul>
 			</div>
 
 			<div id="charStats" class="userInfoBox">

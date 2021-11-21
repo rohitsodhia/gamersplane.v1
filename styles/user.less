@@ -116,6 +116,43 @@
 	#gmStats {
 		margin-bottom: 10px;
 	}
+
+	.activeGames{
+		ul{
+			list-style: none;
+			li{
+				display:grid;
+				grid-template-columns: 40px 3fr 2fr 60px 60px;
+				padding-bottom: .4rem;
+				margin-bottom: .4rem;
+
+				.ag-isGm{
+					grid-column: ~"1/2";
+					grid-row: ~"1/2";
+				}
+				.ag-title{
+					grid-column: ~"2/3";
+					grid-row: ~"1/2";
+					padding-right:.6em;
+				}
+				.ag-system{
+					grid-column: ~"3/4";
+					grid-row: ~"1/2";
+					padding-right:.6em;
+				}
+				.ag-posts{
+					grid-column: ~"4/5";
+					grid-row: ~"1/2";
+				}
+				.ag-forum{
+					grid-column: ~"5/6";
+					grid-row: ~"1/2";
+					justify-self: start;
+					align-self: start;
+				}
+			}
+		}
+	}
 }
 
 @media only screen and (max-width: @mobile-breakpoint){
@@ -126,6 +163,21 @@
 		}
 		#rightCol {
 			width:100%;
+		}
+		.activeGames{
+			ul{
+				li{
+					grid-template-columns: 40px 2fr 1fr;
+					.ag-posts{
+						grid-column: ~"2/3";
+						grid-row: ~"2/3";
+					}
+					.ag-forum{
+						grid-column: ~"3/4";
+						grid-row: ~"2/3";
+					}
+				}
+			}
 		}
 	}
 }
