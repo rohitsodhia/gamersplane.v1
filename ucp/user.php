@@ -59,7 +59,6 @@
 					<li  ng-repeat="activeGame in activeGames">
 						<img src="/images/gm_icon.png" ng-if="activeGame.isGM" class="ag-isGM"/>
 						<a href="/games/{{activeGame.gameID}}" class="ag-title">{{activeGame.title}}</a>
-						<span class="ag-posts">{{activeGame.posts}} post<span ng-if="activeGame.posts > 1">s</span></span>
 						<span class="ag-system" ng-bind-html="activeGame.system"></span>
 						<a  class="ag-forum badge badge-gamePublic" href="/forums/{{activeGame.forumID}}" ng-if="activeGame.forumID">Public</a>
 					</li>
