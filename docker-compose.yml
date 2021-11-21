@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: gpv1-proxy
     ports:
-      - 80
+      - 127.0.0.1:80:80
     volumes:
       - .:/var/www
       - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
