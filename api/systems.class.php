@@ -89,7 +89,7 @@
 				}
 			}
 			if ((!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) && sizeof($custom)) {
-				$systems[] = $custom;
+				array_splice($systems, 0, 0, array($custom));
 			}
 			displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
 		}

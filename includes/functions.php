@@ -273,7 +273,7 @@ function rollDice($roll, $rerollAces = 0)
 				$indivRolls['dice'][$rollCount] = $curRoll;
 			}
 
-			if ($curRoll == $diceType && $rerollAces) {
+			if ($curRoll == $diceType && $rerollAces && $diceType>1) {
 				$rollCount -= 1;
 			}
 		}

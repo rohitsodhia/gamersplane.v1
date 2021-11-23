@@ -24,7 +24,6 @@
 			<div id="forumOptions">
 			</div>
 			<? $forumSearch->displayPagination(); ?>
-			<br class="clear">
 		</div>
 
 <?=$forumSearch->displayResults()?>
@@ -33,6 +32,5 @@
 			<div id="forumOptions">
 			</div>
 			<? $forumSearch->displayPagination(); ?>
-			<br class="clear">
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

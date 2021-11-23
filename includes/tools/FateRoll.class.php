@@ -55,7 +55,7 @@
 				else echo 'Secret Roll';
 				echo $hidden?'</span>':'';
 				echo '</p>';
-				if ($this->visibility <= 1 || $showAll) {
+				if ($this->visibility <= 1 || $this->visibility == 4 || $showAll) {
 					echo '<div class="rollResults">';
 					foreach ($this->rolls as $count => $roll) {
 						echo "<div class=\"fate_dice {$this->sMap[$roll]}\">";
@@ -66,7 +66,7 @@
 					}
 					echo '</div>';
 				}
-				if ($this->visibility == 0 || $showAll) {
+				if ($this->visibility == 0 || $this->visibility == 4 || $showAll) {
 					echo '<p>';
 					if ($this->visibility != 0) echo '<span class="hidden">';
 					echo "{$totals[1]} Positive, {$totals[0]} Blank, {$totals[-1]} Negative - Total: ".showSign($sum);

@@ -795,6 +795,7 @@
 		display: flex;
 		justify-content: flex-end;
 		margin-right: 20px;
+		margin-top:1em;
 	}
 
 	#poll {
@@ -1652,7 +1653,7 @@
 	border: solid 1px #400;
 	padding: 10px;
 	border-radius: 0.5em;
-	margin-top: .2rem;
+	margin-top: .7rem;
 	z-index: 1;
 
 	h3 {
@@ -1677,6 +1678,12 @@
 	display: inline-block;
 	width: 290px;
 	margin-bottom: 1em;
+	padding-right: 1em;
+	box-sizing: border-box;
+
+	select{
+		max-width: 100%;
+	}
 }
 .roller.skill {
 	width: 210px;
@@ -2245,12 +2252,13 @@ body #page_forum_thread .postBlock.postPreview{
 	color: #888;
 	text-align: center;
 	cursor: pointer;
+	white-space: nowrap;
 	span{
 		&:before,&:after{
 			content: "    ";
 			height:1px;
 			border-bottom:solid 1px;
-			width: 100px;
+			width: 80px;
 			display: inline-block;
 			margin: 0 10px;
 			vertical-align: middle;
