@@ -68,7 +68,7 @@
 						<div class="gameLogo"><img ng-src="/images/logos/{{system.system.slug}}.png"></div>
 						<div class="gameInfo">
 							<p ng-bind-html="system.system.name"></p>
-							<p>{{system.numGames}} games<span ng-if="system.numGames > 1">s</span> - {{system.percentage}}%</p>
+							<p>{{system.numGames}} game<span ng-if="system.numGames > 1">s</span> - {{system.percentage}}%</p>
 						</div>
 					</div>
 					<div ng-if="games.length == 0">{{user.username}} has not yet run any games.</div>
