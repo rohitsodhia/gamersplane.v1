@@ -14,10 +14,14 @@
 				<div class="details">
 					<div class="tr">
 						<div class="title">Member Since</div>
-						<div>{{user.joinDate | amUtc | amLocal | amDateFormat:'MMMM D, YYYY h:mm a'}}</div>
+						<div>{{user.joinDate | amUtc | amLocal | amDateFormat:'MMMM D, YYYY'}}</div>
+					</div>
+					<div ng-if="user.lastInactivity" class="tr">
+						<div class="title">Inactive</div>
+						<div ng-bind-html="user.lastInactivity | trustHTML"></div>
 					</div>
 					<div ng-if="user.lastActivity" class="tr">
-						<div class="title">Inactive</div>
+						<div class="title">Last activity</div>
 						<div ng-bind-html="user.lastActivity | trustHTML"></div>
 					</div>
 					<div ng-if="user.pronoun" class="tr">
@@ -52,7 +56,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="activeGames"  ng-if="activeGames.length">
+			<div class="activeGames userInfoBox"  ng-if="activeGames.length">
 				<h2 class="headerbar hbDark">Active Games</h2>
 				<p>Game activity this week</p>
 				<ul>
