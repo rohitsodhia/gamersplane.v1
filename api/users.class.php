@@ -490,6 +490,29 @@
 			}
 
 			$postCount = $mysql->query("SELECT COUNT(postID) FROM posts WHERE authorID = {$userID}")->fetchColumn();
+			$communityPostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NULL")->fetchColumn();
+			$gamePostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NOT NULL")->fetchColumn();
+			$activeGames = $mysql->query("SELECT forums.gameID, count(posts.postID) AS postCount FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE (authorID = {$userID}) AND (forums.gameID IS NOT NULL) AND (posts.datePosted > NOW() - INTERVAL 1 WEEK) GROUP BY forums.gameID ORDER BY forums.title")->fetchAll();
+
+			$activeGameRet=[];
+			foreach($activeGames as $activeGame){
+				$rGame = $mongo->games->findOne(['gameID' => (int)$activeGame['gameID']]);
+				if($rGame){
+					$agTitle = printReady($rGame['title']);
+					$agSystem = $rGame['customType'] ? $rGame['customType'] : $systems->getFullName($rGame['system']);
+					$readPermissions = $mysql->query("SELECT `read` FROM forums_permissions_general WHERE forumID = {$rGame['forumID']} LIMIT 1")->fetchColumn();
+					$agForumID = $readPermissions ? $rGame['forumID'] : null;
+
+					$isGM = false;
+					foreach ($rGame['players'] as $player) {
+						if ($userID == $player['user']['userID'] && $player['isGM']) {
+							$isGM = true;
+						}
+					}
+
+					$activeGameRet[] = ['gameID' => (int)$activeGame['gameID'], 'title' => $agTitle, 'system' => $agSystem, 'posts'=>$activeGame['postCount'], 'isGM' => $isGM, 'forumID' => $agForumID ];
+				}
+			}
 
 			$rCharacters = $mongo->characters->find(
 				['user.userID' => $userID, 'retired' => null],
@@ -544,9 +567,10 @@
 			}
 
 			displayJSON([
-				'posts' => ['count' => $postCount],
+				'posts' => ['count' => $postCount, 'communityCount' => $communityPostCount, 'gameCount' => $gamePostCount],
 				'characters' => ['numChars' => $numChars, 'list' => $characters],
-				'games' => ['numGames' => $numGames, 'list' => $games]
+				'games' => ['numGames' => $numGames, 'list' => $games],
+				'activeGames' => $activeGameRet
 			]);
 		}
 
