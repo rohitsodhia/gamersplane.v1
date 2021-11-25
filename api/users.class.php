@@ -510,7 +510,7 @@
 						}
 					}
 
-					$activeGameRet[] = ['gameID' => (int)$activeGame['gameID'], 'title' => $agTitle, 'system' => $agSystem, 'posts'=>$activeGame['postCount'], 'isGM' => $isGM, 'forumID' => $agForumID ];
+					$activeGameRet[] = ['gameID' => (int)$activeGame['gameID'], 'title' => $agTitle, 'system' => $agSystem, 'isGM' => $isGM, 'forumID' => $agForumID ];
 				}
 			}
 
