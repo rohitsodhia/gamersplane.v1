@@ -227,7 +227,8 @@
 						<div class="postContent">
 							<div class="postPoint point<?=$postSide == 'Right' ? 'Left' : 'Right'?>"></div>
 							<header class="postHeader">
-								<div class="postedOn convertTZ"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
+								<div class="postedOn convertTZ mob-hide"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
+								<div class="postedOn non-mob-hide"><a class="convertTZ" href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></a></div>
 								<div class="subject"><a href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=strlen($post->title) ? printReady($post->title) : '&nbsp'?></a></div>
 							</header>
 <?php
@@ -253,7 +254,7 @@
 	 		}
 
 			if (sizeof($post->draws)) {
-				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]'];
+				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]', '[Hidden Reason]'];
 				$hidden = false;
 ?>
 							<h4>Deck Draws</h4>
@@ -295,7 +296,7 @@
 			if($isLastPost){
 				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Mark as unread</a>\n";
 			}
-			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'\">Quote</span>\n";
+			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'>Quote</span>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
 				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";

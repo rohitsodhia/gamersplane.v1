@@ -222,7 +222,7 @@ $(function () {
 						var location=getGmSheetLocation(gmSheetObject);
 						if(!discoveredLocations.includes(location)){
 							var shortCutDiv=$('<li class="gmSheet"></li>').appendTo(gmSheetSection);
-							shortCutDiv.text(gmSheet);
+							shortCutDiv.text(Object.getOwnPropertyNames(gmSheetObject)[0]);
 							shortCutDiv.data('rulejson', JSON.stringify(gmSheetObject));
 							discoveredLocations.push(location);
 						}
@@ -242,7 +242,7 @@ $(function () {
 				curObject=JSON.parse(curJson);
 			}
 
-			$.extend(true,curObject,{background:{},diceRules:[],characterSheetIntegration:{gmSheets:[]}});
+			$.extend(true,curObject,{background:{},diceRules:[],characterSheetIntegration:{gmSheets:[]},diceDefaults:{}});
 
 			if(!curObject.background.image){
 				curObject.background.image='';
@@ -313,6 +313,16 @@ $(function () {
 		}
 	});
 
+	$('input#rerollAcesDefault').on('click',function(){
+		var curObject=getCurrentAdr();
+		if(curObject){
+			curObject.diceDefaults.rerollAces=$(this).prop('checked');
+			setAdrText(curObject);
+			$('#gameOptions').updateFields();
+		}
+	});
+
+
 	var setAdrText=function(obj){
 		var val=JSON.stringify(obj,null, 2);
 		val=val.replace(/{\s*/gms, "{");
@@ -358,6 +368,10 @@ $(function () {
 
 			if(gameOptions && gameOptions.characterSheetIntegration && gameOptions.characterSheetIntegration.gmExcludePcs){
 				$('input#gmExcludePcs').prop('checked',true);
+			}
+
+			if(gameOptions && gameOptions.diceDefaults && gameOptions.diceDefaults.rerollAces){
+				$('input#rerollAcesDefault').prop('checked',true);
 			}
 
 			if(gameOptions && gameOptions.characterSheetIntegration && gameOptions.characterSheetIntegration.gmSheets && Array.isArray(gameOptions.characterSheetIntegration.gmSheets)){

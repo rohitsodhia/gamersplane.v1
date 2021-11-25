@@ -80,16 +80,16 @@
 				else echo 'Secret Roll';
 				echo $hidden?'</span>':'';
 				echo '</p>';
-				if ($this->visibility <= 1 || $showAll) {
+				if ($this->visibility <= 1  || $this->visibility == 4 || $showAll) {
 					echo '<div class="rollResults">';
 					foreach ($this->rolls as $count => $roll) {
 						echo "<div class=\"starwarsffg_dice {$roll['die']} {$roll['result']}\">";
-						if ($this->visibility == 0 || $showAll) echo '<div></div>';
+						if ($this->visibility == 0 || $this->visibility == 4 || $showAll) echo '<div></div>';
 						echo '</div>';
 					}
 					echo '</div>';
 				}
-				if ($this->visibility == 0 || $showAll) {
+				if ($this->visibility == 0 || $this->visibility == 4 || $showAll) {
 					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
 					if ($this->totals['success'])
 						$totalString .= $this->totals['success'].' Success, ';
@@ -109,7 +109,7 @@
 						$totalString .= $this->totals['blackDot'].' Black Force Point'.($this->totals['blackDot'] > 1?'s':'').', ';
 					echo substr($totalString, 0, -2);
 					echo '</p>';
-					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
+					echo '<p'.(($this->visibility > 0 && $this->visibility <4 )?' class="hidden"':'').'>';
 					$totalString = '';
 					if ($this->totals['success'] != $this->totals['failure'])
 						$totalString .= abs($this->totals['success'] - $this->totals['failure']).' '.($this->totals['success'] > $this->totals['failure']?'Success':'Failure').', ';

@@ -10,7 +10,7 @@
 		protected $dice = array();
 		protected $reason = '';
 		protected $visibility = self::VIS_HIDE_NONE;
-		protected $visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]');
+		protected $visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]', '[Hidden Reason]');
 
 		abstract function __construct();
 
@@ -33,11 +33,11 @@
 		function setVisibility($visibility) {
 			$this->visibility = $visibility;
 		}
-		
+
 		function getVisibility() {
 			return $this->visibility;
 		}
-		
+
 		abstract function getResults();
 
 		function getData() {

@@ -28,8 +28,8 @@
 				displayJSON($this->getPostPreview($_POST['postText'],$_POST['postAsId'], $_POST['postAsName']));
 			} elseif ($pathOptions[0] == 'pollVote') {
 				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti']));
-			} elseif ($pathOptions[0] == 'ftReindex') {
-				displayJSON($this->ftReindex( $_POST['fromId'], $_POST['toId']));
+//			} elseif ($pathOptions[0] == 'ftReindex') {
+//				displayJSON($this->ftReindex( $_POST['fromId'], $_POST['toId']));
 			}else {
 				displayJSON(['failed' => true]);
 			}
@@ -420,6 +420,7 @@
 			}
 		}
 
+		/*
 		public function ftReindex($fromId, $toId){
 			global $mysql;
 
@@ -433,5 +434,6 @@
 
 			return null;
 		}
+		*/
 	}
 ?>

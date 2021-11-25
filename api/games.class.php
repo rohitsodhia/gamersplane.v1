@@ -456,10 +456,12 @@ class games
 		if (strlen($details['title']) == 0) {
 			$errors[] = 'invalidTitle';
 		}
+		/*
 		$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title AND gameID != ' . $gameID);
 		$titleCheck->execute(array(':title' => $details['title']));
 		if ($titleCheck->rowCount())
 			$errors[] = 'repeatTitle';
+		*/
 		// if ($details['system'] == null && !isset($_POST['save']))
 		// 	$errors[] = 'invalidSystem';
 		if ($details['postFrequency']['timesPer'] <= 0 || !($details['postFrequency']['perPeriod'] == 'd' || $details['postFrequency']['perPeriod'] == 'w')) {

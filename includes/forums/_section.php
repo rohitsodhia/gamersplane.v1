@@ -20,6 +20,7 @@
 										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
 										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
 										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
+										<option value="4"<?=isset($data->visibility) && $data->visibility == 4?' selected="selected"':null?>>Hide Reason</option>
 									</select></div>
 									<div class="reroll"><input type="checkbox" name="rolls[<?=$count?>][options][rerollAces]"<?=isset($data->options['rerollAces'])?' checked="checked"':null?>></div>
 								</div>
@@ -71,6 +72,8 @@
 										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
 										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
 										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
+										<option value="4"<?=isset($data->visibility) && $data->visibility == 4?' selected="selected"':null?>>Hide Reason</option>
+
 									</select></div>
 								</div>
 							</div>
@@ -94,6 +97,7 @@
 										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
 										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
 										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
+										<option value="4"<?=isset($data->visibility) && $data->visibility == 4?' selected="selected"':null?>>Hide Reason</option>
 									</select></div>
 								</div>
 							</div>
@@ -123,6 +127,7 @@
 										<option value="1"<?=isset($data->visibility) && $data->visibility == 1?' selected="selected"':null?>>Hide Roll/Result</option>
 										<option value="2"<?=isset($data->visibility) && $data->visibility == 2?' selected="selected"':null?>>Hide Dice &amp; Roll</option>
 										<option value="3"<?=isset($data->visibility) && $data->visibility == 3?' selected="selected"':null?>>Hide Everything</option>
+										<option value="4"<?=isset($data->visibility) && $data->visibility == 4?' selected="selected"':null?>>Hide Reason</option>
 									</select></div>
 								</div>
 							</div>
