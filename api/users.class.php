@@ -39,10 +39,9 @@
 		public function gamersList() {
 			$mysql = DB::conn('mysql');
 
-			$page = isset($_POST['page']) && intval($_POST['page']) > 0 ? intval($_POST['page']) : 1;
-			$total = $mysql->query("SELECT COUNT(userID) FROM users WHERE activatedOn IS NOT NULL" . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : ''))->fetchColumn();
-			$rUsers = $mysql->query('SELECT userID, username, lastActivity, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users WHERE activatedOn IS NOT NULL' . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : '').' ORDER BY online DESC, username LIMIT ' . (($page - 1) * self::USERS_PER_PAGE) . ', ' . self::USERS_PER_PAGE)->fetchAll();
+			$rUsers = $mysql->query('SELECT userID, username, lastActivity, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users WHERE activatedOn IS NOT NULL' . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : '').' ORDER BY online DESC, username')->fetchAll();
 			$users = [];
+			$total=0;
 			if (sizeof($rUsers)) {
 				foreach ($rUsers as $user) {
 					$user['userID'] = (int) $user['userID'];
@@ -51,6 +50,7 @@
 					$user['inactive'] = User::inactive($user['lastActivity']);
 					unset($user['lastActivity']);
 					$users[] = $user;
+					$total++;
 				}
 				displayJSON(['users' => $users, 'totalUsers' => (int) $total]);
 			} else
