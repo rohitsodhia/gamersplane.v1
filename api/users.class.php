@@ -63,7 +63,7 @@
 			$mysql = DB::conn('mysql');
 
 			$search = sanitizeString(preg_replace('/[^\w.]/', '', $_GET['search']), 'lower');
-			$fields = isset($_GET['fields']) && strlen($_GET['fields']) ? $_GET['fields'] : 'userID, username';
+			$fields = isset($_GET['fields']) && strlen($_GET['fields']) ? 'userID, username, activatedOn, suspendedUntil, banned' : 'userID, username';
 			if (isset($_GET['exact']) && (bool) $_GET['exact'] == true) {
 				$searchBy = isset($_GET['searchBy']) && in_array($_GET['searchBy'], ['username', 'userID']) ? $_GET['searchBy'] : 'username';
 				if ($searchBy == 'userID') {
