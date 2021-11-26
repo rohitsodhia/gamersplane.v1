@@ -49,7 +49,7 @@
 
 			if($gamer){
 				$badges='';
-				if (strtotime('-7 Days') < strtotime($currentUser->joinDate)){
+				if (strtotime('-14 Days') < strtotime($currentUser->joinDate)){
 					$badges='<span class="badge badge-newMember">New member</span>';
 				}
 				?>
