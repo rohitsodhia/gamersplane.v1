@@ -57,6 +57,7 @@ $(function() {
 	$('#addRoll button').click(function (e) {
 		e.preventDefault();
 
+		rollCount += 1;
 		$.post('/forums/ajax/addRoll/', { count: rollCount, type: $addRoll_type.val() }, function (data) {
 			$newRow = $(data);
 
@@ -67,7 +68,6 @@ $(function() {
 			$newRow.find('input[type="checkbox"]').prettyCheckbox();
 			$newRow.find('select').prettySelect();
 			$newRow.appendTo($newRolls);
-			rollCount += 1;
 		});
 	});
 
@@ -401,6 +401,7 @@ $(function() {
 
 			var addRollToList = function (reason, roll) {
 
+				rollCount += 1;
 				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'basic' }, function (data) {
 					$newRow = $(data);
 					if(gameOptions && gameOptions.diceDefaults && gameOptions.diceDefaults.rerollAces){
@@ -411,7 +412,6 @@ $(function() {
 					$newRow.find('.reason input').val(reason);
 					$newRow.find('.roll input').val(roll);
 					$newRow.appendTo($newRolls);
-					rollCount += 1;
 				});
 			};
 
