@@ -48,7 +48,7 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 		if (diff < 14)
 		{
 			if(diffSeconds<=86400){
-				return "Less than 1 day ago";
+				return "< 1 day ago";
 			} else if(diffSeconds<=(86400*2)){
 				return "1 day ago";
 			} else {
