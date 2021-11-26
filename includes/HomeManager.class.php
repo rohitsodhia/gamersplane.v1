@@ -36,6 +36,47 @@
 <?
         }
 
+		public function addLookingForAGame($announcementClass){
+            global $mysql,$currentUser;
+			$gamer = $mysql->query("SELECT lfgMeta.metaValue AS lfgStatus, users.userID, users.username, users.joinDate, gamesMeta.metaValue AS games, users.avatarExt, avatarExt.metaValue AS avatarExt FROM usermeta AS lfgMeta INNER JOIN users ON lfgMeta.userID = users.userID INNER JOIN usermeta AS gamesMeta ON users.userID = gamesMeta.userID INNER JOIN usermeta AS avatarExt ON users.userID = avatarExt.userID WHERE (gamesMeta.metaKey = 'games') AND (lfgMeta.metaKey = 'lookingForAGame') AND (avatarExt.metaKey = 'avatarExt') AND (users.lastActivity >= UTC_TIMESTAMP() - INTERVAL 1 WEEK) ORDER BY RAND() LIMIT 1;")->fetch(PDO::FETCH_OBJ);
+
+			?>
+			<div class="announcements <?=$announcementClass?>">
+				<h3 class="headerbar lfgheaderbar"><i class="ra ra-health"></i> <a href="/ucp">Looking for a game</a></h3>
+				<div class="lfgSection">
+<?
+
+
+			if($gamer){
+				$badges='';
+				if (strtotime('-7 Days') < strtotime($currentUser->joinDate)){
+					$badges='<span class="badge badge-newMember">New member</span>';
+				}
+				?>
+					<div class="lfgLhs">
+						<a href="/user/<?=$gamer->userID?>/"><img src="/ucp/avatars/<?=$gamer->userID?>.<?=$gamer->avatarExt?>" onerror="this.onerror=null;this.src='/ucp/avatars/avatar.png';"/></a>
+						<?=$badges?>
+					</div>
+					<div class="lfgRhs">
+						<h3><a href="/user/<?=$gamer->userID?>/"><?=$gamer->username?></a></h3>
+						<div class="lfgGame"><?=$gamer->games?></div>
+						<hr/>
+						<p class="lfgActions"><a href="/pms/send/?userID=<?=$gamer->userID?>/"><i class="ra ra-quill-ink"></i> Send <?=$gamer->username?> a message</a></p>
+					</div>
+				<?
+			} else {
+				?>
+					<div class="noLfg">It looks like nobody is looking for a game at the moment.
+						<hr/>
+					<p class="alignRight"><a href="/ucp">Change your looking for a game status.</a></p></div>
+				<?
+			}
+			?>
+			</div>
+			</div>
+			<?
+		}
+
 		public function addLatestGames($showCount){
 			global $mongo,$currentUser,$systems;
 

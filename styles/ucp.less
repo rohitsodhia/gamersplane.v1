@@ -132,6 +132,44 @@ input[type="checkbox"] {
 	margin-left: 235px;
 }
 
+#lookingForAGame {
+	h2{
+		i {
+			display: none;
+		}
+
+		&.lookingForAGame {
+			background-color: @gp-lfg;
+
+			i {
+				display: inline-block;
+			}
+
+			&:before,
+			&:after {
+				background-color: @gp-lfg;
+			}
+		}
+	}
+
+	.tr {
+		display: flex;
+
+		.verticalLabel{
+			align-self: center;
+		}
+
+		textarea {
+			flex-grow: 1;
+			margin-right: 20px;
+		}
+
+		button {
+			align-self: flex-start;
+		}
+	}
+}
+
 @media only screen and (max-width: @mobile-breakpoint){
 	.tr>*{
 		text-align: left;
@@ -146,5 +184,19 @@ input[type="checkbox"] {
 	input[type="text"],
 	input[type="password"]{
 		width:100%;
+	}
+
+	#lookingForAGame {
+		.tr{
+			flex-direction: column;
+
+			.verticalLabel{
+				align-self: flex-start;
+			}
+
+			textarea {
+				margin-right: 0px;
+			}
+		}
 	}
 }

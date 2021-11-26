@@ -12,7 +12,6 @@
 
 	.avatar {
 		padding: 5px;
-		border: 1px solid #777;
 		-webkit-border-radius: 5px;
 		-moz-border-radius: 5px;
 		border-radius: 5px;
@@ -148,6 +147,32 @@
 				}
 			}
 		}
+	}
+}
+
+#lookingForAGame {
+	h2{
+		i {
+			display: none;
+		}
+
+		&.lookingForAGame {
+			background-color: @gp-lfg;
+
+			i {
+				display: inline-block;
+			}
+
+			&:before,
+			&:after {
+				background-color: @gp-lfg;
+			}
+		}
+	}
+
+	div {
+		white-space: pre-wrap;
+		line-height: 1.8em;
 	}
 }
 

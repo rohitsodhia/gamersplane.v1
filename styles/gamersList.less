@@ -2,6 +2,7 @@
 	Gamers List CSS Stylesheet
 	Created by RhoVisions, designer Rohit Sodhia
 */
+@import "gpVariables.less";
 
 #page_gamersList {
 	label {
@@ -46,15 +47,28 @@
 		}
 	}
 
-	.onlineIndicator {
+	.onlineIndicator,
+	.lfgIndicator {
 		position: absolute;
 		top: 5px;
-		right: 5px;
+		z-index: 10;
+	}
+
+	.lfgIndicator {
+		background-color: @gp-lfg;
+		color: #fff;
+		left: 5px;
+		padding: 1px 3px 0px 3px;
+		border-radius: 50%;
+	}
+
+	.onlineIndicator {
 		width: 10px;
 		height: 10px;
-		z-index: 10;
+		right: 5px;
 		background: url('../images/onlineIndicator.jpg') top left no-repeat;
 	}
+
 
 	.avatar {
 		display: block;

@@ -7,13 +7,18 @@
 				<pretty-checkbox checkbox="showInactive"></pretty-checkbox>
 				<span class="labelText">Show inactive users</span>
 			</label>
+			<label>
+				<pretty-checkbox checkbox="lookingForAGame"></pretty-checkbox>
+				<span class="labelText">Looking for a game</span>
+			</label>
 			<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate>
 		</p>
 		<ul id="gamersList" hb-margined>
-			<li ng-repeat="user in users| filter:{ $ : filter.search }| paginateItems: 25:(pagination.current - 1) * 25" ng-class="{ 'last': $index % 5 == 4 }">
+			<li ng-repeat="user in users| filter:filterItems| paginateItems: 25:(pagination.current - 1) * 25" ng-class="{ 'last': $index % 5 == 4 }">
 				<div class="onlineIndicator" ng-class="{ 'online': user.online, 'offline': !user.online }"></div>
+				<div class="lfgIndicator" ng-if="user.lfgStatus"><i class="ra ra-health"></i></div>
 				<a href="/user/{{user.userID}}/" class="avatar">
-					<img src="{{user.avatar}}">
+					<img src="{{user.avatar}}" on-error-src="/ucp/avatars/avatar.png"/>
 				</a>
 				<p><a href="/user/{{user.userID}}/">{{user.username}}</a><span ng-bind-html="user.inactive | trustHTML"></span></p>
 			</li>

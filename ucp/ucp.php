@@ -51,10 +51,6 @@
 					<div><input type="text" ng-model="user.stream"></div>
 				</div>
 				<div class="tr">
-					<label>What games are you into?</label>
-					<div><input type="text" ng-model="user.games"></div>
-				</div>
-				<div class="tr">
 					<label>Receive PM emails?</label>
 					<div>
 						<label for>
@@ -92,6 +88,22 @@
 					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
 				</div>
 			</div>
+
+			<div id="lookingForAGame">
+				<h2 class="headerbar hbDark" ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> Looking for a game</h2>
+				<div class="tr">
+					<label class="verticalLabel">Looking for a game?</label>
+					<select class="notPretty" ng-model="user.lookingForAGame"><option value="0">I'm not looking for a game</option><option value="5">I'm looking for a game</option></select>
+				</div>
+				<div class="tr">
+					<label>What games are you into?</label>
+					<textarea ng-model="user.games"></textarea>
+				</div>
+				<div class="tr submitDiv">
+					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
+				</div>
+			</div>
+
 
 			<div id="security">
 				<h2 class="headerbar hbDark">Security</h2>

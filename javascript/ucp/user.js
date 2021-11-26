@@ -3,7 +3,7 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 	CurrentUser.load().then(function () {
 		$scope.user = null;
 		$scope.systems = {};
-		$scope.profileFields = { 'location': 'Location', 'aim': 'AIM', 'yahoo': 'Yahoo!', 'msn': 'MSN', 'games': 'Games' };
+		$scope.profileFields = { 'location': 'Location', 'aim': 'AIM', 'yahoo': 'Yahoo!', 'msn': 'MSN' };
 
 		pathElements = getPathElements();
 		userID = null;

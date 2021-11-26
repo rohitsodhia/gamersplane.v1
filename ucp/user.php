@@ -39,6 +39,11 @@
 				</div>
 			</div>
 
+			<div id="lookingForAGame" class="userInfoBox">
+				<h2 class="headerbar hbDark"ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> {{ user.lookingForAGame==0 ? "I'm not looking for a game" : "I'm looking for a game" }}</h2>
+				<div>{{user.games}}</div>
+			</div>
+
 			<div id="forumStats" class="userInfoBox">
 				<h2 class="headerbar hbDark">Forum Stats</h2>
 				<div class="details clearfix" hb-margined>
