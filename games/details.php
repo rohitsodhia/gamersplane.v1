@@ -236,7 +236,7 @@
 								<button type="submit" name="apply" class="fancyButton" ng-if="!details.recruitmentThreadId">Apply to Game</button>
 								<div class="alignRight" ng-if="details.recruitmentThreadId">
 									<hr/>
-									<a href="" onclick="this.closest('form').submit();return false;">Apply to game</a>
+									<a href="" onclick="$(this).closest('form').submit();return false;">Apply to game</a>
 								</div>
 							</form>
 						</div>
