@@ -419,8 +419,8 @@
 			}
 			$user->updateUsermeta('warnUnsaved', sanitizeString($details['warnUnsaved']),true);
 
-			if ($details['lookingForAGame'] == 'null') {
-				$details['lookingForAGame'] = '0';
+			if ($details['lookingForAGame'] == 'null' || $details['lookingForAGame'] == '0') {
+				$details['lookingForAGame'] = '';
 			}
 			$user->updateUsermeta('lookingForAGame', $details['lookingForAGame'],true);
 
