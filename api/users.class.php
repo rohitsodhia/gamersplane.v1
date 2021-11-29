@@ -76,7 +76,7 @@
 				if ($user) {
 					$user['userID'] = (int) $user['userID'];
 					if (isset($user['activatedOn'])) {
-						$user['activatedOn'] = strtotime($user['activatedOn']);
+						$user['activatedOn'] = strtotime('2020-04-01'); //only checking if null
 					}
 					if (isset($user['suspendedUntil']) && $user['suspendedUntil'] != null) {
 						$user['suspendedUntil'] = strtotime($user['suspendedUntil']);
@@ -114,7 +114,7 @@
 					foreach ($valid as $user) {
 						$user['userID'] = (int) $user['userID'];
 						if (isset($user['activatedOn'])) {
-							$user['activatedOn'] = strtotime($user['activatedOn']);
+							$user['activatedOn'] = strtotime('2020-04-01');  //only checking if null
 						}
 						if (isset($user['suspendedUntil']) && $user['suspendedUntil'] != null) {
 							$user['suspendedUntil'] = strtotime($user['suspendedUntil']);
