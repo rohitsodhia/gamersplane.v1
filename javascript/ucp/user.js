@@ -3,7 +3,7 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 	CurrentUser.load().then(function () {
 		$scope.user = null;
 		$scope.systems = {};
-		$scope.profileFields = { 'location': 'Location', 'aim': 'AIM', 'yahoo': 'Yahoo!', 'msn': 'MSN', 'games': 'Games' };
+		$scope.profileFields = { 'location': 'Location', 'aim': 'AIM', 'yahoo': 'Yahoo!', 'msn': 'MSN' };
 
 		pathElements = getPathElements();
 		userID = null;
@@ -12,7 +12,8 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 		UsersService.get(userID).then(function (data) {
 			if (data) {
 				$scope.user = data;
-				$scope.user.lastActivity = UsersService.inactive($scope.user.lastActivity, false);
+				$scope.user.lastInactivity = UsersService.inactive($scope.user.lastActivity, false);
+				$scope.user.lastActivity = lastActiveText($scope.user.lastActivity);
 				$http.post(API_HOST + '/users/stats/', { userID: userID }).then(function (response) {
 					$scope.characters = response.data.characters.list;
 					$scope.posts = {
@@ -35,4 +36,27 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 			}
 		});
 	});
+
+	var lastActiveText = function(lastActivity){
+		if (typeof lastActivity == 'number')
+			lastActivity *= 1000;
+		lastActivity = moment(lastActivity);
+		var now = moment();
+		var diff = now - lastActivity;
+		var diffSeconds = Math.floor(diff / 1000);
+		diff = Math.floor(diffSeconds / (60 * 60 * 24));
+		if (diff < 14)
+		{
+			if(diffSeconds<=86400){
+				return "< 1 day ago";
+			} else if(diffSeconds<=(86400*2)){
+				return "1 day ago";
+			} else {
+				return diff + " days ago";
+			}
+		}
+
+		return null;
+	};
+
 }]);

@@ -22,11 +22,16 @@
 						</div>
 						<div class="info">
 							<h2 ng-bind-html="system.fullName | trustHTML"></h2>
-							<div class="tr publisher" ng-if="system.publisher.name.length">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
-							<div class="tr genres" ng-if="system.genres.length">Genre<span ng-if="system.genres.length > 1">s</span>: <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
-							<div class="tr basics" ng-if="system.basics.length">
-								<h3>Buy the Basics!</h3>
-								<p ng-repeat="basic in system.basics"><a href="{{basic.site}}" target="_blank" ng-bind-html="basic.text | trustHTML"></a></p>
+							<div ng-if="system.fullName=='Custom'">
+								<br/>Play any type of game you want, from niche indie games to that one big system we forgot to list. You will have the option to freely enter any system name you want to your game.
+							</div>
+							<div ng-if="system.fullName!='Custom'">
+								<div class="tr publisher" ng-if="system.publisher.name.length">Publisher: <span ng-bind-html="wrapPublisher(system)"></span></div>
+								<div class="tr genres" ng-if="system.genres.length">Genre<span ng-if="system.genres.length > 1">s</span>: <span ng-repeat="genre in system.genres">{{genre}}{{$last?'':','}}</span></div>
+								<div class="tr basics" ng-if="system.basics.length">
+									<h3>Buy the Basics!</h3>
+									<p ng-repeat="basic in system.basics"><a href="{{basic.site}}" target="_blank" ng-bind-html="basic.text | trustHTML"></a></p>
+								</div>
 							</div>
 						</div>
 					</div>

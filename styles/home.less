@@ -136,6 +136,33 @@
 	}
 }
 
+.lfgSection {
+	display: flex;
+	.lfgLhs {
+		width: 30%;
+		min-width: 110px;
+		margin-top: 10px;
+		text-align: center;
+
+		img {
+			max-width: 100%;
+		}
+
+		.badge-newMember{
+			//.badgeColor(@gp-notify-header);
+			.badgeColor(@gp-green-darkest);
+		}
+	}
+	.lfgRhs {
+		flex-grow: 1;
+		padding:10px 20px;
+
+		.lfgActions{
+			text-align: right;
+		}
+	}
+}
+
 #yourGames {
 	.trapezoid,
 	.hbDark {
@@ -252,4 +279,14 @@ h3 {
 			background-color: @gp-red;
 		}
 	}
+
+	&.lfgheaderbar {
+		background-color: @gp-lfg;
+		&:before,
+		&:after {
+			background-color: @gp-lfg;
+		}
+	}
+
+
 }

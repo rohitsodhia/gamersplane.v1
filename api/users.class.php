@@ -39,18 +39,19 @@
 		public function gamersList() {
 			$mysql = DB::conn('mysql');
 
-			$page = isset($_POST['page']) && intval($_POST['page']) > 0 ? intval($_POST['page']) : 1;
-			$total = $mysql->query("SELECT COUNT(userID) FROM users WHERE activatedOn IS NOT NULL" . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : ''))->fetchColumn();
-			$rUsers = $mysql->query('SELECT userID, username, lastActivity, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, joinDate FROM users WHERE activatedOn IS NOT NULL' . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : '').' ORDER BY online DESC, username LIMIT ' . (($page - 1) * self::USERS_PER_PAGE) . ', ' . self::USERS_PER_PAGE)->fetchAll();
+			$rUsers = $mysql->query('SELECT users.userID, users.username, users.lastActivity, users.joinDate, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, avatar.avatarExt, lfg.lfgStatus FROM users LEFT OUTER JOIN (SELECT userID, metaValue AS lfgStatus FROM usermeta AS usermeta_lfg WHERE (metaKey = "lookingForAGame")) AS lfg ON users.userID = lfg.userID LEFT OUTER JOIN (SELECT userID, metaValue AS avatarExt FROM usermeta AS usermeta_ava WHERE (metaKey = "avatarExt")) AS avatar ON users.userID = avatar.userID WHERE activatedOn IS NOT NULL' . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : '').' ORDER BY online DESC, username')->fetchAll();
 			$users = [];
+			$total=0;
 			if (sizeof($rUsers)) {
 				foreach ($rUsers as $user) {
 					$user['userID'] = (int) $user['userID'];
 					$user['online'] = (bool) $user['online'];
-					$user['avatar'] = User::getAvatar($user['userID']);
+					$user['avatar'] = $user['avatarExt']? "/ucp/avatars/{$user['userID']}.{$user['avatarExt']}": "/ucp/avatars/avatar.png";
 					$user['inactive'] = User::inactive($user['lastActivity']);
 					unset($user['lastActivity']);
+					unset($user['avatarExt']);
 					$users[] = $user;
+					$total++;
 				}
 				displayJSON(['users' => $users, 'totalUsers' => (int) $total]);
 			} else
@@ -62,7 +63,7 @@
 			$mysql = DB::conn('mysql');
 
 			$search = sanitizeString(preg_replace('/[^\w.]/', '', $_GET['search']), 'lower');
-			$fields = isset($_GET['fields']) && strlen($_GET['fields']) ? $_GET['fields'] : 'userID, username';
+			$fields = isset($_GET['fields']) && strlen($_GET['fields']) ? 'userID, username, activatedOn, suspendedUntil, banned' : 'userID, username';
 			if (isset($_GET['exact']) && (bool) $_GET['exact'] == true) {
 				$searchBy = isset($_GET['searchBy']) && in_array($_GET['searchBy'], ['username', 'userID']) ? $_GET['searchBy'] : 'username';
 				if ($searchBy == 'userID') {
@@ -75,7 +76,7 @@
 				if ($user) {
 					$user['userID'] = (int) $user['userID'];
 					if (isset($user['activatedOn'])) {
-						$user['activatedOn'] = strtotime($user['activatedOn']);
+						$user['activatedOn'] = strtotime('2020-04-01'); //only checking if null
 					}
 					if (isset($user['suspendedUntil']) && $user['suspendedUntil'] != null) {
 						$user['suspendedUntil'] = strtotime($user['suspendedUntil']);
@@ -113,7 +114,7 @@
 					foreach ($valid as $user) {
 						$user['userID'] = (int) $user['userID'];
 						if (isset($user['activatedOn'])) {
-							$user['activatedOn'] = strtotime($user['activatedOn']);
+							$user['activatedOn'] = strtotime('2020-04-01');  //only checking if null
 						}
 						if (isset($user['suspendedUntil']) && $user['suspendedUntil'] != null) {
 							$user['suspendedUntil'] = strtotime($user['suspendedUntil']);
@@ -255,7 +256,8 @@
 				'stream' => $user->stream,
 				'games' => $user->games,
 				'theme' =>  $user->theme??'',
-				'warnUnsaved' =>  $user->warnUnsaved??''
+				'warnUnsaved' =>  $user->warnUnsaved??'',
+				'lookingForAGame' => $user->lookingForAGame ? $user->lookingForAGame : "0",
 			];
 			if ($getAll) {
 				$details = array_merge($details, [
@@ -417,6 +419,11 @@
 			}
 			$user->updateUsermeta('warnUnsaved', sanitizeString($details['warnUnsaved']),true);
 
+			if ($details['lookingForAGame'] == 'null') {
+				$details['lookingForAGame'] = '0';
+			}
+			$user->updateUsermeta('lookingForAGame', $details['lookingForAGame'],true);
+
 			$errors = [];
 			$oldPass = $newPass['oldPassword'];
 			$password1 = $newPass['password1'];
@@ -510,7 +517,7 @@
 						}
 					}
 
-					$activeGameRet[] = ['gameID' => (int)$activeGame['gameID'], 'title' => $agTitle, 'system' => $agSystem, 'posts'=>$activeGame['postCount'], 'isGM' => $isGM, 'forumID' => $agForumID ];
+					$activeGameRet[] = ['gameID' => (int)$activeGame['gameID'], 'title' => $agTitle, 'system' => $agSystem, 'isGM' => $isGM, 'forumID' => $agForumID ];
 				}
 			}
 

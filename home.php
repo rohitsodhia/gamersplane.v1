@@ -13,7 +13,7 @@ $forumSearchGames->findThreads(1, 5);
 
 	<div class="flexWrapper mob-order-3">
 		<?= $homeManager->addAnnouncement(3,'ra-gamers-plane','col-1-2 mob-col-1',false,true);?>
-		<?= $homeManager->addAnnouncement(21,'ra-wooden-sign','col-1-2 mob-col-1',false,true);?>
+		<?= $homeManager->addLookingForAGame('col-1-2 mob-col-1');?>
 	</div>
 	<div class="flexWrapper mob-order-1">
 

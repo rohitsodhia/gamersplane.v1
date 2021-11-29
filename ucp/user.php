@@ -14,10 +14,14 @@
 				<div class="details">
 					<div class="tr">
 						<div class="title">Member Since</div>
-						<div>{{user.joinDate | amUtc | amLocal | amDateFormat:'MMMM D, YYYY h:mm a'}}</div>
+						<div>{{user.joinDate | amUtc | amLocal | amDateFormat:'MMMM D, YYYY'}}</div>
+					</div>
+					<div ng-if="user.lastInactivity" class="tr">
+						<div class="title">Inactive</div>
+						<div ng-bind-html="user.lastInactivity | trustHTML"></div>
 					</div>
 					<div ng-if="user.lastActivity" class="tr">
-						<div class="title">Inactive</div>
+						<div class="title">Last activity</div>
 						<div ng-bind-html="user.lastActivity | trustHTML"></div>
 					</div>
 					<div ng-if="user.pronoun" class="tr">
@@ -33,6 +37,11 @@
 						<div>{{user[field]}}</div>
 					</div>
 				</div>
+			</div>
+
+			<div id="lookingForAGame" class="userInfoBox">
+				<h2 class="headerbar hbDark"ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> {{ user.lookingForAGame==0 ? "I'm not looking for a game" : "I'm looking for a game" }}</h2>
+				<div>{{user.games}}</div>
 			</div>
 
 			<div id="forumStats" class="userInfoBox">
@@ -52,7 +61,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="activeGames"  ng-if="activeGames.length">
+			<div class="activeGames userInfoBox"  ng-if="activeGames.length">
 				<h2 class="headerbar hbDark">Active Games</h2>
 				<p>Game activity this week</p>
 				<ul>
@@ -88,7 +97,7 @@
 						<div class="gameLogo"><img ng-src="/images/logos/{{system.system.slug}}.png"></div>
 						<div class="gameInfo">
 							<p ng-bind-html="system.system.name"></p>
-							<p>{{system.numGames}} games<span ng-if="system.numGames > 1">s</span> - {{system.percentage}}%</p>
+							<p>{{system.numGames}} game<span ng-if="system.numGames > 1">s</span> - {{system.percentage}}%</p>
 						</div>
 					</div>
 					<div ng-if="games.length == 0">{{user.username}} has not yet run any games.</div>

@@ -70,9 +70,11 @@
 			$this->parseRolls($rollData['roll']);
 			$rollData['indivRolls'] = unserialize($rollData['indivRolls']);
 			$rollData['results'] = unserialize($rollData['results']);
-			foreach ($rollData['indivRolls'] as $key => $roll) {
-				$this->rolls[$key]['indivRolls'] = $roll;
-				$this->rolls[$key]['result'] = $rollData['results'][$key];
+			if($rollData['indivRolls']){
+				foreach ($rollData['indivRolls'] as $key => $roll) {
+					$this->rolls[$key]['indivRolls'] = $roll;
+					$this->rolls[$key]['result'] = $rollData['results'][$key];
+				}
 			}
 			$this->setVisibility($rollData['visibility']);
 			$rollData['extras'] = unserialize($rollData['extras']);
