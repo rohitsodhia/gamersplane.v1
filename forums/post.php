@@ -217,6 +217,28 @@
 		<hr>
 
 <?php } ?>
+
+		<div id="page_forum_thread">
+		<div class="postBlock postRight postPreview postAsChar" style="display:none;">
+			<div class="flexWrapper">
+				<div class="posterDetails">
+					<div class="avatar"><div><img src=""></div></div>
+					<div class="postNames">
+						<p class="charName"></p>
+						<p class="posterName"><span>Preview</span></p>
+					</div>
+				</div>
+				<div class="postBody">
+					<div class="postContent">
+						<div class="postPoint pointLeft"></div>
+						<header class="postHeader"><div class="subject">Post Preview</div></header>
+						<div class="post"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
 		<form method="post" action="/forums/process/post/">
 <?php
 	if ($pathOptions[0] == 'newThread') {
@@ -269,7 +291,7 @@
 				<?php }?>
 			</div>
 			<div id="submitDiv" class="alignRight">
-				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton submitButton" accesskey="p">Preview</button>
+				<button id="previewPost" class="fancyButton" accesskey="p" type="button">Preview</button>
 				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton submitButton"><?=$editPost?'Save':'Post'?></button>
             </div>
 
