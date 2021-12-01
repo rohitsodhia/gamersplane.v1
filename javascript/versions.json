@@ -67,7 +67,7 @@
 	"/javascript/markItUp/sets/bbcode/_set-common.js": "3.0.1",
 	"/javascript/markItUp/sets/bbcode/character-set.js": "3.0.1",
 	"/javascript/markItUp/sets/bbcode/set.js": "3.0.1",
-	"/javascript/markItUp/sets/bbcode/game-forum-set.js": "3.0.1",
+	"/javascript/markItUp/sets/bbcode/game-forum-set.js": "3.0.2",
 	"/javascript/pms/delete.js": "1.1.0",
 	"/javascript/pms/list.js": "2.1.0",
 	"/javascript/pms/send.js": "1.1.0",

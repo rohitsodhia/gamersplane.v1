@@ -13,6 +13,7 @@
 var notesdropDown = $('#playerList li').map(function () { return { name: $.trim($(this).text()) }; }).get();
 notesdropDown.push({ name: 'Add note', className: 'playerNoteAdd' });
 notesdropDown.push({ name: 'Private', className: 'playerPrivateAdd' });
+notesdropDown.push({ name: 'Mention', className: 'playerMention' });
 
 mySettings = {
 	previewParserPath: '', // path to your BBCode parser
@@ -74,7 +75,7 @@ mySettings = {
 
 
 $(function () {
-	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd)', function (e) {
+	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd):not(.playerMention)', function (e) {
 		$(this).toggleClass('playerNoteSelected');
 		e.stopPropagation();
 	});
@@ -86,6 +87,12 @@ $(function () {
 		} else {
 			$.markItUp({ openWith: '[note="' + selectedPlayers + '"]', closeWith: '[/note]' });
 		}
+		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
+	});
+
+	$('body').on('click', '.markItUpButton10 ul li.playerMention', function (e) {
+		var selectedPlayers = $('.markItUpButton10 ul li.playerNoteSelected').map(function () { return '@'+$.trim($(this).text()); }).get().join()+' ';
+		$.markItUp({ openWith: selectedPlayers , closeWith: ' ' });
 		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
 	});
 });
