@@ -1,10 +1,18 @@
 <? require_once(FILEROOT.'/header.php'); ?>
 		<h1>Forum Rules</h1>
 
+		<h2>Accounts</h2>
+		<ol>
+			<li>Only join or run games that you intend to see through. Users may need to leave games because they didn't match their expectations, values, or because of unexpected life events. However, it is always unacceptable to join or start a game that you did not intend to finish.</li>
+			<li>Switching to a new account is permissible. People are entitled to a fresh start or to change their username. However, any disciplinary actions that applied to your old account will apply to your new account. Creating accounts to circumvent disciplinary actions or engage in inauthentic behaviour will result in an immediate ban.</li>
+			<li>Do not post on the site from two different account at the same time in secret. If you have more than one account that you are using, please declare this information in your profile and when you apply for or run games so that other users know who they are gaming with.</li>
+		</ol>
+
+		<hr>
 		<h2>General guidelines for the forums</h2>
 		<p>Gamers Plane is open anyone, regardless of age, and as such, members are expected to follow certain guidelines.</p>
 		<ol>
-			<li>Treat all members with respsect.</li>
+			<li>Treat all members with respect.</li>
 			<ol>
 				<li>Any use of racial, ethnic, religious, or gender slurs will not be tolerated.</li>
 			</ol>
@@ -14,13 +22,14 @@
 				<li>No heavy cursing</li>
 				<li>No violence or depictions of violence</li>
 			</ol>
-			<li>Post should not be spammy. Keep a post limited to 3 images, and make them images somewhat relevant.</li>
-			<li>No insulting people, directly or indirectly. Don't insult another player, a players family, a random stranger.</li>
+			<li>Posts should not be spammy. Keep a post limited to 3 images, and make them images somewhat relevant.</li>
+			<li>No insulting people, directly or indirectly. Don't insult another player, a player's family, a random stranger, etc.</li>
 			<li>No hot button topics outside the gaming realm, including but not limited to politics, religion, etc., unless permitted by a moderator.</li>
 			<li>Do not post anything libelous or threatening.</li>
-			<li>No promoting commercial products not sanctioned by GP.</li>
+			<li>Promotion of commercial products may only happen in the designated subforum and only with the moderators’ permission.</li>
 			<li>Any actions meant to harm GP, its server, or its content, or actions meant to circumvent its security are prohibited.</li>
 		</ol>
+		<p>Gamers Plane is explicitly a safe haven to all groups of people, meant to be a stress-free hobby environment. Hot button topics such as politics should be avoided. Despite this, GP does not believe that all opinions are equal and it will always stand for the right of minorities and marginalized groups.</p>
 		<p>I'm sad I have to actually put this as a rule, but if you join Gamers' Plane just to promote material on other play-by-post sites, I will just go ahead and ban your account. I don't mind people talking about other sites, if you're an active participant here. But coming here just to get people away from here is crass and rude.</p>
 
 		<hr>
