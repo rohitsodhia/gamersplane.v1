@@ -111,7 +111,7 @@
 						'label' => true,
 						'user' => true,
 					],
-					'sort' => ['user.username' => 1, 'label' => 1]
+					'sort' => ['user.username' => 1, 'name' => 1]
 				]
 			)->toArray();
 			if (count($characters) && $pathAction != 'characters') {
