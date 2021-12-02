@@ -20,21 +20,23 @@ $(function() {
             },
             data:{ postId: postId, vote:vote, addVote: addVote?1:0, isMulti:isMulti?1:0},
             success:function (data) {
-                $('.pollQuestionResults',postPoll).html('');
-                $('.pollMyVote',postPoll).removeClass('pollMyVote');
+                if(data){
+                    $('.pollQuestionResults',postPoll).html('');
+                    $('.pollMyVote',postPoll).removeClass('pollMyVote');
 
-                $('.pollQuestion',postPoll).each(function(){
-                    var pQ=$(this);
-                    var pThisAnswer=data.votes[pQ.data('q')];
-                    if(pThisAnswer){
-                        if(pThisAnswer.me){
-                            pQ.addClass('pollMyVote');
+                    $('.pollQuestion',postPoll).each(function(){
+                        var pQ=$(this);
+                        var pThisAnswer=data.votes[pQ.data('q')];
+                        if(pThisAnswer){
+                            if(pThisAnswer.me){
+                                pQ.addClass('pollMyVote');
+                            }
+                            for(var i=0;i<pThisAnswer.votes;i++){
+                                $('<i class="ra ra-gamers-plane"></i>').appendTo($('.pollQuestionResults',pQ));
+                            }
                         }
-                        for(var i=0;i<pThisAnswer.votes;i++){
-                            $('<i class="ra ra-gamers-plane"></i>').appendTo($('.pollQuestionResults',pQ));
-                        }
-                    }
-                });
+                    });
+                }
                 postPoll.removeClass('thinking');
             }
         });
