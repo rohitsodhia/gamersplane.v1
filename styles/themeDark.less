@@ -302,11 +302,24 @@ body.modal {
     color: #fff;
 }
 
-.bbTable.bbTableRolls{
-    tr{
-        border-bottom: solid 1px #303136;
+.bbTable{
+    &.bbTableRolls{
+        tr{
+            border-bottom: solid 1px #303136;
 
+        }
     }
+	&.bbTableGrid{
+		td{
+			border:solid 1px #888;
+		}
+	}
+
+	&.bbTableZebra{
+		tr:nth-child(2n+3) {
+			background-color: #2d2e32;
+		}
+	}
 }
 
 #charSheetRoller .bbTableRolls{
