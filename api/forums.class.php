@@ -27,7 +27,7 @@
 			} elseif ($pathOptions[0] == 'getPostPreview') {
 				displayJSON($this->getPostPreview($_POST['postText'],$_POST['postAsId'], $_POST['postAsName']));
 			} elseif ($pathOptions[0] == 'pollVote') {
-				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti']));
+				displayJSON($this->pollVote( $_POST['postId'], $_POST['vote'], $_POST['addVote'], $_POST['isMulti'], $_POST['isPublic']));
 //			} elseif ($pathOptions[0] == 'ftReindex') {
 //				displayJSON($this->ftReindex( $_POST['fromId'], $_POST['toId']));
 			}else {
@@ -364,7 +364,7 @@
 			return $ret;
 		}
 
-		public function pollVote($postID, $vote, $addVote, $isMulti){
+		public function pollVote($postID, $vote, $addVote, $isMulti, $isPublic) {
 			global $currentUser;
 			$mongo = DB::conn('mongo');
 			$post = new Post($postID);
@@ -407,6 +407,7 @@
 								'postID' => (int)$postID,
 								'userID' => $currentUser->userID,
 								'vote' => (int)$vote,
+								'username' => ($isPublic ? $currentUser->username : null)
 							]
 						]],
 						['upsert' => true]

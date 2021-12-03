@@ -6,6 +6,8 @@ $(function() {
         var vote=pThis.data('q');
         var isMulti=postPoll.hasClass('pollAllowMulti');
         var hasVote=pThis.hasClass('pollMyVote');
+        var isPublic=postPoll.hasClass('pollPublic');
+
 
         var addVote=true;
         if(hasVote){
@@ -18,7 +20,7 @@ $(function() {
             xhrFields: {
                 withCredentials: true
             },
-            data:{ postId: postId, vote:vote, addVote: addVote?1:0, isMulti:isMulti?1:0},
+            data:{ postId: postId, vote:vote, addVote: addVote?1:0, isMulti:isMulti?1:0, isPublic:isPublic?1:0},
             success:function (data) {
                 if(data){
                     $('.pollQuestionResults',postPoll).html('');
@@ -32,7 +34,7 @@ $(function() {
                                 pQ.addClass('pollMyVote');
                             }
                             for(var i=0;i<pThisAnswer.votes;i++){
-                                $('<i class="ra ra-gamers-plane"></i>').appendTo($('.pollQuestionResults',pQ));
+                                $('.pollQuestionResults',pQ).html(pThisAnswer.html);
                             }
                         }
                     });
