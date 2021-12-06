@@ -139,6 +139,7 @@ function BBCode2Html($text) {
 					 '/\[email\](.*?)\[\/email\]/ms',
 					 '/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
 					 '/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
+					 '/\[zoommap\="?(.*?)"?\](.*?)\[\/zoommap\]/ms',
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
 //					 '/\[list\](.*?)\[\/list\]/ms',
 //					 '/\[\*\]\s?(.*?)\n/ms',
@@ -162,6 +163,7 @@ function BBCode2Html($text) {
 					 '<a href="mailto:\1">\1</a>',
 					 '<span class="userSize" style="font-size:\1%">\2</span>',
 					 '<span class="userColor" style="color:\1">\2</span>',
+					 '<div class="zoommap" data-mapimage="\1" style="display:none">\2</div>',
 //					 '<ol start="\1">\2</ol>',
 //					 '<ul>\1</ul>',
 //					 '<li>\1</li>',
@@ -194,7 +196,7 @@ function BBCode2Html($text) {
 	$text=preg_replace_callback(array('/\[url\="?(.*?)"?\](.*?)\[\/url\]/ms','/\[url\](.*?)\[\/url\]/ms'), function($matches){
 		$url=$matches[1];
 		$target=' target="_blank"';
-		if(substr( $url, 0, 1 ) === "/" || substr( strtolower($url), 0, 23 ) === "https://gamersplane.com" ){
+		if(substr( $url, 0, 1 ) === "/" || substr( strtolower($url), 0, 23 ) === "https://gamersplane.com" || substr( strtolower($url), 0, 22 ) === "http://gamersplane.com" ){
 			$target='';
 		}
 		$linkText=$url;
