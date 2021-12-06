@@ -109,8 +109,9 @@
 						<span class="skill_total addStat_<?=$skill['stat']?> shortNum lrBuffer"><?=showSign($this->getStatMod($skill['stat'], false) + $skill['ranks'] + $skill['misc'])?></span>
 						<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
 						<span class="skill_ranks alignCenter shortNum lrBuffer"><?=showSign($skill['ranks'])?></span>
-						<span class="skill_error alignCenter medNum lrBuffer"><?=$skillInfo['error']?></span>
-						<span class="skill_threat alignCenter medNum lrBuffer"><?=$skillInfo['threat']?></span>
+						<span class="skill_misc alignCenter shortNum lrBuffer"><?=showSign($skill['misc'])?></span>
+						<span class="skill_error alignCenter medNum lrBuffer"><?=$skill['error']?></span>
+						<span class="skill_threat alignCenter medNum lrBuffer"><?=$skill['threat']?></span>
 					</div>
 <?
 				}
