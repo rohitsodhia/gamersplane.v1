@@ -59,24 +59,6 @@ $(function() {
 
 	});
 
-	$('#backfill').on('click',function(){
-		var pThis=$(this);
-		var basePage = window.location.href.split('?')[0];
-		var prevPages=$('.paginateDiv a.page').prevAll('a').filter(function( index ) {return !isNaN($(this).text());});
-
-		var startScroll = $(window).scrollTop();
-		var startHeight=$(document ).height()
-
-		$.get(basePage + '?page=' + $(prevPages[0]).text(), function (data) {
-			var block=$('.postBlock:not(.postPreview)', $(data));
-			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize();
-			var newHeight=$(document).height()
-
-			$(window).scrollTop(startScroll+(newHeight-startHeight));
-
-			pThis.remove();
-		});
-	});
 
 //forums menu
 	var newMenu=$('<li id="fm_forumthreads"><a class="menuLink">Threads</a><ul class="submenu"></li></li>').appendTo($('#fixedMenu_window .leftCol'));

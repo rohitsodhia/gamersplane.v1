@@ -5,6 +5,24 @@ $(function() {
 		gameOptions = JSON.parse($('#gameOptions').html());
 	} catch (e) { }
 
+	$('#backfill').on('click',function(){
+		var pThis=$(this);
+		var backfillLocation=pThis.data('prevpage');
+
+		var startScroll = $(window).scrollTop();
+		var startHeight=$(document ).height()
+
+		$.get(backfillLocation, function (data) {
+			var block=$('.postBlock:not(.postPreview)', $(data));
+			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize();
+			var newHeight=$(document).height()
+
+			$(window).scrollTop(startScroll+(newHeight-startHeight));
+
+			pThis.remove();
+		});
+	});
+
 	var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
 	if (gameOptions && gameOptions.characterSheetIntegration){
 		$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);

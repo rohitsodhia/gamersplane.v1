@@ -129,7 +129,7 @@
 	$lastPostID = 0;
 	if($threadManager->getPage() && $threadManager->getPage()>1){
 		?>
-		<div id="backfill"><span>load previous</span></div>
+		<div id="backfill" data-prevpage="?page=<?=($threadManager->getPage()-1)?>"><span>load previous</span></div>
 		<?php
 	}
 	if (sizeof($threadManager->getPosts())) {

@@ -96,8 +96,29 @@
 				$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");
 				$numPrevPosts = $numPrevPosts->fetchColumn();
 				$page = $numPrevPosts?ceil($numPrevPosts / $this->thread->pageSize):1;
-			} else
+			} elseif (isset($_GET['b'])) {
+				if(intval($_GET['b'])){
+					$post = intval($_GET['b']);
+					$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID} AND postID <= {$post}");
+					$numPrevPosts = $numPrevPosts->fetchColumn();
+					$start=$numPrevPosts-11;
+				}
+				else{
+					$numPrevPosts = $mysql->query("SELECT COUNT(postID) FROM posts WHERE threadID = {$this->threadID}");
+					$numPrevPosts = $numPrevPosts->fetchColumn();
+					$start=$numPrevPosts-10;
+				}
+				$pageSize=10;
+				if($start<0){
+					$start=0;
+					$pageSize=$numPrevPosts-1;
+				}
+				$this->thread->pageSize=$pageSize;
+				$this->thread->getPostsFromStart($start);
+				$page = 1;
+			} else{
 				$page = intval($_GET['page']);
+			}
 			$this->page = intval($page) > 0?intval($page):1;
 		}
 
