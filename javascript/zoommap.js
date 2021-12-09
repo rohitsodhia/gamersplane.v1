@@ -7,7 +7,8 @@ jQuery.fn.zoommap = function (){
         userMapImg.onload = function(){
           var height = userMapImg.height;
           var width = userMapImg.width;
-          // code here to use the dimensions
+
+          // use the dimensions of the loaded image
           var text=pThis.html();
           pThis.text('').show();
           var map = L.map(pThis[0], {crs: L.CRS.Simple,minZoom: -5});
@@ -26,8 +27,6 @@ jQuery.fn.zoommap = function (){
                         var x=$.trim(xy[0]);
                         var y=$.trim(xy[1]);
                         var markerPos = L.latLng([ y*height, x*width]);
-                        //var myIcon = L.divIcon({className: 'leaflet-div-icon my-div-icon'});
-                        //var marker=L.marker(sol,{icon:myIcon});
                         var marker=L.marker(markerPos);
                         var label=bits.length>=1 && $.trim(bits[1]);
                         if(label){
