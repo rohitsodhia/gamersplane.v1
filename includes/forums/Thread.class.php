@@ -6,7 +6,7 @@
 		protected $authorID;
 		protected $authorUsername;
 		protected $datePosted;
-		protected $states = array('sticky' => false, 'locked' => false);
+		protected $states = array('sticky' => false, 'locked' => false , 'publicPosting' => false);
 		protected $allowRolls = false;
 		protected $allowDraws = false;
 		protected $postCount = 0;

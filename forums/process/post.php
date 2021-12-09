@@ -140,6 +140,7 @@
 			if (!$threadManager->getPermissions('createThread')) { header('Location: /forums/'.$forumID); exit; }
 			$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate') ? true : false);
 			$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate') ? true : false);
+			$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 			$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 			$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls') ? true : false);
 
