@@ -351,14 +351,14 @@
 			if($postAsId){
 				$avatar = Character::getCharacterAvatar($postAsId,true);
 				$avatar = $avatar ? $avatar : User::getAvatar($currentUser->userID);
-				$ret=array('post' => printReady(BBCode2Html($postText)), 'avatar'=>$avatar, 'name'=>$postAsName, 'npcPoster'=>false);
+				$ret=array('post' => printReady(BBCode2Html($postText),['nl2br']), 'avatar'=>$avatar, 'name'=>$postAsName, 'npcPoster'=>false);
 			} else {
 				$npc = Post::extractPostingNpc($postText);
 
 				if ($npc) {
-					$ret = array('post' => printReady(BBCode2Html($postText)), 'avatar'=>$npc["avatar"], 'name'=>$npc["name"],'npcPoster'=>true);
+					$ret = array('post' => printReady(BBCode2Html($postText),['nl2br']), 'avatar'=>$npc["avatar"], 'name'=>$npc["name"],'npcPoster'=>true);
 				} else {
-					$ret = array('post' => printReady(BBCode2Html($postText)),'avatar'=> User::getAvatar($currentUser->userID),'name'=>$currentUser->username,'npcPoster'=>false);
+					$ret = array('post' => printReady(BBCode2Html($postText),['nl2br']),'avatar'=> User::getAvatar($currentUser->userID),'name'=>$currentUser->username,'npcPoster'=>false);
 				}
 			}
 			return $ret;

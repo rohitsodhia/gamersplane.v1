@@ -233,7 +233,7 @@
 							</header>
 <?php
 			echo "\t\t\t\t\t\t\t<div class=\"post\">\n";
-			echo printReady(BBCode2Html($post->message)) . "\n";
+			echo printReady(BBCode2Html($post->message),['nl2br']) . "\n";
 			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . "</span></div>\n"; }
 			echo "\t\t\t\t\t\t\t</div>\n";
 
