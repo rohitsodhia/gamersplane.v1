@@ -130,50 +130,48 @@ function BBCode2Html($text) {
 	$text = str_replace($in, $out, $text);
 */
 	// BBCode to find...
-	$in = array( 	 '/\[b\](.*?)\[\/b\]/ms',
-					 '/\[i\](.*?)\[\/i\]/ms',
-					 '/\[u\](.*?)\[\/u\]/ms',
-					 '/\[s\](.*?)\[\/s\]/ms',
-					 "/[\r\n]*\[linebreak\][\r\n]*/",
-					 '/\[img\](.*?)\[\/img\]/ms',
-					 '/\[email\](.*?)\[\/email\]/ms',
-					 '/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
-					 '/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
-//					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
-//					 '/\[list\](.*?)\[\/list\]/ms',
-//					 '/\[\*\]\s?(.*?)\n/ms',
-					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
-					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
-					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
-					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
-					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
-					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
-					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
-					 "/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
-					 "/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
+	$in = array(
+		'/\[b\](.*?)\[\/b\]/ms',
+		'/\[i\](.*?)\[\/i\]/ms',
+		'/\[u\](.*?)\[\/u\]/ms',
+		'/\[s\](.*?)\[\/s\]/ms',
+		"/[\r\n]*\[linebreak\][\r\n]*/",
+		'/\[img\](.*?)\[\/img\]/ms',
+		'/\[email\](.*?)\[\/email\]/ms',
+		'/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
+		'/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
+//		'/\[list\=(.*?)\](.*?)\[\/list\]/ms',
+//		'/\[list\](.*?)\[\/list\]/ms',
+//		'/\[\*\]\s?(.*?)\n/ms',
+		"/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
+		"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
+		"/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
+		"/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
+		"/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
+		"/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
+		"/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
 	);
 	// And replace them by...
-	$out = array(	 '<strong>\1</strong>',
-					 '<em>\1</em>',
-					 '<u>\1</u>',
-					 '<span style="text-decoration:line-through">\1</span>',
-					 '<hr>',
-					 '<img src="\1" alt="\1" class="usrImg">',
-					 '<a href="mailto:\1">\1</a>',
-					 '<span class="userSize" style="font-size:\1%">\2</span>',
-					 '<span class="userColor" style="color:\1">\2</span>',
-//					 '<ol start="\1">\2</ol>',
-//					 '<ul>\1</ul>',
-//					 '<li>\1</li>',
-					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
-					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
-					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
-					 '<div class="youtube_bb"><iframe src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>',
-					 '<div class="layout-columns-2">\1</div>',
-					 '<div class="layout-columns-3">\1</div>',
-					 '<div class="layout-column">\1</div>',
-					 '<div class="style" style="display:none;">\1</div>',
-					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><div class="inlineNpcAvatar" style="background-image:url(\2)"></div><div class="inlineNpcName">\1</div></div>',
+	$out = array(
+		'<strong>\1</strong>',
+		'<em>\1</em>',
+		'<u>\1</u>',
+		'<span style="text-decoration:line-through">\1</span>',
+		'<hr>',
+		'<img src="\1" alt="\1" class="usrImg">',
+		'<a href="mailto:\1">\1</a>',
+		'<span class="userSize" style="font-size:\1%">\2</span>',
+		'<span class="userColor" style="color:\1">\2</span>',
+//		'<ol start="\1">\2</ol>',
+//		'<ul>\1</ul>',
+//		'<li>\1</li>',
+		'<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
+		'<div class="youtube_bb"><iframe src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>',
+		'<div class="layout-columns-2">\1</div>',
+		'<div class="layout-columns-3">\1</div>',
+		'<div class="layout-column">\1</div>',
+		'<div class="style" style="display:none;">\1</div>',
+		'<div class="inlineNpcPrefix"></div><div class="inlineNpc"><div class="inlineNpcAvatar" style="background-image:url(\2)"></div><div class="inlineNpcName">\1</div></div>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
@@ -291,6 +289,18 @@ function BBCode2Html($text) {
 		$postAuthor=$post->getAuthor('userID') == $currentUser->userID;
 		$postAuthorName=$post->getAuthor('username');
 	}
+
+	// Do spoilers later to avoid incorrect closing
+	$in = array(
+		"/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
+		"/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+	);
+	// And replace them by...
+	$out = array(
+		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
+		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
+	);
+	$text = preg_replace($in, $out, $text);
 
 	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
 	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
