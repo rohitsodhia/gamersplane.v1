@@ -26,7 +26,7 @@ jQuery.fn.zoommap = function (){
                   if(xy.length==2){
                         var x=$.trim(xy[0]);
                         var y=$.trim(xy[1]);
-                        var markerPos = L.latLng([ y*height, x*width]);
+                        var markerPos = L.latLng([ height-y, x]);
                         var marker=L.marker(markerPos);
                         var label=bits.length>=1 && $.trim(bits[1]);
                         if(label){
@@ -39,7 +39,7 @@ jQuery.fn.zoommap = function (){
                         }
 
                         if(!setInitialZoom){
-                            map.setView([y*height,x*width],-1);
+                            map.setView([height-y,x],-1);
                             setInitialZoom=true;
                         }
                     }
