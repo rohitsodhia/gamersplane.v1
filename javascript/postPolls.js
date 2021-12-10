@@ -1,5 +1,5 @@
 $(function() {
-    $('.postPoll .pollQuestion').click(function(){
+    $('body').on('click','.postPoll .pollQuestion',function(){
         var pThis=$(this);
         var postPoll=pThis.closest('.postPoll');
         var postId=postPoll.addClass('thinking').data('postid');
