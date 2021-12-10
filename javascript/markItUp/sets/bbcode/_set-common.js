@@ -79,3 +79,26 @@ $(function () {
 		}
 	});
 });
+
+var mobileifyMenus=function(settings){
+	if($('#mainMenuTools:visible').length==0){
+		for(var i=0;i<settings.markupSet.length;i++){
+			var menuOpt=settings.markupSet[i];
+			if(menuOpt.name=='Color'){
+				menuOpt.dropMenu.push({name:'Color...',openWith: '[color="[![Text color]!]"]', closeWith: '[/color]'});
+				menuOpt.openWith=null;
+				menuOpt.closeWith=null;
+			}
+			else if(menuOpt.name=='Image'){
+				menuOpt.replaceWith=null;
+			}
+			else if(menuOpt.name=='Note' && menuOpt.dropMenu){
+				menuOpt.dropMenu.push({name:'Note...',openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]'});
+				menuOpt.openWith=null;
+				menuOpt.closeWith=null;
+			}
+
+		}
+	}
+
+};

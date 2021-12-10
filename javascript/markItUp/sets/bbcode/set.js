@@ -59,4 +59,4 @@ mySettings = {
 	]
 };
 
-
+mobileifyMenus(mySettings);

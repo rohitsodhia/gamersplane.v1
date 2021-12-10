@@ -49,3 +49,5 @@ mySettings = {
 		]},
 	]
 };
+
+mobileifyMenus(mySettings);
