@@ -82,6 +82,7 @@ $(function () {
 
 var mobileifyMenus=function(settings){
 	if($('#mainMenuTools:visible').length==0){
+		settings.isMobile=true;
 		for(var i=0;i<settings.markupSet.length;i++){
 			var menuOpt=settings.markupSet[i];
 			if(menuOpt.name=='Color'){
@@ -93,7 +94,7 @@ var mobileifyMenus=function(settings){
 				menuOpt.replaceWith=null;
 			}
 			else if(menuOpt.name=='Note' && menuOpt.dropMenu){
-				menuOpt.dropMenu.push({name:'Note...',openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]'});
+				menuOpt.dropMenu.push({name:'Note...',openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]', className: 'otherNoteAdd'});
 				menuOpt.openWith=null;
 				menuOpt.closeWith=null;
 			}

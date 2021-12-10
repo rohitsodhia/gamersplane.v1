@@ -47,6 +47,10 @@
 	background-image:url(images/private.png);
 }
 
+.markItUp .playerNoteSelector li.otherNoteAdd a	{
+	background-image:url(images/notes.png);
+}
+
 .markItUp .markItUpButton11 a	{
 	width: 32px;
 	background-image:url(images/ooc.png);
