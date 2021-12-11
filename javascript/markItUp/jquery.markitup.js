@@ -225,8 +225,10 @@
 									$('ul ul', header).hide();
 								}
 								else{
-									$('ul ul', header).hide();
-									$('ul',$(this)).show();
+									if(button.className!='mobileKeepOpen'){
+										$('ul ul', header).hide();
+										$('ul',$(this)).show();
+									}
 								}
 							}
 
