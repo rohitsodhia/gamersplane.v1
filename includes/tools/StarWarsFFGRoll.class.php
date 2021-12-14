@@ -91,14 +91,22 @@
 				}
 				if ($this->visibility == 0 || $this->visibility == 4 || $showAll) {
 					echo '<p'.($this->visibility != 0?' class="hidden"':'').'>';
-					if ($this->totals['success'])
+					$successTotal=$this->totals['success']+$this->totals['triumph'];
+					$failureTotal=$this->totals['failure']+$this->totals['despair'];
+
+					if ($successTotal && $this->totals['triumph']==0)
 						$totalString .= $this->totals['success'].' Success, ';
+					if ($successTotal && $this->totals['triumph']>0)
+						$totalString .= $this->totals['success'].'+'.$this->totals['triumph'].'='.$successTotal.' Success, ';
 					if ($this->totals['advantage'])
 						$totalString .= $this->totals['advantage'].' Advantage, ';
 					if ($this->totals['triumph'])
 						$totalString .= $this->totals['triumph'].' Triumph, ';
-					if ($this->totals['failure'])
+					if ($failureTotal && $this->totals['despair']==0)
 						$totalString .= $this->totals['failure'].' Failure, ';
+					if ($failureTotal && $this->totals['despair']>0)
+						$totalString .= $this->totals['failure'].'+'.$this->totals['despair'].'='.$failureTotal.' Failure, ';
+
 					if ($this->totals['threat'])
 						$totalString .= $this->totals['threat'].' Threat, ';
 					if ($this->totals['despair'])
@@ -111,8 +119,8 @@
 					echo '</p>';
 					echo '<p'.(($this->visibility > 0 && $this->visibility <4 )?' class="hidden"':'').'>';
 					$totalString = '';
-					if ($this->totals['success'] != $this->totals['failure'])
-						$totalString .= abs($this->totals['success'] - $this->totals['failure']).' '.($this->totals['success'] > $this->totals['failure']?'Success':'Failure').', ';
+					if ($successTotal != $failureTotal)
+						$totalString .= abs($successTotal - $failureTotal).' '.(($successTotal > $failureTotal)?'Success':'Failure').', ';
 					if ($this->totals['advantage'] != $this->totals['threat'])
 						$totalString .= abs($this->totals['advantage'] - $this->totals['threat']).' '.($this->totals['advantage'] > $this->totals['threat']?'Advantage':'Threat').', ';
 					if ($this->totals['triumph'])
