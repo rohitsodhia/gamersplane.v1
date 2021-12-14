@@ -63,7 +63,7 @@ $(function() {
                 destiny.attr('data-totalFlips',newHtml.attr('data-totalFlips'));
                 destiny.removeClass('thinking');
                 if(!data.success){
-                    $('<div class="updateError">The list changed before you flipped a token. Do you still want to flip a token?</div>').prependTo(destiny);
+                    $('<div class="updateError">The list has changed. Do you still want to flip a token?</div>').prependTo(destiny);
                 }
             }
         });
