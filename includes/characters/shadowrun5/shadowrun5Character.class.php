@@ -231,27 +231,27 @@
 				foreach ($data->damage->stun as $key => $value)
 					$this->setDamage('stun', $key, $value);
 				$this->clearVar('skills');
-				if (sizeof($data->skills))
+				if ($data->skills && sizeof($data->skills))
 					foreach ($data->skills as $skill)
 						$this->addSkill($skill);
 				$this->clearVar('qualities');
-				if (sizeof($data->qualities))
+				if ($data->qualities && sizeof($data->qualities))
 					foreach ($data->qualities as $quality)
 						$this->addQuality($quality);
 				$this->clearVar('contacts');
-				if (sizeof($data->contacts))
+				if ($data->contacts && sizeof($data->contacts))
 					foreach ($data->contacts as $contact)
 						$this->addContact($contact);
 				$this->clearVar('weapons');
 				$this->weapons = ['ranged' => [], 'melee' => []];
-				if (sizeof($data->weapons->ranged))
+				if ($data->weapons->ranged && sizeof($data->weapons->ranged))
 					foreach ($data->weapons->ranged as $weapon)
 						$this->addWeapon('ranged', $weapon);
-				if (sizeof($data->weapons->melee))
+				if ($data->weapons->melee && sizeof($data->weapons->melee))
 					foreach ($data->weapons->melee as $weapon)
 						$this->addWeapon('melee', $weapon);
 				$this->clearVar('armor');
-				if (sizeof($data->armor))
+				if ($data->armor && sizeof($data->armor))
 					foreach ($data->armor as $armor)
 						$this->addArmor($armor);
 				$this->cyberdeck['programs'] = [];
@@ -262,24 +262,24 @@
 				$this->setCyberdeck('data', $data->cyberdeck->data);
 				$this->setCyberdeck('firewall', $data->cyberdeck->firewall);
 				$this->setCyberdeck('condition', $data->cyberdeck->condition);
-				if (sizeof($data->cyberdeck->programs))
+				if ($data->cyberdeck->programs && sizeof($data->cyberdeck->programs))
 					foreach ($data->cyberdeck->programs as $program)
 						$this->addProgram($program);
 				$this->setCyberdeck('notes', $data->cyberdeck->notes);
 				$this->clearVar('augmentations');
-				if (sizeof($data->augmentations))
+				if ($data->augmentations && sizeof($data->augmentations))
 					foreach ($data->augmentations as $augmentation)
 						$this->addAugmentation($augmentation);
 				$this->clearVar('sprcf');
-				if (sizeof($data->sprcf))
+				if ($data->sprcf && sizeof($data->sprcf))
 					foreach ($data->sprcf as $sprcf)
 						$this->addSPRCF($sprcf);
 				$this->clearVar('powers');
-				if (sizeof($data->powers))
+				if ($data->powers && sizeof($data->powers))
 					foreach ($data->powers as $power)
 						$this->addPower($power);
 				$this->clearVar('gear');
-				if (sizeof($data->gear))
+				if ($data->gear && sizeof($data->gear))
 					foreach ($data->gear as $gear)
 						$this->addGear($gear);
 				$this->setNotes($data->notes);

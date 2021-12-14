@@ -81,7 +81,7 @@
 			$url = sanitizeString($_POST['url']);
 			$title = sanitizeString($_POST['title']);
 			$lyrics = $_POST['lyrics'] ? true : false;
-			$genres = $_POST['genres'];
+			$genres = $_POST['genres'] ? $_POST['genres'] : [];
 			$battlebards = $_POST['battlebards'] ? true : false;
 			$notes = $_POST['notes'];
 

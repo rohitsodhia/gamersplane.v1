@@ -121,19 +121,19 @@
 					$this->setMP($type, $value);
 				}
 				$this->clearVar('skills');
-				if (sizeof($data->skills)) {
+				if ($data->skills && sizeof($data->skills)) {
 					foreach ($data->skills as $skill) {
 						$this->addSkill($skill);
 					}
 				}
 				$this->clearVar('weapons');
-				if (sizeof($data->weapons)) {
+				if ($data->weapons && sizeof($data->weapons)) {
 					foreach ($data->weapons as $weapon) {
 						$this->addWeapon($weapon);
 					}
 				}
 				$this->clearVar('items');
-				if (sizeof($data->items)) {
+				if ($data->items && sizeof($data->items)) {
 					foreach ($data->items as $item) {
 						$this->addItem($item);
 					}

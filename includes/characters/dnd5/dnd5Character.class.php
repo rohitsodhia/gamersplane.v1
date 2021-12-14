@@ -143,7 +143,7 @@
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) {
+			if ($this->skills && sizeof($this->skills)) {
 				foreach ($this->skills as $key => $skill) {
 					$this->skillEditFormat($key + 1, $skill, $this->getStatMod($skill['stat'], false));
 				}
@@ -220,7 +220,7 @@
 		}
 
 		public function displayWeapons() {
-			if (sizeof($this->weapons)) {
+			if ($this->weapons && sizeof($this->weapons)) {
 				foreach ($this->weapons as $weapon) {
 ?>
 					<div class="weapon">
@@ -282,7 +282,7 @@
 		}
 
 		public function showSpellsEdit() {
-			if (sizeof($this->spells)) {
+			if ($this->spells && sizeof($this->spells)) {
 				foreach ($this->spells as $key => $spell) {
 					$this->spellEditFormat($key + 1, $spell);
 				}
@@ -347,14 +347,14 @@
 				$this->setSpeed($data['speed']);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) {
+				if ($data['skills'] && sizeof($data['skills'])) {
 					foreach ($data['skills'] as $skillInfo) {
 						$this->addSkill($skillInfo);
 					}
 				}
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) {
+				if ($data['feats'] && sizeof($data['feats'])) {
 					foreach ($data['feats'] as $featInfo) {
 						$this->addFeat($featInfo);
 					}
@@ -366,7 +366,7 @@
 				}
 
 				$this->clearVar('spells');
-				if (sizeof($data['spells'])) {
+				if ($data['spells'] && sizeof($data['spells'])) {
 					foreach ($data['spells'] as $spellInfo) {
 						$this->addSpell($spellInfo);
 					}

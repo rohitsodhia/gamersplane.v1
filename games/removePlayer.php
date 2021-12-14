@@ -6,7 +6,7 @@
 		['projection' => ['title' => true, 'players' => true]]
 	);
 	$gmCheck = false;
-	$player = [];
+	$player = null;
 	foreach ($game['players'] as $rPlayer) {
 		if ($rPlayer['user']['userID'] == $playerID) {
 			$player = $rPlayer;
@@ -14,7 +14,7 @@
 			$gmCheck = true;
 		}
 	}
-	if (!$gmCheck || sizeof($player) == 0) { header('Location: /games/'.$gameID); exit; }
+	if (!$gmCheck || !$player) { header('Location: /games/'.$gameID); exit; }
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar">Remove Player from Game</h1>

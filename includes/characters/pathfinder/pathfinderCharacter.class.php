@@ -444,14 +444,14 @@
 				$this->setAttackBonus('misc', $data['attackBonus']['misc']['ranged'], 'ranged');
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) {
+				if ($data['skills'] && sizeof($data['skills'])) {
 					foreach ($data['skills'] as $skillInfo) {
 						$this->addSkill($skillInfo);
 					}
 				}
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) {
+				if ($data['feats'] && sizeof($data['feats'])) {
 					foreach ($data['feats'] as $featInfo) {
 						$this->addFeat($featInfo);
 					}

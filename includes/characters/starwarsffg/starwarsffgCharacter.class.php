@@ -374,14 +374,14 @@
 				}
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) {
+				if ($data['skills'] && sizeof($data['skills'])) {
 					foreach ($data['skills'] as $skillInfo) {
 						$this->addSkill($skillInfo);
 					}
 				}
 
 				$this->clearVar('talents');
-				if (sizeof($data['talents'])) {
+				if ($data['talents'] && sizeof($data['talents'])) {
 					foreach ($data['talents'] as $talentInfo) {
 						$this->addTalent($talentInfo);
 					}
