@@ -84,7 +84,7 @@
 					echo '<div class="rollResults">';
 					foreach ($this->rolls as $count => $roll) {
 						echo "<div class=\"starwarsffg_dice {$roll['die']} {$roll['result']}\">";
-						if ($this->visibility == 0 || $this->visibility == 4 || $showAll) echo '<div></div>';
+						if ($this->visibility == 0 || $this->visibility == 4 || $showAll) echo '<div'.($roll['result']?' title="'.str_replace('_',' ',$roll['result']).'"':'').'></div>';
 						echo '</div>';
 					}
 					echo '</div>';
@@ -94,19 +94,14 @@
 					$successTotal=$this->totals['success']+$this->totals['triumph'];
 					$failureTotal=$this->totals['failure']+$this->totals['despair'];
 
-					if ($successTotal && $this->totals['triumph']==0)
-						$totalString .= $this->totals['success'].' Success, ';
-					if ($successTotal && $this->totals['triumph']>0)
-						$totalString .= $this->totals['success'].'+'.$this->totals['triumph'].'='.$successTotal.' Success, ';
+					if ($successTotal)
+						$totalString .= $successTotal.' Success, ';
 					if ($this->totals['advantage'])
 						$totalString .= $this->totals['advantage'].' Advantage, ';
 					if ($this->totals['triumph'])
 						$totalString .= $this->totals['triumph'].' Triumph, ';
-					if ($failureTotal && $this->totals['despair']==0)
-						$totalString .= $this->totals['failure'].' Failure, ';
-					if ($failureTotal && $this->totals['despair']>0)
-						$totalString .= $this->totals['failure'].'+'.$this->totals['despair'].'='.$failureTotal.' Failure, ';
-
+					if ($failureTotal)
+						$totalString .= $failureTotal.' Failure, ';
 					if ($this->totals['threat'])
 						$totalString .= $this->totals['threat'].' Threat, ';
 					if ($this->totals['despair'])

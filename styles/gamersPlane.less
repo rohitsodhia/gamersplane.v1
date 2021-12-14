@@ -3730,3 +3730,64 @@ select.notPretty {
 .hide {
 	display: none !important;
 }
+
+.ffgDestiny{
+	.updateError{
+		font-weight: bold;
+		color: @gp-red;
+		margin-bottom: 1em;
+	}
+	.ffgTokens{
+		div{
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			background-color: #f8f8f8;
+			margin: 5px;
+			border:solid 1px #888;
+			cursor: pointer;
+
+			&:hover{
+				box-shadow: 0 0 5px rgba(0,0,0,.5);
+			}
+
+			&.darkToken{
+				background-color: #080808;
+			}
+		}
+	}
+
+	.ffgHistory{
+
+		.ffgHistoryToggle{
+			font-size: 0.8em;
+			cursor: pointer;
+			color: @gp-link-color;
+		}
+
+		.ffgHistoryList{
+			display: none;
+
+			.toDark,.toLight{
+				&:before{
+					content:' ';
+					display:inline-block;
+					border:solid 1px #888;
+					border-radius: 50%;
+					background-color: #f8f8f8;
+					height:10px;
+					width:10px;
+					margin-right: 5px;
+				}
+			}
+			.toDark:before{
+				background-color: #080808;
+			}
+			.convertTZ{
+				font-size: 0.8em;
+				color: #888;
+			}
+		}
+	}
+}
