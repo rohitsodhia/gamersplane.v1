@@ -1,4 +1,5 @@
 <?
+	$responsivePage=true;
 	$email = filter_var($_GET['email'], FILTER_VALIDATE_EMAIL)?$_GET['email']:false;
 	$user = new User($email);
 	$g_validationStr = preg_match('/^[a-z0-9]{13}$/i', $_GET['validate'])?$_GET['validate']:false;

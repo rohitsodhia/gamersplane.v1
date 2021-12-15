@@ -3730,3 +3730,25 @@ select.notPretty {
 .hide {
 	display: none !important;
 }
+
+@media only screen and (max-width: @mobile-breakpoint) {
+	#page_resetPass{
+		form{
+			width: auto;
+		}
+		label{
+			display: block;
+			text-align: left;
+		}
+		.notice,.alert{
+			margin-left: 0;
+		}
+		input{
+			width: 100%;;
+		}
+
+		.fancyButton{
+			margin-top: 1rem;
+		}
+	}
+}
