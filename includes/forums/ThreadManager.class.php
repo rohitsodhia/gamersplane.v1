@@ -10,7 +10,7 @@
 				global $mysql, $currentUser;
 
 				$this->threadID = intval($threadID);
-				$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, t.allowRolls, t.allowDraws, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
+				$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, t.allowRolls, t.allowDraws, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead, t.discordWebhook FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
 				$this->thread = $thread->fetch();
 	//			throw new Exception('No thread');
 				if (!$this->thread)
@@ -174,7 +174,9 @@
 			}
 
 			if ($this->threadID == null) {
-				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1");
+				$stmt=$mysql->prepare("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1, discordWebhook = :discordWebhook");
+				$stmt->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
+				$stmt->execute();
 				$this->threadID = $mysql->lastInsertId();
 
 				$post->setThreadID($this->threadID);
@@ -186,7 +188,9 @@
 				$this->updateLastRead($postID);
 
 			} else {
-				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0)." WHERE threadID = ".$this->threadID);
+				$stmt=$mysql->prepare("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0).", discordWebhook = :discordWebhook WHERE threadID = ".$this->threadID);
+				$stmt->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
+				$stmt->execute();
 
 				$postID = $post->savePost();
 
@@ -439,15 +443,71 @@
 
 		private function addThreadNotification($notificationType, $post){
 
+			global $mysql, $currentUser, $mongo;
+			$threadIdAsInt = (int)$this->threadID;
+
 			if($notificationType==ThreadNotificationTypeEnum::NEW_POST){
-				return;  //Not putting these on the homepage.  But if we use push notifications then this would be the point to intercept them
+				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadIdAsInt}")->fetchColumn();
+
+				if($discordWebhook){
+					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($post->getMessage()),200);
+					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($this->postID).'#p'.($this->postID).'>';
+
+					$avatar='https://gamersplane.com/ucp/avatars/avatar.png';
+					$postAsName=$currentUser->username;
+					$postAsId= $post->getPostAs();
+
+					if($postAsId && $postAsId!='p'){
+						$charInfo = $mongo->characters->findOne(['characterID' => $postAsId]);
+						if($charInfo){
+							if (file_exists(FILEROOT . "/characters/avatars/{$postAsId}.jpg")) {
+								$avatar="https://gamersplane.com/characters/avatars/{$postAsId}.jpg";
+							}
+							$postAsName=$charInfo['name'];
+						}
+					} else {
+						$npc = Post::extractPostingNpc($post->getMessage());
+						if ($npc) {
+							$avatar=$npc["avatar"];
+							$postAsName=$npc["name"];
+						} else {
+							$avatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
+						}
+					}
+
+					$data = array('content' => $discordMessage,
+								  'username' => $postAsName,
+								  'avatar_url'=> $avatar
+								);
+
+					$options = array(
+							'http' => array(
+							'header'  => "Content-type: application/json\r\n",
+							'method'  => 'POST',
+							'content' => json_encode($data),
+							'ignore_errors' => true
+						)
+					);
+
+					set_error_handler(
+						function ($severity, $message, $file, $line) {
+						}
+					);
+					try {
+					$context  = stream_context_create($options);
+					file_get_contents($discordWebhook, false, $context);
+					}
+					catch (Exception $e) {
+					}
+
+					restore_error_handler();
+				}
+
+				return;
 			}
 
 			$gameID=$this->forumManager->forums[$this->thread->forumID]->getGameID();
 			if($gameID){
-				global $mysql, $currentUser, $mongo;
-
-				$threadIdAsInt = (int)$this->threadID;
 				$postIdAsInt = (int)$post->getPostID();
 
 				$gameInfo = $mongo->games->findOne(

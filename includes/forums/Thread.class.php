@@ -17,6 +17,7 @@
 
 		protected $posts = array();
 		protected $poll = null;
+		protected $discordWebhook = null;
 
 		protected $loaded = array();
 
@@ -164,6 +165,14 @@
 
 		public function getVoteMax() {
 			return $this->poll->getVoteMax();
+		}
+
+		public function getDiscordWebhook(){
+			return $this->discordWebhook;
+		}
+
+		public function setDiscordWebhook($discordWebhook){
+			$this->discordWebhook=$discordWebhook;
 		}
 	}
 ?>
