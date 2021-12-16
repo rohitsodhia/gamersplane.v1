@@ -295,7 +295,7 @@
 <?php	} ?>
 
 <?php	if ($firstPost) { ?>
-			<div id="threadOptions" class="section_options hbdMargined">
+			<div class="threadOptions" class="section_options hbdMargined">
 <?php
 		if ($threadManager->getPermissions('moderate')) {
 			$sticky = $threadManager->getThreadProperty('states[sticky]');

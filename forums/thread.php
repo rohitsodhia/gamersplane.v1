@@ -45,7 +45,7 @@
 <?php	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"> <?$threadManager->addThreadIcon()?><?=$threadManager->getThreadProperty('title')?></h1>
 		<div class="hbMargined">
-			<div id="threadMenu">
+			<div class="threadMenu">
 				<div class="leftCol">
 					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
 					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
@@ -341,16 +341,18 @@
 					</div>
 				</div>
 			</div>
-<?php
-		$threadManager->displayPagination();
+			<div class="threadMenu">
+			<div class="leftCol">
+				<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
+			</div>
+			<div class="rightCol alignRight">
+				<?=$threadManager->addModerationButtons();?>
+				<?=$threadManager->displayPagination();?>
+				</div>
+			</div>
+			<?php
 	}
-
 ?>
-	<div class="rightCol alignRight">
-	<?php
-	$threadManager->addModerationButtons();
-	?>
-	</div>
 		</div>
 
 <?php

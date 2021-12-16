@@ -123,7 +123,7 @@ $(function() {
 		submenu.slideToggle(250).toggleClass('fm_smOpen');
 	});
 
-	var forumsLink=$('#threadMenu #breadcrumbs a').last().attr('href');
+	var forumsLink=$('.threadMenu .breadcrumbs a').last().attr('href');
 	$.get( forumsLink, function( data ) {
 		var dataObj=$(data);
 		var forums=$('.forumList .tr',dataObj);

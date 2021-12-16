@@ -29,8 +29,7 @@
 }
 
 /* --------------------------------------------*/
-#breadcrumbs {
-	margin-bottom: .75em;
+.breadcrumbs {
 	color: #666;
 	font-size: 1.1em;
 	a{
@@ -266,13 +265,17 @@
 		margin: 4em 0;
 	}
 
-	#threadMenu {
+	.threadMenu {
 		display: flex;
 		margin: .5em 0;
 		justify-content: space-between;
 
 		.leftCol {
 			align-self: flex-end;
+
+			#rules{
+				margin-bottom: 0;
+			}
 		}
 
 		.threadSub {
@@ -290,8 +293,9 @@
 		}
 	}
 
-	#threadOptions {
+	.threadOptions {
 		display: inline-block;
+		white-space: nowrap;
 
 		button {
 			height: 24px;
@@ -331,7 +335,7 @@
 		font-size: 24px;
 	}
 
-	#threadMenu .fancyButton {
+	.threadMenu .fancyButton {
 		margin-left: 15px;
 	}
 
@@ -1335,7 +1339,7 @@
 		left: -9999em;
 	}
 
-	#breadcrumbs {
+	.breadcrumbs {
 		font-size: 1.1em;
 		color: #666;
 		margin-bottom: 1em;
@@ -2030,6 +2034,18 @@ body #page_forum_thread .postBlock.postPreview{
 		}
 	}
 
+	.threadMenu .rightCol {
+		display: flex;
+		.paginateDiv{
+			order: 0;
+			flex-grow: 1;
+		}
+
+		.moderationButtons{
+			order:1;
+		}
+	}
+
 	#page_forum_thread .postBlock .posterDetails {
 		order:0;
 		gap:0 1rem;
@@ -2136,11 +2152,19 @@ body #page_forum_thread .postBlock.postPreview{
 	}
 
 	#page_forum_thread {
-		#threadMenu {
+		.threadMenu {
 			flex-direction: column;
 
 			.leftCol {
 				align-self: flex-start;
+
+				.breadcrumbs{
+					margin-bottom: .6em;
+				}
+			}
+
+			.rightCol{
+				justify-content: flex-end;
 			}
 		}
 	}
@@ -2155,11 +2179,11 @@ body #page_forum_thread .postBlock.postPreview{
 	#bodyHeader,
 	.postActions,
 	#page_forum_thread .postBlock .postHeader .postedOn,
-	#page_forum_thread #threadMenu,
+	#page_forum_thread .threadMenu,
 	#quickReply,
 	footer.withFixedMenu,
 	.editInfoDiv,
-	#threadOptions,
+	.threadOptions,
 	#page_forum_thread .postBlock .postContent:before,
 	#page_forum_thread .postBlock .postContent:after{
 		display: none;
