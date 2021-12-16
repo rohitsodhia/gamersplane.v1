@@ -28,6 +28,13 @@ $(function () {
             };
         });
 
+        $.expr[':'].reason =  $.expr[':'].reason || $.expr.createPseudo(function(arg) {
+            return function( elem ) {
+                var thisVal=('.rollString',$(elem).closest('roll')).text().toLowerCase();
+                return thisVal.indexOf(arg)!=-1;
+            };
+        });
+
         //toggle ordering between original and numeric
         var orderRolls=function(parsedRolls){
             if(parsedRolls.hasClass('rollsOrderedByVal')){
@@ -46,10 +53,9 @@ $(function () {
                 var rule = gameOptions.diceRules[count];
                 if(rollstring && rule.rolled &&  rollstring.toLowerCase().indexOf(rule.rolled.toLowerCase())!=-1){
                     //rules highlighting
-                    if(rule.highlight){
-                        var highlightClass=rule.highlight.split(" ").map(function(item) {
-                            return 'rollVal-'+item.trim().toLowerCase();
-                        }).join(' ');
+                    if(rule.highlight || rule.content){
+
+                        var highlightClass=rule.highlight?highlightClass=rule.highlight.split(" ").map(function(item) {return 'rollVal-'+item.trim().toLowerCase();}).join(' '):'';
 
                         var selectorSuffix='';
 
@@ -73,7 +79,23 @@ $(function () {
                             selectorSuffix+=':d100double';
                         }
 
-                        $('i'+selectorSuffix,parsedRolls).addClass(highlightClass);
+                        var matchedDice=$('i'+selectorSuffix,parsedRolls);
+
+                        //reason
+                        if(rule.reason){
+                            var match=rule.reason.toLowerCase();
+                            matchedDice=matchedDice.filter(function(){
+                                var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
+                                return thisVal.indexOf(match)!=-1;
+                            });
+                        }
+
+                        if(rule.highlight){
+                            matchedDice.addClass(highlightClass);
+                        }
+                        if(rule.content){
+                            matchedDice.text(rule.content);
+                        }
                     }
 
                     //other rule options
