@@ -288,9 +288,6 @@
 
 		public static function extractFullText($message) {
 
-			//remove notes and private
-			$message = Post::cleanNotes($message);
-
 			//remove the contents of these tags
 			$in = array(
 				'/\[code\](.*?)\[\/code\]/ms',
@@ -298,9 +295,12 @@
 				"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 				"/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
 				"/\[map\](.*?)\[\/map\]/ms",
-				"/\[spotify\](.*?)\[\/spotify\]/ms"
+				"/\[spotify\](.*?)\[\/spotify\]/ms",
+				'/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\][\n\r]*/ms',
+				'/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\][\n\r]*/ms',
+				"/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms"
 				);
-			$out = array('','','','','','');
+			$out = array('','','','','','','','','');
 
 
 			$message = preg_replace($in, $out, $message);
