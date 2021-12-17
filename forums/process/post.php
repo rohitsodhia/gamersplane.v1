@@ -196,7 +196,7 @@
 			$threadManager = new ThreadManager($post->getThreadID());
 			$firstPost = $threadManager->getThreadProperty('firstPostID') == $post->getPostID() ? true : false;
 
-			if (!(($post->getAuthor('userID') == $currentUser->userID && $threadManager->getPermissions('editPost') && !$threadManager->thread->getStates('locked')) || $threadManager->getPermissions('moderate'))) { header('Location: /forums/thread/' . $post->getThreadID() . '/'); exit; }
+			if (!(($post->getAuthor('userID') == $currentUser->userID && ($threadManager->getPermissions('editPost')||$threadManager->thread->getStates('publicPosting')) && !$threadManager->thread->getStates('locked')) || $threadManager->getPermissions('moderate'))) { header('Location: /forums/thread/' . $post->getThreadID() . '/'); exit; }
 
 			if ($firstPost && strlen($post->getTitle()) == 0) {
 				$formErrors->addError('noTitle');
