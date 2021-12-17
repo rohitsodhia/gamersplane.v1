@@ -220,7 +220,7 @@
 
 		<div id="page_forum_thread">
 <?php
-		if ($pathOptions[0] == 'editPost'){
+		if ($pathOptions[0] == 'editPost' && !$firstPost){
 ?>
 		<div id="backfill" data-prevpage="/forums/thread/<?=$threadManager->getThreadID()?>/?b=<?=$postID?>"><span>load previous</span></div>
 <?php
