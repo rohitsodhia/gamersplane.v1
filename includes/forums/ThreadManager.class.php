@@ -450,9 +450,6 @@
 				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadIdAsInt}")->fetchColumn();
 
 				if($discordWebhook){
-					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($post->getMessage()),200);
-					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($this->postID).'#p'.($this->postID).'>';
-
 					$avatar='https://gamersplane.com/ucp/avatars/avatar.png';
 					$postAsName=$currentUser->username;
 					$postAsId= $post->getPostAs();
@@ -474,6 +471,8 @@
 							$avatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
 						}
 					}
+					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($post->getMessage()),200);
+					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($this->postID).'#p'.($this->postID).'>'.' ~ '.$postAsName;
 
 					$data = array('content' => $discordMessage,
 								  'username' => $postAsName,
