@@ -107,14 +107,19 @@ $(function () {
         };
 
         //convert the text into spans and apply the rules
-        $('.rollValues').each(function(){
-            var pThis=$(this);
+        jQuery.fn.applyDiceRules = function (){
+            $('.rollValues',this).each(function(){
+                var pThis=$(this);
 
-            pThis.on('click',function(){orderRolls($(this));});
+                pThis.on('click',function(){orderRolls($(this));});
 
-            if(gameOptions.diceRules){
-                applyDiceRules(pThis);
-            }
-        });
+                if(gameOptions.diceRules){
+                    applyDiceRules(pThis);
+                }
+            });
+        };
+
+        $('body').applyDiceRules();
+
     }
 });
