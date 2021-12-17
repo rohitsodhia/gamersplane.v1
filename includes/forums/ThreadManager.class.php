@@ -463,13 +463,13 @@
 							if (file_exists(FILEROOT . "/characters/avatars/{$postAsId}.jpg")) {
 								$avatar="https://gamersplane.com/characters/avatars/{$postAsId}.jpg";
 							}
-							$postAsName=$charInfo['name'];
+							$postAsName=$charInfo['name'].' ('.$postAsName.')';
 						}
 					} else {
 						$npc = Post::extractPostingNpc($post->getMessage());
 						if ($npc) {
 							$avatar=$npc["avatar"];
-							$postAsName=$npc["name"];
+							$postAsName=$npc["name"].' ('.$postAsName.')';
 						} else {
 							$avatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
 						}
