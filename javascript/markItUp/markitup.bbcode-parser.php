@@ -367,7 +367,7 @@ function BBCode2Html($text) {
 	//start ffg destiny
 	if($post){
 		$matches = null;
-		$text=preg_replace_callback("/\[ffg\:destiny=\"?(\d*)\"?\]/ms", function($matches){
+		$text=preg_replace_callback("/\[fliptokens=\"?(\d*)\"?\]/ms", function($matches){
 			global $post, $postAuthor, $isGM;
 			$ffgTokens=(int)$matches[1];
 			$ffgResults=$post->getFfgDestinyResults($ffgTokens);
