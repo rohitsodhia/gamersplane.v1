@@ -31,7 +31,7 @@
 
 //define ("EMOTICONS_DIR", "/images/emoticons/");
 function splitByHeader($title,$text,$cssClass){
-	$ret="<div class='".$cssClass."'>";
+	$ret="<div class='".$cssClass." ddCollection'>";
 	$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
 
 	$abilityLines = explode("\n", trim($text));
@@ -173,7 +173,7 @@ function BBCode2Html($text) {
 					 '<div class="layout-columns-3">\1</div>',
 					 '<div class="layout-column">\1</div>',
 					 '<div class="style" style="display:none;">\1</div>',
-					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><div class="inlineNpcAvatar" style="background-image:url(\2)"></div><div class="inlineNpcName">\1</div></div>',
+					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><img class="inlineNpcAvatar" src="\2"/><div class="inlineNpcName">\1</div></div>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
@@ -270,7 +270,7 @@ function BBCode2Html($text) {
 			foreach ($npcRows as $npcRow){
 				$npcElements=explode('|',$npcRow,2);
 				if(count($npcElements) == 2){
-					$ret=$ret."<div class='npcList_item'><div class='npcList_itemAvatar' data-avatar='".$npcElements[1]."' style='background-image:url(".$npcElements[1].");'></div><div class='npcList_itemName'>".$npcElements[0]."</div></div>";
+					$ret=$ret."<div class='npcList_item'><img class='npcList_itemAvatar' data-avatar='".$npcElements[1]."' src='".$npcElements[1]."'/><div class='npcList_itemName'>".$npcElements[0]."</div></div>";
 				}
 			}
 

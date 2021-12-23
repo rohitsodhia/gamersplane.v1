@@ -1,8 +1,10 @@
 function toggleNotes(e) {
 	e.preventDefault();
 
-	$(this).siblings('.notes').slideToggle();
-	$(this).toggleClass('open');
+	if($(this).closest('.ddCollection').length==0){
+		$(this).siblings('.notes').slideToggle();
+		$(this).toggleClass('open');
+	}
 }
 
 $(function () {

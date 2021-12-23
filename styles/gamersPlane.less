@@ -3547,52 +3547,30 @@ select.notPretty {
 }
 
 /* --------------------------------------------*/
-#charDetails {
-	.layout-columns-2,
-	.layout-columns-3 {
-		img {
-			max-width: 100%;
-		}
+.layout-columns-2,
+.layout-columns-3 {
+	display: flex;
 
-		&:after {
-			content: '';
-			display: table;
-			clear: both;
-		}
-
-		.layout-column {
-			padding: 12px;
-			float: left;
-		}
+	img {
+		max-width: 100%;
 	}
 
-	.layout-columns-2 {
-		.layout-column {
-			width: 450px;
-		}
+	.layout-column {
+		padding: 12px;
+		box-sizing: border-box;
+		flex-grow: 1;
+		flex-shrink: 0;
 	}
+}
 
-	.layout-columns-3 {
-		.layout-column {
-			width: 300px;
-		}
+.layout-columns-2{
+	.layout-column{
+		width: 50%;
 	}
-
-	.hbdMargined {
-		.layout-columns-2 {
-			.layout-column {
-				width: 426px;
-				img {
-					max-width: 100%;
-				}
-			}
-		}
-
-		.layout-columns-3 {
-			.layout-column {
-				width: 284px;
-			}
-		}
+}
+.layout-columns-3 {
+	.layout-column{
+		width: 33.33333%;
 	}
 }
 
@@ -3657,7 +3635,7 @@ select.notPretty {
 }
 
 /*--------------*/
-#page_characterSheet {
+#page_characterSheet,.ddCollection {
 	.feat,
 	.ability {
 		position: relative;
@@ -3682,6 +3660,24 @@ select.notPretty {
 		&.open:before {
 			content: '\25BC';
 		}
+	}
+}
+
+.ddCollection{
+	.ability{
+		padding: 4px 0;
+	}
+	.notes {
+		display: none;
+		margin-top: .5em;
+	}
+
+	.ability .notes {
+		padding: 4px;
+		border: 1px solid #888;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
 	}
 }
 
@@ -3729,4 +3725,42 @@ select.notPretty {
 
 .hide {
 	display: none !important;
+}
+
+.npcList{
+	display: grid;
+    grid-template-columns: repeat(auto-fit, 100px);
+    grid-auto-rows: auto;
+    grid-gap: 10px;
+
+	.npcList_item{
+		padding:10px;
+		text-align: center;
+		.npcList_itemAvatar{
+			width:80px;
+			height:80px;
+			object-fit: contain;
+		}
+		.npcList_itemName{
+			font-weight: bold;
+		}
+	}
+}
+
+@media only screen and (max-width: @small-breakpoint){
+	.layout-columns-3{
+		flex-direction: column;
+		.layout-column{
+			width: 100%;
+		}
+	}
+}
+
+@media only screen and (max-width: @mobile-breakpoint){
+	.layout-columns-2{
+		flex-direction: column;
+		.layout-column{
+			width: 100%;
+		}
+	}
 }

@@ -170,6 +170,9 @@ $(function() {
 	//spoiler opening and closing
 	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
 
+	//dd collections notes open close
+	$('body').on('click', '.ddCollection .ability_notesLink', function(e){e.preventDefault();$(this).toggleClass('open').siblings('.notes').slideToggle();});
+
 	//dark theme toggle
 	$('#userMenu').on('click','#toggleDarkMode',function(){
 		var stylesheet=$('#darkmodecss');
