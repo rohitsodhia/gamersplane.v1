@@ -1,5 +1,5 @@
 <?
-	DEFINE('SYSTEM', $pathOptions[1]);
+	DEFINE("SYSTEM", $pathOptions[1]);
 	$characterID = intval($pathOptions[2]);
 	$charPermissions = false;
 	if ($systems->verifySystem(SYSTEM)) {
