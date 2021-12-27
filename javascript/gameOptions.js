@@ -28,10 +28,15 @@ $(function () {
             };
         });
 
-        $.expr[':'].reason =  $.expr[':'].reason || $.expr.createPseudo(function(arg) {
+        $.expr[':'].ge =  $.expr[':'].ge || $.expr.createPseudo(function(arg) {
             return function( elem ) {
-                var thisVal=('.rollString',$(elem).closest('roll')).text().toLowerCase();
-                return thisVal.indexOf(arg)!=-1;
+                return parseInt($(elem).text())>=parseInt(arg);
+            };
+        });
+
+        $.expr[':'].le =  $.expr[':'].le || $.expr.createPseudo(function(arg) {
+            return function( elem ) {
+                return parseInt($(elem).text())<=parseInt(arg);
             };
         });
 
@@ -64,9 +69,17 @@ $(function () {
                             selectorSuffix+=':last';
                         }
 
-                        //natural values
+                        //roll values
                         if(rule.natural) {
                             selectorSuffix+=':equals('+rule.natural+')';
+                        }
+
+                        if(rule.ge) {
+                            selectorSuffix+=':ge('+rule.ge+')';
+                        }
+
+                        if(rule.le) {
+                            selectorSuffix+=':le('+rule.le+')';
                         }
 
                         //check for paired dice
@@ -94,7 +107,7 @@ $(function () {
                             matchedDice.addClass(highlightClass);
                         }
                         if(rule.content){
-                            matchedDice.text(rule.content);
+                            matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
                         }
                     }
 
