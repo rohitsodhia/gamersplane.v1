@@ -95,6 +95,9 @@ $(function() {
 		if($(this).hasClass('starwarsffg_difficulty')){
 			$(this).removeClass('starwarsffg_difficulty').addClass('starwarsffg_challenge').attr('title','Challenge');
 		}
+		else if($(this).hasClass('starwarsffg_ability')){
+			$(this).removeClass('starwarsffg_ability').addClass('starwarsffg_proficiency').attr('title','Proficiency');
+		}
 		else{
 			$(this).remove();
 		}
