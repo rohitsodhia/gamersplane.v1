@@ -39,26 +39,6 @@ $(function() {
 		});
 	});
 
-	$('body').on('click','.quotePost',function(){
-
-		var pThis=$(this);
-		var postId=pThis.data('postid');
-		$.ajax({
-			type: 'post',
-			url: API_HOST +'/forums/getPostQuote',
-			xhrFields: {
-				withCredentials: true
-			},
-			data:{ postID: postId},
-			success:function (data) {
-				$('#messageTextArea').focus();
-				$.markItUp({ replaceWith: data });
-				$("#messageTextArea")[0].scrollIntoView();
-			}
-		});
-
-	});
-
 
 //forums menu
 	var newMenu=$('<li id="fm_forumthreads"><a class="menuLink">Threads</a><ul class="submenu"></li></li>').appendTo($('#fixedMenu_window .leftCol'));

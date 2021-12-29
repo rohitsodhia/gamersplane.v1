@@ -23,6 +23,26 @@ $(function() {
 		});
 	});
 
+	$('body').on('click','.quotePost',function(){
+
+		var pThis=$(this);
+		var postId=pThis.data('postid');
+		$.ajax({
+			type: 'post',
+			url: API_HOST +'/forums/getPostQuote',
+			xhrFields: {
+				withCredentials: true
+			},
+			data:{ postID: postId},
+			success:function (data) {
+				$('#messageTextArea').focus();
+				$.markItUp({ replaceWith: data });
+				$("#messageTextArea")[0].scrollIntoView();
+			}
+		});
+
+	});
+
 	var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
 	if (gameOptions && gameOptions.characterSheetIntegration){
 		$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
