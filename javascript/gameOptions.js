@@ -130,9 +130,10 @@ $(function () {
                     applyDiceRules(pThis);
                 }
             });
+
+            return this;
         };
 
         $('body').applyDiceRules();
-
     }
 });
