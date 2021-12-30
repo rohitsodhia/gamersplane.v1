@@ -141,7 +141,7 @@ $(function() {
 						$('h3',$('<li><h3></h3></li>').appendTo(subMenu)).text('Forums: '+forumLink.text());
 						for(var i=0;i<forums.length;i++)
 						{
-							$('<li></li>').html($('.name',forums[i]).html()).appendTo(subMenu);
+							$('div.description',$('<li></li>').html($('.name',forums[i]).html()).appendTo(subMenu)).remove();
 						}
 					}
 					var threads=$('.threadList .tr',dataObj);
