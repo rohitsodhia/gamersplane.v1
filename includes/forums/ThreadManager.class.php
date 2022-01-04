@@ -472,7 +472,7 @@
 						}
 					}
 					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($post->getMessage()),200);
-					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($this->postID).'#p'.($this->postID).'>'.' ~ '.$postAsName;
+					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID).'>'.' ~ '.$postAsName;
 
 					$data = array('content' => $discordMessage,
 								  'username' => $postAsName,
