@@ -477,7 +477,19 @@
 						}
 					}
 
-					$discordMessage = preg_replace("/\[quote(?:=\"([\w\.]+?)\")?\](((?R)|.)*?)\[\/quote\]/ms", "", $post->getMessage());
+					$in = array(
+						"/\[quote(?:=\"([\w\.]+?)\")?\](((?R)|.)*?)\[\/quote\]/ms",
+						"/\[snippets=\"?(.*?)\"?\](.*?)\[\/snippets\]/ms",
+						"/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms",
+						"/\[poll=\"?(.*?)?\"([^\]]*)\](.*?)\[\/poll\]/ms"
+						);
+					$out = array('','','','Poll (\1) \3');
+
+
+					$discordMessage = preg_replace($in, $out, $post->getMessage());
+
+
+
 					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($discordMessage),200);
 
 					$data = array('username' => $postAsName,
