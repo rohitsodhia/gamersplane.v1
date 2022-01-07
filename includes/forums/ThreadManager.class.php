@@ -446,11 +446,18 @@
 			global $mysql, $currentUser, $mongo;
 			$threadIdAsInt = (int)$this->threadID;
 
-			if($notificationType==ThreadNotificationTypeEnum::NEW_POST){
+			//strip "Re: " if present
+			$postTitle=$post->getTitle();
+			if(substr($postTitle,0,4)=='Re: '){
+				$postTitle=substr($postTitle,4);
+			}
+
+			if($notificationType==ThreadNotificationTypeEnum::NEW_POST || $notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT){
 				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadIdAsInt}")->fetchColumn();
 
 				if($discordWebhook){
-					$avatar='https://gamersplane.com/ucp/avatars/avatar.png';
+					$userAvatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
+					$avatar=$userAvatar;
 					$postAsName=$currentUser->username;
 					$postAsId= $post->getPostAs();
 
@@ -460,25 +467,27 @@
 							if (file_exists(FILEROOT . "/characters/avatars/{$postAsId}.jpg")) {
 								$avatar="https://gamersplane.com/characters/avatars/{$postAsId}.jpg";
 							}
-							$postAsName=$charInfo['name'].' ('.$postAsName.')';
+							$postAsName=$charInfo['name'];
 						}
 					} else {
 						$npc = Post::extractPostingNpc($post->getMessage());
 						if ($npc) {
 							$avatar=$npc["avatar"];
-							$postAsName=$npc["name"].' ('.$postAsName.')';
-						} else {
-							$avatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
+							$postAsName=$npc["name"];
 						}
 					}
+
 					$discordMessage = preg_replace("/\[quote(?:=\"([\w\.]+?)\")?\](((?R)|.)*?)\[\/quote\]/ms", "", $post->getMessage());
 					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($discordMessage),200);
 
-					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID).'>'.' ~ '.$postAsName;
-
-					$data = array('content' => $discordMessage,
-								  'username' => $postAsName,
-								  'avatar_url'=> $avatar
+					$data = array('username' => $postAsName,
+								  'avatar_url'=> $avatar,
+								  'embeds'=>array(array('url'=>'https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID),
+								  						'title'=>$postTitle,
+														'color' => 13395456, //#cc6600
+								  						'description'=>$discordMessage,
+														'footer'=> array('text'=>$currentUser->username.($notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT?" ~ edited post":""),'icon_url'=>$userAvatar)
+														))
 								);
 
 					$options = array(
@@ -527,13 +536,6 @@
 						]
 					];
 				}
-
-				//strip "Re: " if present
-				$postTitle=$post->getTitle();
-				if(substr($postTitle,0,4)=='Re: '){
-					$postTitle=substr($postTitle,4);
-				}
-
 
 				foreach ($gameInfo['players'] as &$player) {
 					$playerUserId=$player['user']['userID'];
