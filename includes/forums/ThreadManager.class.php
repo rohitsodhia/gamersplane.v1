@@ -471,7 +471,7 @@
 							$avatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
 						}
 					}
-					$discordMessage = preg_replace("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/ms", "", $post->getMessage());
+					$discordMessage = preg_replace("/\[quote(?:=\"([\w\.]+?)\")?\](((?R)|.)*?)\[\/quote\]/ms", "", $post->getMessage());
 					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($discordMessage),200);
 
 					$discordMessage=$discordMessage.chr(13).'<https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID).'>'.' ~ '.$postAsName;
