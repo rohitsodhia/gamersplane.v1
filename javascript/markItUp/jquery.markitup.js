@@ -226,8 +226,11 @@
 								}
 								else{
 									if(button.className!='mobileKeepOpen'){
+										var isOpen=$('ul:visible',$(this)).length>0;
 										$('ul ul', header).hide();
-										$('ul',$(this)).show();
+										if(!isOpen){
+											$('ul',$(this)).show();
+										}
 									}
 								}
 							}
