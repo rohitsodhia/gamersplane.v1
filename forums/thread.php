@@ -228,11 +228,11 @@
 							<header class="postHeader">
 								<div class="postedOn convertTZ mob-hide"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
 								<div class="postedOn non-mob-hide"><a class="convertTZ" href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></a></div>
-								<div class="subject"><a href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=strlen($post->title) ? printReady($post->title) : '&nbsp'?></a></div>
+								<div class="subject"><a href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=strlen($post->title) ? printReady($post->title, ['nl2br']) : '&nbsp'?></a></div>
 							</header>
 <?php
 			echo "\t\t\t\t\t\t\t<div class=\"post\">\n";
-			echo printReady(BBCode2Html($post->message)) . "\n";
+			echo printReady(BBCode2Html($post->message),['nl2br']) . "\n";
 			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . "</span></div>\n"; }
 			echo "\t\t\t\t\t\t\t</div>\n";
 

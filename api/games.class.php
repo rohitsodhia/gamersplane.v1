@@ -203,7 +203,7 @@ class games
 		$gameInfo['readPermissions'] = $mysql->query("SELECT `read` FROM forums_permissions_general WHERE forumID = {$gameInfo['forumID']} LIMIT 1")->fetchColumn();
 		$gameInfo['readPermissions'] = (bool)$gameInfo['readPermissions'];
 		$gameInfo['gm']['lastActivity'] = User::inactive($mysql->query("SELECT lastActivity FROM users WHERE userID = {$gameInfo['gm']['userID']} LIMIT 1")->fetchColumn());
-		$gameInfo['title'] = printReady($gameInfo['title']);
+		$gameInfo['title'] = printReady($gameInfo['title'], ['nl2br']);
 		$gameInfo['created'] = date('F j, Y g:i a', getMongoSeconds($gameInfo['created']));
 		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
 		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? $gameInfo['charGenInfo'] : 'None Provided';

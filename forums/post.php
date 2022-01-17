@@ -254,7 +254,7 @@
 	} elseif (!strlen($post->getTitle()) && $threadManager->getThreadID()) {
 		$title = $threadManager->getThreadProperty('title');
 	} else {
-		$title = printReady($post->title, ['stripslashes']);
+		$title = printReady($post->title, []);
 	}
 ?>
 			<div id="basicPostInfo" class="hbMargined">
