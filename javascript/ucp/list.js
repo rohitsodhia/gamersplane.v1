@@ -3,11 +3,25 @@ app.controller('gamersList', ['$scope', '$http', '$sce', '$filter', function ($s
 	$scope.loading = true;
 	$scope.pagination = { numItems: 0, itemsPerPage: 25 };
 	$scope.filter = { search: '' };
+	$scope.ordering = "0";
 
 	$scope.filterItems = function(user) {
-
 		return (user.username.toLowerCase().indexOf($scope.filter.search.toLowerCase() )!=-1) && ((!$scope.lookingForAGame) || (user.lfgStatus));
 	};
+
+	var maxUserIdValue=1000000;
+
+	$scope.sortOrder=function(user){
+		if($scope.ordering==1){
+			return (user.online?'0-':'1-')+('000000000' + user.userID).substr(-6);
+		}
+		else if($scope.ordering==2){
+			return (user.online?'0-':'1-')+(maxUserIdValue-user.userID);
+		}
+
+		return (user.online?'0-':'1-')+user.name;
+	}
+
 
 	$scope.getGamers = function () {
 		$scope.$emit('pageLoading');
