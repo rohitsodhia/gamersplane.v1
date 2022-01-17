@@ -220,21 +220,32 @@ function BBCode2Html($text) {
 
 	//tables
 	$matches = null;
-	$text=preg_replace_callback("/\[table(=([\"a-zA-Z])*)?\](.*?)\[\/table\]/ms", function($matches){
+	$text=preg_replace_callback("/\[table(=([\"a-zA-Z ])*)?\](.*?)\[\/table\]/ms", function($matches){
 			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 			$tableClass="";
-			if($tableType=="center"||$tableType=="centre"){
+			if(strpos($tableType,"center")!==false || strpos($tableType,"centre")!==false){
 				$tableClass=" bbTableCenter";
-			} else if($tableType=="right"){
+			} else if(strpos($tableType,"right")!==false){
 				$tableClass=" bbTableRight";
-			} else if($tableType=="stats"){
+			} else if(strpos($tableType,"stats")!==false){
 				$tableClass=" bbTableStats";
-			} else if($tableType=="ht" || $tableType=="htl" || $tableType=="hl"){
-				$tableClass=" bbTable-".$tableType;
-			} else if($tableType=="rolls"){
+			} else if(strpos($tableType,"htl")!==false){
+				$tableClass=" bbTable-htl";
+			} else if(strpos($tableType,"ht")!==false){
+				$tableClass=" bbTable-ht";
+			} else if(strpos($tableType,"hl")!==false){
+				$tableClass=" bbTable-hl";
+			} else if(strpos($tableType,"rolls")!==false){
 				$tableClass=" bbTableRolls";
 			}
 
+			if(strpos($tableType,"grid")!==false || strpos($tableType,"lines")!==false){
+				$tableClass .= " bbTableGrid";
+			}
+
+			if(strpos($tableType,"zebra")!==false){
+				$tableClass .= " bbTableZebra";
+			}
 
 			$tableRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
 
