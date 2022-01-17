@@ -1,4 +1,5 @@
-<? require_once(FILEROOT.'/header.php'); ?>
+<? $responsivePage=true;
+require_once(FILEROOT.'/header.php'); ?>
 <? if (isset($_GET['invalidEmail'])) { ?>
 		<div class="alertBox_error"><ul>
 			<li>Email not found in our system</li>
