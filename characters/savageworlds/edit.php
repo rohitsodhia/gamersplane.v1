@@ -3,7 +3,7 @@
 					<input type="text" name="name" maxlength="50" value="<?=$this->getName()?>">
 				</div>
 
-				<div class="clearfix">
+				<div class="flexWrapper">
 					<div class="sidebar left">
 						<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
 						<div id="primaryTraits">
@@ -37,11 +37,11 @@
 <?	} ?>
 						</div>
 					</div>
-					<div class="mainColumn right">
+					<div class="right">
 						<div class="clearfix">
 							<div class="twoCol">
 								<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
-								<textarea id="edge_hind" name="edge_hind" class="hbdMargined"><?=$this->getEdgesHindrances()?></textarea>
+								<div class="hbdMargined"><textarea id="edge_hind" name="edge_hind"><?=$this->getEdgesHindrances()?></textarea></div>
 							</div>
 							<div class="twoCol lastTwoCol">
 								<h2 class="headerbar hbDark">Injuries</h2>
@@ -55,22 +55,22 @@
 										<input type="text" name="fatigue" maxlength="2" value="<?=$this->getFatigue()?>">
 									</div>
 								</div>
-								<textarea id="injuries" name="injuries" class="hbdMargined"><?=$this->getInjuries()?></textarea>
+								<div class="hbdMargined"><textarea id="injuries" name="injuries"><?=$this->getInjuries()?></textarea></div>
 							</div>
 						</div>
 
 						<div class="clearfix">
 							<div class="twoCol">
 								<h2 class="headerbar hbDark">Weapons</h2>
-								<textarea id="weapons" name="weapons" class="hbdMargined"><?=$this->getWeapons()?></textarea>
+								<div class="hbdMargined"><textarea id="weapons" name="weapons"><?=$this->getWeapons()?></textarea></div>
 							</div>
 							<div class="twoCol lastTwoCol">
 								<h2 class="headerbar hbDark">Equipment</h2>
-								<textarea id="equipment" name="equipment" class="hbdMargined"><?=$this->getEquipment()?></textarea>
+								<div class="hbdMargined"><textarea id="equipment" name="equipment"><?=$this->getEquipment()?></textarea></div>
 							</div>
 						</div>
 
 						<h2 class="headerbar hbDark">Background/Notes</h2>
-						<textarea id="notes" name="notes" class="hbdMargined"><?=$this->getNotes()?></textarea>
+						<div class="hbdMargined"><textarea id="notes" name="notes"><?=$this->getNotes()?></textarea></div>
 					</div>
 				</div>

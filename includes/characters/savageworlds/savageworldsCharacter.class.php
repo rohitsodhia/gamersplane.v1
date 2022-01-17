@@ -80,7 +80,7 @@
 		}
 
 		public function showSkillsEdit($trait) {
-			if ($this->skills[$trait]) {
+			if ($this->skills[$trait] && sizeof($this->skills[$trait])) {
 				foreach ($this->skills[$trait] as $key => $skillInfo) {
 					$this->skillEditFormat($key, array_merge(['trait' => $trait], $skillInfo));
 				}
@@ -164,7 +164,7 @@
 				}
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) {
+				if ($data['skills'] && sizeof($data['skills'])) {
 					foreach ($data['skills'] as $trait => $skillInfos) {
 						foreach ($skillInfos as $skillInfo) {
 							$this->addSkill(array_merge(['trait' => $trait], $skillInfo));

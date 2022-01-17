@@ -1,9 +1,9 @@
-			<div id="nameDiv" class="tr clearfix">
+			<div id="nameDiv" class="tr flexWrapper">
 				<label>Name:</label>
 				<div><?=$this->getName()?></div>
 			</div>
 
-			<div class="clearfix">
+			<div class="flexWrapper">
 				<div class="sidebar left">
 					<h2 class="headerbar hbDark">Traits &amp; Skills</h2>
 					<div id="primaryTraits">
@@ -12,7 +12,7 @@
 		$dice = $this->getTraits($abbrev);
 ?>
 						<div class="hbdMargined traitDiv" data-trait="<?=$abbrev?>">
-							<div class="trait clearfix">
+							<div class="trait flexWrapper">
 								<div class="traitName"><?=$label?></div>
 								<div class="diceSelect">d<?=$dice?></div>
 							</div>
@@ -33,8 +33,8 @@
 <?	} ?>
 					</div>
 				</div>
-				<div class="mainColumn right">
-					<div class="clearfix">
+				<div class="right">
+					<div class="flexWrapper">
 						<div class="twoCol">
 							<h2 class="headerbar hbDark">Edges &amp; Hindrances</h2>
 							<div class="hbdMargined"><?=printReady(BBCode2Html($this->getEdgesHindrances()))?></div>
@@ -55,7 +55,7 @@
 						</div>
 					</div>
 
-					<div class="clearfix">
+					<div class="flexWrapper">
 						<div class="twoCol">
 							<h2 class="headerbar hbDark">Weapons</h2>
 							<div class="hbdMargined"><?=printReady(BBCode2Html($this->getWeapons()))?></div>

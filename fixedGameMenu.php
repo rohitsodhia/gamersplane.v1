@@ -19,21 +19,26 @@
 			$isGM = $game && $game['players'][0]['isGM'] ? true : false;
 ?>
 <ul style="display:none" id="playerList">
-<?php if($gameID){
-	foreach ($game['players'] as $player){
-		if($player['isGM'] && $player['user']['userID']==$currentUser->userID){
-			$isUserGm=true;
-		}
-		if($player['approved']){?>
+<?php
+	if ($gameID && is_array($game['players'])) {
+		foreach ($game['players'] as $player) {
+			if ($player['isGM'] && $player['user']['userID'] == $currentUser->userID) {
+				$isUserGm = true;
+			}
+			if ($player['approved']) {
+?>
 	<li><?= $player['user']['username']?></li>
-<?php }
+<?php
+			}
+		}
 	}
-} if($gameID){ ?>
+	if ($gameID) {
+?>
 	<script type="application/json" id="gameOptions">
 	<?= $game["gameOptions"] ?>
 	</script>
 
-<?php }?>
+<?php } ?>
 </ul>
 	<ul class="rightCol">
 		<li><a href="<?='/games/'.$gameID?>" class="menuLink">Game Details</a></li>

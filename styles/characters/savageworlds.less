@@ -12,6 +12,7 @@
 
 #nameDiv input {
 	width: 200px;
+	text-align: left;
 }
 
 textarea {
@@ -23,8 +24,8 @@ textarea {
 	width: 300px;
 }
 
-.mainColumn {
-	width: 645px;
+.right {
+	margin-left: 10px;
 }
 
 .traitDiv {
@@ -32,22 +33,27 @@ textarea {
 	margin-bottom: 1.3em;
 }
 
-.trait, .skillHeader, .skills > * {
+.trait,
+.skillHeader,
+.skills > * {
 	padding: 0 8px;
 }
 
 #primaryTraits .trait {
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background-color: #DDD;
+	background-color: #ddd;
 }
 
-.trait > *, .skill > * {
+.trait > *,
+.skill > * {
 	display: inline-block;
 	vertical-align: middle;
 }
 
-.traitName, .skillName, input.skillName {
+.traitName,
+.skillName,
+input.skillName {
 	width: 165px;
 	text-align: left;
 }
@@ -144,5 +150,4 @@ textarea {
 
 #page_characterSheet_edit #notes {
 	height: 15em;
-	width: 912px;
 }

@@ -305,6 +305,18 @@ function BBCode2Html($text) {
 		$postAuthorName=$post->getAuthor('username');
 	}
 
+	// Do spoilers later to avoid incorrect closing
+	$in = array(
+		"/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
+		"/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+	);
+	// And replace them by...
+	$out = array(
+		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
+		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
+	);
+	$text = preg_replace($in, $out, $text);
+
 	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
 	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
