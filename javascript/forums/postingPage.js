@@ -15,7 +15,7 @@ $(function() {
 
 		$.get(basePage + '?page=' + $(prevPages[0]).text(), function (data) {
 			var block=$('.postBlock:not(.postPreview)', $(data));
-			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap();
+			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap().applyDiceRules().convertTimeZones();;
 			var newHeight=$(document).height()
 
 			$(window).scrollTop(startScroll+(newHeight-startHeight));
