@@ -134,7 +134,16 @@ $(function() {
 		e.stopPropagation();
 
 		$selectedDice = $(this).parent();
-		$(this).remove();
+		if($(this).hasClass('starwarsffg_difficulty')){
+			$(this).removeClass('starwarsffg_difficulty').addClass('starwarsffg_challenge').attr('title','Challenge');
+		}
+		else if($(this).hasClass('starwarsffg_ability')){
+			$(this).removeClass('starwarsffg_ability').addClass('starwarsffg_proficiency').attr('title','Proficiency');
+		}
+		else{
+			$(this).remove();
+		}
+
 		var inputVal = [];
 		$selectedDice.find('.diceIcon').each(function () {
 			inputVal[inputVal.length] = $(this).attr('class').charAt(21);
@@ -326,6 +335,8 @@ $(function() {
 							addDnd5Rolls(charSheetContent);
 						} else if(system=='savageworlds'){
 							addSavageWorldRolls(charSheetContent);
+						} else if (system == 'starwarsffg') {
+							addStarwarsFFGRolls(charSheetContent);
 						}
 
 						//tables with rolls
@@ -404,6 +415,42 @@ $(function() {
 				var unskilledRoller=$('<tr class="traitRow"></tr>').addClass('rollDice').attr('roll','1d4-2,1d6-2').attr('rolltext','Unskilled').attr('rerollAces','true').appendTo($('table',unskilledDiv));
 				$('<td>Unskilled</td>').appendTo(unskilledRoller);
 				$('<td>1d4-2,1d6-2</td>').appendTo(unskilledRoller);
+			};
+
+			//special code for Star Wars FFG
+			var addStarwarsFFGRolls=function(charSheetContent){
+				var talenDiv=$('<div class="roller"><select class="shortcutSelector addAsSpoiler"><option>--Talents--</option></select></div>').appendTo(charSheet);
+				$('.talent',charSheetContent).each(function(){
+					var pThis=$(this);
+					var name=$.trim($('.talent_name',pThis).text());
+					var notes=$('.talent_notes',pThis);
+					if(name.length>0 && notes.length>0){
+						var notes=$.trim(notes.html().replace(/(?:\r\n|\r|\n)/g, '').replace(/<br\s*[\/]?>/gi, '\n'));
+						$('<option></option>').text(name).data('notes',notes).appendTo($('select',talenDiv));
+					}
+				});
+
+				$('<h3>Skills</h3>').appendTo(charSheet);
+				var skills=$('<table class="ffgSkills"></table>').appendTo(charSheet);
+				$('.skill', charSheetContent).each(function () {
+					var skill = $(this);
+					var label = $.trim($('.skill_name', skill).text());
+					var ability = $.trim($('.skill_stat', skill).text());
+					var rank = $.trim($('.skill_rank', skill).text());
+					var abilityScore=$.trim($('#stats .stat_'+ability.toLowerCase(), charSheetContent).text());
+					var yellow=Math.min(rank,abilityScore);
+					var green=Math.max(rank,abilityScore)-yellow;
+
+					{
+						var roller = $('<tr class="ffgSkill"><td><span class="name"></span></td><td class="swffgRoller"><span class="ability"></span></td><td><i class="p">1</i><i class="p">2</i><i class="p">3</i><i class="p">4</i><i class="p">5</i></td></tr>').appendTo(skills);
+						$('span.name', roller).text(label);
+						$('.swffgRoller,i.p',roller).data('y',yellow);
+						$('.swffgRoller,i.p',roller).data('g',green);
+						$('.swffgRoller',roller).data('p',0);
+						$('i.p',roller).each(function(){$(this).addClass('swffgRoller').data('p',$(this).text());});
+						$('span.ability', roller).html('<i class="y">y</i>'.repeat(yellow)+'<i class="g">g</i>'.repeat(green));
+					}
+				});
 			};
 
 			//special code for dnd 5e
@@ -486,6 +533,26 @@ $(function() {
 				});
 			};
 
+			var addStarwarsFFGRollToList = function (reason, y, g, p) {
+
+				rollCount += 1;
+				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'starwarsffg' }, function (data) {
+					$newRow = $(data);
+					$newRow.find('select').prettySelect();
+					var ytext='<div class="diceIcon starwarsffg_proficiency" title="Proficiency"></div>'.repeat(y);
+					var gtext='<div class="diceIcon starwarsffg_ability" title="Ability"></div>'.repeat(g);
+					var ptext='<div class="diceIcon starwarsffg_difficulty" title="Difficulty"></div>'.repeat(p);
+					var items=[];
+					items=items.concat(new Array(y).fill('p'));
+					items=items.concat(new Array(g).fill('a'));
+					items=items.concat(new Array(p).fill('d'));
+					$newRow.find('.selectedDice').html(ytext+gtext+ptext);
+					$newRow.find('.reason input').val(reason);
+					$newRow.find('.dicePool input').val(items.join(','));
+					$newRow.appendTo($newRolls);
+				});
+			};
+
 			//clicking a roll
 			$('#rolls_decks').on('click', '.rollDice', function () {
 				var thisRoll = $(this);
@@ -504,6 +571,18 @@ $(function() {
 
 				addRollToList(reason, roll, rerollAces);
 			});
+
+			$('#rolls_decks').on('click', '.swffgRoller', function () {
+				var thisRoll = $(this);
+				var reason=$('.name',thisRoll.closest('tr')).text();
+				var y=parseInt(thisRoll.data('y'));
+				var g=parseInt(thisRoll.data('g'));
+				var p=parseInt(thisRoll.data('p'));
+
+				addStarwarsFFGRollToList(reason, y, g, p);
+			});
+
+
 
 			$('#rolls_decks').on('change', '.shortcutSelector', function (ev) {
 				var pThis=$(this);

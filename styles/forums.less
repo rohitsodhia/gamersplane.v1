@@ -2403,6 +2403,40 @@ h1.forumSearch{
 
 }
 
+.ffgSkills{
+	width:auto;
+	.ffgSkill{
+		margin-bottom: .2rem;
+		i{
+			display: inline-block;
+			border:solid 1px #888;
+			margin-right: 2px;
+			padding: 0 2px;
+			border-radius: 2px;
+		}
+		i.y{
+			background-color:rgba(255, 233, 0, 0.5);
+			color:rgba(255, 233, 0, 0);
+		}
+		i.g{
+			background-color:rgba(79, 184, 71, 0.5);
+			color:rgba(79, 184, 71, 0);
+		}
+		i.p{
+			background-color:rgba(83, 35, 128, 0.5);
+			color:#fff;
+		}
+
+		.ability,i.p{
+			cursor: pointer;
+		}
+
+		.ability:hover i,i.p:hover{
+			box-shadow: 0 0 2px rgba(0,0,0,.6);
+		}
+	}
+}
+
 @media only screen and (max-width: @mobile-breakpoint){
 	.ft_search li .ft_post_info .ft_poster a.username{
 		display: block;
