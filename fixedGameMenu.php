@@ -7,8 +7,7 @@
 		if ($gameID) {
 			$game = $mongo->games->findOne(
 				[
-					'gameID' => (int) $gameID,
-					'players.user.userID' => $currentUser->userID
+					'gameID' => (int) $gameID
 				],
 				[
 					'system' => true,
