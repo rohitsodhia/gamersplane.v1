@@ -219,6 +219,18 @@
 <?php } ?>
 
 		<div id="page_forum_thread">
+<?php
+		if ($pathOptions[0] == 'editPost' && !$firstPost){
+?>
+		<div id="backfill" data-prevpage="/forums/thread/<?=$threadManager->getThreadID()?>/?b=<?=$postID?>"><span>load previous</span></div>
+<?php
+		}
+		else if ($pathOptions[0] == 'post'){
+?>
+		<div id="backfill" data-prevpage="/forums/thread/<?=$threadManager->getThreadID()?>/?b=last"><span>load previous</span></div>
+<?php
+		}
+?>
 		<div class="postBlock postRight postPreview postAsChar" style="display:none;">
 			<div class="flexWrapper">
 				<div class="posterDetails">

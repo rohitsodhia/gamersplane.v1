@@ -5,6 +5,45 @@ $(function() {
 		gameOptions = JSON.parse($('#gameOptions').html());
 	} catch (e) { }
 
+	$('#backfill').on('click',function(){
+		var pThis=$(this);
+		var basePage = window.location.href.split('?')[0];
+		var prevPages=$('.paginateDiv a.page').prevAll('a').filter(function( index ) {return !isNaN($(this).text());});
+
+		var startScroll = $(window).scrollTop();
+		var startHeight=$(document ).height()
+
+		$.get(basePage + '?page=' + $(prevPages[0]).text(), function (data) {
+			var block=$('.postBlock:not(.postPreview)', $(data));
+			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap();
+			var newHeight=$(document).height()
+
+			$(window).scrollTop(startScroll+(newHeight-startHeight));
+
+			pThis.remove();
+		});
+	});
+
+	$('body').on('click','.quotePost',function(){
+
+		var pThis=$(this);
+		var postId=pThis.data('postid');
+		$.ajax({
+			type: 'post',
+			url: API_HOST +'/forums/getPostQuote',
+			xhrFields: {
+				withCredentials: true
+			},
+			data:{ postID: postId},
+			success:function (data) {
+				$('#messageTextArea').focus();
+				$.markItUp({ replaceWith: data });
+				$("#messageTextArea")[0].scrollIntoView();
+			}
+		});
+
+	});
+
 	var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
 	if (gameOptions && gameOptions.characterSheetIntegration){
 		$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
