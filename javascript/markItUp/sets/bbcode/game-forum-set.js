@@ -42,6 +42,7 @@ mySettings = {
 				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } },
 				{ name: 'YouTube...', replaceWith: '[youtube][![YouTube share link]!][/youtube]' },
 				{ name: 'OtFBM', replaceWith: '[map]\nhttps://otfbm.io\n\n--Map size, cell size, and panning\n/26x14/@c60/b5:10x6\n\n--Tokens\n/f7-Alice\n/h8-Bob\n\n--Background image\n?bg=https://i.imgur.com/jIpAjkT.jpg\n[/map]' },
+				{ name: 'Zoom map...', replaceWith: '[zoommap="[![Url]!]"]\n[/zoommap]' }
 			]
 		},
 		{ separator: '---------------' },

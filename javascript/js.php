@@ -51,6 +51,8 @@
 <?	if ($addJSFiles) { foreach ($addJSFiles as $file) { ?>
 <script type="text/javascript" src="/javascript/<?=$file?>?v=<?=getJSVersion('/javascript/'.$file)?>"></script>
 <?	} } ?>
+<script type="text/javascript" src="/javascript/leaflet/leaflet.js?v=<?=getJSVersion('/javascript/leaflet/leaflet.js')?>"></script>
+<script type="text/javascript" src="/javascript/zoommap.js?v=<?=getJSVersion('/javascript/zoommap.js')?>"></script>
 <?	if ($addExternalJSFiles && !empty($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
 <script src="<?=$file?>"></script>
 <?	} } ?>

@@ -1669,7 +1669,7 @@ textarea {
 .oocText,
 .spoiler,
 .private {
-	div:first-child {
+	> div:first-child {
 		font-size: .85em;
 		line-height: 1em;
 		font-weight: bold;
@@ -3741,4 +3741,20 @@ select.notPretty {
 
 .hide {
 	display: none !important;
+}
+
+.zoommap{
+	height:500px;
+}
+
+.leaflet-div-icon-red {
+    filter: hue-rotate(150deg);
+}
+
+.leaflet-div-icon-amber {
+    filter: hue-rotate(190deg);
+}
+
+.leaflet-div-icon-green {
+    filter: hue-rotate(240deg);
 }

@@ -37,6 +37,7 @@
 	<link href="/styles/<?=$file?>.css?v=<?=getStyleVersion('/styles/'.$file.'.css')?>" rel="stylesheet">
 <?	} } ?>
 
+	<link href="/javascript/leaflet/leaflet.css?v=<?=getStyleVersion('/javascript/leaflet/leaflet')?>" rel="stylesheet">
 
 	<noscript><link href="/styles/noJS.css?v=<?=getStyleVersion('/styles/noJS.css')?>" rel="stylesheet"></noscript>
 	<!--[if IE]>
