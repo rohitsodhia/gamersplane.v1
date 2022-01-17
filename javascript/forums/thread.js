@@ -59,43 +59,6 @@ $(function() {
 
 	});
 
-	$('#previewPost').click(function(){
-		$('.postPreview .post').html('<div class="previewing">Getting preview</div>');
-		$('.postPreview').show();
-		var selOpt=$('select[name="postAs"] option:selected');
-		$.ajax({
-			type: 'post',
-			url: API_HOST +'/forums/getPostPreview',
-			xhrFields: {
-				withCredentials: true
-			},
-			data:{ postText: $('#messageTextArea').val(), postAsId: selOpt.val(), postAsName: selOpt.text()},
-			success:function (data) {
-				$('.postPreview .post').html(data.post).darkModeColorize();
-
-				if(data.avatar){
-					$('img',$('.postPreview .posterDetails .avatar').show()).attr('src',data.avatar);
-				}
-				else{
-					$('.postPreview .posterDetails .avatar').hide();
-				}
-
-				if(data.npcPoster){
-					$('.postPreview').addClass('withSingleNpc');
-				}else{
-					$('.postPreview').removeClass('withSingleNpc');
-				}
-
-				$('.postPreview .charName').text(data.name);
-				$(".postPreview")[0].scrollIntoView();
-				var startScroll = $(window).scrollTop()-100;
-				if(startScroll>0){
-					$(window).scrollTop(startScroll);
-				}
-			}
-		});
-	});
-
 	$('#backfill').on('click',function(){
 		var pThis=$(this);
 		var basePage = window.location.href.split('?')[0];
