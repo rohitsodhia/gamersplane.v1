@@ -441,16 +441,23 @@ footer{
 
 	.pollQuestion{
 
+        .pollQuestionResults{
+            .pollAvatar{
+                &.pollIVoted{
+                    outline-color: @theme-gp-red;
+                }
+            }
+            .ra.pollIVoted{
+                -color: @gp-red;
+            }
+        }
 		&.pollMyVote{
 			.pollQuestionLabel{
 				color:@theme-gp-red;
 			}
-
-			.pollQuestionResults{
-				i.ra:first-child{
-					color: @theme-gp-red;
-				}
-			}
+		}
+		&:hover{
+			background-color: fade(@gp-orange-lightest,90%);
 		}
 	}
 }

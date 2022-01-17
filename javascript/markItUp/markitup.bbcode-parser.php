@@ -339,13 +339,12 @@ function BBCode2Html($text) {
 
 			$pollQuestions = explode("\n", trim(str_replace("<br />","",$matches[3])));
 
-			$multipleVotes = (stripos($matches[2],'multi')!=false);
-			$showBeforeVote = (stripos($matches[2],'show')!=false);
+			$multipleVotes = (stripos($matches[2],'multi')!==false);
+			$showBeforeVote = (stripos($matches[2],'show')!==false);
+			$publicVote = (stripos($matches[2],'public')!==false);
 
-
-
-			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"")."' data-postid='".$post->getPostID()."'>";
-			$ret .= "<h3>".$pollTitle."</h3>";
+			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"").($publicVote?" pollPublic":"")."' data-postid='".$post->getPostID()."'>";
+			$ret .= "<h3>".$pollTitle.($multipleVotes?" <span class='badge badge-pollMulti'>Multi</span>":"").($publicVote?" <span class='badge badge-pollPublic'>Public</span>":"")."</h3>";
 
 			$ret .= "<div class='pollQuestions'>";
 			$answerNumber=1;
@@ -355,11 +354,10 @@ function BBCode2Html($text) {
 					$ret .= "<div class='pollQuestion ".($pollResults['votes'][$answerNumber]["me"]?" pollMyVote":"")."' data-q='".$answerNumber."'><div class='pollQuestionLabel'>".$pollQuestion."</div>";
 					$ret .= "<div class='pollQuestionResults'>";
 					if($pollResults['voted'] || $showBeforeVote || $postAuthor || $isGM){
-						$ret .= str_repeat('<i class="ra ra-gamers-plane"></i>', (int)($pollResults['votes'][$answerNumber]['votes']));
+						$ret .= $pollResults['votes'][$answerNumber]['html'];
 					}
 					else{
 						$ret .='<div class="voteToView">Vote to view results.</div>';
-
 					}
 					$ret .= "</div></div>";
 					$answerNumber++;

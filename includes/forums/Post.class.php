@@ -264,20 +264,30 @@
 
 			$voteCollection=$mongo->threads->findOne(['threadID' => ((int)$this->getThreadID())]);
 
-			$ret = array('voted'=>false,'votes'=>array());
+			$ret = array('voted'=>false,'votes'=>array(),'publicVotes'=>array());
 			if($this->postID){
 				if($voteCollection && is_countable($voteCollection["votes"])){
 					foreach ($voteCollection["votes"] as $voteItem) {
 						if($voteItem['postID']==$this->postID){
 							$voteNum=(int)$voteItem['vote'];
 							if(!array_key_exists($voteNum,$ret['votes'])){
-								$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false);
+								$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false,'html'=>'');
 							}
 
 							$ret['votes'][$voteNum]['votes']=$ret['votes'][$voteNum]['votes']+1;
+
+							$myVote=false;
 							if($voteItem['userID']==$currentUser->userID){
 								$ret['votes'][$voteNum]['me']=true;
 								$ret['voted']=true;
+								$myVote=true;
+							}
+
+							if($voteItem['username']){
+								$ret['votes'][$voteNum]['html'].='<span class="pollAvatar'.($myVote?' pollIVoted':'').'" title='.htmlspecialchars($voteItem['username']).' style="background-image:url('.User::getAvatar($voteItem['userID']).');"></span>';
+							}
+							else{
+								$ret['votes'][$voteNum]['html'].='<i class="ra ra-gamers-plane'.($myVote?' pollIVoted':'').'"></i>';
 							}
 						}
 					}
