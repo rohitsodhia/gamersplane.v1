@@ -198,7 +198,7 @@
 			}
 
 			if ($this->threadID == null) {
-				$stmt=$mysql->prepare("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1, publicPosting = ".($this->thread->getStates('publicPosting',true)?1:0)." discordWebhook = :discordWebhook");
+				$stmt=$mysql->prepare("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1, publicPosting = ".($this->thread->getStates('publicPosting',true)?1:0).", discordWebhook = :discordWebhook");
 				$stmt->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
 				$stmt->execute();
 				$this->threadID = $mysql->lastInsertId();

@@ -7,13 +7,12 @@ $(function() {
 
 	$('#backfill').on('click',function(){
 		var pThis=$(this);
-		var basePage = window.location.href.split('?')[0];
-		var prevPages=$('.paginateDiv a.page').prevAll('a').filter(function( index ) {return !isNaN($(this).text());});
+		var backfillLocation=pThis.data('prevpage');
 
 		var startScroll = $(window).scrollTop();
 		var startHeight=$(document ).height()
 
-		$.get(basePage + '?page=' + $(prevPages[0]).text(), function (data) {
+		$.get(backfillLocation, function (data) {
 			var block=$('.postBlock:not(.postPreview)', $(data));
 			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap().applyDiceRules().convertTimeZones();;
 			var newHeight=$(document).height()

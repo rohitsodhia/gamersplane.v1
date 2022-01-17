@@ -86,5 +86,5 @@ $(function() {
 		}
 	};
 
-	loadForumLinks($('#threadMenu #breadcrumbs a').first());
+	loadForumLinks($('.threadMenu .breadcrumbs a').first());
 });
