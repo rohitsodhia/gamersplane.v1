@@ -29,8 +29,7 @@
 }
 
 /* --------------------------------------------*/
-#breadcrumbs {
-	margin-bottom: .75em;
+.breadcrumbs {
 	color: #666;
 	font-size: 1.1em;
 	a{
@@ -266,13 +265,17 @@
 		margin: 4em 0;
 	}
 
-	#threadMenu {
+	.threadMenu {
 		display: flex;
 		margin: .5em 0;
 		justify-content: space-between;
 
 		.leftCol {
 			align-self: flex-end;
+
+			#rules{
+				margin-bottom: 0;
+			}
 		}
 
 		.threadSub {
@@ -290,8 +293,9 @@
 		}
 	}
 
-	#threadOptions {
+	.threadOptions {
 		display: inline-block;
+		white-space: nowrap;
 
 		button {
 			height: 24px;
@@ -331,7 +335,7 @@
 		font-size: 24px;
 	}
 
-	#threadMenu .fancyButton {
+	.threadMenu .fancyButton {
 		margin-left: 15px;
 	}
 
@@ -573,7 +577,7 @@
 	cursor: pointer;
 
 	i {
-		display: inline;
+		display: inline-block;
 		padding: 0 .2em;
 		&:after {
 			content: ',';
@@ -1193,6 +1197,11 @@
 		color: #777;
 	}
 
+	.mainColumn {
+		display: flex;
+		flex-direction: column;
+	}
+
 	#forums {
 		margin-left: 0;
 
@@ -1335,7 +1344,7 @@
 		left: -9999em;
 	}
 
-	#breadcrumbs {
+	.breadcrumbs {
 		font-size: 1.1em;
 		color: #666;
 		margin-bottom: 1em;
@@ -1739,6 +1748,39 @@ td .rollDice {
 	border-bottom-right-radius: 5px;
 }
 
+.savageWorldsRoller{
+	display: flex;
+	flex-wrap: wrap;
+	.savageWorldsTrait{
+		flex-grow: 1;
+		width: 33.333%;
+		table{
+			width: auto;
+			.traitRow{
+				font-weight: bold;
+				td:first-of-type{
+					padding-left: 0;
+				}
+				td{
+					padding-top: .4rem;
+					padding-bottom: .4rem;
+				}
+			}
+			td:last-of-type{
+				text-align: right;
+			}
+			td:first-of-type{
+				padding-right: 1rem;
+				padding-left: 1rem;
+			}
+			tr.rollDice{
+				padding-bottom: .5rem;
+			}
+		}
+
+	}
+}
+
 /* --------------------------------------------*/
 .editRollInfo {
 	&:after {
@@ -1849,13 +1891,14 @@ td .rollDice {
 .inlineNpc{
 	float: left;
 	margin: 0 1rem 0.5rem 0;
+	background-color: #f2f2f2;
+	padding: 0.5rem;
 
 	.inlineNpcAvatar{
 		width:100px;
 		height:100px;
-		background-repeat: no-repeat;
-		background-size: contain;
-		background-position: center center;
+		object-fit: contain;
+		margin: 0 !important;
 	}
 
 	.inlineNpcName{
@@ -1962,6 +2005,13 @@ body #page_forum_thread .postBlock.postPreview{
 					a{
 						margin-right: .4rem;
 					}
+
+					.badge.non-mob-hide{
+						max-width: 10em;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						vertical-align: middle;
+					}
 				}
 
 			}
@@ -1979,7 +2029,14 @@ body #page_forum_thread .postBlock.postPreview{
 		}
     }
 
+	#backfill{
+		margin-bottom: 0.8em;
+	}
+
 	#page_forum_thread .postBlock{
+
+		margin-bottom: 0;
+		margin-top: 0;
 
 		.postHeader{
 			margin-bottom: 0;
@@ -2030,12 +2087,24 @@ body #page_forum_thread .postBlock.postPreview{
 		}
 	}
 
+	.threadMenu .rightCol {
+		display: flex;
+		.paginateDiv{
+			order: 0;
+			flex-grow: 1;
+		}
+
+		.moderationButtons{
+			order:1;
+		}
+	}
+
 	#page_forum_thread .postBlock .posterDetails {
 		order:0;
 		gap:0 1rem;
 		.avatar {
 			img{
-				max-height: 40px;
+				max-height: 60px;
 			}
 		}
 
@@ -2136,11 +2205,19 @@ body #page_forum_thread .postBlock.postPreview{
 	}
 
 	#page_forum_thread {
-		#threadMenu {
+		.threadMenu {
 			flex-direction: column;
 
 			.leftCol {
 				align-self: flex-start;
+
+				.breadcrumbs{
+					margin-bottom: .6em;
+				}
+			}
+
+			.rightCol{
+				justify-content: flex-end;
 			}
 		}
 	}
@@ -2155,11 +2232,11 @@ body #page_forum_thread .postBlock.postPreview{
 	#bodyHeader,
 	.postActions,
 	#page_forum_thread .postBlock .postHeader .postedOn,
-	#page_forum_thread #threadMenu,
+	#page_forum_thread .threadMenu,
 	#quickReply,
 	footer.withFixedMenu,
 	.editInfoDiv,
-	#threadOptions,
+	.threadOptions,
 	#page_forum_thread .postBlock .postContent:before,
 	#page_forum_thread .postBlock .postContent:after{
 		display: none;
@@ -2332,8 +2409,90 @@ h1.forumSearch{
 
 }
 
+.ffgSkills{
+	width:auto;
+	.ffgSkill{
+		margin-bottom: .2rem;
+		i{
+			display: inline-block;
+			border:solid 1px #888;
+			margin-right: 2px;
+			padding: 0 2px;
+			border-radius: 2px;
+		}
+		i.y{
+			background-color:rgba(255, 233, 0, 0.5);
+			color:rgba(255, 233, 0, 0);
+		}
+		i.g{
+			background-color:rgba(79, 184, 71, 0.5);
+			color:rgba(79, 184, 71, 0);
+		}
+		i.p{
+			background-color:rgba(83, 35, 128, 0.5);
+			color:#fff;
+		}
+
+		.ability,i.p{
+			cursor: pointer;
+		}
+
+		.ability:hover i,i.p:hover{
+			box-shadow: 0 0 2px rgba(0,0,0,.6);
+		}
+	}
+}
+
+#page_forum_post #page_forum_thread{
+	.postActions a{
+		display: none;
+	}
+	#backfill{
+		margin-bottom: 10px;
+	}
+}
+
 @media only screen and (max-width: @mobile-breakpoint){
 	.ft_search li .ft_post_info .ft_poster a.username{
 		display: block;
+	}
+
+	.savageWorldsRoller{
+		.savageWorldsTrait{
+			table{
+				width: 100%;
+			}
+		}
+	}
+
+	#page_forumACP {
+		.forumAcpManagement{
+			flex-direction: column;
+		}
+
+		.sideWidget{
+			order: 1;
+		}
+
+		#newForum input {
+			width: 200px;
+		}
+
+		.permission_type{
+			width: 100px;
+		}
+
+		.option{
+			width: 60px;
+		}
+
+		.sectionControls a{
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+
+		#details textarea{
+			width: 100%;
+		}
 	}
 }

@@ -56,9 +56,6 @@
 .markItUpHeader ul li ul{
 	display:none;
 }
-.markItUpHeader ul li:hover > ul{
-	display:block;
-}
 .markItUpHeader ul .markItUpDropMenu {
 	background:transparent url(images/menu.png) no-repeat 115% 50%;
 }
@@ -83,7 +80,7 @@
 .markItUpHeader ul ul {
 	display:none;
 	position:absolute;
-	top:18px; left:0px;	
+	top:18px; left:0px;
 	background:#FFF8F8;
 	border:1px solid #3C769D;
 	border-bottom: none;
@@ -118,7 +115,7 @@
 	display:block;
 	padding-left:0px;
 	text-indent:0;
-	width:120px; 
+	width:120px;
 	padding:5px 5px 5px 25px;
 	background-position:2px 50%;
 }

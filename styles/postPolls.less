@@ -8,6 +8,18 @@
 	h3{
 		color: @gp-red;
 		padding-left: 0.5rem;
+
+		.badge{
+			font-size:1rem;
+			line-height:1rem;
+
+			&.badge-pollMulti{
+				.badgeColor( @gp-black );
+			}
+			&.badge-pollPublic{
+				.badgeColor( @gp-green );
+			}
+		}
 	}
 
 	.pollQuestion{
@@ -20,8 +32,29 @@
 			color: @gp-orange;
 			padding: .2rem 0;
 
-			.ra{
-				margin-right: .1rem;
+			.ra,.pollAvatar{
+				margin-right: .4rem;
+			}
+
+			.pollAvatar{
+				background-repeat: no-repeat;
+				background-position: center center;
+				background-size: cover;
+				border-radius: 50%;
+				width:30px;
+				height:30px;
+				display: inline-block;
+				margin: 0 .5rem 0 0 !important;
+				border:solid 2px transparent;
+				outline:solid 2px transparent;
+
+				&.pollIVoted{
+					outline-color: @gp-red;
+				}
+			}
+
+			.ra.pollIVoted{
+				color: @gp-red;
 			}
 		}
 
@@ -34,12 +67,6 @@
 				color:@gp-red;
 				font-weight: bold;
 			}
-
-			.pollQuestionResults{
-				i.ra:first-child{
-					color: @gp-red;
-				}
-			}
 		}
 
 		.voteToView{
@@ -48,7 +75,20 @@
 		}
 	}
 
+	&.pollPublic .pollQuestion .pollQuestionResults{
+		min-height: 40px;
+		.ra{
+			min-height: 40px;
+			vertical-align: top;
+			&:before{
+				vertical-align: middle;
+			}
+		}
+	}
+
 	&.thinking{
 		background-color: rgba(0,0,0,.1);
 	}
+
+
 }

@@ -186,21 +186,6 @@ body span.invertColors {
     mix-blend-mode: screen;
 }
 
-body #page_forum_thread div.postBlockFound
-{
-    background-color: transparent;
-}
-
-body #page_forum_thread div.postBlockFound .postContent
-{
-    border-color: @theme-gp-red;
-}
-
-body #page_forum_thread div.postBlockFound .postPoint
-{
-    border-right-color: @theme-gp-red;
-}
-
 body input[type=text],
 body input[type=number],
 body input[type=password],
@@ -302,11 +287,24 @@ body.modal {
     color: #fff;
 }
 
-.bbTable.bbTableRolls{
-    tr{
-        border-bottom: solid 1px #303136;
+.bbTable{
+    &.bbTableRolls{
+        tr{
+            border-bottom: solid 1px #303136;
 
+        }
     }
+	&.bbTableGrid{
+		td{
+			border:solid 1px #888;
+		}
+	}
+
+	&.bbTableZebra{
+		tr:nth-child(even) {
+			background-color: #2d2e32;
+		}
+	}
 }
 
 #charSheetRoller .bbTableRolls{
@@ -317,6 +315,15 @@ body.modal {
         background-color: #303136;
     }
 }
+
+.savageWorldsRoller .savageWorldsTrait table .traitRow td{
+    color: #cc5544;
+}
+
+.savageWorldsRoller .savageWorldsTrait table td{
+    color: #999;
+}
+
 
 .parsedRolls{
 	.rollVal-success{
@@ -363,6 +370,7 @@ body.style-background #content {
 	>.bodyContainer {
 		&:before{
 			background-color: rgba(48,49, 54, 0.95);
+            outline-color: rgba(48,49, 54, 0.95);
 		}
 
 	}
@@ -428,16 +436,23 @@ footer{
 
 	.pollQuestion{
 
+        .pollQuestionResults{
+            .pollAvatar{
+                &.pollIVoted{
+                    outline-color: @theme-gp-red;
+                }
+            }
+            .ra.pollIVoted{
+                -color: @gp-red;
+            }
+        }
 		&.pollMyVote{
 			.pollQuestionLabel{
 				color:@theme-gp-red;
 			}
-
-			.pollQuestionResults{
-				i.ra:first-child{
-					color: @theme-gp-red;
-				}
-			}
+		}
+		&:hover{
+			background-color: fade(@gp-orange-lightest,90%);
 		}
 	}
 }
@@ -461,4 +476,19 @@ footer{
 
 .spoiler.snippet {
     background-color: #746852;
+}
+
+.ffgDestiny{
+	.updateError{
+		color: @theme-gp-red;
+	}
+	.ffgHistory{
+		.ffgHistoryToggle{
+			color: @theme-gp-red;
+		}
+    }
+}
+
+.inlineNpc{
+	background-color: #2f2f2f;
 }

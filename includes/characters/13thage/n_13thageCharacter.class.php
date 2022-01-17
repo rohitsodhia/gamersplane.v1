@@ -244,7 +244,7 @@
 						<span class="name"><?=$abilityTalent['name']?></span>
 <?					if (strlen($abilityTalent['notes'])) { ?>
 						<a href="" class="notesLink">Notes</a>
-						<div class="notes"><?=$abilityTalent['notes']?></div>
+						<div class="notes"><?=printReady($abilityTalent['notes'])?></div>
 <?					} ?>
 					</div>
 <?

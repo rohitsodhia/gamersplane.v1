@@ -28,6 +28,18 @@ $(function () {
             };
         });
 
+        $.expr[':'].ge =  $.expr[':'].ge || $.expr.createPseudo(function(arg) {
+            return function( elem ) {
+                return parseInt($(elem).text())>=parseInt(arg);
+            };
+        });
+
+        $.expr[':'].le =  $.expr[':'].le || $.expr.createPseudo(function(arg) {
+            return function( elem ) {
+                return parseInt($(elem).text())<=parseInt(arg);
+            };
+        });
+
         //toggle ordering between original and numeric
         var orderRolls=function(parsedRolls){
             if(parsedRolls.hasClass('rollsOrderedByVal')){
@@ -46,10 +58,9 @@ $(function () {
                 var rule = gameOptions.diceRules[count];
                 if(rollstring && rule.rolled &&  rollstring.toLowerCase().indexOf(rule.rolled.toLowerCase())!=-1){
                     //rules highlighting
-                    if(rule.highlight){
-                        var highlightClass=rule.highlight.split(" ").map(function(item) {
-                            return 'rollVal-'+item.trim().toLowerCase();
-                        }).join(' ');
+                    if(rule.highlight || rule.content){
+
+                        var highlightClass=rule.highlight?highlightClass=rule.highlight.split(" ").map(function(item) {return 'rollVal-'+item.trim().toLowerCase();}).join(' '):'';
 
                         var selectorSuffix='';
 
@@ -58,9 +69,17 @@ $(function () {
                             selectorSuffix+=':last';
                         }
 
-                        //natural values
+                        //roll values
                         if(rule.natural) {
                             selectorSuffix+=':equals('+rule.natural+')';
+                        }
+
+                        if(rule.ge) {
+                            selectorSuffix+=':ge('+rule.ge+')';
+                        }
+
+                        if(rule.le) {
+                            selectorSuffix+=':le('+rule.le+')';
                         }
 
                         //check for paired dice
@@ -73,7 +92,23 @@ $(function () {
                             selectorSuffix+=':d100double';
                         }
 
-                        $('i'+selectorSuffix,parsedRolls).addClass(highlightClass);
+                        var matchedDice=$('i'+selectorSuffix,parsedRolls);
+
+                        //reason
+                        if(rule.reason){
+                            var match=rule.reason.toLowerCase();
+                            matchedDice=matchedDice.filter(function(){
+                                var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
+                                return thisVal.indexOf(match)!=-1;
+                            });
+                        }
+
+                        if(rule.highlight){
+                            matchedDice.addClass(highlightClass);
+                        }
+                        if(rule.content){
+                            matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
+                        }
                     }
 
                     //other rule options
@@ -85,14 +120,20 @@ $(function () {
         };
 
         //convert the text into spans and apply the rules
-        $('.rollValues').each(function(){
-            var pThis=$(this);
+        jQuery.fn.applyDiceRules = function (){
+            $('.rollValues',this).each(function(){
+                var pThis=$(this);
 
-            pThis.on('click',function(){orderRolls($(this));});
+                pThis.on('click',function(){orderRolls($(this));});
 
-            if(gameOptions.diceRules){
-                applyDiceRules(pThis);
-            }
-        });
+                if(gameOptions.diceRules){
+                    applyDiceRules(pThis);
+                }
+            });
+
+            return this;
+        };
+
+        $('body').applyDiceRules();
     }
 });

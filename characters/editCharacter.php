@@ -19,6 +19,7 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$noChar = false;
+					$gameID=$character->getGameID();
 					$addJSFiles[] = 'characters/_edit.js';
 					if (is_subclass_of($character, 'd20Character')) {
 						$addJSFiles[] = 'characters/_d20Character.js';

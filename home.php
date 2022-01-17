@@ -59,7 +59,7 @@ $forumSearchGames->findThreads(1, 5);
 	<?php if($forumSearchGames->getResultsCount()>0){ ?>
 	<div class="flexWrapper mob-order-2">
 		<div id="yourGames" class="col-1">
-			<h3 class="headerbar gamesheaderbar"><i class="ra ra-d6"></i> Your Games</h3>
+			<h3 class="headerbar gamesheaderbar"><a href="/forums/2"><i class="ra ra-d6"></i> Your Games</a></h3>
 		<?php
 			$forumManagerGames = new ForumManager(2);
 			$forumManagerGames->displayForum();

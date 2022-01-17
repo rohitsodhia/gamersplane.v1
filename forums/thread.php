@@ -45,7 +45,7 @@
 <?php	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"> <?$threadManager->addThreadIcon()?><?=$threadManager->getThreadProperty('title')?></h1>
 		<div class="hbMargined">
-			<div id="threadMenu">
+			<div class="threadMenu">
 				<div class="leftCol">
 					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
 					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
@@ -62,9 +62,8 @@
 		}
 	}
 	$threadManager->addModerationButtons();
-	if ($threadManager->getPermissions('write')) {
-			$threadManager->displayPagination();
-} ?>
+	$threadManager->displayPagination();
+?>
 				</div>
 			</div>
 
@@ -129,7 +128,7 @@
 	$lastPostID = 0;
 	if($threadManager->getPage() && $threadManager->getPage()>1){
 		?>
-		<div id="backfill"><span>load previous</span></div>
+		<div id="backfill" data-prevpage="?page=<?=($threadManager->getPage()-1)?>"><span>load previous</span></div>
 		<?php
 	}
 	if (sizeof($threadManager->getPosts())) {
@@ -229,11 +228,11 @@
 							<header class="postHeader">
 								<div class="postedOn convertTZ mob-hide"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></div>
 								<div class="postedOn non-mob-hide"><a class="convertTZ" href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=date('M j, Y g:i a', strtotime($post->datePosted))?></a></div>
-								<div class="subject"><a href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=strlen($post->title) ? printReady($post->title) : '&nbsp'?></a></div>
+								<div class="subject"><a href="?p=<?=$post->postID?>#p<?=$post->postID?>"><?=strlen($post->title) ? printReady($post->title, ['nl2br']) : '&nbsp'?></a></div>
 							</header>
 <?php
 			echo "\t\t\t\t\t\t\t<div class=\"post\">\n";
-			echo printReady(BBCode2Html($post->message)) . "\n";
+			echo printReady(BBCode2Html($post->message),['nl2br']) . "\n";
 			if ($post->timesEdited) { echo "\t\t\t\t\t\t\t\t" . '<div class="editInfoDiv">Last edited <span  class="convertTZ">' . date('F j, Y g:i a', strtotime($post->lastEdit)) . "</span></div>\n"; }
 			echo "\t\t\t\t\t\t\t</div>\n";
 
@@ -296,9 +295,9 @@
 			if($isLastPost){
 				echo "<a class=\"keepUnread\" title=\"Mark as unread\" data-threadid='{$threadID}'>Mark as unread</a>\n";
 			}
-			if ($threadManager->getPermissions('write')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'>Quote</span>\n";
+			if ($threadManager->getPermissions('write') && !$threadManager->getThreadProperty('states[locked]')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'>Quote</span>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
-				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {
+				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost') || ($post->author->userID == $currentUser->userID && $threadManager->getThreadProperty('states[publicPosting]'))) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";
 				}
 				if (
@@ -341,16 +340,18 @@
 					</div>
 				</div>
 			</div>
-<?php
-		$threadManager->displayPagination();
+			<div class="threadMenu">
+			<div class="leftCol">
+				<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
+			</div>
+			<div class="rightCol alignRight">
+				<?=$threadManager->addModerationButtons();?>
+				<?=$threadManager->displayPagination();?>
+				</div>
+			</div>
+			<?php
 	}
-
 ?>
-	<div class="rightCol alignRight">
-	<?php
-	$threadManager->addModerationButtons();
-	?>
-	</div>
 		</div>
 
 <?php

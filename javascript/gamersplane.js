@@ -139,27 +139,6 @@ $(function() {
 		}
 	});
 
-	$('.convertTZ').each(function () {
-		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, YYYY h:mm a';
-		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
-		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
-		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
-	});
-
-	$('.convertTZshort').each(function () {
-		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, h:mm a';
-		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
-		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
-		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
-	});
-
-	$('.convertTZdate').each(function () {
-		var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, YYYY';
-		if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
-		if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
-		$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
-	});
-
 	/* Individual Pages */
 	var curPage;
 	if (!$('body').hasClass('modal'))
@@ -169,6 +148,9 @@ $(function() {
 
 	//spoiler opening and closing
 	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
+
+	//dd collections notes open close
+	$('body').on('click', '.ddCollection .ability_notesLink', function(e){e.preventDefault();$(this).toggleClass('open').siblings('.notes').slideToggle();});
 
 	//dark theme toggle
 	$('#userMenu').on('click','#toggleDarkMode',function(){

@@ -49,7 +49,7 @@
 
 			if($gamer){
 				$badges='';
-				if (strtotime('-14 Days') < strtotime($currentUser->joinDate)){
+				if (strtotime('-14 Days') < strtotime($gamer->joinDate)){
 					$badges='<span class="badge badge-newMember">New member</span>';
 				}
 				?>
@@ -207,11 +207,6 @@
 							}
 						}
 					}
-				}
-
-				if($openGames > 0){
-					$notification='<div class="notify notifyOpenGames col-1-2 mob-col-1">You have <a href="/games/my/">'.$openGames.' game'.($openGames!=1?'s':'').' open for applications</a></div>';
-					$notifications[]=$notification;
 				}
 			}
 

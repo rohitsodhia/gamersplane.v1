@@ -217,6 +217,40 @@
 		<hr>
 
 <?php } ?>
+
+		<div id="page_forum_thread">
+<?php
+		if ($pathOptions[0] == 'editPost' && !$firstPost){
+?>
+		<div id="backfill" data-prevpage="/forums/thread/<?=$threadManager->getThreadID()?>/?b=<?=$postID?>"><span>load previous</span></div>
+<?php
+		}
+		else if ($pathOptions[0] == 'post'){
+?>
+		<div id="backfill" data-prevpage="/forums/thread/<?=$threadManager->getThreadID()?>/?b=last"><span>load previous</span></div>
+<?php
+		}
+?>
+		<div class="postBlock postRight postPreview postAsChar" style="display:none;">
+			<div class="flexWrapper">
+				<div class="posterDetails">
+					<div class="avatar"><div><img src=""></div></div>
+					<div class="postNames">
+						<p class="charName"></p>
+						<p class="posterName"><span>Preview</span></p>
+					</div>
+				</div>
+				<div class="postBody">
+					<div class="postContent">
+						<div class="postPoint pointLeft"></div>
+						<header class="postHeader"><div class="subject">Post Preview</div></header>
+						<div class="post"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
 		<form method="post" action="/forums/process/post/">
 <?php
 	if ($pathOptions[0] == 'newThread') {
@@ -232,7 +266,7 @@
 	} elseif (!strlen($post->getTitle()) && $threadManager->getThreadID()) {
 		$title = $threadManager->getThreadProperty('title');
 	} else {
-		$title = printReady($post->title, ['stripslashes']);
+		$title = printReady($post->title, []);
 	}
 ?>
 			<div id="basicPostInfo" class="hbMargined">
@@ -269,7 +303,7 @@
 				<?php }?>
 			</div>
 			<div id="submitDiv" class="alignRight">
-				<button type="submit" name="preview" tabindex="<?=tabOrder()?>" class="fancyButton submitButton" accesskey="p">Preview</button>
+				<button id="previewPost" class="fancyButton" accesskey="p" type="button">Preview</button>
 				<button type="submit" name="post" tabindex="<?=tabOrder()?>" class="fancyButton submitButton"><?=$editPost?'Save':'Post'?></button>
             </div>
 
@@ -295,7 +329,7 @@
 <?php	} ?>
 
 <?php	if ($firstPost) { ?>
-			<div id="threadOptions" class="section_options hbdMargined">
+			<div class="threadOptions" class="section_options hbdMargined">
 <?php
 		if ($threadManager->getPermissions('moderate')) {
 			$sticky = $threadManager->getThreadProperty('states[sticky]');
@@ -303,16 +337,21 @@
 				$sticky = $fillVars['sticky'];
 			}
 ?>
-				<p><input type="checkbox" name="sticky"<?=$sticky ? ' checked="checked"' : ''?>> Sticky thread</p>
+			<p><input type="checkbox" name="sticky"<?=$sticky ? ' checked="checked"' : ''?>> Sticky thread</p>
 <?php
-		}
-		if ($threadManager->getPermissions('moderate')) {
 			$locked = $threadManager->getThreadProperty('states[locked]');
 			if ($fillVars) {
 				$locked = $fillVars['locked'];
 			}
 ?>
-				<p><input type="checkbox" name="locked"<?=$locked ? ' checked="checked"' : ''?>> Lock thread</p>
+			<p><input type="checkbox" name="locked"<?=$locked ? ' checked="checked"' : ''?>> Lock thread</p>
+<?php
+			$publicPosting = $threadManager->getThreadProperty('states[publicPosting]');
+			if ($fillVars) {
+				$publicPosting = $fillVars['publicPosting'];
+			}
+?>
+			<p><input type="checkbox" name="publicPosting"<?=$publicPosting ? ' checked="checked"' : ''?>> Allow public posting</p>
 <?php
 		}
 		if ($threadManager->getPermissions('addRolls')) {
@@ -331,7 +370,19 @@
 			}
 ?>
 				<p><input type="checkbox" name="allowDraws"<?=$addDraws ? ' checked="checked"' : ''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
-<?php		} ?>
+<?php		}
+
+		if ($threadManager->getPermissions('moderate')) {
+			$discordWebhook = $threadManager->getThreadProperty('discordWebhook');
+			if ($fillVars) {
+				$discordWebhook = $fillVars['discordWebhook'];
+			}
+?>
+			<hr/>
+			<p><label for="title">Discord webhook:</label><input type="text" name="discordWebhook" value="<?=htmlentities($discordWebhook)?>" style="width:100%;"></p>
+<?php
+		}
+		?>
 			</div>
 
 			<div id="poll" class="section_poll hbdMargined hideDiv">

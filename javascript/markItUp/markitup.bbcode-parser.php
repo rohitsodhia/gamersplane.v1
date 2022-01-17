@@ -31,7 +31,7 @@
 
 //define ("EMOTICONS_DIR", "/images/emoticons/");
 function splitByHeader($title,$text,$cssClass){
-	$ret="<div class='".$cssClass."'>";
+	$ret="<div class='".$cssClass." ddCollection'>";
 	$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
 
 	$abilityLines = explode("\n", trim($text));
@@ -130,48 +130,52 @@ function BBCode2Html($text) {
 	$text = str_replace($in, $out, $text);
 */
 	// BBCode to find...
-	$in = array(
-		'/\[b\](.*?)\[\/b\]/ms',
-		'/\[i\](.*?)\[\/i\]/ms',
-		'/\[u\](.*?)\[\/u\]/ms',
-		'/\[s\](.*?)\[\/s\]/ms',
-		"/[\r\n]*\[linebreak\][\r\n]*/",
-		'/\[img\](.*?)\[\/img\]/ms',
-		'/\[email\](.*?)\[\/email\]/ms',
-		'/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
-		'/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
-//		'/\[list\=(.*?)\](.*?)\[\/list\]/ms',
-//		'/\[list\](.*?)\[\/list\]/ms',
-//		'/\[\*\]\s?(.*?)\n/ms',
-		"/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
-		"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
-		"/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
-		"/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
-		"/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
-		"/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
-		"/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
+	$in = array( 	 '/\[b\](.*?)\[\/b\]/ms',
+					 '/\[i\](.*?)\[\/i\]/ms',
+					 '/\[u\](.*?)\[\/u\]/ms',
+					 '/\[s\](.*?)\[\/s\]/ms',
+					 "/[\r\n]*\[linebreak\][\r\n]*/",
+					 '/\[img\](.*?)\[\/img\]/ms',
+					 '/\[email\](.*?)\[\/email\]/ms',
+					 '/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
+					 '/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
+					 '/\[zoommap\="?(.*?)"?\](.*?)\[\/zoommap\]/ms',
+//					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
+//					 '/\[list\](.*?)\[\/list\]/ms',
+//					 '/\[\*\]\s?(.*?)\n/ms',
+					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
+					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
+					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
+					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
+					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
+					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
+					 "/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
+					 "/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
 	);
 	// And replace them by...
-	$out = array(
-		'<strong>\1</strong>',
-		'<em>\1</em>',
-		'<u>\1</u>',
-		'<span style="text-decoration:line-through">\1</span>',
-		'<hr>',
-		'<img src="\1" alt="\1" class="usrImg">',
-		'<a href="mailto:\1">\1</a>',
-		'<span class="userSize" style="font-size:\1%">\2</span>',
-		'<span class="userColor" style="color:\1">\2</span>',
-//		'<ol start="\1">\2</ol>',
-//		'<ul>\1</ul>',
-//		'<li>\1</li>',
-		'<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
-		'<div class="youtube_bb"><iframe src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>',
-		'<div class="layout-columns-2">\1</div>',
-		'<div class="layout-columns-3">\1</div>',
-		'<div class="layout-column">\1</div>',
-		'<div class="style" style="display:none;">\1</div>',
-		'<div class="inlineNpcPrefix"></div><div class="inlineNpc"><div class="inlineNpcAvatar" style="background-image:url(\2)"></div><div class="inlineNpcName">\1</div></div>',
+	$out = array(	 '<strong>\1</strong>',
+					 '<em>\1</em>',
+					 '<u>\1</u>',
+					 '<span style="text-decoration:line-through">\1</span>',
+					 '<hr>',
+					 '<img src="\1" alt="\1" class="usrImg">',
+					 '<a href="mailto:\1">\1</a>',
+					 '<span class="userSize" style="font-size:\1%">\2</span>',
+					 '<span class="userColor" style="color:\1">\2</span>',
+					 '<div class="zoommap" data-mapimage="\1" style="display:none">\2</div>',
+//					 '<ol start="\1">\2</ol>',
+//					 '<ul>\1</ul>',
+//					 '<li>\1</li>',
+					 '<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
+					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
+					 '<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
+					 '<div class="youtube_bb"><iframe src="https://www.youtube.com/embed/\1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>',
+					 '<div class="layout-columns-2">\1</div>',
+					 '<div class="layout-columns-3">\1</div>',
+					 '<div class="layout-column">\1</div>',
+					 '<div class="style" style="display:none;">\1</div>',
+					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><img class="inlineNpcAvatar" src="\2"/><div class="inlineNpcName">\1</div></div>',
 	);
 	$text = preg_replace($in, $out, $text);
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
@@ -192,7 +196,7 @@ function BBCode2Html($text) {
 	$text=preg_replace_callback(array('/\[url\="?(.*?)"?\](.*?)\[\/url\]/ms','/\[url\](.*?)\[\/url\]/ms'), function($matches){
 		$url=$matches[1];
 		$target=' target="_blank"';
-		if(substr( $url, 0, 1 ) === "/" || substr( strtolower($url), 0, 23 ) === "https://gamersplane.com" ){
+		if(substr( $url, 0, 1 ) === "/" || substr( strtolower($url), 0, 23 ) === "https://gamersplane.com" || substr( strtolower($url), 0, 22 ) === "http://gamersplane.com" ){
 			$target='';
 		}
 		$linkText=$url;
@@ -218,21 +222,32 @@ function BBCode2Html($text) {
 
 	//tables
 	$matches = null;
-	$text=preg_replace_callback("/\[table(=([\"a-zA-Z])*)?\](.*?)\[\/table\]/ms", function($matches){
+	$text=preg_replace_callback("/\[table(=([\"a-zA-Z ])*)?\](.*?)\[\/table\]/ms", function($matches){
 			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 			$tableClass="";
-			if($tableType=="center"||$tableType=="centre"){
+			if(strpos($tableType,"center")!==false || strpos($tableType,"centre")!==false){
 				$tableClass=" bbTableCenter";
-			} else if($tableType=="right"){
+			} else if(strpos($tableType,"right")!==false){
 				$tableClass=" bbTableRight";
-			} else if($tableType=="stats"){
+			} else if(strpos($tableType,"stats")!==false){
 				$tableClass=" bbTableStats";
-			} else if($tableType=="ht" || $tableType=="htl" || $tableType=="hl"){
-				$tableClass=" bbTable-".$tableType;
-			} else if($tableType=="rolls"){
+			} else if(strpos($tableType,"htl")!==false){
+				$tableClass=" bbTable-htl";
+			} else if(strpos($tableType,"ht")!==false){
+				$tableClass=" bbTable-ht";
+			} else if(strpos($tableType,"hl")!==false){
+				$tableClass=" bbTable-hl";
+			} else if(strpos($tableType,"rolls")!==false){
 				$tableClass=" bbTableRolls";
 			}
 
+			if(strpos($tableType,"grid")!==false || strpos($tableType,"lines")!==false){
+				$tableClass .= " bbTableGrid";
+			}
+
+			if(strpos($tableType,"zebra")!==false){
+				$tableClass .= " bbTableZebra";
+			}
 
 			$tableRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
 
@@ -268,7 +283,7 @@ function BBCode2Html($text) {
 			foreach ($npcRows as $npcRow){
 				$npcElements=explode('|',$npcRow,2);
 				if(count($npcElements) == 2){
-					$ret=$ret."<div class='npcList_item'><div class='npcList_itemAvatar' data-avatar='".$npcElements[1]."' style='background-image:url(".$npcElements[1].");'></div><div class='npcList_itemName'>".$npcElements[0]."</div></div>";
+					$ret=$ret."<div class='npcList_item'><img class='npcList_itemAvatar' data-avatar='".$npcElements[1]."' src='".$npcElements[1]."'/><div class='npcList_itemName'>".$npcElements[0]."</div></div>";
 				}
 			}
 
@@ -338,13 +353,12 @@ function BBCode2Html($text) {
 
 			$pollQuestions = explode("\n", trim(str_replace("<br />","",$matches[3])));
 
-			$multipleVotes = (stripos($matches[2],'multi')!=false);
-			$showBeforeVote = (stripos($matches[2],'show')!=false);
+			$multipleVotes = (stripos($matches[2],'multi')!==false);
+			$showBeforeVote = (stripos($matches[2],'show')!==false);
+			$publicVote = (stripos($matches[2],'public')!==false);
 
-
-
-			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"")."' data-postid='".$post->getPostID()."'>";
-			$ret .= "<h3>".$pollTitle."</h3>";
+			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"").($publicVote?" pollPublic":"")."' data-postid='".$post->getPostID()."'>";
+			$ret .= "<h3>".$pollTitle.($multipleVotes?" <span class='badge badge-pollMulti'>Multi</span>":"").($publicVote?" <span class='badge badge-pollPublic'>Public</span>":"")."</h3>";
 
 			$ret .= "<div class='pollQuestions'>";
 			$answerNumber=1;
@@ -354,11 +368,10 @@ function BBCode2Html($text) {
 					$ret .= "<div class='pollQuestion ".($pollResults['votes'][$answerNumber]["me"]?" pollMyVote":"")."' data-q='".$answerNumber."'><div class='pollQuestionLabel'>".$pollQuestion."</div>";
 					$ret .= "<div class='pollQuestionResults'>";
 					if($pollResults['voted'] || $showBeforeVote || $postAuthor || $isGM){
-						$ret .= str_repeat('<i class="ra ra-gamers-plane"></i>', (int)($pollResults['votes'][$answerNumber]['votes']));
+						$ret .= $pollResults['votes'][$answerNumber]['html'];
 					}
 					else{
 						$ret .='<div class="voteToView">Vote to view results.</div>';
-
 					}
 					$ret .= "</div></div>";
 					$answerNumber++;
@@ -373,6 +386,18 @@ function BBCode2Html($text) {
 		}, $text, $limit=1);
 	}
 	//end polls
+
+	//start ffg destiny
+	if($post){
+		$matches = null;
+		$text=preg_replace_callback("/\[fliptokens=\"?(\d*)\"?\]/ms", function($matches){
+			global $post, $postAuthor, $isGM;
+			$ffgTokens=(int)$matches[1];
+			$ffgResults=$post->getFfgDestinyResults($ffgTokens);
+			return $ffgResults['html'];
+		}, $text, $limit=1);
+	}
+	//end ffg destiny
 
 	$text = preg_replace_callback('/(\@[0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', function($matches){
 		global $currentUser;

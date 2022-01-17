@@ -21,6 +21,7 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
 					$noChar = false;
+					$gameID=$character->getGameID();
 					if ($charPermissions == 'library') {
 						$mongo->characters->updateOne(['characterID' => $characterID], ['$inc' => ['library.views' => 1]]);
 						$favorited = $mongo->characterLibraryFavorites->findOne(['userID' => $currentUser->userID, 'characterID' => $characterID]) ? true : false;

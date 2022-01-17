@@ -6,7 +6,7 @@
 		protected $authorID;
 		protected $authorUsername;
 		protected $datePosted;
-		protected $states = array('sticky' => false, 'locked' => false);
+		protected $states = array('sticky' => false, 'locked' => false , 'publicPosting' => false);
 		protected $allowRolls = false;
 		protected $allowDraws = false;
 		protected $postCount = 0;
@@ -17,6 +17,7 @@
 
 		protected $posts = array();
 		protected $poll = null;
+		protected $discordWebhook = null;
 
 		protected $loaded = array();
 
@@ -32,6 +33,7 @@
 				if (property_exists($this, $key)) $this->$key = $loadData[$key];
 			$this->states['sticky'] = $loadData['sticky'];
 			$this->states['locked'] = $loadData['locked'];
+			$this->states['publicPosting'] = $loadData['publicPosting'];
 			if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) {
 				$this->lastPost = new stdClass();
 				$this->lastPost->postID = $loadData['lp_postID'];
@@ -42,8 +44,8 @@
 		}
 
 		public function toggleValue($key) {
-			if (in_array($key, array('sticky', 'locked', 'allowRolls', 'allowDraws'))) {
-				if ($key == 'sticky' || $key == 'locked') $this->states[$key] = !$this->states[$key];
+			if (in_array($key, array('sticky', 'locked', 'allowRolls', 'allowDraws', 'publicPosting'))) {
+				if ($key == 'sticky' || $key == 'locked' || $key == 'publicPosting') $this->states[$key] = !$this->states[$key];
 				else $this->$key = !$this->$key;
 			}
 		}
@@ -115,6 +117,16 @@
 
 			if ($page > ceil($this->postCount / $this->pageSize)) $page = ceil($this->postCount / $this->pageSize);
 			$start = ($page - 1) * $this->pageSize;
+
+			return $this->getPostsFromStart($start);
+		}
+
+		public function getPostsFromStart($start) {
+			if (sizeof($this->posts))
+				return $this->posts;
+
+			global $loggedIn, $currentUser, $mysql;
+
 			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, u.lastActivity, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".$this->pageSize);
 			foreach ($posts as $post)
 				$this->posts[$post['postID']] = new Post($post);
@@ -164,6 +176,14 @@
 
 		public function getVoteMax() {
 			return $this->poll->getVoteMax();
+		}
+
+		public function getDiscordWebhook(){
+			return $this->discordWebhook;
+		}
+
+		public function setDiscordWebhook($discordWebhook){
+			$this->discordWebhook=$discordWebhook;
 		}
 	}
 ?>

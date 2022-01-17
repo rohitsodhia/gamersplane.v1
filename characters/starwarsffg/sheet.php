@@ -36,7 +36,7 @@
 ?>
 						<div class="tr">
 							<label id="label_<?=$short?>" class="shortText leftLabel"><?=$stat?></label>
-							<div class="stat"><?=$this->getStat($short)?></div>
+							<div class="stat stat_<?=$short?>"><?=$this->getStat($short)?></div>
 						</div>
 <?
 		$count++;

@@ -264,20 +264,30 @@
 
 			$voteCollection=$mongo->threads->findOne(['threadID' => ((int)$this->getThreadID())]);
 
-			$ret = array('voted'=>false,'votes'=>array());
+			$ret = array('voted'=>false,'votes'=>array(),'publicVotes'=>array());
 			if($this->postID){
 				if($voteCollection && is_countable($voteCollection["votes"])){
 					foreach ($voteCollection["votes"] as $voteItem) {
 						if($voteItem['postID']==$this->postID){
 							$voteNum=(int)$voteItem['vote'];
 							if(!array_key_exists($voteNum,$ret['votes'])){
-								$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false);
+								$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false,'html'=>'');
 							}
 
 							$ret['votes'][$voteNum]['votes']=$ret['votes'][$voteNum]['votes']+1;
+
+							$myVote=false;
 							if($voteItem['userID']==$currentUser->userID){
 								$ret['votes'][$voteNum]['me']=true;
 								$ret['voted']=true;
+								$myVote=true;
+							}
+
+							if($voteItem['username']){
+								$ret['votes'][$voteNum]['html'].='<span class="pollAvatar'.($myVote?' pollIVoted':'').'" title='.htmlspecialchars($voteItem['username']).' style="background-image:url('.User::getAvatar($voteItem['userID']).');"></span>';
+							}
+							else{
+								$ret['votes'][$voteNum]['html'].='<i class="ra ra-gamers-plane'.($myVote?' pollIVoted':'').'"></i>';
 							}
 						}
 					}
@@ -286,10 +296,56 @@
 			return $ret;
 		}
 
-		public static function extractFullText($message) {
+		public function getFfgDestinyResults($ffgTokens){
+			global $currentUser;
 
-			//remove notes and private
-			$message = Post::cleanNotes($message);
+			$mongo = DB::conn('mongo');
+
+			$flipCollection=$mongo->threads->findOne(['threadID' => ((int)$this->getThreadID())]);
+
+			$ret = array('flips'=>array(),'darkTokens'=>0, 'success'=>0, 'html'=>'');
+			if($this->postID){
+				if($flipCollection && is_countable($flipCollection["ffgTokens"])){
+					foreach ($flipCollection["ffgTokens"] as $flip) {
+						if($flip['postID']==$this->postID){
+							$ret['flips'][]=array('toDark'=>$flip['toDark'],'username'=>$flip['username'],'datetime'=>$flip['datetime']);
+							if($flip['toDark']){
+								$ret['darkTokens']=$ret['darkTokens']+1;
+							}else{
+								$ret['darkTokens']=$ret['darkTokens']-1;
+							}
+						}
+					}
+				}
+			}
+			$ret['html']=$this->ffgDestinyResultsToHtml($ret,$ffgTokens);
+			return $ret;
+		}
+
+		public function ffgDestinyResultsToHtml($ffgResults,$ffgTokens){
+			$ret = "<div class='ffgDestiny' data-postid='".$this->getPostID()."' data-tokens='".$ffgTokens."' data-totalflips='".count($ffgResults['flips'])."'>";
+			$ret .= "<div class='ffgTokens'>";
+			for ($i = 0 ; $i < $ffgTokens; $i++)
+			{
+				if($i<$ffgResults['darkTokens']){
+					$ret.='<div class="darkToken"></div>';
+				}else{
+					$ret.='<div></div>';
+				}
+			}
+			$ret.="</div>";
+			if(count($ffgResults['flips'])){
+				$ret.="<div class='ffgHistory'><div class='ffgHistoryToggle'>History</div><div class='ffgHistoryList'>";
+				foreach($ffgResults['flips'] as $history){
+					$ret.='<div class="'.($history['toDark']?"toDark":"toLight").'">'.$history["username"].' <span class="convertTZ">'.date('F j, Y g:i a', getMongoSeconds($history["datetime"])).'</span></div>';
+				}
+				$ret.="</div></div>";
+			}
+			$ret.='</div>';
+			return $ret;
+		}
+
+		public static function extractFullText($message) {
 
 			//remove the contents of these tags
 			$in = array(
@@ -298,9 +354,14 @@
 				"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 				"/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
 				"/\[map\](.*?)\[\/map\]/ms",
-				"/\[spotify\](.*?)\[\/spotify\]/ms"
+				"/\[spotify\](.*?)\[\/spotify\]/ms",
+				'/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\][\n\r]*/ms',
+				'/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\][\n\r]*/ms',
+				"/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
+				'/\[zoommap\="?(.*?)"?\](.*?)\[\/zoommap\]/ms',
+				"/\[npcs=\"?(.*?)\"?\](.*?)\[\/npcs\]/ms"
 				);
-			$out = array('','','','','','');
+			$out = array('','','','','','','','','','','');
 
 
 			$message = preg_replace($in, $out, $message);

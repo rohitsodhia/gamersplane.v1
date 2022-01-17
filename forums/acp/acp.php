@@ -1,4 +1,5 @@
 <?
+	$responsivePage=true;
 	addPackage('forum');
 
 	$forumID = intval($pathOptions[1]);

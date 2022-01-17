@@ -387,7 +387,7 @@
 
 
 			$birthday = intval($details['birthday']['date']['year']) . '-' . (intval($details['birthday']['date']['month']) <= 9 ? '0' : '') . intval($details['birthday']['date']['month']) . '-' . (intval($details['birthday']['date']['day']) <= 9 ? '0' : '') . intval($details['birthday']['date']['day']);
-			if (preg_match('/^[12]\d{3}-[01]\d-[0-3]\d$/', $birthday)) {
+			if (preg_match('/^[12]\d{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/', $birthday)) {
 				$user->updateUsermeta('birthday', $birthday);
 			}
 			$user->updateUsermeta('showAge', $details['birthday']['showAge'] === 'true' ? 1 : 0);
@@ -499,7 +499,7 @@
 			$postCount = $mysql->query("SELECT COUNT(postID) FROM posts WHERE authorID = {$userID}")->fetchColumn();
 			$communityPostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NULL")->fetchColumn();
 			$gamePostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NOT NULL")->fetchColumn();
-			$activeGames = $mysql->query("SELECT forums.gameID, count(posts.postID) AS postCount FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE (authorID = {$userID}) AND (forums.gameID IS NOT NULL) AND (posts.datePosted > NOW() - INTERVAL 1 WEEK) GROUP BY forums.gameID ORDER BY forums.title")->fetchAll();
+			$activeGames = $mysql->query("SELECT forums.gameID, count(posts.postID) AS postCount FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE (authorID = {$userID}) AND (forums.gameID IS NOT NULL) AND (posts.datePosted > NOW() - INTERVAL 1 WEEK) AND (threads.publicPosting=0) GROUP BY forums.gameID ORDER BY forums.title")->fetchAll();
 
 			$activeGameRet=[];
 			foreach($activeGames as $activeGame){

@@ -15,6 +15,7 @@
 		<li><a href="/faqs/">FAQs</a></li>
 		<li><a href="/about/">About GP</a></li>
 		<li><a href="/contact/">Contact Us</a></li>
+		<li class="non-mob-hide"><a href="/forums/rules/">Forum rules</a></li>
 	</ul>
 	<ul id="followLinks">
 		<li><a id="fl_twitter" href="http://twitter.com/GamersPlane" target="_blank" title="Twitter"></a></li>

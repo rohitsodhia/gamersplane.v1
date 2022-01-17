@@ -10,9 +10,10 @@
 // Feel free to add more tags
 // ----------------------------------------------------------------------------
 
-var notesdropDown = $('#playerList li').map(function () { return { name: $.trim($(this).text()) }; }).get();
+var notesdropDown = $('#playerList li').map(function () { return { name: $.trim($(this).text()),className:'mobileKeepOpen' }; }).get();
 notesdropDown.push({ name: 'Add note', className: 'playerNoteAdd' });
 notesdropDown.push({ name: 'Private', className: 'playerPrivateAdd' });
+notesdropDown.push({ name: 'Mention', className: 'playerMention' });
 
 mySettings = {
 	previewParserPath: '', // path to your BBCode parser
@@ -41,6 +42,7 @@ mySettings = {
 				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } },
 				{ name: 'YouTube...', replaceWith: '[youtube][![YouTube share link]!][/youtube]' },
 				{ name: 'OtFBM', replaceWith: '[map]\nhttps://otfbm.io\n\n--Map size, cell size, and panning\n/26x14/@c60/b5:10x6\n\n--Tokens\n/f7-Alice\n/h8-Bob\n\n--Background image\n?bg=https://i.imgur.com/jIpAjkT.jpg\n[/map]' },
+				{ name: 'Zoom map...', replaceWith: '[zoommap="[![Url]!]"]\n[/zoommap]' }
 			]
 		},
 		{ separator: '---------------' },
@@ -72,11 +74,13 @@ mySettings = {
 	]
 };
 
+mobileifyMenus(mySettings);
 
 $(function () {
-	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd)', function (e) {
+	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd):not(.playerMention):not(.otherNoteAdd)', function (e) {
 		$(this).toggleClass('playerNoteSelected');
 		e.stopPropagation();
+		e.preventDefault();
 	});
 
 	$('body').on('click', '.markItUpButton10 ul li.playerNoteAdd,.markItUpButton10 ul li.playerPrivateAdd', function (e) {
@@ -86,6 +90,12 @@ $(function () {
 		} else {
 			$.markItUp({ openWith: '[note="' + selectedPlayers + '"]', closeWith: '[/note]' });
 		}
+		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
+	});
+
+	$('body').on('click', '.markItUpButton10 ul li.playerMention', function (e) {
+		var selectedPlayers = $('.markItUpButton10 ul li.playerNoteSelected').map(function () { return '@'+$.trim($(this).text()); }).get().join()+' ';
+		$.markItUp({ openWith: selectedPlayers , closeWith: ' ' });
 		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
 	});
 });

@@ -396,6 +396,7 @@ public function displayForumRow($forumID)
 
 	public function displayThreads()
 	{
+		$mongo = DB::conn('mongo');
 		$forum = $this->forums[$this->currentForum];
 		if (!$forum->permissions['read']) {
 			return false;
@@ -421,7 +422,7 @@ public function displayForumRow($forumID)
 						?>
                 <div class="tr">
                     <div class="td icon">
-						<a href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div></a>
+						<a href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->getStates('publicPosting') ? ' publicPosting' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div></a>
                     </div>
                     <div class="td threadInfo">
                         <? if ($thread->newPosts($maxRead)) { ?>
@@ -449,15 +450,27 @@ public function displayForumRow($forumID)
 						}
 					}
 				}
-				?>
+				$nonMobBadge='';
+				$mobBadge='';
+				if($forum->forumID==10){
+					$gameInfo = $mongo->games->findOne(['recruitmentThreadId' => (int)$thread->threadID]);
+					if($gameInfo){
+						$systems = Systems::getInstance();
+						$nonMobBadge="<span class='mob-hide badge badge-game".(($gameInfo['status']=='open')?"Open":"Closed")."'>".($gameInfo["customType"]?$gameInfo["customType"]:$systems->getFullName($gameInfo['system']))."</span>";
+						$mobBadge="<span class='non-mob-hide badge badge-game".(($gameInfo['status']=='open')?"Open":"Closed")."'>".($gameInfo["customType"]?$gameInfo["customType"]:$gameInfo['system'])."</span>";
+					}
+				}
+			?>
                             <a href="/forums/thread/<?= $thread->threadID ?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
                         </div>
                         <a href="/forums/thread/<?= $thread->threadID ?>/" class="threadTitle"><?= $thread->title ?></a><br>
-                        <span class="threadAuthor">by <a href="/user/<?= $thread->authorID ?>/" class="username"><?= $thread->authorUsername ?></a> on <span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->datePosted)) ?></span></span>
+                        <span class="threadAuthor"><?=$nonMobBadge?>
+							by <a href="/user/<?= $thread->authorID ?>/" class="username"><?= $thread->authorUsername ?></a> on <span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->datePosted)) ?></span>
+						<span>
                     </div>
                     <div class="td numPosts"><?= $thread->postCount ?></div>
                     <div class="td lastPost">
-                        <a href="/user/<?= $thread->lastPost->authorID ?>" class="username"><?= $thread->lastPost->username ?></a><br><span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->lastPost->datePosted)) ?></span>
+						<?=$mobBadge?><a href="/user/<?= $thread->lastPost->authorID ?>" class="username"><?= $thread->lastPost->username ?></a><br><span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->lastPost->datePosted)) ?></span>
                     </div>
                 </div>
                 <?

@@ -21,11 +21,11 @@
 <script type="text/javascript" src="/javascript/combobox.angular.js?v=<?=getJSVersion('/javascript/combobox.angular.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js?v=<?=getJSVersion('/javascript/markItUp/jquery.markitup.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/_set-common.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/_set-common.js')?>"></script>
-<?	if ($gameID) { ?>
-<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
-<script type="text/javascript" src="/javascript/gameOptions.js?v=<?=getJSVersion('/javascript/gameOptions.js')?>"></script>
-<?	} else if($characterMarkitUp) {?>
-<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/character-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/character-set.js')?>"></script>
+<?	if ($characterMarkitUp) { ?>
+	<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/character-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/character-set.js')?>"></script>
+<?	} else if($gameID) {?>
+	<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
+	<script type="text/javascript" src="/javascript/gameOptions.js?v=<?=getJSVersion('/javascript/gameOptions.js')?>"></script>
 <?	} else {?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>
 <?	}?>
@@ -51,6 +51,8 @@
 <?	if ($addJSFiles) { foreach ($addJSFiles as $file) { ?>
 <script type="text/javascript" src="/javascript/<?=$file?>?v=<?=getJSVersion('/javascript/'.$file)?>"></script>
 <?	} } ?>
+<script type="text/javascript" src="/javascript/leaflet/leaflet.js?v=<?=getJSVersion('/javascript/leaflet/leaflet.js')?>"></script>
+<script type="text/javascript" src="/javascript/zoommap.js?v=<?=getJSVersion('/javascript/zoommap.js')?>"></script>
 <?	if ($addExternalJSFiles && !empty($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
 <script src="<?=$file?>"></script>
 <?	} } ?>

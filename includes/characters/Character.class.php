@@ -301,5 +301,13 @@
 #			$hl_charDeleted = new HistoryLogger('characterDeleted');
 #			$hl_charDeleted->addCharacter($this->characterID)->save();
 		}
+
+		public function getGameID(){
+			if($this->game){
+				return $this->game['gameID'];
+			}
+
+			return null;
+		}
 	}
 ?>

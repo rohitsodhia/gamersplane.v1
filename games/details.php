@@ -95,6 +95,10 @@
 					<div class="labelCol"><label>Game Forums are</label></div>
 					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a><span ng-if="!isGM && details.readPermissions "><a  href="/forums/{{details.forumID}}"> (Read the forum)</a></span></div>
 				</div>
+				<div class="tr clearfix" ng-if="details.recruitmentThreadId">
+					<div class="labelCol"><label>Games Tavern</label></div>
+					<div class="infoCol"><a  href="/forums/thread/{{details.recruitmentThreadId}}">Recruitment thread</a></div>
+				</div>
 				<div ng-if="isPrimaryGM" id="deleteGame" class="tr clearfix">
 					<div class="labelCol"><label>Retire Game</label></div>
 					<div class="infoCol"><a href="" ng-click="toggleRetireConfirm()">I want to close and retire this game!</a></div>
@@ -222,13 +226,8 @@
 						<div ng-if="!details.retired && details.status=='open' && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.approvedPlayers" class="rightCol">
 							<h2 class="headerbar hbDark"><i class="ra ra-player-teleport"></i> Join Game</h2>
 							<div ng-if="details.recruitmentThreadId">
-								<form action="{{'/forums/thread/'+details.recruitmentThreadId}}"  method="post">
-								<p class="hbMargined"><button type="submit" name="navigateToTavern" class="fancyButton"><i class="ra ra-beer"></i> Apply in Games Tavern</button></p>
-								</form>
-
-								<form action="{{'/pms/send/?userID='+details.gm.userID}}" method="post">
-									<p class="hbMargined"><button type="submit" name="pmTheGm" class="fancyButton"><i class="ra ra-quill-ink"></i> Message the GM</button></p>
-								</form>
+								<p class="hbMargined fancyButtonBar"><a href="{{'/forums/thread/'+details.recruitmentThreadId}}" class="fancyButton"><i class="ra ra-beer"></i> Apply in Games Tavern</a></p>
+								<p class="hbMargined fancyButtonBar"><a href="{{'/pms/send/?userID='+details.gm.userID}}" class="fancyButton"><i class="ra ra-quill-ink"></i> Message the GM</a></p>
 							</div>
 
 							<form ng-submit="applyToGame()" class="alignCenter">

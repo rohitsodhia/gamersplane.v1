@@ -63,7 +63,7 @@
 					</div>
 					<div class="tr">
 						<label class="leftLabel">Base Speed</label>
-						<div><?=$this->getSpeed?></div>
+						<div><?=$this->getSpeed()?></div>
 					</div>
 				</div>
 
