@@ -107,10 +107,11 @@
 					'projection' => [
 						'characterID' => true,
 						'system' => true,
+						'name' => true,
 						'label' => true,
 						'user' => true,
 					],
-					'sort' => ['user.username' => 1, 'label' => 1]
+					'sort' => ['user.username' => 1, 'name' => 1]
 				]
 			)->toArray();
 			if (count($characters) && $pathAction != 'characters') {
@@ -134,7 +135,7 @@
 						}
 					}
 ?>
-					<p class="charName"><i class="ra ra-quill-ink"></i> <a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['label']?></a></p>
+					<p class="charName"><i class="ra ra-quill-ink"></i> <a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['name']?></a></p>
 <?php				} ?>
 				</li>
 			</ul>
