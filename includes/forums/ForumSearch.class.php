@@ -71,7 +71,7 @@
 			}
 		}
 
-		function getTextSnippet($text, $maxChars) {
+		public static function getTextSnippet($text, $maxChars) {
 			$words = preg_split('/[\s]+/', $text, null, PREG_SPLIT_DELIM_CAPTURE);
 			$wordCount = count($words);
 			$ret = '';
@@ -106,7 +106,7 @@
 				<li>
 					<h3><a href="/forums/thread/<?=$result->threadID?>/?p=<?=$result->postID?>#p<?=$result->postID?>"><i class="ra forum-icon forum-root-<?=$heritageRoot?> forum-id-<?=$result->forumID?>"></i> <?=$postTitle?></a></h3>
 					<div class="ft_post_info"><a href="/forums/<?=$result->forumID?>/" class="ft_forum"><?=$result->forum?></a> <span class="ft_poster"><a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a> <span class="convertTZdate"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span></span></div>
-					<p class="ft_snippet"><?=$this->getTextSnippet($result->messageFullText,200)?></p>
+					<p class="ft_snippet"><?=ForumSearch::getTextSnippet($result->messageFullText,200)?></p>
 				</li>
 				<?
 			}}

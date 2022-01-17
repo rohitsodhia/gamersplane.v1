@@ -143,6 +143,7 @@
 			$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 			$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 			$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls') ? true : false);
+			$threadManager->thread->setDiscordWebhook(isset($_POST['discordWebhook']) && $threadManager->getPermissions('moderate') ? $_POST['discordWebhook'] : null);
 
 			if (strlen($post->getTitle()) == 0) {
 				$formErrors->addError('noTitle');
@@ -211,6 +212,7 @@
 				$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 				$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 				$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls') ? true : false);
+				$threadManager->thread->setDiscordWebhook(isset($_POST['discordWebhook']) && $threadManager->getPermissions('moderate') ? $_POST['discordWebhook'] : null);
 
 				if (!isset($_POST['deletePoll'])) {
 					$threadManager->thread->poll->setQuestion($_POST['poll']);
@@ -247,6 +249,7 @@
 					$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 					$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 					$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addDraws') ? true : false);
+					$threadManager->thread->setDiscordWebhook(isset($_POST['discordWebhook']) && $threadManager->getPermissions('moderate') ? $_POST['discordWebhook'] : null);
 
 					if (isset($_POST['deletePoll'])) {
 						$threadManager->deletePoll();

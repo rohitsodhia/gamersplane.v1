@@ -963,6 +963,7 @@ CREATE TABLE `threads` (
   `lastPostID` int(11) NOT NULL,
   `postCount` int(11) NOT NULL,
   `publicPosting` tinyint(1) NOT NULL,
+  `discordWebhook` varchar(256) COLLATE utf8_unicode_ci NULL,
   PRIMARY KEY (`threadID`),
   KEY `forumID` (`forumID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

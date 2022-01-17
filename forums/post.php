@@ -370,7 +370,19 @@
 			}
 ?>
 				<p><input type="checkbox" name="allowDraws"<?=$addDraws ? ' checked="checked"' : ''?>> Allow adding deck draws to posts (if this box is unchecked, any draws added to this thread will be ignored)</p>
-<?php		} ?>
+<?php		}
+
+		if ($threadManager->getPermissions('moderate')) {
+			$discordWebhook = $threadManager->getThreadProperty('discordWebhook');
+			if ($fillVars) {
+				$discordWebhook = $fillVars['discordWebhook'];
+			}
+?>
+			<hr/>
+			<p><label for="title">Discord webhook:</label><input type="text" name="discordWebhook" value="<?=htmlentities($discordWebhook)?>" style="width:100%;"></p>
+<?php
+		}
+		?>
 			</div>
 
 			<div id="poll" class="section_poll hbdMargined hideDiv">
