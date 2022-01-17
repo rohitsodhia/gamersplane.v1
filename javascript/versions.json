@@ -64,7 +64,7 @@
 	"/javascript/login/login.js": "1.1.0",
 	"/javascript/login/requesetReset.js": "1.1.0",
 	"/javascript/login/resetPass.js": "3.1.0",
-	"/javascript/markItUp/jquery.markitup.js": "3.0.2",
+	"/javascript/markItUp/jquery.markitup.js": "3.1.0",
 	"/javascript/markItUp/sets/bbcode/_set-common.js": "3.1.0",
 	"/javascript/markItUp/sets/bbcode/character-set.js": "3.1.0",
 	"/javascript/markItUp/sets/bbcode/set.js": "3.1.0",
