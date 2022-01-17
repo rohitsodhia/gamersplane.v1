@@ -325,16 +325,21 @@
 				$sticky = $fillVars['sticky'];
 			}
 ?>
-				<p><input type="checkbox" name="sticky"<?=$sticky ? ' checked="checked"' : ''?>> Sticky thread</p>
+			<p><input type="checkbox" name="sticky"<?=$sticky ? ' checked="checked"' : ''?>> Sticky thread</p>
 <?php
-		}
-		if ($threadManager->getPermissions('moderate')) {
 			$locked = $threadManager->getThreadProperty('states[locked]');
 			if ($fillVars) {
 				$locked = $fillVars['locked'];
 			}
 ?>
-				<p><input type="checkbox" name="locked"<?=$locked ? ' checked="checked"' : ''?>> Lock thread</p>
+			<p><input type="checkbox" name="locked"<?=$locked ? ' checked="checked"' : ''?>> Lock thread</p>
+<?php
+			$publicPosting = $threadManager->getThreadProperty('states[publicPosting]');
+			if ($fillVars) {
+				$publicPosting = $fillVars['publicPosting'];
+			}
+?>
+			<p><input type="checkbox" name="publicPosting"<?=$publicPosting ? ' checked="checked"' : ''?>> Allow public posting</p>
 <?php
 		}
 		if ($threadManager->getPermissions('addRolls')) {

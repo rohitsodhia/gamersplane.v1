@@ -2805,20 +2805,16 @@ div.forumIcon {
 		color: @gp-red;
 	}
 
+	&.publicPosting:before {
+		content: @gp-icon-publicPosting;
+	}
+
 	&.sticky:before {
 		content: @gp-icon-sticky;
 	}
 
-	&.newPosts.sticky {
-		//background-position: -30px -30px;
-	}
-
 	&.locked:before {
 		content: @gp-icon-locked;
-	}
-
-	&.newPosts.locked {
-		//background-position: -30px -60px;
 	}
 }
 

@@ -140,6 +140,7 @@
 			if (!$threadManager->getPermissions('createThread')) { header('Location: /forums/'.$forumID); exit; }
 			$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate') ? true : false);
 			$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate') ? true : false);
+			$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 			$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 			$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls') ? true : false);
 
@@ -195,7 +196,7 @@
 			$threadManager = new ThreadManager($post->getThreadID());
 			$firstPost = $threadManager->getThreadProperty('firstPostID') == $post->getPostID() ? true : false;
 
-			if (!(($post->getAuthor('userID') == $currentUser->userID && $threadManager->getPermissions('editPost') && !$threadManager->thread->getStates('locked')) || $threadManager->getPermissions('moderate'))) { header('Location: /forums/thread/' . $post->getThreadID() . '/'); exit; }
+			if (!(($post->getAuthor('userID') == $currentUser->userID && ($threadManager->getPermissions('editPost')||$threadManager->thread->getStates('publicPosting')) && !$threadManager->thread->getStates('locked')) || $threadManager->getPermissions('moderate'))) { header('Location: /forums/thread/' . $post->getThreadID() . '/'); exit; }
 
 			if ($firstPost && strlen($post->getTitle()) == 0) {
 				$formErrors->addError('noTitle');
@@ -207,6 +208,7 @@
 			if ($firstPost) {
 				$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate') ? true : false);
 				$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate') ? true : false);
+				$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 				$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 				$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addRolls') ? true : false);
 
@@ -242,6 +244,7 @@
 				if ($firstPost) {
 					$threadManager->thread->setState('sticky', isset($_POST['sticky']) && $threadManager->getPermissions('moderate') ? true : false);
 					$threadManager->thread->setState('locked', isset($_POST['locked']) && $threadManager->getPermissions('moderate') ? true : false);
+					$threadManager->thread->setState('publicPosting', isset($_POST['publicPosting']) && $threadManager->getPermissions('moderate') ? true : false);
 					$threadManager->thread->setAllowRolls(isset($_POST['allowRolls']) && $threadManager->getPermissions('addRolls') ? true : false);
 					$threadManager->thread->setAllowDraws(isset($_POST['allowDraws']) && $threadManager->getPermissions('addDraws') ? true : false);
 

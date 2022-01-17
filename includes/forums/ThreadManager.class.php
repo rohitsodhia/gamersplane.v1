@@ -10,7 +10,7 @@
 				global $mysql, $currentUser;
 
 				$this->threadID = intval($threadID);
-				$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, t.allowRolls, t.allowDraws, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
+				$thread = $mysql->query("SELECT t.threadID, t.forumID, t.locked, t.sticky, t.allowRolls, t.allowDraws, t.publicPosting, fp.title, fp.authorID, tAuthor.username authorUsername, fp.datePosted, t.firstPostID, lp.postID lp_postID, lp.authorID lp_authorID, lAuthor.username lp_username, lp.datePosted lp_datePosted, t.postCount, IFNULL(rd.lastRead, 0) lastRead FROM threads t INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users tAuthor ON fp.authorID = tAuthor.userID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users lAuthor ON lp.authorID = lAuthor.userID LEFT JOIN forums_readData_threads rd ON t.threadID = rd.threadID AND rd.userID = {$currentUser->userID} WHERE t.threadID = {$this->threadID} LIMIT 1");
 				$this->thread = $thread->fetch();
 	//			throw new Exception('No thread');
 				if (!$this->thread)
@@ -71,6 +71,9 @@
 		}
 
 		public function getPermissions($permission = null) {
+			if (($permission=="write") && ($this->getThreadProperty('states[publicPosting]'))){
+				return 1;
+			}
 			return $this->forumManager->getForumProperty($this->thread->forumID, 'permissions'.($permission != null?"[{$permission}]":''));
 		}
 
@@ -174,7 +177,7 @@
 			}
 
 			if ($this->threadID == null) {
-				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1");
+				$mysql->query("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1, publicPosting = ".($this->thread->getStates('publicPosting',true)?1:0));
 				$this->threadID = $mysql->lastInsertId();
 
 				$post->setThreadID($this->threadID);
@@ -186,7 +189,7 @@
 				$this->updateLastRead($postID);
 
 			} else {
-				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0)." WHERE threadID = ".$this->threadID);
+				$mysql->query("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0).", publicPosting = ".($this->thread->getStates('publicPosting')?1:0)." WHERE threadID = ".$this->threadID);
 
 				$postID = $post->savePost();
 

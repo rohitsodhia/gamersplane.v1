@@ -6,7 +6,7 @@
 		protected $authorID;
 		protected $authorUsername;
 		protected $datePosted;
-		protected $states = array('sticky' => false, 'locked' => false);
+		protected $states = array('sticky' => false, 'locked' => false , 'publicPosting' => false);
 		protected $allowRolls = false;
 		protected $allowDraws = false;
 		protected $postCount = 0;
@@ -32,6 +32,7 @@
 				if (property_exists($this, $key)) $this->$key = $loadData[$key];
 			$this->states['sticky'] = $loadData['sticky'];
 			$this->states['locked'] = $loadData['locked'];
+			$this->states['publicPosting'] = $loadData['publicPosting'];
 			if (isset($loadData['lp_postID'], $loadData['lp_authorID'], $loadData['lp_username'], $loadData['lp_datePosted'])) {
 				$this->lastPost = new stdClass();
 				$this->lastPost->postID = $loadData['lp_postID'];
@@ -42,8 +43,8 @@
 		}
 
 		public function toggleValue($key) {
-			if (in_array($key, array('sticky', 'locked', 'allowRolls', 'allowDraws'))) {
-				if ($key == 'sticky' || $key == 'locked') $this->states[$key] = !$this->states[$key];
+			if (in_array($key, array('sticky', 'locked', 'allowRolls', 'allowDraws', 'publicPosting'))) {
+				if ($key == 'sticky' || $key == 'locked' || $key == 'publicPosting') $this->states[$key] = !$this->states[$key];
 				else $this->$key = !$this->$key;
 			}
 		}

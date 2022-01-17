@@ -297,7 +297,7 @@
 			}
 			if ($threadManager->getPermissions('write') && !$threadManager->getThreadProperty('states[locked]')) echo "\t\t\t\t\t\t\t<span class='quotePost' data-postid='{$post->postID}'>Quote</span>\n";
 			if (($post->author->userID == $currentUser->userID && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
-				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost')) {
+				if ($threadManager->getPermissions('moderate') || $threadManager->getPermissions('editPost') || ($post->author->userID == $currentUser->userID && $threadManager->getThreadProperty('states[publicPosting]'))) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/editPost/{$post->postID}/\">Edit</a>\n";
 				}
 				if (
