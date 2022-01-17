@@ -360,7 +360,31 @@ var fixDarkThemeColours=function(){
 		return this;
 	};
 
-
 	$('body').darkModeColorize();
 
+	jQuery.fn.convertTimeZones = function (){
+		$('.convertTZ',this).each(function () {
+			var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, YYYY h:mm a';
+			if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
+			if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
+			$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
+		});
+
+		$('.convertTZshort',this).each(function () {
+			var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, h:mm a';
+			if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
+			if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
+			$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
+		});
+
+		$('.convertTZdate',this).each(function () {
+			var parseFormat = 'MMMM D, YYYY h:mm a', displayFormat = 'MMM D, YYYY';
+			if ($(this).data('parseFormat')) parseFormat = $(this).data('parseFormat');
+			if ($(this).data('displayFormat')) displayFormat = $(this).data('displayFormat');
+			$(this).text(convertTZ($(this).text(), parseFormat, displayFormat));
+		});
+		return this;
+	};
+
+	$('body').convertTimeZones();
 };
