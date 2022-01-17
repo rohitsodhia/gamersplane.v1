@@ -226,13 +226,8 @@
 						<div ng-if="!details.retired && details.status=='open' && loggedIn && !pendingInvite && !inGame && details.numPlayers > details.approvedPlayers" class="rightCol">
 							<h2 class="headerbar hbDark"><i class="ra ra-player-teleport"></i> Join Game</h2>
 							<div ng-if="details.recruitmentThreadId">
-								<form action="{{'/forums/thread/'+details.recruitmentThreadId}}"  method="post">
-								<p class="hbMargined"><button type="submit" name="navigateToTavern" class="fancyButton"><i class="ra ra-beer"></i> Apply in Games Tavern</button></p>
-								</form>
-
-								<form action="{{'/pms/send/?userID='+details.gm.userID}}" method="post">
-									<p class="hbMargined"><button type="submit" name="pmTheGm" class="fancyButton"><i class="ra ra-quill-ink"></i> Message the GM</button></p>
-								</form>
+								<p class="hbMargined fancyButtonBar"><a href="{{'/forums/thread/'+details.recruitmentThreadId}}" class="fancyButton"><i class="ra ra-beer"></i> Apply in Games Tavern</a></p>
+								<p class="hbMargined fancyButtonBar"><a href="{{'/pms/send/?userID='+details.gm.userID}}" class="fancyButton"><i class="ra ra-quill-ink"></i> Message the GM</a></p>
 							</div>
 
 							<form ng-submit="applyToGame()" class="alignCenter">

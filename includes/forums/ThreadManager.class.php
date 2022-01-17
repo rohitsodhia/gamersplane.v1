@@ -331,7 +331,7 @@
 						echo "</div>";
 
 						echo "<hr/>";
-						echo "<form action='/games/".$gameInfo['gameID']."/ method='post' class='alignRight'><button type='submit' name='visitGameDetails' class='fancyButton'>Game details</button></form>";
+						echo "<div class='alignRight'><a href='/games/".$gameInfo['gameID']."'/ class='fancyButton'>Game details</a></div>";
 						echo "<hr/>";
 					}
 				}
