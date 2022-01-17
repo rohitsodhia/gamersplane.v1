@@ -60,6 +60,9 @@
     text-align: center;
 }
 
+.markItUp .playerNoteSelector li.otherNoteAdd a	{
+	background-image:url(images/notes.png);
+}
 
 .markItUp .markItUpButton11 a	{
 	width: 32px;

@@ -10,7 +10,7 @@
 // Feel free to add more tags
 // ----------------------------------------------------------------------------
 
-var notesdropDown = $('#playerList li').map(function () { return { name: $.trim($(this).text()) }; }).get();
+var notesdropDown = $('#playerList li').map(function () { return { name: $.trim($(this).text()),className:'mobileKeepOpen' }; }).get();
 notesdropDown.push({ name: 'Add note', className: 'playerNoteAdd' });
 notesdropDown.push({ name: 'Private', className: 'playerPrivateAdd' });
 notesdropDown.push({ name: 'Mention', className: 'playerMention' });
@@ -74,11 +74,13 @@ mySettings = {
 	]
 };
 
+mobileifyMenus(mySettings);
 
 $(function () {
-	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd):not(.playerMention)', function (e) {
+	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd):not(.playerMention):not(.otherNoteAdd)', function (e) {
 		$(this).toggleClass('playerNoteSelected');
 		e.stopPropagation();
+		e.preventDefault();
 	});
 
 	$('body').on('click', '.markItUpButton10 ul li.playerNoteAdd,.markItUpButton10 ul li.playerPrivateAdd', function (e) {
