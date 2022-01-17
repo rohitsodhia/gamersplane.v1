@@ -375,6 +375,18 @@ function BBCode2Html($text) {
 	}
 	//end polls
 
+	//start ffg destiny
+	if($post){
+		$matches = null;
+		$text=preg_replace_callback("/\[fliptokens=\"?(\d*)\"?\]/ms", function($matches){
+			global $post, $postAuthor, $isGM;
+			$ffgTokens=(int)$matches[1];
+			$ffgResults=$post->getFfgDestinyResults($ffgTokens);
+			return $ffgResults['html'];
+		}, $text, $limit=1);
+	}
+	//end ffg destiny
+
 	$text = preg_replace_callback('/(\@[0-9a-zA-Z\-\.\_]+[0-9a-zA-Z\-\_])/', function($matches){
 		global $currentUser;
 		if('@'.strtolower($currentUser->username)==strtolower($matches[1]))

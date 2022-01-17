@@ -43,4 +43,38 @@ $(function() {
             }
         });
     });
+
+    $('body').on('click','.ffgTokens div',function(){
+        var pThis=$(this);
+        var destiny=pThis.closest('.ffgDestiny');
+        var postId=destiny.addClass('thinking').data('postid');
+        var totalFlips=destiny.attr('data-totalflips');
+        var tokens=destiny.data('tokens');
+        var isDark=pThis.hasClass('darkToken');
+
+        $.ajax({
+            type: 'post',
+            url: API_HOST +'/forums/ffgFlip',
+            xhrFields: {
+                withCredentials: true
+            },
+            data:{ postId: postId, toDark:isDark?0:1, totalFlips: totalFlips, tokens: tokens},
+            success:function (data) {
+                var newHtml=$(data.html);
+                destiny.html(newHtml.html());
+                $('.ffgHistoryList',destiny).show();
+                $('.ffgHistoryToggle',destiny).hide();
+                destiny.attr('data-totalFlips',newHtml.attr('data-totalFlips'));
+                destiny.removeClass('thinking');
+                if(!data.success){
+                    $('<div class="updateError">The list has changed. Do you still want to flip a token?</div>').prependTo(destiny);
+                }
+            }
+        });
+    });
+
+    $('body').on('click','.ffgHistoryToggle',function(){
+        $('.ffgHistoryList',$(this).hide().parent()).show();
+    });
+
 });
