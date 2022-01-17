@@ -47,6 +47,20 @@
 	background-image:url(images/private.png);
 }
 
+.markItUp .playerNoteSelector li.playerMention a{
+	background-image: none;
+	padding-left: 0;
+	width: 145px;
+}
+
+.markItUp .playerNoteSelector li.playerMention a:before	{
+	content:'@';
+	display: inline-block;
+    width: 25px;
+    text-align: center;
+}
+
+
 .markItUp .markItUpButton11 a	{
 	width: 32px;
 	background-image:url(images/ooc.png);
