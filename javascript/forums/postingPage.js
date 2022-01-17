@@ -324,6 +324,8 @@ $(function() {
 
 						if (system == 'dnd5') {
 							addDnd5Rolls(charSheetContent);
+						} else if(system=='savageworlds'){
+							addSavageWorldRolls(charSheetContent);
 						}
 
 						//tables with rolls
@@ -376,6 +378,33 @@ $(function() {
 					return ''+val;
 				}
 			}
+
+			var addSavageWorldRolls=function(charSheetContent){
+				var swRoller=$('<div class="savageWorldsRoller"></div>').appendTo(charSheet);
+				$('.traitDiv', charSheetContent).each(function(){
+					var trait=$(this);
+					var traitDiv=$('<div class="savageWorldsTrait"><table></table></div>').appendTo(swRoller);
+					var traitTable=$('table',traitDiv);
+					var traitName=$('.traitName',trait).text();
+					var dieSelect='1'+$('.diceSelect',trait).text()+',1d6';
+					var traitRoller=$('<tr class="traitRow"></tr>').addClass('rollDice').attr('roll',dieSelect).attr('rolltext',traitName).attr('rerollAces','true').appendTo(traitTable);
+					$('<td></td>').text(traitName).appendTo(traitRoller);
+					$('<td></td>').text(dieSelect).appendTo(traitRoller);
+					$('.skill',trait).each(function(){
+						var skill=$(this);
+						var skillName=$('.skillName',skill).text();
+						var skillDieSelect='1'+$('.diceType',skill).text()+',1d6';
+						var traitSkillRoller=$('<tr></tr>').addClass('rollDice').attr('roll',skillDieSelect).attr('rolltext',skillName).attr('rerollAces','true').appendTo(traitTable);
+						$('<td></td>').text(skillName).appendTo(traitSkillRoller);
+						$('<td></td>').text(skillDieSelect).appendTo(traitSkillRoller);
+					});
+				});
+
+				var unskilledDiv=$('<div class="savageWorldsTrait"><table></table></div>').appendTo(swRoller);
+				var unskilledRoller=$('<tr class="traitRow"></tr>').addClass('rollDice').attr('roll','1d4-2,1d6-2').attr('rolltext','Unskilled').attr('rerollAces','true').appendTo($('table',unskilledDiv));
+				$('<td>Unskilled</td>').appendTo(unskilledRoller);
+				$('<td>1d4-2,1d6-2</td>').appendTo(unskilledRoller);
+			};
 
 			//special code for dnd 5e
 			var addDnd5Rolls = function (charSheetContent) {
@@ -441,12 +470,12 @@ $(function() {
 			};
 
 
-			var addRollToList = function (reason, roll) {
+			var addRollToList = function (reason, roll, rerollAces) {
 
 				rollCount += 1;
 				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'basic' }, function (data) {
 					$newRow = $(data);
-					if(gameOptions && gameOptions.diceDefaults && gameOptions.diceDefaults.rerollAces){
+					if( rerollAces || (gameOptions && gameOptions.diceDefaults && gameOptions.diceDefaults.rerollAces)){
 						$newRow.find('.reroll input[type="checkbox"]').prop('checked',true)	;
 					}
 					$newRow.find('input[type="checkbox"]').prettyCheckbox();
@@ -462,6 +491,7 @@ $(function() {
 				var thisRoll = $(this);
 				var roll = thisRoll.attr('roll');
 				var reason=thisRoll.attr('rolltext');
+				var rerollAces=thisRoll.attr('rerollAces')=='true';
 
 				if (thisRoll.hasClass('adv')) {
 					reason += ' (advantage)';
@@ -472,7 +502,7 @@ $(function() {
 					roll = roll + ',' + roll;
 				}
 
-				addRollToList(reason, roll);
+				addRollToList(reason, roll, rerollAces);
 			});
 
 			$('#rolls_decks').on('change', '.shortcutSelector', function (ev) {

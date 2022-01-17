@@ -1739,6 +1739,39 @@ td .rollDice {
 	border-bottom-right-radius: 5px;
 }
 
+.savageWorldsRoller{
+	display: flex;
+	flex-wrap: wrap;
+	.savageWorldsTrait{
+		flex-grow: 1;
+		width: 33.333%;
+		table{
+			width: auto;
+			.traitRow{
+				font-weight: bold;
+				td:first-of-type{
+					padding-left: 0;
+				}
+				td{
+					padding-top: .4rem;
+					padding-bottom: .4rem;
+				}
+			}
+			td:last-of-type{
+				text-align: right;
+			}
+			td:first-of-type{
+				padding-right: 1rem;
+				padding-left: 1rem;
+			}
+			tr.rollDice{
+				padding-bottom: .5rem;
+			}
+		}
+
+	}
+}
+
 /* --------------------------------------------*/
 .editRollInfo {
 	&:after {
@@ -2335,5 +2368,14 @@ h1.forumSearch{
 @media only screen and (max-width: @mobile-breakpoint){
 	.ft_search li .ft_post_info .ft_poster a.username{
 		display: block;
+	}
+
+	.savageWorldsRoller{
+		.savageWorldsTrait{
+			table{
+				width: 100%;
+			}
+			width: 100%;
+		}
 	}
 }
