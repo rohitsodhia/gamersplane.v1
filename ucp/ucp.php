@@ -85,7 +85,7 @@
 				</div>
 
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
 				</div>
 			</div>
 
@@ -100,7 +100,7 @@
 					<textarea ng-model="user.games"></textarea>
 				</div>
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
 				</div>
 			</div>
 
@@ -134,7 +134,7 @@
 				</div>
 				<div ng-show="passMismatch" class="error">Passwords don't match</div>
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
 				</div>
 			</div>
 
@@ -163,7 +163,7 @@
 					<div><label for><pretty-radio radio="user.warnUnsaved" r-value="''"></pretty-radio> Yes</label> <label for><pretty-radio radio="user.warnUnsaved" r-value="'no'"></pretty-radio> No</label></div>
 				</div>
 				<div class="tr submitDiv">
-					<button type="submit" ng-click="save()" class="fancyButton">Save</button>
+					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
 				</div>
 			</div>
 		</form>
