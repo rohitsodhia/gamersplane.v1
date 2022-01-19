@@ -121,6 +121,14 @@ $(function () {
                         } else if(totalSuffix){
                             var matchTotal=$('.rollTotal'+totalSuffix,parsedRolls.closest('.roll'));
 
+                            if(rule.reason){
+                                var match=rule.reason.toLowerCase();
+                                matchTotal=matchTotal.filter(function(){
+                                    var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
+                                    return thisVal.indexOf(match)!=-1;
+                                });
+                            }
+
                             if(rule.highlight){
                                 matchTotal.addClass(highlightClass);
                             }
