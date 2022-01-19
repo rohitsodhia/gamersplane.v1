@@ -118,6 +118,11 @@ $(function () {
                             if(rule.content){
                                 matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
                             }
+
+                            if(matchedDice.length>0 && rule.hideTotal){
+                                $('.rollResultTotal',matchedDice.closest('.roll')).hide();
+                            }
+
                         } else if(totalSuffix){
                             var matchTotal=$('.rollTotal'+totalSuffix,parsedRolls.closest('.roll'));
 
