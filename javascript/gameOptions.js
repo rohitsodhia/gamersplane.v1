@@ -58,7 +58,7 @@ $(function () {
                 var rule = gameOptions.diceRules[count];
                 if(rollstring && rule.rolled &&  rollstring.toLowerCase().indexOf(rule.rolled.toLowerCase())!=-1){
                     //rules highlighting
-                    if(rule.highlight || rule.content){
+                    if(rule.highlight || rule.content || rule.hideTotal){
 
                         var highlightClass=rule.highlight?highlightClass=rule.highlight.split(" ").map(function(item) {return 'rollVal-'+item.trim().toLowerCase();}).join(' '):'';
 
@@ -92,23 +92,46 @@ $(function () {
                             selectorSuffix+=':d100double';
                         }
 
-                        var matchedDice=$('i'+selectorSuffix,parsedRolls);
-
-                        //reason
-                        if(rule.reason){
-                            var match=rule.reason.toLowerCase();
-                            matchedDice=matchedDice.filter(function(){
-                                var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
-                                return thisVal.indexOf(match)!=-1;
-                            });
+                        var totalSuffix='';
+                        if(rule.totalge){
+                            totalSuffix+=':ge('+rule.totalge+')';
+                        }
+                        if(rule.totalle){
+                            totalSuffix+=':le('+rule.totalle+')';
                         }
 
-                        if(rule.highlight){
-                            matchedDice.addClass(highlightClass);
+                        if(selectorSuffix){
+                            var matchedDice=$('i'+selectorSuffix,parsedRolls);
+
+                            //reason
+                            if(rule.reason){
+                                var match=rule.reason.toLowerCase();
+                                matchedDice=matchedDice.filter(function(){
+                                    var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
+                                    return thisVal.indexOf(match)!=-1;
+                                });
+                            }
+
+                            if(rule.highlight){
+                                matchedDice.addClass(highlightClass);
+                            }
+                            if(rule.content){
+                                matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
+                            }
+                        } else if(totalSuffix){
+                            var matchTotal=$('.rollTotal'+totalSuffix,parsedRolls.closest('.roll'));
+
+                            if(rule.highlight){
+                                matchTotal.addClass(highlightClass);
+                            }
+                            if(rule.content){
+                                matchTotal.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
+                            }
+                            if(matchTotal.length>0 && rule.hideTotal){
+                                matchTotal.closest('.rollResultTotal').hide();
+                            }
                         }
-                        if(rule.content){
-                            matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
-                        }
+
                     }
 
                     //other rule options
