@@ -40,6 +40,34 @@ $(function () {
             };
         });
 
+        $.expr[':'].meval =  $.expr[':'].meval || $.expr.createPseudo(function(arg) {
+            return function( elem ) {
+                try{
+                    if(arg.includes('x')){
+                        return eval(arg.replace(/[x]/gi,$(elem).text()));
+                    }
+                    else{
+                        return eval($(elem).text()+arg);
+                    }
+                }catch{}
+                return false;
+            };
+        });
+
+        //strips bad characters from maths eval expression, prepends with = if nothing else present
+        var valToMeval = function (val){
+            val=String(val).toLowerCase();
+            val.replace(/[^0-9\<\=\>\!x\&\|]/gi, '');
+            if(!val.startsWith('<') && !val.startsWith('>') && !val.startsWith('=') && !val.startsWith('!') && !val.includes('x')){
+                val="="+val;
+            }
+
+            //replace single = with == if not a <= >= etc
+            val=val.replace(/(^|[^\<\>\!\&\|\=])(\=)([^\<\>\!\&\|\=])/g,"$1==$3");
+
+            return val;
+        }
+
         //toggle ordering between original and numeric
         var orderRolls=function(parsedRolls){
             if(parsedRolls.hasClass('rollsOrderedByVal')){
@@ -71,7 +99,7 @@ $(function () {
 
                         //roll values
                         if(rule.natural) {
-                            selectorSuffix+=':equals('+rule.natural+')';
+                            selectorSuffix+=':meval('+valToMeval(rule.natural)+')';
                         }
 
                         if(rule.ge) {
@@ -93,11 +121,8 @@ $(function () {
                         }
 
                         var totalSuffix='';
-                        if(rule.totalge){
-                            totalSuffix+=':ge('+rule.totalge+')';
-                        }
-                        if(rule.totalle){
-                            totalSuffix+=':le('+rule.totalle+')';
+                        if(rule.total){
+                            totalSuffix+=':meval('+valToMeval(rule.total)+')';
                         }
 
                         if(selectorSuffix){
@@ -118,6 +143,10 @@ $(function () {
                             if(rule.content){
                                 matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
                             }
+                            if(rule.contentAppend){
+                                matchedDice.each(function(){$(this).text($(this).text()+' '+rule.contentAppend);});
+                            }
+
 
                             if(matchedDice.length>0 && rule.hideTotal){
                                 $('.rollResultTotal',matchedDice.closest('.roll')).hide();
@@ -139,6 +168,9 @@ $(function () {
                             }
                             if(rule.content){
                                 matchTotal.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
+                            }
+                            if(rule.contentAppend){
+                                matchTotal.each(function(){$('<span></span>').text(' '+rule.contentAppend).insertAfter($(this));});
                             }
                             if(matchTotal.length>0 && rule.hideTotal){
                                 matchTotal.closest('.rollResultTotal').hide();
