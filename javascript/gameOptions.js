@@ -65,6 +65,9 @@ $(function () {
             //replace single = with == if not a <= >= etc
             val=val.replace(/(^|[^\<\>\!\&\|\=])(\=)([^\<\>\!\&\|\=])/g,"$1==$3");
 
+            //replace 7<x<9 with 7<x && x<9
+            val=val.replace(/([=<>])(x)([=><])/g,"$1x && x$3");
+
             return val;
         }
 
@@ -86,7 +89,7 @@ $(function () {
                 var rule = gameOptions.diceRules[count];
                 if(rollstring && rule.rolled &&  rollstring.toLowerCase().indexOf(rule.rolled.toLowerCase())!=-1){
                     //rules highlighting
-                    if(rule.highlight || rule.content || rule.hideTotal){
+                    if(rule.highlight || rule.content || rule.contentAppend || rule.hideTotal){
 
                         var highlightClass=rule.highlight?highlightClass=rule.highlight.split(" ").map(function(item) {return 'rollVal-'+item.trim().toLowerCase();}).join(' '):'';
 
