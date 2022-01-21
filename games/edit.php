@@ -25,7 +25,7 @@
 						<combobox data="systemsWCharSheets" change="setCharSheet(value)" select></combobox> <a href="" ng-click="addCharSheet()">[ + ]</a>
 					</div>
 				</div>
-				<div class="error" ng-show="errors.indexOf('noCharSheets') >= 0 || game.allowedCharSheets.length==0">You must allow at least one character sheet</div>
+				<div class="error" ng-show="errors.indexOf('noCharSheets') >= 0 || game.allowedCharSheets.length==0">You must allow at least one character sheet.<br/>Click the [+] to add the selected character sheet to the game.</div>
 				<div class="tr" ng-show="game.allowedCharSheets.length">
 					<div class="shiftRight">
 						<div ng-repeat="system in game.allowedCharSheets | orderBy: 'toString()'" class="allowedClass"><span ng-bind-html="allSystems[system]"></span> <a href="" ng-click="removeCharSheet(system)">[ - ]</a></div>
