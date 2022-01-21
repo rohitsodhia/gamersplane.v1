@@ -24,7 +24,7 @@ RUN docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 RUN apk add postfix
 COPY docker/php/conf.ini .
 RUN mv ./conf.ini $PHP_INI_DIR/conf.d/conf.ini
-RUN echo "\nrelayhost = 192.241.188.88" >> main.cf
+RUN echo "\nrelayhost = 192.241.188.88" >> /etc/postfix/main.cf
 
 # RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 
