@@ -305,7 +305,8 @@
 					$threadManager->getPermissions('deletePost') &&
 					$post->postID != $threadManager->getThreadProperty('firstPostID') ||
 					$threadManager->getPermissions('deleteThread') &&
-					$post->postID == $threadManager->getThreadProperty('firstPostID')
+					$post->postID == $threadManager->getThreadProperty('firstPostID') ||
+					($post->author->userID == $currentUser->userID && $threadManager->getThreadProperty('states[publicPosting]'))
 				) {
 					echo "\t\t\t\t\t\t\t<a href=\"/forums/delete/{$post->postID}/\" class=\"deletePost\">Delete</a>\n";
 				}
