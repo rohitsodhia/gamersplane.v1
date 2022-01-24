@@ -408,7 +408,11 @@ function BBCode2Html($text) {
 	}, $text);
 
 
-
+	//blockquotes back to divs
+	$text = str_replace("<blockquote","<div",$text);
+	$text = str_replace("</blockquote","</div",$text);
+	$text = str_replace("<aside","<div",$text);
+	$text = str_replace("</aside","</div",$text);
 
 
 // paragraphs
