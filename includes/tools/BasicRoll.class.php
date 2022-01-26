@@ -20,12 +20,13 @@
 				preg_match_all('/(([\+\-]?)(\d*)([dD])?(\d+))/', $dicePart, $rolls, PREG_SET_ORDER);
 
 				$totalModifier=0;
-				$diceSides=$diceNumber=array();
+				$diceSides=$diceNumber=$diceModifier=array();
 
 				if(count($rolls)){
 					foreach ($rolls as $roll){
 						if(($roll[4]=="d"||$roll[4]=="D")){
 							$diceNumber[]=intval($roll[3]?$roll[3]:1);
+							$diceModifier[]=$roll[2]?$roll[2]:'+';
 							$diceSize=intval($roll[5]);
 							$diceSides[]=$diceSize;
 							$this->dice[$diceSize]=new BasicDie($diceSize);
@@ -37,7 +38,7 @@
 							}
 						}
 					}
-					$this->rolls[] = array('string' => $dicePart, 'number' => $diceNumber, 'sides' => $diceSides, 'modifier' => $totalModifier, 'indivRolls' => array(), 'result' => 0);
+					$this->rolls[] = array('string' => $dicePart, 'number' => $diceNumber, 'sides' => $diceSides, 'diceModifier' => $diceModifier, 'modifier' => $totalModifier, 'indivRolls' => array(), 'result' => 0);
 					$hasDiceParts = true;
 				}
 
@@ -51,11 +52,11 @@
 				for ($handful=0;$handful<count($roll['number']);$handful++){
 					for ($count = 0; $count < $roll['number'][$handful]; $count++) {
 						$result = $this->dice[$roll['sides'][$handful]]->roll();
-
+						$diceModifier=$roll['diceModifier'][$handful]=='-'?-1:1;
 						if (isset($roll['indivRolls'][$handful][$count]) && is_array($roll['indivRolls'][$handful][$count])) $roll['indivRolls'][$handful][$count][] = $result;
 						elseif ($result == $roll['sides'][$handful] && $this->rerollAces) $roll['indivRolls'][$handful][$count] = array($result);
 						else $roll['indivRolls'][$handful][$count] = $result;
-						$roll['result'] += $result;
+						$roll['result'] += ($diceModifier*$result);
 
 						if ($this->rerollAces && $result == $roll['sides'][$handful] && $result>1) $count -= 1;
 					}
@@ -153,14 +154,17 @@
 					if(is_array($roll['indivRolls']) && count($roll['indivRolls']) && is_array($roll['indivRolls'][0])){
 						//new multidice
 						foreach ($roll['indivRolls'] as $key => $result) {
-							$results[$key]='(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.$this->resultsToText($result).'</span>)';
+							$diceModifier=$roll['diceModifier'][$key]=='-'?-1:1;
+							$diceModifierText=($key || $diceModifier==-1)?($diceModifier==-1?'- ':'+ '):'';
+
+							$results[$key]=$diceModifierText.'(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.$this->resultsToText($result).'</span>)';
 						}
 					}else{
 						//old data
 						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.$this->resultsToText($roll['indivRolls']).'</span>)';
 					}
 
-					$rollValues[$count] .= implode(' + ', $results);
+					$rollValues[$count] .= implode(' ', $results);
 					$rollValues[$count] .= ($roll['modifier'] == 0 ? "" : ($roll['modifier'] < 0 ? " - " : " + ").abs($roll['modifier']));
 					$rollValues[$count] .= ' = '.$roll['result'].($this->visibility != 0?'</span>':'').'</p>';
 				}
