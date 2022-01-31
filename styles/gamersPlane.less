@@ -1471,8 +1471,31 @@ br.gap {
 	max-width: 890px;
 }
 
+.bbTableWrapper{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+	display: block;
+
+	&::-webkit-scrollbar{
+		height: 5px;
+		display: block;
+		background-color: transparent;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: rgba(0, 0, 0, .2);
+		border-right: none;
+		border-left: none;
+	}
+}
+
 .bbTable {
 	width: 100%;
+
 
 	&.bbTableCenter {
 		td {
@@ -3567,6 +3590,7 @@ select.notPretty {
 .layout-columns-2,
 .layout-columns-3 {
 	display: flex;
+	overflow: hidden;
 
 	img {
 		max-width: 100%;
