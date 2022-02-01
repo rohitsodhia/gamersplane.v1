@@ -52,7 +52,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 			}
 		};
 
-		$scope.save = function () {
+		$scope.save = function ($event) {
 			UsersService.save({
 				'details': $scope.user,
 				'newPass': $scope.newPass
@@ -61,6 +61,9 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 				if (data.avatarUploaded) {
 					$scope.avatarTime = new Date().getTime();
 				}
+
+				//provide feedback about data saved
+				$($event.target).text('Saved').fadeTo(400,.3).delay(200).fadeTo(400,1,function(){$($event.target).text('Save');});
 			});
 		};
 	});
