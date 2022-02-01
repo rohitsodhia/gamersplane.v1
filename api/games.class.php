@@ -471,6 +471,10 @@ class games
 			$errors[] = 'invalidNumPlayers';
 		}
 
+		$updateForumGroup = $mysql->prepare("UPDATE forums_groups SET name=:title WHERE gameID={$gameID} ORDER BY groupID LIMIT 1");
+		$updateForumGroup->execute(['title' => $details['title']]);
+
+
 		if (sizeof($errors)) {
 			displayJSON(array('failed' => true, 'errors' => $errors));
 		} else {

@@ -162,7 +162,7 @@
 
 					$rollValues[$count] .= implode(' + ', $results);
 					$rollValues[$count] .= ($roll['modifier'] == 0 ? "" : ($roll['modifier'] < 0 ? " - " : " + ").abs($roll['modifier']));
-					$rollValues[$count] .= ' = '.$roll['result'].($this->visibility != 0?'</span>':'').'</p>';
+					$rollValues[$count] .= '<span class="rollResultTotal"> = <span class="rollTotal">'.$roll['result'].'</span></span>'.($this->visibility != 0?'</span>':'').'</p>';
 				}
 				echo '<p class="rollString">';
 				echo ($showAll && $this->visibility > 0)?'<span class="hidden">'.$this->visText[$this->visibility].'</span> ':'';
