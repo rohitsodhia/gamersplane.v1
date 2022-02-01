@@ -176,7 +176,7 @@ $(function () {
 	$.get( '/forums/thread/22053/?pageSize=10000', function( data ) {
 		var diceRuleSection=$('#diceRules');
 		var diceRegex=/[\"\']diceRules[\"\'][\s]*:[\s]*(\[.*?\])/gms
-		$('.post blockquote.spoiler', $(data)).each(function(){
+		$('.post .spoiler', $(data)).each(function(){
 			var spoiler=$(this);
 			var ruleTitle=$('.tag',spoiler).text();
 			var ruleText=$('.hidden',spoiler).text();

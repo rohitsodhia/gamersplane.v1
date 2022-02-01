@@ -3,7 +3,7 @@ $(function () {
         if(!params.notes){
             $.get( '/forums/thread/21532/?pageSize=10000', function( data ) {
                 var templateList=$('#templateList');
-                $('.post blockquote.spoiler.snippet', $(data)).each(function(){
+                $('.post .spoiler.snippet', $(data)).each(function(){
                     var spoiler=$(this);
                     var snippetTitle=$('.snippetName',spoiler).text();
                     var snippetbbcode=$('.snippetBBCode',spoiler).text();
