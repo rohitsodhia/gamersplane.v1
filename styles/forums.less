@@ -577,7 +577,7 @@
 	cursor: pointer;
 
 	i {
-		display: inline-block;
+		display: inline-flex;
 		padding: 0 .2em;
 		&:after {
 			content: ',';
@@ -595,7 +595,9 @@
 			}
 		}
 	}
+}
 
+.rollResultTotal,.parsedRolls{
 	.rollVal-bold {
 		font-weight: bold;
 	}
@@ -610,6 +612,7 @@
 	}
 
 	.rollVal-invert {
+		padding: 0 0.2em;
 		color: #fff;
 		background-color: #333;
 		&.rollVal-success {
