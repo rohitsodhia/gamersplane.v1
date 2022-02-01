@@ -12,7 +12,7 @@
 	if (!$gameInfo) { header('Location: /games/list/'); exit; }
 
 	$dispatchInfo['title'] = $gameInfo['title'];
-	$dispatchInfo['description'] = ($gameInfo['description'] ? ForumSearch::getTextSnippet(Post::extractFullText($gameInfo['description']),150) : 'No description provided.');
+	$dispatchInfo['description'] = ($gameInfo['description'] ? ForumSearch::getMetaAttribute($gameInfo['description']) : 'No description provided.');
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar"><i class="ra ra-d6"></i> <?=$gameInfo['title'] ?> <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
