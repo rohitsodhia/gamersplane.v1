@@ -176,7 +176,7 @@ $(function () {
 	$.get( '/forums/thread/22053/?pageSize=10000', function( data ) {
 		var diceRuleSection=$('#diceRules');
 		var diceRegex=/[\"\']diceRules[\"\'][\s]*:[\s]*(\[.*?\])/gms
-		$('.post blockquote.spoiler', $(data)).each(function(){
+		$('.post .spoiler', $(data)).each(function(){
 			var spoiler=$(this);
 			var ruleTitle=$('.tag',spoiler).text();
 			var ruleText=$('.hidden',spoiler).text();
@@ -254,6 +254,40 @@ $(function () {
 		return null;
 	};
 
+	//helper js
+	var areEqualObjects = function (o1,o2){
+		var k1=Object.getOwnPropertyNames(o1);
+		var k2=Object.getOwnPropertyNames(o2);
+		for(var i=0;i<k1.length;i++){
+			if((!o2.hasOwnProperty(k1[i])) || (o1[k1[i]]!=o2[k1[i]]))
+				return false;
+		}
+		for(var i=0;i<k2.length;i++){
+			if((!o1.hasOwnProperty(k2[i])) || (o2[k2[i]]!=o1[k2[i]]))
+				return false;
+		}
+
+		return true;
+	};
+
+	var indexOfObject=function(arr,ob){
+		for(var i=0;i<arr.length;i++){
+			if(areEqualObjects(arr[i],ob)){
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	var arrayHasSubset=function(arr,containsArr){
+		for(var i=0;i<containsArr.length;i++){
+			if(indexOfObject(arr,containsArr[i])==-1){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	$('#adrBackground').on('blur change keyup',function(){
 		var curObject=getCurrentAdr();
 		if(curObject){
@@ -266,7 +300,22 @@ $(function () {
 		var curObject=getCurrentAdr();
 		if(curObject){
 			var diceJson=$(this).data('rulejson');
-			curObject.diceRules=JSON.parse(diceJson).diceRules;
+			var selectedDiceRules=JSON.parse(diceJson).diceRules;
+			if($(this).hasClass('jsonRuleSel')){
+				//remove dice rules
+				for(var i=0;i<selectedDiceRules.length;i++){
+					var removeIndex=indexOfObject(curObject.diceRules,selectedDiceRules[i]);
+					if(removeIndex!=-1){
+						curObject.diceRules.splice(removeIndex,1);
+					}
+				}
+			} else {
+				for(var i=0;i<selectedDiceRules.length;i++){
+					if(indexOfObject(curObject.diceRules,selectedDiceRules[i])==-1){
+						curObject.diceRules.push(selectedDiceRules[i]);
+					}
+				}
+			}
 			setAdrText(curObject);
 			$('#gameOptions').updateFields();
 		}
@@ -351,10 +400,10 @@ $(function () {
 			}
 
 			if(gameOptions && gameOptions.diceRules){
-				var existingDiceRulesJson=JSON.stringify({diceRules:gameOptions.diceRules});
 				$('#diceRules .diceRule').each(function(){
 					var pThis=$(this);
-					if(pThis.data('rulejson')==existingDiceRulesJson){
+					var diceRulesArray=JSON.parse(pThis.data('rulejson'));
+					if(diceRulesArray && diceRulesArray.diceRules && arrayHasSubset(gameOptions.diceRules,diceRulesArray.diceRules)){
 						pThis.addClass('jsonRuleSel');
 					}else{
 						pThis.removeClass('jsonRuleSel');
