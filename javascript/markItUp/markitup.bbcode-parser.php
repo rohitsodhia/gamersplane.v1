@@ -252,12 +252,12 @@ function BBCode2Html($text) {
 			$tableRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
 
 			//simple code to split cells on pipes
-			$ret="<table class='bbTable".$tableClass."'>";
+			$ret="<div class='bbTableWrapper'><table class='bbTable".$tableClass."'>";
 			foreach ($tableRows as $tableRow){
 				$ret=$ret."<tr><td>".str_replace("|","</td><td>",$tableRow)."</td></tr>";
 			}
 
-			$ret=$ret."</table>";
+			$ret=$ret."</table></div>";
 
 			return $ret;
 	}, $text);

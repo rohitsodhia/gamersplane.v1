@@ -460,12 +460,8 @@
 
 			// add markup
 			function insert(block) {
-				if (document.selection) {
-					var newSelection = document.selection.createRange();
-					newSelection.text = block;
-				} else {
-					textarea.value =  textarea.value.substring(0, caretPosition)  + block + textarea.value.substring(caretPosition + selection.length, textarea.value.length);
-				}
+				textarea.focus();
+				document.execCommand("insertText", false, block);
 			}
 
 			// set a selection

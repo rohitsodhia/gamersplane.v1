@@ -135,7 +135,7 @@
 			return $this->thread->getPosts($this->page);
 		}
 
-		public function getKeyPost() {
+		public function getKeyPostSnippet() {
 			global $mysql;
 
 			$posts = $this->thread->getPosts($this->page);
@@ -145,16 +145,18 @@
 			elseif (isset($_GET['p']) && intval($_GET['p']))
 				$checkFor = intval($_GET['p']);
 			elseif ($this->page != 1)
-				return $mysql->query("SELECT message FROM posts WHERE postID = {$this->thread->firstPostID}")->fetch();
+				return ForumSearch::getMetaAttribute($mysql->query("SELECT message FROM posts WHERE postID = {$this->thread->firstPostID}")->fetchColumn());
 			else
-				return $posts[$this->thread->firstPostID];
+				return ForumSearch::getMetaAttribute($posts[$this->thread->firstPostID]->message);
 
 			foreach ($posts as $post) {
 				if ($checkFor == 'newPost' && ($post->getPostID() > $this->getThreadLastRead() || $this->thread->getLastPost('postID') == $post->getPostID()))
-					return $post;
-				elseif ($post->getPostID == $checkFor)
-					return $post;
+					return ForumSearch::getMetaAttribute($post->message);
+				elseif ($post->getPostID() == $checkFor)
+					return ForumSearch::getMetaAttribute($post->message);
 			}
+
+			return "";
 		}
 
 		public function updatePostCount() {
