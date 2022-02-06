@@ -13,11 +13,13 @@ $(function() {
 		var startHeight=$(document ).height()
 
 		$.get(backfillLocation, function (data) {
-			var block=$('.postBlock:not(.postPreview)', $(data));
-			(block.clone().insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap().applyDiceRules().convertTimeZones();;
-			var newHeight=$(document).height()
-
-			$(window).scrollTop(startScroll+(newHeight-startHeight));
+			var block=$('.postBlock:not(.postPreview)', $(data)).clone();
+			var addedBlock=(block.insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap().applyDiceRules().convertTimeZones();
+			$("img",addedBlock).on("load", function() {
+				$(this).removeClass('imageNotLoaded');
+				$(window).scrollTop(startScroll+($(document).height()-startHeight));
+			});
+			$(window).scrollTop(startScroll+($(document).height()-startHeight));
 
 			pThis.remove();
 		});
