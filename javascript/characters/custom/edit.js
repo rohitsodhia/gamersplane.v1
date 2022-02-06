@@ -17,11 +17,16 @@ $(function () {
             });
 
             $('#loadTemplate').on('change', function (ev) {
-                var pThis=$(this);
-                var selectedOption=pThis.find(":selected");
-                var bbcode=selectedOption.data('bbcode');
-                $('textarea.markItUp').focus().val(bbcode).change();
-
+                var loadTemplate=true;
+                if($.trim($('textarea.markItUp').val()).length>0){
+                    loadTemplate=confirm("This will overwrite the contents with the new template.  Are you sure?");
+                }
+                if(loadTemplate){
+                    var pThis=$(this);
+                    var selectedOption=pThis.find(":selected");
+                    var bbcode=selectedOption.data('bbcode');
+                    $('textarea.markItUp').focus().val(bbcode).change();
+                }
                 $('option:first',pThis).prop("selected", true);
             });
         }

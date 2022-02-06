@@ -29,6 +29,8 @@
 				$this->saveLFG();
 			} elseif ($pathOptions[0] == 'removeThreadNotification') {
 				$this->removeThreadNotification($_POST['postID']);
+			} elseif ($pathOptions[0] == 'removeAllThreadNotifications') {
+				$this->removeAllThreadNotifications();
 			} elseif ($pathOptions[0] == 'setUserTheme') {
 				$this->setUserTheme($_POST['darkTheme']);
 			} else {
@@ -640,6 +642,19 @@
 				['userID' => $currentUser->userID],
 				['$pull' => [
 					'threadNotifications' => ['postID'=>((int) $postId)]
+					]
+				]
+			);
+
+		}
+
+		public function removeAllThreadNotifications(){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+			$mongo->users->updateMany(
+				['userID' => $currentUser->userID],
+				['$set' => [
+					'threadNotifications' => []
 					]
 				]
 			);

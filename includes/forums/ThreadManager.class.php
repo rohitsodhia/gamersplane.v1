@@ -384,7 +384,7 @@
 			global $mysql;
 
 			//remove quotes
-			$message = preg_replace("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", "", $message);
+			$message = preg_replace("/\[quote(?:=\"([\w\.]+?)\")?\](((?R)|.)*?)\[\/quote\]/ms", "", $message);
 
 			$ret = Array();
 			preg_match_all('/\@([0-9a-zA-Z\-\.\_]+)/', $message, $matches, PREG_SET_ORDER);

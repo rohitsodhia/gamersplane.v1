@@ -42,4 +42,20 @@ $(function() {
         });
     });
 
+    $('#clearMentions').on('click',function(event){
+		$.ajax({
+			type: 'post',
+			url: API_HOST +'/users/removeAllThreadNotifications',
+			xhrFields: {
+				withCredentials: true
+			}
+		}).always(function() {
+            $('.notifyThread').remove();
+            $('#clearMentions').remove();
+            if($('#notificationMsgs .notify').length==0){
+                $('#notifications').remove();
+            }
+        });
+    });
+
 });
