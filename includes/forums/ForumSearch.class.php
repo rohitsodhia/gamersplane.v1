@@ -71,6 +71,10 @@
 			}
 		}
 
+		public static function getMetaAttribute($text){
+			return ForumSearch::getTextSnippet(str_replace('"',"&quot;",Post::extractFullText($text)),150);
+		}
+
 		public static function getTextSnippet($text, $maxChars) {
 			$words = preg_split('/[\s]+/', $text, null, PREG_SPLIT_DELIM_CAPTURE);
 			$wordCount = count($words);

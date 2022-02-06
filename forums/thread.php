@@ -40,7 +40,7 @@
 	$threadManager->getPosts();
 
 	$dispatchInfo['title'] = $threadManager->getThreadProperty('title') . ' | ' . $dispatchInfo['title'];
-	$dispatchInfo['description'] = $threadManager->getKeyPost()->message;
+	$dispatchInfo['description'] = $threadManager->getKeyPostSnippet();
 ?>
 <?php	require_once(FILEROOT.'/header.php'); ?>
 		<h1 class="headerbar"> <?$threadManager->addThreadIcon()?><?=$threadManager->getThreadProperty('title')?></h1>

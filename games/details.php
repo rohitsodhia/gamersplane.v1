@@ -1,5 +1,7 @@
 <?php $responsivePage=true;
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
+	require_once(FILEROOT.'/includes/forums/Post.class.php');
+	require_once(FILEROOT.'/includes/forums/ForumSearch.class.php');
 
 	$gameID = intval($pathOptions[0]);
 
@@ -10,7 +12,7 @@
 	if (!$gameInfo) { header('Location: /games/list/'); exit; }
 
 	$dispatchInfo['title'] = $gameInfo['title'];
-	$dispatchInfo['description'] = "A {$systems->getFullName($gameInfo['system'])} game for {$gameInfo['numPlayers']} players. " . ($gameInfo['description'] ? $gameInfo['description'] : 'No description provided.');
+	$dispatchInfo['description'] = ($gameInfo['description'] ? ForumSearch::getMetaAttribute($gameInfo['description']) : 'No description provided.');
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar"><i class="ra ra-d6"></i> <?=$gameInfo['title'] ?> <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
