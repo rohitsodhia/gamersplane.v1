@@ -247,10 +247,12 @@
 				$notifications[]=$notification;
 			}
 
+			$hasMentions = false;
 			if($threadNotifications && is_countable($threadNotifications["threadNotifications"])){
 				foreach ($threadNotifications["threadNotifications"] as $threadNotification) {
 					$notification='<div class="notify notifyThread notifyThread-'.$threadNotification['notificationType'].' col-1-2 mob-col-1"><a data-postid="'.$threadNotification['postID'].'" href="/forums/thread/'.$threadNotification['threadID'].'/?p='.$threadNotification['postID'].'#p'.$threadNotification['postID'].'">'.$threadNotification['forumTitle'].' &gt; '.$threadNotification['threadTitle'].'</a></div>';
 					$notifications[]=$notification;
+					$hasMentions=true;
 				}
 			}
 
@@ -267,7 +269,7 @@
 
 			if(!empty($notifications)){
 				echo '<div class="flexWrapper"><div id="notifications" class="col-1">';
-				echo '<h2 class="headerbar notificationsheaderbar"><i class="ra ra-ringing-bell"></i> Notifications</h2>';
+				echo '<h2 class="headerbar notificationsheaderbar"><i class="ra ra-ringing-bell"></i> Notifications'.($hasMentions?'<span id="clearMentions">clear @</span>':'').'</h2>';
 
 				echo '<div id="notificationMsgs" class="flexWrapper">';
 				foreach ($notifications as $notification){
