@@ -15,7 +15,7 @@ $(function () {
 
         $.expr[':'].reasonEquals = $.expr[':'].reasonEquals || $.expr.createPseudo(function(arg) {
             return function( elem ) {
-                var thisVal=$('.rollString',$(elem).closest('.roll')).text().toLowerCase();
+                var thisVal=escape($('.rollString',$(elem).closest('.roll')).text().toLowerCase());
                 return thisVal.indexOf(arg)!=-1;
             };
         });
