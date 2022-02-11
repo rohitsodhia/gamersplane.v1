@@ -3817,17 +3817,21 @@ select.notPretty {
 	cursor: pointer;
 
 	i {
-		display: inline-block;
-		padding: 0 .2em;
+		display: inline;
+		padding-left:.2em;
 		&:after {
 			content: ',';
-			display: inline-block;
+			display: inline;
 			vertical-align: bottom;
 			text-decoration: none !important;
+			background-color: #fff;
+			color: #000;
+			margin-left: .2em;
 		}
 
 		&:last-child::after {
 			content: '';
+			padding-left: 0;
 		}
 
 		s {
