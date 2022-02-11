@@ -3813,9 +3813,39 @@ select.notPretty {
 	}
 }
 
-.parsedRolls .rollDrop{
-	text-decoration: line-through !important;
-	opacity: .5;
+.parsedRolls {
+	cursor: pointer;
+
+	i {
+		display: inline-block;
+		padding: 0 .2em;
+		&:after {
+			content: ',';
+			display: inline-block;
+			vertical-align: bottom;
+			text-decoration: none !important;
+		}
+
+		&:last-child::after {
+			content: '';
+		}
+
+		s {
+			margin-right: .2em;
+			text-decoration: none;
+			&:after {
+				content: '\2794';
+			}
+		}
+	}
+
+	.rollDrop{
+		text-decoration: line-through !important;
+		opacity: .5;
+		&:after {
+			text-decoration: none !important;
+		}
+	}
 }
 
 @media only screen and (max-width: @mobile-breakpoint) {
