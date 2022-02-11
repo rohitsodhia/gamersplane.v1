@@ -17,18 +17,32 @@
 			$diceParts=explode(",",$diceString);
 
 			foreach ($diceParts as $dicePart){
-				preg_match_all('/(([\+\-]?)(\d*)([dD])?(\d+))/', $dicePart, $rolls, PREG_SET_ORDER);
+				preg_match_all('/(([\+\-]?)(\d*)([dD])?(\d+)(([hlHL])?(\d)*))/', $dicePart, $rolls, PREG_SET_ORDER);
 
 				$totalModifier=0;
-				$diceSides=$diceNumber=$diceModifier=array();
+				$diceSides=$diceNumber=$diceModifier=$drop=$dropHigh=array();
 
 				if(count($rolls)){
 					foreach ($rolls as $roll){
 						if(($roll[4]=="d"||$roll[4]=="D")){
-							$diceNumber[]=intval($roll[3]?$roll[3]:1);
+							$dn=intval($roll[3]?$roll[3]:1); //dice number
+							$diceNumber[]=$dn;
 							$diceModifier[]=$roll[2]?$roll[2]:'+';
 							$diceSize=intval($roll[5]);
 							$diceSides[]=$diceSize;
+							//keep and drop
+							if($roll[7] && intval($roll[8])){
+								if($roll[7]=="h" || $roll[7]=="H"){
+									$drop[]= max (0,$dn-intval($roll[8]));  //keep is inverse of drop
+									$dropHigh[] = 0;
+								}else{
+									$drop[]= max (0,intval($roll[8]));
+									$dropHigh[] = 1;
+								}
+							}else{
+								$drop[]=0;
+								$dropHigh[] = 0;
+							}
 							$this->dice[$diceSize]=new BasicDie($diceSize);
 						}
 						else{
@@ -38,7 +52,7 @@
 							}
 						}
 					}
-					$this->rolls[] = array('string' => $dicePart, 'number' => $diceNumber, 'sides' => $diceSides, 'diceModifier' => $diceModifier, 'modifier' => $totalModifier, 'indivRolls' => array(), 'result' => 0);
+					$this->rolls[] = array('string' => $dicePart, 'number' => $diceNumber, 'sides' => $diceSides, 'drop' => $drop, 'dropHigh' => $dropHigh, 'diceModifier' => $diceModifier, 'modifier' => $totalModifier, 'indivRolls' => array(), 'result' => 0);
 					$hasDiceParts = true;
 				}
 
@@ -49,17 +63,43 @@
 
 		function roll() {
 			foreach ($this->rolls as $key => &$roll) {
-				for ($handful=0;$handful<count($roll['number']);$handful++){
+				for ($handful=0;$handful<count($roll['number']);$handful++) {
+					$diceVals = array();
 					for ($count = 0; $count < $roll['number'][$handful]; $count++) {
 						$result = $this->dice[$roll['sides'][$handful]]->roll();
-						$diceModifier=$roll['diceModifier'][$handful]=='-'?-1:1;
-						if (isset($roll['indivRolls'][$handful][$count]) && is_array($roll['indivRolls'][$handful][$count])) $roll['indivRolls'][$handful][$count][] = $result;
-						elseif ($result == $roll['sides'][$handful] && $this->rerollAces) $roll['indivRolls'][$handful][$count] = array($result);
-						else $roll['indivRolls'][$handful][$count] = $result;
-						$roll['result'] += ($diceModifier*$result);
+						if (isset($roll['indivRolls'][$handful][$count]) && is_array($roll['indivRolls'][$handful][$count])) {
+							$roll['indivRolls'][$handful][$count][] = $result; // we rolled an ace with the last die
+							$diceVals[array_key_last($diceVals)] += $result;
+						}
+						elseif ($result == $roll['sides'][$handful] && $this->rerollAces){
+							$roll['indivRolls'][$handful][$count] = array($result);  // start an array for rerolling aces
+							$diceVals[] = $result;
+						}
+						else {
+							$roll['indivRolls'][$handful][$count] = $result; // not an ace or not rerolling aces
+							$diceVals[] = $result;
+						}
 
 						if ($this->rerollAces && $result == $roll['sides'][$handful] && $result>1) $count -= 1;
 					}
+
+					//we have the individual rolls.  Calculate the result with droping dice
+					if($roll['dropHigh'][$handful]){
+						arsort($diceVals,SORT_NUMERIC);
+					} else {
+						asort($diceVals,SORT_NUMERIC);
+					}
+					$handfulTotal=0;
+					$diceModifier=$roll['diceModifier'][$handful]=='-'?-1:1;
+					$keeping = 0;
+					foreach ( $diceVals as $key => $val ) {
+						if(++$keeping>$roll['drop'][$handful]){
+							$handfulTotal+=($diceModifier*$val);
+						}
+					}
+
+					$roll['result'] += $handfulTotal;
+
 				}
 				$roll['result'] += $roll['modifier'];
 			}
@@ -106,11 +146,41 @@
 		function getResults() {
 		}
 
-		function resultsToText($rolls){
+		function getDroppedIndices($rolls,$dropDice,$dropHigh) {
+			$ret = array();
+
+			if(is_array($rolls) && $dropDice){
+				$diceVals = array();
+				foreach($rolls as $index=>$roll){
+					if(is_array($roll)) {
+						$diceVals[]=array_sum($roll); //collapse rerolled aces
+					} else {
+						$diceVals[]=$roll;
+					}
+				}
+
+				if($dropHigh){
+					arsort($diceVals,SORT_NUMERIC);
+				} else {
+					asort($diceVals,SORT_NUMERIC);
+				}
+				$keeping = 0;
+				foreach ( $diceVals as $key => $val ) {
+					if(++$keeping<=$dropDice){
+						$ret[] = $key;
+					}
+				}
+			}
+
+			return $ret;
+		}
+
+		function resultsToText($rolls, $droppedIndices){
 			$ret='';
 			if(is_array($rolls)){
 				foreach($rolls as $index=>$roll){
 					if(is_array($roll)){
+						//rerolled ace
 						$rollCount = count($roll);
 						if($rollCount>0){
 							$rollTotal=0;
@@ -125,12 +195,13 @@
 
 								$rollTotal+=$rerolledAce;
 							}
-							$ret.='<i data-ro="'.$index.'" data-rv="'.$rollTotal.'">';
+							$ret.='<i data-ro="'.$index.'" data-rv="'.$rollTotal.'"'.(in_array($index,$droppedIndices)?' class="rollDrop"':'').'>';
 							$ret.=$raHtml;
 							$ret.='</i>';
 						}
 					} else {
-						$ret.='<i data-ro="'.$index.'" data-rv="'.$roll.'">'.$roll.'</i>';
+						//dice roll
+						$ret.='<i data-ro="'.$index.'" data-rv="'.$roll.'"'.(in_array($index,$droppedIndices)?' class="rollDrop"':'').'>'.$roll.'</i>';
 					}
 				}
 			} else {
@@ -155,13 +226,14 @@
 						//new multidice
 						foreach ($roll['indivRolls'] as $key => $result) {
 							$diceModifier=$roll['diceModifier'][$key]=='-'?-1:1;
+							$droppedIndices = $this->getDroppedIndices($result, $roll['drop'][$key], $roll['dropHigh'][$key]);
 							$diceModifierText=($key || $diceModifier==-1)?($diceModifier==-1?'- ':'+ '):'';
 
-							$results[$key]=$diceModifierText.'(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.$this->resultsToText($result).'</span>)';
+							$results[$key]=$diceModifierText.'(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][$key].'d'.$roll['sides'][$key].'">'.$this->resultsToText($result, $droppedIndices).'</span>)';
 						}
 					}else{
 						//old data
-						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.$this->resultsToText($roll['indivRolls']).'</span>)';
+						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.$this->resultsToText($roll['indivRolls'], array()).'</span>)';
 					}
 
 					$rollValues[$count] .= implode(' ', $results);
