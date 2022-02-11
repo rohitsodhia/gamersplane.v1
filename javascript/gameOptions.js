@@ -109,7 +109,7 @@ $(function () {
                                 reasonRegExpression='.*'+reasonRegExpression.replace(/##/g,'\\s*(\\d+)\\s*')+'.*';
                                 var matchReason=new RegExp(reasonRegExpression);
 
-                                var rollSection=parsedRolls.closest('.roll');
+                                var rollSection=parsedRolls.closest('.rollResults');
                                 matchedDice=$('.rollTotal',rollSection).filter(function(index){
                                     var pThis=$(this);
                                     var rollString=$('.rollString',pThis.closest('.roll'));
