@@ -35,6 +35,8 @@
 				$this->processUAI();
 			} elseif ($pathOptions[0] == 'bbformUpdateVal') {
 				$this->bbformUpdateVal((int)$_POST['charID'], (int)$_POST['fieldIdx'], $_POST['fieldValue']);
+			} elseif ($pathOptions[0] == 'bbformUpdateBlock') {
+				$this->bbformUpdateBlock((int)$_POST['charID'], (int)$_POST['blockIdx'], $_POST['fieldValue']);
 			} else {
 				displayJSON(['failed' => true]);
 			}
@@ -671,6 +673,46 @@
 					$character->saveCharacter();
 
 					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
+				} else {
+					displayJSON(['failed' => true, 'errors' => ['noPermission']]);
+				}
+			}
+		}
+
+		private function bbformUpdateBlock($characterID, $blockIdx, $fieldValue){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+
+			if ($characterID <= 0) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
+			}
+			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
+			if (!$systemCheck) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
+			}
+			$system = $systemCheck['system'];
+
+			addPackage($system.'Character');
+			$charClass = Systems::systemClassName($system).'Character';
+			if ($system=='custom' && $character = new $charClass($characterID)) {
+				$character->load();
+				$charPermissions = $character->checkPermissions($currentUser->userID);
+				if ($charPermissions == 'edit') {
+					$matches = null;
+					$formField=0;
+					$text=$character->getNotes();
+					$text=preg_replace_callback("/[\r\n]*\[#=\"?(.*?)\"?\](.*?)\[\/#\][\r\n]*/ms", function($matches) use (&$formField, &$blockIdx, &$fieldValue){
+						if($blockIdx==$formField++){
+							return '[#='.$matches[1].']'.$fieldValue.'[/#]';
+						} else {
+							return $matches[0];
+						}
+					}, $text);
+
+					$character->setNotes($text);
+					$character->saveCharacter();
+
+					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID,'notes'=>printReady(BBCode2Html($text),['nl2br'])]);
 				} else {
 					displayJSON(['failed' => true, 'errors' => ['noPermission']]);
 				}

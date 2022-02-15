@@ -465,6 +465,7 @@ $(function() {
 				customSheet.html($('#charDetails div.customChar',charSheetContent).html());
 				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
 				customSheet.updateCalculations();
+				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});
 			};
 
 			var liAdvDis=function(lis,bonus,text) {
