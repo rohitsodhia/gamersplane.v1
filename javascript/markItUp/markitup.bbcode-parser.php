@@ -261,7 +261,7 @@ function BBCode2Html($text) {
 
 	//tables
 	$matches = null;
-	$text=preg_replace_callback("/\[table(=([\"a-zA-Z ])*)?\](.*?)\[\/table\]/ms", function($matches){
+	$text=preg_replace_callback("/\[table(=([\"a-zA-Z0-9 ])*)?\](.*?)\[\/table\]/ms", function($matches){
 			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 			$tableClass="";
 			if(strpos($tableType,"center")!==false || strpos($tableType,"centre")!==false){
@@ -278,10 +278,18 @@ function BBCode2Html($text) {
 				$tableClass=" bbTable-hl";
 			} else if(strpos($tableType,"rolls")!==false){
 				$tableClass=" bbTableRolls";
-			} else if(strpos($tableType,"d20")!==false){
-				$tableClass=" bbTableD20";
-			} else if(strpos($tableType,"compact")!==false){
-				$tableClass=" bbTableCompact";
+			}
+
+			if(strpos($tableType,"d20")!==false){
+				$tableClass.=" bbTableD20";
+			}
+
+			if(strpos($tableType,"compact")!==false){
+				$tableClass.=" bbTableCompact";
+			}
+
+			if(strpos($tableType,"dnd5e")!==false){
+				$tableClass.=" bbTableDnd5e";
 			}
 
 			if(strpos($tableType,"grid")!==false || strpos($tableType,"lines")!==false){
