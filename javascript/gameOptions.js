@@ -51,10 +51,10 @@ $(function () {
             return function( elem ) {
                 try{
                     if(arg.includes('x')){
-                        return eval(arg.replace(/[x]/gi,$(elem).text()));
+                        return diceExpression(arg.replace(/[x]/gi,$(elem).text()));
                     }
                     else{
-                        return eval($(elem).text()+arg);
+                        return diceExpression($(elem).text()+arg);
                     }
                 }catch{}
                 return false;
@@ -231,5 +231,10 @@ $(function () {
         };
 
         $('body').applyDiceRules();
+
+        function diceExpression(expression) {
+            return Function('"use strict"; return (' + expression + ');')();
+        }
     }
+
 });
