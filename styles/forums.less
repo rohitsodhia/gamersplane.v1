@@ -570,30 +570,6 @@
 	color: #666;
 }
 
-.parsedRolls {
-	cursor: pointer;
-
-	i {
-		display: inline-flex;
-		padding: 0 .2em;
-		&:after {
-			content: ',';
-		}
-
-		&:last-child::after {
-			content: '';
-		}
-
-		s {
-			margin-right: .2em;
-			text-decoration: none;
-			&:after {
-				content: '\2794';
-			}
-		}
-	}
-}
-
 .rollResultTotal,.parsedRolls{
 	.rollVal-bold {
 		font-weight: bold;
@@ -609,7 +585,6 @@
 	}
 
 	.rollVal-invert {
-		padding: 0 0.2em;
 		color: #fff;
 		background-color: #333;
 		&.rollVal-success {
@@ -625,6 +600,12 @@
 
 	.rollVal-underline {
 		text-decoration: underline;
+	}
+}
+
+.rollResultTotal{
+	.rollVal-invert{
+		padding: 0 0.2em;
 	}
 }
 
