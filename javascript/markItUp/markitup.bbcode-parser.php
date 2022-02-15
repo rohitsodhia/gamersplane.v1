@@ -278,6 +278,10 @@ function BBCode2Html($text) {
 				$tableClass=" bbTable-hl";
 			} else if(strpos($tableType,"rolls")!==false){
 				$tableClass=" bbTableRolls";
+			} else if(strpos($tableType,"d20")!==false){
+				$tableClass=" bbTableD20";
+			} else if(strpos($tableType,"compact")!==false){
+				$tableClass=" bbTableCompact";
 			}
 
 			if(strpos($tableType,"grid")!==false || strpos($tableType,"lines")!==false){

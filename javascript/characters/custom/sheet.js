@@ -19,22 +19,15 @@ $(function () {
         pThis.remove();
         pFormValue.text(val);
 
-        $.ajax({type: 'post', url: API_HOST +'/characters/bbformUpdateVal', xhrFields: {withCredentials: true},
-            data:{ charID: $('#characterID').val(), fieldIdx:pFormValue.data('formfieldidx'), fieldValue:val},
-            success:function (data) {}
-        });
-
+        updateField(pFormValue.data('formfieldidx'),val);
         updateCalculations();
     });
 
     $('.customChar').on('click','.formCheck input',function(){
         var checkArea=$(this).closest('.formCheck');
         var val=$('input:checked',checkArea).length+'/'+$('input',checkArea).length;
-        $.ajax({type: 'post', url: API_HOST +'/characters/bbformUpdateVal', xhrFields: {withCredentials: true},
-            data:{ charID: $('#characterID').val(), fieldIdx:checkArea.data('formfieldidx'), fieldValue:val},
-            success:function (data) {}
-        });
 
+        updateField(checkArea.data('formfieldidx'),val);
         updateCalculations();
     });
 
@@ -79,5 +72,12 @@ $(function () {
     ////helpers
     function expressionParse(expression) {
         return Function('"use strict";var d20bonus=function(val){return Math.floor((val-10)/2);}; return (' + expression + ');')();
-    };
+    }
+
+    function updateField(fieldIdx, value){
+        $.ajax({type: 'post', url: API_HOST +'/characters/bbformUpdateVal', xhrFields: {withCredentials: true},
+            data:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value},
+            success:function (data) {}
+        });
+    }
 });
