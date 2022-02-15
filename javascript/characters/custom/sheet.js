@@ -71,11 +71,13 @@ $(function () {
             if(pThis.hasClass('formCalc')) {
                 var formula=pThis.data('varcalc');
                 var isModifier=formula.startsWith('+');
-                var variableNames=Object.getOwnPropertyNames(variables).sort(function(a, b){return b.length - a.length;});
-                for(var i=0;i<variableNames.length;i++){
-                    formula=formula.replace(variableNames[i],variables[variableNames[i]]);
+                var newVal=formula;
+                pThis.removeClass('formCalcError').attr('title','');
+                try{
+                    newVal=expressionParse(formula,variables);
+                }catch(e){
+                    pThis.addClass('formCalcError').attr('title',e.message);
                 }
-                var newVal=expressionParse(formula);
                 var curText=pThis.text();
                 var newText=((newVal>=0 && isModifier)?"+":"")+newVal;
                 pThis.text(newText);
@@ -109,12 +111,20 @@ $(function () {
     $('#charDetails div.customChar').updateCalculations();
 
     ////helpers
-    function expressionParse(expression) {
+    function expressionParse(expression,variables) {
+        var vars='';
+        var variableNames=Object.getOwnPropertyNames(variables).sort(function(a, b){return b.length - a.length;});
+        for(var i=0;i<variableNames.length;i++){
+            vars+='var '+variableNames[i]+'='+variables[variableNames[i]]+';';
+        }
+
         return Function(`"use strict";
                         var d20bonus=function(val){return Math.floor((val-10)/2);};
                         var ceil=function(val){return Math.ceil(val);};
                         var floor=function(val){return Math.floor(val);};
-                        return (`
+                        var max=function(val1,val2){return Math.max(val1,val2);};
+                        var min=function(val1,val2){return Math.min(val1,val2);};`+vars+
+                        'return ('
                          + expression
                          + ');')();
     }
