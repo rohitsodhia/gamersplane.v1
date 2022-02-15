@@ -90,15 +90,6 @@ function BBCode2Html($text) {
 	}
 	$text = preg_replace_callback('/\[code\](.*?)\[\/code\]/ms', "escape", $text);
 
-	$matches = null;
-	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
-			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
-			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
-			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
-			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
-			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
-	}, $text);
-
 	//editable block
 	$matches = null;
 	$formField=0;
@@ -110,6 +101,17 @@ function BBCode2Html($text) {
 			return '<div class="formBlock" data-blockfieldidx="'.($formField++).'"><h2 class="headerbar hbDark"><i class="ra ra-quill-ink"></i> '.$matches[1].'</h2><div class="formBlockRendered">'.$matches[2].'</div><div style="display:none;" class="formBlockBBCode">'.$escapedSnipped.'</div></div>';
 	}, $text);
 	//end editable block
+
+	//snippets
+	$matches = null;
+	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
+			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
+			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
+			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
+			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
+	}, $text);
+	//end snippets
 
 	//ability sections
 	$matches = null;
