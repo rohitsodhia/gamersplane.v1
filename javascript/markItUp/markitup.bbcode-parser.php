@@ -32,7 +32,9 @@
 //define ("EMOTICONS_DIR", "/images/emoticons/");
 function splitByHeader($title,$text,$cssClass){
 	$ret="<div class='".$cssClass." ddCollection'>";
-	$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
+	if($title!=''){
+		$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
+	}
 
 	$abilityLines = explode("\n", trim($text));
 
@@ -187,6 +189,37 @@ function BBCode2Html($text) {
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
 		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]\s*/s", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
+
+	//form characters
+	$matches = null;
+	$formField=0;
+	$text=preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField){
+			$formVarName=$matches[2];
+			$formVal=$matches[3]; //todo strip tags
+			if($formVarName && substr( $formVarName, -1 )=='$'){
+				$isCalc=true;
+				$formVarName=rtrim($formVarName,"$");
+			}
+			else{
+				$isCalc=false;
+			}
+			preg_match('/(\d+)\/(\d+)/',$formVal,$splitVal);
+			$valAsInt=intval($splitVal[1]);
+			$outOf=intval($splitVal[2]);
+			$valHtml='';
+			$spanClasses='formVal'.($isCalc?" formCalc":'').($formVarName?" formVar":"");
+			if($outOf<=20 && $outOf>0 && $valAsInt<=$outOf && $valAsInt>=0){
+				$spanClasses.=' formCheck';
+				$valHtml.=str_repeat('<input class="notPretty" type="checkbox" checked/>',$valAsInt);
+				$valHtml.=str_repeat('<input class="notPretty" type="checkbox"/>',$outOf-$valAsInt);
+			}
+			else{
+				$spanClasses.=($isCalc?'':' formText');
+				$valHtml = ($isCalc?'':$formVal);
+			}
+			return '<span class="'.$spanClasses.'" data-varname="'.$formVarName.'" data-varcalc="'.($isCalc?$formVal:"").'" data-formfieldidx="'.($formField++).'">'.$valHtml.'</span>';
+	}, $text);
+	//end form characters
 
 	//map
 	$matches = null;

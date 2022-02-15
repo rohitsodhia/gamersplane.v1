@@ -16,5 +16,9 @@
 
 			parent::save();
 		}
+
+		public function saveCharacter(){
+			parent::save();
+		}
 	}
 ?>

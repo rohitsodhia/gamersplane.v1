@@ -1,0 +1,35 @@
+.formVal.formText{
+	border-bottom: solid 1px #888;
+	cursor: pointer;
+}
+
+.formVal.formCheck{
+	input{
+		margin: 0 .1em;
+	}
+}
+
+@keyframes flashOfYellow1 {
+    0% { background-color: yellow; }
+    100% { background-color: transparent; }
+}
+
+@keyframes flashOfYellow2 {
+    0% { background-color: yellow; }
+    100% { background-color: transparent; }
+}
+
+
+.updatedCalc1{
+	animation-name: flashOfYellow1;
+    animation-duration: 1500ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}
+
+.updatedCalc2{
+	animation-name: flashOfYellow2;
+    animation-duration: 1500ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}

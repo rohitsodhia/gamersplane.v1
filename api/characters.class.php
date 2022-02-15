@@ -33,6 +33,8 @@
 				$this->getUAI();
 			} elseif ($pathOptions[0] == 'processUAI') {
 				$this->processUAI();
+			} elseif ($pathOptions[0] == 'bbformUpdateVal') {
+				$this->bbformUpdateVal((int)$_POST['charID'], (int)$_POST['fieldIdx'], $_POST['fieldValue']);
 			} else {
 				displayJSON(['failed' => true]);
 			}
@@ -633,6 +635,46 @@
 			}
 
 			return $ac;
+		}
+
+		private function bbformUpdateVal($characterID, $fieldIdx, $fieldValue){
+			global $currentUser;
+			$mongo = DB::conn('mongo');
+
+			if ($characterID <= 0) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
+			}
+			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
+			if (!$systemCheck) {
+				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
+			}
+			$system = $systemCheck['system'];
+
+			addPackage($system.'Character');
+			$charClass = Systems::systemClassName($system).'Character';
+			if ($system=='custom' && $character = new $charClass($characterID)) {
+				$character->load();
+				$charPermissions = $character->checkPermissions($currentUser->userID);
+				if ($charPermissions == 'edit') {
+					$matches = null;
+					$formField=0;
+					$text=$character->getNotes();
+					$text=preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField, &$fieldIdx, &$fieldValue){
+						if($fieldIdx==$formField++){
+							return '[_'.$matches[2].'='.$fieldValue.']';
+						} else {
+							return $matches[0];
+						}
+					}, $text);
+
+					$character->setNotes($text);
+					$character->saveCharacter();
+
+					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
+				} else {
+					displayJSON(['failed' => true, 'errors' => ['noPermission']]);
+				}
+			}
 		}
 	}
 ?>
