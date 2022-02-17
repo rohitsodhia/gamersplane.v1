@@ -93,7 +93,7 @@
 				<h2 class="headerbar hbDark" ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> Looking for a game</h2>
 				<div class="tr">
 					<label class="verticalLabel">Looking for a game?</label>
-					<select class="notPretty" ng-model="user.lookingForAGame"><option value="0">I'm not looking for a game</option><option value="5">I'm looking for a game</option></select>
+					<select class="notPretty" ng-model="user.lookingForAGame"><option value="0">My game interests</option><option value="5">I'm looking for a game</option></select>
 				</div>
 				<div class="tr">
 					<label>What games are you into?</label>
