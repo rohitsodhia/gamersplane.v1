@@ -37,6 +37,10 @@
 				$this->bbformUpdateVal((int)$_POST['charID'], (int)$_POST['fieldIdx'], $_POST['fieldValue']);
 			} elseif ($pathOptions[0] == 'bbformUpdateBlock') {
 				$this->bbformUpdateBlock((int)$_POST['charID'], (int)$_POST['blockIdx'], $_POST['fieldValue']);
+			} elseif ($pathOptions[0] == 'bbformUpdateAbilities') {
+				$this->bbformUpdateAbilities((int)$_POST['charID'], (int)$_POST['blockIdx'], $_POST['fieldValue']);
+			} elseif ($pathOptions[0] == 'getBbcodeSection') {
+				$this->getBbcodeSection((int)$_POST['charID'], (int)$_POST['requestIdx'], $_POST['tagSelector']);
 			} else {
 				displayJSON(['failed' => true]);
 			}
@@ -639,7 +643,7 @@
 			return $ac;
 		}
 
-		private function bbformUpdateVal($characterID, $fieldIdx, $fieldValue){
+		private function updateCustomSheetNotes($characterID, $returnNotes, callable $updateFn){
 			global $currentUser;
 			$mongo = DB::conn('mongo');
 
@@ -658,28 +662,70 @@
 				$character->load();
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
-					$matches = null;
-					$formField=0;
-					$text=$character->getNotes();
-					$text=preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField, &$fieldIdx, &$fieldValue){
-						if($fieldIdx==$formField++){
-							return '[_'.$matches[2].'='.$fieldValue.']';
-						} else {
-							return $matches[0];
-						}
-					}, $text);
-
+					$text = $character->getNotes();
+					$text = $updateFn($text);
 					$character->setNotes($text);
+
 					$character->saveCharacter();
 
-					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
+					if($returnNotes){
+						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID, 'notes'=>printReady(BBCode2Html($text),['nl2br'])]);
+					} else {
+						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
+					}
 				} else {
 					displayJSON(['failed' => true, 'errors' => ['noPermission']]);
 				}
 			}
+		}
+
+		private function bbformUpdateVal($characterID, $fieldIdx, $fieldValue){
+
+			$this->updateCustomSheetNotes($characterID, false, function($text) use (&$fieldIdx, &$fieldValue){
+				$formField=0;
+				$matches = null;
+				$text=preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField, &$fieldIdx, &$fieldValue){
+					if($fieldIdx==$formField++){
+						return '[_'.$matches[2].'='.$fieldValue.']';
+					} else {
+						return $matches[0];
+					}
+				}, $text);
+				return $text;
+			});
 		}
 
 		private function bbformUpdateBlock($characterID, $blockIdx, $fieldValue){
+			$this->updateCustomSheetNotes($characterID, true, function($text) use (&$blockIdx, &$fieldValue){
+				$formField=0;
+				$matches = null;
+				$text=preg_replace_callback("/[\r\n]*\[#=\"?(.*?)\"?\](.*?)\[\/#\][\r\n]*/ms", function($matches) use (&$formField, &$blockIdx, &$fieldValue){
+					if($blockIdx==$formField++){
+						return '[#='.$matches[1].']'.$fieldValue.'[/#]';
+					} else {
+						return $matches[0];
+					}
+				}, $text);
+				return $text;
+			});
+		}
+
+		private function bbformUpdateAbilities($characterID, $blockIdx, $fieldValue){
+			$this->updateCustomSheetNotes($characterID, true, function($text) use (&$blockIdx, &$fieldValue){
+				$formField=0;
+				$matches = null;
+				$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches) use (&$formField, &$blockIdx, &$fieldValue){
+					if($blockIdx==$formField++){
+						return '[abilities='.$matches[1].']'.$fieldValue.'[/abilities]';
+					} else {
+						return $matches[0];
+					}
+				}, $text);
+				return $text;
+			});
+		}
+
+		private function getBbcodeSection($characterID, $requestIdx, $selector){
 			global $currentUser;
 			$mongo = DB::conn('mongo');
 
@@ -698,25 +744,30 @@
 				$character->load();
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
-					$matches = null;
+					$text = $character->getNotes();
+
+					$ret='';
 					$formField=0;
-					$text=$character->getNotes();
-					$text=preg_replace_callback("/[\r\n]*\[#=\"?(.*?)\"?\](.*?)\[\/#\][\r\n]*/ms", function($matches) use (&$formField, &$blockIdx, &$fieldValue){
-						if($blockIdx==$formField++){
-							return '[#='.$matches[1].']'.$fieldValue.'[/#]';
-						} else {
-							return $matches[0];
-						}
-					}, $text);
+					if($selector=='abilities') {
+						preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches) use (&$formField, &$requestIdx, &$ret){
+							if($requestIdx==$formField++){
+								$ret=$matches[2];
+							}
+						}, $text);
+					} else if($selector=='block'){
+						preg_replace_callback("/[\r\n]*\[#=\"?(.*?)\"?\](.*?)\[\/#\][\r\n]*/ms", function($matches) use (&$formField, &$requestIdx, &$ret){
+							if($requestIdx==$formField++){
+								$ret=$matches[2];
+							}
+						}, $text);
+					}
 
-					$character->setNotes($text);
-					$character->saveCharacter();
-
-					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID,'notes'=>printReady(BBCode2Html($text),['nl2br'])]);
+					displayJSON(['success' => true, 'characterID' => $characterID, 'section'=>$ret]);
 				} else {
 					displayJSON(['failed' => true, 'errors' => ['noPermission']]);
 				}
 			}
 		}
+
 	}
 ?>

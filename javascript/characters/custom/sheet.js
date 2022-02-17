@@ -1,4 +1,6 @@
 $(function () {
+
+    //Form field clicking on and away from
     $('body').on('click','.formText',function(){
         var pThis=$(this);
         var curText=pThis.text();
@@ -15,8 +17,8 @@ $(function () {
 
     $('body').on('blur','.formText input',function(){
         var pThis=$(this);
-        var pFormValue=$(this).closest('.formVal');
         var val=pThis.val();
+        var pFormValue=$(this).closest('.formVal');
         var charSheet=$(this).closest('.customChar');
         pThis.remove();
         pFormValue.text(val);
@@ -28,31 +30,68 @@ $(function () {
     $('body').on('keyup keypress','.formText input',function(e){
         var keyCode = e.keyCode || e.which;
         if (keyCode === 13) {
+            //pressing return in field causes it to lose focus and save
             $(this).blur();
         }
     });
+    //End form field
 
+    //Form block clicking on and away from
     $('body').on('click','.formBlock h2 .ra-quill-ink',function(){
         var pThis=$(this);
         var block=pThis.closest('.formBlock');
         var rendered=$('.formBlockRendered',block);
-        var bbcode=$('.formBlockBBCode',block);
-        var textArea=$('<textarea></textarea>').width(rendered.width()).height(Math.max(rendered.height(),200)).val($.trim(bbcode.text())).appendTo(block).focus();
+        getBbCodeBlock(block.data('blockfieldidx'),'block',function(bbcode){
+            var leadin=bbcode.match(/^[ \t]*\r?\n/);
+            block.data('leadin',(leadin && leadin.length)?leadin[0]:'');
+            bbcode=bbcode.replace(/^[ \t]*\r?\n/,'');
+
+            $('<textarea></textarea>').width(rendered.width()).height(Math.max(rendered.height(),200)).val(bbcode).appendTo(block).focus();
+        });
+
         rendered.hide();
     });
 
     $('body').on('blur','.formBlock textarea',function(){
         var pThis=$(this);
-        var pFormBlock=$(this).closest('.formBlock');
-        var val=pThis.val();
+        var block=$(this).closest('.formBlock');
         var charSheet=$(this).closest('.customChar');
+        var val=block.data('leadin')+pThis.val();
         pThis.remove();
-        $('.formBlockRendered',pFormBlock).show();
+        $('.formBlockRendered',block).show();
 
-        updateBlock(pFormBlock.data('blockfieldidx'),val,function(data){charSheet.html(data.notes); charSheet.updateCalculations(); charSheet.trigger('gp.sheetUpdated');});
+        updateBlock(block.data('blockfieldidx'),val,function(data){charSheet.html(data.notes); charSheet.removeClass('calculationsInitialised').updateCalculations(); charSheet.trigger('gp.sheetUpdated');});
+    });
+    //End Form block clicking on and away from
+
+    //Abilities block clicking on and away from
+    $('body').on('click','.abilities h2 .ra-quill-ink',function(){
+        var pThis=$(this);
+        var block=pThis.closest('.abilities');
+        getBbCodeBlock(block.data('abilitiesfieldidx'),'abilities',function(bbcode){
+            var leadin=bbcode.match(/^[ \t]*\r?\n/);
+            block.data('leadin',(leadin && leadin.length)?leadin[0]:'');
+            bbcode=bbcode.replace(/^[ \t]*\r?\n/,'');
+            $('<textarea></textarea>').width(block.width()).height(Math.max(block.height(),200)).val(bbcode).appendTo(block).focus();
+        });
+
+        $('.ability',block).hide();
     });
 
+    $('body').on('blur','.abilities textarea',function(){
+        var pThis=$(this);
+        var block=$(this).closest('.abilities');
+        var charSheet=$(this).closest('.customChar');
+        var val=block.data('leadin')+pThis.val();
+        pThis.remove();
+        $('.ability',block).show();
 
+        updateAbilities(block.data('abilitiesfieldidx'),val,function(data){charSheet.html(data.notes); charSheet.removeClass('calculationsInitialised').updateCalculations(); charSheet.trigger('gp.sheetUpdated');});
+    });
+    //Abilities block clicking on and away from
+
+
+    //Form check boxes
     $('body').on('click','.formCheck input',function(){
         var checkArea=$(this).closest('.formCheck');
         var val=$('input:checked',checkArea).length+'/'+$('input',checkArea).length;
@@ -60,17 +99,24 @@ $(function () {
         updateField(checkArea.data('formfieldidx'),val);
         $(this).closest('.customChar').updateCalculations();
     });
+    //End form check boxes
 
     jQuery.fn.updateCalculations = function (){
         var variables={};
+
+        //we don't need the flash-of-yellow during sheet initiatlisation
         var calcInit=$(this).hasClass('calculationsInitialised');
         $(this).addClass('calculationsInitialised');
+
+        //if fields that look like dice rolls have changed
         var requiresRefresh=false;
+
         $('.formVar,.formCalc').each(function(){
             var pThis=$(this);
+            //this is a calculation
             if(pThis.hasClass('formCalc')) {
                 var formula=pThis.data('varcalc');
-                var isModifier=formula.startsWith('+');
+                var isModifier=formula.startsWith('+'); //this is a modifier formula (e.g. +str)
                 var newVal=formula;
                 pThis.removeClass('formCalcError').attr('title','');
                 try{
@@ -79,9 +125,12 @@ $(function () {
                     pThis.addClass('formCalcError').attr('title',e.message);
                 }
                 var curText=pThis.text();
-                var newText=((newVal>=0 && isModifier)?"+":"")+newVal;
+                var newText=((newVal>=0 && isModifier)?"+":"")+newVal; //append + to positive modifiers
                 pThis.text(newText);
+
                 if(calcInit && newText!=curText){
+
+                    //flash of yellow
                     if(pThis.hasClass('updatedCalc1')){
                         pThis.removeClass('updatedCalc1').addClass('updatedCalc2')
                     }else{
@@ -94,6 +143,7 @@ $(function () {
                 }
             }
 
+            //set a variable
             if(pThis.hasClass('formVar')){
                 if(pThis.hasClass('formCheck')){
                     variables[pThis.data('varname')]=$('input:checked',pThis).length;
@@ -103,11 +153,13 @@ $(function () {
             }
         });
 
+        //refresh required once the save queue is processed
         if(requiresRefresh){
             OnQueueEmpty(function(){$('div.customChar').trigger('gp.sheetUpdated');});
         }
     };
 
+    //initialise all calculations
     $('#charDetails div.customChar').updateCalculations();
 
     ////helpers
@@ -129,10 +181,18 @@ $(function () {
                          + ');')();
     }
 
-    //queue the ajax requests so we don't end up in a mess
+    //queue the ajax requests so we don't end up in an out-of-order mess
     var ajaxQueue=(function(){
         var queue=[];
         var blockCalls=false;
+
+        var blockUI=function(){
+            $('<div id="blockingCalls"></div>').appendTo('body');
+        };
+
+        var unblockUI=function(){
+            $('#blockingCalls').remove();
+        };
 
         var addToQueue=function(item){
             if(!blockCalls){
@@ -142,7 +202,7 @@ $(function () {
                     processQueue();
                     if(item.blocking){
                         blockCalls=true;
-                        $('<div id="blockingCalls"></div>').appendTo('body');
+                        blockUI();
                     }
                 }
             }
@@ -158,7 +218,7 @@ $(function () {
                         processQueue();
                     }else{
                         $('#headerBG').css({"backgroundColor":'#ddd'});
-                        $('#blockingCalls').remove();
+                        unblockUI();
                         blockCalls=false;
                         if(fromQueue.onComplete){
                             fromQueue.onComplete(data.responseJSON);
@@ -181,7 +241,7 @@ $(function () {
             }
         };
 
-        return {addToQueue:addToQueue,addQueueComplete:addQueueComplete};
+        return {addToQueue:addToQueue,addQueueComplete:addQueueComplete, blockUI:blockUI, unblockUI:unblockUI};
     })();
 
     function updateField(fieldIdx, value, onComplete){
@@ -192,11 +252,27 @@ $(function () {
         ajaxQueue.addToQueue({api: '/characters/bbformUpdateBlock', obj:{ charID: $('#characterID').val(), blockIdx:blockIdx, fieldValue:value}, blocking:true, onComplete:onComplete});
     }
 
+    function updateAbilities(blockIdx, value, onComplete){
+        ajaxQueue.addToQueue({api: '/characters/bbformUpdateAbilities', obj:{ charID: $('#characterID').val(), blockIdx:blockIdx, fieldValue:value}, blocking:true, onComplete:onComplete});
+    }
+
     function OnQueueEmpty(onComplete){
         ajaxQueue.addQueueComplete(onComplete);
     }
 
+    function getBbCodeBlock(requestIdx, tagSelector, onComplete){
+        ajaxQueue.blockUI();
+        ajaxQueue.addQueueComplete(function(){
+            $.ajax({type: 'post', url: API_HOST +'/characters/getBbcodeSection', xhrFields: {withCredentials: true}, data:{ charID: $('#characterID').val(), requestIdx:requestIdx, tagSelector:tagSelector },
+                complete:function (data){
+                    ajaxQueue.unblockUI();
+                    onComplete(data.responseJSON.section);
+                }
+            });
+        });
+    }
 
+    //val looks like a dice roll or modifier
     function isDiceRoll(val){
         return (/^[\+\-](\d)+$/.test(val))||/(\d*)[dD](\d+)([+-]\d+)?/g.test(val);
     }

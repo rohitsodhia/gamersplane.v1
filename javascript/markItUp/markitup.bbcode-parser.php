@@ -30,16 +30,17 @@
 // ----------------------------------------------------------------------------
 
 //define ("EMOTICONS_DIR", "/images/emoticons/");
-function splitByHeader($title,$text,$cssClass){
-	$ret="<div class='".$cssClass." ddCollection'>";
+function splitByHeader($title, $text, $cssClass, $collectionData=''){
+	$ret="<div class='".$cssClass." ddCollection'".$collectionData.">";
 	if($title!=''){
 		$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
 	}
 
 	$abilityLines = explode("\n", trim($text));
 
-	$abilityOpen=false;
+	$abilityOpen=true;
 	$abilityRaw="";
+	$ret=$ret.'<div class="ability"><div class="abilityNotes">';
 	foreach ($abilityLines as $abilityLine){
 
 		if(substr($abilityLine,0,1)=='#'){
@@ -115,8 +116,9 @@ function BBCode2Html($text) {
 
 	//ability sections
 	$matches = null;
-	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
-		return splitByHeader($matches[1],$matches[2],"abilities");
+	$formField=0;
+	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches) use (&$formField){
+		return splitByHeader('<i class="ra ra-quill-ink"></i> '.$matches[1],$matches[2],'abilities',(" data-abilitiesfieldidx='".($formField++)."'"));
 	}, $text);
 	//end ability sections
 
