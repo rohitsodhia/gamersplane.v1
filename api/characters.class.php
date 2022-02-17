@@ -663,11 +663,6 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$text = $character->getNotes();
-					$mongo->characterHistory->updateOne(
-						['characterID' => ((int)$characterID)],
-						['$push' => [ 'history' => [ 'userID' => $currentUser->userID, 'username' => $currentUser->username, 'datetime'=>genMongoDate(), 'bbCode' => $text ]]],
-						['upsert' => true]
-					);
 					$text = $updateFn($text);
 					$character->setNotes($text);
 					$character->saveCharacter();
