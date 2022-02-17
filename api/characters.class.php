@@ -663,9 +663,13 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$text = $character->getNotes();
+					$mongo->characterHistory->updateOne(
+						['characterID' => ((int)$characterID)],
+						['$push' => [ 'history' => [ 'userID' => $currentUser->userID, 'username' => $currentUser->username, 'datetime'=>genMongoDate(), 'bbCode' => $text ]]],
+						['upsert' => true]
+					);
 					$text = $updateFn($text);
 					$character->setNotes($text);
-
 					$character->saveCharacter();
 
 					if($returnNotes){
@@ -699,7 +703,7 @@
 			$this->updateCustomSheetNotes($characterID, true, function($text) use (&$blockIdx, &$fieldValue){
 				$formField=0;
 				$matches = null;
-				$text=preg_replace_callback("/[\r\n]*\[#=\"?(.*?)\"?\](.*?)\[\/#\][\r\n]*/ms", function($matches) use (&$formField, &$blockIdx, &$fieldValue){
+				$text=preg_replace_callback("/\[#=\"?(.*?)\"?\](.*?)\[\/#\]/ms", function($matches) use (&$formField, &$blockIdx, &$fieldValue){
 					if($blockIdx==$formField++){
 						return '[#='.$matches[1].']'.$fieldValue.'[/#]';
 					} else {
