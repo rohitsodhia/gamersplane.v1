@@ -414,8 +414,8 @@ $(function() {
 								var rollText=$.trim($('td:not(:emptyContent):first',td.closest('tr')).text());
 								var advDis=$('<span class="rolld20-5e"></span>');
 								$('<span class="rollDice rollDiceD20"></span>').attr('roll','1d20'+tdText).attr('rolltext',rollText).html(td.html()).appendTo(advDis);
-								$('<span class="rollDice rollDiceD20">A</span>').attr('roll','1d20H1'+tdText).attr('rolltext',rollText+' (advantage)').appendTo(advDis);
-								$('<span class="rollDice rollDiceD20">D</span>').attr('roll','1d20L1'+tdText).attr('rolltext',rollText+' (disadvantage)').appendTo(advDis);
+								$('<span class="rollDice rollDiceD20">A</span>').attr('roll','2d20H1'+tdText).attr('rolltext',rollText+' (advantage)').appendTo(advDis);
+								$('<span class="rollDice rollDiceD20">D</span>').attr('roll','2d20L1'+tdText).attr('rolltext',rollText+' (disadvantage)').appendTo(advDis);
 								advDis.appendTo(td.html(''));
 							}
 
