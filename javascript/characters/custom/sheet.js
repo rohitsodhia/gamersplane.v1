@@ -175,7 +175,8 @@ $(function () {
                         var ceil=function(val){return Math.ceil(val);};
                         var floor=function(val){return Math.floor(val);};
                         var max=function(val1,val2){return Math.max(val1,val2);};
-                        var min=function(val1,val2){return Math.min(val1,val2);};`+vars+
+                        var min=function(val1,val2){return Math.min(val1,val2);};
+                        var midVal=function(val1,val2,val3){return max(min(val1,val2), min(max(val1,val2),val3));};`+vars+
                         'return ('
                          + expression
                          + ');')();
