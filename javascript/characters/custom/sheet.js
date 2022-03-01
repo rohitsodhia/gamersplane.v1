@@ -111,7 +111,7 @@ $(function () {
         //if fields that look like dice rolls have changed
         var requiresRefresh=false;
 
-        $('.formVar,.formCalc').each(function(){
+        $('.formVar,.formCalc',this).each(function(){
             var pThis=$(this);
             //this is a calculation
             if(pThis.hasClass('formCalc')) {
@@ -176,7 +176,14 @@ $(function () {
                         var floor=function(val){return Math.floor(val);};
                         var max=function(val1,val2){return Math.max(val1,val2);};
                         var min=function(val1,val2){return Math.min(val1,val2);};
-                        var midVal=function(val1,val2,val3){return max(min(val1,val2), min(max(val1,val2),val3));};`+vars+
+                        var midVal=function(val1,val2,val3){return max(min(val1,val2), min(max(val1,val2),val3));};
+                        var lookupBonus=function(val1,...val2){
+                            var valchunked=[...Array(Math.ceil(val2.length / 3))].map(_ => val2.splice(0,3));
+                            var validx=valchunked.findIndex(function(valtest) {return valtest[0]<=val1 && valtest[1]>=val1;});
+                            return validx!=-1?valchunked[validx][2]:0;
+                        };
+                        var dwBonus=function(val){return lookupBonus(val, 1,3,-3, 4,5,-2, 6,8,-1, 9,12,0, 13,15,1, 16,17,2, 18,18,3,);};`
+                        +vars+
                         'return ('
                          + expression
                          + ');')();
