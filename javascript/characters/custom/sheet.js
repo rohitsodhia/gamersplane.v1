@@ -182,7 +182,7 @@ $(function () {
                             var validx=valchunked.findIndex(function(valtest) {return valtest[0]<=val1 && valtest[1]>=val1;});
                             return validx!=-1?valchunked[validx][2]:0;
                         };
-                        var dwBonus=function(val){return lookupBonus(val, 1,3,-3, 4,5,-2, 6,8,-1, 9,12,0, 13,15,1, 16,17,2, 18,18,3,);};`
+                        var dwBonus=function(val){return lookupBonus(val, 1,3,-3, 4,5,-2, 6,8,-1, 9,12,0, 13,15,1, 16,17,2, 18,18,3);};`
                         +vars+
                         'return ('
                          + expression
