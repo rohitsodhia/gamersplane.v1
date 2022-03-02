@@ -148,7 +148,12 @@ $(function () {
                 if(pThis.hasClass('formCheck')){
                     variables[pThis.data('varname')]=$('input:checked',pThis).length;
                 } else {
-                    variables[pThis.data('varname')]=parseInt(pThis.text());
+                    var val=$.trim(pThis.text());
+                    if(val=='' || isNaN(val)){
+                        variables[pThis.data('varname')]="'"+val.replace("'","\\'")+"'";
+                    }else{
+                        variables[pThis.data('varname')]=val;
+                    }
                 }
             }
         });
