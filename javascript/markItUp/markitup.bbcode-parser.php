@@ -155,16 +155,16 @@ function BBCode2Html($text) {
 					 "/[\r\n]*\[linebreak\][\r\n]*/",
 					 '/\[img\](.*?)\[\/img\]/ms',
 					 '/\[email\](.*?)\[\/email\]/ms',
-					 '/\[size\="?(.*?)"?\](((?R)|.)*?)\[\/size\]/ms',
-					 '/\[color\="?(.*?)"?\](((?R)|.)*?)\[\/color\]/ms',
+					 '/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
+					 '/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
 					 '/\[zoommap\="?(.*?)"?\](.*?)\[\/zoommap\]/ms',
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
 //					 '/\[list\](.*?)\[\/list\]/ms',
 //					 '/\[\*\]\s?(.*?)\n/ms',
-					 "/[\r\n]*\[ooc\](((?R)|.)*?)\[\/ooc\][\r\n]*/ms",
-					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](((?R)|.)*?)\[\/spoiler\][\r\n]*/ms",
-					 "/[\r\n]*\[spoiler\](((?R)|.)*?)\[\/spoiler\][\r\n]*/ms",
-					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
+					"/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
+					"/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
+					"/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+					"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
 					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
 					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
@@ -196,11 +196,7 @@ function BBCode2Html($text) {
 					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><img class="inlineNpcAvatar" src="\2"/><div class="inlineNpcName">\1</div></div>',
 	);
 
-	$recursionCount=0; //count level of recursive RegEx replacement
-	$replCount=1;
-	while($replCount!=0 && ++$recursionCount<10){
-		$text = preg_replace($in, $out, $text,-1,$replCount);
-	}
+	$text = preg_replace($in, $out, $text);
 
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
 		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]\s*/s", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
