@@ -277,19 +277,25 @@ function BBCode2Html($text) {
 			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 			$tableClass="";
 			if(strpos($tableType,"center")!==false || strpos($tableType,"centre")!==false){
-				$tableClass=" bbTableCenter";
-			} else if(strpos($tableType,"right")!==false){
-				$tableClass=" bbTableRight";
-			} else if(strpos($tableType,"stats")!==false){
-				$tableClass=" bbTableStats";
-			} else if(strpos($tableType,"htl")!==false){
-				$tableClass=" bbTable-htl";
+				$tableClass .= " bbTableCenter";
+			}
+			if(strpos($tableType,"right")!==false){
+				$tableClass .= " bbTableRight";
+			}
+			if(strpos($tableType,"stats")!==false){
+				$tableClass .= " bbTableStats";
+			}
+
+			if(strpos($tableType,"htl")!==false){
+				$tableClass .= " bbTable-htl";
 			} else if(strpos($tableType,"ht")!==false){
-				$tableClass=" bbTable-ht";
+				$tableClass .= " bbTable-ht";
 			} else if(strpos($tableType,"hl")!==false){
-				$tableClass=" bbTable-hl";
-			} else if(strpos($tableType,"rolls")!==false){
-				$tableClass=" bbTableRolls";
+				$tableClass .= " bbTable-hl";
+			}
+
+			if(strpos($tableType,"rolls")!==false){
+				$tableClass .= " bbTableRolls";
 			}
 
 			if(strpos($tableType,"d20")!==false){

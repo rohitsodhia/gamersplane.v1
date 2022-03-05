@@ -13,6 +13,13 @@ $(function () {
             };
         });
 
+        $.expr[':'].reasonEquals = $.expr[':'].reasonEquals || $.expr.createPseudo(function(arg) {
+            return function( elem ) {
+                var thisVal=escape($('.rollString',$(elem).closest('.roll')).text().toLowerCase());
+                return thisVal.indexOf(arg)!=-1;
+            };
+        });
+
         $.expr[':'].paired =  $.expr[':'].paired || $.expr.createPseudo(function() {
             return function( elem ) {
                 var pThis=$(elem);
@@ -44,10 +51,10 @@ $(function () {
             return function( elem ) {
                 try{
                     if(arg.includes('x')){
-                        return eval(arg.replace(/[x]/gi,$(elem).text()));
+                        return diceExpression(arg.replace(/[x]/gi,$(elem).text()));
                     }
                     else{
-                        return eval($(elem).text()+arg);
+                        return diceExpression($(elem).text()+arg);
                     }
                 }catch{}
                 return false;
@@ -91,95 +98,113 @@ $(function () {
                     //rules highlighting
                     if(rule.highlight || rule.content || rule.contentAppend || rule.hideTotal){
 
-                        var highlightClass=rule.highlight?highlightClass=rule.highlight.split(" ").map(function(item) {return 'rollVal-'+item.trim().toLowerCase();}).join(' '):'';
+                        var dieSelector=false;
+                        var matchedDice=null;
 
-                        var selectorSuffix='';
+                        //hashed reason e.g. DC##
+                        if(rule.reason){
+                            var foundHashes=rule.reason.indexOf('##');
+                            if(foundHashes!=-1){
+                                var reasonRegExpression=rule.reason.toLowerCase().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                                reasonRegExpression='.*'+reasonRegExpression.replace(/##/g,'\\s*(\\d+)\\s*')+'.*';
+                                var matchReason=new RegExp(reasonRegExpression);
 
-                        //last die
-                        if(rule.lastDie) {
-                            selectorSuffix+=':last';
+                                var rollSection=parsedRolls.closest('.rollResults');
+                                matchedDice=$('.rollTotal',rollSection).filter(function(index){
+                                    var pThis=$(this);
+                                    var rollString=$('.rollString',pThis.closest('.roll'));
+                                    var matched=matchReason.exec(rollString.text().toLowerCase());
+                                    if(matched && matched.length==2){
+                                        var totalHashedSelector=':meval('+valToMeval(rule.total.replace(/##/g,matched[1]))+')';
+                                        if($('.rollTotal'+totalHashedSelector,pThis.parent()).length>0){
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                });
+                            }
                         }
 
-                        //roll values
-                        if(rule.natural) {
-                            selectorSuffix+=':meval('+valToMeval(rule.natural)+')';
-                        }
+                        if(matchedDice==null)
+                        {
 
-                        if(rule.ge) {
-                            selectorSuffix+=':ge('+rule.ge+')';
-                        }
-
-                        if(rule.le) {
-                            selectorSuffix+=':le('+rule.le+')';
-                        }
-
-                        //check for paired dice
-                        if(rule.paired) {
-                            selectorSuffix+=':paired';
-                        }
-
-                        //d100 doubles (11,22,..,99,100)
-                        if(rule.d100double) {
-                            selectorSuffix+=':d100double';
-                        }
-
-                        var totalSuffix='';
-                        if(rule.total){
-                            totalSuffix+=':meval('+valToMeval(rule.total)+')';
-                        }
-
-                        if(selectorSuffix){
-                            var matchedDice=$('i'+selectorSuffix,parsedRolls);
+                            var reasonSelector=''
+                            var selectorSuffix=''
 
                             //reason
                             if(rule.reason){
-                                var match=rule.reason.toLowerCase();
-                                matchedDice=matchedDice.filter(function(){
-                                    var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
-                                    return thisVal.indexOf(match)!=-1;
-                                });
+                                reasonSelector+=":reasonEquals('"+escape(rule.reason.toLowerCase())+"')";
                             }
 
-                            if(rule.highlight){
-                                matchedDice.addClass(highlightClass);
-                            }
-                            if(rule.content){
-                                matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
-                            }
-                            if(rule.contentAppend){
-                                matchedDice.each(function(){$(this).text($(this).text()+' '+rule.contentAppend);});
+                            //last die
+                            if(rule.lastDie) {
+                                selectorSuffix+=':last';
                             }
 
-
-                            if(matchedDice.length>0 && rule.hideTotal){
-                                $('.rollResultTotal',matchedDice.closest('.roll')).hide();
+                            //roll values
+                            if(rule.natural) {
+                                selectorSuffix+=':meval('+valToMeval(rule.natural)+')';
                             }
 
-                        } else if(totalSuffix){
-                            var matchTotal=$('.rollTotal'+totalSuffix,parsedRolls.closest('.roll'));
-
-                            if(rule.reason){
-                                var match=rule.reason.toLowerCase();
-                                matchTotal=matchTotal.filter(function(){
-                                    var thisVal=$('.rollString',$(this).closest('.roll')).text().toLowerCase();
-                                    return thisVal.indexOf(match)!=-1;
-                                });
+                            if(rule.ge) {
+                                selectorSuffix+=':ge('+rule.ge+')';
                             }
 
-                            if(rule.highlight){
-                                matchTotal.addClass(highlightClass);
+                            if(rule.le) {
+                                selectorSuffix+=':le('+rule.le+')';
                             }
-                            if(rule.content){
-                                matchTotal.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
+
+                            //check for paired dice
+                            if(rule.paired) {
+                                selectorSuffix+=':paired';
                             }
-                            if(rule.contentAppend){
-                                matchTotal.each(function(){$('<span></span>').text(' '+rule.contentAppend).insertAfter($(this));});
+
+                            //d100 doubles (11,22,..,99,100)
+                            if(rule.d100double) {
+                                selectorSuffix+=':d100double';
                             }
-                            if(matchTotal.length>0 && rule.hideTotal){
-                                matchTotal.closest('.rollResultTotal').hide();
+
+                            var totalSuffix='';
+                            if(rule.total){
+                                totalSuffix+=':meval('+valToMeval(rule.total)+')';
+                            }
+
+                            if(selectorSuffix){
+                                dieSelector=true; //selecting individal dice
+                                matchedDice=$('i'+selectorSuffix+reasonSelector,parsedRolls);
+                            } else if(totalSuffix){
+                                matchedDice=$('.rollTotal'+totalSuffix+reasonSelector,parsedRolls.closest('.roll'));
                             }
                         }
 
+                        //apply highlighting
+                        if(matchedDice && matchedDice.length){
+                            if(rule.highlight) {
+                                var highlightClass=rule.highlight.split(" ").map(function(item) {return 'rollVal-'+item.trim().toLowerCase();}).join(' ');
+
+                                matchedDice.addClass(highlightClass);
+                            }
+
+                            if(rule.content) {
+                                matchedDice.each(function(){$(this).attr('title',$(this).text()).text(rule.content);});
+                            }
+
+                            if(rule.contentAppend){
+                                if(dieSelector) {
+                                    matchedDice.each(function(){$(this).text($(this).text()+' '+rule.contentAppend);});
+                                } else {
+                                    matchedDice.each(function(){$('<span></span>').text(' '+rule.contentAppend).insertAfter($(this));});
+                                }
+                            }
+
+                            if(matchedDice.length>0 && rule.hideTotal){
+                                if(dieSelector) {
+                                    $('.rollResultTotal',matchedDice.closest('.roll')).hide();
+                                } else {
+                                    matchedDice.closest('.rollResultTotal').hide();
+                                }
+                            }
+                        }
                     }
 
                     //other rule options
@@ -206,5 +231,10 @@ $(function () {
         };
 
         $('body').applyDiceRules();
+
+        function diceExpression(expression) {
+            return Function('"use strict"; return (' + expression + ');')();
+        }
     }
+
 });

@@ -15,6 +15,10 @@
 			<div class="rightCol"><a href="/user/{{sender.userID}}/" class="username">{{sender.username}}</a></div>
 		</div>
 		<div class="tr">
+			<div class="leftCol">To</div>
+			<div class="rightCol"><div ng-repeat="rec in recipients"><a href="/user/{{rec.userID}}/" class="username">{{rec.username}}</a></div></div>
+		</div>
+		<div class="tr">
 			<div class="leftCol">When</div>
 			<div class="rightCol">{{datestamp}}</div>
 		</div>
