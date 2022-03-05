@@ -2597,6 +2597,11 @@ textarea {
 				font-weight: bold;
 			}
 		}
+
+		.parsedRolls i:after{
+			color: #fff;
+			background-color: rgba(0,0,0,0);
+		}
 	}
 }
 
@@ -3809,6 +3814,45 @@ select.notPretty {
 		}
 		.npcList_itemName{
 			font-weight: bold;
+		}
+	}
+}
+
+.parsedRolls {
+	cursor: pointer;
+
+	i {
+		display: inline;
+		padding-left:.2em;
+		&:after {
+			content: ',';
+			display: inline-block;
+			vertical-align: bottom;
+			text-decoration: none !important;
+			background-color: #fff;
+			color: #000;
+			margin-left: .2em;
+		}
+
+		&:last-child::after {
+			content: '';
+			padding-left: 0;
+		}
+
+		s {
+			margin-right: .2em;
+			text-decoration: none;
+			&:after {
+				content: '\2794';
+			}
+		}
+	}
+
+	.rollDrop{
+		text-decoration: line-through !important;
+		opacity: .5;
+		&:after {
+			text-decoration: none !important;
 		}
 	}
 }

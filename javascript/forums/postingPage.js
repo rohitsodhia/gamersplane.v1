@@ -430,6 +430,22 @@ $(function() {
 				}
 			}
 
+			var liAdvDis=function(lis,bonus,text) {
+				lis.each(function(){
+					var pLi=$(this);
+					pLi.addClass('rollDice').attr('rolltext',text);
+					if(pLi.hasClass('adv')){
+						pLi.attr('roll','2d20H1'+prefixSign(bonus));
+					}
+					else if(pLi.hasClass('dis')){
+						pLi.attr('roll','2d20L1'+prefixSign(bonus));
+					}
+					else {
+						pLi.attr('roll','1d20'+prefixSign(bonus));
+					}
+				});
+			};
+
 			var addSavageWorldRolls=function(charSheetContent){
 				var swRoller=$('<div class="savageWorldsRoller"></div>').appendTo(charSheet);
 				$('.traitDiv', charSheetContent).each(function(){
@@ -500,7 +516,7 @@ $(function() {
 					var initiative = prefixSign($.trim($('div', $('#stats .tr label:contains(Initiative)', charSheetContent).closest('.tr')).text()));
 
 					$('span', roller).text('Initiative');
-					$('ul li', roller).addClass('rollDice').attr('roll','1d20'+initiative).attr('rolltext','Initiative');
+					liAdvDis($('ul li', roller),initiative,'Initiative');
 					$('small', roller).text('Initiative ' + initiative);
 				}
 
@@ -512,8 +528,8 @@ $(function() {
 					var save = $.trim($('.saveProficient', abilityScore).text());
 					var roller = $('<div class="roller"><span></span><ul class="check rollSel"><li>Check <small></small></li><li class="adv">A</li><li class="dis">D</li></ul><ul class="save rollSel"><li>Save <small></small></li><li class="adv">A</li><li class="dis">D</li></ul></roller>').appendTo(charSheet);
 					$('span', roller).text(label);
-					$('ul.check li', roller).addClass('rollDice').attr('roll','1d20'+prefixSign(check)).attr('rolltext',label+' check');
-					$('ul.save li', roller).addClass('rollDice').attr('roll', '1d20'+prefixSign(save)).attr('rolltext',label+' save');
+					liAdvDis($('ul.check li', roller),check,label+' check');
+					liAdvDis($('ul.save li', roller),save,label+' save');
 					$('.check small', roller).text(check);
 					$('.save small', roller).text(save);
 				});
@@ -526,7 +542,7 @@ $(function() {
 					var dmg = $.trim($('.weapon_damage', weapon).text());
 					var roller = $('<div class="roller"><span></span><ul class="rollSel attack"><li>To hit: <small></small></li><li class="adv">A</li><li class="dis">D</li></ul></roller> <ul class="rollSel dmg"><li>Dmg: <small></small></li></ul>').appendTo(charSheet);
 					$('span', roller).text(label);
-					$('ul.attack li', roller).addClass('rollDice').attr('roll','1d20'+prefixSign(toHit)).attr('rolltext',label+' to hit');
+					liAdvDis($('ul.attack li', roller),toHit,label+' to hit');
 					$('ul.dmg li', roller).addClass('rollDice').attr('roll', dmg).attr('rolltext', label+' damage');
 					$('ul.attack small', roller).text(toHit);
 					$('ul.dmg small', roller).text(dmg);
@@ -549,7 +565,7 @@ $(function() {
 					{
 						var roller = $('<div class="roller skill"><span></span><ul class="rollSel"><li><small></small></li><li class="adv">A</li><li class="dis">D</li></ul></roller>').appendTo(charSheet);
 						$('span', roller).text(label);
-						$('ul li', roller).addClass('rollDice').attr('roll','1d20'+prefixSign(bonus)).attr('rolltext',label);
+						liAdvDis($('ul li', roller),bonus,label);
 						$('ul small', roller).text(bonus);
 					}
 				});
@@ -602,11 +618,9 @@ $(function() {
 
 				if (thisRoll.hasClass('adv')) {
 					reason += ' (advantage)';
-					roll = roll + ',' + roll;
 				}
 				if (thisRoll.hasClass('dis')) {
 					reason += ' (disadvantage)';
-					roll = roll + ',' + roll;
 				}
 
 				addRollToList(reason, roll, rerollAces);
