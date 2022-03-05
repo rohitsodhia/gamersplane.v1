@@ -210,7 +210,7 @@ $(function() {
 
 			$.expr[':'].multipleDice =  $.expr[':'].multipleDice || $.expr.createPseudo(function() {
 				return function( elem ) {
-					return $('.rollDice',elem).length>1;
+					return $('td:has(.rollDice)',elem).length>1;
 				};
 			});
 
@@ -258,6 +258,17 @@ $(function() {
 				}
 			}
 
+			var replaceForumulae=function(text,htmlEle){
+				var valElements=$('.formVal',htmlEle);
+
+				var i=0;
+				text = text.replace(/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/g, function(match, contents){
+					return valElements.eq(i++).text();
+				});
+
+				return text;
+			};
+
 			//clicked on a character
 			$('#rolls_decks').on('click', '.rollForChar', function () {
 				var rollerForChar = $(this);
@@ -277,8 +288,21 @@ $(function() {
 						var charName=$('#charDetailsName',charSheetContent).text();
 						$('<a target="_blank"><i class="ra ra-scroll-unfurled"></i></a>').attr('href',charUrl).prependTo(($('<h3 class="charName"></h3>').text(charName).appendTo(charSheet)));
 
+						var topRollers=$('<div class="topRollers"></div>').appendTo(charSheet);
+
+						if (system == 'dnd5') {
+							addDnd5Rolls(charSheetContent);
+						} else if(system=='savageworlds'){
+							addSavageWorldRolls(charSheetContent);
+						} else if (system == 'starwarsffg') {
+							addStarwarsFFGRolls(charSheetContent);
+						} else if (system == 'custom') {
+							addCustomSheet(charSheetContent);
+							$('#charDetails',charSheetContent).updateCalculations();
+						}
+
 						//features, spells and snippets
-						var featDiv=$('<div class="roller feats"><select class="featSelect shortcutSelector addAsSpoiler"><option>--Feats/Abilities--</option></select></div>').appendTo(charSheet);
+						var featDiv=$('<div class="roller feats"><select class="featSelect shortcutSelector addAsSpoiler"><option>--Feats/Abilities--</option></select></div>').appendTo(topRollers);
 						$('.feat',charSheetContent).each(function(){
 							var pThis=$(this);
 							var name=$.trim($('.feat_name',pThis).text());
@@ -289,7 +313,7 @@ $(function() {
 							}
 						});
 
-						var spellDiv=$('<div class="roller feats"><select class="spellSelect shortcutSelector addAsSpoiler"><option>--Spells--</option></select></div>').appendTo(charSheet);
+						var spellDiv=$('<div class="roller feats"><select class="spellSelect shortcutSelector addAsSpoiler"><option>--Spells--</option></select></div>').appendTo(topRollers);
 						$('.spell',charSheetContent).each(function(){
 							var pThis=$(this);
 							var name=$.trim($('.spell_name',pThis).text());
@@ -304,13 +328,14 @@ $(function() {
 							var abilitySection=$(this);
 							var title=$('h2',abilitySection).text();
 
-							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector addAsSpoiler"><option></option></select></div>').appendTo(charSheet);
+							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector addAsSpoiler"><option></option></select></div>').appendTo(topRollers);
 							$('option',abilityDiv).text('--'+title+'--');
 							$('.ability',abilitySection).each(function(){
 								var pThis=$(this);
 								var name=$.trim($('.abilityName',pThis).text());
 								if(name.length>0){
 									var notes=$.trim($('.abilityBBCode',pThis).text());
+									notes=replaceForumulae(notes,$('.notes',pThis));
 									$('<option></option>').text(name).data('notes',notes).appendTo($('select',abilityDiv));
 								}
 							});
@@ -320,13 +345,14 @@ $(function() {
 							var abilitySection=$(this);
 							var title=$('h2',abilitySection).text();
 
-							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector"><option></option></select></div>').appendTo(charSheet);
+							var abilityDiv=$('<div class="roller feats"><select class="abilitySelect shortcutSelector"><option></option></select></div>').appendTo(topRollers);
 							$('option',abilityDiv).text('--'+title+'--');
 							$('.ability',abilitySection).each(function(){
 								var pThis=$(this);
 								var name=$.trim($('.abilityName',pThis).text());
 								if(name.length>0){
 									var notes=$.trim($('.abilityBBCode',pThis).text());
+									notes=replaceForumulae(notes,$('.notes',pThis));
 									$('<option></option>').text(name).data('notes',notes).appendTo($('select',abilityDiv));
 								}
 							});
@@ -336,7 +362,7 @@ $(function() {
 							var npcSection=$(this);
 							var title=$('h3',npcSection).text();
 
-							var npcDiv=$('<div class="roller npcs"><select class="abilitySelect shortcutSelector shortcutSelector"><option></option></select></div>').appendTo(charSheet);
+							var npcDiv=$('<div class="roller npcs"><select class="abilitySelect shortcutSelector shortcutSelector"><option></option></select></div>').appendTo(topRollers);
 							$('option',npcDiv).text('--'+title+'--');
 							$('.npcList_item',npcSection).each(function(){
 								var pThis=$(this);
@@ -349,7 +375,7 @@ $(function() {
 							});
 						});
 
-						var snippetDiv=$('<div class="roller snippets"><select class="snippetSelect shortcutSelector"><option>--Snippets--</option></select></div>').appendTo(charSheet);
+						var snippetDiv=$('<div class="roller snippets"><select class="snippetSelect shortcutSelector"><option>--Snippets--</option></select></div>').appendTo(topRollers);
 						$('.spoiler.snippet',charSheetContent).each(function(){
 							var pThis=$(this);
 							var name=$.trim($('.snippetName',pThis).text());
@@ -360,28 +386,24 @@ $(function() {
 						});
 
 						//remove unused roller dropdowns
-						$('.roller select',charSheet).each(function(){
+						$('.roller select',topRollers).each(function(){
 							var pThis=$(this);
 							if($('option',pThis).length<=1){
 								pThis.closest('.roller').remove();
 							}
 						});
 
-						if($('.roller select',charSheet).length>0){
-							$('<hr class="clear"/>').appendTo(charSheet);
+						if($('.roller select',topRollers).length>0){
+							$('<hr class="clear"/>').appendTo(topRollers);
 						}
 
-						if (system == 'dnd5') {
-							addDnd5Rolls(charSheetContent);
-						} else if(system=='savageworlds'){
-							addSavageWorldRolls(charSheetContent);
-						} else if (system == 'starwarsffg') {
-							addStarwarsFFGRolls(charSheetContent);
+						if (system != 'custom'){
+							//tables with rolls
+							var rollsTable=$('table.bbTableRolls',charSheetContent);
+							rollsTable.appendTo(charSheet);
 						}
 
-						//tables with rolls
-						var rollsTable=$('table.bbTableRolls',charSheetContent);
-						$('td',charSheetContent).each(function(){
+						$('table.bbTableRolls td',charSheet).each(function(){
 							var td=$(this);
 							var tdText=$.trim(td.text());
 							if(/(\d*)[dD](\d+)([+-]\d+)?/g.test(tdText)) {
@@ -391,16 +413,40 @@ $(function() {
 							}
 						});
 
+						$('table.bbTableD20:not(.bbTableDnd5e) td',charSheet).each(function(){
+							var td=$(this);
+							var tdText=$.trim(td.text());
+							if(/^[\+\-](\d)+$/.test(tdText)) {
+								var rollText=$.trim($('td:not(:emptyContent):first',td.closest('tr')).text());
+								var rollerSpan=$('<span class="rollDice rollDiceD20"></span>').attr('rollmod',tdText).attr('roll','1d20'+tdText).attr('rolltext',rollText).html(td.html());
+								td.html(rollerSpan);
+							}
+						});
+
+						$('table.bbTableD20.bbTableDnd5e td',charSheet).each(function(){
+							var td=$(this);
+							var tdText=$.trim(td.text());
+							if(/^[\+\-](\d)+$/.test(tdText)) {
+								var rollText=$.trim($('td:not(:emptyContent):first',td.closest('tr')).text());
+								var advDis=$('<span class="rolld20-5e"></span>');
+								$('<span class="rollDice rollDiceD20"></span>').attr('roll','1d20'+tdText).attr('rolltext',rollText).html(td.html()).appendTo(advDis);
+								$('<span class="rollDice rollDiceD20">A</span>').attr('roll','2d20H1'+tdText).attr('rolltext',rollText+' (advantage)').appendTo(advDis);
+								$('<span class="rollDice rollDiceD20">D</span>').attr('roll','2d20L1'+tdText).attr('rolltext',rollText+' (disadvantage)').appendTo(advDis);
+								advDis.appendTo(td.html(''));
+							}
+
+						});
+
 						//look for rows with multiple dice - they'll need the header too
-						$('table.bbTableRolls tr:multipleDice td:has(.rollDice)',charSheetContent).each(function(){
+						$('table.bbTableRolls tr:multipleDice td:has(.rollDice)',charSheet).each(function(){
 							var td=$(this);
 							var cellIndex=td.index();
 							var tableHeadings=$('tr:first td',td.closest('table.bbTableRolls'));
 							var rollDice=$('.rollDice',td);
-							rollDice.attr('rolltext',rollDice.attr('rolltext')+' - '+$.trim(tableHeadings.eq(cellIndex).text()));
+							rollDice.each(function(){
+								$(this).attr('rolltext',$(this).attr('rolltext')+' - '+$.trim(tableHeadings.eq(cellIndex).text()));
+							});
 						});
-
-						rollsTable.appendTo(charSheet);
 
 						//multiple characters - prefix the rolls with the name
 						if($('#charButtons .rollForChar').length>1){
@@ -429,6 +475,14 @@ $(function() {
 					return ''+val;
 				}
 			}
+
+			var addCustomSheet=function(charSheetContent){
+				var customSheet=$('<div class="customSheet customChar"></div>').appendTo(charSheet);
+				customSheet.html($('#charDetails div.customChar',charSheetContent).html());
+				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
+				customSheet.updateCalculations();
+				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});
+			};
 
 			var liAdvDis=function(lis,bonus,text) {
 				lis.each(function(){

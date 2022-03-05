@@ -30,14 +30,17 @@
 // ----------------------------------------------------------------------------
 
 //define ("EMOTICONS_DIR", "/images/emoticons/");
-function splitByHeader($title,$text,$cssClass){
-	$ret="<div class='".$cssClass." ddCollection'>";
-	$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
+function splitByHeader($title, $text, $cssClass, $collectionData=''){
+	$ret="<div class='".$cssClass." ddCollection'".$collectionData.">";
+	if($title!=''){
+		$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
+	}
 
 	$abilityLines = explode("\n", trim($text));
 
-	$abilityOpen=false;
+	$abilityOpen=true;
 	$abilityRaw="";
+	$ret=$ret.'<div class="ability"><div class="abilityNotes">';
 	foreach ($abilityLines as $abilityLine){
 
 		if(substr($abilityLine,0,1)=='#'){
@@ -88,6 +91,19 @@ function BBCode2Html($text) {
 	}
 	$text = preg_replace_callback('/\[code\](.*?)\[\/code\]/ms', "escape", $text);
 
+	//editable block
+	$matches = null;
+	$formField=0;
+	$text=preg_replace_callback("/[\r\n]*\[#=\"?(.*?)\"?\](.*?)\[\/#\][\r\n]*/ms", function($matches) use (&$formField){
+			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
+			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
+			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
+			return '<div class="formBlock" data-blockfieldidx="'.($formField++).'"><h2 class="headerbar hbDark"><i class="ra ra-quill-ink"></i> '.$matches[1].'</h2><div class="formBlockRendered">'.$matches[2].'</div><div style="display:none;" class="formBlockBBCode">'.$escapedSnipped.'</div></div>';
+	}, $text);
+	//end editable block
+
+	//snippets
 	$matches = null;
 	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
 			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
@@ -96,11 +112,13 @@ function BBCode2Html($text) {
 			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
 			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
 	}, $text);
+	//end snippets
 
 	//ability sections
 	$matches = null;
-	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches){
-		return splitByHeader($matches[1],$matches[2],"abilities");
+	$formField=0;
+	$text=preg_replace_callback("/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms", function($matches) use (&$formField){
+		return splitByHeader('<i class="ra ra-quill-ink"></i> '.$matches[1],$matches[2],'abilities',(" data-abilitiesfieldidx='".($formField++)."'"));
 	}, $text);
 	//end ability sections
 
@@ -143,10 +161,10 @@ function BBCode2Html($text) {
 //					 '/\[list\=(.*?)\](.*?)\[\/list\]/ms',
 //					 '/\[list\](.*?)\[\/list\]/ms',
 //					 '/\[\*\]\s?(.*?)\n/ms',
-					 "/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
-					 "/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
-					 "/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
-					 "/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
+					"/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
+					"/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
+					"/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+					"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
 					 "/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
 					 "/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
 					 "/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
@@ -177,10 +195,43 @@ function BBCode2Html($text) {
 					 '<div class="style" style="display:none;">\1</div>',
 					 '<div class="inlineNpcPrefix"></div><div class="inlineNpc"><img class="inlineNpcAvatar" src="\2"/><div class="inlineNpcName">\1</div></div>',
 	);
+
 	$text = preg_replace($in, $out, $text);
+
 	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
 		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]\s*/s", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
+
+	//form characters
+	$matches = null;
+	$formField=0;
+	$text=preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField){
+			$formVarName=$matches[2];
+			$formVal=$matches[3]; //todo strip tags
+			if($formVarName && substr( $formVarName, -1 )=='$'){
+				$isCalc=true;
+				$formVarName=rtrim($formVarName,"$");
+			}
+			else{
+				$isCalc=false;
+			}
+			preg_match('/(\d+)\/(\d+)/',$formVal,$splitVal);
+			$valAsInt=intval($splitVal[1]);
+			$outOf=intval($splitVal[2]);
+			$valHtml='';
+			$spanClasses='formVal'.($isCalc?" formCalc":'').($formVarName?" formVar":"");
+			if($outOf<=20 && $outOf>0 && $valAsInt<=$outOf && $valAsInt>=0){
+				$spanClasses.=' formCheck';
+				$valHtml.=str_repeat('<input class="notPretty" type="checkbox" checked/>',$valAsInt);
+				$valHtml.=str_repeat('<input class="notPretty" type="checkbox"/>',$outOf-$valAsInt);
+			}
+			else{
+				$spanClasses.=($isCalc?'':' formText');
+				$valHtml = ($isCalc?'':$formVal);
+			}
+			return '<span class="'.$spanClasses.'" data-varname="'.$formVarName.'" data-varcalc="'.($isCalc?$formVal:"").'" data-formfieldidx="'.($formField++).'">'.$valHtml.'</span>';
+	}, $text);
+	//end form characters
 
 	//map
 	$matches = null;
@@ -222,7 +273,7 @@ function BBCode2Html($text) {
 
 	//tables
 	$matches = null;
-	$text=preg_replace_callback("/\[table(=([\"a-zA-Z ])*)?\](.*?)\[\/table\]/ms", function($matches){
+	$text=preg_replace_callback("/\[table(=([\"a-zA-Z0-9 ])*)?\](.*?)\[\/table\]/ms", function($matches){
 			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 			$tableClass="";
 			if(strpos($tableType,"center")!==false || strpos($tableType,"centre")!==false){
@@ -245,6 +296,18 @@ function BBCode2Html($text) {
 
 			if(strpos($tableType,"rolls")!==false){
 				$tableClass .= " bbTableRolls";
+			}
+
+			if(strpos($tableType,"d20")!==false){
+				$tableClass.=" bbTableD20";
+			}
+
+			if(strpos($tableType,"compact")!==false){
+				$tableClass.=" bbTableCompact";
+			}
+
+			if(strpos($tableType,"dnd5e")!==false){
+				$tableClass.=" bbTableDnd5e";
 			}
 
 			if(strpos($tableType,"grid")!==false || strpos($tableType,"lines")!==false){
@@ -310,18 +373,6 @@ function BBCode2Html($text) {
 		$postAuthor=$post->getAuthor('userID') == $currentUser->userID;
 		$postAuthorName=$post->getAuthor('username');
 	}
-
-	// Do spoilers later to avoid incorrect closing
-	$in = array(
-		"/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
-		"/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
-	);
-	// And replace them by...
-	$out = array(
-		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
-		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Spoiler</div><div class="hidden">\1</div></blockquote>',
-	);
-	$text = preg_replace($in, $out, $text);
 
 	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
 	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {

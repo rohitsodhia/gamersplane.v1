@@ -46,6 +46,7 @@ mySettings = {
 			{name:'Table', openWith:'[table]\n', closeWith:'\n[/table]' },
 			{name:'Roll Table', openWith:'[table="rolls"]\nName | Roll\ne.g. Percentile | 1d100', closeWith:'\n[/table]' },
 			{name:'Two columns', openWith:'[2column]\n[col]\n', closeWith:'\n[/col]\n[col]\n[/col]\n[/2column]' },
+			{name:'Form field', key:'M', openWith:'[_=', closeWith:']' },
 		]},
 	]
 };

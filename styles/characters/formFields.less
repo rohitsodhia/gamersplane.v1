@@ -1,0 +1,70 @@
+.formVal.formText{
+	border-bottom: solid 1px #888;
+	cursor: pointer;
+    display: inline-block;
+    min-width: 1em;
+    min-height: 1em;
+    input{
+        margin-bottom: 0;
+    }
+}
+
+.formVal.formCheck{
+	input{
+		margin: 0 .1em;
+	}
+}
+
+.formBlock,.abilities {
+        h2 .ra-quill-ink{
+        cursor: pointer;
+    }
+}
+
+.post {
+    .formBlock,.abilities {
+        h2 .ra-quill-ink{
+            display: none;
+        }
+    }
+}
+
+@keyframes flashOfYellow1 {
+    0% { background-color: yellow; }
+    100% { background-color: transparent; }
+}
+
+@keyframes flashOfYellow2 {
+    0% { background-color: yellow; }
+    100% { background-color: transparent; }
+}
+
+
+.updatedCalc1{
+	animation-name: flashOfYellow1;
+    animation-duration: 1500ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}
+
+.updatedCalc2{
+	animation-name: flashOfYellow2;
+    animation-duration: 1500ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}
+
+#blockingCalls{
+    position: fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color: rgba(0,0,0,.5);
+    z-index: 20000;
+}
+
+.formCalcError{
+    background-color: #800;
+    color: #fff;
+}

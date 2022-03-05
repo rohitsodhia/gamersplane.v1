@@ -1714,6 +1714,34 @@ td .rollDice {
 	background-color: #eee;
 }
 
+.rolld20-5e{
+	white-space: nowrap;
+	.rollDice{
+		border-radius: 0;
+		padding: .2em .2em;
+		border-left-width: 0;
+
+		&:first-child{
+			border-radius: 3px 0 0 3px;
+			border-left-width: 1px;
+		}
+		&:last-child{
+			border-radius: 0 3px 3px 0;
+		}
+	}
+}
+
+.rollAdvDis {
+	display: inline-flex;
+	flex-direction: column;
+
+	.rollDice{
+		padding: .2em .3em;
+		font-size: 70%;
+	}
+}
+
+
 #charSheetRoller .bbTableRolls tr:hover {
 	background-color: #fff2e0;
 }
@@ -2483,3 +2511,5 @@ h1.forumSearch{
 		}
 	}
 }
+
+@import "characters/formFields.less";

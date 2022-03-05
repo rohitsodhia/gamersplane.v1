@@ -3,9 +3,9 @@
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
 	if($currentUser->addPostNavigateWarning()){
-		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js','postPolls.js');
+		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js','characters/custom/sheet.js','postPolls.js');
 	}else{
-		$addJSFiles = Array('forums/postingPage.js','postPolls.js');
+		$addJSFiles = Array('forums/postingPage.js','characters/custom/sheet.js','postPolls.js');
 	}
 
 	$threadID = intval($pathOptions[1]);
