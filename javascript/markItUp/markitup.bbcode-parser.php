@@ -91,6 +91,19 @@ function BBCode2Html($text) {
 	}
 	$text = preg_replace_callback('/\[code\](.*?)\[\/code\]/ms', "escape", $text);
 
+	//char sheets
+	$matches = null;
+	$charsheet=0;
+	$text=preg_replace_callback("/[\r\n]*\[charsheet=\"?(.*?)\"?\](.*?)\[\/charsheet\][\r\n]*/ms", function($matches) use (&$charsheet){
+			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
+			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
+			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
+			return '<blockquote class="spoiler closed charsheet" data-charsheet="'.($charsheet++).'"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden"><div class="createSheet"><span class="createSheetButton">Create character</span></div>'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
+	}, $text);
+	//end char sheet
+
+
 	//editable block
 	$matches = null;
 	$formField=0;
@@ -120,12 +133,13 @@ function BBCode2Html($text) {
 
 	//snippets
 	$matches = null;
-	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
+	$snippetCount=0;
+	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches) use (&$snippetCount){
 			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
 			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
 			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
 			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
-			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
+			return '<blockquote class="spoiler closed snippet" data-snippetidx="'.($snippetCount++).'"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
 	}, $text);
 	//end snippets
 
