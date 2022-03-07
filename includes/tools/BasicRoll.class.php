@@ -17,7 +17,7 @@
 			$diceParts=explode(",",$diceString);
 
 			foreach ($diceParts as $dicePart){
-				preg_match_all('/(([\+\-]?)(\d*)([dD])?(\d+)(([hlHL])?(\d)*))/', $dicePart, $rolls, PREG_SET_ORDER);
+				preg_match_all('/(([\+\-]?)(\d*)([dD])?(\d+)(([hlHL])(\d+))?)/', $dicePart, $rolls, PREG_SET_ORDER);
 
 				$totalModifier=0;
 				$diceSides=$diceNumber=$diceModifier=$drop=$dropHigh=array();
