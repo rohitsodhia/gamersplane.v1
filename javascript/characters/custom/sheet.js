@@ -3,15 +3,17 @@ $(function () {
     //Form field clicking on and away from
     $('body').on('click','.formText',function(){
         var pThis=$(this);
-        var curText=pThis.text();
-        var curWidth=pThis.width();
-        if(parseInt(curText)!=curText){
-            curWidth=Math.max(curWidth,100);
-            curWidth=Math.min(curWidth,200);
+        if($('input,select',pThis).length==0) {
+            var curText=pThis.text();
+            var curWidth=pThis.width();
+            if(parseInt(curText)!=curText){
+                curWidth=Math.max(curWidth,100);
+                curWidth=Math.min(curWidth,200);
+            }
+            pThis.text('');
+            var input=$('<input type="text"/>').val(curText).css({"width":curWidth+20}).appendTo(pThis);
+            input.focus();
         }
-        pThis.text('');
-        var input=$('<input type="text"/>').val(curText).css({"width":curWidth+20}).appendTo(pThis);
-        input.focus();
     });
 
 

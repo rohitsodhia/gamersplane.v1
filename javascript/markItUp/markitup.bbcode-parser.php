@@ -103,17 +103,6 @@ function BBCode2Html($text) {
 	}, $text);
 	//end editable block
 
-	//snippets
-	$matches = null;
-	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
-			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
-			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
-			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
-			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
-			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
-	}, $text);
-	//end snippets
-
 	//ability sections
 	$matches = null;
 	$formField=0;
@@ -128,6 +117,17 @@ function BBCode2Html($text) {
 		return splitByHeader($matches[1],$matches[2],"snippets");
 	}, $text);
 	//end ability sections
+
+	//snippets
+	$matches = null;
+	$text=preg_replace_callback("/[\r\n]*\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\][\r\n]*/ms", function($matches){
+			$escapedSnipped=str_replace("[", "&#91;", $matches[2]);
+			$escapedSnipped=str_replace("]", "&#93;", $escapedSnipped);
+			$escapedSnipped=str_replace("\r\n", "\n", $escapedSnipped);
+			$escapedSnipped=str_replace("\n", "&#10;", $escapedSnipped);
+			return '<blockquote class="spoiler closed snippet"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] <span class="snippetName">'.$matches[1].'</span></div><div class="hidden">'.$matches[2].'</div><div style="display:none;" class="snippetBBCode">'.$escapedSnipped.'</div></blockquote>';
+	}, $text);
+	//end snippets
 
 	// Smileys to find...
 /*	$in = array( 	 ':)',
