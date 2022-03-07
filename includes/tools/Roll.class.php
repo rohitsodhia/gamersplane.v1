@@ -11,6 +11,7 @@
 		protected $reason = '';
 		protected $visibility = self::VIS_HIDE_NONE;
 		protected $visText = array(1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]', '[Hidden Reason]');
+		protected $modifier = 0;
 
 		abstract function __construct();
 
@@ -36,6 +37,14 @@
 
 		function getVisibility() {
 			return $this->visibility;
+		}
+
+		function setModifier($modifier) {
+			$this->modifier = (int)$modifier;
+		}
+
+		function getModifier() {
+			return $this->modifier;
 		}
 
 		abstract function getResults();

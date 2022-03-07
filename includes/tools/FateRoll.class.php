@@ -21,7 +21,16 @@
 			$this->rollID = $rollData['rollID'];
 			$this->reason = $rollData['reason'];
 			$this->newRoll($rollData['roll']);
-			$rollData['indivRolls'] = unserialize($rollData['indivRolls']);
+			$serializedRolls=unserialize($rollData['indivRolls']);
+
+			if(array_key_exists('indivRolls',$serializedRolls)){
+				//new format with modifier
+				$rollData['indivRolls'] = $serializedRolls['indivRolls'];
+				$this->setModifier($serializedRolls['modifier']);
+			} else {
+				$rollData['indivRolls'] = $serializedRolls;
+			}
+
 			foreach ($rollData['indivRolls'] as $key => $roll) {
 				$this->rolls[$key] = $roll;
 			}
@@ -34,7 +43,7 @@
 			$addRoll = $mysql->prepare("INSERT INTO rolls SET postID = $postID, type = 'fate', reason = :reason, roll = :roll, indivRolls = :indivRolls, visibility = :visibility");
 			$addRoll->bindValue(':reason', $this->reason);
 			$addRoll->bindValue(':roll', $this->roll);
-			$addRoll->bindValue(':indivRolls', serialize($this->rolls));
+			$addRoll->bindValue(':indivRolls', serialize( array('indivRolls'=>$this->rolls, 'modifier'=>$this->modifier)) );
 			$addRoll->bindValue(':visibility', $this->visibility);
 			$addRoll->execute();
 		}
@@ -67,9 +76,14 @@
 					echo '</div>';
 				}
 				if ($this->visibility == 0 || $this->visibility == 4 || $showAll) {
-					echo '<p>';
+					echo '<p class="rollValues" data-rollstring="'.$this->roll.'df'.showSign($sum).'">';
 					if ($this->visibility != 0) echo '<span class="hidden">';
-					echo "{$totals[1]} Positive, {$totals[0]} Blank, {$totals[-1]} Negative - Total: ".showSign($sum);
+					if($this->modifier){
+						echo "{$totals[1]} Positive, {$totals[0]} Blank, {$totals[-1]} Negative - Total: ".showSign($sum);
+						echo " (".showSign($this->modifier).") <span class='rollResultTotal'> = <span class='rollTotal'>".showSign($sum + $this->modifier).'</span></span>';
+					} else {
+						echo "{$totals[1]} Positive, {$totals[0]} Blank, {$totals[-1]} Negative - Total: <span class='rollResultTotal'><span class='rollTotal'>".showSign($sum).'</span></span>';
+					}
 					if ($this->visibility != 0) echo '</span>';
 					echo '</p>';
 				}

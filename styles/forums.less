@@ -1082,6 +1082,14 @@
 					text-align: center;
 				}
 			}
+			.modifier {
+				width: 80px;
+				text-align: center;
+				input {
+					width: 40px;
+					text-align: center;
+				}
+			}
 		}
 
 		.fengShuiRoll {
@@ -1661,6 +1669,10 @@
 			}
 		}
 	}
+
+	.npcList_item{
+		cursor: pointer;
+	}
 }
 
 .roller {
@@ -1702,11 +1714,11 @@
 	padding: .2em .5em;
 }
 
-.rollDice {
+.rollDice,.rollFateDice {
 	cursor: pointer;
 }
 
-td .rollDice {
+td .rollDice, td .rollFateDice{
 	display: inline-block;
 	padding: .2em 1em;
 	border: solid 1px @gp-black;
