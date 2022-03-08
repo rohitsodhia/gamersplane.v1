@@ -25,7 +25,7 @@ $(function () {
         pThis.remove();
         pFormValue.text(val);
 
-        updateField(pFormValue.data('formfieldidx'),val,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null);
+        updateField(pFormValue.data('formfieldidx'),val,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null,!charSheet.hasClass('ignoreSave'));
         charSheet.updateCalculations();
     });
 
@@ -62,7 +62,7 @@ $(function () {
         pThis.remove();
         $('.formBlockRendered',block).show();
 
-        updateBlock(block.data('blockfieldidx'),val,function(data){charSheet.html(data.notes); charSheet.removeClass('calculationsInitialised').updateCalculations(); charSheet.trigger('gp.sheetUpdated');});
+        updateBlock(block.data('blockfieldidx'),val,function(data){if(data){charSheet.html(data.notes);} charSheet.removeClass('calculationsInitialised').updateCalculations(); charSheet.trigger('gp.sheetUpdated');},!charSheet.hasClass('ignoreSave'));
     });
     //End Form block clicking on and away from
 
@@ -88,7 +88,7 @@ $(function () {
         pThis.remove();
         $('.ability',block).show();
 
-        updateAbilities(block.data('abilitiesfieldidx'),val,function(data){charSheet.html(data.notes); charSheet.removeClass('calculationsInitialised').updateCalculations(); charSheet.trigger('gp.sheetUpdated');});
+        updateAbilities(block.data('abilitiesfieldidx'),val,function(data){if(data){charSheet.html(data.notes);} charSheet.removeClass('calculationsInitialised').updateCalculations(); charSheet.trigger('gp.sheetUpdated');},!charSheet.hasClass('ignoreSave'));
     });
     //Abilities block clicking on and away from
 
@@ -97,9 +97,10 @@ $(function () {
     $('body').on('click','.formCheck input',function(){
         var checkArea=$(this).closest('.formCheck');
         var val=$('input:checked',checkArea).length+'/'+$('input',checkArea).length;
+        var charSheet=$(this).closest('.customChar');
 
-        updateField(checkArea.data('formfieldidx'),val);
-        $(this).closest('.customChar').updateCalculations();
+        updateField(checkArea.data('formfieldidx'),val,function(){},!charSheet.hasClass('ignoreSave'));
+        charSheet.updateCalculations();
     });
     //End form check boxes
 
@@ -259,16 +260,16 @@ $(function () {
         return {addToQueue:addToQueue,addQueueComplete:addQueueComplete, blockUI:blockUI, unblockUI:unblockUI};
     })();
 
-    function updateField(fieldIdx, value, onComplete){
-        ajaxQueue.addToQueue({api: '/characters/bbformUpdateVal', obj:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value, onComplete:onComplete}});
+    function updateField(fieldIdx, value, onComplete, process){
+        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateVal', obj:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value, onComplete:onComplete}}): (onComplete && onComplete(null));
     }
 
-    function updateBlock(blockIdx, value, onComplete){
-        ajaxQueue.addToQueue({api: '/characters/bbformUpdateBlock', obj:{ charID: $('#characterID').val(), blockIdx:blockIdx, fieldValue:value}, blocking:true, onComplete:onComplete});
+    function updateBlock(blockIdx, value, onComplete, process){
+        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateBlock', obj:{ charID: $('#characterID').val(), blockIdx:blockIdx, fieldValue:value}, blocking:true, onComplete:onComplete}): (onComplete && onComplete(null));
     }
 
-    function updateAbilities(blockIdx, value, onComplete){
-        ajaxQueue.addToQueue({api: '/characters/bbformUpdateAbilities', obj:{ charID: $('#characterID').val(), blockIdx:blockIdx, fieldValue:value}, blocking:true, onComplete:onComplete});
+    function updateAbilities(blockIdx, value, onComplete, process){
+        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateAbilities', obj:{ charID: $('#characterID').val(), blockIdx:blockIdx, fieldValue:value}, blocking:true, onComplete:onComplete}): (onComplete && onComplete(null));
     }
 
     function OnQueueEmpty(onComplete){

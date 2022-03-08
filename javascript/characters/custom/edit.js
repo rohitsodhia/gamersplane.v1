@@ -31,4 +31,22 @@ $(function () {
             });
         }
     });
+
+    $('.customTabs li').on('click',function(){
+        var pThis=$(this);
+        $('.customTabs li').removeClass('tabSel');
+        pThis.addClass('tabSel');
+        $('.editTab').hide();
+        var showSel=pThis.data('showsel');
+        var showEle=$(showSel).show();
+        if(showSel=='#tabPreview'){
+            showEle.removeClass('calculationsInitialised').html('<p>Loading....</p>');
+            $.ajax({type: 'post',url: API_HOST +'/forums/getPostPreview',xhrFields: {withCredentials: true},
+                data:{ postText: $('textarea.markItUpEditor').val(), postAsId: 0, postAsName: ''},
+                success:function (data) {
+                    showEle.html(data.post).darkModeColorize().zoommap().updateCalculations();
+                }
+            });
+        }
+    });
 });

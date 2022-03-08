@@ -24,6 +24,9 @@
 					if (is_subclass_of($character, 'd20Character')) {
 						$addJSFiles[] = 'characters/_d20Character.js';
 					}
+					if (SYSTEM == 'custom') {
+						$addJSFiles[] = 'characters/custom/sheet.js';
+					}
 					if (file_exists(FILEROOT . '/javascript/characters/' . SYSTEM . '/edit.js')) {
 						$addJSFiles[] = 'characters/' . SYSTEM . '/edit.js';
 					}
