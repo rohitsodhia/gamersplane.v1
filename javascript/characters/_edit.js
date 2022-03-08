@@ -145,10 +145,14 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 	$scope.toggleNotes = function ($event) {
 		$($event.target).siblings('textarea').slideToggle();
 	};
-	$scope.save = function () {
+	$scope.save = function ($event) {
 		CharactersService.save($scope.character.characterID, $scope.character).then(function (data) {
 			if (data.saved) {
-				window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/';
+				if($($event.originalEvent.submitter).hasClass('dontExit')){
+					window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/edit/';
+				} else {
+					window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/';
+				}
 			}
 		});
 	};
