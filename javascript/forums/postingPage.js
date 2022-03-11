@@ -410,6 +410,7 @@ $(function() {
 							var name=$.trim($('.snippetName',pThis).text());
 							var notes=$.trim($('.snippetBBCode',pThis).text());
 							if(name.length>0 && notes.length>0){
+								notes=replaceForumulae(notes,$('.hidden',pThis));
 								$('<option></option>').text(name).data('notes',notes).appendTo($('select',snippetDiv));
 							}
 						});
