@@ -18,14 +18,6 @@
 		}
 
 		public function saveCharacter(){
-			global $currentUser,$mongo;
-
-			$mongo->characterHistory->updateOne(
-				['characterID' => ((int)$this->characterID)],
-				['$push' => [ 'history' => [ 'userID' => $currentUser->userID, 'username' => $currentUser->username, 'datetime'=>genMongoDate(), 'bbCode' => $this->notes ]]],
-				['upsert' => true]
-			);
-
 			parent::save();
 		}
 	}
