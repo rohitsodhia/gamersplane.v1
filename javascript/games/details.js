@@ -76,7 +76,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID && ($scope.details.retired === undefined || $scope.details.retired === null))
+					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID )
 						$scope.isPrimaryGM = true;
 				} //else
 //					window.location = '/games/';
@@ -108,8 +108,12 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					window.location.href = '/games/?gameRetired=' + $scope.details.gameID;
 			});
 		};
-
-
+		$scope.confirmUnretire = function () {
+			GamesService.confirmUnretire($scope.gameID).then(function (data) {
+				if (data.success)
+					window.location.href = '/games/' + $scope.details.gameID;
+			});
+		};
 		$scope.applyToGame = function () {
 			GamesService.apply($scope.gameID).then(function (data) {
 				if (data.success === true)

@@ -21,6 +21,8 @@ class games
 			$this->toggleGameStatus($_POST['gameID']);
 		} elseif ($pathOptions[0] == 'retire' && intval($_POST['gameID'])) {
 			$this->retire($_POST['gameID']);
+		} elseif ($pathOptions[0] == 'unretire' && intval($_POST['gameID'])) {
+			$this->unretire($_POST['gameID']);
 		} elseif ($pathOptions[0] == 'apply') {
 			$this->apply();
 		} elseif (
@@ -570,6 +572,25 @@ class games
 			if ($gameCount == 0) {
 				$currentUser->deleteUsermeta('isGM');
 			}
+
+			displayJSON(['success' => true]);
+		} else {
+			displayJSON(['failed' => true, 'errors' => ['notGM']]);
+		}
+	}
+
+	public function unretire($gameID)
+	{
+		global $currentUser;
+		$mongo = DB::conn('mongo');
+
+		$gameID = (int)$gameID;
+		extract($mongo->games->findOne(['gameID' => $gameID], ['projection' => ['gm' => true, 'forumID' => true, 'groupID' => true, 'public' => true, 'players' => true]]));
+		$gmID = (int)$gm['userID'];
+		if ($currentUser->userID == $gmID) {
+			$mongo->games->updateOne(['gameID' => $gameID], ['$set' => ['retired' => null, 'status' => 'closed']]);
+
+			$currentUser->updateUsermeta('isGM', true);
 
 			displayJSON(['success' => true]);
 		} else {
