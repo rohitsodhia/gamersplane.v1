@@ -31,7 +31,7 @@
 				</div>
 				<div class="alignRight">
 <?	if ($forumID == 0) { ?>
-					<div><a href="/forums/search/?search=latestPosts">Latest Posts</a></div>
+					<div><a href="/forums/search/?search=latestPosts">Latest Posts</a>/<a href="/forums/search/?search=unreadPosts">Unread Posts</a></div>
 					<div><a href="/forums/search/?search=latestGamePosts">Latest Game Posts</a></div>
 					<div><a href="/forums/search/?search=latestPublicPosts">Latest in Public Games</a></div>
 <?	} ?>
