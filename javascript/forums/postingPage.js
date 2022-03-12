@@ -746,6 +746,11 @@ $(function() {
 
 				$('option:first',pThis).prop("selected", true);
 			});
+
+			$('#charSheetRoller').on('click','.npcList_item',function(){
+				$('#messageTextArea').focus();
+				$.markItUp({ replaceWith: '[npc='+$.trim($('.npcList_itemName',this).text())+']'+$.trim($('img',this).data('avatar'))+"[/npc]" });
+			});
 		}
 	}
 });
