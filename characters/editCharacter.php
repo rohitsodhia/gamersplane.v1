@@ -24,6 +24,9 @@
 					if (is_subclass_of($character, 'd20Character')) {
 						$addJSFiles[] = 'characters/_d20Character.js';
 					}
+					if (SYSTEM == 'custom') {
+						$addJSFiles[] = 'characters/custom/sheet.js';
+					}
 					if (file_exists(FILEROOT . '/javascript/characters/' . SYSTEM . '/edit.js')) {
 						$addJSFiles[] = 'characters/' . SYSTEM . '/edit.js';
 					}
@@ -47,7 +50,7 @@
 			<div class="avatarPreview avatarPreview-<?=SYSTEM?>"><img src="<?=$characterAvatar?>" alt="avatar"/></div>
 <?php
 		}?>
-		<form<?=$angular?" ng-controller=\"{$angular}\" ng-submit=\"save()\"":' method="post" action="/characters/process/editCharacter/"'?>>
+		<form<?=$angular?" ng-controller=\"{$angular}\" ng-submit=\"save(\$event)\"":' method="post" action="/characters/process/editCharacter/"'?>>
 			<input id="characterID" type="hidden" name="characterID" value="<?=$characterID?>">
 			<input id="system" type="hidden" name="system" value="<?=$character::SYSTEM?>">
 
@@ -57,7 +60,8 @@
 			</div>
 
 			<div id="submitDiv">
-				<button type="submit" name="save" class="fancyButton">Save</button>
+				<button type="submit" name="save" class="fancyButton dontExit">Save</button>
+				<button type="submit" name="saveAndExit" class="fancyButton">Save and Exit</button>
 			</div>
 		</form>
 <?php	} ?>
