@@ -410,6 +410,9 @@ app.config(['$httpProvider', function ($httpProvider) {
 	this.confirmRetire = function (gameID) {
 		return $http.post(API_HOST + '/games/retire/', { 'gameID': gameID }).then(function (data) { return data.data; });
 	};
+	this.confirmUnretire = function (gameID) {
+		return $http.post(API_HOST + '/games/unretire/', { 'gameID': gameID }).then(function (data) { return data.data; });
+	};
 }]).service('ACSearch', ['$http', '$q', function ($http, $q) {
 	this.cil = function (type, search, system, systemOnly) {
 		if (search.length === 0) {
