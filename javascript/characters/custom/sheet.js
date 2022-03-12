@@ -23,9 +23,11 @@ $(function () {
         var pFormValue=$(this).closest('.formVal');
         var charSheet=$(this).closest('.customChar');
         pThis.remove();
+        var sendVal=val.replaceAll("[", "&#91;");
+        sendVal=sendVal.replaceAll("]", "&#93;");
         pFormValue.text(val);
 
-        updateField(pFormValue.data('formfieldidx'),val,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null);
+        updateField(pFormValue.data('formfieldidx'),sendVal,isDiceRoll(sendVal)?function(){charSheet.trigger('gp.sheetUpdated');}:null);
         charSheet.updateCalculations();
     });
 

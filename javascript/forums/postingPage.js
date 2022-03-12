@@ -45,6 +45,23 @@ $(function() {
 
 	});
 
+	$('body').on('click','.createSheetButton',function(){
+		var snippetIdx=$(this).closest('.charsheet').data('charsheet');
+		var postId=$(this).closest('.postBlock').data('postid');
+		var name=prompt("What is your character's name?");
+		if(postId && name){
+			$(this).remove();
+			$.ajax( { type: 'post', url: API_HOST +'/characters/createFromSnippet', xhrFields: { withCredentials: true},
+				data:{ postID: postId, snippetIdx:snippetIdx, name:name },
+				success:function (data) {
+					if(data && data.success){
+						window.location.href='/characters/custom/'+data.characterID+'/';
+					}
+				}
+			});
+		}
+	});
+
 	var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
 	if (gameOptions && gameOptions.characterSheetIntegration){
 		$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
@@ -258,6 +275,18 @@ $(function() {
 				}
 			}
 
+			if(!isGm && characterSheetIntegration.playerSheets && Array.isArray(characterSheetIntegration.playerSheets)){
+
+				for(var i=0;i<characterSheetIntegration.playerSheets.length;i++){
+					var char=characterSheetIntegration.playerSheets[i];
+					var keys=Object.keys(char);
+					if(keys.length>0){
+						var hrefParts = char[keys[0]].split('/');
+						$('<span class="rollForChar"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
+					}
+				}
+			}
+
 			var replaceForumulae=function(text,htmlEle){
 				var valElements=$('.formVal',htmlEle);
 
@@ -381,6 +410,7 @@ $(function() {
 							var name=$.trim($('.snippetName',pThis).text());
 							var notes=$.trim($('.snippetBBCode',pThis).text());
 							if(name.length>0 && notes.length>0){
+								notes=replaceForumulae(notes,$('.hidden',pThis));
 								$('<option></option>').text(name).data('notes',notes).appendTo($('select',snippetDiv));
 							}
 						});
@@ -496,7 +526,7 @@ $(function() {
 
 			var addCustomSheet=function(charSheetContent){
 				var customSheet=$('<div class="customSheet customChar"></div>').appendTo(charSheet);
-				customSheet.html($('#charDetails div.customChar',charSheetContent).html());
+				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap();
 				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
 				customSheet.updateCalculations();
 				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});

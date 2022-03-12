@@ -151,7 +151,7 @@
 				$npc = $post->getNpc();
 			}
 ?>
-			<div class="postBlock post<?=$postSide?><?=$postAsChar ? ' postAsChar' . ($character->getAvatar() ? ' withCharAvatar' : '') : ($npc ? ' withSingleNpc postAsChar withCharAvatar':'')?>">
+			<div data-postid="<?=$post->getPostID()?>" class="postBlock post<?=$postSide?><?=$postAsChar ? ' postAsChar' . ($character->getAvatar() ? ' withCharAvatar' : '') : ($npc ? ' withSingleNpc postAsChar withCharAvatar':'')?>">
 				<a name="p<?=$post->getPostID()?>"></a>
 <?php
 			if (!$newPostMarked && ($post->getPostID() > $threadManager->getThreadLastRead() || $threadManager->thread->getLastPost('postID') == $post->getPostID())) {

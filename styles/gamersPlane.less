@@ -3678,6 +3678,27 @@ select.notPretty {
 	background-color: #fec;
 }
 
+.spoiler.charsheet {
+	background-color: #fcc;
+}
+
+.spoiler.charsheet .createSheet{
+	display: none;
+}
+
+.postBlock .post .spoiler.charsheet .createSheet{
+	text-align: right;
+	display: block;
+	.createSheetButton{
+		cursor: pointer;
+		border: solid 1px @gp-red;
+		color: @gp-red;
+		padding: .1rem .5rem;
+		background-color: #fff;
+	}
+}
+
+
 .youtube_bb {
 	position: relative;
 	padding-bottom: 56.25%; //Youtube radio of 315 / 560
