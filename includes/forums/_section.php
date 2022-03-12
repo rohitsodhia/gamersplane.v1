@@ -84,6 +84,7 @@
 								<div class="headers">
 									<div class="reason">Reason</div>
 									<div class="roll"># of Dice</div>
+									<div class="modifier">Modifier</div>
 									<div class="visibility">Visibility</div>
 								</div>
 								<div>
@@ -91,6 +92,9 @@
 									<div class="reason"><input type="text" name="rolls[<?=$count?>][reason]" maxlength="100"<?=isset($data->reason)?" value=\"{$data->reason}\"":null?> class="borderBox"></div>
 									<div class="roll">
 										<input type="text" name="rolls[<?=$count?>][roll]" value="<?=isset($data->roll)?$data->roll:4?>">
+									</div>
+									<div class="modifier">
+										<input type="text" name="rolls[<?=$count?>][modifier]" value="<?=isset($data->modifier)?$data->modifier:0?>">
 									</div>
 									<div class="visibility"><select name="rolls[<?=$count?>][visibility]">
 										<option value="0"<?=isset($data->visibility) && $data->visibility == 0?' selected="selected"':null?>>Hide Nothing</option>

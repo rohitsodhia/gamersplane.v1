@@ -41,6 +41,10 @@
 				$this->bbformUpdateAbilities((int)$_POST['charID'], (int)$_POST['blockIdx'], $_POST['fieldValue']);
 			} elseif ($pathOptions[0] == 'getBbcodeSection') {
 				$this->getBbcodeSection((int)$_POST['charID'], (int)$_POST['requestIdx'], $_POST['tagSelector']);
+			}  elseif ($pathOptions[0] == 'createFromSnippet') {
+				$this->createFromSnippet((int)$_POST['postID'],(int)$_POST['snippetIdx'], $_POST['name']);
+			} elseif ($pathOptions[0] == 'getCharacterSnippet') {
+				$this->getCharacterSnippet((int)$_POST['postID'],(int)$_POST['snippetIdx']);
 			} else {
 				displayJSON(['failed' => true]);
 			}
@@ -679,7 +683,6 @@
 		}
 
 		private function bbformUpdateVal($characterID, $fieldIdx, $fieldValue){
-
 			$this->updateCustomSheetNotes($characterID, false, function($text) use (&$fieldIdx, &$fieldValue){
 				$formField=0;
 				$matches = null;
@@ -768,5 +771,63 @@
 			}
 		}
 
+		private function processCharacterSheetSnippet($postID, $snippetIdx, $regex, callable $processFn){
+			addPackage('forum');
+			$post = new Post($postID);
+			$threadManager = new ThreadManager($post->getThreadID());
+
+			if ($threadManager->getPermissions('read')){
+				$charSheetBBCode = null;
+				$snippetLoop = 0;
+				preg_replace_callback($regex, function($matches) use (&$snippetLoop, &$snippetIdx, &$charSheetBBCode){
+					if($snippetIdx==$snippetLoop++){
+						$charSheetBBCode=$matches[2];
+					}
+				}, $post->getMessage());
+
+				if($charSheetBBCode){
+					$processFn($charSheetBBCode);
+				}else {
+					displayJSON(['failed' => true, 'errors' => ['noSnippet']]);
+				}
+
+			} else {
+				displayJSON(['failed' => true, 'errors' => ['noPermission']]);
+			}
+		}
+
+		private function createFromSnippet($postID, $snippetIdx, $name){
+			$this->processCharacterSheetSnippet($postID, $snippetIdx,"/\[charsheet=\"?(.*?)\"?\](.*?)\[\/charsheet\]/ms" ,function($bbCode) use (&$postID, &$snippetIdx, &$name){
+				$name = sanitizeString($name);
+				if (strcmp(filterString($name), $name) != 0 || $name == '') {
+					$name='PC';
+				}
+
+				addPackage('customCharacter');
+				$charClass = 'customCharacter';
+				$newChar = new $charClass();
+				$newChar->setLabel($name);
+				$newChar->setCharType('PC');
+				$newChar->setName($name);
+				$newChar->setNotes($bbCode);
+				$newChar->createNew();
+
+				displayJSON([
+					'success' => true,
+					'characterID' => $newChar->getID()
+				]);
+			});
+		}
+
+		private function getCharacterSnippet($postID, $snippetIdx){
+			$this->processCharacterSheetSnippet($postID, $snippetIdx,"/\[snippet=\"?(.*?)\"?\](.*?)\[\/snippet\]/ms" ,function($bbCode) use (&$postID, &$snippetIdx){
+				displayJSON([
+					'success' => true,
+					'bbcode' => $bbCode,
+					'postID' => $postID,
+					'snippetIdx' => $snippetIdx
+				]);
+			});
+		}
 	}
 ?>

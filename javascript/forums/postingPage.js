@@ -45,6 +45,23 @@ $(function() {
 
 	});
 
+	$('body').on('click','.createSheetButton',function(){
+		var snippetIdx=$(this).closest('.charsheet').data('charsheet');
+		var postId=$(this).closest('.postBlock').data('postid');
+		var name=prompt("What is your character's name?");
+		if(postId && name){
+			$(this).remove();
+			$.ajax( { type: 'post', url: API_HOST +'/characters/createFromSnippet', xhrFields: { withCredentials: true},
+				data:{ postID: postId, snippetIdx:snippetIdx, name:name },
+				success:function (data) {
+					if(data && data.success){
+						window.location.href='/characters/custom/'+data.characterID+'/';
+					}
+				}
+			});
+		}
+	});
+
 	var characterSheetIntegration={gmExcludePcs:false,gmExcludeNpcs:false};
 	if (gameOptions && gameOptions.characterSheetIntegration){
 		$.extend(characterSheetIntegration,gameOptions.characterSheetIntegration);
@@ -258,6 +275,18 @@ $(function() {
 				}
 			}
 
+			if(!isGm && characterSheetIntegration.playerSheets && Array.isArray(characterSheetIntegration.playerSheets)){
+
+				for(var i=0;i<characterSheetIntegration.playerSheets.length;i++){
+					var char=characterSheetIntegration.playerSheets[i];
+					var keys=Object.keys(char);
+					if(keys.length>0){
+						var hrefParts = char[keys[0]].split('/');
+						$('<span class="rollForChar"></span>').text(keys[0]).attr('charid', hrefParts[1]).attr('gamesys', hrefParts[0]).appendTo(charList);
+					}
+				}
+			}
+
 			var replaceForumulae=function(text,htmlEle){
 				var valElements=$('.formVal',htmlEle);
 
@@ -381,6 +410,7 @@ $(function() {
 							var name=$.trim($('.snippetName',pThis).text());
 							var notes=$.trim($('.snippetBBCode',pThis).text());
 							if(name.length>0 && notes.length>0){
+								notes=replaceForumulae(notes,$('.hidden',pThis));
 								$('<option></option>').text(name).data('notes',notes).appendTo($('select',snippetDiv));
 							}
 						});
@@ -411,7 +441,25 @@ $(function() {
 								var rollerSpan=$('<span class="rollDice"></span>').attr('roll',tdText).attr('rolltext',rollText).html(td.html());
 								td.html(rollerSpan);
 							}
+							if(/([\d]+)[dD][fF]([+-]\d+)?/.test(tdText)) {
+								var matches=tdText.match(/([\d]+)[dD][fF]([+-]\d+)?/);
+								var rollText=$.trim($('td:not(:emptyContent):first',td.closest('tr')).text());
+								var rollerSpan=$('<span class="rollFateDice"></span>').attr('rolldice',matches[1]).attr('rollmodifier',matches[2]?matches[2]:0).attr('rolltext',rollText).html(td.html());
+								td.html(rollerSpan);
+							}
 						});
+
+						/*
+						$('table.bbTableRolls.bbSwRolls td',charSheet).each(function(){
+							var td=$(this);
+							var tdText=$.trim(td.text());
+							if(/(^|\s+)((\d*)([apbdcsfAPBDCSF]))+(\s+|$)/gm.test(tdText)) {
+								var matches=tdText.match(/([\d]+)[dD][fF]([+-]\d+)?/);
+								var rollText=$.trim($('td:not(:emptyContent):first',td.closest('tr')).text());
+								var rollerSpan=$('<span class="rollFateDice"></span>').attr('rolldice',matches[1]).attr('rollmodifier',matches[2]?matches[2]:0).attr('rolltext',rollText).html(td.html());
+								td.html(rollerSpan);
+							}
+						});*/
 
 						$('table.bbTableD20:not(.bbTableDnd5e) td',charSheet).each(function(){
 							var td=$(this);
@@ -438,11 +486,11 @@ $(function() {
 						});
 
 						//look for rows with multiple dice - they'll need the header too
-						$('table.bbTableRolls tr:multipleDice td:has(.rollDice)',charSheet).each(function(){
+						$('table.bbTableRolls tr:multipleDice td:has(.rollDice,.rollFateDice)',charSheet).each(function(){
 							var td=$(this);
 							var cellIndex=td.index();
 							var tableHeadings=$('tr:first td',td.closest('table.bbTableRolls'));
-							var rollDice=$('.rollDice',td);
+							var rollDice=$('.rollDice,.rollFateDice',td);
 							rollDice.each(function(){
 								$(this).attr('rolltext',$(this).attr('rolltext')+' - '+$.trim(tableHeadings.eq(cellIndex).text()));
 							});
@@ -452,7 +500,7 @@ $(function() {
 						if($('#charButtons .rollForChar').length>1){
 							var charPrefix=$('.rollForChar.sel').hasClass('gmSheet')?'':(charName+': ');
 
-							$('.rollDice',charSheet).each(function(){
+							$('.rollDice,.rollFateDice',charSheet).each(function(){
 								var rollDice=$(this);
 								rollDice.attr('rolltext',charPrefix+rollDice.attr('rolltext'));
 							});
@@ -478,7 +526,7 @@ $(function() {
 
 			var addCustomSheet=function(charSheetContent){
 				var customSheet=$('<div class="customSheet customChar"></div>').appendTo(charSheet);
-				customSheet.html($('#charDetails div.customChar',charSheetContent).html());
+				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap();
 				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
 				customSheet.updateCalculations();
 				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});
@@ -628,7 +676,6 @@ $(function() {
 
 
 			var addRollToList = function (reason, roll, rerollAces) {
-
 				rollCount += 1;
 				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'basic' }, function (data) {
 					$newRow = $(data);
@@ -639,6 +686,18 @@ $(function() {
 					$newRow.find('select').prettySelect();
 					$newRow.find('.reason input').val(reason);
 					$newRow.find('.roll input').val(roll);
+					$newRow.appendTo($newRolls);
+				});
+			};
+
+			var addFateRollToList = function (reason, rolldice, rollmodifier){
+				rollCount += 1;
+				$.post('/forums/ajax/addRoll/', { count: rollCount, type: 'fate' }, function (data) {
+					$newRow = $(data);
+					$newRow.find('select').prettySelect();
+					$newRow.find('.reason input').val(reason);
+					$newRow.find('.roll input').val(rolldice);
+					$newRow.find('.modifier input').val(rollmodifier);
 					$newRow.appendTo($newRolls);
 				});
 			};
@@ -680,6 +739,16 @@ $(function() {
 				addRollToList(reason, roll, rerollAces);
 			});
 
+			$('#rolls_decks').on('click', '.rollFateDice', function () {
+				var thisRoll = $(this);
+				var reason=thisRoll.attr('rolltext');
+				var rolldice = thisRoll.attr('rolldice');
+				var rollmodifier = thisRoll.attr('rollmodifier');
+
+				addFateRollToList(reason, rolldice, rollmodifier);
+			});
+
+
 			$('#rolls_decks').on('click', '.swffgRoller', function () {
 				var thisRoll = $(this);
 				var reason=$('.name',thisRoll.closest('tr')).text();
@@ -706,6 +775,11 @@ $(function() {
 				}
 
 				$('option:first',pThis).prop("selected", true);
+			});
+
+			$('#charSheetRoller').on('click','.npcList_item',function(){
+				$('#messageTextArea').focus();
+				$.markItUp({ replaceWith: '[npc='+$.trim($('.npcList_itemName',this).text())+']'+$.trim($('img',this).data('avatar'))+"[/npc]" });
 			});
 		}
 	}

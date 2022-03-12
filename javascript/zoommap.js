@@ -57,4 +57,5 @@ jQuery.fn.zoommap = function (){
 
 $(function() {
 	$('.post').zoommap();
+    $('.customChar').zoommap();
 });

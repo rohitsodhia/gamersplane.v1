@@ -3,11 +3,10 @@ $(function () {
         if(!params.notes){
             $.get( '/forums/thread/21532/?pageSize=10000', function( data ) {
                 var templateList=$('#templateList');
-                $('.post .spoiler.snippet', $(data)).each(function(){
+                $('.post .spoiler.snippet:not(.charsheet)', $(data)).each(function(){
                     var spoiler=$(this);
                     var snippetTitle=$('.snippetName',spoiler).text();
-                    var snippetbbcode=$('.snippetBBCode',spoiler).text();
-                    $('<option></option>').text(snippetTitle).data('bbcode',snippetbbcode).appendTo(templateList);
+                    $('<option></option>').text(snippetTitle).data('snippetidx',spoiler.data('snippetidx')).data('postid',spoiler.closest('.postBlock').data('postid')).appendTo(templateList);
                     $('#loadTemplate').show();
                 });
                 var options = templateList.find('option');
@@ -24,8 +23,20 @@ $(function () {
                 if(loadTemplate){
                     var pThis=$(this);
                     var selectedOption=pThis.find(":selected");
-                    var bbcode=selectedOption.data('bbcode');
-                    $('textarea.markItUp').focus().val(bbcode).change();
+                    var postId=selectedOption.data('postid');
+                    var snippetIdx=selectedOption.data('snippetidx');
+                    $('textarea.markItUp').focus().val('Loading...').change();
+                    $.ajax( { type: 'post', url: API_HOST +'/characters/getCharacterSnippet', xhrFields: { withCredentials: true},
+                    data:{ postID: postId, snippetIdx:snippetIdx},
+                    success:function (data) {
+                        if(data && data.success){
+                            $('textarea.markItUp').focus().val($.trim(data.bbcode)).change();
+                        } else {
+                            $('textarea.markItUp').focus().val('').change();
+                        }
+                    }
+                });
+
                 }
                 $('option:first',pThis).prop("selected", true);
             });
