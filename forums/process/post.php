@@ -81,6 +81,7 @@
 				$rollObj->roll();
 				$rollObj->setReason($roll['reason']);
 				$rollObj->setVisibility($roll['visibility']);
+				$rollObj->setModifier($roll['modifier']);
 				$post->addRollObj($rollObj);
 			}
 		} }
