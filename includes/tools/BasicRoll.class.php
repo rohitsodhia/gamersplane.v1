@@ -25,7 +25,7 @@
 				if(count($rolls)){
 					foreach ($rolls as $roll){
 						if(($roll[4]=="d"||$roll[4]=="D")){
-							$dn=intval($roll[3]?$roll[3]:1); //dice number
+							$dn=intval($roll[3]!=null?$roll[3]:1); //dice number
 							$diceNumber[]=$dn;
 							$diceModifier[]=$roll[2]?$roll[2]:'+';
 							$diceSize=intval($roll[5]);
