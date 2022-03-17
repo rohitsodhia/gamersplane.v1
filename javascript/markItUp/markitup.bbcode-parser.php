@@ -332,6 +332,14 @@ function BBCode2Html($text) {
 				$tableClass .= " bbTableZebra";
 			}
 
+			if(strpos($tableType,"pool")!==false){
+				$tableClass .= " bbTablePool";
+			}
+
+			if(strpos($tableType,"pooladd")!==false){
+				$tableClass .= " bbTablePoolAdd";
+			}
+
 			$tableRows = explode("\n", trim(str_replace("<br />","",$matches[3])));
 
 			//simple code to split cells on pipes
