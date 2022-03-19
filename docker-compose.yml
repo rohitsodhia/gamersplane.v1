@@ -38,6 +38,7 @@ services:
     container_name: gpv1-api
     volumes:
       - ./:/var/www
+      - ./logs/api:/dev/log
     depends_on:
       - mysql
       - mongo
