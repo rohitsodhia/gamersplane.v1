@@ -287,7 +287,7 @@ function BBCode2Html($text) {
 
 	//tables
 	$matches = null;
-	$text=preg_replace_callback("/\[table(=([\"a-zA-Z0-9 ])*)?\](.*?)\[\/table\]/ms", function($matches){
+	$text=preg_replace_callback("/\[table(=([\"a-zA-Z0-9\- ])*)?\](.*?)\[\/table\]/ms", function($matches){
 			$tableType=strtolower(trim(str_replace("=","",str_replace("\"","",$matches[1]))));
 			$tableClass="";
 			if(strpos($tableType,"center")!==false || strpos($tableType,"centre")!==false){
