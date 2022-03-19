@@ -3802,6 +3802,48 @@ select.notPretty {
 	}
 }
 
+//forum icons
+.ra.forum-icon{
+	margin-right: .3em;
+	vertical-align: text-bottom;
+	&:before{ //default communities
+		content: @ra-var-icon-speech-bubble;
+	}
+}
+
+.ra.forum-root-6:before{ //game discussion
+	content: @ra-var-icon-pawn;
+}
+
+.ra.forum-root-20:before{ //guides
+	content: @ra-var-icon-wooden-sign;
+}
+
+.ra.forum-root-22:before{ //management
+	content: @ra-var-icon-sheriff;
+}
+
+.ra.forum-root-2:before{ //games
+	content: @ra-var-icon-d6;
+}
+
+.ra.forum-id-3:before{  //announcements
+	content: @ra-var-icon-gamers-plane;
+}
+
+.ra.forum-id-10:before{  //tavern
+	content: @ra-var-icon-beer;
+}
+
+.ra.forum-id-14:before{  //introductions
+	content: @ra-var-icon-hearts;
+}
+
+.ra.forum-id-8672:before{  //questions and help
+	content: @ra-var-icon-help;
+}
+
+
 .atHighlight {
 	background-color: lighten(@gp-complement-mid, 65%);
 	text-decoration: double;
