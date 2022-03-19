@@ -336,7 +336,7 @@ function BBCode2Html($text) {
 				$tableClass .= " bbTablePool";
 			}
 
-			if(strpos($tableType,"pooladd")!==false){
+			if(strpos($tableType,"pool-add")!==false){
 				$tableClass .= " bbTablePoolAdd";
 			}
 
