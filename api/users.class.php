@@ -387,10 +387,11 @@
 			}
 			$user->updateUsermeta('pronoun', sanitizeString($details['pronoun']));
 
-
-			$birthday = intval($details['birthday']['date']['year']) . '-' . (intval($details['birthday']['date']['month']) <= 9 ? '0' : '') . intval($details['birthday']['date']['month']) . '-' . (intval($details['birthday']['date']['day']) <= 9 ? '0' : '') . intval($details['birthday']['date']['day']);
-			if (preg_match('/^[12]\d{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/', $birthday)) {
-				$user->updateUsermeta('birthday', $birthday);
+			if($details['birthday']['date']){
+				$birthday = intval($details['birthday']['date']['year']) . '-' . (intval($details['birthday']['date']['month']) <= 9 ? '0' : '') . intval($details['birthday']['date']['month']) . '-' . (intval($details['birthday']['date']['day']) <= 9 ? '0' : '') . intval($details['birthday']['date']['day']);
+				if (preg_match('/^[12]\d{3}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/', $birthday)) {
+					$user->updateUsermeta('birthday', $birthday);
+				}
 			}
 			$user->updateUsermeta('showAge', $details['birthday']['showAge'] === 'true' ? 1 : 0);
 			if ($details['location'] == 'null') {
