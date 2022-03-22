@@ -736,7 +736,32 @@ $(function() {
 					reason += ' (disadvantage)';
 				}
 
-				addRollToList(reason, roll, rerollAces);
+				//add to dice pool
+				var addedRollToPool=false;
+				var tablePool=thisRoll.closest('.bbTablePool');
+				if(tablePool.length>0){
+					var lastRoll=$('#newRolls .basicRoll').last();
+					if(lastRoll.length>0){
+						var reasonInput=$('.reason input',lastRoll);
+						var rollInput=$('.roll input',lastRoll);
+						var suffix=", ";
+						if(tablePool.hasClass('bbTablePoolAdd')){
+							suffix=' + ';
+						}
+						var curReasonVal=reasonInput.val();
+						var curRollVal=rollInput.val();
+						//check it fits
+						if((curReasonVal.length+reason.length) < 96 && (curRollVal.length+reason.length) < 46){
+							reasonInput.val(curReasonVal+(curReasonVal.length?suffix:'')+reason);
+							rollInput.val(curRollVal+(curRollVal.length?suffix:'')+roll);
+							addedRollToPool=true;
+						}
+					}
+				}
+
+				if(!addedRollToPool){
+					addRollToList(reason, roll, rerollAces);
+				}
 			});
 
 			$('#rolls_decks').on('click', '.rollFateDice', function () {
