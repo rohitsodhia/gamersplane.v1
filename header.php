@@ -38,7 +38,16 @@
 					<li ng-repeat="game in games | limitTo: 10"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
 				</ul>
 			</li>
-			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
+			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a>
+				<ul>
+					<li><a href="/forums/"><i class="ra ra-gamers-plane"></i> All forums</a></li>
+					<li><a href="/forums/4/"><i class="ra ra-speech-bubble"></i> General Chat</a></li>
+					<li><a href="/forums/21/"><i class="ra forum-root-20"></i> Guides</a></li>
+					<li><a href="/forums/10/"><i class="ra forum-id-10"></i> Games Tavern</a></li>
+					<li><a href="/forums/14/"><i class="ra forum-id-14"></i> Introductions</a></li>
+					<li><a href="/forums/14/"><i class="ra forum-id-8672"></i> Questions and Help</a></li>
+				</ul>
+			</li>
 			<li ng-show="loggedIn"><a href="/gamersList/"><i class="ra ra-gamers-plane hide mob-show-inline-block"></i><span class="mob-hide">The Gamers</span></a></li>
 			<li class="small-hide"><a href="/links/">Links</a></li>
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
