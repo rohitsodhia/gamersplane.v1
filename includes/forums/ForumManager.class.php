@@ -193,7 +193,7 @@ class ForumManager
 			$forumID = $this->currentForum;
 		}
 
-		if (sizeof($this->forums[$forumID]->children) || $this->forums[$forumID]->permissions['read']) {
+		if ((is_array($this->forums[$forumID]->children) && sizeof($this->forums[$forumID]->children)) || $this->forums[$forumID]->permissions['read']) {
 			return true;
 		} else {
 			return false;
