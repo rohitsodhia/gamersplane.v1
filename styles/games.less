@@ -327,7 +327,8 @@
 			vertical-align: initial;
 		}
 
-		.tr.descriptionRow{
+		.tr.descriptionRow,
+		.tr.charGenRow{
 			img,
 			iframe{
 				max-width: 100%;
@@ -382,6 +383,16 @@
 			color: #EEE;
 			font-weight: 400;
 			background-color: #900;
+			.border-radius();
+		}
+	}
+
+	#undeleteGame {
+		label {
+			padding: 4px 6px;
+			color: #EEE;
+			font-weight: 400;
+			background-color: @gp-green;
 			.border-radius();
 		}
 	}

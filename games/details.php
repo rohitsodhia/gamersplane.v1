@@ -101,17 +101,24 @@
 					<div class="labelCol"><label>Games Tavern</label></div>
 					<div class="infoCol"><a  href="/forums/thread/{{details.recruitmentThreadId}}">Recruitment thread</a></div>
 				</div>
-				<div ng-if="isPrimaryGM" id="deleteGame" class="tr clearfix">
+				<div ng-if="isPrimaryGM && !details.retired" id="deleteGame" class="tr clearfix">
 					<div class="labelCol"><label>Retire Game</label></div>
 					<div class="infoCol"><a href="" ng-click="toggleRetireConfirm()">I want to close and retire this game!</a></div>
 				</div>
-				<div ng-if="isPrimaryGM" class="slideToggle" ng-show="displayRetireConfirm">
+				<div ng-if="isPrimaryGM && !details.retired" class="slideToggle" ng-show="displayRetireConfirm">
 					<div class="infoCol shiftRight">
-						<div>Are you sure you want to retire this game? All characters in the game will be removed and it will be moved to your list of retired games. Gamers' Plane admins may choose to make the game forums public, at their discretion.</div>
+						<div>Are you sure you want to retire this game?<br/>
+It will be moved to the Retired Games drawer at the bottom of your <a href="https://gamersplane.com/games/">Games list</a>. You can come back here and unretire it later, if needed.<br/>
+Any future posts in this game will not show up in the normal notification systems (e.g. Front Page, Latest Game Posts, or email) and will only be visible by manually checking the game's threads.</div>
 						<p>
 							<button type="submit" ng-click="confirmRetire()" class="fancyButton smallButton">Retire</button>
 							<button type="submit" ng-click="toggleRetireConfirm()" class="fancyButton smallButton">Cancel</button>
+						</p>
 					</div>
+				</div>
+				<div ng-if="isPrimaryGM && details.retired" id="undeleteGame" class="tr clearfix">
+					<div class="labelCol"><label>Restore Game</label></div>
+					<div class="infoCol"><a href="" ng-click="confirmUnretire()">I want to restore this retired game</a></div>
 				</div>
 				<div class="tr textareaRow clearfix charGenRow">
 					<hr/>
