@@ -292,7 +292,7 @@ $(function () {
 
     //val looks like a dice roll or modifier
     function isDiceRoll(val){
-        return (/^[\+\-](\d)+$/.test(val))||/(\d*)[dD](\d+)([+-]\d+)?/g.test(val);
+        return (/^[\+\-](\d)+$/.test(val))||/((\s*[\+\-]?)\s*(\d*)([dD])?(\d+)(([hlHL])\s*(\d+)\s*)?)+?/g.test(val);
     }
 
 });

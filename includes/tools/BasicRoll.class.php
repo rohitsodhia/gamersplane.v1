@@ -25,7 +25,7 @@
 				if(count($rolls)){
 					foreach ($rolls as $roll){
 						if(($roll[4]=="d"||$roll[4]=="D")){
-							$dn=intval($roll[3]?$roll[3]:1); //dice number
+							$dn=intval($roll[3]!=null?$roll[3]:1); //dice number
 							$diceNumber[]=$dn;
 							$diceModifier[]=$roll[2]?$roll[2]:'+';
 							$diceSize=intval($roll[5]);
@@ -64,7 +64,7 @@
 						$result = $this->dice[$roll['sides'][$handful]]->roll();
 						if (isset($roll['indivRolls'][$handful][$count]) && is_array($roll['indivRolls'][$handful][$count])) {
 							$roll['indivRolls'][$handful][$count][] = $result; // we rolled an ace with the last die
-							$diceVals[array_key_last($diceVals)] += $result;
+							$diceVals[array_keys($diceVals)[count($diceVals)-1]] += $result;
 						}
 						elseif ($result == $roll['sides'][$handful] && $this->rerollAces){
 							$roll['indivRolls'][$handful][$count] = array($result);  // start an array for rerolling aces
