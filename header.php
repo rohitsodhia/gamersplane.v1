@@ -45,7 +45,7 @@
 					<li><a href="/forums/21/"><i class="ra forum-root-20"></i> Guides</a></li>
 					<li><a href="/forums/10/"><i class="ra forum-id-10"></i> Games Tavern</a></li>
 					<li><a href="/forums/14/"><i class="ra forum-id-14"></i> Introductions</a></li>
-					<li><a href="/forums/14/"><i class="ra forum-id-8672"></i> Questions and Help</a></li>
+					<li><a href="/forums/8672/"><i class="ra forum-id-8672"></i> Questions and Help</a></li>
 				</ul>
 			</li>
 			<li ng-show="loggedIn"><a href="/gamersList/"><i class="ra ra-gamers-plane hide mob-show-inline-block"></i><span class="mob-hide">The Gamers</span></a></li>
