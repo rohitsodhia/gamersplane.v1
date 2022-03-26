@@ -22,11 +22,11 @@ RUN docker-php-ext-install pdo_mysql
 # 	&& docker-php-ext-install gd
 RUN docker-php-ext-install gd
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
-COPY docker/php/conf.ini .
-RUN mv ./conf.ini $PHP_INI_DIR/conf.d/conf.ini
-COPY docker/postfix/main.cf .
-RUN mv ./main.cf /etc/postfix/main.cf
+# RUN DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
+# COPY docker/php/conf.ini .
+# RUN mv ./conf.ini $PHP_INI_DIR/conf.d/conf.ini
+# COPY docker/postfix/main.cf .
+# RUN mv ./main.cf /etc/postfix/main.cf
 
 # RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 
