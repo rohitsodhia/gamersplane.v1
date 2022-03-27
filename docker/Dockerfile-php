@@ -10,6 +10,7 @@ RUN apt-get install -y \
 	libpng-dev \
 	make \
 	libmemcached-dev \
+	ca-certificates \
 	# libjpeg-turbo8-dev \
 	&& pecl install memcached \
 	&& docker-php-ext-enable memcached
