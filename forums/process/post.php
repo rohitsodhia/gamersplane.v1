@@ -293,6 +293,7 @@
 				$email = ob_get_contents();
 				ob_end_clean();
 
+				$mail = getMailObj();
 				$mail->Subject = "New Posts";
 				$mail->msgHTML($email);
 
