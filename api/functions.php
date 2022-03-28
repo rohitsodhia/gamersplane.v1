@@ -147,7 +147,7 @@ function randomFloat()
 function getMailObj() {
 	$mail = new PHPMailer();
 	$mail->isSMTP();
-	$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+	// $mail->SMTPDebug = SMTP::DEBUG_SERVER;
 	$mail->Host = 'gamersplane.com';
 	$mail->Port = 25;
 
