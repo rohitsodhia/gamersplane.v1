@@ -1,4 +1,4 @@
-FROM mongo:3.4-jessie
+FROM mongo:3.6-jessie
 
 WORKDIR /docker-entrypoint-initdb.d
 COPY load.sh .
