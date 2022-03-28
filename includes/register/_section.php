@@ -8,9 +8,13 @@
 		$message .= 'Please do not respond to this email, as it will be ignored';
 		$mailSent = false;
 		if (strtolower($_SERVER['HTTP_HOST']) == 'gamersplane.com') {
+			$mail = getMailObj();
+			$mail->addAddress($email);
+			$mail->Subject = "Gamers' Plane Activation Required";
+			$mail->msgHTML($message);
 			do {
-				$mailSent = mail($email, 'Gamers Plane Activation Required', $message, 'From: contact@gamersplane.com');
-			} while (!$mailSent);
+				$sent = $mail->send();
+			} while (!$sent);
 		}
 	}
 ?>

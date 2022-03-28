@@ -203,7 +203,12 @@
 					include('emails/pmEmail.php');
 					$email = ob_get_contents();
 					ob_end_clean();
-					mail($recipEmail, "New PM", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+
+					$mail = getMailObj();
+					$mail->addAddress($recipEmail);
+					$mail->Subject = "New PM";
+					$mail->msgHTML($email);
+					$mail->send();
 				}
 
 				displayJSON(['sent' => true]);

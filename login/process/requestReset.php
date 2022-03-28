@@ -17,7 +17,13 @@ To reset your password, please go to
 {$pathBase}/login/resetPass/?email={$email}&validate={$validationStr}
 
 It will take you to a page where you can enter a new password of your choice.";
-			mail($email, 'Gamers Plane Password Reset', $body, "From: contact@gamersplane.com\r\nReply-To: contact@gamersplane.com");
+
+			$mail = getMailObj();
+			$mail->addAddress($email);
+			$mail->Subject = "Gamers' Plane Password Reset";
+			$mail->body = $body;
+			$mail->send();
+
 			header('Location: /login/requestReset/?success=1'.(isset($_POST['modal'])?'&modal=1':''));
 		} else
 			header('Location: /login/requestReset/?invalidEmail=1'.(isset($_POST['modal'])?'&modal=1':''));

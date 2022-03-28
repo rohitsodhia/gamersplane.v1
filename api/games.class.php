@@ -414,7 +414,15 @@ class games
 				include('emails/newGameEmail.php');
 				$email = ob_get_contents();
 				ob_end_clean();
-				mail('Gamers Plane <contact@gamersplane.com>', "New {$systems->getFullName($system)} Game: {$details['title']}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>\r\nBcc: " . implode(', ', $recips));
+
+				$mail = getMailObj();
+				$mail->addAddress("contact@gamersplane.com");
+				$mail->Subject = "New {$systems->getFullName($system)} Game: {$details['title']}";
+				$mail->msgHTML($email);
+				foreach ($recips as $email) {
+					$mail->addBCC($email);
+				}
+				$mail->send();
 			}
 
 			displayJSON(['success' => true, 'gameID' => (int)$gameID]);
@@ -717,9 +725,19 @@ class games
 			include('emails/gameInviteEmail.php');
 			$email = ob_get_contents();
 			ob_end_clean();
-			@mail($user['email'], "Game Invite", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
-			#				$hl_playerInvited = new HistoryLogger('playerInvited');
-			#				$hl_playerInvited->addUser($currentUser->userID, 'gm')->addUser($user['userID'])->addGame($gameID)->save();
+
+			$mail = getMailObj();
+			$mail->addAddress($user["email"]);
+			$mail->Subject = "Game Invite";
+			$mail->msgHTML($email);
+			foreach ($recips as $email) {
+				$mail->addBCC($email);
+			}
+			$mail->send();
+
+			// $hl_playerInvited = new HistoryLogger('playerInvited');
+			// $hl_playerInvited->addUser($currentUser->userID, 'gm')->addUser($user['userID'])->addGame($gameID)->save();
+
 			displayJSON([
 				'success' => true,
 				'user' => [
@@ -891,7 +909,15 @@ class games
 				include('emails/gmEmail.php');
 				$email = ob_get_contents();
 				ob_end_clean();
-				@mail(implode(', ', $gmEmails), "Game Activity: {$emailDetails->action}", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+
+				$mail = getMailObj();
+				foreach ($gmEmails as $email) {
+					$mail->addAddress($email);
+				}
+				$mail->("contact@gamersplane.com");
+				$mail->Subject = "Game Activity: {$emailDetails->action}";
+				$mail->msgHTML($email);
+				$mail->send();
 			}
 
 			displayJSON(['success' => true, 'character' => $charInfo, 'approved' => $isGM]);

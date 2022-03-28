@@ -293,8 +293,14 @@
 				$email = ob_get_contents();
 				ob_end_clean();
 
-				foreach ($subs as $sub)
-					mail($sub, "New Posts", $email, "Content-type: text/html\r\nFrom: Gamers Plane <contact@gamersplane.com>");
+				$mail->Subject = "New Posts";
+				$mail->msgHTML($email);
+
+				foreach ($subs as $sub) {
+					$mail->clearAddresses();
+					$mail->addAddress($sub);
+					$mail->send();
+				}
 			}
 		}
 

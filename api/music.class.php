@@ -132,7 +132,12 @@
 						'notes' => $notes,
 						'approved' => $currentUser->checkACP('music', false) ? true : false
 					]);
-					@mail('contact@gamersplane.com', 'New Music', "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title", 'From: noone@gamersplane.com');
+
+					$mail = getMailObj();
+					$mail->addAddress("contact@gamersplane.com");
+					$mail->Subject = "New Music";
+					$mail->body = "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title";
+					$mail->send();
 				} else {
 					$mongo->music->updateOne(
 						['_id' => genMongoId($mongoID)],

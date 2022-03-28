@@ -226,7 +226,7 @@ function displayJSON($data, $exit = false)
 	}
 }
 
-function sendMail($to, $subject, $body, $altBody = null) {
+function getMailObj() {
 	$mail = new PHPMailer();
 	$mail->isSMTP();
 	$mail->SMTPDebug = SMTP::DEBUG_SERVER;
@@ -236,12 +236,7 @@ function sendMail($to, $subject, $body, $altBody = null) {
 	$mail->setFrom('contact@gamersplane.com', 'Gamers\' Plane');
 	$mail->addReplyTo('contact@gamersplane.com', 'Gamers\' Plane');
 
-	$mail->addAddress($to);
-	$mail->Subject = $subject;
-	$mail->msgHTML($body);
-	if ($altBody) {
-		$mail->AltBody = $altBody;
-	}
+	return $mail;
 }
 
 /*	Session Functions */

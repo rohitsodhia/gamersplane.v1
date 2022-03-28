@@ -3,19 +3,19 @@
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorVals']);
 		unset($_SESSION['errorTime']);
-		
+
 		$inserts['name'] = sanitizeString($_POST['name']);
 		$inserts['date'] = date('Y-m-d H:i:s');
 		$inserts['username'] = sanitizeString($_POST['username']);
 		$inserts['email'] = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)?$_POST['email']:'';
 		$inserts['subject'] = sanitizeString($_POST['subject']);
 		$inserts['comment'] = sanitizeString($_POST['comment']);
-		
+
 		$nonBlankFields = array('name', 'email', 'subject', 'comment');
 		foreach ($inserts as $field => $value) { if ((in_array($field, $nonBlankFields) && $value == '')) {
 			$_SESSION['errors'][$field] = 1;
 		} }
-		
+
 		if (sizeof($_SESSION['errors'])) {
 			$_SESSION['errorVals'] = $inserts;
 			$_SESSION['errorTime'] = time() + 300;
@@ -31,12 +31,16 @@
 			$addContact->bindValue(':subject', $inserts['subject']);
 			$addContact->bindValue(':comment', $inserts['comment']);
 			$addContact->execute();
-			
+
 			$message = '';
 			foreach ($inserts as $key => $value) { $message .= ucfirst($key).":\n".printReady($value)."\n\n"; }
-			
-			mail('contact@gamersplane.com', 'Gamers Plane Contact: '.printReady($inserts['subject']), $message, 'From: '.$inserts['email']);
-			
+
+			$mail->addAddress("contact@gamersplane.com");
+			$mail->Subject = "Gamers' Plane Contact: ".printReady($inserts["subject"]);
+			$mail->body = $message;
+			$mail->setFrom($inserts["email"]);
+			$mail->send();
+
 			unset($_SESSION['errors']);
 			unset($_SESSION['errorVals']);
 
