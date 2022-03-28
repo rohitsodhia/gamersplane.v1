@@ -21,7 +21,7 @@ It will take you to a page where you can enter a new password of your choice.";
 			$mail = getMailObj();
 			$mail->addAddress($email);
 			$mail->Subject = "Gamers' Plane Password Reset";
-			$mail->body = $body;
+			$mail->Body = $body;
 			$mail->send();
 
 			header('Location: /login/requestReset/?success=1'.(isset($_POST['modal'])?'&modal=1':''));

@@ -100,7 +100,7 @@
 				$mail = getMailObj();
 				$mail->addAddress("contact@gamersplane.com");
 				$mail->Subject = "New User";
-				$mail->body = "New User: {$username}";
+				$mail->Body = "New User: {$username}";
 				$mail->send();
 
 //				wp_create_user($username, $password1, $email);

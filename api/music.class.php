@@ -136,7 +136,7 @@
 					$mail = getMailObj();
 					$mail->addAddress("contact@gamersplane.com");
 					$mail->Subject = "New Music";
-					$mail->body = "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title";
+					$mail->Body = "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title";
 					$mail->send();
 				} else {
 					$mongo->music->updateOne(
