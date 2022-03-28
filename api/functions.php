@@ -141,6 +141,19 @@ function randomFloat()
 	return mt_rand() / mt_getrandmax();
 }
 
+function getMailObj() {
+	$mail = new PHPMailer();
+	$mail->isSMTP();
+	$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+	$mail->Host = 'gamersplane.com';
+	$mail->Port = 25;
+
+	$mail->setFrom('contact@gamersplane.com', 'Gamers\' Plane');
+	$mail->addReplyTo('contact@gamersplane.com', 'Gamers\' Plane');
+
+	return $mail;
+}
+
 /* Session Functions */
 function startSession()
 {
