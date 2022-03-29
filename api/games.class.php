@@ -914,7 +914,6 @@ class games
 				foreach ($gmEmails as $email) {
 					$mail->addAddress($email);
 				}
-				$mail->("contact@gamersplane.com");
 				$mail->Subject = "Game Activity: {$emailDetails->action}";
 				$mail->msgHTML($email);
 				$mail->send();
