@@ -17,7 +17,11 @@ $(function() {
 			var lastPageData=$(data);
 			var block=$('.postBlock:not(.postPreview)', lastPageData).clone();
 			var addedBlock=isForwardFill?(block.insertBefore(pThis)):(block.insertAfter(pThis));
-			addedBlock.addClass('postBlockFound').darkModeColorize().zoommap().applyDiceRules().convertTimeZones();
+			addedBlock.addClass('postBlockFound').darkModeColorize().zoommap().convertTimeZones();
+			if($.isFunction($.fn.applyDiceRules)){
+				addedBlock.applyDiceRules();
+			}
+
 			if(!isForwardFill) {
 				$("img",addedBlock).on("load", function() {
 					$(this).removeClass('imageNotLoaded');
