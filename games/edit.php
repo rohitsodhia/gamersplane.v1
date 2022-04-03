@@ -12,8 +12,9 @@
 				<div class="error" ng-show="errors.indexOf('repeatTitle') >= 0">Someone else already has a game by this title</div>
 				<div class="tr">
 					<label>System</label>
-					<combobox ng-if="state == 'new'" data="allSystems" change="setSystem(value)" select></combobox>
-					<div ng-if="state != 'new'" ng-bind-html="allSystems[game.system]"></div>
+					<select ng-model="game.system" class="notPretty">
+						<option ng-repeat="(key, value) in allSystems" value="{{key}}" ng-bind-html="value"></option>
+					</select>
 				</div>
 				<div class="tr" ng-if="allSystems[game.system]=='Custom'">
 					<label>Custom Type</label>

@@ -430,6 +430,9 @@ class games
 			displayJSON(['unauthorized' => true]);
 		}
 
+		$systems = Systems::getInstance();
+		$details['system'] = $systems->verifySystem($_POST['system']) ? $_POST['system'] : null;
+
 		$details['title'] = sanitizeString($_POST['title']);
 		$details['allowedCharSheets'] = $_POST['allowedCharSheets'];
 		$details['postFrequency'] = [
@@ -444,7 +447,12 @@ class games
 		}
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
-		$details['customType'] = sanitizeString($_POST['customType']);
+
+		if($_POST['system']=="custom"){
+			$details['customType'] = sanitizeString($_POST['customType']);
+		} else {
+			$details['customType'] = null;
+		}
 
 		$gameOptions=trim($_POST['gameOptions']?:"");
 		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
