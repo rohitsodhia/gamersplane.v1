@@ -74,6 +74,9 @@
 			if (($permission=="write") && ($this->getThreadProperty('states[publicPosting]'))){
 				return 1;
 			}
+			if(!$this->forumManager){  //failed permissions in c'tor
+				return 0;
+			}
 			return $this->forumManager->getForumProperty($this->thread->forumID, 'permissions'.($permission != null?"[{$permission}]":''));
 		}
 

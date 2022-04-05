@@ -121,7 +121,7 @@ $(function () {
             //this is a calculation
             if(pThis.hasClass('formCalc')) {
                 var formula=pThis.data('varcalc');
-                var isModifier=formula.startsWith('+'); //this is a modifier formula (e.g. +str)
+                var isModifier=formula.toString().startsWith('+'); //this is a modifier formula (e.g. +str)
                 var newVal=formula;
                 pThis.removeClass('formCalcError').attr('title','');
                 try{
