@@ -5,6 +5,10 @@
 		public static function getPermissions($userID, $forumIDs, $types = null, $forumsData = null) {
 			global $mysql;
 
+			if(!sizeof($forumIDs)){
+				return null;  //forum does not exit
+			}
+
 			$userID = intval($userID);
 			if (!is_array($forumIDs)) $forumIDs = array($forumIDs);
 			$queryColumn = array('permissions' => '', 'permissionSums' => '', 'general' => '', 'group' => '');
