@@ -1,4 +1,5 @@
 <?php
+	$responsivePage=true;
 	function showOptions($forumID, $indent = 0) {
 		global $forumManager;
 		$forum = $forumManager->forums[$forumID];
