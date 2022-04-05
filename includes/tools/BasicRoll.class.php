@@ -78,6 +78,11 @@
 						if ($this->rerollAces && $result == $roll['sides'][$handful] && $result>1) $count -= 1;
 					}
 
+					if(!$roll['number'][$handful]) {
+						$roll['indivRolls'][$handful][0] = 0; // 0d6
+						$diceVals[] = 0;
+					}
+
 					//we have the individual rolls.  Calculate the result with droping dice
 					if($roll['dropHigh'][$handful]){
 						arsort($diceVals,SORT_NUMERIC);
