@@ -128,7 +128,7 @@
 	$lastPostID = 0;
 	if($threadManager->getPage() && $threadManager->getPage()>1){
 		?>
-		<div id="backfill" data-prevpage="?page=<?=($threadManager->getPage()-1)?>"><span>load previous</span></div>
+		<div id="backfill" data-loadpage="?page=<?=($threadManager->getPage()-1)?>"><span>load previous</span></div>
 		<?php
 	}
 	if (sizeof($threadManager->getPosts())) {
@@ -321,6 +321,11 @@
 			if ($forumOptions['postSide'] == 'c') {
 				$postSide = $postSide == 'Right'?'Left':'Right';
 			}
+		}
+		if(!$threadManager->isLastPage()){
+			?>
+				<div id="forwardfill" class="forwardfill" data-loadpage="?page=<?=($threadManager->getPage()+1)?>"><span>load next</span></div>
+			<?php
 		}
 ?>
 			<div class="postBlock post<?=$postSide?> postPreview postAsChar" style="display:none;">

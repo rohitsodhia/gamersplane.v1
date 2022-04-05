@@ -257,6 +257,11 @@
 			ForumView::displayPagination($this->getThreadProperty('postCount'), $this->page,array(), $this->thread->pageSize,true);
 		}
 
+		public function isLastPage() {
+			$numPages = ceil($this->getThreadProperty('postCount') / $this->thread->pageSize);
+			return $this->page==$numPages;
+		}
+
 		public function deletePost($post) {
 			global $mysql;
 
