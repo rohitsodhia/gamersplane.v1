@@ -526,7 +526,7 @@ $(function() {
 
 			var addCustomSheet=function(charSheetContent){
 				var customSheet=$('<div class="customSheet customChar"></div>').appendTo(charSheet);
-				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap();
+				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap().darkModeColorize();
 				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
 				customSheet.updateCalculations();
 				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});
