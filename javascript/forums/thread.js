@@ -76,7 +76,7 @@ $(function() {
 						{
 							var menuItem=$('<li><a></a></li>').appendTo(subMenu);
 							var threadText=$('.td.threadInfo>a',threads[i]);
-							$('a',menuItem).attr('href',threadText.attr('href')+'?view=newPost#newPost').text(threadText.text());
+							$('a',menuItem).attr('href',threadText.attr('href').replace('?view=newPost#newPost','')+'?view=newPost#newPost').text(threadText.text());
 						}
 					}
 					loadForumLinks(forumLink.next('a'));
