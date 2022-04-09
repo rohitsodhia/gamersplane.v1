@@ -63,8 +63,7 @@ $(function () {
         var sendVal=val.replaceAll("[", "&#91;");
         sendVal=sendVal.replaceAll("]", "&#93;");
         pFormValue.text(val);
-
-        updateField(pFormValue.data('formfieldidx'),val,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null,!charSheet.hasClass('ignoreSave'));
+        updateField(pFormValue.data('formfieldidx'),sendVal,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null,!charSheet.hasClass('ignoreSave'));
         charSheet.updateCalculations();
     });
 
@@ -300,7 +299,7 @@ $(function () {
     })();
 
     function updateField(fieldIdx, value, onComplete, process){
-        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateVal', obj:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value, onComplete:onComplete}}): (onComplete && onComplete(null));
+        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateVal', obj:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value}, onComplete:onComplete}): (onComplete && onComplete(null));
     }
 
     function updateBlock(blockIdx, value, onComplete, process){
