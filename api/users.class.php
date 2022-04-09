@@ -164,11 +164,23 @@
 				displayJSON(['failed' => true]);
 			}
 
+			$rfavouriteChars = array_column(iterator_to_array($mongo->characterLibraryFavorites->find(
+				['userID' => $currentUser->userID],
+				['projection'=>['characterID'=>true, '_id'=>false]]
+				),false),'characterID');
+
+			$charSelector=[
+				'user.userID' => $currentUser->userID,
+				'retired' => null
+			];
+
+			$charLimit=6;
+			if($rfavouriteChars && count($rfavouriteChars)){
+				$charSelector=	['characterID' => ['$in' => $rfavouriteChars],'retired' => null];
+				$charLimit=count($rfavouriteChars);
+			}
 			$rCharacters = $mongo->characters->find(
-				[
-					'user.userID' => $currentUser->userID,
-					'retired' => null
-				],
+				$charSelector,
 				[
 					'projection' => [
 						'characterID' => true,
@@ -176,27 +188,40 @@
 						'system' => true
 					],
 					'sort' => ['label' => 1],
-					'limit' => 6
+					'limit' => $charLimit
 				]
 			);
+
 			$characters = [];
 			foreach ($rCharacters as $char) {
 				$characters[] = $char;
 			}
 
+			$rfavouriteGames = array_column(iterator_to_array($mongo->gameFavorites->find(
+				['userID' => $currentUser->userID],
+				['projection'=>['gameID'=>true, '_id'=>false]]
+				),false),'gameID');
+
+			$gameSelector=[
+				'players.user.userID' => $currentUser->userID,
+				'retired' => null
+			];
+
+			$gameLimit=6;
+			if($rfavouriteGames && count($rfavouriteGames)){
+				$gameSelector=	['gameID' => ['$in' => $rfavouriteGames]];
+				$gameLimit=count($rfavouriteGames);
+			}
 			$rGames = $mongo->games->find(
-				[
-					'players.user.userID' => $currentUser->userID,
-					'retired' => null
-				],
+				$gameSelector,
 				[
 					'projection' => [
 						'gameID' => true,
 						'title' => true,
-						'players.$' => true
+						'players' => true
 					],
 					'sort' => ['title' => 1],
-					'limit' => 6
+					'limit' => $gameLimit
 				]
 			);
 			$games = [];
