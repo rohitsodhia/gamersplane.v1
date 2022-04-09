@@ -259,7 +259,7 @@
 
 		public function isLastPage() {
 			$numPages = ceil($this->getThreadProperty('postCount') / $this->thread->pageSize);
-			return $this->page==$numPages;
+			return $this->page>=$numPages;
 		}
 
 		public function deletePost($post) {
