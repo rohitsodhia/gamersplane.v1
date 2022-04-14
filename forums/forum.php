@@ -40,7 +40,7 @@
 			</div>
 		</div>
 <?
-	$forumManager->displayForum();
+	$forumManager->displayForum(ForumManager::FAV_AND_NON_FAV);
 
 	if ($forumID && $forumManager->getForumProperty($forumID, 'forumType') == 'f') {
 		$forumManager->getThreads($_GET['page']);
