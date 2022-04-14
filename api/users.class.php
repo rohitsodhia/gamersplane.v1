@@ -164,10 +164,10 @@
 				displayJSON(['failed' => true]);
 			}
 
-			$rfavouriteChars = array_column(iterator_to_array($mongo->characterLibraryFavorites->find(
-				['userID' => $currentUser->userID],
-				['projection'=>['characterID'=>true, '_id'=>false]]
-				),false),'characterID');
+
+			$rfavouriteChars=array_column(iterator_to_array($mongo->characterLibraryFavorites->aggregate([	['$lookup'=>	['from' => 'characters', 'localField' => 'characterID' ,'foreignField' => 'characterID', 'as' => 'favChars']],
+			['$match' => ['$and'=>[['userID' =>  $currentUser->userID, 'favChars'=>['$ne'=>[]]]]]],
+			['$project' => ['characterID' => '$characterID']]	]),false),'characterID');
 
 			$charSelector=[
 				'user.userID' => $currentUser->userID,
@@ -226,10 +226,20 @@
 			);
 			$games = [];
 			foreach ($rGames as $game) {
-				$game['isGM'] = $game['players'][0]['isGM'];
+				$game['isPlayer'] = sizeof(array_filter($game['players'], function($v,$k) use (&$currentUser) {return $v['user']['userID']==$currentUser->userID;}, ARRAY_FILTER_USE_BOTH))!=0;
+				$game['isGM'] = sizeof(array_filter($game['players'], function($v,$k) use (&$currentUser) {return $v['isGM'] && $v['user']['userID']==$currentUser->userID;}, ARRAY_FILTER_USE_BOTH))!=0;
 				unset($game['players']);
 				$games[] = $game;
 			}
+
+			usort($games, function($a, $b) {
+				if($a['isPlayer']!=$b['isPlayer']){
+					return $a['isPlayer']>$b['isPlayer']?-1:1;
+				}
+				$atitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $a['title'], "UTF-8" ) ) ));
+				$btitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $b['title'], "UTF-8" ) ) ));
+				return $atitle > $btitle ? 1 : ($atitle < $btitle ? -1 :0);
+			});
 
 			$pmCount = $mongo->pms->count([
 				'recipients' => ['$elemMatch' => [

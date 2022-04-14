@@ -56,16 +56,28 @@ $forumSearchGames->findThreads(1, 5);
 		?>
 		</div>
 	</div>
-	<?php if($forumSearchGames->getResultsCount()>0){ ?>
-	<div class="flexWrapper mob-order-2">
-		<div id="yourGames" class="col-1">
-			<h3 class="headerbar gamesheaderbar"><a href="/forums/2"><i class="ra ra-d6"></i> Your Games</a></h3>
-		<?php
-			$forumManagerGames = new ForumManager(2);
-			$forumManagerGames->displayForum();
-		?>
-		</div>
-	</div>
+	<?php 	$forumManagerGames = new ForumManager(2);
+			if($forumManagerGames->hasForums(ForumManager::FAVOURITE)) {
+	?>
+			<div class="flexWrapper mob-order-2">
+				<div id="yourGames" class="col-1">
+					<h3 class="headerbar gamesheaderbar"><a href="/forums/2"><i class="ra ra-d6"></i> Bookmarked Games</a></h3>
+				<?php
+					$forumManagerGames->displayForum(ForumManager::FAVOURITE);
+				?>
+				</div>
+			</div>
+	<?php 	}
+
+			if($forumManagerGames->hasForums(ForumManager::NON_FAVOURITE)) { ?>
+			<div class="flexWrapper mob-order-2">
+				<div id="yourGames" class="col-1">
+					<h3 class="headerbar"><a href="/forums/2"><i class="ra ra-d6"></i> Your Games</a></h3>
+				<?php
+					$forumManagerGames->displayForum(ForumManager::NON_FAVOURITE);
+				?>
+				</div>
+			</div>
 	<?php } ?>
 
 </div>
