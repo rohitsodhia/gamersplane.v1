@@ -61,7 +61,7 @@ $forumSearchGames->findThreads(1, 5);
 	?>
 			<div class="flexWrapper mob-order-2">
 				<div id="yourGames" class="col-1">
-					<h3 class="headerbar gamesheaderbar"><a href="/forums/2"><i class="ra ra-d6"></i> Bookmarked Games</a></h3>
+					<h3 class="headerbar gamesheaderbar"><a href="/forums/2"><i class="ra ra-bookmark"></i> Bookmarked Games</a></h3>
 				<?php
 					$forumManagerGames->displayForum(ForumManager::FAVOURITE);
 				?>
