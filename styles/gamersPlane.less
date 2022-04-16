@@ -2858,6 +2858,10 @@ div.forumIcon {
 		color: @gp-red;
 	}
 
+	&.favGame::before{
+		content: @ra-var-icon-bookmark;
+	}
+
 	&.publicPosting:before {
 		content: @gp-icon-publicPosting;
 	}
@@ -2868,10 +2872,6 @@ div.forumIcon {
 
 	&.locked:before {
 		content: @gp-icon-locked;
-	}
-
-	&.favGame::before{
-		content: @ra-var-icon-bookmark;
 	}
 }
 
