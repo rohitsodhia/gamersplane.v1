@@ -68,7 +68,7 @@ $(function() {
 							$('div.description',$('<li></li>').html($('.name',forums[i]).html()).appendTo(subMenu)).remove();
 						}
 					}
-					var threads=$('.threadList .tr',dataObj);
+					var threads=$('.threadList .tr:has(a)',dataObj);
 					if(threads.length>0)
 					{
 						$('h3',$('<li><h3></h3></li>').appendTo(subMenu)).text('Threads: '+forumLink.text());
