@@ -89,11 +89,11 @@
 
 				session_regenerate_id(TRUE);
 				session_destroy();
-				setcookie(session_name(), '', time() - 30, '/');
+				setcookie(session_name(), '', time() - 30, '/', COOKIE_DOMAIN, true, true);
 				$_SESSION = [];
 			}
 
-			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN);
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, true, true);
 //			session_destroy();
 		}
 
@@ -163,8 +163,8 @@
 		}
 
 		public function generateLoginCookie() {
-			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN);
-			setcookie('loginHash', $this->username . '|' . $this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN);
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, true, true);
+			setcookie('loginHash', $this->username . '|' . $this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN, true, true);
 		}
 
 		public function getUsermeta($metaKey) {
