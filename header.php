@@ -34,8 +34,8 @@
 			<li>
 				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}"><i class="ra ra-d6 hide mob-show-inline-block"></i><span class="mob-hide">Games</span></a>
 				<ul ng-if="loggedIn && games.length">
-				<li><a href="/games/my/"><i class="ra ra-d6"></i> All games</a></li>
-					<li ng-repeat="game in games | limitTo: 10"><a href="/games/{{game.gameID}}/"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
+				<li><a href="/games/my/"><i class="ra ra-gamers-plane"></i> All games</a></li>
+					<li ng-repeat="game in games | limitTo: 10"><a href="/games/{{game.gameID}}/"><i class="ra {{game.isPlayer?'ra-d6':'ra-bookmark'}}"></i> <span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
 				</ul>
 			</li>
 			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>

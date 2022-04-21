@@ -13,8 +13,12 @@
 
 	$dispatchInfo['title'] = $gameInfo['title'];
 	$dispatchInfo['description'] = ($gameInfo['description'] ? ForumSearch::getMetaAttribute($gameInfo['description']) : 'No description provided.');
+	$favorited = $mongo->gameFavorites->findOne(['userID' => $currentUser->userID, 'gameID' => $gameID]) ? true : false;
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
+		<div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
+			<a href="#" class="favoriteGame sprite tassel<?=$favorited?'':' off'?>" title="Favorite" alt="Favorite"  data-gameid="<?=$gameID?>"></a>
+		</div>
 		<h1 class="headerbar"><i class="ra ra-d6"></i> <?=$gameInfo['title'] ?> <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 
 <?php	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
