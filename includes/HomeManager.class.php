@@ -291,7 +291,7 @@
 
 				$newPosts = $result->lastPostID > $forumReadId && $result->lastPostID > $result->lastRead?true:false;
 
-				ForumSearch::displayLatestPostResultHP($result,$newPosts);
+				ForumSearch::displayLatestPostResultHP($result,$newPosts, $forumManager->isFavGame($result->forumID));
 			}
 		}
     }

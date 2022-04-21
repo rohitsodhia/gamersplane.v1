@@ -436,8 +436,7 @@
 			$characterID = intval($_POST['characterID']);
 			$charCheck = $mongo->characters->findOne(
 				[
-					'characterID' => $characterID,
-					'library.inLibrary' => true
+					'characterID' => $characterID
 				]
 			) ? true : false;
 			if ($charCheck) {

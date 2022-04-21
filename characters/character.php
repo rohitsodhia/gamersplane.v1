@@ -24,8 +24,8 @@
 					$gameID=$character->getGameID();
 					if ($charPermissions == 'library') {
 						$mongo->characters->updateOne(['characterID' => $characterID], ['$inc' => ['library.views' => 1]]);
-						$favorited = $mongo->characterLibraryFavorites->findOne(['userID' => $currentUser->userID, 'characterID' => $characterID]) ? true : false;
 					}
+					$favorited = $mongo->characterLibraryFavorites->findOne(['userID' => $currentUser->userID, 'characterID' => $characterID]) ? true : false;
 					$addJSFiles[] = 'characters/_sheet.js';
 					if (file_exists(FILEROOT . '/javascript/characters/' . SYSTEM . '/sheet.js')) {
 						$addJSFiles[] = 'characters/' . SYSTEM . '/sheet.js';
@@ -43,6 +43,7 @@
 		<div class="clearfix"><div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
 <?php		if ($charPermissions == 'edit') { ?>
 			<a id="editCharacter" href="/characters/<?=SYSTEM?>/<?=$characterID?>/edit/" class="sprite pencil"></a>
+			<a href="/" class="favoriteChar sprite tassel<?=$favorited?'':' off'?>" title="Favorite" alt="Favorite"></a>
 <?php		} else { ?>
 			<a href="/" class="favoriteChar sprite tassel<?=$favorited?'':' off'?>" title="Favorite" alt="Favorite"></a>
 <?php		} ?>

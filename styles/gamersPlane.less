@@ -1259,8 +1259,9 @@ body.style-background #content {
 		}
 
 		#sheetActions{
-			top:-10px;
+			top:-14px;
 			right:-20px;
+			z-index: 1;
 		}
 
 		.avatarPreview {
@@ -2857,6 +2858,10 @@ div.forumIcon {
 		color: @gp-red;
 	}
 
+	&.favGame::before{
+		content: @ra-var-icon-bookmark;
+	}
+
 	&.publicPosting:before {
 		content: @gp-icon-publicPosting;
 	}
@@ -2868,6 +2873,10 @@ div.forumIcon {
 	&.locked:before {
 		content: @gp-icon-locked;
 	}
+}
+
+.favGame div.forumIcon:before{
+	content: @ra-var-icon-bookmark;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
