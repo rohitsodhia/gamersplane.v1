@@ -218,7 +218,8 @@
 					'projection' => [
 						'gameID' => true,
 						'title' => true,
-						'players' => true
+						'players' => true,
+						'forumID' => true
 					],
 					'sort' => ['title' => 1],
 					'limit' => $gameLimit
