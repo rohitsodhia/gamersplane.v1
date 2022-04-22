@@ -56,7 +56,9 @@
 			</div>
 			<div id="details">
 				<div class="tr clearfix descriptionRow">
-					<?=printReady(BBCode2Html($gameInfo['description'])) ?>
+					<div>
+						<?=printReady(BBCode2Html($gameInfo['description'])) ?>
+					</div>
 				</div>
 				<div class="tr clearfix">
 					<hr/>
