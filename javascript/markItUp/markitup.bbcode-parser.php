@@ -261,7 +261,7 @@ function BBCode2Html($text) {
 	$text=preg_replace_callback(array('/\[url\="?(.*?)"?\](.*?)\[\/url\]/ms','/\[url\](.*?)\[\/url\]/ms'), function($matches){
 		$url=$matches[1];
 		$target=' target="_blank"';
-		if(substr( $url, 0, 1 ) === "/" || substr( strtolower($url), 0, 23 ) === "https://gamersplane.com" || substr( strtolower($url), 0, 22 ) === "http://gamersplane.com" ){
+		if ( substr($url, 0, 1) === "/" || preg_match("/^https?:\/\/".getenv('APP_URL')."/", strtolower($url))){
 			$target='';
 		}
 		$linkText=$url;
