@@ -1162,10 +1162,16 @@ div.prettySelect > div {
 
 	ul.gameSubmenu{
 		li{
-			text-align: left;
+			display: flex;
 			a{
 				display: inline-block;
 				padding: 7px 8px;
+			}
+			a.gameSubmenuItem{
+				flex-grow: 0;
+			}
+			a.forumSubmenuItem{
+				flex-grow: 1;
 			}
 		}
 	}
