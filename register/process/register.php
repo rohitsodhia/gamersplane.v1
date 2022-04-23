@@ -68,7 +68,7 @@
 			}
 		}
 
-		if (strtolower($_SERVER['HTTP_HOST']) == 'gamersplane.com') {
+		if (strtolower($_SERVER['HTTP_HOST']) == getenv('APP_URL')) {
 			$secret = '6LcT8gsTAAAAAEA0RemG5ryLemgp4h8uwwbCHFgs';
 			$recaptcha_options = [
 				'http' => [

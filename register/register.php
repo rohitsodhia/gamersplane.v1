@@ -68,7 +68,7 @@
 				<div class="alert"></div>
 			</div>
 
-<?php	if (strtolower($_SERVER['HTTP_HOST']) == 'gamersplane.com') { ?>
+<?php	if (strtolower($_SERVER['HTTP_HOST']) == getenv('APP_URL')) { ?>
 			<div id="recaptchaDiv" class="tr">
 				<h2>Prove to me you're real!</h2>
 				<div class="g-recaptcha" data-sitekey="6LcT8gsTAAAAALlRVGdtM9iansESdnIdeCUIwoqG"></div>

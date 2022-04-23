@@ -490,7 +490,7 @@
 				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadIdAsInt}")->fetchColumn();
 
 				if($discordWebhook){
-					$userAvatar='https://gamersplane.com'.User::getAvatar($currentUser->userID);
+					$userAvatar="https://".getenv('APP_URL').User::getAvatar($currentUser->userID);
 					$avatar=$userAvatar;
 					$postAsName=$currentUser->username;
 					$postAsId= $post->getPostAs();
@@ -499,7 +499,7 @@
 						$charInfo = $mongo->characters->findOne(['characterID' => $postAsId]);
 						if($charInfo){
 							if (file_exists(FILEROOT . "/characters/avatars/{$postAsId}.jpg")) {
-								$avatar="https://gamersplane.com/characters/avatars/{$postAsId}.jpg";
+								$avatar="https://".getenv('APP_URL')."/characters/avatars/{$postAsId}.jpg";
 							}
 							$postAsName=$charInfo['name'];
 						}
@@ -526,18 +526,25 @@
 
 					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($discordMessage),200);
 
-					$data = array('username' => $postAsName,
-								  'avatar_url'=> $avatar,
-								  'embeds'=>array(array('url'=>'https://gamersplane.com/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID),
-								  						'title'=>$postTitle,
-														'color' => 13395456, //#cc6600
-								  						'description'=>$discordMessage,
-														'footer'=> array('text'=>$currentUser->username.($notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT?" ~ edited post":""),'icon_url'=>$userAvatar)
-														))
-								);
+					$data = array(
+						'username' => $postAsName,
+						'avatar_url'=> $avatar,
+						'embeds'=>array(
+							array(
+								'url'=>'https://'.getenv('APP_URL').'/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID),
+								'title'=>$postTitle,
+								'color' => 13395456, //#cc6600
+								'description'=>$discordMessage,
+								'footer'=> array(
+									'text'=>$currentUser->username.($notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT?" ~ edited post":""),
+									'icon_url'=>$userAvatar
+								)
+							)
+						)
+					);
 
 					$options = array(
-							'http' => array(
+						'http' => array(
 							'header'  => "Content-type: application/json\r\n",
 							'method'  => 'POST',
 							'content' => json_encode($data),

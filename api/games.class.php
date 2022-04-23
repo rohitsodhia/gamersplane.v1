@@ -904,7 +904,8 @@ class games
 				$emailDetails->gameInfo = (object)$game;
 				$charLabel = strlen($charDetails['name']) ? $charDetails['name'] : $charInfo['label'];
 				$systems = Systems::getInstance();
-				$emailDetails->message = "<a href=\"http://gamersplane.com/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"http://gamersplane.com/characters/{$characterID}/\">{$charLabel}</a>.";
+				$site_url = getenv('APP_URL');
+				$emailDetails->message = "<a href=\"https://{$site_url}/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"https://{$site_url}/characters/{$characterID}/\">{$charLabel}</a>.";
 				ob_start();
 				include('emails/gmEmail.php');
 				$email = ob_get_contents();
