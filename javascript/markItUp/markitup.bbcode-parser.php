@@ -247,6 +247,14 @@ function BBCode2Html($text) {
 	}, $text);
 	//end form characters
 
+	//format
+	$matches = null;
+	$text=preg_replace_callback('/\[f=?"?\s*([a-zA-Z0-9\- ]*)\s*"?\](.*?)\[\/f\]/ms', function($matches){
+			$classes=array_map(function($className) {return 'gpFormat-'.strtolower($className);},explode(' ',$matches[1]));
+			return '<span class="'.implode(' ',$classes).'">'.$matches[2].'</span>';
+	}, $text);
+	//end format
+
 	//map
 	$matches = null;
 	$text=preg_replace_callback("/\[map\](.*?)\[\/map\]/ms", function($matches){
