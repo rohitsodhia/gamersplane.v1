@@ -1,5 +1,42 @@
 $(function () {
 
+    //helpers for text area formatting
+    jQuery.fn.surroundWithTags = function (openTag,closeTag){
+        var pThis=$(this);
+        var start = pThis[0].selectionStart;
+        var end = pThis[0].selectionEnd;
+        var curSel = pThis.val().substring(start, end);
+        var block = openTag + curSel + closeTag;
+        document.execCommand("insertText", false, block);
+        return this;
+    };
+
+    $('body').on('keydown','.abilities textarea,.formBlock textarea',function(e){
+        if (e.ctrlKey) {
+            var handled=false;
+            if (e.key === 'b'){$(this).surroundWithTags('[b]','[/b]');handled=true;} else
+            if (e.key === 'i'){$(this).surroundWithTags('[i]','[/i]');handled=true;} else
+            if (e.key === 'u'){$(this).surroundWithTags('[u]','[/u]');handled=true;} else
+            if (e.key === 'm'){$(this).surroundWithTags('[_=',']');handled=true;} else
+            if (e.key === 'k'){
+                var link=prompt("URL");
+                if(link){
+                    $(this).surroundWithTags('[url='+link+']','[/url]');
+                }
+                handled=true;
+            }
+            if(handled){
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+    });
+
+	$('body').on('paste','.abilities textarea,.formBlock textarea',function(ev){
+        var pThis=$(this);
+		ImgurHelper.uploadFromClipboard(ev, function(link){pThis.surroundWithTags('[img]'+link+'[/img]','');});
+	});
+
     //Form field clicking on and away from
     $('body').on('click','.formText',function(){
         var pThis=$(this);
@@ -26,8 +63,7 @@ $(function () {
         var sendVal=val.replaceAll("[", "&#91;");
         sendVal=sendVal.replaceAll("]", "&#93;");
         pFormValue.text(val);
-
-        updateField(pFormValue.data('formfieldidx'),val,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null,!charSheet.hasClass('ignoreSave'));
+        updateField(pFormValue.data('formfieldidx'),sendVal,isDiceRoll(val)?function(){charSheet.trigger('gp.sheetUpdated');}:null,!charSheet.hasClass('ignoreSave'));
         charSheet.updateCalculations();
     });
 
@@ -121,7 +157,7 @@ $(function () {
             //this is a calculation
             if(pThis.hasClass('formCalc')) {
                 var formula=pThis.data('varcalc');
-                var isModifier=formula.startsWith('+'); //this is a modifier formula (e.g. +str)
+                var isModifier=formula.toString().startsWith('+'); //this is a modifier formula (e.g. +str)
                 var newVal=formula;
                 pThis.removeClass('formCalcError').attr('title','');
                 try{
@@ -263,7 +299,7 @@ $(function () {
     })();
 
     function updateField(fieldIdx, value, onComplete, process){
-        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateVal', obj:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value, onComplete:onComplete}}): (onComplete && onComplete(null));
+        process?ajaxQueue.addToQueue({api: '/characters/bbformUpdateVal', obj:{ charID: $('#characterID').val(), fieldIdx:fieldIdx, fieldValue:value}, onComplete:onComplete}): (onComplete && onComplete(null));
     }
 
     function updateBlock(blockIdx, value, onComplete, process){

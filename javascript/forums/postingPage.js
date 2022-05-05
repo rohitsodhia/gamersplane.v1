@@ -5,23 +5,50 @@ $(function() {
 		gameOptions = JSON.parse($('#gameOptions').html());
 	} catch (e) { }
 
-	$('#backfill').on('click',function(){
+	$('#backfill, #forwardfill').on('click',function(){
 		var pThis=$(this);
-		var backfillLocation=pThis.data('prevpage');
+		var loadLocation=pThis.data('loadpage');
+		var isForwardFill=pThis.hasClass('forwardfill');
 
 		var startScroll = $(window).scrollTop();
 		var startHeight=$(document ).height()
 
-		$.get(backfillLocation, function (data) {
-			var block=$('.postBlock:not(.postPreview)', $(data)).clone();
-			var addedBlock=(block.insertAfter(pThis)).addClass('postBlockFound').darkModeColorize().zoommap().applyDiceRules().convertTimeZones();
-			$("img",addedBlock).on("load", function() {
-				$(this).removeClass('imageNotLoaded');
-				$(window).scrollTop(startScroll+($(document).height()-startHeight));
-			});
-			$(window).scrollTop(startScroll+($(document).height()-startHeight));
+		$.get(loadLocation, function (data) {
+			var lastPageData=$(data);
+			var block=$('.postBlock:not(.postPreview)', lastPageData).clone();
+			var addedBlock=isForwardFill?(block.insertBefore(pThis)):(block.insertAfter(pThis));
+			addedBlock.addClass('postBlockFound').darkModeColorize().zoommap().convertTimeZones();
+			if($.isFunction($.fn.applyDiceRules)){
+				addedBlock.applyDiceRules();
+			}
 
-			pThis.remove();
+			if(!isForwardFill) {
+				$("img",addedBlock).on("load", function() {
+					$(this).removeClass('imageNotLoaded');
+					$(window).scrollTop(startScroll+($(document).height()-startHeight));
+				});
+				$(window).scrollTop(startScroll+($(document).height()-startHeight));
+			}
+
+			var lastPageBackFill=isForwardFill?$('#forwardfill',lastPageData):$('#backfill',lastPageData);
+			var beforeIndex=loadLocation.indexOf('?b');
+			if(beforeIndex==-1){
+				if(lastPageBackFill.length){
+					pThis.data('loadpage',lastPageBackFill.data('loadpage'));
+				} else {
+					pThis.remove();
+				}
+			} else {
+				if(block.length==0){
+					pThis.remove();
+				} else {
+					pThis.data('loadpage',loadLocation.substring(0,beforeIndex)+'?b='+block.data('postid'));
+				}
+			}
+
+			if(isForwardFill){
+				$('.paginateDiv').html($('.paginateDiv:first',lastPageData).html());
+			}
 		});
 	});
 
@@ -526,7 +553,7 @@ $(function() {
 
 			var addCustomSheet=function(charSheetContent){
 				var customSheet=$('<div class="customSheet customChar"></div>').appendTo(charSheet);
-				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap();
+				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap().darkModeColorize();
 				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
 				customSheet.updateCalculations();
 				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});

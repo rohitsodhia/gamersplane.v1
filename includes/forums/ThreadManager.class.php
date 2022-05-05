@@ -74,6 +74,9 @@
 			if (($permission=="write") && ($this->getThreadProperty('states[publicPosting]'))){
 				return 1;
 			}
+			if(!$this->forumManager){  //failed permissions in c'tor
+				return 0;
+			}
 			return $this->forumManager->getForumProperty($this->thread->forumID, 'permissions'.($permission != null?"[{$permission}]":''));
 		}
 
@@ -252,6 +255,11 @@
 
 		public function displayPagination() {
 			ForumView::displayPagination($this->getThreadProperty('postCount'), $this->page,array(), $this->thread->pageSize,true);
+		}
+
+		public function isLastPage() {
+			$numPages = ceil($this->getThreadProperty('postCount') / $this->thread->pageSize);
+			return $this->page>=$numPages;
 		}
 
 		public function deletePost($post) {

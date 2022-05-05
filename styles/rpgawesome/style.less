@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '@{rpgawesome-font-family}';
-  src:  url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.eot?y1scfp');
-  src:  url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.eot?y1scfp#iefix') format('embedded-opentype'),
-    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.ttf?y1scfp') format('truetype'),
-    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.woff?y1scfp') format('woff'),
-    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.svg?y1scfp#@{rpgawesome-font-family}') format('svg');
+  src:  url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.eot?6phj7g');
+  src:  url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.eot?6phj7g#iefix') format('embedded-opentype'),
+    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.ttf?6phj7g') format('truetype'),
+    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.woff?6phj7g') format('woff'),
+    url('@{rpgawesome-font-path}/@{rpgawesome-font-family}.svg?6phj7g#@{rpgawesome-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -29,6 +29,11 @@ i.ra {
   display: inline-block;
 }
 
+.ra-bookmark {
+  &:before {
+    content: @ra-var-icon-bookmark;
+  }
+}
 .ra-acid {
   &:before {
     content: @ra-var-icon-acid;

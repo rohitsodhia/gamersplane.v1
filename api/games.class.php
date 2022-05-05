@@ -25,7 +25,9 @@ class games
 			$this->unretire($_POST['gameID']);
 		} elseif ($pathOptions[0] == 'apply') {
 			$this->apply();
-		} elseif (
+		} elseif ($pathOptions[0] == 'toggleFavorite') {
+			$this->toggleFavorite();
+		}  elseif (
 			$pathOptions[0] == 'invite' &&
 			sizeof($pathOptions) == 1 &&
 			intval($_POST['gameID']) &&
@@ -995,5 +997,25 @@ class games
 		}
 
 		displayJSON(['success' => true, 'lfgs' => $lfgs]);
+	}
+
+	public function toggleFavorite() {
+		global $currentUser;
+		$mongo = DB::conn('mongo');
+
+		$gameID = intval($_POST['gameID']);
+		$state = $mongo->gameFavorites->findOne(
+			[
+				'userID' => $currentUser->userID,
+				'gameID' => $gameID
+			]
+		) ? 'unfavorited' : 'favorited';
+		if ($state == 'unfavorited') {
+			$mongo->gameFavorites->deleteOne(['userID' => $currentUser->userID, 'gameID' => $gameID]);
+		} else {
+			$mongo->gameFavorites->insertOne(['userID' => $currentUser->userID, 'gameID' => $gameID]);
+		}
+
+		displayJSON(['success' => true, 'state' => $state]);
 	}
 }

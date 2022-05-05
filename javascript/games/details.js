@@ -352,3 +352,24 @@ app.animation('.slideToggle', ['$timeout', function ($timeout) {
 		}
 	};
 }]);
+
+$(function () {
+	$('.favoriteGame').click(function (e) {
+		e.preventDefault();
+		var pThis = $(this);
+		var gameID = pThis.data('gameid');
+		$.ajax({
+			method: 'POST',
+			url: API_HOST + '/games/toggleFavorite/',
+			data: { gameID: gameID },
+			xhrFields: { withCredentials: true },
+			success: function (data) {
+				if (data !== 0 && pThis.hasClass('off')) {
+					pThis.removeClass('off').attr('title', 'Unfavorite').attr('alt', 'Unfavorite');
+				} else if (data !== 0) {
+					pThis.addClass('off').attr('title', 'Favorite').attr('alt', 'Favorite');
+				}
+			}
+		});
+	});
+});

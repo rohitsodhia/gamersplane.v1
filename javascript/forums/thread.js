@@ -68,7 +68,7 @@ $(function() {
 							$('div.description',$('<li></li>').html($('.name',forums[i]).html()).appendTo(subMenu)).remove();
 						}
 					}
-					var threads=$('.threadList .tr',dataObj);
+					var threads=$('.threadList .tr:has(a)',dataObj);
 					if(threads.length>0)
 					{
 						$('h3',$('<li><h3></h3></li>').appendTo(subMenu)).text('Threads: '+forumLink.text());
@@ -76,7 +76,7 @@ $(function() {
 						{
 							var menuItem=$('<li><a></a></li>').appendTo(subMenu);
 							var threadText=$('.td.threadInfo>a',threads[i]);
-							$('a',menuItem).attr('href',threadText.attr('href')).text(threadText.text());
+							$('a',menuItem).attr('href',threadText.attr('href').replace('?view=newPost#newPost','')+'?view=newPost#newPost').text(threadText.text());
 						}
 					}
 					loadForumLinks(forumLink.next('a'));
