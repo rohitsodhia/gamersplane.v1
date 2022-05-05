@@ -243,6 +243,25 @@ class ForumManager
 		return sizeof($childForums)!=0;
 	}
 
+	private function sortGameForums(&$forums){
+		usort($forums, function($a, $b) {
+			if($a==10){  //games tavern
+				return -1;
+			}
+			if($b==10){  //games tavern
+				return 1;
+			}
+			$aFav=$this->isFavGame($a);
+			$bFav=$this->isFavGame($b);
+			if($aFav!=$bFav){
+				return $aFav>$bFav?1:-1;
+			}
+			$atitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $this->forums[$a]->title, "UTF-8" ) ) ));
+			$btitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $this->forums[$b]->title, "UTF-8" ) ) ));
+			return $atitle > $btitle ? 1 : ($atitle < $btitle ? -1 :0);
+		});
+	}
+
 	public function displayForum($favFilter)
 	{
 		global $loggedIn, $currentUser;
@@ -263,17 +282,8 @@ class ForumManager
 			return false;
 		}
 
-		if($favFilter==ForumManager::FAVOURITE || $favFilter==ForumManager::NON_FAVOURITE){
-			usort($childForums, function($a, $b) {
-				$aFav=$this->isFavGame($a);
-				$bFav=$this->isFavGame($b);
-				if($aFav!=$bFav){
-					return $aFav>$bFav?1:-1;
-				}
-				$atitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $this->forums[$a]->title, "UTF-8" ) ) ));
-				$btitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $this->forums[$b]->title, "UTF-8" ) ) ));
-				return $atitle > $btitle ? 1 : ($atitle < $btitle ? -1 :0);
-			});
+		if($favFilter==ForumManager::FAVOURITE || $favFilter==ForumManager::NON_FAVOURITE || $this->currentForum==2){
+			$this->sortGameForums($childForums);
 		}
 
 
@@ -306,7 +316,12 @@ class ForumManager
 		if ($this->forums[$childID]->forumType == 'f') {
 			$this->displayForumRow($childID);
 		} elseif (is_array($this->forums[$childID]->children)) {
-			foreach ($this->forums[$childID]->children as $cChildID) {
+			$rolledUpChildren=$this->forums[$childID]->children;
+			if($childID==2){ //games forums
+				$this->sortGameForums($rolledUpChildren);
+			}
+
+			foreach ($rolledUpChildren as $cChildID) {
 				$this->displayForumRow($cChildID);
 			}
 		}

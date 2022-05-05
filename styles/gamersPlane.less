@@ -2402,14 +2402,12 @@ textarea {
 	}
 
 	&.tassel {
-		&,
-		&.off:hover {
+		& {
 			width: 14px;
 			background-position: -181px 0;
 		}
 
-		&.off,
-		&:hover {
+		&.off {
 			background-position: -181px -20px;
 		}
 	}
@@ -2901,6 +2899,10 @@ div.forumIcon {
 
 .favGame div.forumIcon:before{
 	content: @ra-var-icon-bookmark;
+}
+
+.fid10 div.forumIcon:before{
+	content: @ra-var-icon-beer;
 }
 
 /* ----------------------------------------------------------------------------------------------*/
