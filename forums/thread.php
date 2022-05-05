@@ -16,6 +16,7 @@
 
 	$gameID = false;
 	$isGM = false;
+	$isThreadAdmin = $threadManager->getPermissions('admin');
 	$gms = [];
 	if ($threadManager->isGameForum()) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');

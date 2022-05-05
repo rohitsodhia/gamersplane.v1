@@ -69,7 +69,21 @@ $(function() {
 				$("#messageTextArea")[0].scrollIntoView();
 			}
 		});
+	});
 
+	$('body').on('click','div.note > div:first-child',function(){
+		var pThis=$(this);
+		var commaSepList=$.trim($('span',pThis).text());
+		var sender=$('.posterDetails .username',pThis.closest('.postBlock')).text().toLowerCase();
+		var toArray = commaSepList.split(',').map(function(element) {return element.trim().toLowerCase();});
+		if(sender && !toArray.includes(sender)){
+			if(commaSepList.length){
+				commaSepList+=',';
+			}
+			commaSepList+=sender;
+		}
+		$('textarea.markItUpEditor').focus();
+		$.markItUp({ openWith:'[note="'+commaSepList+'"]', closeWith:'[/note]'});
 	});
 
 	$('body').on('click','.createSheetButton',function(){

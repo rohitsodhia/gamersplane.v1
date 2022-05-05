@@ -386,7 +386,7 @@ function BBCode2Html($text) {
 
 	//notes and private
 	$matches = null;
-	global $currentUser, $isGM, $post, $postAuthor;
+	global $currentUser, $isGM, $post, $postAuthor, $isThreadAdmin;
 
 	$postAuthor=false;
 	$postAuthorName="";
@@ -396,15 +396,19 @@ function BBCode2Html($text) {
 		$postAuthorName=$post->getAuthor('username');
 	}
 
-	$text = preg_replace('/\[note="?(\w[\w\. +;,]+?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to \1</div>\2</aside>', $text);
-	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to (.*?)\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
+	$text = preg_replace('/\[note=?"?([\w\. +;,]*?)"?](.*?)\[\/note\]\s*/s', '<aside class="note"><div>Note to <span>\1</span></div>\2</aside>', $text);
+	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$isThreadAdmin && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to \<span\>(.*?)\<\/span\>\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
 			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
 			if (!in_array(strtolower($currentUser->username), $noteTo)) {
-				$text = str_replace($match[0], '<aside class="note"><div>'.$postAuthorName.' sent a note to '.$match[1].'</div></aside>', $text);
+				$text = str_replace($match[0], '<aside class="note"><div>'.$postAuthorName.' sent a note to <span>'.$match[1].'</span></div></aside>', $text);
 			}
 		}
 	}
+
+	//remove the "to" from empty notes
+	$text = str_replace('<aside class="note"><div>Note to <span></span>','<aside class="note"><div>Note <span></span>',$text);
+	$text = str_replace('<aside class="note"><div>'.$postAuthorName.' sent a note to <span></span>','<aside class="note"><div>'.$postAuthorName.'\'s note <span></span>',$text);
 
 	$text = preg_replace('/\[private="?(\w[\w\. +;,]+?)"?](.*?)\[\/private\]\s*/s', '<aside class="private"><div>Privately: \1</div>\2</aside>', $text);
 	if (strpos($text, 'aside class="private"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {

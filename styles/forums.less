@@ -1958,6 +1958,18 @@ body #page_forum_thread .postBlock.postPreview{
 
 }
 
+.note > div:first-child
+{
+	cursor: pointer;
+	&:before{
+		content: @ra-var-icon-quill-ink;
+		font-family: '@{rpgawesome-font-family}';
+		margin-right: .5em;
+	}
+}
+
+
+
 @media only screen and (max-width: @mobile-breakpoint),print{
     #page_forum,#page_forum_search{
 		.tableDiv{
