@@ -2,7 +2,8 @@
 		<h1 class="headerbar">Contact Us</h1>
 		<div class="animationFrame">
 			<form ng-show="dispForm" ng-submit="send()" class="slideDown">
-				<p>All fields except "username" are required.</p>
+				<p ng-if="!loggedIn">All fields except "username" are required.</p>
+				<p ng-if="loggedIn">All fields are required.</p>
 				<div class="tr">
 					<input type="text" ng-model="form.name" maxlength="50" placeholder="Name" ng-class="{ 'error': errors.empty.indexOf('name') > -1 }">
 				</div>
