@@ -1160,6 +1160,30 @@ div.prettySelect > div {
 		}
 	}
 
+	ul.gameSubmenu{
+		left:-70px;
+		min-width: 160px;
+
+		&:before,
+		&:after {
+			left: 100px;
+		}
+
+		li{
+			display: flex;
+			a{
+				display: inline-block;
+				padding: 7px 8px;
+			}
+			a.gameSubmenuItem{
+				flex-grow: 0;
+			}
+			a.forumSubmenuItem{
+				flex-grow: 1;
+			}
+		}
+	}
+
 	#mainMenuTools ul {
 		left: -5px;
 		&:before,
