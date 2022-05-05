@@ -9,7 +9,7 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 		$scope.lfg = [];
 		$scope.game = {
 			'title': '',
-			'system': '',
+			'system': 'custom',
 			'allowedCharSheets': [],
 			'postFrequency': {
 				'timesPer': 1,
