@@ -16,6 +16,109 @@ $(function () {
 	$('textarea#messageTextArea,textarea.markItUp').on('paste',function(ev){
 		ImgurHelper.uploadFromClipboard(ev, function(link){$.markItUp({ replaceWith: '[img]' + link+ '[/img]' });});
 	});
+
+	$('#content').on('click','.miuDlg-flags span',function(){$(this).toggleClass('sel');});
+	$('#content').on('click','.miuDlg-select span',function(){ $(this).siblings().removeClass('sel'); $(this).toggleClass('sel');});
+	$('#content').on('click','.miuDlgOptions-format .miuAttributeSelector span',function(){ $('.miuDlgPreviewContent').attr('class','miuDlgPreviewContent '+$('.miuAttributeSelector .sel').map(function() { return 'gpFormat-'+$(this).data('attrval'); }).get().join(' ')); });
+	$('#content').on('click','.miuDlgOptions-table .miuAttributeSelector span',function(){
+		var contentPreviewTable=$('.miuDlgPreviewContent').attr('class','miuDlgPreviewContent bbTable '+$('.miuAttributeSelector .sel').map(function() { return $(this).data('previewclass'); }).get().join(' '));
+		$('td:eq(7)',contentPreviewTable).html('1d4+2');
+		$('td:eq(8)',contentPreviewTable).html('+4');
+		if(contentPreviewTable.hasClass('bbTableRolls'))
+		{
+			$('td:eq(7)',contentPreviewTable).html('<span class="rollDice">1d4+2</span>');
+			if(contentPreviewTable.hasClass('bbTableD20')){
+				if(contentPreviewTable.hasClass('bbTableDnd5e')){
+					$('td:eq(8)',contentPreviewTable).html('<span class="rolld20-5e"><span class="rollDice rollDiceD20">+4</span><span class="rollDice rollDiceD20">A</span><span class="rollDice rollDiceD20">D</span></span>');
+				} else {
+					$('td:eq(8)',contentPreviewTable).html('<span class="rollDice">+4</span>');
+				}
+			}
+		}
+	});
+
+	$('#content').on('click','.miuDlgCancel',function(){$('#markitUpBlocker,#markitUpDlg').remove();});
+	$('body').on('click','#markitUpBlocker',function(){$('#markitUpBlocker,#markitUpDlg').remove();});
+	$('#content').on('click','.miuDlgOK',function(){
+		var openTag='['+$('#markitUpDlg').data('opentag');
+		openTag+=$('.miuAttributeSelector .sel').map(function() { return $(this).data('attrval'); }).get().join(' ');
+		openTag+=']';
+		var closeTag='[/'+$('#markitUpDlg').data('closetag')+']';
+		$.markItUp({ openWith: openTag , closeWith: closeTag });
+
+		$('#markitUpBlocker,#markitUpDlg').remove();}
+	);
+
+	var showMiuDlg=function(dlgTitle,pThis,opt){
+		$('<div id="markitUpBlocker"></div>').appendTo("body");
+		var dlg=$('<div id="markitUpDlg"><h2></h2><div class="miuDlgOptions"></div><div class="miuDlgPreview" style="display:none;"></div><div class="miuDlgButtons"><button class="fancyButton miuDlgOK" type="button">OK</button><button class="fancyButton miuDlgCancel" type="button">Cancel</button></div></div>').appendTo(pThis.closest('.markItUpHeader'));
+		$('h2',dlg).text(dlgTitle);
+		dlg.data('opentag',opt.openTag);
+		dlg.data('closetag',opt.closeTag);
+		dlg.addClass('miuDlgOptions-'+opt.dlgType);
+		if(opt.previewHtml){
+			$('.miuDlgPreview').html(opt.previewHtml).show();
+		}
+		for(var i=0;i<opt.options.length;i++){
+			var optionSet=opt.options[i];
+			var optSetDiv=$('<div class="miuDlgOptSet"><label></label></div>').appendTo($('.miuDlgOptions',dlg));
+			$('label',optSetDiv).text(optionSet.label+':');
+			var flagsDiv=$('<div></div>"').addClass('miuAttributeSelector').addClass('miuDlg-'+optionSet.type).appendTo(optSetDiv);
+			for(var j=0;j<optionSet.options.length;j++){
+				if(optionSet.subtype=='font'){
+					$('<span></span>').text(optionSet.options[j]).addClass('gpFormat-font-'+optionSet.options[j]).data('attrval','font-'+optionSet.options[j]).appendTo(flagsDiv);
+				}else{
+					if(optionSet.options[j].label){
+						var spanSelector=$('<span></span>').text(optionSet.options[j].label).attr('title',optionSet.options[j].title).data('attrval',optionSet.options[j].label).appendTo(flagsDiv);
+						if(optionSet.options[j].previewClass){
+							spanSelector.data('previewclass',optionSet.options[j].previewClass);
+						}
+					} else {
+						$('<span></span>').text(optionSet.options[j]).data('attrval',optionSet.options[j]).appendTo(flagsDiv);
+					}
+				}
+			}
+		}
+	};
+
+	$('#content').on('click','.miuBtnFormat',function(){
+		showMiuDlg('Formatting options',$(this),{
+			dlgType:'format',
+			openTag:'f=',
+			closeTag:'f',
+			previewHtml:'<span class="miuDlgPreviewContent">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br/>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>',
+			options:[{type:'select',subtype:'font',label:'Font',options:['opensans','ostrich','cursive','agency','neuropol','kelt','dumbledor','aniron','aladin','blackops','cabin','eagle','goudy','gugi','iceland','fell','nightshade','start','quint','elite','stalinist']},
+				{type:'select',label:'Size',options:['tiny','small','large','huge','gargantuan']},
+				{type:'select',label:'Spacing',options:['extra-space','double-space']},
+				{type:'flags',label:'Style',options:['italic','bold','border']},
+				{type:'select',label:'Alignment',options:['centre','right']},
+				{type:'select',label:'Floating',options:['float-left','float-right']},
+				{type:'select',label:'Heading',options:['h1','h2','h3']},
+				{type:'select',label:'Fancy',options:['fancy-vdu','fancy-paper','fancy-parchment']}
+			]
+		});
+	});
+	$('#content').on('click','.miuBtnPoll',function(){
+		showMiuDlg('Poll options',$(this),{
+			dlgType:'poll',
+			openTag:'poll="" ',
+			closeTag:'poll',
+			options:[{type:'flags',label:'Poll options',options:[{label:'show',title:'Show the results before voting'},{label:'multi',title:'Allow multiple votes'},{label:'public',title:'Show avatar of voter'}]}]
+		});
+	});
+	$('#content').on('click','.miuBtnTable',function(){
+		showMiuDlg('Table options',$(this),{
+			dlgType:'table',
+			openTag:'table=',
+			closeTag:'table',
+			previewHtml:'<table class="miuDlgPreviewContent bbTable"><tr><td>Lorem</td><td>ipsum</td><td>dolor</td></tr><tr><td>sit</td><td>amet</td><td>consectetur</td></tr><tr><td>adipiscing</td><td>1d4+2</td><td>+4</td></tr></table>',
+			options:[{type:'select',label:'Layout',options:[{label:'center',title:'', previewClass:'bbTableCenter'},{label:'right',title:'', previewClass:'bbTableRight'},{label:'stats',title:'', previewClass:'bbTableStats'},{label:'htl',title:'', previewClass:'bbTable-htl'},{label:'ht',title:'', previewClass:'bbTable-ht'},{label:'hl',title:'', previewClass:'bbTable-hl'}]},
+					{type:'flags',label:'Rollers',options:[{label:'rolls',title:'', previewClass:'bbTableRolls'},{label:'d20',title:'', previewClass:'bbTableD20'},{label:'dnd5e',title:'', previewClass:'bbTableDnd5e'},{label:'pool',title:'', previewClass:''},{label:'pool-add',title:'', previewClass:''}]},
+					{type:'flags',label:'Style',options:[{label:'grid',title:'', previewClass:'bbTableGrid'},{label:'zebra',title:'', previewClass:'bbTableZebra'},{label:'compact',title:'', previewClass:'bbTableCompact'}]},
+			]
+		});
+	});
+
 });
 
 var mobileifyMenus=function(settings){

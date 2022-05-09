@@ -60,6 +60,7 @@
 .gpFormat-border {
     border:solid 1px;
     padding: .5rem;
+    display: block;
 }
 
 // Headings
@@ -164,12 +165,15 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), 0 0 2rem #ccc inset;
     background: #f8f8f8;
     display: inline-block;
+    color: #303136;
 }
 
 .gpFormat-fancy-parchment {
     display: inline-block;
     position: relative;
     padding: 1.5em;
+    color: #303136;
+    z-index: 1;
     &:before{
         position: absolute;
         display: block;
@@ -182,5 +186,7 @@
         filter: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="gpFormatParchmentSvg"><feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5"></feTurbulence><feDisplacementMap in="SourceGraphic" scale="20" /></filter></svg>#gpFormatParchmentSvg');
         pointer-events: none;
         margin: 0 0.5rem 0.5rem 0;
+        background-color: #fff;
+        z-index: -1;
     }
 }
