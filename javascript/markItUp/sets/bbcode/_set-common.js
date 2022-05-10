@@ -50,11 +50,17 @@ $(function () {
 	$('#content').on('click','.miuDlgCancel',function(){$('#markitUpBlocker,#markitUpDlg').remove();});
 	$('body').on('click','#markitUpBlocker',function(){$('#markitUpBlocker,#markitUpDlg').remove();});
 	$('#content').on('click','.miuDlgOK',function(){
-		var openTag='['+$('#markitUpDlg').data('opentag');
+		var dlg=$('#markitUpDlg');
+		var openTag='['+dlg.data('opentag');
 		openTag+=$('.miuAttributeSelector .sel').map(function() { return $(this).data('attrval'); }).get().join(' ');
 		openTag+=']';
-		var closeTag='[/'+$('#markitUpDlg').data('closetag')+']';
-		$.markItUp({ openWith: openTag , closeWith: closeTag });
+		var closeTag='[/'+dlg.data('closetag')+']';
+		if(dlg.data('replmode')){
+			$.markItUp({ replaceWith: openTag+dlg.data('sel')+closeTag });
+		}
+		else{
+			$.markItUp({ openWith: openTag , closeWith: closeTag });
+		}
 
 		$('#markitUpBlocker,#markitUpDlg').remove();}
 	);
@@ -65,6 +71,8 @@ $(function () {
 		$('h2',dlg).text(dlgTitle);
 		dlg.data('opentag',opt.openTag);
 		dlg.data('closetag',opt.closeTag);
+		dlg.data('replmode',opt.replMode);
+		dlg.data('sel',opt.sel);
 		dlg.addClass('miuDlgOptions-'+opt.dlgType);
 		if(opt.previewHtml){
 			$('.miuDlgPreview').html(opt.previewHtml).show();
@@ -99,10 +107,44 @@ $(function () {
 		}
 		$('.miuColorWell span',dlg).addClass('userColor');
 		dlg.darkModeColorize();
+
+
+		if(opt.selectOptions){
+			$('.miuAttributeSelector span').each(function(){
+				var pSpan=$(this);
+				if(opt.selectOptions.includes(pSpan.data('attrval'))){
+					pSpan.click();
+				}
+			});
+		}
 	};
+
+	var getExistingSelection=function(pThis,startRegEx,endRegEx){
+		var ret={selectOptions:null,selectOptions2:null,sel:null,existingSel:false};
+		var miuTextarea=$('textarea',pThis.closest('.markItUpContainer'));
+		var start = miuTextarea[0].selectionStart;
+		var finish = miuTextarea[0].selectionEnd;
+		var sel = $.trim(miuTextarea.val().substring(start, finish));
+
+		var foundStartFormatting =startRegEx.exec(sel);
+		var foundEndFormatting = endRegEx.exec(sel);
+
+		if(foundStartFormatting && foundEndFormatting){
+			ret.selectOptions=foundStartFormatting[1].split(' ');
+			if(foundStartFormatting.length>2){
+				ret.selectOptions2=foundStartFormatting[2].split(' ');
+			}
+			ret.selectOptions=foundStartFormatting[1].split(' ');
+			ret.sel=sel.substring(foundStartFormatting[0].length,sel.length-foundEndFormatting[0].length);
+			ret.existingSel=true;
+		}
+
+		return ret;
+	}
 
 	$('#content').on('click','.miuBtnFormat',function(){
 		var pThis=$(this);
+		var sel=getExistingSelection(pThis,(/^\s*\[f\=?\"?([^\"\]]*)\"?\]/gm),(/\[\/f\]\s*$/gm));
 
 		var showFormatDlg=function(previewHtml)
 		{
@@ -114,6 +156,9 @@ $(function () {
 				dlgType:'format',
 				openTag:'f=',
 				closeTag:'f',
+				selectOptions:sel.selectOptions,
+				replMode:sel.existingSel,
+				sel:sel.sel,
 				previewHtml:'<span class="miuDlgPreviewContent">'+previewHtml+'</span>',
 				options:[{type:'select',subtype:'font',label:'Font',options:['opensans','ostrich','cursive','agency','neuropol','kelt','dumbledor','aniron','aladin','blackops','cabin','eagle','goudy','gugi','iceland','fell','nightshade','start','quint','elite','stalinist']},
 					{type:'select',label:'Size',options:['tiny','small','large','huge','gargantuan']},
@@ -129,14 +174,9 @@ $(function () {
 			});
 		}
 
-		var miuTextarea=$('textarea',pThis.closest('.markItUpContainer'));
-		var start = miuTextarea[0].selectionStart;
-		var finish = miuTextarea[0].selectionEnd;
-		var sel = $.trim(miuTextarea.val().substring(start, finish));
-
-		if(sel.length>0){
+		if(sel.sel && sel.sel.length>0){
 			$.ajax({type: 'post',url: API_HOST +'/forums/getPostPreview',xhrFields: {withCredentials: true},
-			data:{ postText: sel, postAsId: 0, postAsName: ''},
+			data:{ postText: sel.sel, postAsId: 0, postAsName: ''},
 			success:function (data) {
 				showFormatDlg(data.post);
 			}
@@ -148,18 +188,29 @@ $(function () {
 
 	});
 	$('#content').on('click','.miuBtnPoll',function(){
+		var pThis=$(this);
+		var sel=getExistingSelection(pThis,(/^\s*\[poll=\"?(.*?)?\"([^\]]*)\]/gm),(/\[\/poll\]\s*$/gm));
+
 		showMiuDlg('Poll options',$(this),{
 			dlgType:'poll',
-			openTag:'poll="" ',
+			openTag:'poll="'+(sel.selectOptions?(sel.selectOptions.join(' ')):'Your question here...')+'" ',
 			closeTag:'poll',
+			selectOptions:sel.selectOptions2,
+			replMode:sel.existingSel,
+			sel:sel.sel,
 			options:[{type:'flags',label:'Poll options',options:[{label:'show',title:'Show the results before voting'},{label:'multi',title:'Allow multiple votes'},{label:'public',title:'Show avatar of voter'}]}]
 		});
 	});
 	$('#content').on('click','.miuBtnTable',function(){
+		var pThis=$(this);
+		var sel=getExistingSelection(pThis,(/^\s*\[table\=?\"?([^\"\]]*)\"?\]/gm),(/\[\/table\]\s*$/gm));
 		showMiuDlg('Table options',$(this),{
 			dlgType:'table',
 			openTag:'table=',
 			closeTag:'table',
+			selectOptions:sel.selectOptions,
+			replMode:sel.existingSel,
+			sel:sel.sel,
 			previewHtml:'<table class="miuDlgPreviewContent bbTable"><tr><td>Lorem</td><td>ipsum</td><td>dolor</td></tr><tr><td>sit</td><td>amet</td><td>consectetur</td></tr><tr><td>adipiscing</td><td>1d4+2</td><td>+4</td></tr></table>',
 			options:[{type:'select',label:'Layout',options:[{label:'center',title:'', previewClass:'bbTableCenter'},{label:'right',title:'', previewClass:'bbTableRight'},{label:'stats',title:'', previewClass:'bbTableStats'},{label:'htl',title:'', previewClass:'bbTable-htl'},{label:'ht',title:'', previewClass:'bbTable-ht'},{label:'hl',title:'', previewClass:'bbTable-hl'}]},
 					{type:'flags',label:'Rollers',options:[{label:'rolls',title:'', previewClass:'bbTableRolls'},{label:'d20',title:'', previewClass:'bbTableD20'},{label:'dnd5e',title:'', previewClass:'bbTableDnd5e'},{label:'pool',title:'', previewClass:''},{label:'pool-add',title:'', previewClass:''}]},
