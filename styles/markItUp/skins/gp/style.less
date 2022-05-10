@@ -50,6 +50,7 @@
 	margin-right:auto;
 	background:url(images/handle.png) center center no-repeat;
 	cursor:n-resize;
+	touch-action: none;
 }
 /***************************************************************************************/
 /* first row of buttons */
@@ -118,7 +119,7 @@
 .markItUpHeader>ul>li>a {
 	display:block;
 	min-width:16px;
-	height:16px;
+	min-height:16px;
 	text-indent:-10000px;
 	line-height: 0;
 	padding:3px;
@@ -271,7 +272,7 @@
 
 #markitUpDlg{
 	position: absolute;
-	top:1rem;
+	top:-100px;
 	left:1rem;
 	right:1rem;
 	background-color: #ffffff;
@@ -341,10 +342,29 @@
 				color: @gp-orange;
 				border-radius: 4px;
 				cursor: pointer;
+				box-sizing: content-box;
 
 				&.sel{
 					background-color: @gp-orange;
 					color: #fff;
+				}
+			}
+		}
+
+		.miuColorWell{
+			span{
+				border-color: #000;
+				min-height: 1em;
+				min-width: 1em;
+				margin-top: 3px;
+				margin-bottom: 3px;
+				&.sel{
+					margin-top: 0;
+					margin-bottom: 0;
+					border: solid 3px #000;
+					border-radius: 3px !important;
+					min-height: 1.1em;
+					min-width: 1.1em;
 				}
 			}
 		}
@@ -375,6 +395,13 @@ body.dark{
 	}
 }
 
+@media only screen and (max-width:@mobile-breakpoint) {
+	#markitUpDlg .miuDlgOptSet .miuColorWell span{
+		min-width: 0.7em;
+	}
+
+}
+
 @media only screen and (min-width: @mobile-breakpoint){
 	#markitUpDlg{
 		width: 600px;
@@ -386,6 +413,6 @@ body.dark{
 @media only screen and (min-width: @small-breakpoint){
 	.markItUpHeader > ul > li > a{
 		padding: 6px;
-		font-size: 120%;
+		font-size: 150%;
 	}
 }

@@ -123,10 +123,10 @@ function gpClassFormatter($matches,$innerText,$tag){
 		},explode(' ',$matches[1][0]));
 
 	if(count($styles)>0){
-		return "<{$tag} class=\"".implode(' ',$classes)."\" style=\"".implode(';',$styles)."\">{$innerText}</{$tag}>";
+		return "<{$tag} class=\"userColor ".implode(' ',$classes)."\" style=\"".implode(';',$styles)."\">{$innerText}</{$tag}>";
 	}
 
-	return "<{$tag} class=\"".implode(' ',$classes)."\">{$innerText}</{$tag}>";
+	return "<{$tag} class=\"userColor ".implode(' ',$classes)."\">{$innerText}</{$tag}>";
 }
 
 function BBCode2Html($text) {

@@ -159,17 +159,17 @@
 				if (options.resizeHandle === true && browser.safari !== true) {
 					resizeHandle = $('<div class="markItUpResizeHandle"></div>')
 						.insertAfter($$)
-						.bind("mousedown.markItUp", function(e) {
-							var h = $$.height(), y = e.clientY, mouseMove, mouseUp;
+						.bind("mousedown touchstart", function(e) {
+							var h = $$.height(), y = (e.clientY?e.clientY:e.originalEvent.touches[0].clientY), mouseMove, mouseUp;
 							mouseMove = function(e) {
-								$$.css("height", Math.max(20, e.clientY+h-y)+"px");
+								$$.css("height", Math.max(20, (e.clientY?e.clientY:e.originalEvent.touches[0].clientY)+h-y)+"px");
 								return false;
 							};
 							mouseUp = function(e) {
-								$("html").unbind("mousemove.markItUp", mouseMove).unbind("mouseup.markItUp", mouseUp);
+								$("html").unbind("mousemove touchmove", mouseMove).unbind("mouseup touchend", mouseUp);
 								return false;
 							};
-							$("html").bind("mousemove.markItUp", mouseMove).bind("mouseup.markItUp", mouseUp);
+							$("html").bind("mousemove touchmove", mouseMove).bind("mouseup touchend", mouseUp);
 					});
 					footer.append(resizeHandle);
 				}
