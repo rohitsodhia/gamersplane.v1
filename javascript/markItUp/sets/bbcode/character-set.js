@@ -37,7 +37,7 @@ mySettings = {
 		},
 		{ name: 'Table', className:'miuBtnTable'},
 		{name:'Link',  key:'K', openWith:'[url=[![Url]!]]', closeWith:'[/url]', placeHolder:'Your text to link here...', className:'miuBtnLink'},
-		{separator:'---------------' },
+		{separator:'---------------' , className:'mobileSeparator'},
 		{name:'Note', openWith:'[note="[![User(s)]!]"]', closeWith:'[/note]', className:'miuBtnNote'},
 		{name:'Spoiler', openWith:'[spoiler="[![Tag]!]"]', closeWith:'[/spoiler]', className:'miuBtnSpoiler'},
 		{name:'Code', className:'miuBtnCode',

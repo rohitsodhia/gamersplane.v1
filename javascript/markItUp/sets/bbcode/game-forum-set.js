@@ -48,7 +48,7 @@ mySettings = {
 		},
 		{ name: 'Table', className:'miuBtnTable'},
 		{ name: 'Poll', className:'miuBtnPoll'},
-		{ separator: '---------------' },
+		{ separator: '---------------' , className:'mobileSeparator'},
 		{ name: 'Link', key:'K', openWith: '[url=[![Url]!]]', closeWith: '[/url]', placeHolder: 'Your text to link here...' , className:'miuBtnLink'},
 		{ separator: '---------------' },
 
