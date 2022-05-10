@@ -228,6 +228,21 @@
 			return false;
 		}
 
+		public function searchTitle(){
+			if ($this->search == 'latestGamePosts') {
+				return 'Latest Game Posts';
+			} elseif ($this->search == 'latestPublicPosts') {
+				return 'Lastest Public Game Posts';
+			} elseif ($this->search == 'text') {
+				return 'Search Results';
+			} else if ($this->search == 'unreadPosts'){
+				return 'Unread Posts';
+			}
+
+			return 'Latest Posts';
+		}
+
+
 		public function displayHeader(){
 			global $mysql;
 			if ($this->search == 'latestGamePosts') {
