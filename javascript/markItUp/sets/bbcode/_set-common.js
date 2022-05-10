@@ -120,7 +120,7 @@ $(function () {
 					{type:'select',subtype:'color',label:'Color',options:['black','silver','gray','white','maroon','red','purple','fuchsia','green','lime','olive','yellow','navy','blue','teal','aqua']},
 					{type:'select',subtype:'backgroundcolor',label:'Back',options:['black','silver','gray','white','maroon','red','purple','fuchsia','green','lime','olive','yellow','navy','blue','teal','aqua']},
 					{type:'select',label:'Spacing',options:['extra-space','double-space']},
-					{type:'flags',label:'Style',options:['italic','bold','border']},
+					{type:'flags',label:'Style',options:['italic','bold','border','strikethrough']},
 					{type:'select',label:'Alignment',options:['centre','right']},
 					{type:'select',label:'Floating',options:['float-left','float-right']},
 					{type:'select',label:'Heading',options:['h1','h2','h3']},
