@@ -99,11 +99,20 @@ class games
 					'retired'=>true,
 					'forumID'=>true
 				]]
-			);
+			)->toArray();
+
+			$rfavouriteGames = array_column(iterator_to_array($mongo->gameFavorites->find(
+				['userID' => $currentUser->userID],
+				['projection'=>['gameID'=>true, '_id'=>false]]
+				),false),'gameID');
+
+			foreach ($rGames as &$gameCheck) {
+				$gameCheck['isFavorite']=in_array($gameCheck['gameID'], $rfavouriteGames);
+			}
 		} else {
 			$findParams = [
-				'players.user.userID' => ['$ne' => $currentUser->userID],
-				'status' => 'open',
+				//'players.user.userID' => ['$ne' => $currentUser->userID],
+				//'status' => 'open',
 				'retired' => null
 			];
 			if ($_GET['systems']) {
@@ -122,7 +131,9 @@ class games
 				'numPlayers' => true,
 				'status' => true,
 				'players' => true,
-				'customType' => true
+				'customType' => true,
+				'public'=>true,
+				'forumID'=>true,
 			]];
 			if (isset($_GET['sort'])) {
 				$gameSearchOptions['sort'] = [$_GET['sort'] => !isset($_GET['sortOrder']) || $_GET['sortOrder'] == 1 ? 1 : -1];

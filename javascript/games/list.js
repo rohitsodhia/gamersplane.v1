@@ -25,7 +25,8 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 		'name_d': 'Name (Desc)',
 		'system': 'System'
 	};
-	$scope.filter = { 'orderBy': 'createdOn_d', 'showFullGames': false, 'showInactiveGMs': false, 'systems': [] };
+	$scope.filter = { search: '' };
+	$scope.pagination = { numItems: 0, itemsPerPage: 25 };
 	$scope.orderBy = '-start';
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
@@ -36,51 +37,18 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 				$scope.systems[val.shortName] = val.fullName;
 			});
 
-			GamesService.getGames().then(function (data) {
+			GamesService.getGames({'systems': null,'showFullGames': true,'showInactiveGMs': true}).then(function (data) {
 				reqLoading = $scope.clearPageLoading(reqLoading);
 				$scope.games = data;
 				$scope.games.forEach(function (game) {
 					game.lastActivity = UsersService.inactive(game.lastActivity);
 				});
-				equalizeHeights();
+				$scope.pagination.numItems = $scope.games.length;
 			});
 		});
-		$scope.slideToggle = function (field) {
-			$scope.filter[field] = !$scope.filter[field];
-		};
-		$scope.clearSystems = function () {
-			$scope.filter.systems = [];
-		};
-		$scope.setFilter = function (orderBy) {
-			$scope.filter.orderBy = orderBy;
-		};
-		$scope.filterGames = function () {
-			$scope.$emit('pageLoading');
-			var filter = copyObject($scope.filter);
-			$scope.orderBy = filter.orderBy.slice(-1) == 'd'?'-':'';
-			if (filter.orderBy.slice(0, -2) == 'createdOn') {
-				$scope.orderBy += 'start';
-			} else if (filter.orderBy.slice(0, -2) == 'name') {
-				$scope.orderBy += 'title';
-			} else if (filter.orderBy == 'system') {
-				$scope.orderBy += filter.orderBy;
-			}
-			if (filter.systems.length === 0) {
-				filter.systems = null;
-			}
-			$scope.games = [];
-			GamesService.getGames({
-				'systems': filter.systems,
-				'showFullGames': filter.showFullGames,
-				'showInactiveGMs': filter.showInactiveGMs
-			}).then(function (data) {
-				$scope.$emit('pageLoading');
-				$scope.games = data;
-				$scope.games.forEach(function (game) {
-					game.lastActivity = UsersService.inactive(game.lastActivity);
-				});
-				equalizeHeights();
-			});
-		};
+		$scope.$watch(function () { return $scope.filter.search; }, function () {
+			$scope.pagination.numItems = $filter('filter')($scope.games, { $: $scope.filter.search }).length;
+			$scope.pagination.current = 1;
+		});
 	});
 }]);
