@@ -120,11 +120,12 @@ $(function () {
 	};
 
 	var getExistingSelection=function(pThis,startRegEx,endRegEx){
-		var ret={selectOptions:null,selectOptions2:null,sel:null,existingSel:false};
+		var ret={selectOptions:null,selectOptions2:null,sel:null,existingSel:false,rawSel:null};
 		var miuTextarea=$('textarea',pThis.closest('.markItUpContainer'));
 		var start = miuTextarea[0].selectionStart;
 		var finish = miuTextarea[0].selectionEnd;
 		var sel = $.trim(miuTextarea.val().substring(start, finish));
+		ret.rawSel=sel;
 
 		var foundStartFormatting =startRegEx.exec(sel);
 		var foundEndFormatting = endRegEx.exec(sel);
@@ -183,7 +184,7 @@ $(function () {
 			});
 		}
 		else {
-			showFormatDlg('');
+			showFormatDlg(sel.rawSel);
 		}
 
 	});
