@@ -637,3 +637,35 @@ h1.customChar{
 		margin-left: 110px;
 	}
 }
+
+@media print {
+	.abilities {
+		h2.headerbar
+		{
+			margin-left: 0;
+			margin-right: 0;
+			color: #000;
+			background-color: #fff;
+
+			i {
+				display: none;
+			}
+
+			&:before, &:after{
+				display: none;
+			}
+		}
+
+		.abilityNotes.notes{
+			display: block;
+		}
+	}
+
+	.layout-columns-2, .layout-columns-3 {
+		flex-direction: column;
+
+		.layout-column {
+			width: 100%;
+		}
+	}
+}

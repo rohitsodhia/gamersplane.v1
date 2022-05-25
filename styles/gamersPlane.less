@@ -1026,12 +1026,6 @@ div.prettySelect > div {
 	}
 }
 
-@media print {
-	#bodyHeader {
-		position: relative;
-	}
-}
-
 #bodyHeader,
 #bodyHeader > *,
 #headerLogo {
@@ -4083,3 +4077,14 @@ select.notPretty {
 	}
 }
 
+@media print {
+	footer,
+	#bodyHeader {
+		display: none;
+	}
+
+	#content{
+		padding-top: 0;
+		background-image: none !important;
+	}
+}

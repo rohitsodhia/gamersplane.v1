@@ -153,7 +153,7 @@
 						</div>
 						<div class="permissions">
 <?	foreach ($permissionTypes as $pType => $title) { if ($title != 'Moderate' || ($title == 'Moderate' && $type != 'general')) { ?>
-							<div class="tr clearfix">
+							<div class="tr clearfix permission_type_repeater">
 								<div class="permission_type textLabel"><?=$title?></div>
 								<select name="permissions[<?=$type?>]<?=$type != 'general'?"[$typeID]":''?>[<?=$pType?>]">
 									<option value="1"<?=$permissions[$pType] >= 1?' selected="selected"':''?>>Yes</option>
