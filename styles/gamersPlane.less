@@ -3809,11 +3809,13 @@ select.notPretty {
 .badge {
 	.makeBadge;
 
-	&.badge-gameOpen {
+	&.badge-gameOpen,
+	&.badge-game-open {
 		.badgeColor( @gp-open-badge-color );
 	}
 
-	&.badge-gameClosed {
+	&.badge-gameClosed,
+	&.badge-game-closed {
 		.badgeColor( @gp-closed-badge-color);
 	}
 
@@ -3835,6 +3837,12 @@ select.notPretty {
 
 	&.badge-gameGm {
 		.badgeColor( @gp-gm-badge-color);
+	}
+	&.badge-gameHasPlaces {
+		.badgeColor( @gp-complement-mid);
+	}
+	&.badge-gameNoPlaces {
+		.badgeColor( @gp-black);
 	}
 }
 

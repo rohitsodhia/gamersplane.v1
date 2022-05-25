@@ -12,6 +12,15 @@
 
 
 #page_myGames {
+
+	.favoriteGame {
+		cursor: pointer;
+		color: @gp-orange;
+		&.off{
+			color: rgba(128,128,128,0.5);
+		}
+	}
+
 	#editLFG {
 		ul {
 			margin-left: 0;
@@ -35,45 +44,37 @@
 		font-weight: bold;
 	}
 
-	.gameTitle, .systemType, .gmInfo {
-		display: inline-block;
-		vertical-align: middle;
-	}
+	.gameList{
+		li{
+			display: flex;
+			.gameTitle, .systemType, .gmInfo,.forumLink,.gameBadges {
+				display: inline-block;
+				vertical-align: middle;
+			}
 
-	.gameTitle {
-		width: 250px;
-		border-right: 1px solid #666;
-	}
+			.gameTitle,.systemType {
+				width: 25%;
+			}
 
-	.gameRunning .gameTitle {
-		width: 300px;
-	}
+			.gameTitle {
+				flex-grow: 4;
+			}
 
-	.systemType, .gmInfo {
-		border-right: 1px solid #999;
-		text-align: center;
-	}
+			.systemType {
+				flex-grow: 1;
+			}
 
-	.systemType {
-		width: 200px;
-	}
+			.gmInfo{
+				width: 160px;
+			}
+			.gameBadges{
+				width: 160px;
+			}
+			.forumLink{
+				width: 60px;
+			}
+		}
 
-	.gmInfo {
-		float: none;
-		width: 155px;
-		border-right: none;
-	}
-
-	.gmLinks {
-		margin-left: 470px;
-	}
-
-	.playerLinks {
-		margin-left: 670px;
-	}
-
-	.gameRunning .systemType {
-		border-right: none;
 	}
 
 	#lfg a {
@@ -212,49 +213,6 @@
 /* --------------------------------------------*/
 
 #page_listGames {
-	#filterGames {
-		.combobox {
-			width: 158px;
-		}
-
-		#clearCheckboxes {
-			margin-bottom: .8em;
-
-			a {
-				vertical-align: bottom;
-			}
-		}
-
-		.tr:first-child {
-			padding-top: 0;
-		}
-
-		input[type="text"] {
-//			width: 212px;
-		}
-
-		& > ul {
-			margin: .5em 0 1em;
-			clear: both;
-			list-style: none;
-
-			li {
-				padding: 0.1em 0
-			}
-		}
-	}
-
-	#toggleFullGames, #toggleInactiveGMs {
-		* {
-			display: inline-block;
-			margin-right: 5px;
-			vertical-align: middle;
-		}
-
-		div {
-			cursor: pointer;
-		}
-	}
 
 	label {
 		display: inline;
@@ -264,27 +222,41 @@
 		margin: 0;
 	}
 
-	.gameTitle, .systemType, .gmLink {
-		display: inline-block;
-		vertical-align: middle;
+	#gamesList{
+		display: flex;
+		flex-direction: column;
+		li{
+			display: flex;
+
+			.gameTitle,
+			.systemType {
+				width:25%;
+				padding-right: 1em;
+			}
+
+			.gameTitle {
+				flex-grow: 2;
+			}
+
+			.systemType {
+				flex-grow: 1;
+			}
+
+			.username{
+				width:160px;
+			}
+
+			.gameTags{
+				width:190px;
+				.badge {
+					width: 42px;
+					text-align: center;
+					margin-left: 0;
+				}
+			}
+		}
 	}
 
-	.gameTitle {
-		width: 210px;
-		padding-right: 10px;
-	}
-
-	.systemType {
-		width: 200px;
-		padding: 0 15px;
-		border-left: 1px solid #999;
-		border-right: 1px solid #999;
-		text-align: center;
-	}
-
-	.gmLink {
-		margin-left: 15px;
-	}
 
 	#noResults {
 		margin: 2em 0;
@@ -662,36 +634,38 @@
 		text-align: left;
 	}
 
-	#gamesList,#page_myGames .gameList{
+	#page_myGames .gameList{
 
 		margin-bottom: 1rem;
 		padding-bottom: 1rem;
 		border-bottom: solid 1px @gp-black;
 
 		li{
+			padding-left: 0;
+			padding-right: 0;
 			margin-bottom: .2rem;
+			display: flex;
+			flex-wrap: wrap;
+
 			.gameTitle{
-				display: block;
-				font-size: 1.2em;
-				width: auto;
-				margin-bottom: .2rem;
-				border-right-style: none;
+				font-size: 110%;
 			}
+
 			.systemType{
-				border-style: none;
-				width: auto;
-				.makeBadge;
-				.badgeColor(@gp-system-badge-color);
-				margin-left: 0;
+				padding-left: 2em;
 			}
-			.gmLink,.gmInfo{
-				width: auto;
-				.makeBadge;
-				.badgeColor(@gp-gm-badge-color);
-				a{
-					color: #fff;
-				}
+
+			.gameTitle,.systemType{
+				width: 100%;
+
 			}
+
+			.gmInfo,.gameBadges {
+				width: auto;
+				flex-grow: 1;
+				padding-left: 2em;
+			}
+
 		}
 	}
 
@@ -714,6 +688,51 @@
 			width: 100%;
 		}
 	}
+
+	#page_listGames{
+		input[type="text"].headerSearch{
+			width:9em;
+			min-width: 9em;
+		}
+
+		#gamesList{
+			display: flex;
+			flex-direction: column;
+			li{
+				display: flex;
+				flex-wrap: wrap;
+				padding-left: 0;
+				padding-right: 0;
+
+				.gameTitle {
+					width: 100%;
+					font-size: 110%;
+					padding-right: 0;
+				}
+
+				.systemType {
+					padding-bottom: 4px;
+				}
+
+				.username{
+					width:auto;
+					text-align: right;
+				}
+
+				.gameTags{
+					text-align: right;
+					width:100%;
+					.badge {
+						width: 42px;
+						text-align: center;
+						margin-left: 0;
+					}
+				}
+			}
+		}
+
+	}
+
 }
 
 #ardHelpers{

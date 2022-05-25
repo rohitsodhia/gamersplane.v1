@@ -53,24 +53,24 @@ $(function() {
 		});
 	}
 
-	/*
-	$('.headerbar, .fancyButton').each(skewElement);
-	hbMargin = parseFloat($('.headerbar').data('skewedOut')) * 2;
-	$('.hbMargined:not(textarea)').css({ 'margin-left': Math.ceil(hbMargin) + 'px', 'margin-right': Math.ceil(hbMargin) + 'px' });
-	$('.hbTopper').css({ 'marginLeft': Math.round(hbMargin) + 'px' });
-	$('textarea.hbMargined').each(function () {
-		tWidth = $(this).parent().width();
-		$(this).css({ 'margin-left': Math.ceil(hbMargin) + 'px', 'margin-right': Math.ceil(hbMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbMargin) + 'px' });
+	$('body').on('click','.favoriteGame', function (e) {
+		e.preventDefault();
+		var pThis = $(this);
+		var gameID = pThis.data('gameid');
+		$.ajax({
+			method: 'POST',
+			url: API_HOST + '/games/toggleFavorite/',
+			data: { gameID: gameID },
+			xhrFields: { withCredentials: true },
+			success: function (data) {
+				if (data !== 0 && pThis.hasClass('off')) {
+					pThis.removeClass('off').attr('title', 'Unfavorite');
+				} else if (data !== 0) {
+					pThis.addClass('off').attr('title', 'Favorite');
+				}
+			}
+		});
 	});
-
-	hbdMargin = parseFloat($('.hbDark').data('skewedOut')) * 2;
-	$('.hbdMargined:not(textarea)').css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px' });
-	$('.hbdTopper').css({ 'marginLeft': Math.round(hbdMargin) + 'px' });
-	$('textarea.hbdMargined').each(function () {
-		tWidth = $(this).parent().width();
-		$(this).css({ 'margin-left': Math.ceil(hbdMargin) + 'px', 'margin-right': Math.ceil(hbdMargin) + 'px', 'width': Math.ceil(tWidth - 2 * hbdMargin) + 'px' });
-	});
-	*/
 
 	$('.trapezoid').each(trapezoidify);
 
