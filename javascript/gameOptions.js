@@ -96,10 +96,17 @@ $(function () {
                 var rule = gameOptions.diceRules[count];
                 if(rollstring && rule.rolled &&  rollstring.toLowerCase().indexOf(rule.rolled.toLowerCase())!=-1){
                     //rules highlighting
-                    if(rule.highlight || rule.content || rule.contentAppend || rule.hideTotal){
+                    if(rule.highlight || rule.content || rule.contentAppend || rule.hideTotal || rule.countTotal){
 
                         var dieSelector=false;
                         var matchedDice=null;
+                        var reasonSelector=(rule.reason?":reasonEquals('"+escape(rule.reason.toLowerCase())+"')":"");
+
+                        if(rule.countTotal){
+                            if(!rule.reason || (rule.reason && $('i'+reasonSelector,parsedRolls).length)){
+                                $('.rollTotal',parsedRolls.closest('.rollResults')).text($('i'+':meval('+valToMeval(rule.countTotal)+')',parsedRolls).length);
+                            }
+                        }
 
                         //hashed reason e.g. DC##
                         if(rule.reason){
@@ -128,13 +135,7 @@ $(function () {
                         if(matchedDice==null)
                         {
 
-                            var reasonSelector=''
                             var selectorSuffix=''
-
-                            //reason
-                            if(rule.reason){
-                                reasonSelector+=":reasonEquals('"+escape(rule.reason.toLowerCase())+"')";
-                            }
 
                             //last die
                             if(rule.lastDie) {

@@ -17,7 +17,7 @@
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
-			<a href="#" class="favoriteGame sprite tassel<?=$favorited?'':' off'?>" title="Favorite" alt="Favorite"  data-gameid="<?=$gameID?>"></a>
+			<a href="#" class="favoriteGame sprite tassel<?=$favorited?'':' off'?>" title="<?=$favorited?'Unfavorite':' Favorite'?>" data-gameid="<?=$gameID?>"></a>
 		</div>
 		<h1 class="headerbar"><i class="ra ra-d6"></i> <?=$gameInfo['title'] ?> <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 

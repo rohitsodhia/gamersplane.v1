@@ -160,23 +160,15 @@ body #page_gameDetails #playersInGame>li:hover .characters
 
 }
 
-body .markItUpButton,
-body .markItUpHeader ul .markItUpDropMenu,
-body .markItUpHeader ul .markItUpSeparator
-{
-    background-color: #ddd;
-    min-height:22px;
+.markItUpHeader>ul>li.markItUpButton>a{
+	&::after{
+        color: #fff;
+    }
 }
 
-body .markItUpHeader ul .markItUpSeparator
-{
-    margin:0;
-    border:solid 10px #ddd;
-    background-color: #303136;
-    border-top-width: 0;
-    border-bottom-width: 0;
+.markItUpHeader ul .markItUpSeparator {
+	background-color:#666;
 }
-
 
 body #messageTextArea
 {

@@ -7,6 +7,7 @@
 	$gameID = $_GET['gameID'];
 	$forumSearch->searchText($searchText, $gameID);
 	$forumSearch->findThreads($_GET['page']);
+	$dispatchInfo['title'] = $forumSearch->searchTitle();
 
 	require_once(FILEROOT.'/header.php');
 ?>

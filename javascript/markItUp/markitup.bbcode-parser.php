@@ -67,6 +67,68 @@ function splitByHeader($title, $text, $cssClass, $collectionData=''){
 	return $ret;
 }
 
+/**
+ * BBCode Replace function which supports nested tags
+ * $text - the text to search
+ * $openTagNeedle - regex for the opening tag to search for
+ * $closeTagNeedle - the closing tag.  Not regex
+ * $callback - function to perform the replacement.  This is passed the tag found, the inner text, and the matches
+ */
+function nestedReplace($text, $openTagNeedle, $closeTagNeedle, $callback, $options){
+    $replacementMade=true;
+    $searchFromPos=0;
+    $closeTagLen=strlen($closeTagNeedle);
+
+    do{
+        $replacementMade=false;
+        if(preg_match($openTagNeedle, $text, $matches, PREG_OFFSET_CAPTURE,$searchFromPos)) {
+            $foundTag = $matches[0][0];
+            $openTagStart = $matches[0][1];
+			$openTagEnd=$openTagStart+strlen($foundTag);
+            $nextOpenTagPos=-1;
+
+            if(preg_match($openTagNeedle, $text, $matchesNext, PREG_OFFSET_CAPTURE,$openTagEnd)){
+                $nextOpenTagPos=$matchesNext[0][1];		//find the next opening tag
+            }
+            $nextCloseTag=strpos($text,$closeTagNeedle,$openTagEnd);
+
+            if($nextCloseTag!==false){
+                if($nextCloseTag<$nextOpenTagPos || $nextOpenTagPos==-1){
+					//found a closing tag before the next opening tag
+					$text=substr($text,0,$openTagStart).$callback($matches,substr($text,$openTagEnd,$nextCloseTag-$openTagEnd),$options).substr($text,$nextCloseTag+$closeTagLen);
+                    $replacementMade=true;
+                    $searchFromPos=$openTagEnd;
+                } else {
+					//found an opening tag before the next closing tag - nesting
+					$restOfText=substr($text,$openTagEnd);
+                    $text=substr($text,0,$openTagEnd).nestedReplace($restOfText,$openTagNeedle, $closeTagNeedle, $callback, $options);
+                    $replacementMade=true;
+                }
+            }
+        }
+    }while($replacementMade);
+
+    return $text;
+}
+
+function gpClassFormatter($matches,$innerText,$tag){
+	$styles=array();
+	$classes=array_map(function($className) use(&$styles)
+		{
+			if(strpos($className,':')!==false){
+				$styles[]=$className;
+				return "";
+			}
+			return 'gpFormat-'.strtolower($className);
+		},explode(' ',$matches[1][0]));
+
+	if(count($styles)>0){
+		return "<{$tag} class=\"userColor ".implode(' ',$classes)."\" style=\"".implode(';',$styles)."\">{$innerText}</{$tag}>";
+	}
+
+	return "<{$tag} class=\"userColor ".implode(' ',$classes)."\">{$innerText}</{$tag}>";
+}
+
 function BBCode2Html($text) {
 	$text = trim($text);
 
@@ -212,8 +274,8 @@ function BBCode2Html($text) {
 
 	$text = preg_replace($in, $out, $text);
 
-	while (preg_match("/\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]/sm", $text))
-		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"([\w\.]+?)\")?\](.*?)\[\/quote\]\s*/s", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
+	while (preg_match("/\[quote(?:=\"?([^\"\]]+?)\"?)?\](.*?)\[\/quote\]/sm", $text))
+		$text = preg_replace("/([\r\n]?)[\r\n]*\[quote(?:=\"?([^\"\]]+?)\"?)?\](.*?)\[\/quote\]\s*/s", '\1<blockquote class="quote"><div class="quotee">\2 says:</div>\3</blockquote>', $text);
 	$text = str_replace('<div class="quotee"> says:</div>', '<div class="quotee">Quote:</div>', $text);
 
 	//form characters
@@ -246,6 +308,11 @@ function BBCode2Html($text) {
 			return '<span class="'.$spanClasses.'" data-varname="'.$formVarName.'" data-varcalc="'.($isCalc?$formVal:"").'" data-formfieldidx="'.($formField++).'">'.$valHtml.'</span>';
 	}, $text);
 	//end form characters
+
+	//format
+	$text=nestedReplace($text,'/\[f=?"?\s*([^\"\]]*)\s*"?\]/ms','[/f]','gpClassFormatter',"span");
+	$text=nestedReplace($text,'/\[b=?"?\s*([^\"\]]*)\s*"?\]/ms','[/b]','gpClassFormatter',"strong");
+	//end format
 
 	//map
 	$matches = null;

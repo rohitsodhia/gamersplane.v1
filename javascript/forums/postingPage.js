@@ -274,7 +274,7 @@ $(function() {
 				charactersToAdd = $('#fm_characters .submenu>li.thisUser p.charName a');
 			}
 
-			if(!characterSheetIntegration.gmExcludePcs){
+			if(!isGm || !characterSheetIntegration.gmExcludePcs){
 				charactersToAdd.each(function () {
 					var addChar = $(this);
 					var hrefParts = addChar.attr('href').split('/');
