@@ -70,6 +70,7 @@
 					$forumString = 'IN ('.$forumString.')';
 				}
 				$permissionsInfos = $mysql->query("SELECT forumID, 'general' pType, {$queryColumn['permissions']} FROM forums_permissions_general WHERE forumID {$forumString} UNION SELECT forumID, 'group' pType, {$queryColumn['permissions']} FROM forums_permissions_groups_c WHERE userID = {$userID} AND forumID {$forumString} UNION SELECT forumID, 'user' pType, {$queryColumn['permissions']} FROM forums_permissions_users WHERE userID = {$userID} AND forumID {$forumString}");
+				$groupPermissionsDenied = $mysql->query("SELECT forumID FROM forums_permissions_groups WHERE `read`=-2 AND forumID {$forumString}")->fetchAll(PDO::FETCH_COLUMN);
 				$rawPermissions = array();
 				foreach ($permissionsInfos->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC) as $key => $rawPermission) {
 					if (sizeof($rawPermission) == 1) {
@@ -97,7 +98,13 @@
 						if (isset($rawPermissions[$heritage]))
 							foreach ($types as $type)
 								if (abs($rawPermissions[$heritage][$type]) > abs($permissions[$forumID][$type]))
+								if($type!='read' || !in_array(strval($forumID),$groupPermissionsDenied)){
 									$permissions[$forumID][$type] = $rawPermissions[$heritage][$type];
+								}
+								else{
+									//group is denied read by default (browsing private subforums in public games when unauthenticated)
+									$permissions[$forumID][$type] = -2;
+								}
 					}
 				}
 			}

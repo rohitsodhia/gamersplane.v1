@@ -7,6 +7,7 @@
 	z-index blocks:
 */
 @import "gpVariables.less";
+@import "gpFormatTag.less";
 
 @font-face {
 	font-family: 'AgencyFB';
@@ -1022,12 +1023,6 @@ div.prettySelect > div {
 			vertical-align: middle;
 			display: inline-block;
 		}
-	}
-}
-
-@media print {
-	#bodyHeader {
-		position: relative;
 	}
 }
 
@@ -3808,11 +3803,13 @@ select.notPretty {
 .badge {
 	.makeBadge;
 
-	&.badge-gameOpen {
+	&.badge-gameOpen,
+	&.badge-game-open {
 		.badgeColor( @gp-open-badge-color );
 	}
 
-	&.badge-gameClosed {
+	&.badge-gameClosed,
+	&.badge-game-closed {
 		.badgeColor( @gp-closed-badge-color);
 	}
 
@@ -3834,6 +3831,12 @@ select.notPretty {
 
 	&.badge-gameGm {
 		.badgeColor( @gp-gm-badge-color);
+	}
+	&.badge-gameHasPlaces {
+		.badgeColor( @gp-complement-mid);
+	}
+	&.badge-gameNoPlaces {
+		.badgeColor( @gp-black);
 	}
 }
 
@@ -4074,3 +4077,14 @@ select.notPretty {
 	}
 }
 
+@media print {
+	footer,
+	#bodyHeader {
+		display: none;
+	}
+
+	#content{
+		padding-top: 0;
+		background-image: none !important;
+	}
+}
