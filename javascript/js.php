@@ -26,6 +26,8 @@
 <?	} else if($gameID) {?>
 	<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
 	<script type="text/javascript" src="/javascript/gameOptions.js?v=<?=getJSVersion('/javascript/gameOptions.js')?>"></script>
+<?	} else if($pathAction == 'forums'){?>
+<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/public-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/public-forum-set.js')?>"></script>
 <?	} else {?>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/set.js')?>"></script>
 <?	}?>
