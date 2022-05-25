@@ -21,13 +21,14 @@ mySettings = {
 		$('textarea.markItUp').trigger('input').trigger('change');
 	},
 	markupSet: [
-		{ name: 'Bold', key: 'B', openWith: '[b]', closeWith: '[/b]' },
-		{ name: 'Italic', key: 'I', openWith: '[i]', closeWith: '[/i]' },
-		{ name: 'Underline', key: 'U', openWith: '[u]', closeWith: '[/u]' },
-		{ name: 'Strikethrough', openWith: '[s]', closeWith: '[/s]' },
-		{ name: 'Line break', openWith: '\n[linebreak]\n' },
+		{ name: 'Bold', key: 'B', openWith: '[b]', closeWith: '[/b]', className:'miuBtnBold' },
+		{ name: 'Italic', key: 'I', openWith: '[i]', closeWith: '[/i]', className:'miuBtnItalic' },
+		{ name: 'Underline', key: 'U', openWith: '[u]', closeWith: '[/u]', className:'miuBtnUnderline' },
+		{ name: 'Strikethrough', openWith: '[s]', closeWith: '[/s]', className:'miuBtnStrikethrough' },
+		{ name: 'Line break', openWith: '\n[linebreak]\n' , className:'miuBtnLinebreak'},
+		{ name: 'Format', className:'miuBtnFormat'},
 		{
-			name: 'Color', openWith: '[color="[![Text color]!]"]', closeWith: '[/color]',
+			name: 'Color', openWith: '[color="[![Text color]!]"]', closeWith: '[/color]', className:'miuBtnColor',
 			dropMenu: [
 				{ name: 'Red', openWith: '[color="red"]', closeWith: '[/color]' },
 				{ name: 'Blue', openWith: '[color="blue"]', closeWith: '[/color]' },
@@ -36,7 +37,7 @@ mySettings = {
 		},
 		{ separator: '---------------' },
 		{
-			name: 'Image', replaceWith: '[img][![Url]!][/img]',
+			name: 'Image', replaceWith: '[img][![Url]!][/img]', className:'miuBtnImage',
 			dropMenu: [
 				{ name: 'By URL...', replaceWith: '[img][![Url]!][/img]' },
 				{ name: 'Upload to Imgur...', closeWith: function (markItUp) { imgurUpload(markItUp); } },
@@ -45,8 +46,10 @@ mySettings = {
 				{ name: 'Zoom map...', replaceWith: '[zoommap="[![Url]!]"]\n[/zoommap]' }
 			]
 		},
-		{ separator: '---------------' },
-		{ name: 'Link', key:'K', openWith: '[url=[![Url]!]]', closeWith: '[/url]', placeHolder: 'Your text to link here...' },
+		{ name: 'Table', className:'miuBtnTable'},
+		{ name: 'Poll', className:'miuBtnPoll'},
+		{ separator: '---------------' , className:'mobileSeparator'},
+		{ name: 'Link', key:'K', openWith: '[url=[![Url]!]]', closeWith: '[/url]', placeHolder: 'Your text to link here...' , className:'miuBtnLink'},
 		{ separator: '---------------' },
 
 /*		{name:'Size', key:'S', openWith:'[size=[![Text size]!]]', closeWith:'[/size]',
@@ -60,42 +63,42 @@ mySettings = {
 		{name:'Numeric list', openWith:'[list=[![Starting number]!]]\n', closeWith:'\n[/list]'},
 		{name:'List item', openWith:'[*] '},
 		{separator:'---------------' },
-*/		{ name: 'Quotes', openWith: '[quote]', closeWith: '[/quote]' },
+*/		{ name: 'Quotes', openWith: '[quote]', closeWith: '[/quote]' , className:'miuBtnQuote'},
 		{
-			name: 'Note', className: 'playerNoteSelector', openWith: '[note="[![User(s)]!]"]', closeWith: '[/note]',
+			name: 'Note', className: 'playerNoteSelector miuBtnNote', openWith: '[note="[![User(s)]!]"]', closeWith: '[/note]',
 			dropMenu: notesdropDown
 		},
-		{ name: 'Out of Character', openWith: '[ooc]', closeWith: '[/ooc]' },/*
+		{ name: 'Out of Character', openWith: '[ooc]', closeWith: '[/ooc]' , className:'miuBtnOoc'},/*
 		{name:'Code', openWith:'[code]', closeWith:'[/code]'},
 		{separator:'---------------' },
 		{name:'Clean', className:"clean", replaceWith:function(markitup) { return markitup.selection.replace(/\[(.*?)\]/g, "") } },
 		{name:'Preview', className:"preview", call:'preview' }*/
-		{ name: 'Spoiler', openWith: '[spoiler="[![Tag]!]"]', closeWith: '[/spoiler]' },
+		{ name: 'Spoiler', openWith: '[spoiler="[![Tag]!]"]', closeWith: '[/spoiler]' , className:'miuBtnSpoiler'},
 	]
 };
 
 mobileifyMenus(mySettings);
 
 $(function () {
-	$('body').on('click', '.markItUpButton10 ul li:not(.playerNoteAdd):not(.playerPrivateAdd):not(.playerMention):not(.otherNoteAdd)', function (e) {
+	$('body').on('click', '.playerNoteSelector ul li:not(.playerNoteAdd):not(.playerPrivateAdd):not(.playerMention):not(.otherNoteAdd)', function (e) {
 		$(this).toggleClass('playerNoteSelected');
 		e.stopPropagation();
 		e.preventDefault();
 	});
 
-	$('body').on('click', '.markItUpButton10 ul li.playerNoteAdd,.markItUpButton10 ul li.playerPrivateAdd', function (e) {
-		var selectedPlayers = $('.markItUpButton10 ul li.playerNoteSelected').map(function () { return $.trim($(this).text()); }).get().join();
+	$('body').on('click', '.playerNoteSelector ul li.playerNoteAdd,.playerNoteSelector ul li.playerPrivateAdd', function (e) {
+		var selectedPlayers = $('.playerNoteSelector ul li.playerNoteSelected').map(function () { return $.trim($(this).text()); }).get().join();
 		if($(this).hasClass('playerPrivateAdd')){
 			$.markItUp({ openWith: '[private="' + selectedPlayers + '"]', closeWith: '[/private]' });
 		} else {
 			$.markItUp({ openWith: '[note="' + selectedPlayers + '"]', closeWith: '[/note]' });
 		}
-		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
+		$('.playerNoteSelector ul li.playerNoteSelected').removeClass('playerNoteSelected');
 	});
 
-	$('body').on('click', '.markItUpButton10 ul li.playerMention', function (e) {
-		var selectedPlayers = $('.markItUpButton10 ul li.playerNoteSelected').map(function () { return '@'+$.trim($(this).text()); }).get().join()+' ';
+	$('body').on('click', '.playerNoteSelector ul li.playerMention', function (e) {
+		var selectedPlayers = $('.playerNoteSelector ul li.playerNoteSelected').map(function () { return '@'+$.trim($(this).text()); }).get().join()+' ';
 		$.markItUp({ openWith: selectedPlayers , closeWith: ' ' });
-		$('.markItUpButton10 ul li.playerNoteSelected').removeClass('playerNoteSelected');
+		$('.playerNoteSelector ul li.playerNoteSelected').removeClass('playerNoteSelected');
 	});
 });

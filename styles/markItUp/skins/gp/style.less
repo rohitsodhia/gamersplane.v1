@@ -1,0 +1,428 @@
+@import "../../../../styles/gpVariables.less";
+
+/* -------------------------------------------------------------------
+// markItUp! Universal MarkUp Engine, JQuery plugin
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.markItUp * {
+	outline:none;
+}
+.markItUp ul{
+	margin: 0;
+	padding: 0;
+}
+.markItUp a:link,
+.markItUp a:visited {
+	text-decoration:none;
+}
+#page_forumThread .markItUp, #page_forumPost .markItUp  {
+/*	width:700px;*/
+	margin:5px 0 5px 0;
+	padding: 0;
+}
+.markItUpContainer  {
+/*	border:1px solid #200;*/
+/*	background:#0A0A0A url(images/bg-container.png) repeat-x top left;*/
+	padding:5px 0 2px;
+}
+.markItUpEditor {
+	display:block;
+	clear:both;
+	padding: 4px 5px;
+}
+.markItUpPreviewFrame	{
+	overflow:auto;
+	background-color:#000;
+	border:1px solid #3C769D;
+	width:99.9%;
+	height:300px;
+	margin:5px 0;
+}
+.markItUpFooter {
+	width:100%;
+	cursor:n-resize;
+	padding-top: 3px;
+}
+.markItUpResizeHandle {
+	overflow:hidden;
+	width:21px; height:15px;
+	margin-left:auto;
+	margin-right:auto;
+	background:url(images/handle.png) center center no-repeat;
+	cursor:n-resize;
+	touch-action: none;
+}
+/***************************************************************************************/
+/* first row of buttons */
+.markItUpHeader{
+	position: relative;
+}
+.markItUpHeader ul li	{
+	list-style:none;
+	position:relative;
+	display: inline-block;
+}
+.markItUpHeader ul li ul{
+	display:none;
+}
+.markItUpHeader ul .markItUpDropMenu {
+	background:transparent url(images/menu.png) no-repeat 115% 50%;
+}
+.markItUpHeader ul .markItUpDropMenu > a {
+	margin-right: 6px;
+}
+.markItUpHeader ul .markItUpDropMenu li {
+	margin-right:0px;
+}
+.markItUpHeader ul .markItUpSeparator {
+	margin:3px 10px;
+	width:1px;
+	height:16px;
+	overflow:hidden;
+	background-color:#CCC;
+	vertical-align: bottom;
+}
+.markItUpHeader ul ul .markItUpSeparator {
+	width:auto; height:1px;
+	margin:0px;
+}
+/* next rows of buttons */
+.markItUpHeader ul ul {
+	display:none;
+	position:absolute;
+	top:18px; left:0px;
+	background:#FFF8F8;
+	border:1px solid #3C769D;
+	border-bottom: none;
+	height:inherit;
+	z-index: 7501;
+}
+.markItUpHeader ul ul li {
+	float:none;
+	border-bottom:1px solid #3C769D;
+}
+.markItUpHeader ul ul .markItUpDropMenu {
+	background:#F5F5F5 url(images/submenu.png) no-repeat 100% 50%;
+}
+/* next rows of buttons */
+.markItUpHeader ul ul ul {
+	position:absolute;
+	top:-1px; left:150px;
+}
+.markItUpHeader ul ul ul li {
+	float:none;
+}
+.markItUpHeader ul li a{
+	background-repeat:no-repeat;
+	background-position: center;
+}
+.markItUpHeader>ul>li>a {
+	display:block;
+	min-width:16px;
+	min-height:16px;
+	text-indent:-10000px;
+	line-height: 0;
+	padding:3px;
+	margin:0px;
+}
+.markItUpHeader ul ul a {
+	display:block;
+	padding-left:0px;
+	text-indent:0;
+	width:120px;
+	padding:5px 5px 5px 25px;
+	background-position:2px 50%;
+}
+.markItUpHeader ul ul a:hover  {
+	color:#FFF;
+	background-color:#3C769D;
+}
+
+//buttons
+.markItUpHeader>ul>li.markItUpButton>a{
+
+	&::after{
+		font-family: '@{rpgawesome-font-family}';
+		display: block;
+		text-indent: 0;
+		line-height: initial;
+		color: @gp-black;
+	}
+
+}
+
+.markItUpHeader>ul>li.markItUpButton:hover>a:after{
+	color: @gp-orange;
+}
+
+.markItUpHeader>ul>li.miuBtnBold>a::after	{
+	content: @ra-var-icon-bold;
+}
+.markItUpHeader>ul>li.miuBtnItalic>a::after{
+	content: @ra-var-icon-italic;
+}
+.markItUpHeader>ul>li.miuBtnUnderline>a::after{
+	content: @ra-var-icon-underline;
+}
+.markItUpHeader>ul>li.miuBtnStrikethrough>a::after{
+	content: @ra-var-icon-strikethrough;
+}
+.markItUpHeader>ul>li.miuBtnLinebreak>a::after{
+	content: '—';
+	font-family: sans-serif;
+	font-weight: bold;
+}
+.markItUpHeader>ul>li.miuBtnFormat>a::after{
+	content: @ra-var-icon-font;
+}
+.markItUpHeader>ul>li.miuBtnTable>a::after{
+	content: @ra-var-icon-table2;
+}
+.markItUpHeader>ul>li.miuBtnPoll>a::after{
+	content: @ra-var-icon-menu2;
+}
+.markItUpHeader>ul>li.miuBtnColor>a::after{
+	content: @ra-var-icon-eyedropper;
+}
+.markItUpHeader>ul>li.miuBtnImage>a::after{
+	content: @ra-var-icon-file-picture;
+}
+.markItUpHeader>ul>li.miuBtnLink>a::after{
+	content: @ra-var-icon-link;
+}
+.markItUpHeader>ul>li.miuBtnQuote>a::after{
+	content: @ra-var-icon-quotes-left;
+}
+.markItUpHeader>ul>li.miuBtnNote>a::after{
+	content: @ra-var-icon-file-text;
+}
+.markItUpHeader>ul>li.miuBtnCode>a::after{
+	content: @ra-var-icon-embed2;
+}
+
+.markItUp .playerNoteSelector li a	{
+	padding-left: 0;
+	width: 145px;
+	&::before{
+		font-family: '@{rpgawesome-font-family}';
+		display: inline-block;
+		text-indent: 0;
+		line-height: initial;
+		color: @gp-black;
+		width: 25px;
+		content: @ra-var-icon-checkbox-unchecked;
+		text-align: center;
+	}
+}
+.markItUp .playerNoteSelector li.playerNoteSelected a	{
+	&::before{
+		content: @ra-var-icon-checkbox-checked;
+		color: @gp-green;
+	}
+}
+.markItUp .playerNoteSelector li.playerNoteAdd a	{
+	&::before{
+		content: @ra-var-icon-file-text;
+		color: @gp-orange;
+	}
+}
+.markItUp .playerNoteSelector li.playerPrivateAdd a	{
+	&::before{
+		content: @ra-var-icon-file-text;
+		color: #888;
+	}
+}
+
+.markItUp .playerNoteSelector li.playerMention a{
+	background-image: none;
+	padding-left: 0;
+	width: 145px;
+}
+
+.markItUp .playerNoteSelector li.playerMention a:before	{
+	content:'@';
+	display: inline-block;
+    width: 25px;
+    text-align: center;
+}
+
+
+.markItUpHeader>ul>li.miuBtnOoc>a::after{
+	content: 'OOC';
+	font-family: 'AgencyFB';
+	font-weight: bold;
+}
+.markItUpHeader>ul>li.miuBtnSpoiler>a::after{
+	content: '±';
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+
+//dialogs
+#markitUpBlocker{
+	position: fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background-color: rgba(0,0,0,.5);
+	z-index: 20000;
+}
+
+#markitUpDlg{
+	position: absolute;
+	top:-100px;
+	left:1rem;
+	right:1rem;
+	background-color: #ffffff;
+	z-index: 20001;
+	box-shadow: 0 0 2px #000;
+
+	h2{
+		background-color: @gp-orange;
+		color: #fff;
+		font-family: 'AgencyFB';
+		font-size: 2.2em;
+		line-height: 1.4em;
+		padding: 0 0.5rem;
+	}
+
+	.miuDlgButtons{
+		text-align: right;
+		margin: 0 .5rem .5rem 0;
+	}
+
+	.miuDlgOptions{
+		margin: 1rem;
+		border-bottom: solid 1px #888;
+	}
+
+	.miuDlgPreview{
+		&:before{
+			content: "Preview";
+			color: @gp-orange;
+			font-size: 150%;
+			font-family: 'AgencyFB';
+			display: block;
+			clear: both;
+			margin-bottom: .5rem;
+			margin-left: -1rem;
+		}
+
+		margin: 0 1rem 1rem 1rem;
+		padding: 1rem;
+		border-bottom: solid 1px #888;
+		&:after{
+			content: "";
+			display: table;
+			clear: both;
+		}
+
+	}
+
+	.miuDlgOptSet{
+		margin-bottom: .5rem;
+		label{
+			font-weight: bold;
+			display: inline-block;
+			margin-right: .5rem;
+		}
+		.miuDlg-flags,
+		.miuDlg-select
+		{
+			display: inline-block;
+			//white-space: nowrap;
+			span{
+				vertical-align: middle;
+				padding: .1rem .2rem;
+				margin-right:.2rem;
+				display: inline-block;
+				border:solid 1px;
+				color: @gp-orange;
+				border-radius: 4px;
+				cursor: pointer;
+				box-sizing: content-box;
+
+				&.sel{
+					background-color: @gp-orange;
+					color: #fff;
+				}
+			}
+		}
+
+		.miuColorWell{
+			span{
+				border-color: #000;
+				min-height: 1em;
+				min-width: 1em;
+				margin-top: 3px;
+				margin-bottom: 3px;
+				&.sel{
+					margin-top: 0;
+					margin-bottom: 0;
+					border: solid 3px #000;
+					border-radius: 3px !important;
+					min-height: 1.1em;
+					min-width: 1.1em;
+				}
+			}
+		}
+
+		.miuDlg-select{
+			span{
+				margin-right: 0;
+				border-radius: 0;
+
+				&:first-child{
+					border-radius: 4px 0 0 4px;
+				}
+				&:last-child{
+					border-radius: 0 4px 4px 0;
+				}
+			}
+		}
+	}
+}
+
+body.dark{
+	#markitUpDlg{
+		background-color: #303136;
+
+		.miuDlgOptSet .miuDlg-flags span, .miuDlgOptSet .miuDlg-select span{
+			color: #fff;
+		}
+	}
+}
+
+@media only screen and (max-width:@mobile-breakpoint) {
+	#markitUpDlg .miuDlgOptSet .miuColorWell span{
+		min-width: 0.7em;
+	}
+	.markItUpHeader ul .mobileSeparator{
+		display: block;
+		height: 0;
+	}
+	.markItUpHeader > ul > li > a{
+		font-size: 120%;
+		padding: 4px;
+	}
+	.markItUpHeader ul .markItUpSeparator{
+		background-color: transparent;
+	}
+}
+
+@media only screen and (min-width: @mobile-breakpoint){
+	#markitUpDlg{
+		width: 600px;
+		left:50%;
+		margin-left: -300px;
+	}
+}
+
+@media only screen and (min-width: @small-breakpoint){
+	.markItUpHeader > ul > li > a{
+		padding: 6px;
+		font-size: 150%;
+	}
+}
