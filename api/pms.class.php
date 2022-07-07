@@ -47,7 +47,15 @@
 			$pms = [];
 			foreach ($pmsResults as $pm) {
 				$pm = printReady($pm);
-				$pm['read'] = true;
+				$pm['read'] = false;
+				if ($box == 'inbox') {
+					foreach ($recipient in $pm['recipients']) {
+						if ($recipient['userID'] == $currentUser->userID) {
+							$pm['read'] = $recipient['read'];
+							break;
+						}
+					}
+				}
 				$pms[] = $pm;
 			}
 			displayJSON(['success' => true, 'box' => $box, 'pms' => $pms, 'totalCount' => $numPMs]);
