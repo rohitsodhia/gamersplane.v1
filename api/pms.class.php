@@ -49,7 +49,7 @@
 				$pm = printReady($pm);
 				$pm['read'] = false;
 				if ($box == 'inbox') {
-					foreach ($recipient in $pm['recipients']) {
+					foreach ($pm['recipients'] as $recipient) {
 						if ($recipient['userID'] == $currentUser->userID) {
 							$pm['read'] = $recipient['read'];
 							break;
