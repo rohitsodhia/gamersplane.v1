@@ -24,7 +24,7 @@
 			</div>
 			<div id="pmList" hb-margined>
 				<div ng-repeat="pm in pms" id="pm_{{pm.pmID}}" class="pm tr" ng-class="{'lastTR': $last, 'new': !pm.read}">
-					<div class="delCol"><a ng-if="pm.allowDelete" ng-click="delete(pm.pmID)" class="deletePM sprite cross"></a></div>
+					<div class="delCol"><a ng-click="delete(pm.pmID)" class="deletePM sprite cross"></a></div>
 					<div class="info">
 						<div class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></div>
 						<div class="details" ng-show="box == 'Inbox'">
