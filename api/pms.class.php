@@ -32,7 +32,7 @@
 			if ($box == 'inbox') {
 				$search = ['recipients.userID' => $currentUser->userID, 'recipients.deleted' => false];
 			} else {
-				$search = ['sender.userID' => $currentUser->userID];
+				$search = ['sender.userID' => $currentUser->userID, 'deleted' => false];
 			}
 			$page = isset($_POST['page']) && intval($_POST['page']) > 0 ? intval($_POST['page']) : 1;
 			$numPMs = $mongo->pms->count($search);
@@ -47,19 +47,11 @@
 			$pms = [];
 			foreach ($pmsResults as $pm) {
 				$pm = printReady($pm);
-				$pm['read'] = true;
+				$pm['read'] = false;
 				if ($box == 'inbox') {
-					$pm['allowDelete'] = true;
 					foreach ($pm['recipients'] as $recipient) {
 						if ($recipient['userID'] == $currentUser->userID) {
 							$pm['read'] = $recipient['read'];
-						}
-					}
-				} else {
-					$pm['allowDelete'] = true;
-					foreach ($pm['recipients'] as $recipient) {
-						if ($recipient['read']) {
-							$pm['allowDelete'] = false;
 							break;
 						}
 					}
@@ -91,15 +83,8 @@
 			} else {
 				$pm = printReady($pm);
 				$pm['message'] = BBCode2Html($pm['message']);
-				$pm['allowDelete'] = true;
 				$history = $pm['history'];
-				if ($pm['sender']['userID'] == $currentUser->userID) {
-					foreach ($pm['recipients'] as $recipient) {
-						if ($recipient['read'] && !$recipient['deleted']) {
-							$pm['allowDelete'] = false;
-						}
-					}
-				} elseif (isset($_POST['markRead']) && $_POST['markRead']) {
+				if (isset($_POST['markRead']) && $_POST['markRead']) {
 					$mongo->pms->updateOne(
 						[
 							'pmID' => $pmID,
@@ -190,6 +175,7 @@
 				$mongo->pms->insertOne([
 					'pmID' => mongo_getNextSequence('pmID'),
 					'sender' => $sender,
+					'deleted' => false,
 					'recipients' => [$recipient],
 					'title' => sanitizeString($_POST['title']),
 					'message' => sanitizeString($_POST['message']),
@@ -231,16 +217,10 @@
 			if ($pm === null) {
 				displayJSON(['noMatch' => true]);
 			} elseif ($pm['sender']['userID'] == $currentUser->userID) {
-				$allowDelete = true;
-				foreach ($pm['recipients'] as $recipient) {
-					if ($recipient['read'] && !$recipient['deleted']) {
-						$allowDelete = false;
-					}
-				}
-
-				if ($allowDelete) {
-					$mongo->pms->deleteOne(['pmID' => $pmID]);
-				}
+				$mongo->pms->updateOne(
+					['pmID' => $pmID],
+					['$set' => ['deleted' => true]]
+				);
 
 				displayJSON(['deleted' => true]);
 			} else {
