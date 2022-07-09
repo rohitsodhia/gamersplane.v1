@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: gpv1-proxy
     ports:
-      - 127.0.0.1:80:80
+      - "127.0.0.1:80:80"
     volumes:
       - .:/var/www
       - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
@@ -47,7 +47,7 @@ services:
     image: mysql:5.5
     container_name: gpv1-mysql
     ports:
-      - 3306
+      - "3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -62,6 +62,18 @@ services:
       context: ./docker/mongo
     container_name: gpv1-mongo
     ports:
-      - 5432
+      - "5432"
     volumes:
       - mongo_db:/data/db
+
+  postfix:
+    build:
+      context: ./docker/postfix
+    container_name: gpv1-postfix
+    ports:
+      - "8025:25"
+    environment:
+      - POSTFIX_SMTP_HELO_NAME=localhost
+      - POSTFIX_MYORIGIN=localhost
+      - POSTFIX_MYHOSTNAME=localhost
+      - MAIL_DOMAIN=gamersplane.com
