@@ -16,7 +16,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 COPY main.cf /etc/postfix/main.cf
 
 # copy entrypoint script into an image
-COPY docker-entrypoint.sh /
+# COPY docker-entrypoint.sh /
 
 # postfix is listening on port 25
 EXPOSE 25
