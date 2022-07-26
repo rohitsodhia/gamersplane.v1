@@ -34,7 +34,7 @@ compatibility_level = 2
 
 
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-myhostname = 537a88cf65bd
+myhostname = new.gamersplane.com
 # alias_maps = hash:/etc/aliases
 # alias_database = hash:/etc/aliases
 mydestination = $myhostname, localhost.localdomain, localhost
