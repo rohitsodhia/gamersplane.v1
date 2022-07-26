@@ -7,19 +7,20 @@ RUN apk add --no-cache --update postfix bash && \
     (rm "/tmp/"* 2>/dev/null || true) && (rm -rf /var/cache/apk/* 2>/dev/null || true)
 
 # install dockerize
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+# RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+#     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+#     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # copy postfix config file template into image
 # COPY main.cf.tmpl /etc/postfix/main.cf.tmpl
 COPY main.cf /etc/postfix/main.cf
 
 # copy entrypoint script into an image
-COPY docker-entrypoint.sh /
+# COPY docker-entrypoint.sh /
 
 # postfix is listening on port 25
-EXPOSE 25
+# EXPOSE 25
 STOPSIGNAL SIGKILL
 
-CMD /docker-entrypoint.sh
+# CMD /docker-entrypoint.sh
+CMD ["postfix", "start-fg"]
