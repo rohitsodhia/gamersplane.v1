@@ -22,5 +22,6 @@ COPY docker-entrypoint.sh /
 # EXPOSE 25
 STOPSIGNAL SIGKILL
 
-CMD /docker-entrypoint.sh
+# CMD /docker-entrypoint.sh
 # CMD ["postfix", "start-fg"]
+CMD dockerize -template /etc/postfix/main.cf.tmpl:/etc/postfix/main.cf postfix start-fg
