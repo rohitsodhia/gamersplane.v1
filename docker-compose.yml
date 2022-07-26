@@ -72,6 +72,8 @@ services:
     container_name: gpv1-postfix
     ports:
       - "8025:25"
+    volumes:
+      - ./logs/postfix:/var/log/postfix
     environment:
       - POSTFIX_SMTP_HELO_NAME=localhost
       - POSTFIX_MYORIGIN=localhost
