@@ -230,7 +230,7 @@ function getMailObj() {
 	$mail = new PHPMailer();
 	$mail->isSMTP();
 	// $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-	$mail->Host = 'gamersplane.com';
+	$mail->Host = 'postfix';
 	$mail->Port = 25;
 
 	$mail->setFrom('contact@gamersplane.com', 'Gamers\' Plane');
