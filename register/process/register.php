@@ -68,7 +68,7 @@
 			}
 		}
 
-		if (strtolower($_SERVER['HTTP_HOST']) == 'gamersplane.com') {
+		if (strtolower($_SERVER['HTTP_HOST']) == getenv('APP_URL')) {
 			$secret = '6LcT8gsTAAAAAEA0RemG5ryLemgp4h8uwwbCHFgs';
 			$recaptcha_options = [
 				'http' => [
@@ -97,7 +97,11 @@
 				$newUser->updateUsermeta('reference', $hear);
 
 				sendActivationEmail($email, $username);
-				mail('contact@gamersplane.com', 'New User', 'New User: ' . $username, 'From: noone@gamersplane.com');
+				$mail = getMailObj();
+				$mail->addAddress("contact@gamersplane.com");
+				$mail->Subject = "New User";
+				$mail->Body = "New User: {$username}";
+				$mail->send();
 
 //				wp_create_user($username, $password1, $email);
 

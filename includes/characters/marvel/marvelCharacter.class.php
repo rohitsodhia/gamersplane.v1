@@ -289,14 +289,14 @@
 				}
 
 				$this->clearVar('actions');
-				if (sizeof($data['actions'])) {
+				if ($data['actions'] && sizeof($data['actions'])) {
 					foreach ($data['actions'] as $actionInfo) {
 						$this->addAction($actionInfo);
 					}
 				}
 
 				$this->clearVar('modifiers');
-				if (sizeof($data['modifiers'])) {
+				if ($data['modifiers'] && sizeof($data['modifiers'])) {
 					foreach ($data['modifiers'] as $modifierInfo) {
 						$this->addModifier($modifierInfo);
 					}

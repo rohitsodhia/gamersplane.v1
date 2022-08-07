@@ -144,12 +144,12 @@
 				}
 
 				$this->clearVar('aspects');
-				if (sizeof($data['aspects'])) {
+				if ($data['aspects'] && sizeof($data['aspects'])) {
 					foreach ($data['aspects'] as $aspect) $this->addAspect($aspect);
 				}
 
 				$this->clearVar('stunts');
-				if (sizeof($data['stunts'])) {
+				if ($data['stunts'] && sizeof($data['stunts'])) {
 					foreach ($data['stunts'] as $stuntInfo) {
 						$this->addStunt($stuntInfo);
 					}
@@ -160,7 +160,7 @@
 				$this->setSkillPoints('available', $data['skillPoints']['available']);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) {
+				if ($data['skills'] && sizeof($data['skills'])) {
 					foreach ($data['skills'] as $skill) {
 						$this->addSkill($skill);
 					}

@@ -42,7 +42,7 @@
 						</div>
 					</form>
 					<div ng-show="user.showForm == 'activationLink'" class="activationLink">
-						<input type="text" value="http://gamersplane.com/register/activate/{{user.userHash}}/">
+						<input type="text" value="https://gamersplane.com/register/activate/{{user.userHash}}/">
 					</div>
 				</li>
 			</ul>

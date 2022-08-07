@@ -157,7 +157,7 @@
 	$rollsAllowed = $threadManager->getThreadProperty('allowRolls') ? true : false;
 	$drawsAllowed = false;
 	if ($gameID && $threadManager->getPermissions('addDraws')) {
-		$decks = $game['decks'];
+		$decks = $game['decks'] ? $game['decks'] : [];
 		if (!$isGM) {
 			foreach ($decks as $key => $deck) {
 				if (!in_array($currentUser->userID, $deck['permissions'])) {
@@ -276,7 +276,7 @@
 						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder()?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
 					</div>
 <?php
-	if ($gameID && (sizeof($characters)||sizeof($pcCharacters))) {
+	if ($gameID && (sizeof($characters) || sizeof($pcCharacters))) {
 		$currentChar = $post->postAs;
 		if ($fillVars) {
 			$currentChar = $fillVars['postAs'];

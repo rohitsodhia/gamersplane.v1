@@ -114,7 +114,7 @@
 				<div ng-if="isPrimaryGM && !details.retired" class="slideToggle" ng-show="displayRetireConfirm">
 					<div class="infoCol shiftRight">
 						<div>Are you sure you want to retire this game?<br/>
-It will be moved to the Retired Games drawer at the bottom of your <a href="https://gamersplane.com/games/">Games list</a>. You can come back here and unretire it later, if needed.<br/>
+It will be moved to the Retired Games drawer at the bottom of your <a href="https://<?=getenv('APP_URL')?>/games/">Games list</a>. You can come back here and unretire it later, if needed.<br/>
 Any future posts in this game will not show up in the normal notification systems (e.g. Front Page, Latest Game Posts, or email) and will only be visible by manually checking the game's threads.</div>
 						<p>
 							<button type="submit" ng-click="confirmRetire()" class="fancyButton smallButton">Retire</button>

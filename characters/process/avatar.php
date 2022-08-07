@@ -1,6 +1,6 @@
 <?
 	if (isset($_POST['submit'])) {
-		DEFINE('SYSTEM', $_POST['system']);
+		DEFINE("SYSTEM", $_POST['system']);
 		$characterID = intval($_POST['characterID']);
 		$charPermissions = false;
 		if ($systems->verifySystem(SYSTEM)) {

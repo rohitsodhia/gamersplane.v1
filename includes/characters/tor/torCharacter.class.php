@@ -237,13 +237,13 @@
 					$this->setSkill($skill, $value);
 				}
 				$this->clearVar('weaponSkills');
-				if (sizeof($data->weaponSkills)) {
+				if ($data->weaponSkills && sizeof($data->weaponSkills)) {
 					foreach ($data->weaponSkills as $skill) {
 						$this->addWeaponSkill($skill->name, $skill->rank);
 					}
 				}
 				$this->clearVar('weapons');
-				if (sizeof($data->weapons)) {
+				if ($data->weapons && sizeof($data->weapons)) {
 					foreach ($data->weapons as $weapon) {
 						$this->addweapon($weapon);
 					}
@@ -252,12 +252,12 @@
 					$this->setCombat($stat, $value);
 				}
 				$this->clearVar('gear');
-				if (sizeof($data->mainGear)) {
+				if ($data->mainGear && sizeof($data->mainGear)) {
 					foreach ($data->mainGear as $gear) {
 						$this->addGear($gear->name, $gear->enc);
 					}
 				}
-				if (sizeof($data->gear)) {
+				if ($data->gear && sizeof($data->gear)) {
 					foreach ($data->gear as $gear) {
 						$this->addGear($gear->name, $gear->enc);
 					}

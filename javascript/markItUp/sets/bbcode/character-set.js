@@ -43,8 +43,10 @@ mySettings = {
 		{name:'Code', className:'miuBtnCode',
         dropMenu :[
 			{name:'Snippet', openWith:'[snippet="[![Snippet title]!]"]', closeWith:'[/snippet]' },
-			{name:'Abilities', openWith:'[abilities="Abilities"]\n# Heading\n\n', closeWith:'[/abilities]' },
-			{name:'NPCs', openWith:'[npcs="NPC list"]\nExample NPC | https://gamersplane.com/ucp/avatars/avatar.png\n', closeWith:'[/npcs]' },
+			{name:'Abilities', openWith:'[abilities="Abilities"]\n# Example heading 1\nExample ability 1 description\nSupports multiline and BBCode\n# Example heading 2\nExample ability 2 description\n\n', closeWith:'[/abilities]' },
+			{name:'NPCs', openWith:'[npcs="NPC list"]\nExample NPC | //gamersplane.com/ucp/avatars/avatar.png\n', closeWith:'[/npcs]' },
+			{name:'Table', openWith:'[table]\n', closeWith:'\n[/table]' },
+			{name:'Roll Table', openWith:'[table="rolls"]\nName | Roll\ne.g. Percentile | 1d100', closeWith:'\n[/table]' },
 			{name:'Two columns', openWith:'[2column]\n[col]\n', closeWith:'\n[/col]\n[col]\n[/col]\n[/2column]' },
 			{name:'Form field', key:'M', openWith:'[_=', closeWith:']' },
 		]},

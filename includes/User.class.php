@@ -249,7 +249,7 @@
 		}
 
 		public function checkACP($role, $redirect = true) {
-			if ($role == 'all' && sizeof($this->acpPermissions)) {
+			if ($role == 'all' && $this->acpPermissions && sizeof($this->acpPermissions)) {
 				return $this->acpPermissions;
 			} elseif ($role == 'any' && $this->acpPermissions && sizeof($this->acpPermissions)) {
 				return true;

@@ -221,14 +221,14 @@
 				$this->setStoryPoints($data['storyPoints']);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) {
+				if ($data['skills'] && sizeof($data['skills'])) {
 					foreach ($data['skills'] as $skillName => $skillInfo) {
 						$this->addSkill($skillName, $skillInfo);
 					}
 				}
 
 				$this->clearVar('traits');
-				if (sizeof($data['traits'])) {
+				if ($data['traits'] && sizeof($data['traits'])) {
 					foreach ($data['traits'] as $type => $traits) {
 						foreach ($traits as $traitInfo) {
 							$this->addTrait($type, $traitInfo);

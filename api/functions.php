@@ -4,6 +4,9 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 if (!function_exists('is_countable')) {
 	function is_countable($c)
 	{
@@ -139,6 +142,19 @@ function b26ToDec($str)
 function randomFloat()
 {
 	return mt_rand() / mt_getrandmax();
+}
+
+function getMailObj() {
+	$mail = new PHPMailer();
+	$mail->isSMTP();
+	// $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+	$mail->Host = 'postfix';
+	$mail->Port = 25;
+
+	$mail->setFrom('contact@gamersplane.com', 'Gamers\' Plane');
+	$mail->addReplyTo('contact@gamersplane.com', 'Gamers\' Plane');
+
+	return $mail;
 }
 
 /* Session Functions */

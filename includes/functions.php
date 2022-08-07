@@ -4,6 +4,11 @@
 	Created by RhoVisions, designer Rohit Sodhia
 */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
+date_default_timezone_set('Etc/UTC');
+
 if (!function_exists('is_countable')) {
 	function is_countable($c)
 	{
@@ -219,6 +224,19 @@ function displayJSON($data, $exit = false)
 	if ($exit) {
 		exit;
 	}
+}
+
+function getMailObj() {
+	$mail = new PHPMailer();
+	$mail->isSMTP();
+	// $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+	$mail->Host = 'gamersplane.com';
+	$mail->Port = 25;
+
+	$mail->setFrom('contact@gamersplane.com', 'Gamers\' Plane');
+	$mail->addReplyTo('contact@gamersplane.com', 'Gamers\' Plane');
+
+	return $mail;
 }
 
 /*	Session Functions */

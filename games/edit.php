@@ -54,7 +54,7 @@
 				</div>
 				<div class="tr"><p>If you've created a recruitment thread in the <a href="/forums/10/" target="_blank">Games Tavern</a> link it to the game here.</p></div>
 				<div class="tr textareaRow">
-					<strong><span class="mob-hide">https://gamersplane.com</span>/forums/thread/<input id="recruitmentThreadId" type="number" ng-model="game.recruitmentThreadId"></strong>
+					<strong><span class="mob-hide">https://<?=getenv('APP_URL')?></span>/forums/thread/<input id="recruitmentThreadId" type="number" ng-model="game.recruitmentThreadId"></strong>
 				</div>
 				<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] Advanced rules definitions</div><div class="hidden">
 				<section class="tr textareaRow">

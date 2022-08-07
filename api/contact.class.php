@@ -39,12 +39,11 @@
 					$message .= ucfirst($key) . ":\n" . printReady($value) . "\n\n";
 				}
 
-				@mail(
-					'contact@gamersplane.com',
-					'Gamers Plane Contact: ' . printReady($inserts['subject']),
-					$message,
-					'From: '.$inserts['email']
-				);
+				$mail = getMailObj();
+				$mail->addAddress("contact@gamersplane.com");
+				$mail->Subject = 'Gamers Plane Contact: ' . printReady($inserts['subject']);
+				$mail->Body = $message;
+				$mail->send();
 
 				displayJSON(['success' => true]);
 			}

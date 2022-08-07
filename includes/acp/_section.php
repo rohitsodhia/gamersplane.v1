@@ -3,7 +3,7 @@
 	$levels = [1 => 'Link', 'Affiliate'];
 	function linkFormat($link = []) {
 		global $levels;
-		if (sizeof($link) == 0) {
+		if (is_countable($link) && sizeof($link) == 0) {
 			$link['_id'] = 'new';
 			$link['level'] = 'link';
 		}

@@ -5,7 +5,6 @@
 # File types
 *.ods
 *.csv
-*.sh
 *.txt
 *.psd
 *.ai
@@ -18,12 +17,14 @@ styles/**/*.css
 
 # Specific files
 ._htaccess
-_backup/
 Thumbs.db
 test*.php
 docker-compose.override.yml
 
 # Folders
+_backup/
+logs/
+
 blog/
 characters/avatars/
 images/links/

@@ -391,22 +391,22 @@
 				$this->setIconRelationships($data['iconRelationships']);
 
 				$this->clearVar('backgrounds');
-				if (sizeof($data['backgrounds']))
+				if ($data['backgrounds'] && sizeof($data['backgrounds']))
 					foreach ($data['backgrounds'] as $backgroundInfo)
 						$this->addBackground($backgroundInfo);
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats']))
+				if ($data['feats'] && sizeof($data['feats']))
 					foreach ($data['feats'] as $featInfo)
 						$this->addFeat($featInfo);
 
 				$this->clearVar('abilitiesTalents');
-				if (sizeof($data['abilitiesTalents']))
+				if ($data['abilitiesTalents'] && sizeof($data['abilitiesTalents']))
 					foreach ($data['abilitiesTalents'] as $info)
 						$this->addAbilitiesTalents($info);
 
 				$this->clearVar('powers');
-				if (sizeof($data['powers']))
+				if ($data['powers'] && sizeof($data['powers']))
 					foreach ($data['powers'] as $info)
 						$this->addPower($info);
 
@@ -415,7 +415,7 @@
 						$this->setBasicAttack($type, $key, $value);
 
 				$this->clearVar('attacks');
-				if (sizeof($data['attacks']))
+				if ($data['attacks'] && sizeof($data['attacks']))
 					foreach ($data['attacks'] as $info)
 						$this->addAttack($info);
 

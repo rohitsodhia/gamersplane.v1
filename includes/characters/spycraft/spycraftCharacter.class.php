@@ -349,12 +349,12 @@
 				$this->setExtraStats('education', $data['extraStats']['education']);
 
 				$this->clearVar('skills');
-				if (sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
+				if ($data['skills'] && sizeof($data['skills'])) { foreach ($data['skills'] as $skillInfo) {
 					$this->addSkill($skillInfo);
 				} }
 
 				$this->clearVar('feats');
-				if (sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
+				if ($data['feats'] && sizeof($data['feats'])) { foreach ($data['feats'] as $featInfo) {
 					$this->addFeat($featInfo);
 				} }
 

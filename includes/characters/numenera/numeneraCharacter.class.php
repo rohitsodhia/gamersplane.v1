@@ -175,20 +175,20 @@
 				$this->setArmor($data->armor);
 
 				$this->clearVar('attacks');
-				if (sizeof($data->attacks))
+				if ($data->attacks && sizeof($data->attacks))
 					foreach ($data->attacks as $attack)
 						$this->addAttack($attack);
 
 				$this->clearVar('skills');
-				if (sizeof($data->skills))
+				if ($data->skills && sizeof($data->skills))
 					foreach ($data->skills as $skill) $this->addSkill($skill);
 
 				$this->clearVar('specialAbilities');
-				if (sizeof($data->specialAbilities))
+				if ($data->specialAbilities && sizeof($data->specialAbilities))
 					foreach ($data->specialAbilities as $specialAbility) $this->addSpecialAbility($specialAbility);
 
 				$this->clearVar('cyphers');
-				if (sizeof($data->cyphers))
+				if ($data->cyphers && sizeof($data->cyphers))
 					foreach ($data->cyphers as $cypher) $this->addCypher($cypher);
 
 				$this->setPossessions($data->possessions);
