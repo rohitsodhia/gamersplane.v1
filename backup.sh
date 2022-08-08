@@ -1,7 +1,7 @@
 export $(grep -v '^#' .env | xargs -d '\n')
 filename=$(date +'%Y%m%d_%H%M%S')
 
-docker-compose exec mysql bash -c "mysqldump -ugamersplane -p$MYSQL_PASSWORD --ignore-table=$MYSQL_DATABASE.forums_readData_forums_c --ignore-table=$MYSQL_DATABASE.forums_readData_newPosts $MYSQL_DATABASE | gzip > /tmp/$filename.gz"
+docker-compose exec mysql bash -c "mysqldump --user=$MYSQL_USERNAME --password='$MYSQL_PASSWORD' --ignore-table=$MYSQL_DATABASE.forums_readData_forums_c --ignore-table=$MYSQL_DATABASE.forums_readData_newPosts $MYSQL_DATABASE | gzip > /tmp/$filename.gz"
 mysql_container=$(docker ps | grep -E 'mysql' | awk '{ print $1 }')
 docker cp $mysql_container:/tmp/$filename.gz $BACKUP_DIR/mysql/
 docker-compose exec mysql rm /tmp/$filename.gz
