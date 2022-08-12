@@ -233,8 +233,8 @@ function getMailObj() {
 	$mail->Host = 'postfix';
 	$mail->Port = 25;
 
-	$mail->setFrom('contact@gamersplane.com', 'Gamers\' Plane');
-	$mail->addReplyTo('contact@gamersplane.com', 'Gamers\' Plane');
+	$mail->setFrom('noone@gamersplane.com', 'Gamers\' Plane');
+	$mail->addReplyTo('noone@gamersplane.com', 'Gamers\' Plane');
 
 	return $mail;
 }
