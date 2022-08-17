@@ -5,7 +5,7 @@
 		public static function getPermissions($userID, $forumIDs, $types = null, $forumsData = null) {
 			global $mysql;
 
-			if(!sizeof($forumIDs)){
+			if(is_array($forumIDs) && !sizeof($forumIDs)){
 				return null;  //forum does not exit
 			}
 
