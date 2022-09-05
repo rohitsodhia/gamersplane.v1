@@ -44,7 +44,9 @@ services:
       - mongo
 
   mysql:
-    image: mysql:5.5
+    build:
+      context: ./docker/mysql
+      dockerfile: Dockerfile
     container_name: gpv1-mysql
     ports:
       - "3306"
