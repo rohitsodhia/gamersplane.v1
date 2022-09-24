@@ -43,6 +43,7 @@
 				$mail->addAddress("contact@gamersplane.com");
 				$mail->Subject = 'Gamers Plane Contact: ' . printReady($inserts['subject']);
 				$mail->Body = $message;
+				$mail->setFrom($inserts['email']);
 				$mail->send();
 
 				displayJSON(['success' => true]);
