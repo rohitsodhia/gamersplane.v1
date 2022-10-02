@@ -152,7 +152,7 @@ function getMailObj() {
 	$mail->Port = 25;
 
 	$mail->setFrom('noone@gamersplane.com', 'Gamers\' Plane');
-	$mail->addReplyTo('noone@gamersplane.com', 'Gamers\' Plane');
+	// $mail->addReplyTo('noone@gamersplane.com', 'Gamers\' Plane');
 
 	return $mail;
 }
