@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head prefix="og: http://ogp.me/ns#">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NVGX2DJWQP"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-NVGX2DJWQP');
+</script>
 <?	require_once(FILEROOT.'/meta.php'); ?>
 
 <?	require_once(FILEROOT.'/styles/styles.php'); ?>
