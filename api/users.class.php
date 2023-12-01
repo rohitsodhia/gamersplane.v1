@@ -307,7 +307,9 @@
 					'pmMail' => $user->pmMail ? true : false,
 					'newGameMail' => $user->newGameMail ? true : false,
 					'gmMail' => $user->gmMail ? true : false,
-					'postSide' => $user->postSide
+					'postSide' => $user->postSide,
+					'pog_participate' => $user->usermeta['pog_participate'] ? true: false,
+					'pog_interests' => $user->usermeta['pog_interests']
 				]);
 			}
 			if ($details['birthday']['showAge']) {
@@ -330,6 +332,7 @@
 
 			$details = $_POST['details'];
 			$newPass = $_POST['newPass'];
+			$plane_of_giving = $_POST['plane_of_giving'];
 			$userID = (int) $details['userID'];
 			if ($currentUser->userID != $userID) {
 				$user = new User($userID);
@@ -492,6 +495,9 @@
 				$postSide = 'l';
 			}
 			$user->updateUsermeta('postSide', $postSide);
+
+			$user->updateUsermeta('pog_participate', $plane_of_giving['participate'] ? true : false);
+			$user->updateUsermeta('pog_interests', $plane_of_giving['interests']);
 
 			$return = [];
 			if (sizeof($errors)) {
