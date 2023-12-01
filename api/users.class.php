@@ -309,7 +309,7 @@
 					'gmMail' => $user->gmMail ? true : false,
 					'postSide' => $user->postSide,
 					'pog_participate' => $user->usermeta['pog_participate'] ? true: false,
-					'pog_interests' => $user->usermeta['pog_interests']
+					'pog_interests' => $user->usermeta['pog_interests'] ?? ''
 				]);
 			}
 			if ($details['birthday']['showAge']) {
