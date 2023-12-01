@@ -2,7 +2,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 	$scope.$emit('pageLoading');
 	CurrentUser.load().then(function () {
 		$scope.CurrentUser = CurrentUser.get();
-		$scope.admin = !isUndefined($scope.CurrentUser.acpPermissions) && $scope.CurrentUser.acpPermissions !== null && ($scope.CurrentUser.acpPermissions.indexOf('users')!=-1 || $scope.CurrentUser.acpPermissions.indexOf('all')!=-1)?true:false;
+		$scope.admin = !isUndefined($scope.CurrentUser.acpPermissions) && $scope.CurrentUser.acpPermissions !== null && ($scope.CurrentUser.acpPermissions.indexOf('users') != -1 || $scope.CurrentUser.acpPermissions.indexOf('all') != -1) ? true : false;
 		var userID = null;
 		var pathElements = getPathElements();
 		if (!isUndefined(pathElements[1])) {
@@ -21,12 +21,13 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 				)
 			)
 		) {
-			window.location.href = '/user/' + (userID !== null?userID + '/':'');
+			window.location.href = '/user/' + (userID !== null ? userID + '/' : '');
 		}
 		$scope.user = null;
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' };
 		$scope.newAvatar = null;
 		$scope.avatarTime = new Date().getTime();
+		$scope.giving = { 'participate': false, interests: '' };
 
 		UsersService.get(userID).then(function (data) {
 			if (data) {
@@ -39,6 +40,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 						'year': birthday[0]
 					};
 				}
+				$scope.giving = { 'participate': data['pog_participate'], interests: data['pog_interests'] };
 				$scope.$emit('pageLoading');
 			}
 		});
@@ -55,7 +57,8 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 		$scope.save = function ($event) {
 			UsersService.save({
 				'details': $scope.user,
-				'newPass': $scope.newPass
+				'newPass': $scope.newPass,
+				'plane_of_giving': $scope.giving
 			}, $scope.newAvatar).then(function (data) {
 				data = data.data;
 				if (data.avatarUploaded) {
@@ -63,7 +66,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 				}
 
 				//provide feedback about data saved
-				$($event.target).text('Saved').fadeTo(400,.3).delay(200).fadeTo(400,1,function(){$($event.target).text('Save');});
+				$($event.target).text('Saved').fadeTo(400, .3).delay(200).fadeTo(400, 1, function () { $($event.target).text('Save'); });
 			});
 		};
 	});

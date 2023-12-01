@@ -89,6 +89,21 @@
 				</div>
 			</div>
 
+			<div id="planeOfGiving">
+				<h2 class="headerbar hbDark">Gamers' Plane of Giving</h2>
+				<div class="tr">
+					<label class="verticalLabel">Would you like to participate?</label>
+					<pretty-checkbox checkbox="giving.participate" value="participate"></pretty-checkbox>
+				</div>
+				<div class="tr">
+					<label>What are your interests?</label>
+					<textarea ng-model="giving.interests"></textarea>
+				</div>
+				<div class="tr submitDiv">
+					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
+				</div>
+			</div>
+
 			<div id="lookingForAGame">
 				<h2 class="headerbar hbDark" ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> Looking for a game</h2>
 				<div class="tr">
@@ -103,7 +118,6 @@
 					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
 				</div>
 			</div>
-
 
 			<div id="security">
 				<h2 class="headerbar hbDark">Security</h2>
