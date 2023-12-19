@@ -309,8 +309,16 @@
 					'gmMail' => $user->gmMail ? true : false,
 					'postSide' => $user->postSide,
 					'pog_participate' => $user->usermeta['pog_participate'] ? true: false,
-					'pog_interests' => $user->usermeta['pog_interests'] ?? ''
+					'pog_interests' => $user->usermeta['pog_interests'] ?? '',
 				]);
+				if ($user->usermeta['pog_participate']) {
+					$pog23_giftee = new User(intval($user->usermeta['pog23_giftee']));
+					$details = array_merge($details, [
+						'pog_assignee' => $pog23_giftee->username,
+						'pog_assignee_email' => $pog23_giftee->email,
+						'pog_assignee_interests' => $pog23_giftee->usermeta['pog_interests'],
+					]);
+				}
 			}
 			if ($details['birthday']['showAge']) {
 				$now = new DateTime();

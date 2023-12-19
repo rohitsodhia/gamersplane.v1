@@ -40,7 +40,12 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 						'year': birthday[0]
 					};
 				}
-				$scope.giving = { 'participate': data['pog_participate'], interests: data['pog_interests'] };
+				$scope.giving = {
+					'participate': data['pog_participate'],
+					'assignee': data['pog_assignee'],
+					'assignee_email': data['pog_assignee_email'],
+					'assignee_interests': data['pog_assignee_interests']
+				};
 				$scope.$emit('pageLoading');
 			}
 		});
