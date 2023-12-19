@@ -313,6 +313,7 @@
 				]);
 				if ($user->usermeta['pog_participate']) {
 					$pog23_giftee = new User(intval($user->usermeta['pog23_giftee']));
+					$pog23_giftee->getAllUsermeta();
 					$details = array_merge($details, [
 						'pog_assignee' => $pog23_giftee->username,
 						'pog_assignee_email' => $pog23_giftee->email,
