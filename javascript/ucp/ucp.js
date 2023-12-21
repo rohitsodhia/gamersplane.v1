@@ -27,7 +27,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 		$scope.newPass = { 'oldPassword': '', 'password1': '', 'password2': '' };
 		$scope.newAvatar = null;
 		$scope.avatarTime = new Date().getTime();
-		$scope.giving = { 'participate': false, interests: '' };
+		$scope.giving = { 'participate': false, interests: '', 'sent': false, 'recieved': false };
 
 		UsersService.get(userID).then(function (data) {
 			if (data) {
@@ -43,8 +43,11 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 				$scope.giving = {
 					'participate': data['pog_participate'],
 					'assignee': data['pog_assignee'],
+					'assignee_id': data['pog_assignee_id'],
 					'assignee_email': data['pog_assignee_email'],
-					'assignee_interests': data['pog_assignee_interests']
+					'assignee_interests': data['pog_assignee_interests'],
+					'gift_sent': data['pog_gift_sent'],
+					'gift_received': data['pog_gift_received']
 				};
 				$scope.$emit('pageLoading');
 			}
