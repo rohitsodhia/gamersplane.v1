@@ -310,6 +310,8 @@
 					'postSide' => $user->postSide,
 					'pog_participate' => $user->usermeta['pog_participate'] ? true: false,
 					'pog_interests' => $user->usermeta['pog_interests'] ?? '',
+					'pog_gift_sent' => $user->usermeta['pog_gift_sent'] ? true: false,
+					'pog_gift_recieved' => $user->usermeta['pog_gift_recieved'] ? true: false,
 				]);
 				if ($user->usermeta['pog_participate']) {
 					$pog23_giftee = new User(intval($user->usermeta['pog23_giftee']));
@@ -317,7 +319,7 @@
 					$details = array_merge($details, [
 						'pog_assignee' => $pog23_giftee->username,
 						'pog_assignee_email' => $pog23_giftee->email,
-						'pog_assignee_interests' => $pog23_giftee->usermeta['pog_interests'],
+						'pog_assignee_interests' => $pog23_giftee->usermeta['pog_interests'] ?? 'None provided',
 					]);
 				}
 			}
@@ -507,6 +509,8 @@
 
 			$user->updateUsermeta('pog_participate', $plane_of_giving['participate'] ? true : false);
 			$user->updateUsermeta('pog_interests', $plane_of_giving['interests']);
+			$user->updateUsermeta('pog_gift_sent', $plane_of_giving['gift_sent'] ? true : false);
+			$user->updateUsermeta('pog_gift_received', $plane_of_giving['gift_received'] ? true : false);
 
 			$return = [];
 			if (sizeof($errors)) {

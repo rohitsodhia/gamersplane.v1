@@ -97,6 +97,14 @@
 					<p>{{giving.assignee_interests}}</p>
 					<p>If you're interested in sending a physical gift, reach out to Keleth either via the email or discord, and he'll check if your participant is ok giving you their physical address.</p>
 				</div>
+				<div class="tr">
+					<label class="verticalLabel">Have you sent your gift?</label>
+					<pretty-checkbox checkbox="giving.gift_sent" value="sent"></pretty-checkbox>
+				</div>
+				<div class="tr">
+					<label class="verticalLabel">Have you recieved your gift?</label>
+					<pretty-checkbox checkbox="giving.gift_received" value="recieved"></pretty-checkbox>
+				</div>
 				<!-- <div class="tr">
 					<label class="verticalLabel">Would you like to participate?</label>
 					<pretty-checkbox checkbox="giving.participate" value="participate"></pretty-checkbox>
