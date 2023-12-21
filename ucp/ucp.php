@@ -92,7 +92,7 @@
 			<div id="planeOfGiving">
 				<h2 class="headerbar hbDark">Gamers' Plane of Giving 2023</h2>
 				<div ng-if="giving.participate" class="tr">
-					<p>Your Plane of Giving giftee is: {{giving.assignee}}! You can send them their gift at {{giving.assignee_email}}.</p>
+					<p>Your Plane of Giving giftee is: <a ng-href="/user/{{giving.assignee_id}}/" class="username">{{giving.assignee}}</a>! You can send them their gift at {{giving.assignee_email}}.</p>
 					<p>Their interests include:</p>
 					<p>{{giving.assignee_interests}}</p>
 					<p>If you're interested in sending a physical gift, reach out to Keleth either via the email or discord, and he'll check if your participant is ok giving you their physical address.</p>

@@ -43,6 +43,7 @@ controllers.controller('ucp', ['$scope', '$http', 'CurrentUser', 'UsersService',
 				$scope.giving = {
 					'participate': data['pog_participate'],
 					'assignee': data['pog_assignee'],
+					'assignee_id': data['pog_assignee_id'],
 					'assignee_email': data['pog_assignee_email'],
 					'assignee_interests': data['pog_assignee_interests'],
 					'gift_sent': data['pog_gift_sent'],

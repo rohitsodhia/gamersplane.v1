@@ -318,6 +318,7 @@
 					$pog23_giftee->getAllUsermeta();
 					$details = array_merge($details, [
 						'pog_assignee' => $pog23_giftee->username,
+						'pog_assignee_id' => $pog23_giftee->userID,
 						'pog_assignee_email' => $pog23_giftee->email,
 						'pog_assignee_interests' => $pog23_giftee->usermeta['pog_interests'] ?? 'None provided',
 					]);
