@@ -105,6 +105,9 @@
 					<label class="verticalLabel">Have you recieved your gift?</label>
 					<pretty-checkbox checkbox="giving.gift_received" value="recieved"></pretty-checkbox>
 				</div>
+				<div class="tr submitDiv">
+					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
+				</div>
 				<!-- <div class="tr">
 					<label class="verticalLabel">Would you like to participate?</label>
 					<pretty-checkbox checkbox="giving.participate" value="participate"></pretty-checkbox>
