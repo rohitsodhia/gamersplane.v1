@@ -96,7 +96,7 @@
 		}
 
 		public function getPermissions($permission = null) {
-			if (array_key_exists($permission, $this->permissions))
+			if (is_array($this->permissions) && array_key_exists($permission, $this->permissions))
 				return $this->permissions[$permission];
 			else
 				return $this->permissions;
