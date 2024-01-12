@@ -26,7 +26,7 @@
 			$this->forumID = (int) $forumID;
 			foreach (get_object_vars($this) as $key => $value) {
 				if (in_array($key, array('children', 'threads', 'lastPost'))) continue;
-				if (!array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
+				if (is_array($forumData) && !array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 				$this->__set($key, $forumData[$key]);
 			}
 			$this->heritage = array_map('intval', explode('-', $this->heritage));
@@ -96,7 +96,7 @@
 		}
 
 		public function getPermissions($permission = null) {
-			if (array_key_exists($permission, $this->permissions))
+			if (is_array($this->permissions) && array_key_exists($permission, $this->permissions))
 				return $this->permissions[$permission];
 			else
 				return $this->permissions;
