@@ -206,7 +206,7 @@ function BBCode2Html($text) {
 	//end snippets
 
 	// Scripting attack block
-	$scriptingAttackRegex = '\[(.*?)\].*?javascript:.*?\[/\1\]';
+	$scriptingAttackRegex = '/\[(.*?)\].*?javascript:.*?\[\/\1\]/';
 	$text = preg_replace($scriptingAttackRegex, '', $text);
 
 	// Smileys to find...
