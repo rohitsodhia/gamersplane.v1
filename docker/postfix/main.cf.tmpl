@@ -46,9 +46,3 @@ inet_interfaces = all
 inet_protocols = all
 
 maillog_file=/var/log/postfix.log
-
-# Milter configuration
-milter_default_action = accept
-milter_protocol = 6
-smtpd_milters = local:opendkim/opendkim.sock
-non_smtpd_milters = $smtpd_milters
