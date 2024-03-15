@@ -2,7 +2,7 @@ FROM alpine:3
 
 RUN apk add --no-cache --upgrade opendkim
 
-COPY etc /etc/
+COPY opendkim.conf /etc/opendkim/opendkim.conf
 
 COPY docker-entrypoint.sh /
 
