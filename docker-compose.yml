@@ -76,3 +76,11 @@ services:
       - "8025:25"
     volumes:
       - ./logs/postfix:/var/log
+
+  opendkim:
+    build:
+      context: ./docker/opendkim
+    container_name: gpv1-opendkim
+    volumes:
+      - ./docker/opendkim/keys:/etc/opendkim/keys
+      # - ./logs/opendkim:/var/log
