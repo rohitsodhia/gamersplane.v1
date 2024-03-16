@@ -19,7 +19,7 @@ readme_directory = no
 
 # See http://www.postfix.org/COMPATIBILITY_README.html -- default to 2 on
 # fresh installs.
-compatibility_level = 2
+compatibility_level = 3.8
 
 
 
@@ -34,7 +34,7 @@ compatibility_level = 2
 
 
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-myhostname = {{ .Env.POSTFIX_MYHOSTNAME }}
+myhostname = gamersplane.com
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 mydestination = $myhostname, localhost.localdomain, localhost

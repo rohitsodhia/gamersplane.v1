@@ -1,5 +1,10 @@
-#/bin/bash
+#!/bin/sh
 
-# Run dockerize and template file main.cf.tmpl into main.cf
-# then start postfix as child process
-dockerize -template /etc/postfix/main.cf.tmpl:/etc/postfix/main.cf postfix start-fg
+set -x
+
+mkdir -p /var/run/opendkim
+opendkim -u opendkim
+
+sed -i -r -e "s/^(myhostname =) gamersplane.com$/\1 $POSTFIX_MYHOSTNAME/" /etc/postfix/main.cf
+postalias /etc/postfix/aliases
+postfix start-fg
