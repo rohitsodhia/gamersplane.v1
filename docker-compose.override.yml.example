@@ -1,0 +1,9 @@
+version: '3.6'
+
+services:
+  api:
+    user: ''
+  opendkim:
+    build:
+      args:
+        OPENDKIM_KEY: ''
