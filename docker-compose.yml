@@ -81,6 +81,5 @@ services:
     build:
       context: ./docker/opendkim
     container_name: gpv1-opendkim
-    volumes:
-      - ./docker/opendkim/keys:/etc/opendkim/keys
+    # volumes:
       # - ./logs/opendkim:/var/log
