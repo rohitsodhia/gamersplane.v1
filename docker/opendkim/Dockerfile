@@ -8,7 +8,7 @@ COPY opendkim.conf /etc/opendkim/opendkim.conf
 RUN sed -i -r -e "s/^(Domain\s+)\sgamersplane.com$/\1 $POSTFIX_MYHOSTNAME/" /etc/opendkim/opendkim.conf
 COPY --chmod=600 ${OPENDKIM_KEY} /etc/opendkim/keys/key.private
 
-COPY docker-entrypoint.sh /
+COPY --chmod=700 docker-entrypoint.sh /
 
 STOPSIGNAL SIGKILL
 
