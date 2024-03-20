@@ -51,10 +51,10 @@ services:
     ports:
       - "127.0.0.1:3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
       - MYSQL_USER=gamersplane
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PASSWORD
     volumes:
       - ./docker/mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
@@ -74,5 +74,17 @@ services:
     container_name: gpv1-postfix
     ports:
       - "8025:25"
+    environment:
+      - POSTFIX_MYHOSTNAME
     volumes:
       - ./logs/postfix:/var/log
+
+  opendkim:
+    build:
+      context: ./docker/opendkim
+      args:
+        - OPENDKIM_KEY
+        - POSTFIX_MYHOSTNAME
+    container_name: gpv1-opendkim
+    volumes:
+      - ./logs/opendkim:/var/log
