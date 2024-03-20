@@ -82,6 +82,9 @@ services:
   opendkim:
     build:
       context: ./docker/opendkim
+      args:
+        - OPENDKIM_KEY
+        - POSTFIX_MYHOSTNAME
     container_name: gpv1-opendkim
     # volumes:
       # - ./logs/opendkim:/var/log
