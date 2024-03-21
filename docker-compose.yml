@@ -84,7 +84,9 @@ services:
       context: ./docker/opendkim
       args:
         - OPENDKIM_KEY
-        - POSTFIX_MYHOSTNAME
     container_name: gpv1-opendkim
+    environment:
+      - OPENDKIM_SELECTOR
+      - POSTFIX_MYHOSTNAME
     volumes:
       - ./logs/opendkim:/var/log
