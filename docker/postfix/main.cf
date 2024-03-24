@@ -16,6 +16,7 @@ smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_una
 inet_interfaces = all
 inet_protocols = ipv4
 
+smtp_tls_security_level = may
 tls_ssl_options = NO_COMPRESSION, NO_RENEGOTIATION
 
 milter_default_action = accept
