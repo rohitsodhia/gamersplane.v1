@@ -43,3 +43,4 @@ ucp/avatars/
 vendor/
 docker/apache/ssl/
 logs/
+docker/opendkim/keys/
