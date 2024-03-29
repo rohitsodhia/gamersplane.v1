@@ -6,9 +6,6 @@ volumes:
   mysql_db:
     driver: local
     name: gpv1_mysql_db
-  mongo_db:
-    driver: local
-    name: gpv1_mongo_db
 
 services:
   # memcached:
@@ -41,7 +38,6 @@ services:
       - ./logs/api:/dev/log
     depends_on:
       - mysql
-      - mongo
 
   mysql:
     build:
@@ -58,15 +54,6 @@ services:
     volumes:
       - ./docker/mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
-
-  mongo:
-    build:
-      context: ./docker/mongo
-    container_name: gpv1-mongo
-    ports:
-      - "5432"
-    volumes:
-      - mongo_db:/data/db
 
   postfix:
     build:
