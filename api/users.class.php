@@ -657,7 +657,7 @@
 		}
 
 		public function saveLFG() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) {
 				$userID = (int) $_POST['userID'];
@@ -665,10 +665,7 @@
 				global $currentUser;
 				$userID = $currentUser->userID;
 			}
-			$lfg = $mongo->users->findOne(
-				['userID' => $userID],
-				['projection' => ['lfg' => 1]]
-			);
+			$lfg = $mysql->query("SELECT lfg FROM users WHERE userID = {$userID}");
 			$remove = [];
 			$lfg = $lfg['lfg'];
 			$newLFG = [];
@@ -686,10 +683,12 @@
 				}
 			}
 			$lfg = array_merge($lfg, array_keys($newLFG));
+			$updateSystemLFGCount = $mysql->prepare("UPDATE systems SET lfg = lfg + :incAmount WHERE id = :system");
 			foreach (array_merge($remove, $newLFG) as $system => $count) {
-				$mongo->systems->updateOne(['_id' => $system], ['$inc' => ['lfg' => $count]]);
+				$updateSystemLFGCount->execute(['incAmount': $count, 'system' => $system]);
 			}
-			$mongo->users->updateOne(['userID' => $userID], ['$set' => ['lfg' => $lfg]]);
+			$updateUserLFG = $mysql->prepare("UPDATE users SET lfg = :lfg WHERE userID = :userID");
+			$updateUserLFG->execute(['lfg' => $lfg, 'userID' => $userID]);
 		}
 
 		public function removeThreadNotification($postId){

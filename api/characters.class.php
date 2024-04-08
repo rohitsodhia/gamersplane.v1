@@ -212,11 +212,12 @@
 
 		public function newChar() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$errors = [];
 			$system = $_POST['system'];
-			$validSystem = $mongo->systems->findOne(['_id' => $system], ['projection' => ['_id' => true]]);
+			$validSystem = $mysql->prepare("SELECT id FROM systems WHERE ID = ?");
+			$validSystem->execute($system);
 			if (!$validSystem) {
 				$errors[] = 'invalidSystem';
 			}

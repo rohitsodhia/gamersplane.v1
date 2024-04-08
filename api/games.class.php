@@ -298,16 +298,12 @@ class games
 		}
 		$details['system'] = $systems->verifySystem($_POST['system']) ? $_POST['system'] : null;
 		$details['allowedCharSheets'] = [];
-		if (!is_array($_POST['allowedCharSheets']) || sizeof($_POST['allowedCharSheets']) == 0) {
+		if (!is_array($_POST['allowedCharSheets']) || count($_POST['allowedCharSheets']) == 0) {
 			$errors[] = 'noCharSheets';
 		} else {
-			$validCharSheets = $mongo->systems->find(
-				[
-					'_id' => ['$in' => $_POST['allowedCharSheets']],
-					'hasCharSheet' => true
-				],
-				['projection' => ['_id' => true]]
-			);
+			$inPlaceholders = str_repeat("?, ", count($_POST['allowedCharSheets']) - 1) . "?";
+			$validCharSheets = $mysql->prepare("SELECT id FROM systems WHERE id IN ({$inPlaceholders}) AND hasCharSheet = TRUE");
+			$validCharSheets->execute($_POST['allowedCharSheets']);
 			foreach ($validCharSheets as $system) {
 				$details['allowedCharSheets'][] = $system['_id'];
 			}
@@ -1017,17 +1013,10 @@ class games
 
 	public function getLFG()
 	{
-		$mongo = DB::conn('mongo');
+		$mysql = DB::conn('mysql');
 
 		$lfgCount = intval($_POST['lfgCount']) > 0 ? intval($_POST['lfgCount']) : 10;
-		$rLFGs = $mongo->systems->find(
-			['lfg' => ['$ne' => 0]],
-			[
-				'projection' => ['name' => 1, 'lfg' => 1],
-				'sort' => ['lfg' => -1, 'sortName' => 1],
-				'limit' => $lfgCount
-			]
-		);
+		$rLFGs = $mysql->query("SELECT name, lfg AS count FROM systems WHERE lfg > 0 ORDER BY lfg DESC, sortName LIMIT {$lfgCount}");
 		$lfgs = [];
 		foreach ($rLFGs as $rLFG) {
 			$lfgs[] = ['name' => $rLFG['name'], 'count' => (int)$rLFG['lfg']];
