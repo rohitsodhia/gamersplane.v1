@@ -218,7 +218,7 @@
 			$system = $_POST['system'];
 			$validSystem = $mysql->prepare("SELECT id FROM systems WHERE ID = ?");
 			$validSystem->execute($system);
-			if (!$validSystem) {
+			if (!$validSystem->rowCount()) {
 				$errors[] = 'invalidSystem';
 			}
 			$label = sanitizeString($_POST['label']);

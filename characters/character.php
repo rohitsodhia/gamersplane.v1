@@ -9,7 +9,9 @@
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
-				$angular = $mongo->systems->findOne(['_id' => SYSTEM], ['angular' => true])['angular'];
+				$getAngular = $mysql->prepare("SELECT angular FROM systems WHERE id = ?");
+				$getAngular->execute(SYSTEM);
+				$angular = $getAngular->fetch()['angular'];
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'viewCharacter';
 					$angular = 'viewCharacter_' . SYSTEM;

@@ -304,7 +304,7 @@ class games
 			$inPlaceholders = str_repeat("?, ", count($_POST['allowedCharSheets']) - 1) . "?";
 			$validCharSheets = $mysql->prepare("SELECT id FROM systems WHERE id IN ({$inPlaceholders}) AND hasCharSheet = TRUE");
 			$validCharSheets->execute($_POST['allowedCharSheets']);
-			foreach ($validCharSheets as $system) {
+			foreach ($validCharSheets->fetchAll() as $system) {
 				$details['allowedCharSheets'][] = $system['_id'];
 			}
 			if (sizeof($details['allowedCharSheets']) == 0) {
@@ -1016,7 +1016,7 @@ class games
 		$mysql = DB::conn('mysql');
 
 		$lfgCount = intval($_POST['lfgCount']) > 0 ? intval($_POST['lfgCount']) : 10;
-		$rLFGs = $mysql->query("SELECT name, lfg AS count FROM systems WHERE lfg > 0 ORDER BY lfg DESC, sortName LIMIT {$lfgCount}");
+		$rLFGs = $mysql->query("SELECT name, lfg AS count FROM systems WHERE lfg > 0 ORDER BY lfg DESC, sortName LIMIT {$lfgCount}")->fetchAll();
 		$lfgs = [];
 		foreach ($rLFGs as $rLFG) {
 			$lfgs[] = ['name' => $rLFG['name'], 'count' => (int)$rLFG['lfg']];
