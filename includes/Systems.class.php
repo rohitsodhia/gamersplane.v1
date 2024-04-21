@@ -4,6 +4,8 @@
 		protected $systems = [];
 
 		private function __construct() {
+			$mysql = DB::conn('mysql');
+
 			$systems = $mysql->query("SELECT id, name FROM systems ORDER BY sortName")->fetchAll();
 			foreach ($systems as $system) {
 				$this->systems[$system['id']] = $system['name'];
