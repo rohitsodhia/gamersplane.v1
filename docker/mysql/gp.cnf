@@ -1,2 +1,4 @@
+default_authentication_plugin = mysql_native_password
+
 [mysqld]
 query_cache_size=16M

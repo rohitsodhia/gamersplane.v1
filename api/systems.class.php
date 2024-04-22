@@ -26,18 +26,17 @@
 				$selectFields = '*';
 			} elseif (isset($_POST['fields']) && is_array($_POST['fields'])) {
 				$reqFields = $_POST['fields'];
-				if (array_diff($reqFields, $validFields)) {
-					continue;
+				if (!array_diff($reqFields, $validFields)) {
+					$fields = $reqFields;
+					$selectFields = implode(', ', str_repeat('?', count($fields)));
 				}
-				$fields = $reqFields;
-				$selectFields = implode(', ', str_repeat('?', count($fields)));
 			}
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
-				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems WHERE id = ?")
-				$getSystems->execute(array_merge($fields, [$_POST['shortName']]);
+				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems WHERE id = ?");
+				$getSystems->execute(array_merge($fields, [$_POST['shortName']]));
 				$numSystems = 1;
 			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
-				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems ORDER BY sortName")
+				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems ORDER BY sortName");
 				$getSystems->execute($fields);
 				$numSystems = $getSystems->rowCount();
 			}
@@ -55,7 +54,7 @@
 					'shortName' => $rSystem['id'],
 					'fullName' => $rSystem['name']
 				]);
-				unset($system['id'], $system['name'])
+				unset($system['id'], $system['name']);
 				if ($system['shortName'] != 'custom') {
 					$systems[] = $system;
 				} else {
