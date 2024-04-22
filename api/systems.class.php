@@ -47,6 +47,7 @@
 				'publisher' => ['name' => '', 'site' => ''],
 				'basics' => []
 			];
+			$boolFields = ['angular', 'enabled', 'hasCharSheet'];
 			unset($fields['name']);
 			$rSystems = $getSystems->fetchAll();
 			foreach ($rSystems as $rSystem) {
@@ -54,6 +55,12 @@
 					'shortName' => $rSystem['id'],
 					'fullName' => $rSystem['name']
 				]);
+				foreach (array_keys($defaults) as $jsonKey) {
+					$system[$jsonKey] = json_decode($system[$jsonKey], true);
+				}
+				foreach ($boolFields as $boolKey) {
+					$system[$boolKey] = $system[$boolKey] == "1";
+				}
 				unset($system['id'], $system['name']);
 				if ($system['shortName'] != 'custom') {
 					$systems[] = $system;
