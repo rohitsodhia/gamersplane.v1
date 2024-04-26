@@ -12,7 +12,6 @@
 
 		public function send() {
 			global $loggedIn, $currentUser;
-			$mongo = DB::conn('mongo');
 
 			$inserts['name'] = $_POST['name'];
 			$inserts['username'] = $loggedIn ? $currentUser->username : $_POST['username'];
@@ -31,9 +30,6 @@
 			if (sizeof($errors)) {
 				displayJSON(['failed' => true, 'errors' => $errors]);
 			} else {
-				$inserts['date'] = genMongoDate();
-				$mongo->contact->insertOne($inserts);
-
 				$message = '';
 				foreach ($inserts as $key => $value) {
 					$message .= ucfirst($key) . ":\n" . printReady($value) . "\n\n";

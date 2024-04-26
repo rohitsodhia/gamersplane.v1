@@ -24,16 +24,11 @@
 		}
 
 		public function getFAQs($pr = true) {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
-			$rawFAQs = $mongo->faqs->find(
-				[],
-				['sort' => ['category' => 1, 'order' => 1]]
-			);
+			$rawFAQs = $mysql->query("SELECT * FROM faqs ORDER BY category, order");
 			$faqs = [];
 			foreach ($rawFAQs as $faq) {
-				$faq['_id'] = (string) $faq['_id'];
-				$faq['order'] = (int) $faq['order'];
 				$faq['answer'] = [
 					'raw' => $faq['answer'],
 					'encoded' => BBCode2Html(printReady($faq['answer']))
@@ -45,64 +40,48 @@
 
 		public function changeOrder() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (!$currentUser->checkACP('faqs', false)) {
 				displayJSON(['failed' => true, 'noPermissions' => true]);
 			}
 
-			$id = genMongoId($_POST['id']);
+			$id = (int) $_POST['id'];
 			$direction = $_POST['direction'];
 			if ($direction != 'up' && $direction != 'down') {
 				displayJSON(['failed' => true]);
 			}
 
-			$faq = $mongo->faqs->findOne(
-				['_id' => $id],
-				['_id' => false, 'category' => true, 'order' => true]
-			);
+			$faq = $mysql->query("SELECT category, order FROM faqs WHERE id = {$id}")->fetch();
 			if ($direction == 'up' && $faq['order'] == 1) {
 				displayJSON(['failed' => true, 'cannotSwitch' => true]);
 			}
-			$switch = $mongo->faqs->findOne(
-				[
-					'category' => $faq['category'],
-					'order' => $faq['order'] + ($direction == 'up' ? -1 : 1 )
-				],
-				['_id' => true]
-			);
 			if ($direction == 'down' && $faq['order'] == null) {
 				displayJSON(['failed' => true, 'cannotSwitch' => true]);
 			}
-			$mongo->faqs->updateOne(
-				['_id' => $id],
-				['$set' => ['order' => $faq['order'] + ($direction == 'up' ? -1 : 1)]]
-			);
-			$mongo->faqs->updateOne(
-				['_id' => $switch['_id']],
-				['$set' => ['order' => $faq['order']]]
-			);
+			$switch = $mysql->prepare("SELECT id FROM faqs WHERE category = :category AND order = :order");
+			$switch->execute([':category' => $faq['category'], ':order'] => $faq['order'] + ($direction == 'up' ? -1 : 1)]);
+			$switch = $switch->fetch();
+			$updateOrder = $mysql->prepare("UPDATE faqs SET order = :order WHERE id = :id");
+			$updateOrder->execute([':id' => $id, ':order' => $faq['order'] + ($direction == 'up' ? -1 : 1)]);
+			$updateOrder->execute([':id' => $switch['id'], ':order' => $faq['order']]);
 		}
 
 		public function save() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (!$currentUser->checkACP('faqs', false)) {
 				displayJSON(['failed' => true, 'noPermissions' => true]);
 			}
 
-			$id = isset($_POST['id']) ? genMongoId($_POST['id']) : null;
+			$id = isset($_POST['id']) ? (int) $_POST['id'] : null;
 			$question = $_POST['question'];
 			$answer = $_POST['answer'];
 			if ($id) {
-				$faq = $mongo->faqs->findAndUpdate(
-					['_id' => $id],
-					['$set' => [
-						'question' => $question,
-						'answer' => $answer
-					]],
-					['returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER]);
+				$updateFAQ = $mysql->prepare("UPDATE faqs SET question = :question, answer = :answer WHERE id = :id");
+				$updateFAQ->execute([':id' => $id, ':question' => $question, ':answer' => $answer]);
+				$faq = $mysql->query("SELECT * FROM faqs WHERE id = {$id}")->fetch();
 			} else {
 				$faq = [
 					'category' => $_POST['category'],
@@ -110,13 +89,14 @@
 					'answer' => $answer,
 					'order' => 0
 				];
-				$order = $mongo->faqs->count(['category' => $faq['category']]);
-				$faq['order'] = $order + 1;
-				$mongo->faqs->insertOne($faq);
+				$getCatCount = $mysql->prepare("SELECT `order` FROM faqs WHERE category = ?");
+				$getCatCount->execute($faq['category']);
+				$faq['order'] = $getCatCount->rowCount() + 1;
+				$addFAQ = $mysql->prepare("INSERT INTO faqs SET question = :question, answer = :answer, `order` = :order");
+				$addFAQ->execute([':question' => $question, ':answer' => $answer, ':order' => $faq['order']]);
+				$faq['id'] = $mysql->lastInsertId();
 			}
 
-			$faq['_id'] = (string) $faq['_id'];
-			$faq['order'] = (int) $faq['order'];
 			$faq['answer'] = [
 				'raw' => $faq['answer'],
 				'encoded' => BBCode2Html(printReady($faq['answer']))
@@ -127,20 +107,16 @@
 
 		public function delete() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
+
 			if (!$currentUser->checkACP('faqs', false)) {
 				displayJSON(['failed' => true, 'noPermissions' => true]);
 			}
 
-			$id = genMongoId($_POST['id']);
-			$faq = $mongo->faqs->findAndDelete(['_id' => $id]);
-			$faqs = $mongo->faqs->updateMany(
-				[
-					'category' => $faq['category'],
-					'order' => ['$gt' => $faq['order']]
-				],
-				['$inc' => ['order' => -1]]
-			);
+			$id = (int) $_POST['id'];
+			$faq = $mysql->query("SELECT category, order FROM faqs WHERE id = {$id}")->fetch();
+			$mysql->query("DELETE FROM faqs WHERE id = {$id}");
+			$mysql->query("UPDATE faqs SET order = order - 1 WHERE category = '{$faqs['category']}' AND order > {$faqs['order']}");
 
 			displayJSON(['success' => true]);
 		}
