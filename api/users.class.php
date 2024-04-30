@@ -685,7 +685,7 @@
 			$lfg = array_merge($lfg, array_keys($newLFG));
 			$updateSystemLFGCount = $mysql->prepare("UPDATE systems SET lfg = lfg + :incAmount WHERE id = :system");
 			foreach (array_merge($remove, $newLFG) as $system => $count) {
-				$updateSystemLFGCount->execute(['incAmount': $count, 'system' => $system]);
+				$updateSystemLFGCount->execute(['incAmount' => $count, 'system' => $system]);
 			}
 			$updateUserLFG = $mysql->prepare("UPDATE users SET lfg = :lfg WHERE userID = :userID");
 			$updateUserLFG->execute(['lfg' => $lfg, 'userID' => $userID]);
