@@ -16,13 +16,12 @@
 
 		public function __construct($userDetail = null) {
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
 			if ($userDetail == null) {
 				return false;
 			}
 
-			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn, lastActivity FROM users WHERE " . (strpos($userDetail, '@') ? 'email' : 'userID') . " = :userDetail LIMIT 1");
+			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn, lastActivity, acpPermissions FROM users WHERE " . (strpos($userDetail, '@') ? 'email' : 'userID') . " = :userDetail LIMIT 1");
 			$userInfo->bindParam(':userDetail', $userDetail);
 			$userInfo->execute();
 			if ($userInfo->rowCount()) {
@@ -36,10 +35,6 @@
 				foreach ($usermeta as $eMeta) {
 					$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 				}
-				$this->acpPermissions = (array) $mongo->users->findOne(
-					['userID' => $this->userID],
-					['projection' => ['acpPermissions' => 1]]
-				)['acpPermissions'];
 			} else {
 				return false;
 			}
