@@ -163,8 +163,9 @@
 		}
 
 		public function generateLoginCookie() {
-			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, true, true);
-			setcookie('loginHash', $this->username . '|' . $this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN, true, true);
+			$secure = getenv('ENVIRONMENT') != 'dev';
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, $secure, true);
+			setcookie('loginHash', $this->username . '|' . $this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN, $secure, true);
 		}
 
 		public function getUsermeta($metaKey) {
