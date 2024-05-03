@@ -49,7 +49,7 @@
 			</li>
 			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
 			<li ng-show="loggedIn"><a href="/gamersList/"><i class="ra ra-gamers-plane hide mob-show-inline-block"></i><span class="mob-hide">The Gamers</span></a></li>
-			<li class="small-hide"><a href="/links/">Links</a></li>
+			<!-- <li class="small-hide"><a href="/links/">Links</a></li> -->
 			<li id="headerRegister" ng-show="!loggedIn"><a href="/register/" class="last">Register</a></li>
 			<li id="headerLogin" ng-show="!loggedIn"><a href="/login/" colorbox>Login</a></li>
 			<li ng-show="loggedIn" id="userMenu">
