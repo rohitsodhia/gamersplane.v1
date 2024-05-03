@@ -21,7 +21,7 @@
 				return false;
 			}
 
-			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn, lastActivity, acpPermissions FROM users WHERE " . (strpos($userDetail, '@') ? 'email' : 'userID') . " = :userDetail LIMIT 1");
+			$userInfo = $mysql->prepare("SELECT userID, username, password, salt, email, joinDate, activatedOn, lastActivity FROM users WHERE " . (strpos($userDetail, '@') ? 'email' : 'userID') . " = :userDetail LIMIT 1");
 			$userInfo->bindParam(':userDetail', $userDetail);
 			$userInfo->execute();
 			if ($userInfo->rowCount()) {
@@ -33,7 +33,11 @@
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
 				foreach ($usermeta as $eMeta) {
-					$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+					if ($eMeta['metaKey'] != 'acpPermissions') {
+						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+					} else {
+						$this->acpPermissions = $eMeta['metaValue'];
+					}
 				}
 			} else {
 				return false;
