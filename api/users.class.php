@@ -448,18 +448,6 @@
 			if ($details['location'] == 'null') {
 				$details['location'] = '';
 			}
-			$user->updateUsermeta('location', sanitizeString($details['location']));
-			if ($details['twitter'] == 'null') {
-				$details['twitter'] = '';
-			}
-			$user->updateUsermeta('twitter', sanitizeString($details['twitter']));
-			if ($details['stream'] == 'null') {
-				$details['stream'] = '';
-			}
-			$user->updateUsermeta('stream', sanitizeString($details['stream']));
-			if ($details['games'] == 'null') {
-				$details['games'] = '';
-			}
 			$user->updateUsermeta('games', sanitizeString($details['games']));
 			$user->updateUsermeta('pmMail', $details['pmMail'] === 'true' ? 1 : 0);
 			$user->updateUsermeta('newGameMail', $details['newGameMail'] === 'true' ? 1 : 0);
@@ -641,7 +629,7 @@
 		}
 
 		public function getLFG() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) {
 				$userID = (int) $_POST['userID'];
@@ -649,11 +637,13 @@
 				global $currentUser;
 				$userID = $currentUser->userID;
 			}
-			$lfg = $mongo->users->findOne(
-				['userID' => $userID],
-				['projection' => ['lfg' => 1]]
-			);
-			displayJSON(['lfg' => $lfg['lfg']]);
+			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'acpPermissions'");
+			if ($lfg->rowCount()) {
+				$lfg = json_decode($lfg->fetch()['metaValue'], true);
+				displayJSON(['lfg' => $lfg]);
+			} else {
+				displayJson([]);
+			}
 		}
 
 		public function saveLFG() {
@@ -665,9 +655,13 @@
 				global $currentUser;
 				$userID = $currentUser->userID;
 			}
-			$lfg = $mysql->query("SELECT lfg FROM users WHERE userID = {$userID}");
+			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'acpPermissions'");
+			if ($lfg->rowCount()) {
+				$lfg = json_decode($lfg->fetch()['metaValue'], true);
+			} else {
+				$lfg = [];
+			}
 			$remove = [];
-			$lfg = $lfg['lfg'];
 			$newLFG = [];
 			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
