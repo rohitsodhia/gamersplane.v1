@@ -19,8 +19,9 @@
 			if (!in_array($domain, ['youtube.com', 'soundcloud.com'])) {
 				$errors['invalidURL'] = 1;
 			} else {
-				$duplicates = $mongo->music->findOne(array('url' => $url));
-				if ($duplicates != null) {
+				$duplicates = $mysql->prepare("SELECT id FROM music WHERE url = :url");
+				$duplicates->execute($url);
+				if ($duplicates->rowCount()) {
 					$errors['dupURL'] = 1;
 				}
 			}
@@ -35,16 +36,8 @@
 		if (sizeof($errors)) {
 			echo json_encode($errors);
 		} else {
-			$mongo->music->insertOne([
-				'userID' => $currentUser->userID,
-				'username' => $currentUser->username,
-				'url' => $url,
-				'title' => $title,
-				'lyrics' => $lyrics,
-				'genres' => $genres,
-				'notes' => $notes,
-				'approved' => false
-			]);
+			$addMusic = $mysql->prepare("INSERT INTO music SET user = :user, url = :url, title = :title, lyrics = :lyrics, genres = :genres, notes = :notes");
+			$addMusic->execute([':user' => $currentUser->userID, ':url' => $url, ':title' => $title, ':lyrics' => $lyrics, ':genres' => $genres, ':notes' => $notes]);
 
 			$mail = getMailObj();
 			$mail->addAddress("contact@gamersplane.com");

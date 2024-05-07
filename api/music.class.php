@@ -1,4 +1,6 @@
 <?php
+	require_once(FILEROOT.'/includes/tools/Music_consts.class.php');
+
 	class music {
 		function __construct() {
 			global $loggedIn, $pathOptions;
@@ -15,35 +17,28 @@
 		}
 
 		public function getMusic() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$itemsPerPage = 20;
 			$page = intval($_POST['page']) && (int) $_POST['page'] >= 1 ? (int) $_POST['page'] : 1;
 
-			$filter = isset($_POST['filter']) ? (array) $_POST['filter'] : [];
+			$filter = isset($_POST['filter']) ? array_intersect((array) $_POST['filter'], Music_consts::getGenres()) : [];
 			if (sizeof($filter) && sizeof($filter['genres'])) {
-				$filter['genres'] = ['$in' => $filter['genres']];
+				$filter['genres'] = "genres IN ('" . implode("', '", $filter['genres']) . "')";
 			} elseif (sizeof($filter) && sizeof($filter['genres']) == 0) {
 				unset($filter['genres']);
 			}
 			if (sizeof($filter) && sizeof($filter['lyrics']) == 1) {
-				$filter['lyrics'] = array_search('hasLyrics', $filter['lyrics']) !== false ? true : false;
+				$filter['lyrics'] = "lyrics = " . array_search('hasLyrics', $filter['lyrics']) !== false ? 1 : 0;
 			} elseif ((sizeof($filter) && sizeof($filter['lyrics']) == 2) || sizeof($filter['lyrics']) == 0) {
 				unset($filter['lyrics']);
 			}
-
-			$count = $mongo->music->count($filter);
-			$songs = $mongo->music->find(
-				$filter,
-				[
-					'sort' => ['approved' => 1, 'title' => 1],
-					'skip' => $itemsPerPage * ($page - 1),
-					'limit' => $itemsPerPage
-				]
-			);
+			$count = $mysql->query("SELECT COUNT(*) as `count` FROM music" . (sizeof($filter) ? ' WHERE ' . implode(' AND ', $filter) : ''))->fetch()['count'];
+			$musicQuery = $mysql->query("SELECT * FROM music" . (sizeof($filter) ? ' WHERE ' . implode(' AND ', $filter) : '') . " ORDER BY approved DESC, title LIMIT {$itemsPerPage * ($page - 1)}, {$itemsPerPage}");
+			$songs = $musicQuery->fetchAll();
 			$music = [];
 			foreach ($songs as $rawSong) {
-				$song['_id'] = $rawSong['_id']->{'$id'};
+				$song['id'] = $rawSong['id'];
 				$song['url'] = $rawSong['url'];
 				$song['title'] = $rawSong['title'];
 				$song['approved'] = (bool) $rawSong['approved'];
@@ -59,13 +54,13 @@
 
 		public function toggleApproval($id, $approved) {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (!$currentUser->checkACP('music')) {
 				displayJSON(['failed' => true, 'errors' => ['noPermission']]);
 			}
 
-			$updated = $mongo->music->updateOne(['_id' => genMongoId($id)], ['$set' => ['approved' => !$approved]]);
+			$mysql->query("UPDATE music SET approved = NOT approved WHERE id = {$songID}");
 
 			if ($updated['updatedExisting']) {
 				displayJSON(['success' => true]);
@@ -76,7 +71,7 @@
 
 		public function saveSong() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$url = sanitizeString($_POST['url']);
 			$title = sanitizeString($_POST['title']);
@@ -86,9 +81,9 @@
 			$notes = $_POST['notes'];
 
 			$update = false;
-			if (isset($_POST['_id'])) {
+			if (isset($_POST['id'])) {
 				$update = true;
-				$mongoID = $_POST['_id'];
+				$id = (int) $_POST['id'];
 			}
 
 			$errors = [];
@@ -100,7 +95,9 @@
 				if (!in_array($domain, ['youtube.com', 'soundcloud.com'])) {
 					$errors[] = 'invalidURL';
 				} elseif (!$update) {
-					$duplicates = $mongo->music->findOne(['url' => $url]);
+					$duplicates = $mysql->prepare("SELECT id FROM music WHERE url = :url");
+					$duplicates->execute($url);
+					$duplicates = $mysql->music->findOne(['url' => $url]);
 					if ($duplicates != null) {
 						$errors[] = 'dupURL';
 					}
@@ -117,21 +114,8 @@
 				displayJSON(['failed' => true, 'errors' => $errors]);
 			} else {
 				if (!$update) {
-					$mongoID = genMongoId();
-					$mongo->music->insertOne([
-						'_id' => $mongoID,
-						'user' => [
-							'userID' => $currentUser->userID,
-							'username' => $currentUser->username
-						],
-						'url' => $url,
-						'title' => $title,
-						'lyrics' => $lyrics,
-						'genres' => $genres,
-						'battlebards' => $battlebards,
-						'notes' => $notes,
-						'approved' => $currentUser->checkACP('music', false) ? true : false
-					]);
+					$addMusic = $mysql->prepare("INSERT INTO music SET user = :user, url = :url, title = :title, lyrics = :lyrics, genres = :genres, notes = :notes");
+					$addMusic->execute([':user' => $currentUser->userID, ':url' => $url, ':title' => $title, ':lyrics' => $lyrics, ':genres' => $genres, ':notes' => $notes]);
 
 					$mail = getMailObj();
 					$mail->addAddress("contact@gamersplane.com");
@@ -139,23 +123,12 @@
 					$mail->Body = "New Music:\n\rusername: {$currentUser->username},\n\rurl => $url,\n\rtitle => $title";
 					$mail->send();
 				} else {
-					$mongo->music->updateOne(
-						['_id' => genMongoId($mongoID)],
-						['$set' => [
-							'url' => $url,
-							'title' => $title,
-							'lyrics' => $lyrics,
-							'genres' => $genres,
-							'battlebards' => $battlebards,
-							'notes' => $notes
-						]]
-					);
+					$updateMusic = $mysql->prepare("UPDATE music SET user = :user, url = :url, title = :title, lyrics = :lyrics, genres = :genres, notes = :notes WHERE id = :id");
+					$updateMusic->execute(['id' => $id, ':user' => $currentUser->userID, ':url' => $url, ':title' => $title, ':lyrics' => $lyrics, ':genres' => $genres, ':notes' => $notes]);
 				}
 
-				$song = $mongo->music->findOne(['_id' => genMongoId($mongoID)]);
+				$song = $mysql->query("SELECT * FROM music WHERE id = {$id}")->fetch();
 				if ($song) {
-					$song['id'] = (string) $song['_id'];
-					unset($song['_id']);
 					displayJSON(['success' => true, 'song' => $song]);
 				}
 			}
