@@ -158,7 +158,7 @@
 
 		public function getHeader() {
 			global $loggedIn, $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (!$loggedIn) {
 				displayJSON(['failed' => true]);
@@ -242,13 +242,7 @@
 				return $atitle > $btitle ? 1 : ($atitle < $btitle ? -1 :0);
 			});
 
-			$pmCount = $mongo->pms->count([
-				'recipients' => ['$elemMatch' => [
-					'userID' => $currentUser->userID,
-					'read' => false,
-					'deleted' => false
-				]]
-			]);
+			$pmCount = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE recipientID = {$currentUser->userID} AND `read` = 0 AND senderDeleted = 0 and recipientDeleted = 0")->fetch()['count'];
 
 			displayJSON([
 				'success' => true,
