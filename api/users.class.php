@@ -164,85 +164,31 @@
 				displayJSON(['failed' => true]);
 			}
 
-
-			$rfavouriteChars=array_column(iterator_to_array($mongo->characterLibraryFavorites->aggregate([	['$lookup'=>	['from' => 'characters', 'localField' => 'characterID' ,'foreignField' => 'characterID', 'as' => 'favChars']],
-			['$match' => ['$and'=>[['userID' =>  $currentUser->userID, 'favChars'=>['$ne'=>[]]]]]],
-			['$project' => ['characterID' => '$characterID']]	]),false),'characterID');
-
-			$charSelector=[
-				'user.userID' => $currentUser->userID,
-				'retired' => null
-			];
-
-			$charLimit=6;
-			if($rfavouriteChars && count($rfavouriteChars)){
-				$charSelector=	['characterID' => ['$in' => $rfavouriteChars],'retired' => null];
-				$charLimit=count($rfavouriteChars);
-			}
-			$rCharacters = $mongo->characters->find(
-				$charSelector,
-				[
-					'projection' => [
-						'characterID' => true,
-						'label' => true,
-						'system' => true
-					],
-					'sort' => ['label' => 1],
-					'limit' => $charLimit
-				]
-			);
+			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.system, IF(favorites.userID, 1, 0) isFavorite FROM characters LEFT JOIN characterLibrary_favorites favorites ON characters.characterID = favorites.characterID WHERE (characters.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND characters.isRetired = NULL ORDER BY isFavorite DESC LIMIT 6");
 
 			$characters = [];
-			foreach ($rCharacters as $char) {
+			$hasFavorites = FALSE;
+			foreach ($getCharacters->fetchAll as $char) {
+				if ($char['isFavorite']) {
+					$hasFavorites = TRUE;
+				} elseif ($hasFavorites) {
+					break;
+				}
 				$characters[] = $char;
 			}
 
-			$rfavouriteGames = array_column(iterator_to_array($mongo->gameFavorites->find(
-				['userID' => $currentUser->userID],
-				['projection'=>['gameID'=>true, '_id'=>false]]
-				),false),'gameID');
-
-			$gameSelector=[
-				'players.user.userID' => $currentUser->userID,
-				'retired' => null
-			];
-
-			$gameLimit=6;
-			if($rfavouriteGames && count($rfavouriteGames)){
-				$gameSelector=	['gameID' => ['$in' => $rfavouriteGames]];
-				$gameLimit=count($rfavouriteGames);
-			}
-			$rGames = $mongo->games->find(
-				$gameSelector,
-				[
-					'projection' => [
-						'gameID' => true,
-						'title' => true,
-						'players' => true,
-						'forumID' => true
-					],
-					'sort' => ['title' => 1],
-					'limit' => $gameLimit
-				]
-			);
-			$games = [];
-			foreach ($rGames as $game) {
-				$game['isPlayer'] = sizeof(array_filter($game['players'], function($v,$k) use (&$currentUser) {return $v['user']['userID']==$currentUser->userID;}, ARRAY_FILTER_USE_BOTH))!=0;
-				$game['isGM'] = sizeof(array_filter($game['players'], function($v,$k) use (&$currentUser) {return $v['isGM'] && $v['user']['userID']==$currentUser->userID;}, ARRAY_FILTER_USE_BOTH))!=0;
-				unset($game['players']);
-				$games[] = $game;
-			}
+			$games = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, TRUE, FALSE) isGM, IF(players.isPlayer, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID WHERE (players.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND games.isRetired = NULL LIMIT 6")->fetchAll();
 
 			usort($games, function($a, $b) {
-				if($a['isPlayer']!=$b['isPlayer']){
-					return $a['isPlayer']>$b['isPlayer']?-1:1;
+				if ($a['isPlayer'] != $b['isPlayer']){
+					return $a['isPlayer'] > $b['isPlayer'] ? -1 : 1;
 				}
-				$atitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $a['title'], "UTF-8" ) ) ));
-				$btitle=trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding( $b['title'], "UTF-8" ) ) ));
-				return $atitle > $btitle ? 1 : ($atitle < $btitle ? -1 :0);
+				$aTitle = trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding($a['title'], "UTF-8"))));
+				$bTitle = trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding($b['title'], "UTF-8"))));
+				return $aTitle > $bTitle ? 1 : ($aTitle < $bTitle ? -1 : 0);
 			});
 
-			$pmCount = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE recipientID = {$currentUser->userID} AND `read` = 0 AND senderDeleted = 0 and recipientDeleted = 0")->fetch()['count'];
+			$pmCount = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE recipientID = {$currentUser->userID} AND `read` = 0 AND senderDeleted = 0 and recipientDeleted = 0")->fetchColumn();
 
 			displayJSON([
 				'success' => true,
@@ -526,7 +472,7 @@
 		}
 
 		public function stats() {
-			global $mysql, $mongo;
+			$mysql = DB::conn('mysql');
 			require_once(FILEROOT . '/includes/Systems.class.php');
 			$systems = Systems::getInstance();
 
@@ -540,78 +486,73 @@
 			$postCount = $mysql->query("SELECT COUNT(postID) FROM posts WHERE authorID = {$userID}")->fetchColumn();
 			$communityPostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NULL")->fetchColumn();
 			$gamePostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NOT NULL")->fetchColumn();
-			$activeGames = $mysql->query("SELECT forums.gameID, count(posts.postID) AS postCount FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE (authorID = {$userID}) AND (forums.gameID IS NOT NULL) AND (posts.datePosted > NOW() - INTERVAL 1 WEEK) AND (threads.publicPosting=0) GROUP BY forums.gameID ORDER BY forums.title")->fetchAll();
+			$getActiveGames = $mysql->query(
+				"SELECT
+					games.gameID, games.title, games.system, games.customSystem, games.forumID, players.isGM, forums_permissions_general.`read`
+				FROM games
+				INNER JOIN players
+					ON games.gameID = players.gameID
+				INNER JOIN forums
+					ON games.gameID = forums.gameID
+				INNER JOIN threads
+					ON forums.forumID = threads.forumID
+				INNER JOIN posts
+					ON threads.threadID = posts.threadID
+				INNER JOIN forums_permissions_general permissions
+					ON forums.forumID = permissions.forumID
+				WHERE
+					players.userID = {$userID} AND players.approved = TRUE AND posts.datePosted > NOW() - INTERVAL 1 WEEK AND threads.publicPosting = 0
+				GROUP BY games.gameID
+				ORDER BY games.title"
+			);
 
-			$activeGameRet=[];
-			foreach($activeGames as $activeGame){
-				$rGame = $mongo->games->findOne(['gameID' => (int)$activeGame['gameID']]);
-				if($rGame){
-					$agTitle = printReady($rGame['title']);
-					$agSystem = $rGame['customType'] ? $rGame['customType'] : $systems->getFullName($rGame['system']);
-					$readPermissions = $mysql->query("SELECT `read` FROM forums_permissions_general WHERE forumID = {$rGame['forumID']} LIMIT 1")->fetchColumn();
-					$agForumID = $readPermissions ? $rGame['forumID'] : null;
-
-					$isGM = false;
-					foreach ($rGame['players'] as $player) {
-						if ($userID == $player['user']['userID'] && $player['isGM']) {
-							$isGM = true;
-						}
-					}
-
-					$activeGameRet[] = ['gameID' => (int)$activeGame['gameID'], 'title' => $agTitle, 'system' => $agSystem, 'isGM' => $isGM, 'forumID' => $agForumID ];
-				}
+			$activeGames = [];
+			foreach($getActiveGames as $activeGame) {
+				$title = printReady($activeGame['title']);
+				$system = $activeGame['customSystem'] ? $activeGame['customSystem'] : $systems->getFullName($activeGame['system']);
+				$forumID = (bool) $activeGame['read'] ? $activeGame['forumID'] ? null;
+				$isGM = (bool) $activeGame['isGM'];
+				$activeGames[] = [
+					'gameID' => $activeGame['gameID'],
+					'title' => $title,
+					'system' => $system,
+					'isGM' => $isGM,
+					'forumID' => $forumID
+				];
 			}
 
-			$rCharacters = $mongo->characters->find(
-				['user.userID' => $userID, 'retired' => null],
-				['projection' => ['system' => true]]
-			);
-//			$rCharacters = $mysql->query("SELECT c.characterID, c.system shortName, s.fullName, COUNT(c.characterID) numChars FROM characters c INNER JOIN systems s ON c.system = s.shortName WHERE c.userID = {$userID} AND retired IS NULL GROUP BY c.system ORDER BY numChars DESC, s.fullName");
+			$getCharacters = $mysql->query("SELECT system FROM characters WHERE userID = {$userID} AND retired = 0");
 			$characters = [];
 			$numChars = 0;
-			foreach ($rCharacters as $character) {
-				if (!isset($characters[$character['system']])) {
-					$characters[$character['system']] = [
+			foreach ($getCharacters->fetchAll() as $character) {
+				$system = $character['system'];
+				if (!isset($characters[$system])) {
+					$characters[$system] = [
 						'system' => [
-							'slug' => $character['system'],
-							'name' => $systems->getFullName($character['system'])
+							'slug' => $system,
+							'name' => $systems->getFullName($system)
 						],
 						'numChars' => 1
 					];
 				} else {
-					$characters[$character['system']]['numChars']++;
+					$characters[$system]['numChars']++;
 				}
 				$numChars++;
 			}
 			$characters = array_values($characters);
 
-			$rGames = $mongo->games->aggregate(
-				[
-					['$match' => [
-						'players' => [
-							'$elemMatch' => [
-								'user.userID' => $userID,
-								'isGM' => true
-							]
-						]
-					]],
-					['$group' => [
-						'_id' => '$system',
-						'running' => ['$sum' => 1]
-					]]
-				]
-			);
+			$getGamesRunning = $mysql->query("SELECT games.system, count(*) numGames FROM games INNER JOIN players ON games.gameID = players.gameID WHERE players.userID = {$userID} AND players.isGM = TRUE and games.retired = FALSE GROUP BY games.system ORDER BY games.system")->fetchALl();
 			$games = [];
 			$numGames = 0;
-			foreach ($rGames as $game) {
+			foreach ($getGamesRunning as $game) {
 				$games[] = [
 					'system' => [
-						'slug' => $game['_id'],
-						'name' => $systems->getFullName($game['_id'])
+						'slug' => $game['system'],
+						'name' => $systems->getFullName($game['system'])
 					],
-					'numGames' => (int) $game['running']
+					'numGames' => $game['numGames']
 				];
-				$numGames += (int) $game['running'];
+				$numGames += $game['numGames'];
 			}
 
 			displayJSON([
@@ -633,7 +574,7 @@
 			}
 			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'acpPermissions'");
 			if ($lfg->rowCount()) {
-				$lfg = json_decode($lfg->fetch()['metaValue'], true);
+				$lfg = json_decode($lfg->fetchColumn(), true);
 				displayJSON(['lfg' => $lfg]);
 			} else {
 				displayJson([]);
@@ -651,7 +592,7 @@
 			}
 			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'acpPermissions'");
 			if ($lfg->rowCount()) {
-				$lfg = json_decode($lfg->fetch()['metaValue'], true);
+				$lfg = json_decode($lfg->fetchColumn(), true);
 			} else {
 				$lfg = [];
 			}
@@ -681,13 +622,13 @@
 
 		public function removeThreadNotification($postId){
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
+
 			$mongo->users->updateMany(
 				['userID' => $currentUser->userID],
 				['$pull' => [
 					'threadNotifications' => ['postID'=>((int) $postId)]
-					]
-				]
+				]]
 			);
 
 		}
@@ -695,23 +636,20 @@
 		public function removeAllThreadNotifications(){
 			global $currentUser;
 			$mongo = DB::conn('mongo');
+
 			$mongo->users->updateMany(
 				['userID' => $currentUser->userID],
 				['$set' => [
 					'threadNotifications' => []
-					]
-				]
+				]]
 			);
 
 		}
 
-		public function setUserTheme($darkTheme){
+		public function setUserTheme($darkTheme) {
 			global $currentUser;
-			if((int)$darkTheme){
-				$currentUser->updateUsermeta('theme', 'dark', true);
-			}else{
-				$currentUser->updateUsermeta('theme', '', true);
-			}
+
+			$currentUser->updateUsermeta('theme', (int) $darkTheme ? 'dark' : '', true);
 
 			return true;
 		}

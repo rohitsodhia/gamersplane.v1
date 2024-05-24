@@ -2,9 +2,9 @@
 	$responsivePage=true;
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
-	if($currentUser->addPostNavigateWarning()){
+	if ($currentUser->addPostNavigateWarning()) {
 		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js','characters/custom/sheet.js','postPolls.js');
-	}else{
+	} else {
 		$addJSFiles = Array('forums/postingPage.js','postPolls.js','characters/custom/sheet.js');
 	}
 
@@ -60,22 +60,11 @@
 						$quoteInfo = $quoteInfo->fetch();
 						$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
 						if ($gameID) {
-							$game = $mongo->games->findOne(
-								[
-									'gameID' => (int) $gameID,
-									'players' => ['$elemMatch' => [
-										'user.userID' => $currentUser->userID,
-										'isGM' => true
-									]]
-								],
-								['projection' => ['players.$' => true]]
-							);
-							$isGM = $game['players'][0]['isGM'];
+							$isGM = $mysql->query("SELECT players.isGM FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} LIMIT 1")->fetchColumn();
 							if (!$isGM) {
 								$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
 							}
-						}
-						else{
+						} else {
 							$quoteInfo['message'] = Post::cleanNotes($quoteInfo['message']);
 						}
 
@@ -102,54 +91,21 @@
 	$isGM = false;
 	if ($threadManager->getForumProperty('gameID')) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
-		$returnFields = ['system' => true, 'players' => true];
-		if ($threadManager->getPermissions('addDraws')) {
-			$returnFields['decks'] = true;
-		}
-		$game = $mongo->games->findOne(['gameID' => $gameID], ['projection' => $returnFields]);
-		$system = $game['system'];
-		$isGM = false;
-		foreach ($game['players'] as $player) {
-			if ($player['user']['userID'] == $currentUser->userID) {
-				if ($player['isGM']) {
-					$isGM = true;
-				}
-				break;
-			}
-		}
+		list($system, $isGM) = $mysql->query("SELECT games.system, players.isGM FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} LIMIT 1")->fetch();
 
-		$rCharacters = $mongo->characters->find(
-			[
-				'game.gameID' => $gameID,
-				'game.approved' => true,
-				'user.userID' => $currentUser->userID
-			],
-			['projection' => ['characterID' => true, 'name' => true]]
-		);
+		$getCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 		$characters = [];
-		foreach ($rCharacters as $character) {
-			if (strlen($character['name'])) {
-				$characters[$character['characterID']] = $character['name'];
-			}
+		foreach ($getCharacters->fetchAll() as $character) {
+			$characters[$character['characterID']] = $character['name'];
 		}
 
 		$pcCharacters = [];
-		if($isGM){
-			$rPcCharacters = $mongo->characters->find(
-				[
-					'game.gameID' => $gameID,
-					'game.approved' => true,
-					'user.userID' => ['$ne'=>$currentUser->userID]
-				],
-				['projection' => ['characterID' => true, 'name' => true]]
-			);
-			foreach ($rPcCharacters as $character) {
-				if (strlen($character['name'])) {
-					$pcCharacters[$character['characterID']] = $character['name'];
-				}
+		if ($isGM) {
+			$getPCCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+			foreach ($getPCCharacters->fetchAll() as $character) {
+				$pcCharacters[$character['characterID']] = $character['name'];
 			}
 		}
-
 	} else {
 		$fixedGameMenu = false;
 	}
@@ -157,14 +113,10 @@
 	$rollsAllowed = $threadManager->getThreadProperty('allowRolls') ? true : false;
 	$drawsAllowed = false;
 	if ($gameID && $threadManager->getPermissions('addDraws')) {
-		$decks = $game['decks'] ? $game['decks'] : [];
-		if (!$isGM) {
-			foreach ($decks as $key => $deck) {
-				if (!in_array($currentUser->userID, $deck['permissions'])) {
-					unset($decks[$key]);
-				}
-			}
-			$decks = array_values($decks);
+		if ($isGM) {
+			$decks = $mysql->query("SELECT * FROM decks WHERE gameID = {$gameID}")->fetchAll();
+		} else {
+			$decks = $mysql->query("SELECT decks.* FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deck.gameID = {$gameID} AND deckPermissions.userID = {$currentUser->userID}")->fetchAll();
 		}
 		if (sizeof($decks)) {
 			$drawsAllowed = true;
@@ -204,7 +156,7 @@
 		</ul></div>
 <?php
 	}
-	$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);
+	$threadManager->displayBreadcrumbs($pathOptions, $post, $quoteID);
 ?>
 		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
 		<h1 class="headerbar"><i class="ra ra-quill-ink"></i> <?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>

@@ -35,7 +35,7 @@
 				$where = "senderID = {$currentUser->userID} AND senderDeleted = 0";
 			}
 			$page = isset($_POST['page']) && intval($_POST['page']) > 0 ? intval($_POST['page']) : 1;
-			$numPMs = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE {$where}")->fetch()['count'];
+			$numPMs = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE {$where}")->fetchColumn();
 			$pmsResults = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE {$where} ORDER BY datestamp DESC LIMIT {PAGINATE_PER_PAGE * ($page - 1)}, {PAGINATE_PER_PAGE}");
 			$pms = [];
 			foreach ($pmsResults as $pm) {
@@ -131,7 +131,7 @@
 					'history' => $history
 				])
 
-				$sendMail = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$recipient->userID} AND metaKey = 'pmMail'")->fetch()['metaValue'];
+				$sendMail = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$recipient->userID} AND metaKey = 'pmMail'")->fetchColumn();
 				if ($sendMail) {
 					ob_start();
 					include('emails/pmEmail.php');

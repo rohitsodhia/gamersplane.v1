@@ -33,7 +33,7 @@
 			} elseif ((sizeof($filter) && sizeof($filter['lyrics']) == 2) || sizeof($filter['lyrics']) == 0) {
 				unset($filter['lyrics']);
 			}
-			$count = $mysql->query("SELECT COUNT(*) as `count` FROM music" . (sizeof($filter) ? ' WHERE ' . implode(' AND ', $filter) : ''))->fetch()['count'];
+			$count = $mysql->query("SELECT COUNT(*) as `count` FROM music" . (sizeof($filter) ? ' WHERE ' . implode(' AND ', $filter) : ''))->fetchColumn();
 			$musicQuery = $mysql->query("SELECT * FROM music" . (sizeof($filter) ? ' WHERE ' . implode(' AND ', $filter) : '') . " ORDER BY approved DESC, title LIMIT {$itemsPerPage * ($page - 1)}, {$itemsPerPage}");
 			$songs = $musicQuery->fetchAll();
 			$music = [];

@@ -103,29 +103,30 @@
 		}
 
 		public function library() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
-			$search = ['library.inLibrary' => true];
-			if (isset($_POST['search']) && is_array($_POST['search'])) {
-				$search['system'] = array('$in' => $_POST['search']);
-			}
-			$rCharacters = $mongo->characters->find(
-				$search,
-				['projection' => [
-					'_id' => false,
-					'characterID' => true,
-					'label' => true,
-					'user' => true,
-					'system' => true
-				]]
-			);
+			$searchSystems = [];
 			$systems = Systems::getInstance();
+			if (isset($_POST['search']) && is_array($_POST['search'])) {
+				foreach($_POST['search'] as $searchSystem) {
+					if ($systems->verifySystem($searchSystem)) {
+						$searchSystems[] = $searchSystem;
+					}
+				}
+				$searchSystems = ' AND system IN (' . implode(', ', $searchSystems) . ')';
+			}
+			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.userID, user.username, characters.system FROM characters INNER JOIN users ON characters.userID = users.userID WHERE inLibrary = TRUE" . $searchSystems);
 			$characters = [];
-			foreach ($rCharacters as $character) {
+			foreach ($getCharacters->fetchAll() as $character) {
 				$character['system'] = [
 					'slug' => $character['system'],
 					'name' => $systems->getFullName($character['system'])
 				];
+				$character['user'] = [
+					'userID' => $character['userID'],
+					'username' => $character['username']
+				];
+				$unset($character['userID'], $character['username']);
 				$characters[] = $character;
 			}
 			displayJSON(['success' => true, 'characters' => $characters]);
@@ -140,32 +141,28 @@
 
 			$systems = Systems::getInstance();
 
-			$cond = [
-				'user.userID' => $currentUser->userID,
-				'retired' => null
+			$conds = [
+				"user.userID = {$currentUser->userID}",
+				"retired IS NULL"
 			];
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
 				if (sizeof($allowedSystems) == 1) {
-					$cond['system'] = $allowedSystems[0];
+					$conds = "system = {$allowedSystems[0]}";
 				} elseif (sizeof($allowedSystems) > 1) {
-					foreach ($allowedSystems as &$system) {
-						$system = preg_replace('/[^\w_]/', '', $system);
+					$validSystems = [];
+					foreach ($allowedSystems as $system) {
+						if ($systems->verifySystem($system)) {
+							$validSystems[] = $system;
+						}
 					}
-					$cond['system'] = ['$in' => $allowedSystems];
+					$conds[] = 'system IN (' . implode(', ', $validSystems) . ')';
 				}
 			}
 			if (isset($_POST['noGame'])) {
-				$cond['game'] = null;
+				$conds[] = "gameID IS NULL";
 			}
-			$rCharacters = $mongo->characters->find($cond, ['projection' => [
-				'characterID' => true,
-				'label' => true,
-				'charType' => true,
-				'system' => true,
-				'game' => true,
-				'library' => true
-			]]);
+			$getCharacters = $mysql->query("SELECT characterID, label, charType, system, gameID, approved, inLibrary WHERE " . implode(' AND ', $conds));
 			$characters = [];
 			foreach ($rCharacters as $character) {
 				$character['label'] = printReady($character['label']);
@@ -173,37 +170,22 @@
 					'short' => printReady($character['system']),
 					'name' => printReady($systems->getFullName($character['system']))
 				];
-				$character['gameID'] = (int) $character['game']['gameID'];
-				$character['approved'] = (bool) $character['game']['approved'];
-				$character['inLibrary'] = (bool) $character['library']['inLibrary'];
-				unset($character['game'], $character['library']);
+				// $character['gameID'] = (int) $character['game']['gameID'];
+				// $character['approved'] = (bool) $character['game']['approved'];
+				// $character['inLibrary'] , characters.= (bool) $character['library']['inLibrary'];
 				$characters[] = $character;
 			}
 			$return = array('characters' => $characters);
 			if (isset($_POST['library']) && $_POST['library']) {
-				$rLibraryItems = $mongo->characterLibraryFavorites->find(['userID' => $currentUser->userID]);
+				$getUserLibraryChars = $mysql->query("SELECT characters.characterID, characters.label, characters.charType, characters.system, user.userID, user.username FROM characterLibrary_favorites favorites INNER JOIN characters ON favorites.characterID = characters.characterID INNER JOIN users ON characters.userID = users.userID WHERE favorites.userID = {$currentUser->userID}");
 				$libraryItems = [];
-				foreach ($rLibraryItems as $item) {
-					$libraryItems[] = $item['characterID'];
-				}
-				$libraryItems = $mongo->characters->find(
-					['characterID' => ['$in' => $libraryItems]],
-					['projection' => [
-						'characterID' => true,
-						'label' => true,
-						'charType' => true,
-						'system' => true,
-						'user' => true
-					]]
-				);
-				foreach ($libraryItems as $item) {
-					$item['label'] = printReady($item['label']);
-					$item['system'] = [
-						'short' => printReady($item['system']),
-						'name' => printReady($systems->getFullName($item['system']))
+				foreach ($getUserLibraryChars->fetchAll() as $character) {
+					$character['label'] = printReady($character['label']);
+					$character['system'] = [
+						'short' => printReady($character['system']),
+						'name' => printReady($systems->getFullName($character['system']))
 					];
-					unset($item['_id']);
-					$return['library'][] = $item;
+					$return['library'][] = $character;
 				}
 			}
 
@@ -252,7 +234,8 @@
 
 		public function saveBasic() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
+
 			$characterID = intval($_POST['characterID']);
 			$label = sanitizeString($_POST['label']);
 			$charType = in_array($_POST['charType'], self::$charTypes) ? $_POST['charType'] : 'PC';
@@ -260,19 +243,11 @@
 				displayJSON(['failed' => true, 'errors' => ['noLabel']]);
 			}
 
-			$charCheck = $mongo->characters->findOne(
-				[
-					'user.userID' => $currentUser->userID,
-					'characterID' => $characterID
-				],
-				['projection' => ['_id' => true]]);
-			if (!$charCheck) {
+			$updateCharacter = $mysql->prepare("UPDATE characters SET label = :label, charType = :charType WHERE userID = {$currentUser->userID} AND characterID = {$characterID}");
+			$updateCharacter->execute(['label' => $label, 'charType' => $charType]);
+			if (!$updateCharacter->rowCount()) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			} else {
-				$mongo->characters->updateOne(
-					['characterID' => $characterID],
-					['$set' => ['label' => $label, 'charType' => $charType]]
-				);
 #				$hl_basicEdited = new HistoryLogger('basicEdited');
 #				$hl_basicEdited->addCharacter($characterID, false)->save();
 				displayJSON(['success' => true, 'basicUpdated' => true]);
@@ -281,7 +256,7 @@
 
 		public function loadCharacter() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$characterID = (int) $_POST['characterID'];
 			if ($characterID <= 0) {
@@ -291,8 +266,9 @@
 				]);
 			}
 
-			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
-			if ($systemCheck) {
+			$systemCheck = $mysql->query("SELECT system FROM characters WHERE {$characterID}");
+			if ($systemCheck->rowCount()) {
+				$systemCheck = $systemCheck->fetch();
 				$system = $systemCheck['system'];
 				addPackage($system.'Character');
 				$charClass = Systems::systemClassName($system).'Character';
@@ -300,7 +276,7 @@
 					$character->load();
 					$charPermissions = $character->checkPermissions($currentUser->userID);
 					if ($charPermissions) {
-						displayJSON($character->get(isset($_POST['printReady']) && $_POST['printReady']?true:false));
+						displayJSON($character->get(isset($_POST['printReady']) && $_POST['printReady'] ? true : false));
 					} else {
 						displayJSON([
 							'failed' => true,
@@ -312,42 +288,6 @@
 			displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 		}
 
-		public function checkPermissions($characterID, $userID = null) {
-			global $mongo;
-
-			if ($userID == null) {
-				$userID = $this->userID;
-			} else {
-				$userID = intval($userID);
-			}
-
-			$characterID = (int) $characterID;
-			$charCheck = $mongo->characters->findOne(
-				['characterID' => $characterID],
-				['projection' => ['user' => true, 'game' => true]]
-			);
-			if ($charCheck['user']['userID'] == $userID) {
-				return 'edit';
-			} else {
-				$gmCheck = $mongo->games->findOne(
-					[
-						'gameID' => $charCheck['game']['gameID'],
-						'players' => [
-							'$elemMatch' => [
-								'user.userID' => $userID,
-								'isGM' => true
-							]
-						]
-					],
-					['projection' => ['_id' => true]]
-				);
-				if ($gmCheck) {
-					return 'edit';
-				}
-			}
-			return $mongo->characters->findOne(['characterID' => $characterID, 'library.inLibrary' => true]) ? 'library' : false;
-		}
-
 		public function saveCharacter() {
 			global $currentUser;
 			$mongo = DB::conn('mongo');
@@ -356,10 +296,11 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
-			if (!$systemCheck) {
+			$systemCheck = $mysql->query("SELECT system FROM characters WHERE {$characterID}");
+			if (!$systemCheck->rowCount()) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
+			$systemCheck = $systemCheck->fetch();
 			$system = $systemCheck['system'];
 
 			$systems = Systems::getInstance();
@@ -382,41 +323,28 @@
 
 		public function toggleLibrary() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$characterID = intval($_POST['characterID']);
-			$currentState = $mongo->characters->findOne(
-				[
-					'characterID' => $characterID,
-					'user.userID' => $currentUser->userID,
-					'retired' => null
-				],
-				['projection' => ['library' => true]]
-			);
-			if ($currentState) {
-				$mongo->characters->updateOne(
-					['_id' => $currentState['_id']],
-					['$set' => ['library.inLibrary' => !$currentState['library']['inLibrary']]]
-				);
+			$libraryCheck = $mysql->query("SELECT inLibrary FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID} AND retired IS NULL");
+			if ($libraryCheck->rowCount()) {
+				$mysql->query("UPDATE characters SET inLibrary = !inLibrary");
 #				$hl_libraryToggle = new HistoryLogger(($currentState?'removeFrom':'addTo').'Library');
 #				$hl_libraryToggle->addCharacter($characterID, false)->save();
 
-				displayJSON(['success' => true, 'state' => !$currentState['library']['inLibrary']]);
-			} else
-				displayJSON(['failed' => true, 'errors' => array('invalidID')]);
+				displayJSON(['success' => true, 'state' => !$libraryCheck->fetchColumn()]);
+			} else {
+				displayJSON(['failed' => true, 'errors' => ['invalidID']]);
+			}
 		}
 
 		public function delete() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$characterID = intval($_POST['characterID']);
-			try {
-				$system = $mongo->characters->findOne(
-					['characterID' => $characterID],
-					['projection' => ['_id' => false, 'system' => true]]
-				)['system'];
-			} catch (Exception $e) {
+			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}")->fetchColumn();
+			if (!$system) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
 			require_once(FILEROOT."/includes/packages/".$system."Character.package.php");
@@ -432,25 +360,19 @@
 
 		public function toggleFavorite() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$characterID = intval($_POST['characterID']);
-			$charCheck = $mongo->characters->findOne(
-				[
-					'characterID' => $characterID
-				]
-			) ? true : false;
-			if ($charCheck) {
-				$state = $mongo->characterLibraryFavorites->findOne(
-					[
-						'userID' => $currentUser->userID,
-						'characterID' => $characterID
-					]
-				) ? 'unfavorited' : 'favorited';
-				if ($state == 'unfavorited') {
-					$mongo->characterLibraryFavorites->deleteOne(['userID' => $currentUser->userID, 'characterID' => $characterID]);
-				} else {
-					$mongo->characterLibraryFavorites->insertOne(['userID' => $currentUser->userID, 'characterID' => $characterID]);
+			$charCheck = $mysql->("SELECT characterID FROM characters WHERE characterID = {$characterID}");
+			if ($charCheck->rowCount()) {
+				try {
+					$mysql->query("INSERT INTO characterLibrary_favorites SET userID = {$currentUser->userID}, characterID = {$characterID}");
+					$state = "favorited";
+				} catch (Exception $e) {
+					if (str_contains($e->getMessage(), 'Integrity constraint violation: 1062')) {
+						$mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID}")
+						$state = "unfavorited";
+					}
 				}
 #				$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
 #				$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
@@ -654,11 +576,10 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
-			if (!$systemCheck) {
+			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}")->fetchColumn();
+			if (!$system) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
-			$system = $systemCheck['system'];
 
 			addPackage($system.'Character');
 			$charClass = Systems::systemClassName($system).'Character';
@@ -734,11 +655,10 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$systemCheck = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['system' => true]]);
-			if (!$systemCheck) {
+			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}")->fetchColumn();
+			if (!$system) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
-			$system = $systemCheck['system'];
 
 			addPackage($system.'Character');
 			$charClass = Systems::systemClassName($system).'Character';

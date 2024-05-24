@@ -205,76 +205,86 @@ class games
 		require_once(FILEROOT . '/includes/User.class.php');
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$gameID = intval($gameID);
 		if (!$gameID) {
 			displayJSON(['failed' => true]);
 		}
-		$gameInfo = $mongo->games->findOne(['gameID' => $gameID]);
-		if (!$gameInfo) {
+		$gameInfo = $mysql->query("SELECT games.gameID, games.title, games.customSystem, games.system, gm.userID, gm.username, gm.lastActivity, games.created, games.start, games.end, games.postFrequency, games.numPlayers, games.charsPerPlayer, games.description, games.charGenInfo, games.forumID, games.groupID, games.status, games.public, games.retired, games.allowedCharSheets, games.gameOptions, games.recruitmentThreadId INNER JOIN users gm ON games.gmID = gm.userID WHERE games.gameID = {$gameID} LIMIT 1");
+		if (!$gameInfo->rowCount()) {
 			displayJSON(['failed' => true, 'noGame' => true]);
 		}
 		$gameInfo['readPermissions'] = $mysql->query("SELECT `read` FROM forums_permissions_general WHERE forumID = {$gameInfo['forumID']} LIMIT 1")->fetchColumn();
 		$gameInfo['readPermissions'] = (bool)$gameInfo['readPermissions'];
-		$gameInfo['gm']['lastActivity'] = User::inactive($mysql->query("SELECT lastActivity FROM users WHERE userID = {$gameInfo['gm']['userID']} LIMIT 1")->fetchColumn());
+		$gameInfo['gm'] = [
+			'userID' => $gameInfo['userID'],
+			'username' => $gameInfo['username'],
+			'lastActivity' => $gameInfo['lastActivity']
+		];
+		unset($gameInfo['userID'], $gameInfo['username'], $gameInfo['lastActivity']);
 		$gameInfo['title'] = printReady($gameInfo['title'], ['nl2br']);
 		$gameInfo['created'] = date('F j, Y g:i a', getMongoSeconds($gameInfo['created']));
 		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
 		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? $gameInfo['charGenInfo'] : 'None Provided';
 		$gameInfo['approvedPlayers'] = 0;
-		foreach ($gameInfo['players'] as &$player) {
-			$player['user']['username'] = printReady($player['user']['username']);
-			$player['primaryGM'] = $player['user']['userID'] == $gameInfo['gm']['userID'];
-			if ($player['approved'] && !$player['primaryGM']) {
+		$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}")
+		$gameInfo['players'] = [];
+		foreach ($players->fetchAll() as $player) {
+			$gameInfo['players'][] = [
+				'user' => [
+					'userID' => $player['userID'],
+					'username' => printReady($player['username'])
+					]
+				'approved' => $player['approved'],
+				'isGM' => $player['isGM'],
+				'primaryGM' => $player['userID'] == $gameInfo['gm']['userID']
+			];
+			if ($player['approved'] && $player['userID'] != $gameInfo['gm']['userID']) {
 				$gameInfo['approvedPlayers']++;
 			}
 		}
 
-		$decks = $gameInfo['decks'];
-		unset($gameInfo['decks']);
-		if (is_array($decks) && sizeof($decks)) {
-			foreach ($decks as &$deck) {
-				$deck = [
+		$getDecks = $mysql->query("SELECT deckID, label, deck, position FROM decks WHERE gameID = {$gameID}");
+		$decks = [];
+		if ($getDecks->rowCount()) {
+			foreach ($getDecks->fetchAll() as $deck) {
+				$decks[] = [
 					'deckID' => $deck['deckID'],
 					'type' => $deck['type'],
 					'label' => $deck['label'],
 					'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1
-				];
+
+				]
 			}
-		} else {
-			$decks = [];
 		}
 
-		$players = $gameInfo['players'];
-		$rCharacters = $mongo->characters->find(
-			['game.gameID' => $gameID],
-			['projection' => [
-				'characterID' => true,
-				'user' => true,
-				'label' => true,
-				'system' => true,
-				'game' => true
-			]]
-		);
+		$getPlayers = $mysql->query("SELECT players.userID, user.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE gameID = {$gameID}");
+		$players = [];
+		$playerIDs = [];
+		foreach ($getPlayers->fetchAll() as $player) {
+			$players[] = [
+				'user' => [
+					'userID' => $player['userID'],
+					'username' => $player['username'],
+				],
+				'approved' => $player['approved'],
+				'isGM' => $player['isGM'],
+				'characters' => []
+			];
+			$playerIDs[] = $player['userID'];
+		}
+		$getCharacters = $mysql->query("SELECT charcterID, userID, label, approved FROM characters WHERE userID IN (". implode(', ', $playerIDs) .")")
 		$characters = [];
-		foreach ($rCharacters as $character) {
-			$userID = $character['user']['userID'];
-			if (!isset($characters[$userID])) {
-				$characters[$userID] = [];
-			}
-			$character['approved'] = $character['game']['approved'];
-			unset($character['_id'], $character['user'], $character['game']);
+		foreach ($getCharacters->fetchAll() as $character) {
+			$userID = $character['userID'];
+			unset($character['userID']);
 			$characters[$userID][] = $character;
 		}
 		foreach ($players as &$player) {
-			if (isset($characters[$player['user']['userID']])) {
-				$player['characters'] = $characters[$player['user']['userID']];
-			} else {
-				$player['characters'] = [];
+			if (isset($characters[$player['userID']])) {
+				$player['characters'] = $characters[$player['userID']];
 			}
 		}
-		unset($gameInfo['players']);
 		displayJSON([
 			'success' => true,
 			'details' => $gameInfo,
@@ -335,7 +345,7 @@ class games
 			$details['gameOptions']=$gameOptions;
 		}
 
-		$details['status'] = 'closed';
+		$details['status'] = false;
 		$details['public'] = true;
 
 		/*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
@@ -429,21 +439,10 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$gameID = intval($_POST['gameID']);
-		$gameInfo = $mongo->games->findOne(
-			['gameID' => $gameID],
-			['projection' => ['forumID' => true, 'public' => true, 'players' => true]]
-		);
-		$isGM = false;
-		foreach ($gameInfo['players'] as $player) {
-			if ($currentUser->userID == $player['user']['userID'] && $player['isGM']) {
-				$isGM = true;
-				break;
-			}
-		}
-		if (!$isGM) {
+		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		if (!$gmCheck->rowCount()) {
 			displayJSON(['unauthorized' => true]);
 		}
 
@@ -458,9 +457,9 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
-		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
-		if($details['recruitmentThreadId']==0){
-			$details['recruitmentThreadId']=null;
+		$details['recruitmentThreadId'] = intval($_POST['recruitmentThreadId']);
+		if ($details['recruitmentThreadId'] == 0){
+			$details['recruitmentThreadId'] = null;
 		}
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
@@ -471,12 +470,12 @@ class games
 			$details['customType'] = null;
 		}
 
-		$gameOptions=trim($_POST['gameOptions']?:"");
-		$gameOptions=str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
+		$gameOptions = trim($_POST['gameOptions'] ?: "");
+		$gameOptions = str_replace(["‘", "’", "“", "”"], ["'", "'", '"', '"'], $gameOptions);
 		$jsonTest = json_decode($gameOptions);
-		if ($gameOptions=="" || json_last_error() === 0) {
+		if ($gameOptions == "" || json_last_error() === 0) {
 			// JSON is valid
-			$details['gameOptions']=$gameOptions;
+			$details['gameOptions'] = $gameOptions;
 		}
 
 		$errors = [];
@@ -501,12 +500,15 @@ class games
 		$updateForumGroup = $mysql->prepare("UPDATE forums_groups SET name=:title WHERE gameID={$gameID} ORDER BY groupID LIMIT 1");
 		$updateForumGroup->execute(['title' => $details['title']]);
 
-
 		if (sizeof($errors)) {
 			displayJSON(array('failed' => true, 'errors' => $errors));
 		} else {
-			$mongo->games->updateOne(['gameID' => $gameID], ['$set' => $details]);
-			$mongo->characters->updateOne(['game.gameID' => $gameID], ['$set' => ['game.title' => $details['title']]]);
+			$setVars = [];
+			foreach (array_keys($details) as $key) {
+				$setVars[] = "{$key} = :{$key}";
+			}
+			$updateGame = $mysql->prepare("UPDATE games SET " . implode(", ", $setVars) . " WHERE gameID = {$gameID}");
+			$updateGame->execute($details);
 			$updateForumTitle = $mysql->prepare('UPDATE forums SET title = :title WHERE forumID = :forumID');
 			$updateForumTitle->execute(['title' => $details['title'], 'forumID' => $gameInfo['forumID']]);
 			// $hl_gameEdited = new HistoryLogger('gameEdited');
@@ -516,27 +518,15 @@ class games
 		}
 	}
 
-	public function toggleForum($gameID)
-	{
+	public function toggleForum($gameID) {
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$gameID = (int)$gameID;
-		$gameInfo = $mongo->games->findOne(
-			['gameID' => $gameID],
-			['projection' => ['forumID' => true, 'public' => true, 'players' => true]]
-		);
-		$isGM = false;
-		foreach ($gameInfo['players'] as $player) {
-			if ($currentUser->userID == $player['user']['userID'] && $player['isGM']) {
-				$isGM = true;
-				break;
-			}
-		}
-		if ($isGM) {
+		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		if ($gmCheck->rowCount()) {
 			$mysql->query("UPDATE forums_permissions_general SET `read` = `read` ^ 1 WHERE forumID = {$gameInfo['forumID']}");
-			$mongo->games->updateOne(['gameID' => $gameID], ['$set' => ['public' => !$gameInfo['public']]]);
+			$mysql->query("UPDATE games SET public = NOT public WHERE gameID = {$gameID}");
 			displayJSON(['success' => true]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'notGM']);
@@ -548,22 +538,11 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$gameID = (int)$gameID;
-		$gameInfo = $mongo->games->findOne(['gameID' => $gameID], ['projection' => ['forumID' => true, 'status' => true, 'players' => true]]);
-		$isGM = false;
-		foreach ($gameInfo['players'] as $player) {
-			if ($currentUser->userID == $player['user']['userID'] && $player['isGM']) {
-				$isGM = true;
-				break;
-			}
-		}
-		if ($isGM) {
-			$mongo->games->updateOne(
-				['gameID' => $gameID],
-				['$set' => ['status' => $gameInfo['status'] == 'open' ? 'closed' : 'open']]
-			);
+		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		if ($gmCheck->rowCount()) {
+			$mysql->query("UPDATE games SET status = NOT status WHERE gameID = {$gameID}");
 			displayJSON(['success' => true]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'notGM']);
@@ -574,13 +553,12 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$gameID = (int)$gameID;
-		extract($mongo->games->findOne(['gameID' => $gameID], ['projection' => ['gm' => true, 'forumID' => true, 'groupID' => true, 'public' => true, 'players' => true]]));
-		$gmID = (int)$gm['userID'];
-		if ($currentUser->userID == $gmID) {
-			$mongo->games->updateOne(['gameID' => $gameID], ['$set' => ['retired' => genMongoDate(), 'status' => 'closed']]);
+		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		if ($gmCheck->rowCount()) {
+			$mysql->query("UPDATE games SET retired = NOW(), status = FALSE WHERE gameID = {$gameID} LIMIT 1");
+
 			// $groups = $mysql->query("DELETE FROM forums_permissions_group WHERE groupID = {$groupID}");
 			// $forums = $mysql->query("SELECT forumID FROM forums WHERE gameID = {$gameID}")->fetchAll(PDO::FETCH_COLUMN);
 			// $mysql->query("DELETE FROM forums_permissions_users WHERE forumID IN (".implode(', ', $forums).")");
@@ -590,11 +568,11 @@ class games
 			// if ($cForumID != $forumID)
 			// $mysql->query("INSERT INTO forums_permissions_general SET forumID = {$cForumID}");
 			// $mysql->query("UPDATE forums_permissions_general SET `read` = {$public}, `write` = 0, `editPost` = 0, `deletePost` = 0, `createThread` = 0, `deleteThread` = 0, `addPoll` = 0, `addRolls` = -1, `addDraws` = -1, `moderate` = -1 WHERE forumID = {$forumID}");
-			#				$hl_retired = new HistoryLogger('retired');
-			#				$hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
+			// $hl_retired = new HistoryLogger('retired');
+			// $hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
 
-			$gameCount = $mongo->games->count(['gm.userID' => $currentUser->userID, 'retired' => null]);
-			if ($gameCount == 0) {
+			$gameCount = $mysql->query("SELECT gameID FROM players WHERE players.userID = {$currentUser->userID} AND players.isGM = TRUE");
+			if (!$gameCount->rowCount()) {
 				$currentUser->deleteUsermeta('isGM');
 			}
 
@@ -607,13 +585,12 @@ class games
 	public function unretire($gameID)
 	{
 		global $currentUser;
-		$mongo = DB::conn('mongo');
+		$mysql = DB::conn('mysql');
 
 		$gameID = (int)$gameID;
-		extract($mongo->games->findOne(['gameID' => $gameID], ['projection' => ['gm' => true, 'forumID' => true, 'groupID' => true, 'public' => true, 'players' => true]]));
-		$gmID = (int)$gm['userID'];
-		if ($currentUser->userID == $gmID) {
-			$mongo->games->updateOne(['gameID' => $gameID], ['$set' => ['retired' => null, 'status' => 'closed']]);
+		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		if ($gmCheck->rowCount()) {
+			$mysql->query("UPDATE games SET retired = null, status = FALSE WHERE gameID = {$gameID} LIMIT 1");
 
 			$currentUser->updateUsermeta('isGM', true);
 
@@ -627,29 +604,17 @@ class games
 	{
 		global $loggedIn, $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		if (!$loggedIn) {
 			displayJSON(['failed' => true, 'loggedOut' => true]);
 		}
 
 		$gameID = intval($_POST['gameID']);
-		$status = $mongo->games->findOne(['gameID' => $gameID], ['projection' => ['status' => true]]);
-		if ($status['status'] == 'open') {
-			$mongo->games->updateOne(['gameID' => $gameID], [
-				'$push' => [
-					'players' => [
-						'user' => [
-							'userID' => (int)$currentUser->userID,
-							'username' => $currentUser->username
-						],
-						'approved' => false,
-						'isGM' => false
-					]
-				]
-			]);
-			#				$hl_playerApplied = new HistoryLogger('playerApplied');
-			#				$hl_playerApplied->addUser($currentUser->userID)->addGame($gameID)->save();
+		$status = $mysql->query("SELECT status FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
+		if ($status) {
+			$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}");
+			// $hl_playerApplied = new HistoryLogger('playerApplied');
+			// $hl_playerApplied->addUser($currentUser->userID)->addGame($gameID)->save();
 		} else {
 			displayJSON(['failed' => true, 'gameClosed' => true]);
 		}
@@ -661,35 +626,19 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
-		$gameID = intval($gameID);
-		$gameInfo = $mongo->games->findOne(
-			['gameID' => $gameID],
-			['projection' => [
-				'title' => true,
-				'system' => true,
-				'players' => true,
-				'invites' => true
-			]]
-		);
-		$isGM = false;
-		foreach ($gameInfo['players'] as $player) {
-			if ($currentUser->userID == $player['user']['userID']) {
-				if ($player['isGM']) {
-					$isGM = true;
-				}
-			}
-			if ($user == strtolower($player['user']['userID'])) {
+		$gameID = (int)$gameID;
+		$userID = (int)$userID;
+					if ($user == strtolower($player['user']['userID'])) {
 				displayJSON([
 					'failed' => true,
 					'errors' => ['alreadyInGame']
 				]);
 			}
-		}
-		if ($isGM) {
-			$userCheck = $mysql->prepare("SELECT userID, username, email FROM users WHERE userID = :userID LIMIT 1");
-			$userCheck->execute(array(':userID' => $userID));
+
+		$gmCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = TRUE LIMIT 1");
+		if ($gmCheck->rowCount()) {
+			$userCheck = $mysql->query("SELECT users.userID, users.username, users.email, players.approved FROM users LEFT JOIN players ON users.userID = players.userID AND players.gameID = {$gameID} WHERE users.userID = {$userID} LIMIT 1");
 			if (!$userCheck->rowCount()) {
 				displayJSON([
 					'failed' => true,
@@ -697,25 +646,20 @@ class games
 				]);
 			}
 			$user = $userCheck->fetch();
-			if (isset($gameInfo['invites'])) {
-				foreach ($gameInfo['invites'] as $invite) {
-					if ($currentUser->userID == $invite['user']['userID']) {
-						displayJSON([
-							'failed' => true,
-							'errors' => ['alreadyInvited']
-						]);
-					}
-				}
+			if ($user['approved'] != NULL) {
+				displayJSON([
+					'failed' => true,
+					'errors' => ['alreadyInGame']
+				]);
 			}
-			$mongo->games->updateOne(
-				['gameID' => $gameID],
-				['$push' => [
-					'invites' => [
-						'userID' => (int)$user['userID'],
-						'username' => $user['username']
-					]
-				]]
-			);
+			$inviteCheck = $mysql->query("SELECT gameID FROM invites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
+			if ($inviteCheck) {
+				displayJSON([
+					'failed' => true,
+					'errors' => ['alreadyInvited']
+				]);
+			}
+			$mysql->query("INSERT INTO invites SET gameID = {$gameID}, userID = {$userID}");
 			$systems = Systems::getInstance();
 			ob_start();
 			include('emails/gameInviteEmail.php');
@@ -726,9 +670,9 @@ class games
 			$mail->addAddress($user["email"]);
 			$mail->Subject = "Game Invite";
 			$mail->msgHTML($email);
-			foreach ($recips as $email) {
-				$mail->addBCC($email);
-			}
+			// foreach ($recips as $email) {
+			// 	$mail->addBCC($email);
+			// }
 			$mail->send();
 
 			// $hl_playerInvited = new HistoryLogger('playerInvited');
@@ -737,7 +681,7 @@ class games
 			displayJSON([
 				'success' => true,
 				'user' => [
-					'userID' => (int)$user['userID'],
+					'userID' => (int) $user['userID'],
 					'username' => $user['username']
 				]
 			]);
@@ -750,38 +694,17 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$gameID = intval($gameID);
 		$userID = intval($userID);
-		$game = $mongo->games->findOne(
-			['gameID' => $gameID],
-			['projection' => [
-				'players' => true,
-				'invites' => true
-			]]
-		);
-		$isGM = false;
-		foreach ($game['players'] as $player) {
-			if ($player['user']['userID'] == $currentUser->userID && $player['isGM']) {
-				$isGM = true;
-				break;
-			}
-		}
-		if ($isGM || $currentUser->userID == $userID) {
-			$mongo->games->updateOne(
-				['gameID' => $gameID],
-				[
-					'$pull' => [
-						'invites' => ['userID' => $userID]
-					]
-				]
-			);
-			#				$hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
-			#				if ($pathOptions[1] == 'withdraw')
-			#					$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
-			#				$hl_inviteRemoved->addUser($userID)->addGame($gameID)->save();
-			displayJSON(['success' => true, 'userID' => (int)$userID]);
+		$gmCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = TRUE LIMIT 1");
+		if ($gmCheck->rowCount() || $currentUser->userID == $userID) {
+			$mysql->query("DELETE FROM invites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
+			// $hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
+			// if ($pathOptions[1] == 'withdraw')
+			// 	$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
+			// $hl_inviteRemoved->addUser($userID)->addGame($gameID)->save();
+			displayJSON(['success' => true, 'userID' => (int) $userID]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'noPermission']);
 		}
@@ -791,34 +714,17 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
-		$gameID = intval($gameID);
-		$userID = (int)$currentUser->userID;
-		$game = $mongo->games->findOne(['gameID' => $gameID, 'invites.userID' => $currentUser->userID], ['projection' => ['groupID' => true]]);
-		if ($game) {
-			$mongo->games->updateOne(
-				['gameID' => $gameID],
-				[
-					'$push' => [
-						'players' => [
-							'user' => [
-								'userID' => $currentUser->userID,
-								'username' => $currentUser->username
-							],
-							'approved' => true,
-							'isGM' => false
-						]
-					],
-					'$pull' => [
-						'invites' => ['userID' => $currentUser->userID]
-					]
-				]
-			);
+		$gameID = (int) $gameID;
+		$inviteCheck = $mysql->query("SELECT gameID FROM invites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
+		if ($inviteCheck->rowCount()) {
+			$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}, approved = 1");
+			$mysql->query("DELETE FROM invites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
+			$groupID = $mysql->query("SELECT groupID FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 			$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$game['groupID']}, userID = {$userID}");
-			#				$hl_inviteAccepted = new HistoryLogger('inviteAccepted');
-			#				$hl_inviteAccepted->addUser($userID)->addGame($gameID)->save();
-			displayJSON(['success' => true, 'userID' => (int)$userID]);
+			// $hl_inviteAccepted = new HistoryLogger('inviteAccepted');
+			// $hl_inviteAccepted->addUser($userID)->addGame($gameID)->save();
+			displayJSON(['success' => true, 'userID' => (int) $userID]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'noPermission']);
 		}
@@ -828,73 +734,33 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
-		$gameID = (int)$gameID;
-		$game = $mongo->games->findOne(
-			[
-				'gameID' => $gameID,
-				'players' => [
-					'$elemMatch' => [
-						'user.userID' => $currentUser->userID,
-						'approved' => true
-					]
-				]
-			],
-			['projection' => [
-				'gameID' => true,
-				'title' => true,
-				'system' => true,
-				'players' => true
-			]]
-		);
-		if (!$game) {
+		$characterID = (int) $characterID;
+		$gameID = (int) $gameID;
+		$playerCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE LIMIT 1");
+		if (!$playerCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['notPlayer']]);
 		}
-		$isGM = false;
-		$playerIDs = [];
-		foreach ($game['players'] as $player) {
-			if ($player['isGM']) {
-				$playerIDs[] = $player['user']['userID'];
-			}
-			if ($player['user']['userID'] == $currentUser->userID) {
-				$isGM = $player['isGM'];
-			}
-		}
-		$charInfo = $mongo->characters->findOne(
-			[
-				'characterID' => $characterID,
-				'user.userID' => $currentUser->userID
-			],
-			['projection' => ['characterID' => true, 'label' => true, 'game' => true]]
-		);
-		if (!$charInfo) {
+
+		$charCheck = $mysql->query("SELECT name, label, gameID FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID} LIMIT 1");
+		if (!$charCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['notOwner']]);
 		}
 
-		if ($charInfo['game'] != null) {
+		$charDetails = $charCheck->fetch();
+		if ($charDetails['gameID']) {
 			displayJSON(['failed' => true, 'errors' => ['alreadyInGame']]);
 		} else {
-			$mongo->characters->updateOne(
-				['characterID' => $charInfo['characterID']],
-				['$set' => [
-					'game' => [
-						'gameID' => $game['gameID'],
-						'title' => $game['title'],
-						'approved' => (bool)$isGM
-					]
-				]]
-			);
-			#				$hl_charApplied = new HistoryLogger('characterApplied');
-			#				$hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
-			#				if ($isGM) {
-			#					$hl_charApproved = new HistoryLogger('characterApproved');
-			#					$hl_charApproved->addUser($currentUser->userID, 'gm')->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
-			#				}
+			$mysql->query("UPDATE characters SET gameID = {$gameID} WHERE characterID = {$characterID} LIMIT 1");
+			// $hl_charApplied = new HistoryLogger('characterApplied');
+			// $hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
+			// if ($isGM) {
+			// 	$hl_charApproved = new HistoryLogger('characterApproved');
+			// 	$hl_charApproved->addUser($currentUser->userID, 'gm')->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
+			// }
 
-			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID WHERE u.userID IN (" . implode(', ', $playerIDs) . ") AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
+			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID INNER JOIN players ON u.userID = players.userID WHERE players.gameID = {$gameID} AND players.isGM = 1 AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 			if (sizeof($gmEmails)) {
-				$charDetails = $mongo->characters->findOne(['characterID' => $characterID], ['projection' => ['name' => 1]]);
 				$emailDetails = new stdClass();
 				$emailDetails->action = 'Character Added';
 				$emailDetails->gameInfo = (object)$game;
@@ -924,48 +790,28 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$pendingAction = 'removed';
-		$gameID = (int)$gameID;
-		$characterID = (int)$characterID;
-		$isGM = false;
-		$game = $mongo->games->findOne(
-			['gameID' => $gameID],
-			['projection' => ['players' => true]]
-		);
-		$charInfo = $mongo->characters->findOne(
-			['characterID' => $characterID],
-			['projection' => ['user' => true, 'game' => true]]
-		);
-		$players = [];
-		$character = [];
-		foreach ($game['players'] as $player) {
-			if ($player['user']['userID'] == $currentUser->userID && $player['isGM']) {
-				$isGM = true;
-			}
-			if ($player['user']['userID'] == $charInfo['user']['userID']) {
-				$characters = $player['characters'];
-			}
-		}
-		if ($charInfo['user']['userID'] != $currentUser->userID && !$isGM) {
+		$gameID = (int) $gameID;
+		$characterID = (int) $characterID;
+
+		$charInfo = $mysql->query("SELECT userID, gameID FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetch();
+		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
+		if ($charInfo['userID'] != $currentUser->userID && !$gmCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => 'badAuthentication']);
 		}
 
-		$mongo->characters->updateOne(
-			['characterID' => $characterID],
-			['$set' => ['game' => null]]
-		);
+		$mysql->query("UPDATE characters SET gameID = NULL, approved = 0 WHERE characterID = {$characterID} LIMIT 1");
 		if ($charInfo['user']['userID'] == $currentUser->userID) {
 			$pendingAction = 'withdrawn';
 		} elseif (!$charInfo['approved']) {
 			$pendingAction = 'rejected';
 		}
-		#			$hl_charRemoved = new HistoryLogger('character'.ucwords($pendingAction));
-		#			$hl_charRemoved->addCharacter($characterID);
-		#			if ($pendingAction != 'withdrawn')
-		#				$hl_charRemoved->addUser($currentUser->userID, 'gm');
-		#			$hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
+		// $hl_charRemoved = new HistoryLogger('character'.ucwords($pendingAction));
+		// $hl_charRemoved->addCharacter($characterID);
+		// if ($pendingAction != 'withdrawn')
+		// 	$hl_charRemoved->addUser($currentUser->userID, 'gm');
+		// $hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
 
 		displayJSON(['success' => true, 'action' => $pendingAction, 'characterID' => $characterID]);
 	}
@@ -974,39 +820,19 @@ class games
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
-		$gameID = (int)$gameID;
-		$characterID = (int)$characterID;
-		$game = $mongo->games->findOne(
-			[
-				'gameID' => $gameID,
-				'players' => [
-					'$elemMatch' => [
-						'user.userID' => $currentUser->userID,
-						'isGM' => true,
-					]
-				]
-			],
-			['projection' => ['players' => true]]
-		);
-		$charInfo = $mongo->characters->findOne(
-			[
-				'characterID' => $characterID,
-				'game.gameID' => $gameID,
-				'retired' => null
-			],
-			['projection' => ['characterID' => true, 'user' => true]]
-		);
-		if (!$charInfo && $game) {
+		$gameID = (int) $gameID;
+		$characterID = (int) $characterID;
+
+		$charInfo = $mysql->query("SELECT userID, gameID FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetch();
+		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
+		if (!$charInfo || $charInfo['gameID'] != $gameID || $gmCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => 'badAuthentication']);
 		}
-		$mongo->characters->updateOne(
-			['characterID' => $characterID],
-			['$set' => ['game.approved' => true]]
-		);
-		#			$hl_charApproved = new HistoryLogger('characterApproved');
-		#			$hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
+
+		$mysql->query("UPDATE characters SET approved = 1 WHERE characterID = {$characterID} LIMIT 1");
+		// $hl_charApproved = new HistoryLogger('characterApproved');
+		// $hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 
 		displayJSON(['success' => true, 'action' => 'characterApproved', 'characterID' => $characterID]);
 	}
@@ -1027,19 +853,15 @@ class games
 
 	public function toggleFavorite() {
 		global $currentUser;
-		$mongo = DB::conn('mongo');
+		$mysql = DB::conn('mysql');
 
-		$gameID = intval($_POST['gameID']);
-		$state = $mongo->gameFavorites->findOne(
-			[
-				'userID' => $currentUser->userID,
-				'gameID' => $gameID
-			]
-		) ? 'unfavorited' : 'favorited';
-		if ($state == 'unfavorited') {
-			$mongo->gameFavorites->deleteOne(['userID' => $currentUser->userID, 'gameID' => $gameID]);
-		} else {
-			$mongo->gameFavorites->insertOne(['userID' => $currentUser->userID, 'gameID' => $gameID]);
+		$gameID = (int) $_POST['gameID'];
+		try {
+			$mysql->query("INSERT INTO games_favorites SET userID = {$currentUser->userID}, gameID = {$gameID}");
+		} catch (Exception $e) {
+			if (str_contains($e->getMessage(), 'Integrity constraint violation: 1062')) {
+				$mysql->query("DELETE FROM games_favorites WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
+			}
 		}
 
 		displayJSON(['success' => true, 'state' => $state]);

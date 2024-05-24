@@ -11,7 +11,7 @@
 			if ($active) {
 				$getAngular = $mysql->prepare("SELECT angular FROM systems WHERE id = ?");
 				$getAngular->execute(SYSTEM);
-				$angular = $getAngular->fetch()['angular'];
+				$angular = $getAngular->fetchColumn();
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'viewCharacter';
 					$angular = 'viewCharacter_' . SYSTEM;
@@ -23,9 +23,9 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
 					$noChar = false;
-					$gameID=$character->getGameID();
+					$gameID = $character->getGameID();
 					if ($charPermissions == 'library') {
-						$mongo->characters->updateOne(['characterID' => $characterID], ['$inc' => ['library.views' => 1]]);
+						$mysql->query("UPDATE characters SET libraryViews = libraryViews + 1 WHERE characterID = {$characterID} LIMIT 1");
 					}
 					$favorited = $mongo->characterLibraryFavorites->findOne(['userID' => $currentUser->userID, 'characterID' => $characterID]) ? true : false;
 					$addJSFiles[] = 'characters/_sheet.js';
