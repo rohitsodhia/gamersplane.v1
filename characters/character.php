@@ -27,7 +27,7 @@
 					if ($charPermissions == 'library') {
 						$mysql->query("UPDATE characters SET libraryViews = libraryViews + 1 WHERE characterID = {$characterID} LIMIT 1");
 					}
-					$favorited = $mongo->characterLibraryFavorites->findOne(['userID' => $currentUser->userID, 'characterID' => $characterID]) ? true : false;
+					$favorited = (bool) $mysql->query("SELECT COUNT(*) FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID} LIMIT 1")->fetchColumn();
 					$addJSFiles[] = 'characters/_sheet.js';
 					if (file_exists(FILEROOT . '/javascript/characters/' . SYSTEM . '/sheet.js')) {
 						$addJSFiles[] = 'characters/' . SYSTEM . '/sheet.js';

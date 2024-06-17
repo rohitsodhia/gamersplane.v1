@@ -52,7 +52,7 @@
 
 		public static function newItemized($type, $name, $system) {
 			global $currentUser, $systems;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$systems = Systems::getInstance();
 			if ($system == 'custom') {
@@ -63,41 +63,24 @@
 			}
 
 			$searchName = sanitizeString($name, 'search_format');
-			$ac = $mongo->charAutocomplete->findOne(
-				['searchName' => $searchName],
-				['projection' => ['_id' => true, 'systems' => true]]
-			);
-			$alreadyExists = $mongo->userAddedItems->findOne(
-				['name' => $name, 'system' => $system],
-				['projection' => ['_id' => true]]
-			);
-			if ($alreadyExists || ($ac && in_array($system, $ac['systems']))) {
-				return true;
+			$searchAutocomplete = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE searchName = :searchName LIMIT 1");
+			$searchAutocomplete->execute(['searchName' => $searchName]);
+			if (!$searchAutocomplete->rowCount()) {
+				$addUAI = $mysql->prepare("INSERT INTO charAutocomplete SET `type` = :type, `name` = :name, searchName = :searchName, userDefined = :userDefined, approved = 0")
+				$addUAI->execute([
+					`type` = $type,
+					`name` = $name,
+					searchName = $searchName,
+					userDefined = $currentUser->userID
+				]);
+				$itemID = $mysql->lastInsertId();
+			} else {
+				$itemID = $searchAutocomplete->fetchColumn();
 			}
 
-			$uai = [
-				'name' => $name,
-				'itemID' => null,
-				'action' => null,
-				'system' => $system,
-				'type' => $type,
-				'addedBy' => [
-					'userID' => (int) $currentUser->userID,
-					'username' => $currentUser->username,
-					'on' => genMongoDate()
-				],
-				'actedBy' => [
-					'userID' => null,
-					'username' => null,
-					'on' => null
-				]
-			];
-			if ($ac != null) {
-				$uai['itemID'] = (string) $ac['_id'];
-				$mongo->userAddedItems->insertOne($uai);
-			} else {
-				$mongo->userAddedItems->insertOne($uai);
-			}
+			try {
+				$mysql->query("INSERT INTO charAutocomplete_systems SET itemID = {$itemID}, system = {$system}");
+			} catch (Exception $e) {}
 
 			return true;
 		}
@@ -134,7 +117,7 @@
 
 		public function my() {
 			global $loggedIn, $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 			if (!$loggedIn) {
 				displayJSON(['failed' => true, 'notLoggedIn' => true], true);
 			}
@@ -147,7 +130,7 @@
 			];
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
-				if (sizeof($allowedSystems) == 1) {
+				if (sizeof($allowedSystems) == 1 && $systems->verifySystem($allowedSystems[0])) {
 					$conds = "system = {$allowedSystems[0]}";
 				} elseif (sizeof($allowedSystems) > 1) {
 					$validSystems = [];
@@ -290,7 +273,7 @@
 
 		public function saveCharacter() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$characterID = (int) $_POST['characterID'];
 			if ($characterID <= 0) {
@@ -395,68 +378,24 @@
 		}
 
 		public function cilSearch() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$type = sanitizeString($_POST['type']);
-			$searchName = sanitizeString($_POST['search'], 'search_format');
+			$formattedSearch = sanitizeString($_POST['search'], 'search_format');
 			$system = $_POST['system'];
 			$systems = Systems::getInstance();
-			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly']?true:false;
+			$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly'] ? true : false;
 
-			if ($systems->verifySystem($system)) {
-				$search = ['searchName' => new MongoDB\BSON\Regex($searchName)];
+			if (!$system || $systems->verifySystem($system)) {
+				$getCIL = $mysql->query("
+					SELECT charAutocomplete.itemID, charAutocomplete.name, IF(systems.system, TRUE, FALSE) systemItem
+					FROM charAutocomplete " . ($systemOnly ? "INNER" : "LEFT") . " JOIN systems ON charAutocomplete.itemID = systems.itemID
+					WHERE charAutocomplete.approved = 1 AND charAutocomplete.searchName LIKE '%{$formattedSearch}%'" . ($systemOnly ? " AND systems.system = {$system}" : "") .
+					" ORDER BY systemItem DESC LIMIT 5");
 				$items = [];
-				if ($systemOnly) {
-					$search['systems'] = $system;
-					$rCIL = $mongo->charAutocomplete->find(
-						$search,
-						[
-							'sort' => ['searchName' => 1],
-							'limit' => 5
-						]
-					);
-					foreach ($rCIL as $item) {
-						$items[] = [
-							'itemID' => (string) $item['_id'],
-							'name' => $item['name'],
-							'systemItem' => true
-						];
-					}
-				} else {
-					$rCIL = $mongo->charAutocomplete->aggregate([
-						[
-							'$match' => [
-								'searchName' => $search['searchName']
-							]
-						],
-						[
-							'$project' => [
-								'name' => true,
-								'inSystem' => [
-									'$setIsSubset' => [
-										[$system],
-										'$systems'
-									]
-								]
-							]
-						],
-						[
-							'$sort' => [
-								'inSystem' => -1,
-								'name' => 1
-							]
-						],
-						[
-							'$limit' => 5
-						]
-					]);
-					foreach ($rCIL['result'] as $item) {
-						$items[] = [
-							'itemID' => (string) $item['_id'],
-							'name' => $item['name'],
-							'systemItem' => $item['systemItem']?true:false
-						];
-					}
+				foreach ($getCIL->fetchAll() as $item) {
+					$item['systemItem'] = (bool) $item['systemItem'] ? true : false;
+					$items[] = $item;
 				}
 
 				displayJSON(['items' => $items]);
@@ -465,41 +404,41 @@
 
 		public function getUAI() {
 			global $loggedIn, $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) {
 				displayJSON(['failed' => true, 'noPermission' => true]);
 			}
 
-			$rNewItems = $mongo->userAddedItems->find(['itemID' => null, 'action' => null]);
+			$getNewUAI = $mysql->query("SELECT ac.itemID, ac.name, GROUP_CONCAT(systems.system ORDER BY systems.system SEPARATOR ';') systems FROM charAutocomplete ac LEFT JOIN charAutocomplete_systems systems ON ac.itemID = systems.itemID WHERE action IS NULL GROUP BY ac.itemID")
 			$newItems = [];
-			foreach ($rNewItems as $item) {
-				$item['_id'] = (string) $item['_id'];
+			foreach ( as $item) {
+				$item['systems'] = explode(';', $item['systems']);
 				$newItems[] = $item;
 			}
 
-			$rAddToSystem = $mongo->userAddedItems->find(
-				[
-					'itemID' => ['$ne' => null],
-					'action' => null
-				]
-			);
-			$addToSystem = [];
-			foreach ($rAddToSystem as $item) {
-				$item['_id'] = (string) $item['_id'];
-				$addToSystem[] = $item;
-			}
+			// $rAddToSystem = $mongo->userAddedItems->find(
+			// 	[
+			// 		'itemID' => ['$ne' => null],
+			// 		'action' => null
+			// 	]
+			// );
+			// $addToSystem = [];
+			// foreach ($rAddToSystem as $item) {
+			// 	$item['_id'] = (string) $item['_id'];
+			// 	$addToSystem[] = $item;
+			// }
 
 			displayJSON([
 				'success' => true,
 				'newItems' => $newItems,
-				'addToSystem' => $addToSystem
+				'addToSystem' => []
 			]);
 		}
 
 		public function processUAI() {
 			global $loggedIn, $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if (!$loggedIn || !$currentUser->checkACP('autocomplete')) {
 				displayJSON(['failed' => true, 'noPermission' => true]);
@@ -571,7 +510,7 @@
 
 		private function updateCustomSheetNotes($characterID, $returnNotes, callable $updateFn){
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
@@ -593,7 +532,7 @@
 					$character->saveCharacter();
 
 					if($returnNotes){
-						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID, 'notes'=>printReady(BBCode2Html($text),['nl2br'])]);
+						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID, 'notes' => printReady(BBCode2Html($text),['nl2br'])]);
 					} else {
 						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
 					}
@@ -604,12 +543,12 @@
 		}
 
 		private function bbformUpdateVal($characterID, $fieldIdx, $fieldValue){
-			$this->updateCustomSheetNotes($characterID, false, function($text) use (&$fieldIdx, &$fieldValue){
-				$formField=0;
+			$this->updateCustomSheetNotes($characterID, false, function($text) use (&$fieldIdx, &$fieldValue) {
+				$formField = 0;
 				$matches = null;
-				$text=preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField, &$fieldIdx, &$fieldValue){
-					if($fieldIdx==$formField++){
-						return '[_'.$matches[2].'='.$fieldValue.']';
+				$text = preg_replace_callback('/\[\_(([\w\_\$]*)\=)?([^\]]*)\]/', function($matches) use (&$formField, &$fieldIdx, &$fieldValue) {
+					if ($fieldIdx == $formField++){
+						return '[_' . $matches[2] . '=' . $fieldValue . ']';
 					} else {
 						return $matches[0];
 					}
@@ -650,7 +589,7 @@
 
 		private function getBbcodeSection($characterID, $requestIdx, $selector){
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
@@ -662,7 +601,7 @@
 
 			addPackage($system.'Character');
 			$charClass = Systems::systemClassName($system).'Character';
-			if ($system=='custom' && $character = new $charClass($characterID)) {
+			if ($system == 'custom' && $character = new $charClass($characterID)) {
 				$character->load();
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {

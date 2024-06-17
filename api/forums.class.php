@@ -302,8 +302,8 @@
 		}
 
 		public function getPostQuote($postID){
-
-			global $currentUser,$mongo;
+			global $currentUser;
+			$mysql = DB::conn('mysql');
 
 			$ret = '';
 
@@ -313,18 +313,8 @@
 			if (!$threadManager->getThreadProperty('states[locked]')  && $threadManager->getPermissions('write')){
 				$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
 				if ($gameID) {
-					$game = $mongo->games->findOne(
-						[
-							'gameID' => (int) $gameID,
-							'players' => ['$elemMatch' => [
-								'user.userID' => $currentUser->userID,
-								'isGM' => true
-							]]
-						],
-						['projection' => ['players.$' => true]]
-					);
-					$isGM = $game['players'][0]['isGM'];
-					if (!$isGM) {
+					$checkIsGM = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}")->fetchColumn();
+					if (!$checkIsGM) {
 						$ret = Post::cleanNotes($post->message);
 					}
 					else{

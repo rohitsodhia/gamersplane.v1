@@ -39,7 +39,6 @@ class forumACP
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		$forumManager = new ForumManager($forumID, ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
@@ -61,22 +60,17 @@ class forumACP
 		];
 		if ($details['isGameForum']) {
 			$gameForumID = $forum->heritage[2];
-			$gameDetails = $mongo->games->findOne(
-				['forumID' => $gameForumID],
-				['projection' => ['gameID' => true, 'groupID' => true, 'players' => true]]
-			);
-			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameDetails['gameID']}")->fetchAll();
+			list($gameID, $groupID) = $mysql->query("SELECT gameID, groupID FROM games WHERE forumID = {$gameForumID} LIMIT 1");
+			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameID}")->fetchAll();
 			foreach ($groups as &$group) {
 				$group['groupID'] = (int) $group['groupID'];
 			}
-			foreach ($gameDetails['players'] as &$player) {
-				$player = $player['user'];
-			}
+			$players = $mysql->query("SELECT users.userID, users.username FROM users INNER JOIN players ON users.userID = players.userID WHERE players.gameID = {$gameID}")->fetchAll();
 			$details['gameDetails'] = [
 				'forumID' => $gameForumID,
-				'groupID' => (int) $gameDetails['groupID'],
+				'groupID' => (int) $groupID,
 				'groups' => $groups,
-				'players' => $gameDetails['players']
+				'players' => $players
 			];
 		}
 		if (sizeof($forum->getChildren())) {
@@ -292,19 +286,17 @@ class forumACP
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
-		$gameInfo = $mongo->games->findOne(
-			['groupID' => (int) $groupID],
-			['projection' => ['_id' => false, 'forumID' => true, 'groupID' => true]]
-		);
-		if ($gameInfo) {
+		$groupID = (int) $groupID;
+		$getForumID = $mysql->query("SELECT forumID FROM games WHERE groupID = {$groupID} LIMIT 1");
+		if ($getForumID->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['mainGroup']]);
 		}
 		if (strlen($name) < 3) {
 			displayJSON(['failed' => true, 'errors' => ['noName']]);
 		}
 
+		$forumID = $getForumID->fetchColumn();
 		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
@@ -326,13 +318,9 @@ class forumACP
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
-		$gameInfo = $mongo->games->findOne(
-			['groupID' => (int) $groupID],
-			['projection' => ['_id' => false, 'forumID' => true, 'groupID' => true]]
-		);
-		if ($gameInfo) {
+		$getForumID = $mysql->query("SELECT forumID FROM games WHERE groupID = {$groupID} LIMIT 1");
+		if ($getForumID->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['mainGroup']]);
 		}
 

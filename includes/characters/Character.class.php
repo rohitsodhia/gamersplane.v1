@@ -97,7 +97,6 @@
 		public function checkPermissions($userID = null) {
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
 			if ($userID == null) {
 				$userID = $this->userID;
@@ -105,28 +104,12 @@
 				$userID = intval($userID);
 			}
 
-			$charCheck = $mongo->characters->findOne(
-				['characterID' => $this->characterID],
-				['projection' => ['user' => true, 'game' => true]]
-			);
-			if ($charCheck['user']['userID'] == $userID) {
+			list($charUserID, $gameID, $inLibrary, $isGM) = $mysql->query("SELECT characters.userID, characters.gameID, characters.inLibrary, players.isGM FROM characters LEFT JOIN players ON characters.gameID = players.gameID AND players.userID = {$userID} WHERE characters.characterID = {$this->characterID} LIMIT 1")->fetch();
+			if ($charUserID == $userID || $isGM) {
 				return 'edit';
-			} else {
-				$gmCheck = $mongo->games->findOne(
-					[
-						'gameID' => $charCheck['game']['gameID'],
-						'players' => ['$elemMatch' => [
-							'user.userID' => $userID,
-							'isGM' => true
-						]]
-					],
-					['projection' => ['_id' => true]]
-				);
-				if ($gmCheck) {
-					return 'edit';
-				}
 			}
-			return $mongo->characters->findOne(['characterID' => $this->characterID, 'library.inLibrary' => true]) ? 'library' : false;
+
+			return $inLibrary ? 'library' : false;
 		}
 
 		public function showSheet() {
@@ -211,23 +194,13 @@
 
 		public function save() {
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
-			$classVars = get_object_vars($this);
-			foreach ($this->mongoIgnore['save'] as $key) {
-				unset($classVars[$key]);
-			}
-			$classVars = array_merge(array('system' => $this::SYSTEM), $classVars);
-			if ($classVars['created'] == null) {
-				$classVars['created'] = genMongoDate();
-			}
+			$classVars = array_merge(array('system' => $this::SYSTEM), get_object_vars($this));
 			try {
-//				array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value))
-//					$value = mb_convert_encoding($value, 'UTF-8');
-//				});
-				$username = $mysql->query("SELECT username FROM users WHERE userID = {$classVars['userID']}")->fetchColumn();
-				$classVars['user'] = ['userID' => $classVars['userID'], 'username' => $username];
-				unset($classVars['userID']);
+				// array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value))
+				// 	$value = mb_convert_encoding($value, 'UTF-8');
+				// });
+
 				$mongo->characters->updateOne(
 					['characterID' => $this->characterID],
 					['$set' => $classVars],

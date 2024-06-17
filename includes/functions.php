@@ -251,13 +251,10 @@ function startSession()
 /* Character Functions */
 function getCharacterClass($characterID)
 {
-	$mongo = DB::conn('mongo');
+	$mysql = DB::conn('mysql');
 
 	$characterID = intval($characterID);
-	$system = $mongo->characters->findOne(
-		['characterID' => $characterID],
-		['projection' => ['system' => true]]
-	)['system'];
+	$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetchColumn();
 
 	return $system ? $system : null;
 }

@@ -443,8 +443,7 @@
 		}
 
 		private function addMentions($post){
-			global $mysql;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$userIds = ThreadManager::getUserIdsFromMentions($post->message);
 
@@ -474,138 +473,125 @@
 			}
 		}
 
-
 		private function addThreadNotification($notificationType, $post){
+			global $currentUser;
+			$mysql = DB::conn('mysql');
 
-			global $mysql, $currentUser, $mongo;
-			$threadIdAsInt = (int)$this->threadID;
+			$threadID = (int) $this->threadID;
 
 			//strip "Re: " if present
-			$postTitle=$post->getTitle();
-			if(substr($postTitle,0,4)=='Re: '){
-				$postTitle=substr($postTitle,4);
+			$postTitle = $post->getTitle();
+			if (substr($postTitle, 0, 4) == 'Re: ') {
+				$postTitle = substr($postTitle, 4);
 			}
 
-			if($notificationType==ThreadNotificationTypeEnum::NEW_POST || $notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT){
+			if ($notificationType == ThreadNotificationTypeEnum::NEW_POST || $notificationType == ThreadNotificationTypeEnum::MAJOR_EDIT) {
 				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadIdAsInt}")->fetchColumn();
 
-				if($discordWebhook){
-					$userAvatar="https://".getenv('APP_URL').User::getAvatar($currentUser->userID);
-					$avatar=$userAvatar;
-					$postAsName=$currentUser->username;
-					$postAsId= $post->getPostAs();
+				if ($discordWebhook) {
+					$userAvatar = "https://" . getenv('APP_URL') . User::getAvatar($currentUser->userID);
+					$avatar = $userAvatar;
+					$postAsName = $currentUser->username;
+					$postAsId = $post->getPostAs();
 
-					if($postAsId && $postAsId!='p'){
-						$charInfo = $mongo->characters->findOne(['characterID' => $postAsId]);
-						if($charInfo){
+					if ($postAsId && $postAsId != 'p') {
+						$cpostAsName = $mysql->query("SELECT name FROM characters WHERE characterID = {$postAsId} LIMIT 1")->fetchColumn();
+						if ($postAsName) {
 							if (file_exists(FILEROOT . "/characters/avatars/{$postAsId}.jpg")) {
-								$avatar="https://".getenv('APP_URL')."/characters/avatars/{$postAsId}.jpg";
+								$avatar = "https://" . getenv('APP_URL') . "/characters/avatars/{$postAsId}.jpg";
 							}
-							$postAsName=$charInfo['name'];
 						}
 					} else {
 						$npc = Post::extractPostingNpc($post->getMessage());
 						if ($npc) {
-							$avatar=$npc["avatar"];
-							$postAsName=$npc["name"];
+							$avatar = $npc["avatar"];
+							$postAsName = $npc["name"];
 						}
 					}
 
-					$in = array(
+					$in = [
 						"/\[quote(?:=\"([\w\.]+?)\")?\](((?R)|.)*?)\[\/quote\]/ms",
 						"/\[snippets=\"?(.*?)\"?\](.*?)\[\/snippets\]/ms",
 						"/\[abilities=\"?(.*?)\"?\](.*?)\[\/abilities\]/ms",
 						"/\[poll=\"?(.*?)?\"([^\]]*)\](.*?)\[\/poll\]/ms"
-						);
-					$out = array('','','','Poll (\1) \3');
-
+					];
+					$out = ['', '', '', 'Poll (\1) \3'];
 
 					$discordMessage = preg_replace($in, $out, $post->getMessage());
+					$discordMessage = ForumSearch::getTextSnippet(Post::extractFullText($discordMessage), 200);
 
-
-
-					$discordMessage=ForumSearch::getTextSnippet(Post::extractFullText($discordMessage),200);
-
-					$data = array(
+					$data = [
 						'username' => $postAsName,
-						'avatar_url'=> $avatar,
-						'embeds'=>array(
-							array(
-								'url'=>'https://'.getenv('APP_URL').'/forums/thread/'.($this->threadID).'/?p='.($post->postID).'#p'.($post->postID),
-								'title'=>$postTitle,
+						'avatar_url' => $avatar,
+						'embeds' => [
+							[
+								'url' => 'https://' . getenv('APP_URL') . "/forums/thread/{$this->threadID}/?p={$post->postID}#p{$post->postID}",
+								'title' => $postTitle,
 								'color' => 13395456, //#cc6600
-								'description'=>$discordMessage,
-								'footer'=> array(
-									'text'=>$currentUser->username.($notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT?" ~ edited post":""),
-									'icon_url'=>$userAvatar
-								)
-							)
-						)
-					);
+								'description' => $discordMessage,
+								'footer' => [
+									'text' => $currentUser->username . ($notificationType == ThreadNotificationTypeEnum::MAJOR_EDIT ? " ~ edited post" : ""),
+									'icon_url' => $userAvatar
+								]
+							]
+						]
+					];
 
-					$options = array(
-						'http' => array(
+					$options = [
+						'http' => [
 							'header'  => "Content-type: application/json\r\n",
 							'method'  => 'POST',
 							'content' => json_encode($data),
 							'ignore_errors' => true
-						)
-					);
+						]
+					];
 
 					set_error_handler(
 						function ($severity, $message, $file, $line) {
 						}
 					);
 					try {
-					$context  = stream_context_create($options);
-					file_get_contents($discordWebhook, false, $context);
+						$context  = stream_context_create($options);
+						file_get_contents($discordWebhook, false, $context);
 					}
-					catch (Exception $e) {
+						catch (Exception $e) {
 					}
-
 					restore_error_handler();
 				}
 
 				return;
 			}
 
-			$gameID=$this->forumManager->forums[$this->thread->forumID]->getGameID();
-			if($gameID){
-				$postIdAsInt = (int)$post->getPostID();
+			$gameID = $this->forumManager->forums[$this->thread->forumID]->getGameID();
+			if ($gameID) {
+				$postID = (int)$post->getPostID();
 
-				$gameInfo = $mongo->games->findOne(
-					['gameID' => $gameID]
-				);
-
-				if($notificationType==ThreadNotificationTypeEnum::MAJOR_EDIT){
+				if ($notificationType == ThreadNotificationTypeEnum::MAJOR_EDIT) {
 					$pull = ['$pull' => [
-						'threadNotifications' => ['postID'=>$postIdAsInt]
-						]
-					];
-				}
-				else if($notificationType==ThreadNotificationTypeEnum::NEW_POST){
+						'threadNotifications' => ['postID'=>$postID]
+					]];
+				} elseif ($notificationType == ThreadNotificationTypeEnum::NEW_POST) {
 					$pull = ['$pull' => [
-						'threadNotifications' => ['threadID'=>$threadIdAsInt,'notificationType'=>$notificationType]
-						]
-					];
+						'threadNotifications' => ['threadID' => $threadIdAsInt, 'notificationType' => $notificationType]
+					]];
 				}
 
-				foreach ($gameInfo['players'] as &$player) {
-					$playerUserId=$player['user']['userID'];
-					if($playerUserId!=$currentUser->userID && $player['approved']){
+				$players = $mysql->query("SELECT * FROM players WHERE gameID = {$gameID}")->fetchAll();
+				foreach ($players as $player) {
+					if ($player['userID'] != $currentUser->userID && $player['approved']){
 
 						//pull previous notifications
 						$mongo->users->updateOne(
-							['userID' => ((int)$playerUserId)],
+							['userID' => ((int)$player['userID'])],
 							$pull
 						);
 
 						$mongo->users->updateOne(
-							['userID' => ((int)$playerUserId)],
+							['userID' => ((int)$player['userID'])],
 							['$push' => [
 								'threadNotifications' => [
 									'threadID' => $threadIdAsInt,
-									'postID' => $postIdAsInt,
+									'postID' => $postID,
 									'forumTitle'=>$this->getForumProperty('title'),
 									'threadTitle' => $postTitle,
 									'notificationType' => $notificationType
