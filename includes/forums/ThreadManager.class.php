@@ -443,7 +443,7 @@
 				}
 
 
-				$upsertNotification = $mysql->query("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
+				$upsertNotification = $mysql->prepare("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
 				foreach ($userIds as $mentionUserId) {
 					$upsertNotification->execute(['userID' => $mentionUserId, 'threadID' => $this->threadID, 'notificationType' => ThreadNotificationTypeEnum::MENTION, 'postID' => $post->getPostID()]);
 				}
@@ -556,7 +556,7 @@
 				$approvedPlayers = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} AND approved = 1")->fetchAll();
 				foreach ($approvedPlayers as $player) {
 					if ($player['userID'] != $currentUser->userID){
-						$upsertNotification = $mysql->query("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
+						$upsertNotification = $mysql->prepare("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
 						$upsertNotification->execute(['userID' => $player['userID'], 'threadID' => $threadIdAsInt, 'notificationType' => $notificationType, 'postID' => $postID]);
 					}
 				}

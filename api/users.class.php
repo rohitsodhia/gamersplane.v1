@@ -164,7 +164,7 @@
 				displayJSON(['failed' => true]);
 			}
 
-			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.system, IF(favorites.userID, 1, 0) isFavorite FROM characters LEFT JOIN characterLibrary_favorites favorites ON characters.characterID = favorites.characterID WHERE (characters.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND characters.isRetired = NULL ORDER BY isFavorite DESC LIMIT 6");
+			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.system, IF(favorites.userID, 1, 0) isFavorite FROM characters LEFT JOIN characterLibrary_favorites favorites ON characters.characterID = favorites.characterID WHERE (characters.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND characters.retired = NULL ORDER BY isFavorite DESC LIMIT 6");
 
 			$characters = [];
 			$hasFavorites = FALSE;
@@ -177,7 +177,7 @@
 				$characters[] = $char;
 			}
 
-			$games = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, TRUE, FALSE) isGM, IF(players.isPlayer, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID WHERE (players.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND games.isRetired = NULL LIMIT 6")->fetchAll();
+			$games = $mysql->query("SELECT games.gameID, games.title, games.forumID, players.isGM, IF(players.userID, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID WHERE (players.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND games.retired = NULL LIMIT 6")->fetchAll();
 
 			usort($games, function($a, $b) {
 				if ($a['isPlayer'] != $b['isPlayer']){
@@ -623,13 +623,13 @@
 		public function removeThreadNotification($postId){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID]} AND postID = {$postId}")
+			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID} AND postID = {$postId}");
 		}
 
 		public function removeAllThreadNotifications(){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID]} AND subscribed_to = 't'");
+			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID} AND subscribed_to = 't'");
 
 		}
 
