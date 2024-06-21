@@ -40,7 +40,7 @@ services:
       - mysql
 
   mysql:
-    image: mysql:8.0
+    image: mysql:8.3
     # build:
     #   context: ./docker/mysql
     #   dockerfile: Dockerfile
