@@ -314,19 +314,12 @@
 				$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
 				if ($gameID) {
 					$checkIsGM = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}")->fetchColumn();
-					if (!$checkIsGM) {
-						$ret = Post::cleanNotes($post->message);
-					}
-					else{
-						$ret = $post->message;
-					}
-				}
-				else{
+					$ret = $checkIsGM ? $post->message : Post::cleanNotes($post->message);
+				} else {
 					$ret = Post::cleanNotes($post->message);
 				}
 
-				$ret='[quote="'.$post->getAuthor('username').'"]'.$ret.'[/quote]';
-
+				$ret = '[quote="' . $post->getAuthor('username') . '"]' . $ret . '[/quote]';
 			}
 
 			return $ret;
@@ -358,13 +351,12 @@
 
 		public function pollVote($postID, $vote, $addVote, $isMulti, $isPublic) {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 			$post = new Post($postID);
 			$threadManager = new ThreadManager($post->getThreadID());
 
-			if ($threadManager->getPermissions('write')){
-
-				if($isMulti){
+			if ($threadManager->getPermissions('write')) {
+				if ($isMulti) {
 					$mongo->threads->updateOne(
 						['threadID' => ((int)$post->getThreadID())],
 						['$pull' => [

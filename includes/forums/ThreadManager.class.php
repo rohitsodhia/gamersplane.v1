@@ -301,22 +301,18 @@
 			<?
 		}
 
-		public function enrichThread(){
-			if($this->thread && $this->thread->forumID==10 && $this->page==1){  //games tavern
+		public function enrichThread() {
+			if ($this->thread && $this->thread->forumID == 10 && $this->page == 1) {  //games tavern
+				$mysql = DB::conn('mysql');
+				$authorId = $mysql->query("SELECT authorId FROM posts WHERE postID = {$this->thread->firstPostID}")->fetchColumn();
 
-				global $mysql;
-				$authorId=$mysql->query("SELECT AuthorId FROM posts WHERE postID = {$this->thread->firstPostID}")->fetchColumn();
-
-				if($authorId){
-					$mongo = DB::conn('mongo');
-					$gameInfo = $mongo->games->findOne(['recruitmentThreadId' => ($this->threadID),
-														'gm.userID' => (int)($authorId)]);
-
-
-					if($gameInfo){
+				if ($authorId) {
+					$gameInfo = $mysql->query("SELECT games.gameID, games.status, games.public, games.system, games.customSystem, games.postFrequency, users.username gmUsername, games.description FROM games INNER JOIN users ON games.gmID = users.userID WHERE games.recruitmentThreadId = {$this->threadID} AND games.gmID = {$authorId} LIMIT 1");
+					if($gameInfo->rowCount()){
+						$gameInfo = $gameInfo->fetch();
 
 						echo "<div class='tavernTags'>";
-						if($gameInfo['status']=='open'){
+						if($gameInfo['status']){
 							echo "<span class='badge badge-gameOpen'>Open</span>";
 						}
 						else{
@@ -326,7 +322,7 @@
 						require_once(FILEROOT . '/includes/Systems.class.php');
 						$systems = Systems::getInstance();
 
-						echo "<span class='badge badge-system badge-system-".$gameInfo['system']."'>".($gameInfo["customType"]?$gameInfo["customType"]:$systems->getFullName($gameInfo['system']))."</span>";
+						echo "<span class='badge badge-system badge-system-".$gameInfo['system']."'>".($gameInfo["customSystem"]?$gameInfo["customSystem"]:$systems->getFullName($gameInfo['system']))."</span>";
 
 						if($gameInfo['public']){
 							echo "<span class='badge badge-gamePrivate'>Private</span>";
@@ -335,9 +331,10 @@
 							echo "<span class='badge badge-gamePublic'>Public</span>";
 						}
 
+						$gameInfo['postFrequency'] = json_decode($gameInfo['postFrequency']);
 						echo "<span class='badge badge-gameFrequency'>".$gameInfo["postFrequency"]["timesPer"]." / ".($gameInfo["postFrequency"]["perPeriod"]=="d"?"day":"week")."</span>";
 
-						echo "<span class='badge badge-gameGm'>".$gameInfo["gm"]["username"]."</span>";
+						echo "<span class='badge badge-gameGm'>".$gameInfo["gmUsername"]."</span>";
 
 						echo "</div>";
 						echo "<div class='tavernGame'>";
@@ -401,10 +398,10 @@
 
 			if (sizeof($matches)) {
 				foreach ($matches as $match) {
-					$checkUsername=rtrim($match[1],".-_ \n\r\t\v\0");
+					$checkUsername = rtrim($match[1],".-_ \n\r\t\v\0");
 					$mentionUserId = $mysql->query("SELECT userID FROM users WHERE username = '{$checkUsername}'")->fetchColumn();
 					if($mentionUserId && !in_array($mentionUserId,$ret)){
-						$ret[] = $mentionUserId;
+						$ret[] = (int) $mentionUserId;
 					}
 				}
 			}
@@ -424,22 +421,12 @@
 							]
 						);
 			*/
-			global $mysql;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$oldMessage = $mysql->query("SELECT message FROM posts WHERE postID = {$post->postID}")->fetchColumn();
 
 			$userIds = ThreadManager::getUserIdsFromMentions($oldMessage);
-
-			foreach ($userIds as $userId) {
-				$mongo->users->updateOne(
-					['userID' => ((int)$userId)],
-					['$pull' => [
-						'threadNotifications' => ['postID'=>((int) $post->getPostID())]
-						]
-					]
-				);
-			}
+			$mysql->query("DELETE FROM forumSubs WHERE subscribed_to = 't' AND postID = {$post->getPostID()} AND userID IN (" . implode(', ', $userIds) . ")");
 		}
 
 		private function addMentions($post){
@@ -456,19 +443,9 @@
 				}
 
 
+				$upsertNotification = $mysql->query("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
 				foreach ($userIds as $mentionUserId) {
-					$mongo->users->updateOne(
-						['userID' => ((int)$mentionUserId)],
-						['$push' => [
-							'threadNotifications' => [
-								'threadID' => (int)$this->threadID,
-								'postID' => ((int) $post->getPostID()),
-								'forumTitle'=>$this->getForumProperty('title'),
-								'threadTitle' => $postTitle,
-								'notificationType' => ThreadNotificationTypeEnum::MENTION
-							]
-						]]
-					);
+					$upsertNotification->execute(['userID' => $mentionUserId, 'threadID' => $this->threadID, 'notificationType' => ThreadNotificationTypeEnum::MENTION, 'postID' => $post->getPostID()]);
 				}
 			}
 		}
@@ -576,28 +553,11 @@
 					]];
 				}
 
-				$players = $mysql->query("SELECT * FROM players WHERE gameID = {$gameID}")->fetchAll();
-				foreach ($players as $player) {
-					if ($player['userID'] != $currentUser->userID && $player['approved']){
-
-						//pull previous notifications
-						$mongo->users->updateOne(
-							['userID' => ((int)$player['userID'])],
-							$pull
-						);
-
-						$mongo->users->updateOne(
-							['userID' => ((int)$player['userID'])],
-							['$push' => [
-								'threadNotifications' => [
-									'threadID' => $threadIdAsInt,
-									'postID' => $postID,
-									'forumTitle'=>$this->getForumProperty('title'),
-									'threadTitle' => $postTitle,
-									'notificationType' => $notificationType
-								]
-							]]
-						);
+				$approvedPlayers = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} AND approved = 1")->fetchAll();
+				foreach ($approvedPlayers as $player) {
+					if ($player['userID'] != $currentUser->userID){
+						$upsertNotification = $mysql->query("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
+						$upsertNotification->execute(['userID' => $player['userID'], 'threadID' => $threadIdAsInt, 'notificationType' => $notificationType, 'postID' => $postID]);
 					}
 				}
 			}

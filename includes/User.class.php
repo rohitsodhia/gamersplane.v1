@@ -36,7 +36,7 @@
 					if ($eMeta['metaKey'] != 'acpPermissions') {
 						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
 					} else {
-						$this->acpPermissions = $eMeta['metaValue'];
+						$this->acpPermissions = unserialize($eMeta['metaValue']);
 					}
 				}
 			} else {
@@ -110,7 +110,6 @@
 
 		public function newUser($username, $password, $email) {
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
 			$this->salt = randomAlphaNum(20);
 			$addUser = $mysql->prepare('INSERT INTO users SET username = :username, password = :password, salt = :salt, email = :email, joinDate = :joinDate');
@@ -121,8 +120,6 @@
 			$addUser->bindValue(':joinDate', date('Y-m-d H:i:s'));
 			$addUser->execute();
 			$this->userID = $mysql->lastInsertId();
-
-			$mongo->users->insertOne(['userID' => (int) $this->userID, 'lfg' => []]);
 
 			if ($this->userID) {
 				return $this->userID;

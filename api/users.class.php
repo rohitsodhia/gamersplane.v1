@@ -507,10 +507,10 @@
 			);
 
 			$activeGames = [];
-			foreach($getActiveGames as $activeGame) {
+			foreach ($getActiveGames as $activeGame) {
 				$title = printReady($activeGame['title']);
 				$system = $activeGame['customSystem'] ? $activeGame['customSystem'] : $systems->getFullName($activeGame['system']);
-				$forumID = (bool) $activeGame['read'] ? $activeGame['forumID'] ? null;
+				$forumID = (bool) $activeGame['read'] ? $activeGame['forumID'] : null;
 				$isGM = (bool) $activeGame['isGM'];
 				$activeGames[] = [
 					'gameID' => $activeGame['gameID'],
@@ -623,26 +623,13 @@
 		public function removeThreadNotification($postId){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-
-			$mongo->users->updateMany(
-				['userID' => $currentUser->userID],
-				['$pull' => [
-					'threadNotifications' => ['postID'=>((int) $postId)]
-				]]
-			);
-
+			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID]} AND postID = {$postId}")
 		}
 
 		public function removeAllThreadNotifications(){
 			global $currentUser;
-			$mongo = DB::conn('mongo');
-
-			$mongo->users->updateMany(
-				['userID' => $currentUser->userID],
-				['$set' => [
-					'threadNotifications' => []
-				]]
-			);
+			$mysql = DB::conn('mysql');
+			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID]} AND subscribed_to = 't'");
 
 		}
 
