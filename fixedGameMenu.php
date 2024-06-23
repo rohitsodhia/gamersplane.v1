@@ -98,7 +98,7 @@
 		if ($gameID) {
 			$where = "games.gameID = {$gameID} AND characters.approved = TRUE";
 			if (!$isGM) {
-				$where .= " AND characters.userID = {$currentUser->userID}"
+				$where .= " AND characters.userID = {$currentUser->userID}";
 			}
 			$characters = $mysql->query("SELECT characterID, system, label, name, userID FROM characters WHERE {$where}");
 			if ($characters->rowCount() && $pathAction != 'characters') {
@@ -130,7 +130,6 @@
 <?php
 			}
 		}
-		foreach ($players)
 		if ($gameID && $pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
 ?>
 			<li><a href="/forums/<?=$game['forumID']?>/" class="menuLink">Forum</a></li>

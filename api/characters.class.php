@@ -66,12 +66,12 @@
 			$searchAutocomplete = $mysql->prepare("SELECT itemID FROM charAutocomplete WHERE searchName = :searchName LIMIT 1");
 			$searchAutocomplete->execute(['searchName' => $searchName]);
 			if (!$searchAutocomplete->rowCount()) {
-				$addUAI = $mysql->prepare("INSERT INTO charAutocomplete SET `type` = :type, `name` = :name, searchName = :searchName, userDefined = :userDefined, approved = 0")
+				$addUAI = $mysql->prepare("INSERT INTO charAutocomplete SET `type` = :type, `name` = :name, searchName = :searchName, userDefined = :userDefined, approved = 0");
 				$addUAI->execute([
-					`type` = $type,
-					`name` = $name,
-					searchName = $searchName,
-					userDefined = $currentUser->userID
+					'type' => $type,
+					'name' => $name,
+					'searchName' => $searchName,
+					'userDefined' => $currentUser->userID
 				]);
 				$itemID = $mysql->lastInsertId();
 			} else {
@@ -125,7 +125,7 @@
 			$systems = Systems::getInstance();
 
 			$conds = [
-				"user.userID = {$currentUser->userID}",
+				"userID = {$currentUser->userID}",
 				"retired IS NULL"
 			];
 			if (isset($_POST['systems'])) {
@@ -145,9 +145,9 @@
 			if (isset($_POST['noGame'])) {
 				$conds[] = "gameID IS NULL";
 			}
-			$getCharacters = $mysql->query("SELECT characterID, label, charType, system, gameID, approved, inLibrary WHERE " . implode(' AND ', $conds));
+			$getCharacters = $mysql->query("SELECT characterID, label, charType, `system`, gameID, approved, inLibrary FROM characters WHERE " . implode(' AND ', $conds));
 			$characters = [];
-			foreach ($rCharacters as $character) {
+			foreach ($getCharacters->fetchAll() as $character) {
 				$character['label'] = printReady($character['label']);
 				$character['system'] = [
 					'short' => printReady($character['system']),
@@ -160,7 +160,7 @@
 			}
 			$return = array('characters' => $characters);
 			if (isset($_POST['library']) && $_POST['library']) {
-				$getUserLibraryChars = $mysql->query("SELECT characters.characterID, characters.label, characters.charType, characters.system, user.userID, user.username FROM characterLibrary_favorites favorites INNER JOIN characters ON favorites.characterID = characters.characterID INNER JOIN users ON characters.userID = users.userID WHERE favorites.userID = {$currentUser->userID}");
+				$getUserLibraryChars = $mysql->query("SELECT characters.characterID, characters.label, characters.charType, characters.system, users.userID, users.username FROM characterLibrary_favorites favorites INNER JOIN characters ON favorites.characterID = characters.characterID INNER JOIN users ON characters.userID = users.userID WHERE favorites.userID = {$currentUser->userID}");
 				$libraryItems = [];
 				foreach ($getUserLibraryChars->fetchAll() as $character) {
 					$character['label'] = printReady($character['label']);
@@ -346,14 +346,14 @@
 			$mysql = DB::conn('mysql');
 
 			$characterID = intval($_POST['characterID']);
-			$charCheck = $mysql->("SELECT characterID FROM characters WHERE characterID = {$characterID}");
+			$charCheck = $mysql->query("SELECT characterID FROM characters WHERE characterID = {$characterID}");
 			if ($charCheck->rowCount()) {
 				try {
 					$mysql->query("INSERT INTO characterLibrary_favorites SET userID = {$currentUser->userID}, characterID = {$characterID}");
 					$state = "favorited";
 				} catch (Exception $e) {
 					if (str_contains($e->getMessage(), 'Integrity constraint violation: 1062')) {
-						$mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID}")
+						$mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID}");
 						$state = "unfavorited";
 					}
 				}
@@ -410,9 +410,9 @@
 				displayJSON(['failed' => true, 'noPermission' => true]);
 			}
 
-			$getNewUAI = $mysql->query("SELECT ac.itemID, ac.name, GROUP_CONCAT(systems.system ORDER BY systems.system SEPARATOR ';') systems FROM charAutocomplete ac LEFT JOIN charAutocomplete_systems systems ON ac.itemID = systems.itemID WHERE action IS NULL GROUP BY ac.itemID")
+			$getNewUAI = $mysql->query("SELECT ac.itemID, ac.name, GROUP_CONCAT(systems.system ORDER BY systems.system SEPARATOR ';') systems FROM charAutocomplete ac LEFT JOIN charAutocomplete_systems systems ON ac.itemID = systems.itemID WHERE action IS NULL GROUP BY ac.itemID");
 			$newItems = [];
-			foreach ( as $item) {
+			foreach ($getNewUAI->fetchAll() as $item) {
 				$item['systems'] = explode(';', $item['systems']);
 				$newItems[] = $item;
 			}
