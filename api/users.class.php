@@ -168,7 +168,7 @@
 
 			$characters = [];
 			$hasFavorites = FALSE;
-			foreach ($getCharacters->fetchAll as $char) {
+			foreach ($getCharacters->fetchAll() as $char) {
 				if ($char['isFavorite']) {
 					$hasFavorites = TRUE;
 				} elseif ($hasFavorites) {

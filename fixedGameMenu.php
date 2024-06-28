@@ -5,8 +5,8 @@
 		$gameID = (int) $gameID;
 		$isUserGM = false;
 		if ($gameID) {
-			$game = $mysql->query("SELECT systems.name AS system, games.forumID, games.public, games.gameOptions FROM games INNER JOIN systems ON games.system = systems.id WHERE games.gameID = {$gameID}")->fetch();
-			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN players.userID = users.userID WHERE player.gameID = {$gameID}");
+			$game = $mysql->query("SELECT systems.name AS `system`, games.forumID, games.public, games.gameOptions FROM games INNER JOIN systems ON games.system = systems.id WHERE games.gameID = {$gameID}")->fetch();
+			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
 			$isGM = $game && $game['gmID'] == $currentUser->userID ? true : false;
 ?>
 <ul style="display:none" id="playerList">
@@ -45,6 +45,7 @@
 			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
 				<li id="fm_diceRoller">
+8
 					<a href="/tools/dice" class="menuLink">Dice Roller</a>
 					<div class="subwindow">
 						<div class="floatLeft">
@@ -96,11 +97,11 @@
 <?php		} ?>
 <?php
 		if ($gameID) {
-			$where = "games.gameID = {$gameID} AND characters.approved = TRUE";
+			$where = "gameID = {$gameID} AND approved = TRUE";
 			if (!$isGM) {
-				$where .= " AND characters.userID = {$currentUser->userID}";
+				$where .= " AND userID = {$currentUser->userID}";
 			}
-			$characters = $mysql->query("SELECT characterID, system, label, name, userID FROM characters WHERE {$where}");
+			$characters = $mysql->query("SELECT characterID, `system`, label, name, userID FROM characters WHERE {$where}");
 			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">

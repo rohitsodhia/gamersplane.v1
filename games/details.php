@@ -5,15 +5,13 @@
 
 	$gameID = intval($pathOptions[0]);
 
-	$gameInfo = $mongo->games->findOne(
-		['gameID' => $gameID],
-		['projection' => ['title' => true, 'description' => true, 'charGenInfo' => true]]
-	);
-	if (!$gameInfo) { header('Location: /games/list/'); exit; }
+	$getGameInfo = $mysql->query("SELECT title, description, charGenInfo FROM games WHERE gameID = {$gameID} LIMIT 1");
+	if (!$getGameInfo->rowCount()) { header('Location: /games/list/'); exit; }
 
+	$gameInfo = $getGameInfo->fetch();
 	$dispatchInfo['title'] = $gameInfo['title'];
 	$dispatchInfo['description'] = ($gameInfo['description'] ? ForumSearch::getMetaAttribute($gameInfo['description']) : 'No description provided.');
-	$favorited = $mongo->gameFavorites->findOne(['userID' => $currentUser->userID, 'gameID' => $gameID]) ? true : false;
+	$favorited = (bool) $mysql->query("SELECT userID FROM games_favorites WHERE userID = {$currentUser->userID} AND gameID = {$gameID} LIMIT 1")->rowCount();
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<div id="sheetActions" class="trapezoid facingUp hbMargined floatRight">
@@ -73,7 +71,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>System</label></div>
-					<div ng-bind-html="details.customType?details.customType:systems[details.system] | trustHTML"></div>
+					<div ng-bind-html="details.customSystem ? details.customSystem : systems[details.system] | trustHTML"></div>
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Allowed Character Sheets</label></div>

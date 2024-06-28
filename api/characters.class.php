@@ -180,10 +180,9 @@
 			$mysql = DB::conn('mysql');
 
 			$errors = [];
+			$systems = Systems::getInstance();
 			$system = $_POST['system'];
-			$validSystem = $mysql->prepare("SELECT id FROM systems WHERE ID = ?");
-			$validSystem->execute($system);
-			if (!$validSystem->rowCount()) {
+			if (!$systems->verifySystem($system)) {
 				$errors[] = 'invalidSystem';
 			}
 			$label = sanitizeString($_POST['label']);
@@ -203,7 +202,7 @@
 				$newChar = new $charClass();
 				$newChar->setLabel($label);
 				$newChar->setCharType($charType);
-				$newChar->createNew();
+				$newChar->save();
 #				$hl_charCreated = new HistoryLogger('characterCreated');
 #				$hl_charCreated->addCharacter($characterID, false)->save();
 
@@ -249,10 +248,9 @@
 				]);
 			}
 
-			$systemCheck = $mysql->query("SELECT system FROM characters WHERE {$characterID}");
+			$systemCheck = $mysql->query("SELECT `system` FROM characters WHERE {$characterID}");
 			if ($systemCheck->rowCount()) {
-				$systemCheck = $systemCheck->fetch();
-				$system = $systemCheck['system'];
+				$system = $systemCheck->fetchColumn();
 				addPackage($system.'Character');
 				$charClass = Systems::systemClassName($system).'Character';
 				if ($character = new $charClass($characterID)) {
@@ -279,13 +277,11 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$systemCheck = $mysql->query("SELECT system FROM characters WHERE {$characterID}");
+			$systemCheck = $mysql->query("SELECT `system` FROM characters WHERE {$characterID}");
 			if (!$systemCheck->rowCount()) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
-			$systemCheck = $systemCheck->fetch();
-			$system = $systemCheck['system'];
-
+			$system = $systemCheck->fetchColumn();
 			$systems = Systems::getInstance();
 			addPackage($system.'Character');
 			$charClass = Systems::systemClassName($system).'Character';
@@ -529,7 +525,7 @@
 					$text = $character->getNotes();
 					$text = $updateFn($text);
 					$character->setNotes($text);
-					$character->saveCharacter();
+					$character->save();
 
 					if($returnNotes){
 						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID, 'notes' => printReady(BBCode2Html($text),['nl2br'])]);

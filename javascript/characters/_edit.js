@@ -86,7 +86,7 @@ $(function () {
 		};
 		setupItemized($('#feats'));
 
-		$('#feats').on('click', '.notesLink', function(e) {
+		$('#feats').on('click', '.notesLink', function (e) {
 			e.preventDefault();
 
 			$(this).siblings('textarea').slideToggle();
@@ -98,7 +98,7 @@ $(function () {
 		$('#addWeapon').click(function (e) {
 			e.preventDefault();
 
-			$.post('/characters/ajax/addWeapon/', { system: system, weaponNum: ++weaponCount }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); } );
+			$.post('/characters/ajax/addWeapon/', { system: system, weaponNum: ++weaponCount }, function (data) { $(data).hide().appendTo('#weapons > div').slideDown(); });
 		});
 	}
 	if ($('#addArmor').length) {
@@ -106,7 +106,7 @@ $(function () {
 		$('#addArmor').click(function (e) {
 			e.preventDefault();
 
-			$.post('/characters/ajax/addArmor/', { system: system, armorNum: ++armorCount }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); } );
+			$.post('/characters/ajax/addArmor/', { system: system, armorNum: ++armorCount }, function (data) { $(data).hide().appendTo('#armor > div').slideDown(); });
 		});
 	}
 
@@ -131,7 +131,7 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 			if (typeof blanks != 'undefined') {
 				CharactersService.loadBlanks($scope.character, blanks);
 			}
-			$(document).trigger('gp.characterloaded',$scope.character);
+			$(document).trigger('gp.characterloaded', $scope.character);
 		});
 	};
 	$scope.addItem = function (key) {
@@ -146,9 +146,9 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 		$($event.target).siblings('textarea').slideToggle();
 	};
 	$scope.save = function ($event) {
-		CharactersService.save($scope.character.characterID, $scope.character).then(function (data) {
+		CharactersService.save(characterID, $scope.character).then(function (data) {
 			if (data.saved) {
-				if($($event.originalEvent.submitter).hasClass('dontExit')){
+				if ($($event.originalEvent.submitter).hasClass('dontExit')) {
 					window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/edit/';
 				} else {
 					window.location = '/characters/' + pathElements[1] + '/' + pathElements[2] + '/';

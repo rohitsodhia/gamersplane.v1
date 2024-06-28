@@ -14,10 +14,6 @@
 				$this->setNotes($data->notes);
 			}
 
-			$this->saveCharacter();
-		}
-
-		public function saveCharacter(){
 			parent::save();
 		}
 	}

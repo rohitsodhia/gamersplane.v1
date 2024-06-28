@@ -4,44 +4,21 @@
 		$playerID = intval($_POST['playerID']);
 		$pendingAction = $_POST['pendingAction'] == 'approve' ? 'approve' : 'reject';
 
-		$groupID = $mongo->games->findOne(
-			[
-				'gameID' => $gameID,
-				'players' => ['$elemMatch' => [
-					'user.userID' => $currentUser->userID,
-					'isGM' => true
-				]]
-			],
-			['projection' => ['groupID' => true]]
-		);
+		$getGame = $mysql->query("SELECT games.groupID FROM games INNER JOIN players gmCheck ON games.gameID = gmCheck.gameID INNER JOIN players playerCheck ON gamers.gameID = playerCheck.gameID WHERE games.gameID = {$gameID} AND gmCheck.userID = {$currentUser->userID} AND gmCheck.isGM = 1 AND playerCheck.userID = {$playerID} LIMIT 1");
 
-		if (!$groupID) {
+		if (!$getGame->rowCount()) {
 			if (isset($_POST['modal'])) {
 				displayJSON(['failed' => true, 'errors' => ['noPlayer']]);
 			} else {
 				header("Location: /games/{$gameID}/?approveError=1");
 			}
 		} else {
-			$groupID = $groupID['groupID'];
+			$groupID = $getGame->fetchColumn();
 			if ($pendingAction == 'approve') {
-				$mongo->games->updateOne(
-					[
-						'gameID' => $gameID,
-						'players' => ['$elemMatch' => [
-							'user.userID' => $playerID
-						]]
-					],
-					['$set' => ['players.$.approved' => true]]
-				);
+				$mysql->query("UPDATE players SET approved = 1 WHERE gameID = {$gameID} AND userID = {$playerID} LIMIT 1");
 				$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$groupID}, userID = {$playerID}");
 			} else {
-				$mongo->games->updateOne(
-					['gameID' => $gameID],
-					['$pull' => ['players' => ['user.userID' => $playerID]]]
-				);
-			}
-#			$hl_playerApplied = new HistoryLogger($pendingAction == 'approve'?'playerApproved':'playerRejected');
-#			$hl_playerApplied->addUser($playerID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
+				$mysql->query("DELETE FROM players WHERE gameID = {$gameID} AND userID = {$playerID} LIMIT 1");
 
 			if (isset($_POST['modal'])) {
 				displayJSON(['success' => true, 'action' => $pendingAction, 'userID' => $playerID]);

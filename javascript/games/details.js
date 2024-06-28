@@ -4,7 +4,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		CurrentUser = CurrentUser.get();
 		$scope.ngInterface = '';
 		$scope.skewedOut = {};
-		$scope.loggedIn = !CurrentUser || CurrentUser.loggedOut?false:true;
+		$scope.loggedIn = !CurrentUser || CurrentUser.loggedOut ? false : true;
 		$scope.CurrentUser = CurrentUser;
 		$scope.systems = [];
 		$scope.deckTypes = {};
@@ -31,7 +31,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		setGameData = function () {
 			$scope.$emit('pageLoading');
-			SystemsService.get({ 'getAll': true, 'fields': ['hasCharSheet'] }).then(function (data) {
+			SystemsService.get({ 'getAll': true }).then(function (data) {
 				data.systems.forEach(function (val) {
 					$scope.systems[val.shortName] = val.fullName;
 				});
@@ -43,9 +43,9 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					$scope.players = data.players;
 					$scope.invites.pending = data.invites;
 					$scope.decks = data.decks;
-					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
+					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0 ? true : false;
 					$scope.details.playersInGame = $scope.players.length - 1;
-					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: CurrentUser?CurrentUser.userID:0 }, true).length  == 1?true:false;
+					$scope.pendingInvite = $filter('filter')($scope.invites.pending, { userID: CurrentUser ? CurrentUser.userID : 0 }, true).length == 1 ? true : false;
 					var addAvilChars = function (data) {
 						$scope.characters = data.characters;
 						for (var key in $scope.characters)
@@ -56,7 +56,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 						if (CurrentUser && $scope.players[key].user.userID == CurrentUser.userID) {
 							$scope.inGame = true;
 							$scope.curPlayer = $scope.players[key];
-							$scope.approved = $scope.curPlayer.approved?true:false;
+							$scope.approved = $scope.curPlayer.approved ? true : false;
 							if ($scope.curPlayer.isGM)
 								$scope.isGM = true;
 
@@ -76,10 +76,10 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							break;
 						}
 					}
-					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID )
+					if (CurrentUser && $scope.details.gm.userID == CurrentUser.userID)
 						$scope.isPrimaryGM = true;
 				} //else
-//					window.location = '/games/';
+				//					window.location = '/games/';
 				$scope.$emit('pageLoading');
 			});
 		};
@@ -88,7 +88,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.toggleGameStatus = function () {
 			GamesService.toggleGameStatus($scope.gameID).then(function (data) {
 				if (data.success)
-					$scope.details.status = $scope.details.status == 'open'?'closed':'open';
+					$scope.details.status = $scope.details.status == 'open' ? 'closed' : 'open';
 			});
 		};
 		$scope.toggleForum = function () {
@@ -138,7 +138,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 					}
 					if (newVal.playerID == CurrentUser.userID)
 						$scope.inGame = false;
-					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0?true:false;
+					$scope.playersAwaitingApproval = $filter('filter')($scope.players, { approved: false }).length > 0 ? true : false;
 					break;
 				case 'playerRemoved':
 					for (key in $scope.players) {
@@ -196,7 +196,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.searchForUsers = function (search, userId) {
 			if (search.length < 3) {
 				$scope.invites.users = {};
-			} else  {
+			} else {
 				ACSearch.users(search, true).then(function (data) {
 					for (var key in data) {
 						data[key] = {
@@ -231,7 +231,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			).success(function (data) {
 				if (data.failed && data.errors && data.errors.indexOf('invalidUser') != -1) {
 					$scope.invites.errorMsg = 'Invalid user';
-//					$timeout(function () { $scope.invites.errorMsg = null; }, 1000);
+					//					$timeout(function () { $scope.invites.errorMsg = null; }, 1000);
 				} else if (data.success) {
 					$scope.invites.errorMsg = null;
 					$scope.invites.user = null;

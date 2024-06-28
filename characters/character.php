@@ -10,7 +10,7 @@
 			$active = $character->load();
 			if ($active) {
 				$getAngular = $mysql->prepare("SELECT angular FROM systems WHERE id = ?");
-				$getAngular->execute(SYSTEM);
+				$getAngular->execute([SYSTEM]);
 				$angular = $getAngular->fetchColumn();
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'viewCharacter';
@@ -38,7 +38,7 @@
 	} else { header('Location: /404/'); exit; }
 ?>
 <?php
-	if(SYSTEM=='custom'){$responsivePage=true;}
+	if (SYSTEM == 'custom') { $responsivePage = true; }
 
 	require_once(FILEROOT.'/header.php'); ?>
 <?php	if (!$noChar) { ?>

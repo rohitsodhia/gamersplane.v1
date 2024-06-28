@@ -1,34 +1,15 @@
 <?php
 	$gameID = intval($pathOptions[0]);
-	$game = $mongo->games->findOne(['gameID' => $gameID], ['projection' => ['gm' => true, 'players' => true, 'decks' => true]]);
-	$gmCheck = false;
-	foreach ($game['players'] as $player) {
-		if ($player['user']['userID'] == $currentUser->userID) {
-			if ($player['isGM']) {
-				$gmCheck = true;
-			}
-			break;
-		}
-	}
-	if (!$gmCheck) { header('Location: /tools/decks/'); exit; }
-
+	$deckID = intval($pathOptions[2]);
 	$action = $pathOptions[3];
+
+	$getDeck = $mysql->query("SELECT decks.label, decks.type FROM games INNER JOIN players ON games.gameID = players.gameID INNER JOIN decks ON games.gameID = decks.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 AND decks.deckID = {$deckID} LIMIT 1");
+	if (!$getDeck->rowCount()) { header('Location: /tools/decks/'); exit; }
+
+	$deck = $getDeck->fetch();
 	require_once('includes/DeckTypes.class.php');
 	$deckTypes = DeckTypes::getInstance()->getAll();
-	$permissions = [];
-	if ($action == 'edit') {
-		$deck = [];
-		$deckID = intval($pathOptions[2]);
-		foreach ($game['decks'] as $iDeck) {
-			if ($iDeck['deckID'] == $deckID) {
-				$deck = $iDeck;
-				break;
-			}
-		}
-		foreach ($deck['permissions'] as $user) {
-			$permissions[] = $user['userID'];
-		}
-	}
+	$getPlayers = $mysql->query("SELECT users.userID, users.username, players.isGM, IF(deckPermissions.userID, 1, 0) hasPermission FROM players INNER JOIN users ON players.userID = users.userID LEFT JOIN deckPermissions ON players.userID = deckPermissions.userID WHERE players.gameID = {$gameID} AND deckPermissions.deckID = {$deckID}");
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($action)?> Deck</h1>
@@ -50,7 +31,7 @@
 				<div class="inputCol">
 <?php
 	foreach ($deckTypes as $deckType) {
-		echo "\t\t\t\t\t" . '<p><input type="radio" name="deckType" value="' . $deckType['_id'] . '"' . ($deck['type'] == $deckType['_id'] ? ' checked="checked"' : '') . '>' . $deckType['name'] . "</p>\n";
+		echo "\t\t\t\t\t" . '<p><input type="radio" name="deckType" value="' . $deckType['id'] . '"' . ($deck['type'] == $deckType['id'] ? ' checked="checked"' : '') . '>' . $deckType['name'] . "</p>\n";
 	}
 ?>
 				</div>
@@ -61,10 +42,10 @@
 				<a id="uncheckAll" href="">[ Uncheck All ]</a>
 			</div>
 			<div id="users" class="clearfix">
-<?php	foreach ($game['players'] as $player) { ?>
+<?php	foreach ($getPlayers->fetchAll() as $player) { ?>
 				<div class="tr user">
-					<input type="checkbox" name="addUser[<?=$player['user']['userID']?>]"<?=(in_array($player['user']['userID'], $permissions) || $player['user']['userID'] == $game['gm']['userID'] ? ' checked="checked"' : '') . ($player['user']['userID'] == $game['gm']['userID'] ? ' data-disabled="disabled"' : '')?>>
-					<label><?=$player['user']['username']?></label>
+					<input type="checkbox" name="addUser[<?=$player['userID']?>]"<?=($player['hasPermission'] || $player['isGM'] ? ' checked="checked"' : '') . ($player['isGM'] ? ' data-disabled="disabled"' : '')?>>
+					<label><?=$player['username']?></label>
 				</div>
 <?php	} ?>
 			</div>

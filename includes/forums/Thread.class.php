@@ -158,8 +158,8 @@
 			return $this->poll->$key;
 		}
 
-		public function savePoll($theadID = null) {
-			$this->poll->savePoll($theadID);
+		public function savePoll($threadID = null) {
+			$this->poll->savePoll($threadID);
 		}
 
 		public function deletePoll() {

@@ -81,6 +81,7 @@
 				<ul>
 <?php
 		foreach ($threadManager->getPollProperty('options') as $pollOptionID => $option) {
+			echo "					<li>\n";
 			if ($allowVote) {
 				if ($threadManager->getPollProperty('optionsPerUser') == 1) {
 					echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"" . ($option->voted ? ' checked="checked"' : '') . "></div>\n";
@@ -355,21 +356,25 @@
 		</div>
 
 <?php
-	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
+	if (
+		($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) ||
+		$threadManager->getPermissions('moderate')
+	) {
 		$characters = [];
 		$playerCharacters = [];
 		if ($gameID) {
-		$getCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
-		$characters = [];
-		foreach ($getCharacters->fetchAll() as $character) {
-			$characters[$character['characterID']] = $character['name'];
-		}
+			$getCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+			$characters = [];
+			foreach ($getCharacters->fetchAll() as $character) {
+				$characters[$character['characterID']] = $character['name'];
+			}
 
-		$pcCharacters = [];
-		if ($isGM) {
-			$getPCCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
-			foreach ($getPCCharacters->fetchAll() as $character) {
-				$pcCharacters[$character['characterID']] = $character['name'];
+			$pcCharacters = [];
+			if ($isGM) {
+				$getPCCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+				foreach ($getPCCharacters->fetchAll() as $character) {
+					$pcCharacters[$character['characterID']] = $character['name'];
+				}
 			}
 		}
 

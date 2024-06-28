@@ -172,32 +172,4 @@ function sql_forumIDPad($forumID)
 	return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
 }
 
-function mongo_getNextSequence($key)
-{
-	$mongo = DB::conn('mongo');
-
-	$counter = $mongo->counters->findOneAndUpdate(
-		['_id' => $key],
-		['$inc' => ['seq' => 1]],
-		['returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER]
-	);
-
-	return $counter['seq'];
-}
-
-function genMongoId($id = null)
-{
-	return new MongoDB\BSON\ObjectID($id);
-}
-
-function genMongoDate($seconds = null)
-{
-	return new MongoDB\BSON\UTCDateTime($seconds ? $seconds * 1000 : null);
-}
-
-function getMongoSeconds($mongoDateTime)
-{
-	return $mongoDateTime->toDateTime()->getTimestamp();
-}
-
 /* Character Functions */

@@ -134,15 +134,16 @@ class games
 		if (!$gameID) {
 			displayJSON(['failed' => true]);
 		}
-		$gameInfo = $mysql->query("SELECT games.gameID, games.title, games.customSystem, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity, games.created, games.start, games.end, games.postFrequency, games.numPlayers, games.charsPerPlayer, games.description, games.charGenInfo, games.forumID, games.groupID, games.status, games.public, games.retired, games.allowedCharSheets, games.gameOptions, games.recruitmentThreadId INNER JOIN users gm ON games.gmID = gm.userID WHERE games.gameID = {$gameID} LIMIT 1");
+		$gameInfo = $mysql->query("SELECT games.gameID, games.title, games.customSystem, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity, games.created, games.start, games.end, games.postFrequency, games.numPlayers, games.charsPerPlayer, games.description, games.charGenInfo, games.forumID, games.groupID, games.status, games.public, games.retired, games.allowedCharSheets, games.gameOptions, games.recruitmentThreadId FROM games INNER JOIN users gm ON games.gmID = gm.userID WHERE games.gameID = {$gameID} LIMIT 1");
 		if (!$gameInfo->rowCount()) {
 			displayJSON(['failed' => true, 'noGame' => true]);
 		}
+		$gameInfo = $gameInfo->fetch();
 		$gameInfo['readPermissions'] = $mysql->query("SELECT `read` FROM forums_permissions_general WHERE forumID = {$gameInfo['forumID']} LIMIT 1")->fetchColumn();
 		$gameInfo['readPermissions'] = (bool)$gameInfo['readPermissions'];
 		$gameInfo['gm'] = [
-			'userID' => $gameInfo['userID'],
-			'username' => $gameInfo['username'],
+			'userID' => $gameInfo['gmID'],
+			'username' => $gameInfo['gmUsername'],
 			'lastActivity' => $gameInfo['lastActivity']
 		];
 		unset($gameInfo['userID'], $gameInfo['username'], $gameInfo['lastActivity']);
@@ -151,21 +152,11 @@ class games
 		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
 		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? $gameInfo['charGenInfo'] : 'None Provided';
 		$gameInfo['approvedPlayers'] = 0;
-		$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
-		$gameInfo['players'] = [];
-		foreach ($players->fetchAll() as $player) {
-			$gameInfo['players'][] = [
-				'user' => [
-					'userID' => $player['userID'],
-					'username' => printReady($player['username'])
-				],
-				'approved' => $player['approved'],
-				'isGM' => $player['isGM'],
-				'primaryGM' => $player['userID'] == $gameInfo['gmID']
-			];
-			if ($player['approved'] && $player['userID'] != $gameInfo['gmID']) {
-				$gameInfo['approvedPlayers']++;
-			}
+		if (strlen($gameInfo['customSystem'])) {
+			unset($gameInfo['customSystem']);
+		}
+		foreach (['allowedCharSheets', 'postFrequency'] as $jsonKey) {
+			$gameInfo[$jsonKey] = json_decode($gameInfo[$jsonKey]);
 		}
 
 		$getDecks = $mysql->query("SELECT deckID, label, deck, position FROM decks WHERE gameID = {$gameID}");
@@ -181,7 +172,7 @@ class games
 			}
 		}
 
-		$getPlayers = $mysql->query("SELECT players.userID, user.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE gameID = {$gameID}");
+		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE gameID = {$gameID}");
 		$players = [];
 		$playerIDs = [];
 		foreach ($getPlayers->fetchAll() as $player) {
@@ -195,8 +186,11 @@ class games
 				'characters' => []
 			];
 			$playerIDs[] = $player['userID'];
+			if ($player['approved'] && $player['userID'] != $gameInfo['gmID']) {
+				$gameInfo['approvedPlayers']++;
+			}
 		}
-		$getCharacters = $mysql->query("SELECT charcterID, userID, label, approved FROM characters WHERE userID IN (". implode(', ', $playerIDs) .")");
+		$getCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} AND userID IN (". implode(', ', $playerIDs) .")");
 		$characters = [];
 		foreach ($getCharacters->fetchAll() as $character) {
 			$userID = $character['userID'];
@@ -243,10 +237,10 @@ class games
 				$errors[] = 'noCharSheets';
 			}
 		}
-		$details['postFrequency'] = json_encode([
+		$details['postFrequency'] = [
 			'timesPer' => intval($_POST['postFrequency']->timesPer),
 			'perPeriod' => $_POST['postFrequency']->perPeriod
-		]);
+		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
 		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
@@ -256,19 +250,19 @@ class games
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		if ($_POST['system'] == "custom") {
-			$details['customType'] = sanitizeString($_POST['customType']);
+			$details['customSystem'] = sanitizeString($_POST['customType']);
 		}
 
-		$gameOptions = trim($_POST['gameOptions']?:"");
+		$gameOptions = trim($_POST['gameOptions'] ?: "");
 		$gameOptions = str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
-		$jsonTest = json_decode($gameOptions);
-		if ($gameOptions=="" || json_last_error() === 0) {
+		json_decode($gameOptions);
+		if ($gameOptions != "" || json_last_error() === 0) {
 			// JSON is valid
-			$details['gameOptions'] = json_encode($gameOptions);
+			$details['gameOptions'] = $gameOptions;
 		}
 
-		$details['status'] = false;
-		$details['public'] = true;
+		$details['status'] = 0;
+		$details['public'] = 1;
 
 		/*			$titleCheck = $mysql->prepare('SELECT gameID FROM games WHERE title = :title'.(isset($_POST['save'])?' AND gameID != '.$gameID:''));
 			$titleCheck->execute(array(':title' => $details['title']));
@@ -287,13 +281,16 @@ class games
 		if (sizeof($errors)) {
 			displayJSON(['failed' => true, 'errors' => $errors]);
 		} else {
+			$details['postFrequency'] = json_encode($details['postFrequency']);
+			$details['allowedCharSheets'] = json_encode($details['allowedCharSheets']);
 			$details['gmID'] = $currentUser->userID;
-			$details['decks'] = [];
+			$details['forumID'] = -1;
+			$details['groupID'] = -1;
 
 			$inserts = array_map(function ($value) {
-				return "`{$value}` => :{$value}";
-			}, $details);
-			$insertGame = $mysql->prepare("INSERT INTO GAMES SET " . implode(', ', $inserts) . ", `created` = NOW(), `start` = NOW()");
+				return "`{$value}` = :{$value}";
+			}, array_keys($details));
+			$insertGame = $mysql->prepare("INSERT INTO games SET " . implode(', ', $inserts) . ", `created` = NOW(), `start` = NOW()");
 			$insertGame->execute($details);
 			$gameID = $mysql->lastInsertId();
 
@@ -310,11 +307,11 @@ class games
 			$addForumGroup->execute(['title' => $details['title']]);
 			$groupID = $mysql->lastInsertId();
 
-			$mysql->query('INSERT INTO forums_groupMemberships (groupID, userID) VALUES (' . $groupID . ', ' . $currentUser->userID . ')');
+			$mysql->query("INSERT INTO forums_groupMemberships (groupID, userID) VALUES ({$groupID}, {$currentUser->userID})");
 
-			$mysql->query('INSERT INTO forumAdmins (userID, forumID) VALUES(' . $currentUser->userID . ', ' . $forumID . ')');
-			$mysql->query('INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES (' . $groupID . ', ' . $forumID . ', 2, 2, 2, 2, 2, 2, 2)');
-			$mysql->query("INSERT INTO forums_permissions_general SET forumID = $forumID");
+			$mysql->query("INSERT INTO forumAdmins (userID, forumID) VALUES({$currentUser->userID}, {$forumID})");
+			$mysql->query("INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ({$groupID}, {$forumID}, 2, 2, 2, 2, 2, 2, 2)");
+			$mysql->query("INSERT INTO forums_permissions_general SET forumID = {$forumID}");
 
 			$mysql->query("UPDATE games SET forumID = {$forumID}, groupID = {$groupID} WHERE gameID = {$gameID} LIMIT 1");
 
@@ -371,10 +368,10 @@ class games
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 
-		if($_POST['system']=="custom"){
-			$details['customType'] = sanitizeString($_POST['customType']);
+		if($_POST['system'] == "custom"){
+			$details['customSystem'] = sanitizeString($_POST['customType']);
 		} else {
-			$details['customType'] = null;
+			$details['customSystem'] = null;
 		}
 
 		$gameOptions = trim($_POST['gameOptions'] ?: "");
@@ -383,6 +380,8 @@ class games
 		if ($gameOptions == "" || json_last_error() === 0) {
 			// JSON is valid
 			$details['gameOptions'] = $gameOptions;
+		} else {
+			$details['gameOptions'] = '{}';
 		}
 
 		$errors = [];

@@ -28,7 +28,7 @@
 				$reqFields = $_POST['fields'];
 				if (!array_diff($reqFields, $validFields)) {
 					$fields = $reqFields;
-					$selectFields = implode(', ', str_repeat('?', count($fields)));
+					$selectFields = substr(str_repeat('?, ', count($fields)), 0, -2);
 				}
 			}
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
@@ -49,14 +49,13 @@
 			];
 			$boolFields = ['angular', 'enabled', 'hasCharSheet'];
 			unset($fields['name']);
-			$rSystems = $getSystems->fetchAll();
-			foreach ($rSystems as $rSystem) {
+			foreach ($getSystems->fetchAll() as $rSystem) {
 				$system = array_merge($defaults, $rSystem, [
 					'shortName' => $rSystem['id'],
 					'fullName' => $rSystem['name']
 				]);
 				foreach (array_keys($defaults) as $jsonKey) {
-					$system[$jsonKey] = json_decode($system[$jsonKey], true);
+					$system[$jsonKey] = $system[$jsonKey];
 				}
 				foreach ($boolFields as $boolKey) {
 					$system[$boolKey] = $system[$boolKey] == "1";
@@ -75,17 +74,13 @@
 		}
 
 		public function getGenres() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$genres = [];
-			$rSystem = $mongo->systems->find(
-				['genres' => [
-					'$not' => ['$size' => 0]
-				]],
-				['projection' => ['_id' => -1, 'genres' => 1]]
-			);
-			foreach ($rSystem as $system) {
-				foreach ($system['genres'] as $genre) {
+			$getSystem = $mysql->query("SELECT genres FROM systems");
+			foreach ($getSystem->fetchAll() as $system) {
+				$genres = json_decode($system['genres']);
+				foreach ($genres as $genre) {
 					$genres[] = $genre;
 				}
 			}

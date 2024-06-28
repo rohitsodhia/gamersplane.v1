@@ -196,16 +196,16 @@
 		public function saveThread($post, $majorEdit = false) {
 			global $mysql;
 
-			$newPost=!($post->getPostID());
+			$newPost = !($post->getPostID());
 
-			if(!$newPost){
+			if (!$newPost) {
 				$this->removeOldMentions($post);
 			}
 
 			if ($this->threadID == null) {
-				$stmt=$mysql->prepare("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1, publicPosting = ".($this->thread->getStates('publicPosting',true)?1:0).", discordWebhook = :discordWebhook");
-				$stmt->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
-				$stmt->execute();
+				$insertThread = $mysql->prepare("INSERT INTO threads SET forumID = {$this->thread->forumID}, sticky = ".$this->thread->getStates('sticky', true).", locked = ".$this->thread->getStates('locked', true).", allowRolls = ".$this->thread->getAllowRolls(true).", allowDraws = ".$this->thread->getAllowDraws(true).", postCount = 1, publicPosting = ".($this->thread->getStates('publicPosting',true)?1:0).", discordWebhook = :discordWebhook, firstPostID = -1, lastPostID = -1");
+				$insertThread->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
+				$insertThread->execute();
 				$this->threadID = $mysql->lastInsertId();
 
 				$post->setThreadID($this->threadID);
@@ -215,11 +215,10 @@
 				$mysql->query("UPDATE forums SET threadCount = threadCount + 1 WHERE forumID = {$this->thread->forumID}");
 
 				$this->updateLastRead($postID);
-
 			} else {
-				$stmt=$mysql->prepare("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0).", publicPosting = ".($this->thread->getStates('publicPosting')?1:0).", discordWebhook = :discordWebhook WHERE threadID = ".$this->threadID);
-				$stmt->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
-				$stmt->execute();
+				$updateThread = $mysql->prepare("UPDATE threads SET forumID = {$this->thread->forumID}, sticky = ".($this->thread->getStates('sticky')?1:0).", locked = ".($this->thread->getStates('locked')?1:0).", allowRolls = ".($this->thread->getAllowRolls()?1:0).", allowDraws = ".($this->thread->getAllowDraws()?1:0).", publicPosting = ".($this->thread->getStates('publicPosting')?1:0).", discordWebhook = :discordWebhook WHERE threadID = ".$this->threadID);
+				$updateThread->bindValue(':discordWebhook', $this->getThreadProperty('discordWebhook'));
+				$updateThread->execute();
 
 				$postID = $post->savePost();
 
@@ -229,7 +228,6 @@
 
 				$this->updatePostCount();
 				$this->updateLastRead($postID);
-
 			}
 
 			$this->thread->savePoll($this->threadID);
@@ -410,17 +408,6 @@
 		}
 
 		private function removeOldMentions($post){
-
-			//It is possible that this can simply be replaced with the code below - but without indexes I'm leery of performance
-			/*
-						$mongo->users->updateMany(
-							[],
-							['$pull' => [
-								'mentions' => ['postID'=>((int) $this->postID)]
-								]
-							]
-						);
-			*/
 			$mysql = DB::conn('mysql');
 
 			$oldMessage = $mysql->query("SELECT message FROM posts WHERE postID = {$post->postID}")->fetchColumn();
@@ -463,7 +450,7 @@
 			}
 
 			if ($notificationType == ThreadNotificationTypeEnum::NEW_POST || $notificationType == ThreadNotificationTypeEnum::MAJOR_EDIT) {
-				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadIdAsInt}")->fetchColumn();
+				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadID}")->fetchColumn();
 
 				if ($discordWebhook) {
 					$userAvatar = "https://" . getenv('APP_URL') . User::getAvatar($currentUser->userID);
@@ -549,7 +536,7 @@
 					]];
 				} elseif ($notificationType == ThreadNotificationTypeEnum::NEW_POST) {
 					$pull = ['$pull' => [
-						'threadNotifications' => ['threadID' => $threadIdAsInt, 'notificationType' => $notificationType]
+						'threadNotifications' => ['threadID' => $threadID, 'notificationType' => $notificationType]
 					]];
 				}
 
@@ -557,7 +544,7 @@
 				foreach ($approvedPlayers as $player) {
 					if ($player['userID'] != $currentUser->userID){
 						$upsertNotification = $mysql->prepare("INSERT INTO forumSubs SET userID = :userID, subscribed_to = 't', ID = :threadID, `type` = :notificationType, postID = :postID ON DUPLICATE KEY UPDATE `type` = :notificationType, postID = :postID");
-						$upsertNotification->execute(['userID' => $player['userID'], 'threadID' => $threadIdAsInt, 'notificationType' => $notificationType, 'postID' => $postID]);
+						$upsertNotification->execute(['userID' => $player['userID'], 'threadID' => $threadID, 'notificationType' => $notificationType, 'postID' => $postID]);
 					}
 				}
 			}

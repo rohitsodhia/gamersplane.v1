@@ -16,8 +16,8 @@
 		protected $notes;
 
 		protected $linkedTables = [];
-		protected $mongoIgnore = [
-			'save' => ['bodyClasses', 'linkedTables', 'mongoIgnore'],
+		protected $dbIgnore = [
+			'save' => ['approved', 'bodyClasses', 'charType', 'characterID', 'created', 'dbIgnore', 'game', 'gameID', 'inLibrary', 'label', 'library', 'libraryViews', 'linkedTables', 'name', 'retired', 'userID'],
 			'load' => ['_id', 'system', 'user']
 		];
 
@@ -104,12 +104,12 @@
 				$userID = intval($userID);
 			}
 
-			list($charUserID, $gameID, $inLibrary, $isGM) = $mysql->query("SELECT characters.userID, characters.gameID, characters.inLibrary, players.isGM FROM characters LEFT JOIN players ON characters.gameID = players.gameID AND players.userID = {$userID} WHERE characters.characterID = {$this->characterID} LIMIT 1")->fetch();
-			if ($charUserID == $userID || $isGM) {
+			$charInfo = $mysql->query("SELECT characters.userID, characters.inLibrary, players.isGM FROM characters LEFT JOIN players ON characters.gameID = players.gameID AND players.userID = {$userID} WHERE characters.characterID = {$this->characterID} LIMIT 1")->fetch();
+			if ($charInfo['userID'] == $userID || $charInfo['isGM']) {
 				return 'edit';
 			}
 
-			return $inLibrary ? 'library' : false;
+			return $charInfo['inLibrary'] ? 'library' : false;
 		}
 
 		public function showSheet() {
@@ -183,29 +183,39 @@
 				$char = $this->prElement($char);
 				$char['notes'] = BBCode2Html($char['notes']);
 			}
-//				if (!in_array($key, ['bodyClasses', 'linkedTables', 'mongoIgnore'))) {
 			return $char;
-		}
-
-		public function createNew() {
-			$this->characterID = mongo_getNextSequence('characterID');
-			$this->save(true);
 		}
 
 		public function save() {
 			$mysql = DB::conn('mysql');
 
-			$classVars = array_merge(array('system' => $this::SYSTEM), get_object_vars($this));
+			$classVars = get_object_vars($this);
+			$setValues = [
+				'userID' => $classVars['userID'],
+				'label' => $classVars['label'],
+				'name' => $classVars['name'],
+				'charType' => $classVars['charType'],
+				'system' => $this::SYSTEM,
+				'inLibrary' => $classVars['library']['inLibrary'] ? 1 : 0,
+				'libraryViews' => $classVars['library']['views']
+			];
+			foreach (array_keys($setValues) as $key) {
+				unset($classVars[$key]);
+			}
+			foreach ($this->dbIgnore['save'] as $key) {
+				unset($classVars[$key]);
+			}
+			$setValues['data'] = json_encode($classVars);
 			try {
-				// array_walk_recursive($classVars, function (&$value, $key) { if (is_string($value))
-				// 	$value = mb_convert_encoding($value, 'UTF-8');
-				// });
-
-				$mongo->characters->updateOne(
-					['characterID' => $this->characterID],
-					['$set' => $classVars],
-					['upsert' => true]
-				);
+				$preparedValues = array_map(function ($value) {
+					return "`{$value}` = :{$value}";
+				}, array_keys($setValues));
+				if ($this->characterID) {
+					$saveCharacter = $mysql->prepare("UPDATE characters SET " . implode(', ', $preparedValues) . " WHERE characterID = {$this->characterID} LIMIT 1");
+				} else {
+					$saveCharacter = $mysql->prepare("INSERT INTO characters SET " . implode(', ', $preparedValues));
+				}
+				$saveCharacter->execute($setValues);
 				return true;
 			} catch (Exception $e) { var_dump($e); }
 
@@ -214,19 +224,20 @@
 
 		public function load() {
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
-			$character = $mongo->characters->findOne(['characterID' => $this->characterID]);
-			if ($character == null) {
+			$getCharacter = $mysql->query("SELECT * FROM characters WHERE characterID = {$this->characterID} LIMIT 1");
+			if (!$getCharacter->rowCount()) {
 				return false;
 			}
+			$character = $getCharacter->fetch();
 			if ($character['retired'] == null) {
-				foreach ($character as $key => $value) {
-					if (!in_array($key, $this->mongoIgnore['load'])) {
+				$data = json_decode($character['data'], true);
+				unset($character['data']);
+				foreach (array_merge($character, $data) as $key => $value) {
+					if (!in_array($key, $this->dbIgnore['load'])) {
 						$this->$key = $value;
 					}
 				}
-				$this->userID = $character['user']['userID'];
 
 				return true;
 			} else {
@@ -236,43 +247,9 @@
 
 		public function delete() {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
-			if ($this->label == null) {
-				$this->game = $mongo->characters->findOne(
-					['characterID' => $this->characterID],
-					['projection' => ['game' => true]]
-				)['game'];
-			}
-			if ($this->game) {
-				$players = $mongo->games->findOne(
-					['gameID' => $this->game['gameID']],
-					['projection' => ['players' => true]]
-				)['players'];
-				foreach ($players as &$player) {
-					if ($player['user']['userID'] == $this->userID) {
-						foreach ($player['characters'] as $key => $character) {
-							if ($character['characterID'] == $this->characterID) {
-								unset($player['characters'][$key]);
-								break;
-							}
-						}
-						$player['characters'] = array_values($player['characters']);
-						break;
-					}
-				}
-				$mongo->games->updateOne(
-					['gameID' => $this->game['gameID']],
-					['$set' => ['players' => $players]]
-				);
-			}
-			$mongo->characters->updateOne(
-				['characterID' => $this->characterID],
-				['$set' => ['game' => null, 'retired' => genMongoDate()]]
-			);
-
-#			$hl_charDeleted = new HistoryLogger('characterDeleted');
-#			$hl_charDeleted->addCharacter($this->characterID)->save();
+			$mysql->query("UPDATE characters SET gameID = NULL, retired = NOW() WHERE characterID = {$this->characterID} LIMIT 1");
 		}
 
 		public function getGameID(){

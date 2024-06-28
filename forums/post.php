@@ -91,7 +91,7 @@
 	$isGM = false;
 	if ($threadManager->getForumProperty('gameID')) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
-		list($system, $isGM) = $mysql->query("SELECT games.system, players.isGM FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} LIMIT 1")->fetch();
+		$isGM = $mysql->query("SELECT players.isGM FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} LIMIT 1")->fetchColumn();
 
 		$getCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 		$characters = [];
