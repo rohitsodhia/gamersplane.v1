@@ -172,7 +172,7 @@ class games
 			}
 		}
 
-		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE gameID = {$gameID}");
+		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
 		$players = [];
 		$playerIDs = [];
 		foreach ($getPlayers->fetchAll() as $player) {
@@ -202,11 +202,15 @@ class games
 				$player['characters'] = $characters[$player['userID']];
 			}
 		}
+
+		$getInvites = $mysql->query("SELECT users.userID, users.username FROM invites INNER JOIN users ON invites.userID = users.userID WHERE invites.gameID = {$gameID}");
+		$invites = $getInvites->fetchAll();
+
 		displayJSON([
 			'success' => true,
 			'details' => $gameInfo,
 			'players' => $players,
-			'invites' => is_countable($gameInfo['invites']) && sizeof($gameInfo['invites']) ? $gameInfo['invites'] : [],
+			'invites' => $invites,
 			'decks' => $decks
 		]);
 	}
