@@ -131,7 +131,7 @@
 			if (isset($_POST['systems'])) {
 				$allowedSystems = array_unique($_POST['systems']);
 				if (sizeof($allowedSystems) == 1 && $systems->verifySystem($allowedSystems[0])) {
-					$conds[] = "system = '{$allowedSystems[0]}'";
+					$conds[] = "`system` = '{$allowedSystems[0]}'";
 				} elseif (sizeof($allowedSystems) > 1) {
 					$validSystems = [];
 					foreach ($allowedSystems as $system) {
