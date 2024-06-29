@@ -98,7 +98,7 @@ class games
 			if (!$showFullGames) {
 				$findParams[] = "numPlayers < games.numPlayers";
 			}
-			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.start, games.`status`, games.customSystem, games.public, games.retired, games.forumID, COUNT(players.userID) numPlayers FROM games INNER JOIN users gm ON games.gmID = gm.userID" . (!isset($_GET['hideInactive']) || !$_GET['hideInactive'] ? " AND gm.lastActivity < NOW() - INTERVAL 14 DAY" : '') . " INNER JOIN players ON games.gameID = players.gameID AND players.approved WHERE " . implode(' AND ', $findParams) . " GROUP BY games.gameID ORDER BY games.created DESC" . ($limit ? "LIMIT {$limit}" : ''));
+			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.start, games.`status`, games.customSystem, games.public, games.retired, games.forumID, COUNT(players.userID) numPlayers FROM games INNER JOIN users gm ON games.gmID = gm.userID" . (!isset($_GET['hideInactive']) || !$_GET['hideInactive'] ? " AND gm.lastActivity < NOW() - INTERVAL 14 DAY" : '') . " INNER JOIN players ON games.gameID = players.gameID AND players.approved WHERE " . implode(' AND ', $findParams) . " GROUP BY games.gameID ORDER BY games.created DESC" . ($limit ? " LIMIT {$limit}" : ''));
 		}
 		$games = [];
 		$gms = [];

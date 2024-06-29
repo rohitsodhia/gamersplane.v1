@@ -488,7 +488,7 @@
 			$gamePostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NOT NULL")->fetchColumn();
 			$getActiveGames = $mysql->query(
 				"SELECT
-					games.gameID, games.title, games.system, games.customSystem, games.forumID, players.isGM, forums_permissions_general.`read`
+					games.gameID, games.title, games.system, games.customSystem, games.forumID, players.isGM, permissions.`read`
 				FROM games
 				INNER JOIN players
 					ON games.gameID = players.gameID

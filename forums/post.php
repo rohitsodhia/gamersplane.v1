@@ -93,7 +93,7 @@
 		$gameID = (int) $threadManager->getForumProperty('gameID');
 		$isGM = $mysql->query("SELECT players.isGM FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} LIMIT 1")->fetchColumn();
 
-		$getCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+		$getCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 		$characters = [];
 		foreach ($getCharacters->fetchAll() as $character) {
 			$characters[$character['characterID']] = $character['name'];
@@ -101,7 +101,7 @@
 
 		$pcCharacters = [];
 		if ($isGM) {
-			$getPCCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+			$getPCCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 			foreach ($getPCCharacters->fetchAll() as $character) {
 				$pcCharacters[$character['characterID']] = $character['name'];
 			}

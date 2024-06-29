@@ -1148,7 +1148,7 @@ CREATE TABLE `users` (
   `newGameMail` tinyint(1) NOT NULL DEFAULT '1',
   `postSide` varchar(1) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'r',
   `suspendedUntil` datetime DEFAULT NULL,
-  `banned` tinyint(1) NOT NULL,
+  `banned` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19767 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
