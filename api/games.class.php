@@ -81,7 +81,7 @@ class games
 		$limit = isset($_GET['limit']) && (int) $_GET['limit'] > 0 ? (int) $_GET['limit'] : null;
 		if (isset($_GET['my']) && $_GET['my']) {
 			$myGames = true;
-			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.`status`, games.customSystem, games.retired, games.forumID, userIsPlayer.isGM, COUNT(players.userID) numPlayers, IF(games_favorites.userID, 1, 0) isFavorite FROM games INNER JOIN players userIsPlayer ON games.gameID = userIsPlayer.gameID AND userIsPlayer.userID = {$currentUser->userID} AND userIsPlayer.approved INNER JOIN users gm ON games.gmID = gm.userID INNER JOIN players ON games.gameID = players.gameID AND players.approved LEFT JOIN games_favorites ON games.gameID = games_favorites.gameID AND games_favorites.userID = {$currentUser->userID} GROUP BY games.gameID" . ($limit ? "LIMIT {$limit}" : ''));
+			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.`status`, games.customSystem, games.retired, games.forumID, userIsPlayer.isGM, COUNT(players.userID) numPlayers, IF(games_favorites.userID, 1, 0) isFavorite FROM games INNER JOIN players userIsPlayer ON games.gameID = userIsPlayer.gameID AND userIsPlayer.userID = {$currentUser->userID} AND userIsPlayer.approved INNER JOIN users gm ON games.gmID = gm.userID LEFT JOIN players ON games.gameID = players.gameID AND players.approved LEFT JOIN games_favorites ON games.gameID = games_favorites.gameID AND games_favorites.userID = {$currentUser->userID} GROUP BY games.gameID" . ($limit ? "LIMIT {$limit}" : ''));
 		} else {
 			$findParams = [
 				'retired IS NULL'
@@ -98,7 +98,7 @@ class games
 			if (!$showFullGames) {
 				$findParams[] = "numPlayers < games.numPlayers";
 			}
-			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.start, games.`status`, games.customSystem, games.public, games.retired, games.forumID, COUNT(players.userID) numPlayers FROM games INNER JOIN users gm ON games.gmID = gm.userID" . (!isset($_GET['hideInactive']) || !$_GET['hideInactive'] ? " AND gm.lastActivity < NOW() - INTERVAL 14 DAY" : '') . " INNER JOIN players ON games.gameID = players.gameID AND players.approved WHERE " . implode(' AND ', $findParams) . " GROUP BY games.gameID ORDER BY games.created DESC" . ($limit ? " LIMIT {$limit}" : ''));
+			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.start, games.`status`, games.customSystem, games.public, games.retired, games.forumID, COUNT(players.userID) numPlayers FROM games INNER JOIN users gm ON games.gmID = gm.userID" . (!isset($_GET['hideInactive']) || !$_GET['hideInactive'] ? " AND gm.lastActivity < NOW() - INTERVAL 14 DAY" : '') . " LEFT JOIN players ON games.gameID = players.gameID AND players.approved WHERE " . implode(' AND ', $findParams) . " GROUP BY games.gameID ORDER BY games.created DESC" . ($limit ? " LIMIT {$limit}" : ''));
 		}
 		$games = [];
 		$gms = [];
