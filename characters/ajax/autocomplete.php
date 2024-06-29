@@ -7,40 +7,15 @@
 		$systemOnly = isset($_POST['systemOnly']) && $_POST['systemOnly'] ? true : false;
 
 		if ($systems->verifySystem($system)) {
-			$search = array('searchName' => new MongoDB\BSON\Regex($searchName));
 			if ($systemOnly) {
-				$search['systems'] = $system;
-				$rCIL = $mongo->charAutocomplete->find(
-					$search,
-					[
-						'sort' => ['searchName' => true],
-						'limit' => 5
-					]
-				);
+				$searchSkills = $mysql->query("SELECT charAutocomplete.name, 1 'systemSkill' FROM charAutocomplete INNER JOIN charAutocomplete_systems ON charAutocomplete.itemID = charAutocomplete_systems.itemID WHERE charAutocomplete.searchName LIKE ? AND charAutocomplete_systems = '{$system} ORDER BY name LIMIT 5");
+				$searchSkills->execute(["%{$searchName}%"]);
 			} else {
-				$rCIL = $mongo->charAutocomplete->aggregate([
-					['$match' => [
-						'searchName' => $search['searchName'],
-						'type' => $type
-					]],
-					['$project' => [
-						'name' => true,
-						'inSystem' => [
-							'$setIsSubset' => [
-								[$system],
-								'$systems'
-							]
-						]
-					]],
-					['$sort' => [
-						'inSystem' => -1,
-						'name' => 1
-					]],
-					['$limit' => 5]
-				]);
+				$searchSkills = $mysql->query("SELECT charAutocomplete.name, IF(charAutocomplete_systems.itemID, 1, 0) systemSkill FROM charAutocomplete LEFT JOIN charAutocomplete_systems ON charAutocomplete.itemID = charAutocomplete_systems.itemID WHERE charAutocomplete.searchName LIKE ? AND charAutocomplete_systems = '{$system} ORDER BY systemSkill DESC, name LIMIT 5");
+				$searchSkills->execute(["%{$searchName}%"]);
 			}
 			$lastType = null;
-			foreach ($rCIL as $item) {
+			foreach ($searchSkills->fetchAll() as $item) {
 				$classes = [];
 				if (!$item['systemItem']) {
 					$classes[] = 'nonSystemItem';

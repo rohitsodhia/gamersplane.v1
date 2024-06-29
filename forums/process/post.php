@@ -87,25 +87,13 @@
 		} }
 
 		if (array_key_exists('decks', $_POST) && sizeof($_POST['decks'])) {
-			$returnFields = ['players' => true];
-			if (sizeof($_POST['decks'])) {
-				$returnFields['decks'] = true;
-			}
-			$game = $mongo->games->findOne(['gameID' => $gameID, 'players.user.userID' => $currentUser->userID], ['projection' => $returnFields]);
-			if ($game) {
-				$rDecks = $game['decks'];
-				$decks = [];
+			$getDecks = $mysql->query("SELECT decks.* FROM decks LEFT JOIN deckPermissions ON decks.deckID = deckPermissions.deckID LEFT JOIN players ON decks.gameID = players.gameID AND players.isGM = TRUE WHERE decks.gameID = {$gameID} AND (deckPermissions.userID = {$currentUser->userID} OR players.userID = {$currentUser->userID})");
+			if ($getDecks->fetch()) {
 				$draws = array_filter($_POST['decks'], function($value) { return intval($value['draw']) > 0 ? true : false; });
-				foreach ($rDecks as $deck) {
-					if (array_key_exists((int) $deck['deckID'], $draws) && in_array($currentUser->userID, $deck['permissions'])) {
+				$decks = [];
+				foreach ($getDecks->fetchAll() as $deck) {
+					if (array_key_exists((int) $deck['deckID'], $draws)) {
 						$decks[$deck['deckID']] = $deck;
-					}
-				}
-				$isGM = null;
-				foreach ($game['players'] as $player) {
-					if ($player['user']['userID'] == $currentUser->userID) {
-						$isGM = $player['isGM'];
-						break;
 					}
 				}
 				foreach ($draws as $deckID => $draw) {

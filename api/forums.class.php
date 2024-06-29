@@ -162,45 +162,13 @@
 
 			if ($threadManager->getPermissions('write')) {
 				if ($isMulti) {
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$pull' => [
-							'votes' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID,
-								'vote' => (int)$vote
-							]
-						]],
-						['upsert' => true]
-					);
+					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {(int) $postID} AND userID = {$currentUser->userID} AND vote = {(int) $vote} LIMIT 1");
+				} else{
+					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {(int) $postID} AND userID = {$currentUser->userID}");
 				}
-				else{
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$pull' => [
-							'votes' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID
-							]
-						]],
-						['upsert' => true]
-					);
-				}
-
 
 				if($addVote || !$isMulti){
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$push' => [
-							'votes' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID,
-								'vote' => (int)$vote,
-								'username' => ($isPublic ? $currentUser->username : null)
-							]
-						]],
-						['upsert' => true]
-					);
+					$mysql->query("INSERT INTO forums_postPollVotes SET postID = {(int) $postID}, userID = {$currentUser->userID}, vote = {(int) $vote}");
 				}
 
 				return $post->getPollResults();
@@ -212,26 +180,14 @@
 
 		public function ffgFlip($postID, $toDark, $totalFlips, $tokens){
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 			$post = new Post($postID);
 			$threadManager = new ThreadManager($post->getThreadID());
 
 			if ($threadManager->getPermissions('write')){
 				$flips=$post->getFfgDestinyResults($tokens);
 				if(count($flips['flips'])==$totalFlips){
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$push' => [
-							'ffgTokens' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID,
-								'username' => $currentUser->username,
-								'toDark' => (int)$toDark,
-								'datetime'=>genMongoDate()
-							]
-						]],
-						['upsert' => true]
-					);
+					$mysql->query("INSERT INTO forums_postFFGFlips SET postID = {(int) $postID}, userID = {$currentUser->userID}, toDark = {(int) $toDark}");
 					$flips=$post->getFfgDestinyResults($tokens);
 					$flips['success']=1;
 				}

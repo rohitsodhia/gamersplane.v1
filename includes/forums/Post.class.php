@@ -185,7 +185,6 @@
 		public function savePost() {
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
 			if ($this->postID == null) {
 				$addPost = $mysql->prepare("INSERT INTO posts SET threadID = {$this->threadID}, title = :title, authorID = {$currentUser->userID}, message = :message, messageFullText = :messageFullText, datePosted = :datePosted, postAs = ".($this->postAs?$this->postAs:'NULL'));
@@ -212,9 +211,6 @@
 				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = {$this->postID}, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
 				foreach($this->draws as $deckID => $draw) {
 					$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON f.forumID = t.forumID WHERE t.threadID = {$this->threadID} LIMIT 1")->fetchColumn();
-					$mongo->games->updateOne(
-						['gameID' => $gameID, 'decks.deckID' => (int) $deckID], ['$inc' => ['decks.$.position' => (int) $draw['draw']]]
-					);
 					$addDraw->bindValue('deckID', $deckID);
 					$addDraw->bindValue('type', $draw['type']);
 					$addDraw->bindValue('cardsDrawn', $draw['cardsDrawn']);
@@ -259,38 +255,30 @@
 
 		public function getPollResults(){
 			global $currentUser;
+			$mysql = DB::conn('mysql');
 
-			$mongo = DB::conn('mongo');
-
-			$voteCollection=$mongo->threads->findOne(['threadID' => ((int)$this->getThreadID())]);
-
+			$getVotes = $mysql->query("SELECT forums_postPollVotes.vote, users.userID, users.username FROM forums_postPollVotes INNER JOIN users ON forums_postPollVotes.userID = users.userID WHERE forums_postPollVotes.postID = {$this->postID}");
 			$ret = array('voted'=>false,'votes'=>array(),'publicVotes'=>array());
-			if($this->postID){
-				if($voteCollection && is_countable($voteCollection["votes"])){
-					foreach ($voteCollection["votes"] as $voteItem) {
-						if($voteItem['postID']==$this->postID){
-							$voteNum=(int)$voteItem['vote'];
-							if(!array_key_exists($voteNum,$ret['votes'])){
-								$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false,'html'=>'');
-							}
+			foreach ($getVotes->fetchAll() as $voteItem) {
+				$voteNum=(int)$voteItem['vote'];
+				if(!array_key_exists($voteNum,$ret['votes'])){
+					$ret['votes'][$voteNum]=array('votes'=>0,'me'=>false,'html'=>'');
+				}
 
-							$ret['votes'][$voteNum]['votes']=$ret['votes'][$voteNum]['votes']+1;
+				$ret['votes'][$voteNum]['votes']=$ret['votes'][$voteNum]['votes']+1;
 
-							$myVote=false;
-							if($voteItem['userID']==$currentUser->userID){
-								$ret['votes'][$voteNum]['me']=true;
-								$ret['voted']=true;
-								$myVote=true;
-							}
+				$myVote=false;
+				if($voteItem['userID']==$currentUser->userID){
+					$ret['votes'][$voteNum]['me']=true;
+					$ret['voted']=true;
+					$myVote=true;
+				}
 
-							if($voteItem['username']){
-								$ret['votes'][$voteNum]['html'].='<span class="pollAvatar'.($myVote?' pollIVoted':'').'" title='.htmlspecialchars($voteItem['username']).' style="background-image:url('.User::getAvatar($voteItem['userID']).');"></span>';
-							}
-							else{
-								$ret['votes'][$voteNum]['html'].='<i class="ra ra-gamers-plane'.($myVote?' pollIVoted':'').'"></i>';
-							}
-						}
-					}
+				if($voteItem['username']){
+					$ret['votes'][$voteNum]['html'].='<span class="pollAvatar'.($myVote?' pollIVoted':'').'" title='.htmlspecialchars($voteItem['username']).' style="background-image:url('.User::getAvatar($voteItem['userID']).');"></span>';
+				}
+				else{
+					$ret['votes'][$voteNum]['html'].='<i class="ra ra-gamers-plane'.($myVote?' pollIVoted':'').'"></i>';
 				}
 			}
 			return $ret;
@@ -299,23 +287,16 @@
 		public function getFfgDestinyResults($ffgTokens){
 			global $currentUser;
 
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
-			$flipCollection=$mongo->threads->findOne(['threadID' => ((int)$this->getThreadID())]);
-
+			$getFlips = $mysql->query("SELECT forums_postFFGFlips.toDark, users.userID, users.username FROM forums_postFFGFlips INNER JOIN users ON forums_postFFGFlips.userID = users.userID WHERE forums_postFFGFlips.postID = {$this->postID}");
 			$ret = array('flips'=>array(),'darkTokens'=>0, 'success'=>0, 'html'=>'');
-			if($this->postID){
-				if($flipCollection && is_countable($flipCollection["ffgTokens"])){
-					foreach ($flipCollection["ffgTokens"] as $flip) {
-						if($flip['postID']==$this->postID){
-							$ret['flips'][]=array('toDark'=>$flip['toDark'],'username'=>$flip['username'],'datetime'=>$flip['datetime']);
-							if($flip['toDark']){
-								$ret['darkTokens']=$ret['darkTokens']+1;
-							}else{
-								$ret['darkTokens']=$ret['darkTokens']-1;
-							}
-						}
-					}
+			foreach ($getFlips->fetchAll() as $flip) {
+				$ret['flips'][]=array('toDark'=>$flip['toDark'],'username'=>$flip['username'],'datetime'=>$flip['datetime']);
+				if($flip['toDark']){
+					$ret['darkTokens']=$ret['darkTokens']+1;
+				}else{
+					$ret['darkTokens']=$ret['darkTokens']-1;
 				}
 			}
 			$ret['html']=$this->ffgDestinyResultsToHtml($ret,$ffgTokens);
@@ -337,7 +318,7 @@
 			if(count($ffgResults['flips'])){
 				$ret.="<div class='ffgHistory'><div class='ffgHistoryToggle'>History</div><div class='ffgHistoryList'>";
 				foreach($ffgResults['flips'] as $history){
-					$ret.='<div class="'.($history['toDark']?"toDark":"toLight").'">'.$history["username"].' <span class="convertTZ">'.date('F j, Y g:i a', getMongoSeconds($history["datetime"])).'</span></div>';
+					$ret.='<div class="'.($history['toDark']?"toDark":"toLight").'">'.$history["username"].' <span class="convertTZ">'.date('F j, Y g:i a', strtotime($history["timestamp"])).'</span></div>';
 				}
 				$ret.="</div></div>";
 			}
