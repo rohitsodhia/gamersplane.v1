@@ -567,7 +567,7 @@ class games
 				]);
 			}
 			$inviteCheck = $mysql->query("SELECT gameID FROM invites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
-			if ($inviteCheck) {
+			if ($inviteCheck->rowCount()) {
 				displayJSON([
 					'failed' => true,
 					'errors' => ['alreadyInvited']
