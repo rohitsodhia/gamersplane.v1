@@ -354,7 +354,19 @@ class games
 		$details['system'] = $systems->verifySystem($_POST['system']) ? $_POST['system'] : null;
 
 		$details['title'] = sanitizeString($_POST['title']);
-		$details['allowedCharSheets'] = $_POST['allowedCharSheets'];
+		if (!is_array($_POST['allowedCharSheets']) || count($_POST['allowedCharSheets']) == 0) {
+			$errors[] = 'noCharSheets';
+		} else {
+			$inPlaceholders = str_repeat("?, ", count($_POST['allowedCharSheets']) - 1) . "?";
+			$validCharSheets = $mysql->prepare("SELECT id FROM systems WHERE id IN ({$inPlaceholders}) AND hasCharSheet = TRUE");
+			$validCharSheets->execute($_POST['allowedCharSheets']);
+			foreach ($validCharSheets->fetchAll() as $system) {
+				$details['allowedCharSheets'][] = $system['id'];
+			}
+			if (sizeof($details['allowedCharSheets']) == 0) {
+				$errors[] = 'noCharSheets';
+			}
+		}
 		$details['postFrequency'] = [
 			'timesPer' => intval($_POST['postFrequency']->timesPer),
 			'perPeriod' => $_POST['postFrequency']->perPeriod
@@ -410,6 +422,8 @@ class games
 			displayJSON(array('failed' => true, 'errors' => $errors));
 		} else {
 			$setVars = [];
+			$details['postFrequency'] = json_encode($details['postFrequency']);
+			$details['allowedCharSheets'] = json_encode($details['allowedCharSheets']);
 			foreach (array_keys($details) as $key) {
 				$setVars[] = "{$key} = :{$key}";
 			}
