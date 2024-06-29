@@ -14,6 +14,9 @@ RUN apt-get install -y \
 	libpng-dev \
 	&& pecl install memcached \
 	&& docker-php-ext-enable memcached
+RUN sed -i -r 's/^(.*CN-?EXT)/##\1/' /usr/lib/x86_64-linux-gnu/gconv/gconv-modules \
+	&& iconvconfig /usr/lib/x86_64-linux-gnu/gconv/ \
+	&& iconv -l | grep -E 'CN-?EXT' && exit 1 || true
 RUN pecl install xdebug-2.7.0RC2 \
 	&& docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo_mysql
