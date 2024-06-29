@@ -549,12 +549,6 @@ class games
 
 		$gameID = (int)$gameID;
 		$userID = (int)$userID;
-					if ($user == strtolower($player['user']['userID'])) {
-				displayJSON([
-					'failed' => true,
-					'errors' => ['alreadyInGame']
-				]);
-			}
 
 		$gmCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = TRUE LIMIT 1");
 		if ($gmCheck->rowCount()) {
