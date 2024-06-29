@@ -53,6 +53,7 @@ services:
       - MYSQL_USER=gamersplane
       - MYSQL_PASSWORD
     volumes:
+      - ./docker/mysql/gp.cnf:/etc/mysql/conf.d/gp.cnf
       - ./docker/mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
 
