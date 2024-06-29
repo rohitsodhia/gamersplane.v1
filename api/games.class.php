@@ -393,7 +393,7 @@ class games
 		$gameOptions = trim($_POST['gameOptions'] ?: "");
 		$gameOptions = str_replace(["‘", "’", "“", "”"], ["'", "'", '"', '"'], $gameOptions);
 		$jsonTest = json_decode($gameOptions);
-		if ($gameOptions == "" || json_last_error() === 0) {
+		if ($gameOptions != "" && json_last_error() === 0) {
 			// JSON is valid
 			$details['gameOptions'] = $gameOptions;
 		} else {
