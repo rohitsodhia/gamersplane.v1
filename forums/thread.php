@@ -20,7 +20,7 @@
 	$gms = [];
 	if ($threadManager->isGameForum()) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
-		$system = $mysql->query("SELECT system FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
+		$system = $mysql->query("SELECT `system` FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 		$isGM = false;
 		$getGMs = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} AND isGM = TRUE")->fetchAll(PDO::FETCH_COLUMN, 0);
 		if (in_array($currentUser->userID, $gms)) {
