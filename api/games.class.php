@@ -425,7 +425,7 @@ class games
 			$details['postFrequency'] = json_encode($details['postFrequency']);
 			$details['allowedCharSheets'] = json_encode($details['allowedCharSheets']);
 			foreach (array_keys($details) as $key) {
-				$setVars[] = "{$key} = :{$key}";
+				$setVars[] = "`{$key}` = :{$key}";
 			}
 			$updateGame = $mysql->prepare("UPDATE games SET " . implode(", ", $setVars) . " WHERE gameID = {$gameID}");
 			$updateGame->execute($details);
