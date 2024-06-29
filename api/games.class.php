@@ -103,7 +103,7 @@ class games
 		$games = [];
 		$gms = [];
 		$count = 0;
-		foreach ($getGames as $game) {
+		foreach ($getGames->fetchAll() as $game) {
 			$game['system'] = $systems->getFullName($game['system']);
 			$game['isGM'] = false;
 			$game['isRetired'] = $game['retired'] != null;
