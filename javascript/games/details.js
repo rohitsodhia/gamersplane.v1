@@ -276,7 +276,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			).success(function (data) {
 				if (data.success) {
 					for (var key in $scope.availChars) {
-						if ($scope.availChars[key].id == $scope.submitChar.characterId) {
+						if (parseInt($scope.availChars[key].value) == parseInt($scope.submitChar.characterId)) {
 							$scope.availChars.splice(key, 1);
 						}
 					}

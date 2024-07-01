@@ -183,8 +183,8 @@ class games
 					'userID' => $player['userID'],
 					'username' => $player['username'],
 				],
-				'approved' => $player['approved'],
-				'isGM' => $player['isGM'],
+				'approved' => (bool) $player['approved'],
+				'isGM' => (bool) $player['isGM'],
 				'characters' => []
 			];
 			$playerIDs[] = $player['userID'];
@@ -200,8 +200,8 @@ class games
 			$characters[$userID][] = $character;
 		}
 		foreach ($players as &$player) {
-			if (isset($characters[$player['userID']])) {
-				$player['characters'] = $characters[$player['userID']];
+			if (isset($characters[$player['user']['userID']])) {
+				$player['characters'] = $characters[$player['user']['userID']];
 			}
 		}
 
@@ -657,10 +657,11 @@ class games
 
 		$characterID = (int) $characterID;
 		$gameID = (int) $gameID;
-		$playerCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE LIMIT 1");
+		$playerCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE LIMIT 1");
 		if (!$playerCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['notPlayer']]);
 		}
+		$isGM = $playerCheck->fetchColumn();
 
 		$charCheck = $mysql->query("SELECT name, label, gameID FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID} LIMIT 1");
 		if (!$charCheck->rowCount()) {
@@ -684,7 +685,7 @@ class games
 				$emailDetails = new stdClass();
 				$emailDetails->action = 'Character Added';
 				$emailDetails->gameInfo = (object)$game;
-				$charLabel = strlen($charDetails['name']) ? $charDetails['name'] : $charInfo['label'];
+				$charLabel = strlen($charDetails['name']) ? $charDetails['name'] : $charDetails['label'];
 				$systems = Systems::getInstance();
 				$site_url = getenv('APP_URL');
 				$emailDetails->message = "<a href=\"https://{$site_url}/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"https://{$site_url}/characters/{$characterID}/\">{$charLabel}</a>.";
@@ -702,7 +703,7 @@ class games
 				$mail->send();
 			}
 
-			displayJSON(['success' => true, 'character' => $charInfo, 'approved' => $isGM]);
+			displayJSON(['success' => true, 'character' => $charDetails, 'approved' => $isGM]);
 		}
 	}
 

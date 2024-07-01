@@ -148,14 +148,15 @@
 			$getCharacters = $mysql->query("SELECT characterID, label, charType, `system`, gameID, approved, inLibrary FROM characters WHERE " . implode(' AND ', $conds));
 			$characters = [];
 			foreach ($getCharacters->fetchAll() as $character) {
+				$character['characterID'] = (int) $character['characterID'];
 				$character['label'] = printReady($character['label']);
 				$character['system'] = [
 					'short' => printReady($character['system']),
 					'name' => printReady($systems->getFullName($character['system']))
 				];
-				// $character['gameID'] = (int) $character['game']['gameID'];
-				// $character['approved'] = (bool) $character['game']['approved'];
-				// $character['inLibrary'] , characters.= (bool) $character['library']['inLibrary'];
+				$character['gameID'] = (int) $character['gameID'];
+				$character['approved'] = (bool) $character['approved'];
+				$character['inLibrary'] = (bool) $character['inLibrary'];
 				$characters[] = $character;
 			}
 			$return = array('characters' => $characters);
