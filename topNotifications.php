@@ -2,22 +2,20 @@
 	$pendingPlayers = $mysql->query("SELECT games.gameID, games.title, COUNT(*) as numberPlayers FROM players pendingPlayers INNER JOIN games ON pendingPlayers.gameID = games.gameID INNER JOIN players gms ON games.gameID = gms.gameID AND gms.isGM = TRUE AND gms.userID = {$currentUser->userID} WHERE pendingPlayers.approved = FALSE GROUP BY games.gameID");
 	$pendingCharacters = $mysql->query("SELECT games.gameID, games.title, COUNT(*) as numberCharacters FROM characters pendingCharacters INNER JOIN games ON pendingCharacters.gameID = games.gameID INNER JOIN players gms ON games.gameID = gms.gameID AND gms.isGM = TRUE AND gms.userID = {$currentUser->userID} WHERE pendingCharacters.approved = FALSE GROUP BY games.gameID");
 	$pending = [];
-	if ($pendingPlayers->rowCount() || $pendingCharacters->rowCount()) {
-		foreach ($pendingPlayers->fetchAll() as $players) {
-			$pending[$players['gameID']] = [
-				'game' => ['gameID' => $players['gameID'], 'title' => $players['title']],
-				'pending' => ['players' => $players['numberPlayers'], 'characters' => 0]
+	foreach ($pendingPlayers->fetchAll() as $players) {
+		$pending[$players['gameID']] = [
+			'game' => ['gameID' => $players['gameID'], 'title' => $players['title']],
+			'pending' => ['players' => $players['numberPlayers'], 'characters' => 0]
+		];
+	}
+	foreach ($pendingCharacters->fetchAll() as $characters) {
+		if (!in_array($characters['gameID'])) {
+			$pending[$characters['gameID']] = [
+				'game' => ['gameID' => $characters['gameID'], 'title' => $characters['title']],
+				'pending' => ['players' => 0, 'characters' => $characters['numberCharacters']]
 			];
-		}
-		foreach ($pendingCharacters->fetchAll() as $characters) {
-			if (!in_array($characters['gameID'])) {
-				$pending[$characters['gameID']] = [
-					'game' => ['gameID' => $characters['gameID'], 'title' => $characters['title']],
-					'pending' => ['players' => 0, 'characters' => $characters['numberCharacters']]
-				];
-			} else {
-				$pending[$characters['gameID']]['pending']['characters'] = $characters['numberCharacters'];
-			}
+		} else {
+			$pending[$characters['gameID']]['pending']['characters'] = $characters['numberCharacters'];
 		}
 	}
 

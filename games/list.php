@@ -10,7 +10,7 @@
 					<div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
 					<a href="/user/{{game.gm.userID}}/" class="username" ng-bind-html="game.gm.username"></a><span ng-if="game.lastActivity" ng-bind-html="game.lastActivity"></span>
 					<div class="gameTags">
-						<span class="badge badge-game-{{game.status}}">{{game.status}}</span>
+						<span class="badge badge-game-{{game.status}}">{{game.status ? 'Open' : 'Closed'}}</span>
 						<span class="badge badge-gamePrivate" ng-if='game.public'>private</span>
 						<a class="badge badge-gamePublic"  ng-if='!game.public' href="/forums/{{game.forumID}}">public</a>
 						<span class="badge {{game.playerCount<game.numPlayers?'badge-gameHasPlaces':'badge-gameNoPlaces'}}">{{game.playerCount}}/{{game.numPlayers}}</span>

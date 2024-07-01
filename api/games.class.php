@@ -158,6 +158,8 @@ class games
 		foreach (['allowedCharSheets', 'postFrequency'] as $jsonKey) {
 			$gameInfo[$jsonKey] = json_decode($gameInfo[$jsonKey]);
 		}
+		$gameInfo['status'] = $gameInfo['status'] ? 'open' : 'closed';
+		$gameInfo['public'] = $gameInfo['public'] ? 'public' : 'private';
 
 		$getDecks = $mysql->query("SELECT deckID, label, deck, position FROM decks WHERE gameID = {$gameID}");
 		$decks = [];
@@ -447,10 +449,10 @@ class games
 		$mysql = DB::conn('mysql');
 
 		$gameID = (int)$gameID;
-		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		$gmCheck = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
 		if ($gmCheck->rowCount()) {
-			$mysql->query("UPDATE forums_permissions_general SET `read` = `read` ^ 1 WHERE forumID = {$gameInfo['forumID']}");
-			$mysql->query("UPDATE games SET public = NOT public WHERE gameID = {$gameID}");
+			$forumID = $gmCheck->fetchColumn();
+			$mysql->query("UPDATE forums_permissions_general SET `read` = NOT `read` WHERE forumID = {$forumID} LIMIT 1");
 			displayJSON(['success' => true]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'notGM']);
