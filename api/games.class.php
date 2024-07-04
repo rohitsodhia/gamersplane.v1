@@ -116,6 +116,7 @@ class games
 				'username' => $game['gmUsername'],
 				'lastActivity' => $game['gmLastActivity']
 			];
+			$game['isFavorite'] = (bool) $game['isFavorite'];
 			unset($game['retired'], $game['gmID'], $game['gmUsername'], $game['gmLastActivity']);
 			$games[] = $game;
 		}
@@ -785,6 +786,6 @@ class games
 			}
 		}
 
-		displayJSON(['success' => true, 'state' => $state]);
+		displayJSON(['success' => true]);
 	}
 }

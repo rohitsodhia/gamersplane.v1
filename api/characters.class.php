@@ -98,7 +98,7 @@
 				}
 				$searchSystems = ' AND system IN (' . implode(', ', $searchSystems) . ')';
 			}
-			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.userID, user.username, characters.system FROM characters INNER JOIN users ON characters.userID = users.userID WHERE inLibrary = TRUE" . $searchSystems);
+			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.userID, users.username, characters.system FROM characters INNER JOIN users ON characters.userID = users.userID WHERE inLibrary = TRUE" . ($searchSystems != [] ? $searchSystems : null));
 			$characters = [];
 			foreach ($getCharacters->fetchAll() as $character) {
 				$character['system'] = [
