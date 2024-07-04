@@ -109,7 +109,7 @@
 					'userID' => $character['userID'],
 					'username' => $character['username']
 				];
-				$unset($character['userID'], $character['username']);
+				unset($character['userID'], $character['username']);
 				$characters[] = $character;
 			}
 			displayJSON(['success' => true, 'characters' => $characters]);
