@@ -363,7 +363,7 @@
 		$characters = [];
 		$playerCharacters = [];
 		if ($gameID) {
-			$getCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+			$getCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 			$characters = [];
 			foreach ($getCharacters->fetchAll() as $character) {
 				$characters[$character['characterID']] = $character['name'];
@@ -371,7 +371,7 @@
 
 			$pcCharacters = [];
 			if ($isGM) {
-				$getPCCharacters = $mysql->query("SELECT characterID, name FROM characteres WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+				$getPCCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 				foreach ($getPCCharacters->fetchAll() as $character) {
 					$pcCharacters[$character['characterID']] = $character['name'];
 				}
