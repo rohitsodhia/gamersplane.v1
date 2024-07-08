@@ -59,6 +59,8 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 							$scope.approved = $scope.curPlayer.approved ? true : false;
 							if ($scope.curPlayer.isGM)
 								$scope.isGM = true;
+							if (CurrentUser && $scope.players[key].user.userID == $scope.details.gm.userID)
+								$scope.players[key].primaryGM = true;
 
 							if ($scope.approved && ($scope.isGM || $scope.curPlayer.characters.length < $scope.details.charsPerPlayer)) {
 								allowedSystems = $scope.details.allowedCharSheets;

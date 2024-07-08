@@ -142,8 +142,9 @@ class games
 		$gameInfo = $gameInfo->fetch();
 		$gameInfo['readPermissions'] = $mysql->query("SELECT `read` FROM forums_permissions_general WHERE forumID = {$gameInfo['forumID']} LIMIT 1")->fetchColumn();
 		$gameInfo['readPermissions'] = (bool)$gameInfo['readPermissions'];
+		$gameInfo['gameID'] = (int) $gameInfo['gameID'];
 		$gameInfo['gm'] = [
-			'userID' => $gameInfo['gmID'],
+			'userID' => (int) $gameInfo['gmID'],
 			'username' => $gameInfo['gmUsername'],
 			'lastActivity' => $gameInfo['lastActivity']
 		];
@@ -181,7 +182,7 @@ class games
 		foreach ($getPlayers->fetchAll() as $player) {
 			$players[] = [
 				'user' => [
-					'userID' => $player['userID'],
+					'userID' => (int) $player['userID'],
 					'username' => $player['username'],
 				],
 				'approved' => (bool) $player['approved'],
@@ -206,8 +207,11 @@ class games
 			}
 		}
 
-		$getInvites = $mysql->query("SELECT users.userID, users.username FROM invites INNER JOIN users ON invites.userID = users.userID WHERE invites.gameID = {$gameID}");
+		$getInvites = $mysql->query("SELECT users.userID, users.username FROM gameInvites INNER JOIN users ON gameInvites.userID = users.userID WHERE gameInvites.gameID = {$gameID}");
 		$invites = $getInvites->fetchAll();
+		array_walk($invites, function (&$value, $key) {
+			$value['userID'] = (int) $value['userID'];
+		});
 
 		displayJSON([
 			'success' => true,
@@ -290,7 +294,7 @@ class games
 		} else {
 			$details['postFrequency'] = json_encode($details['postFrequency']);
 			$details['allowedCharSheets'] = json_encode($details['allowedCharSheets']);
-			$details['gmID'] = $currentUser->userID;
+			$details['gmID'] = (int) $currentUser->userID;
 			$details['forumID'] = -1;
 			$details['groupID'] = -1;
 
@@ -573,14 +577,14 @@ class games
 					'errors' => ['alreadyInGame']
 				]);
 			}
-			$inviteCheck = $mysql->query("SELECT gameID FROM invites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
+			$inviteCheck = $mysql->query("SELECT gameID FROM gameInvites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
 			if ($inviteCheck->rowCount()) {
 				displayJSON([
 					'failed' => true,
 					'errors' => ['alreadyInvited']
 				]);
 			}
-			$mysql->query("INSERT INTO invites SET gameID = {$gameID}, userID = {$userID}");
+			$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, userID = {$userID}");
 			$systems = Systems::getInstance();
 			ob_start();
 			include('emails/gameInviteEmail.php');
@@ -620,7 +624,7 @@ class games
 		$userID = intval($userID);
 		$gmCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = TRUE LIMIT 1");
 		if ($gmCheck->rowCount() || $currentUser->userID == $userID) {
-			$mysql->query("DELETE FROM invites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
+			$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
 			// $hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
 			// if ($pathOptions[1] == 'withdraw')
 			// 	$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
@@ -637,14 +641,12 @@ class games
 		$mysql = DB::conn('mysql');
 
 		$gameID = (int) $gameID;
-		$inviteCheck = $mysql->query("SELECT gameID FROM invites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
+		$inviteCheck = $mysql->query("SELECT gameID FROM gameInvites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
 		if ($inviteCheck->rowCount()) {
 			$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}, approved = 1");
-			$mysql->query("DELETE FROM invites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
+			$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
 			$groupID = $mysql->query("SELECT groupID FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
-			$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$game['groupID']}, userID = {$userID}");
-			// $hl_inviteAccepted = new HistoryLogger('inviteAccepted');
-			// $hl_inviteAccepted->addUser($userID)->addGame($gameID)->save();
+			$mysql->query("INSERT INTO forums_groupMemberships SET groupID = {$groupID}, userID = {$currentUser->userID}");
 			displayJSON(['success' => true, 'userID' => (int) $userID]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'noPermission']);

@@ -38,8 +38,9 @@
 	}
 ?>
 		</ul></div>
+		asdgwevaw
 <?php
-	$invitedTo = $mysql->query("SELECT games.gameID, games.title FROM invites INNER JOIN games ON invites.gameID = games.gameID WHERE invites.userID = {$currentUser->userID}");
+	$invitedTo = $mysql->query("SELECT games.gameID, games.title FROM gameInvites INNER JOIN games ON gameInvites.gameID = games.gameID WHERE gameInvites.userID = {$currentUser->userID}");
 	if ($invitedTo->rowCount()) {
 ?>
 		<div id="topNotifications" class="alertBox_info"><ul>

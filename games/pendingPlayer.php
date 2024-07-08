@@ -5,6 +5,7 @@
 	$getGame = $mysql->query("SELECT games.title FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 LIMIT 1");
 	if (!$getGame->rowCount()) { header('Location: /403'); exit; }
 
+	$game = $getGame->fetch();
 	$getPlayer = $mysql->query("SELECT username FROM users WHERE userID = {$playerID} LIMIT 1");
 	if ($getPlayer->rowCount() == 0) { header('Location: /403'); exit; }
 	$playerName = $getPlayer->fetchColumn();

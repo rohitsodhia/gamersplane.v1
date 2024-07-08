@@ -32,8 +32,8 @@
 		$mysql->query("DELETE FROM gm USING forums_groupMemberships gm INNER JOIN forums_permissions_groups p WHERE gm.userID = {$playerID} AND gm.groupID = p.groupID AND p.forumID IN (" . implode(', ', $forumIDs) . ")");
 		// $hl_removePlayer = new HistoryLogger(isset($_POST['remove'])?'playerRemove':'playerLeft');
 		// $hl_removePlayer->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->addForCharacters($chars)->save();
-		$mysql->query("DELETE deckPermissions FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deckPermissions.userID = {$playerID}")->fetchAll();
-		$mysql->query("DELETE FROM players WHERE gameID = {$gameID} AND playerID = {$playerID} LIMIT 1");
+		$mysql->query("DELETE deckPermissions FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deckPermissions.userID = {$playerID}");
+		$mysql->query("DELETE FROM players WHERE gameID = {$gameID} AND userID = {$playerID} LIMIT 1");
 		$mysql->query("UPDATE characters SET gameID = NULL WHERE userID = {$playerID} AND gameID = {$gameID}");
 
 		if (isset($_POST['remove'])) {
