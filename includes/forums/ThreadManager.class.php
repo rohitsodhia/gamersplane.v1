@@ -413,7 +413,9 @@
 			$oldMessage = $mysql->query("SELECT message FROM posts WHERE postID = {$post->postID}")->fetchColumn();
 
 			$userIds = ThreadManager::getUserIdsFromMentions($oldMessage);
-			$mysql->query("DELETE FROM forumSubs WHERE subscribed_to = 't' AND postID = {$post->getPostID()} AND userID IN (" . implode(', ', $userIds) . ")");
+			if (sizeof($userIds)) {
+				$mysql->query("DELETE FROM forumSubs WHERE subscribed_to = 't' AND postID = {$post->getPostID()} AND userID IN (" . implode(', ', $userIds) . ")");
+			}
 		}
 
 		private function addMentions($post){

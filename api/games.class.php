@@ -165,7 +165,7 @@ class games
 		foreach (['allowedCharSheets', 'postFrequency'] as $jsonKey) {
 			$gameInfo[$jsonKey] = json_decode($gameInfo[$jsonKey]);
 		}
-		$gameInfo['status'] = (bool) $gameInfo['status'];
+		$gameInfo['status'] = (bool) $gameInfo['status'] ? 'open' : 'closed';
 		$gameInfo['public'] = (bool) $gameInfo['public'];
 
 		$getDecks = $mysql->query("SELECT deckID, label, deck, position FROM decks WHERE gameID = {$gameID}");
@@ -203,6 +203,8 @@ class games
 		$characters = [];
 		foreach ($getCharacters->fetchAll() as $character) {
 			$userID = $character['userID'];
+			$character['characterID'] = (int) $character['characterID'];
+			$character['approved'] = (bool) $character['approved'];
 			unset($character['userID']);
 			$characters[$userID][] = $character;
 		}
@@ -479,7 +481,7 @@ class games
 		$gameID = (int)$gameID;
 		$gmCheck = $mysql->query("SELECT gameID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
 		if ($gmCheck->rowCount()) {
-			$mysql->query("UPDATE games SET status = NOT status WHERE gameID = {$gameID}");
+			$mysql->query("UPDATE games SET status = NOT status WHERE gameID = {$gameID} LIMIT 1");
 			displayJSON(['success' => true]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'notGM']);
@@ -727,7 +729,7 @@ class games
 
 		$charInfo = $mysql->query("SELECT userID, gameID FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetch();
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
-		if ($charInfo['userID'] != $currentUser->userID && !$gmCheck->rowCount()) {
+		if ((int) $charInfo['userID'] != $currentUser->userID && !$gmCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => 'badAuthentication']);
 		}
 
@@ -756,7 +758,7 @@ class games
 
 		$charInfo = $mysql->query("SELECT userID, gameID FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetch();
 		$gmCheck = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
-		if (!$charInfo || $charInfo['gameID'] != $gameID || $gmCheck->rowCount()) {
+		if (!$charInfo || (int) $charInfo['gameID'] != $gameID || !$gmCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => 'badAuthentication']);
 		}
 

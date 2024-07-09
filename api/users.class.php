@@ -388,6 +388,7 @@
 			if ($details['location'] == 'null') {
 				$details['location'] = '';
 			}
+			$user->updateUsermeta('location', sanitizeString($details['location']));
 			$user->updateUsermeta('games', sanitizeString($details['games']));
 			$user->updateUsermeta('pmMail', $details['pmMail'] === 'true' ? 1 : 0);
 			$user->updateUsermeta('newGameMail', $details['newGameMail'] === 'true' ? 1 : 0);

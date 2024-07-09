@@ -116,7 +116,7 @@
 		if ($isGM) {
 			$decks = $mysql->query("SELECT * FROM decks WHERE gameID = {$gameID}")->fetchAll();
 		} else {
-			$decks = $mysql->query("SELECT decks.* FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deck.gameID = {$gameID} AND deckPermissions.userID = {$currentUser->userID}")->fetchAll();
+			$decks = $mysql->query("SELECT decks.* FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE decks.gameID = {$gameID} AND deckPermissions.userID = {$currentUser->userID}")->fetchAll();
 		}
 		if (sizeof($decks)) {
 			$drawsAllowed = true;

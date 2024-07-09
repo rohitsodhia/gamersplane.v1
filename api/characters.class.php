@@ -139,7 +139,7 @@
 							$validSystems[] = $system;
 						}
 					}
-					$conds[] = '`system` IN (' . implode(', ', $validSystems) . ')';
+					$conds[] = '`system` IN ("' . implode('", "', $validSystems) . '")';
 				}
 			}
 			if (isset($_POST['noGame'])) {
