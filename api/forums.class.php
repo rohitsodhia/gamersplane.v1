@@ -162,13 +162,13 @@
 
 			if ($threadManager->getPermissions('write')) {
 				if ($isMulti) {
-					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {(int) $postID} AND userID = {$currentUser->userID} AND vote = {(int) $vote} LIMIT 1");
+					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {$postID} AND userID = {$currentUser->userID} AND vote = {$vote} LIMIT 1");
 				} else{
-					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {(int) $postID} AND userID = {$currentUser->userID}");
+					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {$postID} AND userID = {$currentUser->userID}");
 				}
 
 				if($addVote || !$isMulti){
-					$mysql->query("INSERT INTO forums_postPollVotes SET postID = {(int) $postID}, userID = {$currentUser->userID}, vote = {(int) $vote}");
+					$mysql->query("INSERT INTO forums_postPollVotes SET postID = {$postID}, userID = {$currentUser->userID}, vote = {$vote}");
 				}
 
 				return $post->getPollResults();
