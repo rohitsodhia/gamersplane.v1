@@ -11,15 +11,14 @@
 					<a href="/user/{{game.gm.userID}}/" class="username" ng-bind-html="game.gm.username"></a><span ng-if="game.lastActivity" ng-bind-html="game.lastActivity"></span>
 					<div class="gameTags">
 						<span class="badge badge-game-{{game.status}}">{{game.status ? 'Open' : 'Closed'}}</span>
-						<span class="badge badge-gamePrivate" ng-if='game.public'>private</span>
-						<a class="badge badge-gamePublic"  ng-if='!game.public' href="/forums/{{game.forumID}}">public</a>
+						<span class="badge badge-gamePrivate" ng-if='!game.public'>private</span>
+						<a class="badge badge-gamePublic"  ng-if='game.public' href="/forums/{{game.forumID}}">public</a>
 						<span class="badge {{game.playerCount<game.numPlayers?'badge-gameHasPlaces':'badge-gameNoPlaces'}}">{{game.playerCount}}/{{game.numPlayers}}</span>
 					</div>
 				</li>
 				<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate>
-
-				<li ng-hide="games.length" id="noResults">Doesn't seem like any games are available at this time.<br>Maybe you should <a href="/games/new/">make one</a>?</li>
 			</ul>
+			<div ng-if="!games.length" id="noResults">Doesn't seem like any games are available at this time.<br>Maybe you should <a href="/games/new/">make one</a>?</div>
 		</div>
 	</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

@@ -98,7 +98,7 @@ class games
 			if (!$showFullGames) {
 				$findParams[] = "numPlayers < games.numPlayers";
 			}
-			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.start, games.`status`, games.customSystem, games.public, games.retired, games.forumID, COUNT(players.userID) numPlayers FROM games INNER JOIN users gm ON games.gmID = gm.userID" . (!isset($_GET['hideInactive']) || !$_GET['hideInactive'] ? " AND gm.lastActivity > NOW() - INTERVAL 14 DAY" : '') . " LEFT JOIN players ON games.gameID = players.gameID AND players.approved WHERE " . implode(' AND ', $findParams) . " GROUP BY games.gameID ORDER BY games.created DESC" . ($limit ? " LIMIT {$limit}" : ''));
+			$getGames = $mysql->query("SELECT games.gameID, games.title, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity gmLastActivity, games.start, games.`status`, games.customSystem, games.public, games.retired, games.forumID, games.numPlayers, COUNT(players.userID) playerCount FROM games INNER JOIN users gm ON games.gmID = gm.userID" . (!isset($_GET['hideInactive']) || !$_GET['hideInactive'] ? " AND gm.lastActivity > NOW() - INTERVAL 14 DAY" : '') . " LEFT JOIN players ON games.gameID = players.gameID AND players.approved AND players.isGM = 0 WHERE " . implode(' AND ', $findParams) . " GROUP BY games.gameID ORDER BY games.created DESC" . ($limit ? " LIMIT {$limit}" : ''));
 		}
 		$games = [];
 		$gms = [];
@@ -107,7 +107,12 @@ class games
 			$game['system'] = $systems->getFullName($game['system']);
 			$game['isGM'] = false;
 			$game['isRetired'] = $game['retired'] != null;
-			$game['playerCount'] = -1;
+			foreach (['gameID', 'forumID', 'numPlayers', 'playerCount'] as $intKey) {
+				$game[$intKey] = (int) $game[$intKey];
+			}
+			foreach (['status', 'public'] as $boolKey) {
+				$game[$boolKey] = (int) $game[$boolKey];
+			}
 			if ($game['start']) {
 				$game['start'] = strtotime($game['start']);
 			}
@@ -160,8 +165,8 @@ class games
 		foreach (['allowedCharSheets', 'postFrequency'] as $jsonKey) {
 			$gameInfo[$jsonKey] = json_decode($gameInfo[$jsonKey]);
 		}
-		$gameInfo['status'] = $gameInfo['status'] ? 'open' : 'closed';
-		$gameInfo['public'] = $gameInfo['public'] ? 'public' : 'private';
+		$gameInfo['status'] = (bool) $gameInfo['status'];
+		$gameInfo['public'] = (bool) $gameInfo['public'];
 
 		$getDecks = $mysql->query("SELECT deckID, label, deck, position FROM decks WHERE gameID = {$gameID}");
 		$decks = [];
@@ -457,7 +462,8 @@ class games
 		$gmCheck = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
 		if ($gmCheck->rowCount()) {
 			$forumID = $gmCheck->fetchColumn();
-			$mysql->query("UPDATE forums_permissions_general SET `read` = NOT `read` WHERE forumID = {$forumID} LIMIT 1");
+			$mysql->query("UPDATE forums_permissions_general SET `read` = IF(`read` = 1, -1, 1) WHERE forumID = {$forumID} LIMIT 1");
+			$mysql->query("UPDATE games SET `public` = NOT `public` WHERE gameID = {$gameID} LIMIT 1");
 			displayJSON(['success' => true]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'notGM']);

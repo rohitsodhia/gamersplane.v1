@@ -99,7 +99,7 @@
 				</div>
 				<div class="tr clearfix">
 					<div class="labelCol"><label>Game Forums are</label></div>
-					<div class="infoCol">{{details.readPermissions ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.readPermissions ? 'Public' : 'Private'}} ]</a><span ng-if="!isGM && details.readPermissions "><a  href="/forums/{{details.forumID}}"> (Read the forum)</a></span></div>
+					<div class="infoCol">{{details.public ? 'Public' : 'Private'}} <a ng-if="isGM" href="" ng-click="toggleForum()">[ Make game {{!details.public ? 'Public' : 'Private'}} ]</a><span ng-if="!isGM && details.public "><a  href="/forums/{{details.forumID}}"> (Read the forum)</a></span></div>
 				</div>
 				<div class="tr clearfix" ng-if="details.recruitmentThreadId">
 					<div class="labelCol"><label>Games Tavern</label></div>

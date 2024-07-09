@@ -96,7 +96,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 		$scope.toggleForum = function () {
 			GamesService.toggleForum($scope.gameID).then(function (data) {
 				if (data.success)
-					$scope.details.readPermissions = !$scope.details.readPermissions;
+					$scope.details.public = !$scope.details.public;
 			});
 		};
 
