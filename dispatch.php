@@ -48,9 +48,9 @@
 	}
 
 	// echo $pathAction;
-//	print_r($pathOptions);
-//	var_dump($_SESSION);
-//	var_dump($_COOKIE);
+	// print_r($pathOptions);
+	// var_dump($_SESSION);
+	// var_dump($_COOKIE);
 
 	$requireLoc = '';
 	$isAJAX = false;
@@ -58,7 +58,7 @@
 	if ($pathAction == 'facebook') {
 		header('Location: https://www.facebook.com/GamersPlane/');
 	} elseif (STATE == 'standard') {
-		$moddedPath = $pathAction?$pathAction:'';
+		$moddedPath = $pathAction ? $pathAction : '';
 		foreach ($pathOptions as $pathOption) {
 			if ($pathOption == 'ajax') $isAJAX = true;
 
@@ -71,11 +71,10 @@
 				$moddedPath .= $pathOption;
 			}
 		}
-		// echo $moddedPath;
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, ngController, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute([$moddedPath . '/']);
 		$dispatchInfo = $dispatchInfo->fetch();
-		// var_dump($dispatchInfo);
+		// var_dump($dispatchInfo); exit();
 		global $loggedIn;
 		$loggedIn = User::checkLogin((bool) $dispatchInfo['loginReq']);
 		if (
@@ -90,7 +89,7 @@
 		}
 		$requireLoc = $dispatchInfo['file'];
 		define('PAGE_ID', $dispatchInfo['pageID']);
-		$fixedGameMenu = $dispatchInfo['fixedGameMenu']?true:false;
+		$fixedGameMenu = $dispatchInfo['fixedGameMenu'] ? true : false;
 	} elseif (STATE == 'maintenance') {
 		$dispatchInfo = array(
 			'url' => '/',

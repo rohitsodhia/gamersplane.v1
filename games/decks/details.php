@@ -1,15 +1,20 @@
 <?php
 	$gameID = intval($pathOptions[0]);
 	$deckID = intval($pathOptions[2]);
-	$action = $pathOptions[3];
+	if (sizeof($pathOptions) == 3 && $pathOptions[2] == 'new') {
+		$action = $pathOptions[2];
+	} else {
+		$action = $pathOptions[3];
 
-	$getDeck = $mysql->query("SELECT decks.label, decks.type FROM games INNER JOIN players ON games.gameID = players.gameID INNER JOIN decks ON games.gameID = decks.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 AND decks.deckID = {$deckID} LIMIT 1");
-	if (!$getDeck->rowCount()) { header('Location: /tools/decks/'); exit; }
+		$getDeck = $mysql->query("SELECT decks.label, decks.type FROM games INNER JOIN players ON games.gameID = players.gameID INNER JOIN decks ON games.gameID = decks.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 AND decks.deckID = {$deckID} LIMIT 1");
+		if (!$getDeck->rowCount()) { header('Location: /tools/decks/'); exit; }
 
-	$deck = $getDeck->fetch();
+		$deck = $getDeck->fetch();
+	}
+
 	require_once('includes/DeckTypes.class.php');
 	$deckTypes = DeckTypes::getInstance()->getAll();
-	$getPlayers = $mysql->query("SELECT users.userID, users.username, players.isGM, IF(deckPermissions.userID, 1, 0) hasPermission FROM players INNER JOIN users ON players.userID = users.userID LEFT JOIN deckPermissions ON players.userID = deckPermissions.userID WHERE players.gameID = {$gameID} AND deckPermissions.deckID = {$deckID}");
+	$getPlayers = $mysql->query("SELECT users.userID, users.username, players.isGM, IF(deckPermissions.userID, 1, 0) hasPermission FROM players INNER JOIN users ON players.userID = users.userID LEFT JOIN deckPermissions ON players.userID = deckPermissions.userID AND deckPermissions.deckID = {$deckID} WHERE players.gameID = {$gameID}");
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($action)?> Deck</h1>

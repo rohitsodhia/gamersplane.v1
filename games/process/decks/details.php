@@ -23,17 +23,18 @@
 				header("Location: /games/{$gameID}/decks/?new=1&invalidDeck=1");
 			}
 		} else {
-			$insertDeck = $mysql->prepare("INSERT INTO decks SET label = :label, type = :type, deck = :deck, position = 1, lastShuffle = NOW()");
-			$deck = []
+			$insertDeck = $mysql->prepare("INSERT INTO decks SET gameID = :gameID, label = :label, type = :type, deck = :deck, position = 1, lastShuffle = NOW()");
+			$deck = [];
 			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
 				$deck[] = $count;
 			}
 			shuffle($deck);
 			$insertDeck->execute([
+				'gameID' => $gameID,
 				'label' => $deckLabel,
 				'type' => $type,
-				'deck' => json_encode($deck),
-			];
+				'deck' => json_encode($deck)
+			]);
 			$deckID = $mysql->lastInsertId();
 			$addPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = ?");
 			foreach ($addUsers as $userID) {
