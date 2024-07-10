@@ -329,7 +329,7 @@ class games
 
 			$mysql->query("INSERT INTO forumAdmins (userID, forumID) VALUES({$currentUser->userID}, {$forumID})");
 			$mysql->query("INSERT INTO forums_permissions_groups (`groupID`, `forumID`, `read`, `write`, `editPost`, `createThread`, `deletePost`, `addRolls`, `addDraws`) VALUES ({$groupID}, {$forumID}, 2, 2, 2, 2, 2, 2, 2)");
-			$mysql->query("INSERT INTO forums_permissions_general SET forumID = {$forumID}");
+			$mysql->query("INSERT INTO forums_permissions_general (`forumID`, `read`) VALUES ({$forumID}, 1)");
 
 			$mysql->query("UPDATE games SET forumID = {$forumID}, groupID = {$groupID} WHERE gameID = {$gameID} LIMIT 1");
 
@@ -566,8 +566,8 @@ class games
 		global $currentUser;
 		$mysql = DB::conn('mysql');
 
-		$gameID = (int)$gameID;
-		$userID = (int)$userID;
+		$gameID = (int) $gameID;
+		$userID = (int) $userID;
 
 		$gmCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = TRUE LIMIT 1");
 		if ($gmCheck->rowCount()) {
@@ -585,15 +585,18 @@ class games
 					'errors' => ['alreadyInGame']
 				]);
 			}
-			$inviteCheck = $mysql->query("SELECT gameID FROM gameInvites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
-			if ($inviteCheck->rowCount()) {
-				displayJSON([
-					'failed' => true,
-					'errors' => ['alreadyInvited']
-				]);
+			try {
+				$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, userID = {$userID}");
+			} catch (Exception $e) {
+				if ($inviteCheck->rowCount()) {
+					displayJSON([
+						'failed' => true,
+						'errors' => ['alreadyInvited']
+					]);
+				}
 			}
-			$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, userID = {$userID}");
 			$systems = Systems::getInstance();
+			$gameInfo = $mysql->query("SELECT system, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch();
 			ob_start();
 			include('emails/gameInviteEmail.php');
 			$email = ob_get_contents();

@@ -254,7 +254,7 @@ function getCharacterClass($characterID)
 	$mysql = DB::conn('mysql');
 
 	$characterID = intval($characterID);
-	$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetchColumn();
+	$system = $mysql->query("SELECT `system` FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetchColumn();
 
 	return $system ? $system : null;
 }
