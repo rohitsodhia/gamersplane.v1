@@ -37,7 +37,7 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 		});
 	});
 
-	var lastActiveText = function(lastActivity){
+	var lastActiveText = function (lastActivity) {
 		if (typeof lastActivity == 'number')
 			lastActivity *= 1000;
 		lastActivity = moment(lastActivity);
@@ -45,11 +45,10 @@ controllers.controller('user', ['$scope', '$http', 'CurrentUser', 'UsersService'
 		var diff = now - lastActivity;
 		var diffSeconds = Math.floor(diff / 1000);
 		diff = Math.floor(diffSeconds / (60 * 60 * 24));
-		if (diff < 14)
-		{
-			if(diffSeconds<=86400){
+		if (diff < 14) {
+			if (diffSeconds <= 86400) {
 				return "< 1 day ago";
-			} else if(diffSeconds<=(86400*2)){
+			} else if (diffSeconds <= (86400 * 2)) {
 				return "1 day ago";
 			} else {
 				return diff + " days ago";

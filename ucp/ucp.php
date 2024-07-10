@@ -89,7 +89,7 @@
 				</div>
 			</div>
 
-			<div id="planeOfGiving">
+			<!-- <div id="planeOfGiving">
 				<h2 class="headerbar hbDark">Gamers' Plane of Giving 2023</h2>
 				<div ng-if="giving.participate" class="tr">
 					<p>Your Plane of Giving giftee is: <a ng-href="/user/{{giving.assignee_id}}/" class="username">{{giving.assignee}}</a>! You can send them their gift at {{giving.assignee_email}}.</p>
@@ -108,7 +108,7 @@
 				<div class="tr submitDiv">
 					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
 				</div>
-				<!-- <div class="tr">
+				<div class="tr">
 					<label class="verticalLabel">Would you like to participate?</label>
 					<pretty-checkbox checkbox="giving.participate" value="participate"></pretty-checkbox>
 				</div>
@@ -118,8 +118,8 @@
 				</div>
 				<div class="tr submitDiv">
 					<button type="submit" ng-click="save($event)" class="fancyButton">Save</button>
-				</div> -->
-			</div>
+				</div>
+			</div> -->
 
 			<div id="lookingForAGame">
 				<h2 class="headerbar hbDark" ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> Looking for a game</h2>

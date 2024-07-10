@@ -489,7 +489,7 @@
 			$gamePostCount = $mysql->query("SELECT COUNT(posts.postID) FROM posts INNER JOIN threads ON posts.threadID = threads.threadID INNER JOIN forums ON threads.forumID = forums.forumID WHERE authorID = {$userID} AND forums.gameID IS NOT NULL")->fetchColumn();
 			$getActiveGames = $mysql->query(
 				"SELECT
-					games.gameID, games.title, games.system, games.customSystem, games.forumID, players.isGM, permissions.`read`
+					games.gameID, games.title, games.`system`, games.customSystem, games.forumID, players.isGM, permissions.`read`
 				FROM games
 				INNER JOIN players
 					ON games.gameID = players.gameID
@@ -500,7 +500,7 @@
 				INNER JOIN posts
 					ON threads.threadID = posts.threadID
 				INNER JOIN forums_permissions_general permissions
-					ON forums.forumID = permissions.forumID
+					ON games.forumID = permissions.forumID
 				WHERE
 					players.userID = {$userID} AND players.approved = TRUE AND posts.datePosted > NOW() - INTERVAL 1 WEEK AND threads.publicPosting = 0
 				GROUP BY games.gameID
@@ -522,7 +522,7 @@
 				];
 			}
 
-			$getCharacters = $mysql->query("SELECT system FROM characters WHERE userID = {$userID} AND retired = 0");
+			$getCharacters = $mysql->query("SELECT `system` FROM characters WHERE userID = {$userID} AND retired IS NULL");
 			$characters = [];
 			$numChars = 0;
 			foreach ($getCharacters->fetchAll() as $character) {
@@ -542,7 +542,7 @@
 			}
 			$characters = array_values($characters);
 
-			$getGamesRunning = $mysql->query("SELECT games.system, count(*) numGames FROM games INNER JOIN players ON games.gameID = players.gameID WHERE players.userID = {$userID} AND players.isGM = TRUE and games.retired = FALSE GROUP BY games.system ORDER BY games.system")->fetchALl();
+			$getGamesRunning = $mysql->query("SELECT games.`system`, count(*) numGames FROM games INNER JOIN players ON games.gameID = players.gameID WHERE players.userID = {$userID} AND players.isGM = TRUE AND games.retired IS NULL GROUP BY games.system ORDER BY games.system")->fetchALl();
 			$games = [];
 			$numGames = 0;
 			foreach ($getGamesRunning as $game) {
