@@ -42,6 +42,10 @@
 			$pms = [];
 			foreach ($pmsResults as $pm) {
 				$pm = printReady($pm);
+				$pm['read'] = (bool) $pm['read'];
+				foreach (['pmID', 'senderID', 'recipientID'] as $intKey) {
+					$pm[$intKey] = (int) $pm[$intKey];
+				}
 				$pms[] = $pm;
 			}
 			displayJSON(['success' => true, 'box' => $box, 'pms' => $pms, 'totalCount' => $numPMs]);
