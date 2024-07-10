@@ -323,7 +323,7 @@
 			$mysql = DB::conn('mysql');
 
 			$characterID = intval($_POST['characterID']);
-			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}")->fetchColumn();
+			$system = $mysql->query("SELECT `system` FROM characters WHERE characterID = {$characterID}")->fetchColumn();
 			if (!$system) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
@@ -512,7 +512,7 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}")->fetchColumn();
+			$system = $mysql->query("SELECT `system` FROM characters WHERE characterID = {$characterID}")->fetchColumn();
 			if (!$system) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
@@ -526,7 +526,7 @@
 					$text = $character->getNotes();
 					$text = $updateFn($text);
 					$character->setNotes($text);
-					$character->save();
+					$character->save(true);
 
 					if($returnNotes){
 						displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID, 'notes' => printReady(BBCode2Html($text),['nl2br'])]);
@@ -591,7 +591,7 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$system = $mysql->query("SELECT system FROM characters WHERE characterID = {$characterID}")->fetchColumn();
+			$system = $mysql->query("SELECT `system` FROM characters WHERE characterID = {$characterID}")->fetchColumn();
 			if (!$system) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
