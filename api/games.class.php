@@ -675,7 +675,7 @@ class games
 		if (!$playerCheck->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['notPlayer']]);
 		}
-		$isGM = $playerCheck->fetchColumn();
+		$isGM = (bool) $playerCheck->fetchColumn();
 
 		$charCheck = $mysql->query("SELECT name, label, gameID FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID} LIMIT 1");
 		if (!$charCheck->rowCount()) {
@@ -686,13 +686,8 @@ class games
 		if ($charDetails['gameID']) {
 			displayJSON(['failed' => true, 'errors' => ['alreadyInGame']]);
 		} else {
-			$mysql->query("UPDATE characters SET gameID = {$gameID} WHERE characterID = {$characterID} LIMIT 1");
-			// $hl_charApplied = new HistoryLogger('characterApplied');
-			// $hl_charApplied->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
-			// if ($isGM) {
-			// 	$hl_charApproved = new HistoryLogger('characterApproved');
-			// 	$hl_charApproved->addUser($currentUser->userID, 'gm')->addUser($currentUser->userID)->addCharacter($characterID)->addGame($gameID)->save();
-			// }
+			$approved = $isGM ? 1 : 0;
+			$mysql->query("UPDATE characters SET gameID = {$gameID}, approved = {$approved} WHERE characterID = {$characterID} LIMIT 1");
 
 			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID INNER JOIN players ON u.userID = players.userID WHERE players.gameID = {$gameID} AND players.isGM = 1 AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 			if (sizeof($gmEmails)) {
