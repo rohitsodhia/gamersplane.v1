@@ -47,9 +47,9 @@
 				<div class="rightCol alignRight">
 <?php
 	if ($loggedIn) {
-		$forumSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 'f' AND ID = {$threadManager->getThreadProperty('forumID')}");
+		$forumSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND subscribed_to = 'f' AND ID = {$threadManager->getThreadProperty('forumID')}");
 		if (!$forumSubbed->rowCount()) {
-			$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 't' AND ID = {$threadID}");
+			$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND subscribed_to = 't' AND ID = {$threadID}");
 ?>
 					<p class="threadSub"><a id="forumSub" href="/forums/process/subscribe/?threadID=<?=$threadID?>"><?=$isSubbed->rowCount() ? 'Unsubscribe from' : 'Subscribe to'?> thread</a></p>
 <?php
