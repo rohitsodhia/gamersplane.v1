@@ -329,7 +329,8 @@
 							echo "<span class='badge badge-gamePublic'>Public</span>";
 						}
 
-						$gameInfo['postFrequency'] = json_decode($gameInfo['postFrequency']);
+						$gameInfo['postFrequency'] = json_decode($gameInfo['postFrequency'], true);
+
 						echo "<span class='badge badge-gameFrequency'>".$gameInfo["postFrequency"]["timesPer"]." / ".($gameInfo["postFrequency"]["perPeriod"]=="d"?"day":"week")."</span>";
 
 						echo "<span class='badge badge-gameGm'>".$gameInfo["gmUsername"]."</span>";
