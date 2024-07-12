@@ -105,13 +105,12 @@ class games
 		$count = 0;
 		foreach ($getGames->fetchAll() as $game) {
 			$game['system'] = $systems->getFullName($game['system']);
-			$game['isGM'] = false;
 			$game['isRetired'] = $game['retired'] != null;
 			foreach (['gameID', 'forumID', 'numPlayers', 'playerCount'] as $intKey) {
 				$game[$intKey] = (int) $game[$intKey];
 			}
-			foreach (['status', 'public'] as $boolKey) {
-				$game[$boolKey] = (int) $game[$boolKey];
+			foreach (['status', 'public', 'isGM'] as $boolKey) {
+				$game[$boolKey] = (bool) $game[$boolKey];
 			}
 			if ($game['start']) {
 				$game['start'] = strtotime($game['start']);
