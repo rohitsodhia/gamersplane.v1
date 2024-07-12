@@ -253,7 +253,7 @@
 			return null;
 		}
 
-		public function getPollResults(){
+		public function getPollResults($public){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
 
@@ -274,7 +274,7 @@
 					$myVote=true;
 				}
 
-				if($voteItem['username']){
+				if($public){
 					$ret['votes'][$voteNum]['html'].='<span class="pollAvatar'.($myVote?' pollIVoted':'').'" title='.htmlspecialchars($voteItem['username']).' style="background-image:url('.User::getAvatar($voteItem['userID']).');"></span>';
 				}
 				else{

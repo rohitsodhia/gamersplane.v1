@@ -504,7 +504,6 @@ function BBCode2Html($text) {
 		$text=preg_replace_callback("/\[poll=\"?(.*?)?\"([^\]]*)\](.*?)\[\/poll\]/ms", function($matches){
 			global $post, $postAuthor, $isGM;
 
-			$pollResults=$post->getPollResults();
 
 			$pollTitle=$matches[1];
 
@@ -513,6 +512,7 @@ function BBCode2Html($text) {
 			$multipleVotes = (stripos($matches[2],'multi')!==false);
 			$showBeforeVote = (stripos($matches[2],'show')!==false);
 			$publicVote = (stripos($matches[2],'public')!==false);
+			$pollResults=$post->getPollResults($publicVote);
 
 			$ret = "<div class='postPoll".($multipleVotes?" pollAllowMulti":"").($publicVote?" pollPublic":"")."' data-postid='".$post->getPostID()."'>";
 			$ret .= "<h3>".$pollTitle.($multipleVotes?" <span class='badge badge-pollMulti'>Multi</span>":"").($publicVote?" <span class='badge badge-pollPublic'>Public</span>":"")."</h3>";

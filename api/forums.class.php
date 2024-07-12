@@ -171,7 +171,7 @@
 					$mysql->query("INSERT INTO forums_postPollVotes SET postID = {$postID}, userID = {$currentUser->userID}, vote = {$vote}");
 				}
 
-				return $post->getPollResults();
+				return $post->getPollResults($isPublic);
 			}
 			else {
 				return null;
