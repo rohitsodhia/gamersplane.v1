@@ -181,7 +181,7 @@ class games
 			}
 		}
 
-		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID} ORDER GY players.isGM DESC, users.username");
+		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID} ORDER BY players.isGM DESC, users.username");
 		$players = [];
 		$playerIDs = [];
 		foreach ($getPlayers->fetchAll() as $player) {
