@@ -169,6 +169,9 @@
 			$characters = [];
 			$hasFavorites = FALSE;
 			foreach ($getCharacters->fetchAll() as $char) {
+				$char['characterID'] = (int) $char['characterID'];
+				$char['isFavorite'] = (bool) $char['isFavorite'];
+
 				if ($char['isFavorite']) {
 					$hasFavorites = TRUE;
 				} elseif ($hasFavorites) {
@@ -178,6 +181,15 @@
 			}
 
 			$games = $mysql->query("SELECT DISTINCT games.gameID, games.title, games.forumID, players.isGM, IF(players.userID, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID WHERE (players.userID = {$currentUser->userID} OR favorites.userID = {$currentUser->userID}) AND games.retired IS NULL LIMIT 6")->fetchAll();
+
+			foreach ($games as &$game) {
+				foreach(['gameID', 'forumID'] as $intKey) {
+					$game[$intKey] = (int) $game[$intKey];
+				}
+				foreach(['isGM', 'isPlayer'] as $boolKey) {
+					$game[$boolKey] = (bool) $game[$boolKey];
+				}
+			}
 
 			usort($games, function($a, $b) {
 				if ($a['isPlayer'] != $b['isPlayer']){
