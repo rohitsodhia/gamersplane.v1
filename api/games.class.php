@@ -181,7 +181,7 @@ class games
 			}
 		}
 
-		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
+		$getPlayers = $mysql->query("SELECT players.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID} ORDER GY players.isGM DESC, users.username");
 		$players = [];
 		$playerIDs = [];
 		foreach ($getPlayers->fetchAll() as $player) {
@@ -199,7 +199,7 @@ class games
 				$gameInfo['approvedPlayers']++;
 			}
 		}
-		$getCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} AND userID IN (". implode(', ', $playerIDs) .")");
+		$getCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} AND userID IN (". implode(', ', $playerIDs) .") ORDER BY label");
 		$characters = [];
 		foreach ($getCharacters->fetchAll() as $character) {
 			$userID = $character['userID'];
