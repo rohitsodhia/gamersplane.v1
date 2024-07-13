@@ -308,9 +308,7 @@
 			$characterID = intval($_POST['characterID']);
 			$libraryCheck = $mysql->query("SELECT inLibrary FROM characters WHERE characterID = {$characterID} AND userID = {$currentUser->userID} AND retired IS NULL");
 			if ($libraryCheck->rowCount()) {
-				$mysql->query("UPDATE characters SET inLibrary = !inLibrary");
-#				$hl_libraryToggle = new HistoryLogger(($currentState?'removeFrom':'addTo').'Library');
-#				$hl_libraryToggle->addCharacter($characterID, false)->save();
+				$mysql->query("UPDATE characters SET inLibrary = !inLibrary WHERE characterID = {$characterID} LIMIT 1");
 
 				displayJSON(['success' => true, 'state' => !$libraryCheck->fetchColumn()]);
 			} else {
