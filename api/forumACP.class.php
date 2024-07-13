@@ -60,7 +60,7 @@ class forumACP
 		];
 		if ($details['isGameForum']) {
 			$gameForumID = $forum->heritage[2];
-			list($gameID, $groupID) = $mysql->query("SELECT gameID, groupID FROM games WHERE forumID = {$gameForumID} LIMIT 1");
+			list($gameID, $groupID) = $mysql->query("SELECT gameID, groupID FROM games WHERE forumID = {$gameForumID} LIMIT 1")->fetch(PDO::FETCH_NUM);
 			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameID}")->fetchAll();
 			foreach ($groups as &$group) {
 				$group['groupID'] = (int) $group['groupID'];
@@ -318,19 +318,30 @@ class forumACP
 	{
 		global $currentUser;
 		$mysql = DB::conn('mysql');
+		$groupID = (int) $groupID;
 
 		$getForumID = $mysql->query("SELECT forumID FROM games WHERE groupID = {$groupID} LIMIT 1");
 		if ($getForumID->rowCount()) {
 			displayJSON(['failed' => true, 'errors' => ['mainGroup']]);
 		}
 
-		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
-		$forum = $forumManager->forums[$forumID];
-		if ($forum == null || !$forum->getPermissions('admin')) {
+		$getGroupDetails = $mysql->query("SELECT ownerID, gameID FROM forums_groups WHERE groupID = {$groupID} LIMIT 1");
+		if (!$getGroupDetails->rowCount()) {
+			displayJSON(['failed' => true, 'errors' => ['noGroup']]);
+		}
+		$groupDetails = $getGroupDetails->fetch();
+		if ($currentUser->userID != $groupDetails['ownerID']) {
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
 		}
 
-		if ($forum->isGameForum()) {
+		// $forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
+		// $forum = $forumManager->forums[$forumID];
+		// if ($forum == null || !$forum->getPermissions('admin')) {
+		// 	displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
+		// }
+
+		if ($groupDetails['gameID']) {
+		// if ($forum->isGameForum()) {
 			$mysql->query("DELETE g, m, p FROM forums_groups g INNER JOIN forums_groupMemberships m ON g.groupID = m.groupID LEFT JOIN forums_permissions_groups p ON g.groupID = p.groupID WHERE g.groupID = {$groupID}");
 			displayJSON(['success' => true, 'deleted' => true]);
 		}
