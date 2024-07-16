@@ -65,6 +65,15 @@
 			} else {
 				$pm = printReady($pm->fetch());
 				$pm['message'] = BBCode2Html($pm['message']);
+				$pm['read'] = (bool) $pm['read'];
+				$pm['sender'] = [
+					'userID' => (int) $pm['senderID'],
+					'username' => $pm['senderUsername']
+				];
+				$pm['recipients'] = [[
+					'userID' => (int) $pm['recipientID'],
+					'username' => $pm['recipientUsername']
+				]];
 				$history = json_decode($pm['history']);
 				if (isset($_POST['markRead']) && $_POST['markRead'] && !$pm['read']) {
 					$mysql->query("UPDATE pms SET `read` = 1 WHERE pmID = {$pmID}");
@@ -73,13 +82,13 @@
 					$pm['history'] = [];
 					if ($includeSelfHistory) {
 						$pm['history'][] = [
-							'pmID' => $pm['pmID'],
+							'pmID' => (int) $pm['pmID'],
 							'sender' => $pm['sender'],
 							'recipients' => $pm['recipients'],
 							'title' => $pm['title'],
 							'message' => $pm['message'],
 							'datestamp' => $pm['datestamp'],
-							'replyTo' => $pm['replyTo'],
+							'replyTo' => (int) $pm['replyTo'],
 						];
 					}
 					if ($history && sizeof($history)) {
@@ -160,11 +169,11 @@
 			$mysql = DB::conn('mysql');
 
 			$pmID = intval($pmID);
-			$pm = $mysql->query("SELECT pmID FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID = {$pmID} AND (sender.userID = {$currentUser->userID} OR recipient.userID = {$currentUser->userID})");
-			if ($pm->rowCount()) {
+			$getPM = $mysql->query("SELECT senderID FROM pms WHERE pmID = {$pmID} AND (senderID = {$currentUser->userID} OR recipientID = {$currentUser->userID})");
+			if (!$getPM->rowCount()) {
 				displayJSON(['noMatch' => true]);
 			}
-			$pm = $pm->fetch();
+			$pm = $getPM->fetch();
 			if ($pm['senderID'] == $currentUser->userID) {
 				$key = 'senderDeleted';
 			} else {
