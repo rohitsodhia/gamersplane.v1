@@ -46,6 +46,14 @@
 				foreach (['pmID', 'senderID', 'recipientID'] as $intKey) {
 					$pm[$intKey] = (int) $pm[$intKey];
 				}
+				$pm['sender'] = [
+					'userID' => (int) $pm['senderID'],
+					'username' => $pm['senderUsername']
+				];
+				$pm['recipients'] = [[
+					'userID' => (int) $pm['recipientID'],
+					'username' => $pm['recipientUsername']
+				]];
 				$pms[] = $pm;
 			}
 			displayJSON(['success' => true, 'box' => $box, 'pms' => $pms, 'totalCount' => $numPMs]);
@@ -92,14 +100,19 @@
 						];
 					}
 					if ($history && sizeof($history)) {
-						$historyPMs = $mysql->query("SELECT SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID IN (" . implode(',', $history) . ")");
+						$historyPMs = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID IN (" . implode(',', $history) . ") ORDER BY datestamp DESC LIMIT 10");
 						foreach ($historyPMs->fetchAll() as $hPM) {
 							$hPM['title'] = printReady($hPM['title']);
 							$hPM['message'] = BBCode2Html(printReady($hPM['message']));
+							$hPM['sender'] = [
+								'userID' => (int) $hPM['senderID'],
+								'username' => $hPM['senderUsername']
+							];
+							$hPM['recipients'] = [[
+								'userID' => (int) $hPM['recipientID'],
+								'username' => $hPM['recipientUsername']
+							]];
 							$pm['history'][] = $hPM;
-							if (sizeof($pm['history']) == 10) {
-								break;
-							}
 						}
 					}
 				}
@@ -133,7 +146,7 @@
 					$parent = $mysql->query("SELECT history FROM pms WHERE pmID = {$replyTo}")->fetch();
 					$history = [$replyTo];
 					if ($parent['history']) {
-						$history = array_merge($history, $parent['history']);
+						$history = array_merge($history, json_decode($parent['history']));
 					}
 				}
 				$addPM = $mysql->prepare("INSERT INTO pms SET recipientID = :recipientID, senderID = :senderID, title = :title, message = :message, datestamp = NOW(), replyTo = :replyTo, history = :history");
@@ -143,7 +156,7 @@
 					'title' => sanitizeString($_POST['title']),
 					'message' => sanitizeString($_POST['message']),
 					'replyTo' => $replyTo,
-					'history' => $history
+					'history' => json_encode($history)
 				]);
 
 				$sendMail = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$recipient->userID} AND metaKey = 'pmMail'")->fetchColumn();
