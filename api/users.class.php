@@ -180,7 +180,7 @@
 				$characters[] = $char;
 			}
 
-			$games = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, players.isGM, FALSE) isGM, IF(players.userID, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID AND players.userID = 2 LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = 2 WHERE (players.gameID IS NOT NULL OR favorites.gameID IS NOT NULL) AND games.retired IS NULL ORDER BY games.start DESC LIMIT 6")->fetchAll();
+			$games = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, players.isGM, FALSE) isGM, IF(players.userID, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID} WHERE (players.gameID IS NOT NULL OR favorites.gameID IS NOT NULL) AND games.retired IS NULL ORDER BY games.start DESC LIMIT 6")->fetchAll();
 
 			foreach ($games as &$game) {
 				foreach(['gameID', 'forumID'] as $intKey) {
