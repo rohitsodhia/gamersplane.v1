@@ -41,7 +41,7 @@
 
 			<div id="lookingForAGame" class="userInfoBox">
 				<h2 class="headerbar hbDark"ng-class="{ ' lookingForAGame': user.lookingForAGame != '0' }"><i class="ra ra-health"></i> {{ user.lookingForAGame==0 ? "My game interests" : "I'm looking for a game" }}</h2>
-				<div>{{user.metadata.games}}</div>
+				<div>{{user.games}}</div>
 			</div>
 
 			<div id="forumStats" class="userInfoBox">
