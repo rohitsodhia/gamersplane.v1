@@ -5,7 +5,7 @@
 		$gameID = (int) $gameID;
 		$isUserGM = false;
 		if ($gameID) {
-			$game = $mysql->query("SELECT systems.name AS `system`, games.forumID, games.public, games.gameOptions FROM games INNER JOIN systems ON games.system = systems.id WHERE games.gameID = {$gameID}")->fetch();
+			$game = $mysql->query("SELECT games.gmID, systems.name AS `system`, games.forumID, games.public, games.gameOptions FROM games INNER JOIN systems ON games.system = systems.id WHERE games.gameID = {$gameID}")->fetch();
 			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
 			$isGM = $game && $game['gmID'] == $currentUser->userID ? true : false;
 ?>
@@ -22,7 +22,7 @@
 			}
 			if ($player['approved']) {
 ?>
-	<li><?= $player['user']['username']?></li>
+	<li><?= $player['username']?></li>
 <?php
 			}
 		}
@@ -97,11 +97,11 @@
 <?php		} ?>
 <?php
 		if ($gameID) {
-			$where = "gameID = {$gameID} AND approved = TRUE";
+			$where = "characters.gameID = {$gameID} AND characters.approved = TRUE";
 			if (!$isGM) {
-				$where .= " AND userID = {$currentUser->userID}";
+				$where .= " AND characters.userID = {$currentUser->userID}";
 			}
-			$characters = $mysql->query("SELECT characterID, `system`, label, name, userID FROM characters WHERE {$where}");
+			$characters = $mysql->query("SELECT characters.characterID, characters.`system`, characters.label, characters.name, users.userID, users.username FROM characters INNER JOIN users ON characters.userID = users.userID WHERE {$where}");
 			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
@@ -118,7 +118,7 @@
 						echo "				<li".($currentUser->userID == $currentUserID?" class='thisUser'":"").">\n";
 						if ($isGM) {
 ?>
-					<p class="username"><i class="ra ra-quill-ink"></i> <a href="/user/<?=$charInfo['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
+					<p class="username"><i class="ra ra-quill-ink"></i> <a href="/user/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
 <?php
 						}
 					}
