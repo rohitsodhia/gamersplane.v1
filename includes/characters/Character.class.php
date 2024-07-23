@@ -216,6 +216,9 @@
 					$saveCharacter = $mysql->prepare("INSERT INTO characters SET " . implode(', ', $preparedValues));
 				}
 				$saveCharacter->execute($setValues);
+				if (!$this->characterId) {
+					$this->characterID = $mysql->lastInsertID();
+				}
 				return true;
 			} catch (Exception $e) { var_dump($e); }
 

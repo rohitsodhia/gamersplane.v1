@@ -664,7 +664,7 @@
 				$newChar->setCharType('PC');
 				$newChar->setName($name);
 				$newChar->setNotes($bbCode);
-				$newChar->createNew();
+				$newChar->save(true);
 
 				displayJSON([
 					'success' => true,
