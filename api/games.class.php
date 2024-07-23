@@ -171,11 +171,12 @@ class games
 		$decks = [];
 		if ($getDecks->rowCount()) {
 			foreach ($getDecks->fetchAll() as $deck) {
+
 				$decks[] = [
-					'deckID' => $deck['deckID'],
+					'deckID' => (int) $deck['deckID'],
 					'type' => $deck['type'],
 					'label' => $deck['label'],
-					'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1
+					'cardsRemaining' => sizeof(json_decode($deck['deck'])) - (int) $deck['position'] + 1
 				];
 			}
 		}
