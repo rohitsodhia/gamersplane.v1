@@ -252,7 +252,8 @@
 			global $currentUser;
 			$mysql = DB::conn('mysql');
 
-			$mysql->query("UPDATE characters SET gameID = NULL, retired = NOW() WHERE characterID = {$this->characterID} LIMIT 1");
+			$mysql->query("UPDATE characters SET gameID = NULL, retired = NOW(), inLibrary = 0 WHERE characterID = {$this->characterID} LIMIT 1");
+			$mysql->query("DELETE FROM characterLibrary_favorites WHERE characterID = {$this->characterID}");
 		}
 
 		public function getGameID(){
