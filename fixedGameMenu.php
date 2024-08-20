@@ -100,7 +100,7 @@
 			if (!$isGM) {
 				$where .= " AND characters.userID = {$currentUser->userID}";
 			}
-			$characters = $mysql->query("SELECT characters.characterID, characters.`system`, characters.label, characters.name, users.userID, users.username FROM characters INNER JOIN users ON characters.userID = users.userID WHERE {$where}");
+			$characters = $mysql->query("SELECT characters.characterID, characters.`system`, characters.label, characters.name, users.userID, users.username FROM characters INNER JOIN users ON characters.userID = users.userID WHERE {$where} ORDER BY users.username");
 			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
