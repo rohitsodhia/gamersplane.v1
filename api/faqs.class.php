@@ -26,7 +26,7 @@
 		public function getFAQs($pr = true) {
 			$mysql = DB::conn('mysql');
 
-			$rawFAQs = $mysql->query("SELECT * FROM faqs ORDER BY category, order");
+			$rawFAQs = $mysql->query("SELECT * FROM faqs ORDER BY category, `order`");
 			$faqs = [];
 			foreach ($rawFAQs as $faq) {
 				$faq['answer'] = [
@@ -60,7 +60,7 @@
 				displayJSON(['failed' => true, 'cannotSwitch' => true]);
 			}
 			$switch = $mysql->prepare("SELECT id FROM faqs WHERE category = :category AND order = :order");
-			$switch->execute([':category' => $faq['category'], ':order'] => $faq['order'] + ($direction == 'up' ? -1 : 1)]);
+			$switch->execute([':category' => $faq['category'], ':order' => $faq['order'] + ($direction == 'up' ? -1 : 1)]);
 			$switch = $switch->fetch();
 			$updateOrder = $mysql->prepare("UPDATE faqs SET order = :order WHERE id = :id");
 			$updateOrder->execute([':id' => $id, ':order' => $faq['order'] + ($direction == 'up' ? -1 : 1)]);
