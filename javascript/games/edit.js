@@ -62,6 +62,10 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 					if ($scope.game.charGenInfo == 'None Provided') {
 						$scope.game.charGenInfo = '';
 					}
+					var gameOptions = $scope.game.gameOptions;
+					gameOptions = JSON.parse(gameOptions);
+					gameOptions = JSON.stringify(gameOptions, null, 4);
+					$scope.game.gameOptions = gameOptions
 					$('#gameOptions').updateFields($scope.game.gameOptions);
 				});
 			}
@@ -393,7 +397,7 @@ $(function () {
 
 		var curJson = gameOptionJson || $.trim($('#gameOptions').val());
 		if (curJson && isValidJson(curJson)) {
-			var gameOptions = JSON.parse(curJson);
+			var gameOptions = JSON.parse(curJson, null, 2);
 			if (gameOptions && gameOptions.background && gameOptions.background.image) {
 				$('#adrBackground').val(gameOptions.background.image);
 			}
