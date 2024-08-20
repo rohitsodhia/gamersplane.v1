@@ -45,7 +45,6 @@
 			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
 				<li id="fm_diceRoller">
-8
 					<a href="/tools/dice" class="menuLink">Dice Roller</a>
 					<div class="subwindow">
 						<div class="floatLeft">
