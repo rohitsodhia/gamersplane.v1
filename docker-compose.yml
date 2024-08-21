@@ -53,9 +53,13 @@ services:
       - MYSQL_USER=gamersplane
       - MYSQL_PASSWORD
     volumes:
-      - ./docker/mysql/gp.cnf:/etc/mysql/conf.d/gp.cnf
+      # - ./docker/mysql/gp.cnf:/etc/mysql/conf.d/gp.cnf
       - ./docker/mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
+    command:
+      --mysql-native-password=ON
+      --authentication_policy=mysql_native_password
+      --log_error_suppression_list=MY-013360
 
   postfix:
     build:
