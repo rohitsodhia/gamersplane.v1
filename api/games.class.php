@@ -199,7 +199,7 @@ class games
 				$gameInfo['approvedPlayers']++;
 			}
 		}
-		$getCharacters = $mysql->query("SELECT characterID, userID, label, approved FROM characters WHERE gameID = {$gameID} AND userID IN (". implode(', ', $playerIDs) .") ORDER BY label");
+		$getCharacters = $mysql->query("SELECT characterID, userID, label, `system`, approved FROM characters WHERE gameID = {$gameID} AND userID IN (". implode(', ', $playerIDs) .") ORDER BY label");
 		$characters = [];
 		foreach ($getCharacters->fetchAll() as $character) {
 			$userID = $character['userID'];
