@@ -330,13 +330,6 @@ app.config(['$httpProvider', function ($httpProvider) {
 			return data.data;
 		});
 	};
-}]).service('Links', ['$http', function ($http) {
-	this.categories = ['Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories'];
-	this.get = function (params) {
-		if (typeof params != 'object' || Array.isArray(params))
-			params = {};
-		return $http.post(API_HOST + '/links/get/', params).then(function (data) { return data; });
-	};
 }]).service('faqs', ['$http', '$q', function ($http, $q) {
 	this.categories = { 'getting-started': 'Getting Started', 'characters': 'Characters', 'games': 'Games', 'tools': 'Tools' };
 	this.get = function () {
@@ -1022,20 +1015,6 @@ app.config(['$httpProvider', function ($httpProvider) {
 				$scope.$emit('pageLoading');
 				$scope.aFAQs = data.faqs;
 			}
-		});
-	}]).controller('about', ['$scope', '$filter', 'Links', function ($scope, $filter, Links) {
-		$scope.$emit('pageLoading');
-		$scope.links = [];
-		Links.get({
-			'level': ['Affiliate', 'Partner'],
-			'networks': 'rpga',
-			'or': true
-		}).then(function (data) {
-			data = data.data;
-			$scope.links.partners = $filter('filter')(data.links, { 'level': 'Partner' });
-			$scope.links.rpgan = $filter('filter')(data.links, { 'networks': 'rpga' });
-			$scope.links.affiliates = $filter('filter')(data.links, { 'level': 'Affiliate' });
-			$scope.$emit('pageLoading');
 		});
 	}]);
 var controllers = angular.module('controllers', []);
