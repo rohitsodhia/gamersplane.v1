@@ -178,16 +178,17 @@
 			}
 		}
 
-		public function ffgFlip($postID, $toDark, $totalFlips, $tokens){
+		public function ffgFlip(int $postID, bool $toDark, $totalFlips, $tokens){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
 			$post = new Post($postID);
+			$toDark = $toDark ? 1 : 0;
 			$threadManager = new ThreadManager($post->getThreadID());
 
 			if ($threadManager->getPermissions('write')){
 				$flips=$post->getFfgDestinyResults($tokens);
 				if(count($flips['flips'])==$totalFlips){
-					$mysql->query("INSERT INTO forums_postFFGFlips SET postID = {(int) $postID}, userID = {$currentUser->userID}, toDark = {(int) $toDark}");
+					$mysql->query("INSERT INTO forums_postFFGFlips SET postID = {$postID}, userID = {$currentUser->userID}, toDark = {$toDark}");
 					$flips=$post->getFfgDestinyResults($tokens);
 					$flips['success']=1;
 				}

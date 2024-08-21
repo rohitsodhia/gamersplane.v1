@@ -289,10 +289,10 @@
 
 			$mysql = DB::conn('mysql');
 
-			$getFlips = $mysql->query("SELECT forums_postFFGFlips.toDark, users.userID, users.username FROM forums_postFFGFlips INNER JOIN users ON forums_postFFGFlips.userID = users.userID WHERE forums_postFFGFlips.postID = {$this->postID}");
+			$getFlips = $mysql->query("SELECT forums_postFFGFlips.toDark, users.userID, users.username, forums_postFFGFlips.timestamp FROM forums_postFFGFlips INNER JOIN users ON forums_postFFGFlips.userID = users.userID WHERE forums_postFFGFlips.postID = {$this->postID}");
 			$ret = array('flips'=>array(),'darkTokens'=>0, 'success'=>0, 'html'=>'');
 			foreach ($getFlips->fetchAll() as $flip) {
-				$ret['flips'][]=array('toDark'=>$flip['toDark'],'username'=>$flip['username'],'datetime'=>$flip['datetime']);
+				$ret['flips'][]=array('toDark'=>$flip['toDark'],'username'=>$flip['username'],'timestamp'=>$flip['timestamp']);
 				if($flip['toDark']){
 					$ret['darkTokens']=$ret['darkTokens']+1;
 				}else{
