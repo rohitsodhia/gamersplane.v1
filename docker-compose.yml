@@ -41,9 +41,9 @@ services:
 
   mysql:
     image: mysql:8.4
-    # build:
-    #   context: ./docker/mysql
-    #   dockerfile: Dockerfile
+    build:
+      context: ./docker/mysql
+      dockerfile: Dockerfile
     container_name: gpv1-mysql
     ports:
       - "127.0.0.1:3306:3306"
@@ -53,13 +53,8 @@ services:
       - MYSQL_USER=gamersplane
       - MYSQL_PASSWORD
     volumes:
-      # - ./docker/mysql/gp.cnf:/etc/mysql/conf.d/gp.cnf
       - ./docker/mysql:/docker-entrypoint-initdb.d
       - mysql_db:/var/lib/mysql
-    command:
-      --mysql-native-password=ON
-      --authentication_policy=mysql_native_password
-      --log_error_suppression_list=MY-013360
 
   postfix:
     build:
