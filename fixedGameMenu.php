@@ -30,7 +30,7 @@
 	if ($gameID) {
 ?>
 	<script type="application/json" id="gameOptions">
-<?= json_decode($game["gameOptions"]) ?>
+<?= $game["gameOptions"] ?>
 	</script>
 
 <?php } ?>
