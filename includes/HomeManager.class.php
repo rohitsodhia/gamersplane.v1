@@ -84,7 +84,7 @@
 			$mysql = DB::conn('mysql');
 			$systems = Systems::getInstance();
 
-			$getLatestGames = $mysql->query("SELECT games.gameID, games.title, games.system, games.system, gm.userID, gm.username, games.numPlayers, COUNT(approvedPlayers.gameID) playersInGame FROM games INNER JOIN users gm ON games.gmID = gm.userID INNER JOIN players approvedPlayers ON games.gameID = approvedPlayers.gameID AND approvedPlayers.approved = 1 LEFT JOIN players userGames ON games.gameID = userGames.gameID AND userGames.userID = {$currentUser->userID} WHERE userGames.userID != {$currentUser->userID} GROUP BY games.gameID ORDER BY `start` LIMIT {$showCount}");
+			$getLatestGames = $mysql->query("SELECT games.gameID, games.title, games.system, games.system, gm.userID, gm.username, games.numPlayers, COUNT(approvedPlayers.gameID) playersInGame FROM games INNER JOIN users gm ON games.gmID = gm.userID INNER JOIN players approvedPlayers ON games.gameID = approvedPlayers.gameID AND approvedPlayers.approved = 1 LEFT JOIN players userGames ON games.gameID = userGames.gameID AND userGames.userID = {$currentUser->userID} WHERE userGames.userID IS NULL GROUP BY games.gameID ORDER BY `start` DESC LIMIT {$showCount}");
 			$first = true;
 			foreach ($getLatestGames->fetchAll() as $gameInfo) {
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
