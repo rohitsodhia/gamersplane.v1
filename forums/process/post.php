@@ -262,7 +262,7 @@
 		}
 
 		if (!isset($_POST['edit']) || !$minorChange) {
-			$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE s.userID = {$currentUser->userID} AND ((s.subscribed_to = 'f' AND s.ID = {$threadManager->getThreadProperty('forumID')}) OR (s.subscribed_to = 't' AND s.ID = {$threadManager->getThreadID()}))");
+			$subbedUsers = $mysql->query("SELECT u.email FROM forumSubs s INNER JOIN users u ON s.userID = u.userID WHERE s.userID = {$currentUser->userID} AND ((s.`type` = 'f' AND s.ID = {$threadManager->getThreadProperty('forumID')}) OR (s.`type` = 't' AND s.ID = {$threadManager->getThreadID()}))");
 			$subs = [];
 			if ($subbedUsers->rowCount()) {
 				foreach ($subbedUsers as $user) {

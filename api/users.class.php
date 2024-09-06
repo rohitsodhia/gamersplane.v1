@@ -636,13 +636,13 @@
 		public function removeThreadNotification($postId){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID} AND postID = {$postId}");
+			$mysql->query("DELETE FROM forumNotifications WHERE userID = {$currentUser->userID} AND postID = {$postId}");
 		}
 
 		public function removeAllThreadNotifications(){
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mysql->query("DELETE FROM forumSubs WHERE userID = {$currentUser->userID} AND subscribed_to = 't'");
+			$mysql->query("DELETE FROM forumNotifications WHERE userID = {$currentUser->userID}");
 
 		}
 

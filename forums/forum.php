@@ -55,7 +55,7 @@
 <?
 	}
 	if ($forumID) {
-		$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND subscribed_to = 'f' AND ID = {$forumID}");
+		$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND `type` = 'f' AND ID = {$forumID}");
 ?>
 				<p><a id="forumSub" href="/forums/process/subscribe/?forumID=<?=$forumID?>"><?=$isSubbed->rowCount()?'Unsubscribe from':'Subscribe to'?> forum</a></p>
 <?

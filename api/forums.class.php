@@ -36,7 +36,7 @@
 
 			if (isset($_POST['userID'])) {
 				$userID = (int) $_POST['userID'];
-				$rForums = $mysql->query("SELECT p.forumID, p.title, p.heritage, p.parentID, p.order, IF(s.ID = p.forumID, 1, 0) isSubbed FROM forumSubs s INNER JOIN forums f ON s.ID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') WHERE p.forumID != 0 AND s.userID = {$userID} AND s.subscribed_to = 'f' ORDER BY LENGTH(p.heritage), `order`");
+				$rForums = $mysql->query("SELECT p.forumID, p.title, p.heritage, p.parentID, p.order, IF(s.ID = p.forumID, 1, 0) isSubbed FROM forumSubs s INNER JOIN forums f ON s.ID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') WHERE p.forumID != 0 AND s.userID = {$userID} AND s.`type` = 'f' ORDER BY LENGTH(p.heritage), `order`");
 				$forums = [];
 				foreach ($rForums as $forum) {
 					if (!isset($forums[$forum['forumID']])) {
@@ -54,7 +54,7 @@
 					}
 				}
 
-				$rThreads = $mysql->query("SELECT f.forumID, f.title forumTitle, t.threadID, p.title threadTitle FROM forumSubs s INNER JOIN threads t ON s.ID = t.threadID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts p ON t.firstPostID = p.postID WHERE s.userID = {$userID} AND s.subscribed_to = 't' ORDER BY LENGTH(f.heritage), `order`");
+				$rThreads = $mysql->query("SELECT f.forumID, f.title forumTitle, t.threadID, p.title threadTitle FROM forumSubs s INNER JOIN threads t ON s.ID = t.threadID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts p ON t.firstPostID = p.postID WHERE s.userID = {$userID} AND s.`type` = 't' ORDER BY LENGTH(f.heritage), `order`");
 				$threads = [];
 				foreach ($rThreads as $thread) {
 					if (!isset($threads[$thread['forumID']])) {
@@ -86,7 +86,7 @@
 			}
 			$typeID = (int) $_POST['id'];
 
-			$mysql->query("DELETE FROM forumSubs WHERE userID = {$userID} AND subscribed_to = '{$type}' AND ID = {$typeID} LIMIT 1");
+			$mysql->query("DELETE FROM forumSubs WHERE userID = {$userID} AND `type` = '{$type}' AND ID = {$typeID} LIMIT 1");
 
 			displayJSON(['success' => true]);
 		}
