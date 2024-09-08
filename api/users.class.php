@@ -164,8 +164,7 @@
 				displayJSON(['failed' => true]);
 			}
 
-			$getCharacters = $mysql->query("SELECT DISTINCT characters.characterID, characters.label, characters.system, IF(favorites.userID, 1, 0) isFavorite FROM characters LEFT JOIN characterLibrary_favorites favorites ON characters.characterID = favorites.characterID AND favorites.userID = {$currentUser->userID} WHERE characters.userID = {$currentUser->userID} AND characters.retired IS NULL ORDER BY isFavorite DESC LIMIT 10");
-
+			$getCharacters = $mysql->query("SELECT DISTINCT characters.characterID, characters.label, characters.system, IF(favorites.userID, 1, 0) isFavorite FROM characters LEFT JOIN characterLibrary_favorites favorites ON characters.characterID = favorites.characterID AND favorites.userID = {$currentUser->userID} WHERE characters.userID = {$currentUser->userID} AND characters.retired IS NULL ORDER BY isFavorite DESC, characters.label");
 			$characters = [];
 			$hasFavorites = FALSE;
 			foreach ($getCharacters->fetchAll() as $char) {
@@ -178,27 +177,32 @@
 					break;
 				}
 				$characters[] = $char;
+				if (!$hasFavorites && count($characters) == 6) {
+					break;
+				}
 			}
 
-			$games = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, players.isGM, FALSE) isGM, IF(players.userID, TRUE, FALSE) isPlayer FROM games LEFT JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID} WHERE favorites.userID IS NOT NULL AND games.retired IS NULL ORDER BY games.start DESC LIMIT 10")->fetchAll();
-
-			foreach ($games as &$game) {
+			$getGames = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, players.isGM, FALSE) isGM, IF(players.userID, TRUE, FALSE) isPlayer, IF(favorites.userID, 1, 0) isFavorite FROM games LEFT JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID} WHERE (players.userID IS NOT NULL OR favorites.userID IS NOT NULL) AND games.retired IS NULL ORDER BY isFavorite DESC, isGM DESC, isPlayer DESC, games.title");
+			$games = [];
+			$hasFavorites = FALSE;
+			foreach ($getGames->fetchAll() as $game) {
 				foreach(['gameID', 'forumID'] as $intKey) {
 					$game[$intKey] = (int) $game[$intKey];
 				}
 				foreach(['isGM', 'isPlayer'] as $boolKey) {
 					$game[$boolKey] = (bool) $game[$boolKey];
 				}
-			}
 
-			usort($games, function($a, $b) {
-				if ($a['isPlayer'] != $b['isPlayer']){
-					return $a['isPlayer'] > $b['isPlayer'] ? -1 : 1;
+				if ($game['isFavorite']) {
+					$hasFavorites = TRUE;
+				} elseif ($hasFavorites) {
+					break;
 				}
-				$aTitle = trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding($a['title'], "UTF-8"))));
-				$bTitle = trim(strtolower(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', mb_convert_encoding($b['title'], "UTF-8"))));
-				return $aTitle > $bTitle ? 1 : ($aTitle < $bTitle ? -1 : 0);
-			});
+				$games[] = $game;
+				if (!$hasFavorites && count($games) == 6) {
+					break;
+				}
+			}
 
 			$pmCount = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE recipientID = {$currentUser->userID} AND `read` = 0 AND senderDeleted = 0 and recipientDeleted = 0")->fetchColumn();
 
