@@ -37,7 +37,8 @@
 	</ul>
 	<ul class="leftCol">
 <?php
-			if ($isGM || $pathAction == 'characters') {
+		}
+		if ($isGM || $pathAction == 'characters') {
 ?>
 		<li id="fm_tools" class="mob-hide">
 			<a href="/tools" class="menuLink">Tools</a>
@@ -61,7 +62,7 @@
 					</div>
 				</li>
 <?php
-				if ($isGM || $pathAction == 'characters') {
+			if ($isGM || $pathAction == 'characters') {
 ?>
 				<li id="fm_cards">
 					<a href="/tools/cards" class="menuLink">Cards</a>
@@ -95,10 +96,11 @@
 			</ul>
 		</li>
 <?php
-				}
 			}
+		}
 ?>
 <?php
+		if ($gameID) {
 			$where = "characters.gameID = {$gameID} AND characters.approved = TRUE";
 			// if (!$isGM) {
 			// 	$where .= " AND characters.userID = {$currentUser->userID}";
@@ -132,11 +134,15 @@
 		</li>
 <?php
 			}
-		}
-		if ($pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
+			if ($pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
 ?>
 			<li><a href="/forums/<?=$game['forumID']?>/" class="menuLink">Forum</a></li>
-<?php	} ?>
+<?php
+			}
+?>
 	</ul>
-<?php	} ?>
+<?php
+		}
+	}
+?>
 </div></div>
