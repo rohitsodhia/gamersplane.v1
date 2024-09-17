@@ -97,9 +97,9 @@
 <?php
 		if ($gameID) {
 			$where = "characters.gameID = {$gameID} AND characters.approved = TRUE";
-			if (!$isGM) {
-				$where .= " AND characters.userID = {$currentUser->userID}";
-			}
+			// if (!$isGM) {
+			// 	$where .= " AND characters.userID = {$currentUser->userID}";
+			// }
 			$characters = $mysql->query("SELECT characters.characterID, characters.`system`, characters.label, characters.name, users.userID, users.username FROM characters INNER JOIN users ON characters.userID = users.userID WHERE {$where} ORDER BY users.username");
 			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
@@ -115,11 +115,11 @@
 						}
 						$currentUserID = $charInfo['userID'];
 						echo "				<li".($currentUser->userID == $currentUserID?" class='thisUser'":"").">\n";
-						if ($isGM) {
+						// if ($isGM) {
 ?>
 					<p class="username"><i class="ra ra-quill-ink"></i> <a href="/user/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
 <?php
-						}
+						// }
 					}
 ?>
 					<p class="charName"><i class="ra ra-quill-ink"></i> <a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['name']?></a></p>
