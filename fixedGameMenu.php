@@ -1,7 +1,6 @@
 
-<?php	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
-<div id="fixedMenu"><div id="fixedMenu_window">
 <?php
+	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) {
 		$gameID = (int) $gameID;
 		$isUserGM = false;
 		if ($gameID) {
@@ -9,38 +8,37 @@
 			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
 			$isGM = $game && $game['gmID'] == $currentUser->userID ? true : false;
 ?>
+<div id="fixedMenu"><div id="fixedMenu_window">
 <ul style="display:none" id="playerList">
 <?php
-	$approvedPlayer = false;
-	if ($gameID && $players->rowCount()) {
-		foreach ($players->fetchAll() as $player) {
-			if ($player['userID'] == $currentUser->userID && $player['approved']) {
-				$approvedPlayer = true;
-			}
-			if ($player['isGM'] && $player['userID'] == $currentUser->userID) {
-				$isUserGM = true;
-			}
-			if ($player['approved']) {
+			$approvedPlayer = false;
+			if ($players->rowCount()) {
+				foreach ($players->fetchAll() as $player) {
+					if ($player['userID'] == $currentUser->userID && $player['approved']) {
+						$approvedPlayer = true;
+					}
+					if ($player['isGM'] && $player['userID'] == $currentUser->userID) {
+						$isUserGM = true;
+					}
+					if ($player['approved']) {
 ?>
 	<li><?= $player['username']?></li>
 <?php
+					}
+				}
 			}
-		}
-	}
-	if ($gameID) {
 ?>
 	<script type="application/json" id="gameOptions">
 <?= $game["gameOptions"] ?>
 	</script>
-
-<?php } ?>
 </ul>
 	<ul class="rightCol">
 		<li><a href="/games/<?=$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
-<?php		} ?>
 	<ul class="leftCol">
-<?php		if ($isGM || $pathAction == 'characters') { ?>
+<?php
+			if ($isGM || $pathAction == 'characters') {
+?>
 		<li id="fm_tools" class="mob-hide">
 			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
@@ -62,6 +60,9 @@
 						<div class="floatRight"></div>
 					</div>
 				</li>
+<?php
+				if ($isGM || $pathAction == 'characters') {
+?>
 				<li id="fm_cards">
 					<a href="/tools/cards" class="menuLink">Cards</a>
 					<div class="subwindow">
@@ -93,9 +94,11 @@
 				</li>
 			</ul>
 		</li>
-<?php		} ?>
 <?php
-		if ($gameID) {
+				}
+			}
+?>
+<?php
 			$where = "characters.gameID = {$gameID} AND characters.approved = TRUE";
 			// if (!$isGM) {
 			// 	$where .= " AND characters.userID = {$currentUser->userID}";
@@ -130,10 +133,10 @@
 <?php
 			}
 		}
-		if ($gameID && $pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
+		if ($pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
 ?>
 			<li><a href="/forums/<?=$game['forumID']?>/" class="menuLink">Forum</a></li>
 <?php	} ?>
 	</ul>
+<?php	} ?>
 </div></div>
-<?php } ?>

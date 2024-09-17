@@ -257,11 +257,7 @@
 		}
 
 		public function getGameID(){
-			if($this->game){
-				return $this->game['gameID'];
-			}
-
-			return null;
+			return (int) $this->gameID ?? null;
 		}
 	}
 ?>
