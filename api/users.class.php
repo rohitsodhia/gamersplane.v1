@@ -198,7 +198,7 @@
 				} elseif ($hasFavorites) {
 					break;
 				}
-				if (!$game['isFavorite'] && !$game['retired']) {
+				if ($game['isFavorite'] || (!$game['isFavorite'] && !$game['retired'])) {
 					$games[] = $game;
 				}
 				if (!$hasFavorites && count($games) == 6) {
