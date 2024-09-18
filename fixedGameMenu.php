@@ -1,6 +1,8 @@
-
 <?php
-	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) {
+	if (($gameID || ($pathAction == 'characters' && $pathOptions[0] != 'my')) && !isset($_GET['modal'])) {
+?>
+<div id="fixedMenu"><div id="fixedMenu_window">
+<?php
 		$gameID = (int) $gameID;
 		$isUserGM = false;
 		if ($gameID) {
@@ -8,7 +10,6 @@
 			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
 			$isGM = $game && $game['gmID'] == $currentUser->userID ? true : false;
 ?>
-<div id="fixedMenu"><div id="fixedMenu_window">
 <ul style="display:none" id="playerList">
 <?php
 			$approvedPlayer = false;
@@ -35,9 +36,11 @@
 	<ul class="rightCol">
 		<li><a href="/games/<?=$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
-	<ul class="leftCol">
 <?php
 		}
+?>
+	<ul class="leftCol">
+<?php
 		if ($isGM || $pathAction == 'characters') {
 ?>
 		<li id="fm_tools" class="mob-hide">
