@@ -278,7 +278,7 @@
 			if ($characterID <= 0) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacterID']]);
 			}
-			$systemCheck = $mysql->query("SELECT `system` FROM characters WHERE {$characterID}");
+			$systemCheck = $mysql->query("SELECT `system` FROM characters WHERE characterID = {$characterID} LIMIT 1");
 			if (!$systemCheck->rowCount()) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			}
