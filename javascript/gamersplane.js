@@ -3,25 +3,25 @@ function hex(x) {
 }
 
 $.cssHooks.backgroundColor = {
-    get: function(elem) {
+	get: function (elem) {
 		var bg;
-        if (elem.currentStyle) {
-            bg = elem.currentStyle.backgroundColor;
+		if (elem.currentStyle) {
+			bg = elem.currentStyle.backgroundColor;
 		}
-        else if (window.getComputedStyle) {
-            bg = document.defaultView.getComputedStyle(elem, null).getPropertyValue("background-color");
+		else if (window.getComputedStyle) {
+			bg = document.defaultView.getComputedStyle(elem, null).getPropertyValue("background-color");
 		}
-        if (bg.search("rgb") == -1) {
-            return bg;
-        } else {
-            bg = bg.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            hexString = /*"#" + */hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
-            return hexString.toUpperCase();
-        }
-    }
+		if (bg.search("rgb") == -1) {
+			return bg;
+		} else {
+			bg = bg.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+			hexString = /*"#" + */hex(bg[1]) + hex(bg[2]) + hex(bg[3]);
+			return hexString.toUpperCase();
+		}
+	}
 };
 
-$(function() {
+$(function () {
 	$('select:not(.notPretty)').prettySelect();
 	$('input[type="checkbox"]:not(.notPretty)').prettyCheckbox();
 	$('input[type="radio"]').prettyRadio();
@@ -32,8 +32,8 @@ $(function() {
 
 	if ($('body').hasClass('modal')) {
 		$('a').not('.inFrame').attr('target', '_parent');
-		parent.$.colorbox.resize({ 'innerWidth': $('body').data('modalWidth') } );
-		parent.$.colorbox.resize({ 'innerHeight': $('body').height() } );
+		parent.$.colorbox.resize({ 'innerWidth': $('body').data('modalWidth') });
+		parent.$.colorbox.resize({ 'innerHeight': $('body').height() });
 
 		$('form.ajaxForm_refreshParent').append('<input type="hidden" name="modal" value="1">').ajaxForm({
 			dataType: 'json',
@@ -53,7 +53,7 @@ $(function() {
 		});
 	}
 
-	$('body').on('click','.favoriteGame', function (e) {
+	$('body').on('click', '.favoriteGame', function (e) {
 		e.preventDefault();
 		var pThis = $(this);
 		var gameID = pThis.data('gameid');
@@ -147,27 +147,27 @@ $(function() {
 		curPage = $('body > div').attr('id').substring(5);
 
 	//spoiler opening and closing
-	$('body').on('click','.spoiler .tag',function(){$(this).closest('.spoiler').toggleClass('closed');});
+	$('body').on('click', '.spoiler .tag', function () { $(this).closest('.spoiler').toggleClass('closed'); });
 
 	//dd collections notes open close
-	$('body').on('click', '.ddCollection .ability_notesLink', function(e){e.preventDefault();$(this).toggleClass('open').siblings('.notes').slideToggle();});
+	$('body').on('click', '.ddCollection .ability_notesLink', function (e) { e.preventDefault(); $(this).toggleClass('open').siblings('.notes').slideToggle(); });
 
 	//dark theme toggle
-	$('#userMenu').on('click','#toggleDarkMode',function(){
-		var stylesheet=$('#darkmodecss');
-		if(stylesheet.length==0){
-			$('<link id="darkmodecss" href="/styles/themeDark.css?v='+(Math.floor(Math.random() * 100000))+'" type="text/css" rel="stylesheet"/>').appendTo($('head'));
+	$('#userMenu').on('click', '#toggleDarkMode', function () {
+		var stylesheet = $('#darkmodecss');
+		if (stylesheet.length == 0) {
+			$('<link id="darkmodecss" href="/styles/themeDark.css?v=' + (Math.floor(Math.random() * 100000)) + '" type="text/css" rel="stylesheet"/>').appendTo($('head'));
 			$('body').addClass('dark').darkModeColorize();
-		}else{
+		} else {
 			stylesheet.remove();
 			$('body').removeClass('dark').darkModeColorizeRevert();
 		}
-		var darkTheme=$('#darkmodecss').length>0;
-		$.ajax({type: 'post', url: API_HOST +'/users/setUserTheme', xhrFields: {withCredentials: true},data:{ darkTheme: darkTheme?1:0}});
-		$('#toggleDarkMode').text((darkTheme?"Light theme":"Dark theme"));
+		var darkTheme = $('#darkmodecss').length > 0;
+		$.ajax({ type: 'post', url: API_HOST + '/users/setUserTheme', xhrFields: { withCredentials: true }, data: { darkTheme: darkTheme ? 1 : 0 } });
+		$('#toggleDarkMode').text((darkTheme ? "Light theme" : "Dark theme"));
 		event.preventDefault();
 	});
-	$('#toggleDarkMode').text(($('#darkmodecss').length>0?"Light theme":"Dark theme"));
+	$('#toggleDarkMode').text(($('#darkmodecss').length > 0 ? "Light theme" : "Dark theme"));
 
 	applyPageStyle($('#gameOptions').html());
 	fixDarkThemeColours();
@@ -182,8 +182,8 @@ app.config(['$httpProvider', function ($httpProvider) {
 
 	factory.load = function () {
 		return $http.post(API_HOST + '/users/getCurrentUser/').then(function (data) {
-			userData = data.data.loggedOut?null:data.data;
-			return data.data.loggedOut?false:true;
+			userData = data.data.loggedOut ? null : data.data;
+			return data.data.loggedOut ? false : true;
 		});
 	};
 
@@ -232,8 +232,8 @@ app.config(['$httpProvider', function ($httpProvider) {
 			'url': API_HOST + '/users/save/',
 			'file': newAvatar,
 			'data': params
-//			'fields': params,
-//			'sendFieldsAs': 'form'
+			//			'fields': params,
+			//			'sendFieldsAs': 'form'
 		});
 	};
 	this.inactive = function (lastActivity, returnImg) {
@@ -249,15 +249,15 @@ app.config(['$httpProvider', function ($httpProvider) {
 			return null;
 		diffStr = 'Inactive for';
 		if (diff <= 30)
-			diffStr += ' ' + (diff - 1) + ' day' + (diff > 1?'s':'');
+			diffStr += ' ' + (diff - 1) + ' day' + (diff > 1 ? 's' : '');
 		else {
 			diff = Math.floor(diff / 30);
 			if (diff < 12)
-				diffStr += ' ' + diff + ' month' + (diff > 1?'s':'');
+				diffStr += ' ' + diff + ' month' + (diff > 1 ? 's' : '');
 			else
 				diffStr += 'ever!';
 		}
-		return returnImg?"<img src=\"/images/sleeping.png\" title=\"" + diffStr + "\" alt=\"" + diffStr + "\">":diffStr;
+		return returnImg ? "<img src=\"/images/sleeping.png\" title=\"" + diffStr + "\" alt=\"" + diffStr + "\">" : diffStr;
 	};
 	this.suspend = function (userID, until) {
 		return $http.post(API_HOST + '/users/suspend/', { 'userID': userID, 'until': until }).then(function (data) {
@@ -330,13 +330,6 @@ app.config(['$httpProvider', function ($httpProvider) {
 			return data.data;
 		});
 	};
-}]).service('Links', ['$http', function ($http) {
-	this.categories = [ 'Blog', 'Podcast', 'Videocast', 'Liveplay', 'Devs', 'Accessories' ];
-	this.get = function (params) {
-		if (typeof params != 'object' || Array.isArray(params))
-			params = {};
-		return $http.post(API_HOST + '/links/get/', params).then(function (data) { return data; });
-	};
 }]).service('faqs', ['$http', '$q', function ($http, $q) {
 	this.categories = { 'getting-started': 'Getting Started', 'characters': 'Characters', 'games': 'Games', 'tools': 'Tools' };
 	this.get = function () {
@@ -389,7 +382,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 		).then(function (data) { return data.data; });
 	};
 	this.getLFG = function (lfgCount) {
-		lfgCount = parseInt(lfgCount) >= 0?parseInt(lfgCount):10;
+		lfgCount = parseInt(lfgCount) >= 0 ? parseInt(lfgCount) : 10;
 		return $http.post(API_HOST + '/games/getLFG/', { count: lfgCount }).then(function (data) { return data.data.lfgs; });
 	};
 	this.create = function (details) {
@@ -486,7 +479,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 				'default': false
 			}
 		},
-		postData = { 'characterID': parseInt(characterID) };
+			postData = { 'characterID': parseInt(characterID) };
 		for (var option in validOptions) {
 			if (option in options && typeof options[option] == validOptions[option].type) {
 				postData[option] = options[option];
@@ -497,9 +490,9 @@ app.config(['$httpProvider', function ($httpProvider) {
 		}
 		return $http.post(API_HOST + '/characters/load/', postData).then(function (data) { return data.data; });
 	};
-    this.getBookData = function (system) {
-        return $http.post(API_HOST + '/characters/getBookData/', { 'system': system }).then(function (data) { return data.data; });
-    };
+	this.getBookData = function (system) {
+		return $http.post(API_HOST + '/characters/getBookData/', { 'system': system }).then(function (data) { return data.data; });
+	};
 	this.save = function (characterID, character) {
 		return $http.post(API_HOST + '/characters/save/', { 'characterID': characterID, 'character': character }).then(function (data) { return data.data; });
 	};
@@ -544,24 +537,24 @@ app.config(['$httpProvider', function ($httpProvider) {
 			skewedOut = Math.tan(Math.abs(skewDeg) * Math.PI / 180) * $element.outerHeight() / 2;
 			scope.skewedOut = skewedOut;
 			$element.css({
-				'-webkit-transform' : 'skew(' + skewDeg + 'deg)',
-				'-moz-transform'    : 'skew(' + skewDeg + 'deg)',
-				'-ms-transform'     : 'skew(' + skewDeg + 'deg)',
-				'-o-transform'      : 'skew(' + skewDeg + 'deg)',
-				'transform'         : 'skew(' + skewDeg + 'deg)',
+				'-webkit-transform': 'skew(' + skewDeg + 'deg)',
+				'-moz-transform': 'skew(' + skewDeg + 'deg)',
+				'-ms-transform': 'skew(' + skewDeg + 'deg)',
+				'-o-transform': 'skew(' + skewDeg + 'deg)',
+				'transform': 'skew(' + skewDeg + 'deg)',
 			}).data('skewedOut', skewedOut);
 			if (parseInt($element.css('margin-left').slice(0, -2)) < Math.ceil(skewedOut))
 				$element.css('margin-left', Math.ceil(skewedOut) + 'px');
 			if (parseInt($element.css('margin-right').slice(0, -2)) < Math.ceil(skewedOut))
 				$element.css('margin-right', Math.ceil(skewedOut) + 'px');
 			$skewDiv.css({
-				'-webkit-transform' : 'skew(' + (skewDeg * -1) + 'deg)',
-				'-moz-transform'    : 'skew(' + (skewDeg * -1) + 'deg)',
-				'-ms-transform'     : 'skew(' + (skewDeg * -1) + 'deg)',
-				'-o-transform'      : 'skew(' + (skewDeg * -1) + 'deg)',
-				'transform'         : 'skew(' + (skewDeg * -1) + 'deg)',
-				'margin-left'       : Math.ceil(skewedOut) + 'px',
-				'margin-right'      : Math.ceil(skewedOut) + 'px'
+				'-webkit-transform': 'skew(' + (skewDeg * -1) + 'deg)',
+				'-moz-transform': 'skew(' + (skewDeg * -1) + 'deg)',
+				'-ms-transform': 'skew(' + (skewDeg * -1) + 'deg)',
+				'-o-transform': 'skew(' + (skewDeg * -1) + 'deg)',
+				'transform': 'skew(' + (skewDeg * -1) + 'deg)',
+				'margin-left': Math.ceil(skewedOut) + 'px',
+				'margin-right': Math.ceil(skewedOut) + 'px'
 			});
 
 			if ($element.hasClass('headerbar')) {
@@ -629,14 +622,14 @@ app.config(['$httpProvider', function ($httpProvider) {
 		},
 		link: function (scope, element, attrs) {
 			if (!isUndefined(attrs.class) && attrs.class.length)
-				element.attr('class', (element.attr('class').length?element.attr('.class') + ' ':'') + attrs.class);
+				element.attr('class', (element.attr('class').length ? element.attr('.class') + ' ' : '') + attrs.class);
 			scope.numPages = 0;
 			scope.$watch(function () { return scope.numItems; }, function (val) {
 				scope.numPages = Math.ceil(scope.numItems / scope.itemsPerPage);
 				if (scope.current > scope.numPages)
 					scope.current = 1;
 				scope.pages = [];
-				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++)
+				for (count = scope.current > 2 ? scope.current - 2 : 1; count <= scope.current + 2 && count <= scope.numPages; count++)
 					scope.pages.push(count);
 			});
 
@@ -646,7 +639,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 					page = 1;
 				scope.current = page;
 				scope.pages = [];
-				for (count = scope.current > 2?scope.current - 2:1; count <= scope.current + 2 && count <= scope.numPages; count++)
+				for (count = scope.current > 2 ? scope.current - 2 : 1; count <= scope.current + 2 && count <= scope.numPages; count++)
 					scope.pages.push(count);
 				if (typeof scope.changeFunc == 'function') {
 					$timeout(scope.changeFunc);
@@ -655,397 +648,379 @@ app.config(['$httpProvider', function ($httpProvider) {
 		}
 	};
 }])
-.directive('prettyCheckbox', ['$timeout', function ($timeout) {
-	return {
-		restrict: 'E',
-		templateUrl: '/angular/directives/prettyCheckbox.php',
-		scope: {
-			'checkbox': '=checkbox',
-			'cbValue': '=value'
-		},
-		link: function (scope, element, attrs) {
-			scope.cbm = false;
-			var eleID = null, label = null, wrapperLabel = false;
-			$timeout(function () {
-				if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox)
-					scope.cbm = true;
-				eleID = typeof attrs.eleid == 'string' && attrs.eleid?attrs.eleid:null;
-				$label = $(element).closest('label');
-				if (!$label.length && eleID)
-					$label = $('label[for=' + eleID + ']');
-				else if ($label.length)
-					wrapperLabel = true;
-				if ($label.length)
-					$label.on('click', function ($event) {
-						$event.preventDefault();
-						if ($event.target.nodeName !== 'DIV') {
-							scope.toggleCB();
-							scope.$apply();
+	.directive('prettyCheckbox', ['$timeout', function ($timeout) {
+		return {
+			restrict: 'E',
+			templateUrl: '/angular/directives/prettyCheckbox.php',
+			scope: {
+				'checkbox': '=checkbox',
+				'cbValue': '=value'
+			},
+			link: function (scope, element, attrs) {
+				scope.cbm = false;
+				var eleID = null, label = null, wrapperLabel = false;
+				$timeout(function () {
+					if ((scope.checkbox instanceof Array && scope.checkbox.indexOf(scope.cbValue) != -1) || !(scope.checkbox instanceof Array) && scope.checkbox)
+						scope.cbm = true;
+					eleID = typeof attrs.eleid == 'string' && attrs.eleid ? attrs.eleid : null;
+					$label = $(element).closest('label');
+					if (!$label.length && eleID)
+						$label = $('label[for=' + eleID + ']');
+					else if ($label.length)
+						wrapperLabel = true;
+					if ($label.length)
+						$label.on('click', function ($event) {
+							$event.preventDefault();
+							if ($event.target.nodeName !== 'DIV') {
+								scope.toggleCB();
+								scope.$apply();
+							}
+						});
+				});
+
+				scope.toggleCB = function () {
+					scope.cbm = !scope.cbm;
+				};
+
+				scope.$watch(function () { return scope.cbm; }, function (val, oldVal) {
+					if (val == oldVal)
+						return;
+
+					val = val ? true : false;
+					if (scope.checkbox instanceof Array) {
+						if (val && scope.checkbox.indexOf(scope.cbValue) == -1)
+							scope.checkbox.push(scope.cbValue);
+						else if (!val) {
+							key = scope.checkbox.indexOf(scope.cbValue);
+							if (key > -1)
+								scope.checkbox.splice(key, 1);
 						}
-					});
-			});
+					} else
+						scope.checkbox = val;
+				});
 
-			scope.toggleCB = function () {
-				scope.cbm = !scope.cbm;
-			};
-
-			scope.$watch(function () { return scope.cbm; }, function (val, oldVal) {
-				if (val == oldVal)
-					return;
-
-				val = val?true:false;
-				if (scope.checkbox instanceof Array) {
-					if (val && scope.checkbox.indexOf(scope.cbValue) == -1)
-						scope.checkbox.push(scope.cbValue);
-					else if (!val) {
-						key = scope.checkbox.indexOf(scope.cbValue);
-						if (key > -1)
-							scope.checkbox.splice(key, 1);
-					}
-				} else
-					scope.checkbox = val;
-			});
-
-			scope.$watch(function () { return scope.checkbox; }, function (newVal, oldVal) {
-				if (scope.checkbox instanceof Array)
-					scope.cbm = scope.checkbox.indexOf(scope.cbValue) != -1?true:false;
-				else
-					scope.cbm = scope.checkbox?true:false;
-			});
-		}
-	};
-}]).directive('prettyRadio', [function () {
-	return {
-		restrict: 'E',
-		templateUrl: '/angular/directives/prettyRadio.php',
-		scope: {
-			'radio': '=radio',
-			'rValue': '=rValue'
-		},
-		link: function (scope, element, attrs) {
-			scope.inputID = typeof attrs.eleid == 'string'?attrs.eleid:'';
-
-			var label = null, wrapperLabel = false;
-			label = $(element).closest('label');
-			if (!label.length && typeof attrs.eleid == 'string' && attrs.eleid) {
-//				element.attr('id', attrs['eleid']);
-				label = $('label[for=' + attrs.eleid + ']');
-			} else if (label.length)
-				wrapperLabel = true;
-			if (label.length)
-				label.click(function (e) {
-					if (wrapperLabel)
-						scope.setRadio();
+				scope.$watch(function () { return scope.checkbox; }, function (newVal, oldVal) {
+					if (scope.checkbox instanceof Array)
+						scope.cbm = scope.checkbox.indexOf(scope.cbValue) != -1 ? true : false;
 					else
-						e.preventDefault();
-					scope.$apply();
+						scope.cbm = scope.checkbox ? true : false;
 				});
+			}
+		};
+	}]).directive('prettyRadio', [function () {
+		return {
+			restrict: 'E',
+			templateUrl: '/angular/directives/prettyRadio.php',
+			scope: {
+				'radio': '=radio',
+				'rValue': '=rValue'
+			},
+			link: function (scope, element, attrs) {
+				scope.inputID = typeof attrs.eleid == 'string' ? attrs.eleid : '';
 
-			scope.setRadio = function () {
-				scope.radio = scope.rValue;
-			};
-		}
-	};
-}]).directive('equalizeColumns', ['$timeout', function ($timeout) {
-	return {
-		restrict: 'A',
-		link: function (scope, element, attrs) {
-			$timeout(function () {
-				var tallest = 0;
-				element.children().each(function () {
-					if ($(this).height() > tallest)
-						tallest = $(this).height();
-				}).height(tallest);
-			}, 1);
-		}
-	};
-}]).directive('ngPlaceholder', ['$timeout', function ($timeout) {
-	return {
-		restrict: 'A',
-		require: 'ngModel',
-		scope: {},
-		link: function (scope, element, attrs, ngModel) {
-			var placeholder = attrs.ngPlaceholder;
-			if (typeof placeholder == 'string' && placeholder.length) {
-				$timeout(function () {
-					var $input = $(element);
-					$input.addClass('placeholder');
-					if ($input.val() === '' || $input.val() == placeholder)
-						$input.addClass('default');
-					$input.focus(function () {
-						if ($input.val() == placeholder || $input.val() === '')
-							$input.val('').removeClass('default');
-					}).blur(function () {
-						if ($input.val() === '')
-							$input.val(placeholder).addClass('default');
-					}).blur();
-					scope.$watch(function () { return ngModel.$modelValue; }, function (val) {
-						if (val != placeholder && typeof val != 'undefined' && val !== '')
-							$input.removeClass('default');
-						else if (val == placeholder || val === '')
-							$input.addClass('default');
+				var label = null, wrapperLabel = false;
+				label = $(element).closest('label');
+				if (!label.length && typeof attrs.eleid == 'string' && attrs.eleid) {
+					//				element.attr('id', attrs['eleid']);
+					label = $('label[for=' + attrs.eleid + ']');
+				} else if (label.length)
+					wrapperLabel = true;
+				if (label.length)
+					label.click(function (e) {
+						if (wrapperLabel)
+							scope.setRadio();
+						else
+							e.preventDefault();
+						scope.$apply();
 					});
-				});
+
+				scope.setRadio = function () {
+					scope.radio = scope.rValue;
+				};
 			}
-		}
-	};
-}]).directive('loadingSpinner', ['$timeout', function ($timeout) {
-	return {
-		restrict: 'E',
-		template: '<div class="loadingSpinner"><img ng-src="/images/loading_back{{wb}}.png" class="background"><img src="/images/loading_fore{{wb}}.png" class="foreground"></div>',
-		scope: {
-			'pause': '='
-		},
-		link: function (scope, element, attrs) {
-			if (!isUndefined(attrs.size))
-				element.children().addClass(attrs.size);
-			scope.wb = !isUndefined(attrs.wb)?'_wb':'';
-			if (!isUndefined(attrs.overlay)) {
-				parentHeight = element.parent().height();
-				if (parentHeight > 200)
-					element.children().css('top', '90px');
+		};
+	}]).directive('equalizeColumns', ['$timeout', function ($timeout) {
+		return {
+			restrict: 'A',
+			link: function (scope, element, attrs) {
+				$timeout(function () {
+					var tallest = 0;
+					element.children().each(function () {
+						if ($(this).height() > tallest)
+							tallest = $(this).height();
+					}).height(tallest);
+				}, 1);
 			}
-			var foreground = element.find('.foreground'),
-				running = !scope.pause,
-				fadeTime = 1500,
-				fadePauseB = 150,
-				fadePauseT = 450;
-			scope.fadeIn = function () {
-				$timeout(function () {
-					if (!scope.pause) {
-						running = true;
-						foreground.fadeIn(fadeTime, scope.fadeOut);
-					} else
-						running = false;
-				}, fadePauseB);
-			};
-			scope.fadeOut = function () {
-				$timeout(function () {
-					if (!scope.pause) {
-						running = true;
-						foreground.fadeOut(fadeTime, scope.fadeIn);
-					} else
-						running = false;
-				}, fadePauseT);
-			};
-			if (!scope.pause)
-				scope.fadeIn();
-			scope.$watch(function () { return scope.pause; }, function () {
-				if (!scope.pause && !running)
-					scope.fadeIn();
-			});
-		}
-	};
-}]).directive('userLink', [function () {
-	return {
-		restrict: 'E',
-		template: '<a href="/user/{{user.userID}}/" class="username" ng-bind-html="user.username"></a>',
-		scope: {
-			'user': '='
-		},
-		link: function (scope, element, attrs) {
-		}
-	};
-}]).filter('trustHTML', ['$sce', function($sce){
-	return function(text) {
-		if (typeof text != 'string')
-			text = '';
-		return $sce.trustAsHtml(text);
-	};
-}]).filter('paginateItems', [function () {
-	return function (input, limit, skip) {
-		output = [];
-		count = -1;
-		for (var key in input) {
-			count++;
-			if (count < skip)
-				continue;
-			else if (count >= limit + skip)
-				break;
-			output.push(input[key]);
-		}
-		return output;
-	};
-}]).filter('intersect', [function () {
-	return function (input, field, compareTo) {
-		if (compareTo.length === 0)
-			return input;
-		output = [];
-		for (var key in input) {
-			for (var iKey in compareTo) {
-				if (input[key][field].indexOf(compareTo[iKey]) >= 0) {
-					output.push(input[key]);
-					break;
+		};
+	}]).directive('ngPlaceholder', ['$timeout', function ($timeout) {
+		return {
+			restrict: 'A',
+			require: 'ngModel',
+			scope: {},
+			link: function (scope, element, attrs, ngModel) {
+				var placeholder = attrs.ngPlaceholder;
+				if (typeof placeholder == 'string' && placeholder.length) {
+					$timeout(function () {
+						var $input = $(element);
+						$input.addClass('placeholder');
+						if ($input.val() === '' || $input.val() == placeholder)
+							$input.addClass('default');
+						$input.focus(function () {
+							if ($input.val() == placeholder || $input.val() === '')
+								$input.val('').removeClass('default');
+						}).blur(function () {
+							if ($input.val() === '')
+								$input.val(placeholder).addClass('default');
+						}).blur();
+						scope.$watch(function () { return ngModel.$modelValue; }, function (val) {
+							if (val != placeholder && typeof val != 'undefined' && val !== '')
+								$input.removeClass('default');
+							else if (val == placeholder || val === '')
+								$input.addClass('default');
+						});
+					});
 				}
 			}
-		}
-		return output;
-	};
-}]).filter('convertTZ', [function () {
-	return function (dtString, parseString, displayString) {
-		parseString = !isUndefined(parseString)?parseString:'MMM D, YYYY h:mm a';
-		displayString = !isUndefined(displayString)?displayString:'MMM D, YYYY h:mm a';
+		};
+	}]).directive('loadingSpinner', ['$timeout', function ($timeout) {
+		return {
+			restrict: 'E',
+			template: '<div class="loadingSpinner"><img ng-src="/images/loading_back{{wb}}.png" class="background"><img src="/images/loading_fore{{wb}}.png" class="foreground"></div>',
+			scope: {
+				'pause': '='
+			},
+			link: function (scope, element, attrs) {
+				if (!isUndefined(attrs.size))
+					element.children().addClass(attrs.size);
+				scope.wb = !isUndefined(attrs.wb) ? '_wb' : '';
+				if (!isUndefined(attrs.overlay)) {
+					parentHeight = element.parent().height();
+					if (parentHeight > 200)
+						element.children().css('top', '90px');
+				}
+				var foreground = element.find('.foreground'),
+					running = !scope.pause,
+					fadeTime = 1500,
+					fadePauseB = 150,
+					fadePauseT = 450;
+				scope.fadeIn = function () {
+					$timeout(function () {
+						if (!scope.pause) {
+							running = true;
+							foreground.fadeIn(fadeTime, scope.fadeOut);
+						} else
+							running = false;
+					}, fadePauseB);
+				};
+				scope.fadeOut = function () {
+					$timeout(function () {
+						if (!scope.pause) {
+							running = true;
+							foreground.fadeOut(fadeTime, scope.fadeIn);
+						} else
+							running = false;
+					}, fadePauseT);
+				};
+				if (!scope.pause)
+					scope.fadeIn();
+				scope.$watch(function () { return scope.pause; }, function () {
+					if (!scope.pause && !running)
+						scope.fadeIn();
+				});
+			}
+		};
+	}]).directive('userLink', [function () {
+		return {
+			restrict: 'E',
+			template: '<a href="/user/{{user.userID}}/" class="username" ng-bind-html="user.username"></a>',
+			scope: {
+				'user': '='
+			},
+			link: function (scope, element, attrs) {
+			}
+		};
+	}]).filter('trustHTML', ['$sce', function ($sce) {
+		return function (text) {
+			if (typeof text != 'string')
+				text = '';
+			return $sce.trustAsHtml(text);
+		};
+	}]).filter('paginateItems', [function () {
+		return function (input, limit, skip) {
+			output = [];
+			count = -1;
+			for (var key in input) {
+				count++;
+				if (count < skip)
+					continue;
+				else if (count >= limit + skip)
+					break;
+				output.push(input[key]);
+			}
+			return output;
+		};
+	}]).filter('intersect', [function () {
+		return function (input, field, compareTo) {
+			if (compareTo.length === 0)
+				return input;
+			output = [];
+			for (var key in input) {
+				for (var iKey in compareTo) {
+					if (input[key][field].indexOf(compareTo[iKey]) >= 0) {
+						output.push(input[key]);
+						break;
+					}
+				}
+			}
+			return output;
+		};
+	}]).filter('convertTZ', [function () {
+		return function (dtString, parseString, displayString) {
+			parseString = !isUndefined(parseString) ? parseString : 'MMM D, YYYY h:mm a';
+			displayString = !isUndefined(displayString) ? displayString : 'MMM D, YYYY h:mm a';
 
-		utcDT = moment.utc(dtString, parseString);
-		return utcDT.local().format(displayString);
-	};
-}]).filter('ceil', [function () {
-	return function (input) {
-		return Math.ceil(input);
-	};
-}]).controller('core', ['$scope', '$window', 'SystemsService', function ($scope, $window, SystemsService) {
-	$scope.pageLoadingPause = true;
-	$pageLoading = $('#pageLoading');
+			utcDT = moment.utc(dtString, parseString);
+			return utcDT.local().format(displayString);
+		};
+	}]).filter('ceil', [function () {
+		return function (input) {
+			return Math.ceil(input);
+		};
+	}]).controller('core', ['$scope', '$window', 'SystemsService', function ($scope, $window, SystemsService) {
+		$scope.pageLoadingPause = true;
+		$pageLoading = $('#pageLoading');
 
-	$scope.$on('pageLoading', function (event) {
-		$scope.pageLoadingPause = !$scope.pageLoadingPause;
-		$pageLoading.toggle();
-	});
+		$scope.$on('pageLoading', function (event) {
+			$scope.pageLoadingPause = !$scope.pageLoadingPause;
+			$pageLoading.toggle();
+		});
 
-	$scope.clearPageLoading = function(count) {
-		count--;
-		if (count === 0)
-			$scope.$emit('pageLoading');
-		return count;
-	};
-}]).controller('header', ['$scope', '$timeout', 'UsersService', function ($scope, $timeout, UsersService) {
-	$scope.characters = [];
-	$scope.games = [];
-	$scope.avatar = '';
-	$scope.pmCount = 0;
-	UsersService.getHeader().then(function (data) {
-		$scope.loggedIn = data.success?true:false;
-		if ($scope.loggedIn) {
-			$scope.characters = data.characters;
-			$scope.games = data.games;
-			$scope.avatar = data.avatar;
-			$scope.pmCount = data.pmCount;
-		}
-	});
+		$scope.clearPageLoading = function (count) {
+			count--;
+			if (count === 0)
+				$scope.$emit('pageLoading');
+			return count;
+		};
+	}]).controller('header', ['$scope', '$timeout', 'UsersService', function ($scope, $timeout, UsersService) {
+		$scope.characters = [];
+		$scope.games = [];
+		$scope.avatar = '';
+		$scope.pmCount = 0;
+		UsersService.getHeader().then(function (data) {
+			$scope.loggedIn = data.success ? true : false;
+			if ($scope.loggedIn) {
+				$scope.characters = data.characters;
+				$scope.games = data.games;
+				$scope.avatar = data.avatar;
+				$scope.pmCount = data.pmCount;
+			}
+		});
 
-	var $header = $('#bodyHeader'),
-		$headerEles = $('#bodyHeader, #bodyHeader > *'),
-		$logo = $('#headerLogo img'),
-		scrollPos = $(window).scrollTop(),
-		headerHeight = $header.height(),
-		scrollTimeout = null,
-		ratio = 1,
-		mobileAdjustment=($('#mainMenuTools:visible').length>0?1:0.666),
-		$mainMenu = $('#mainMenu');
+		var $header = $('#bodyHeader'),
+			$headerEles = $('#bodyHeader, #bodyHeader > *'),
+			$logo = $('#headerLogo img'),
+			scrollPos = $(window).scrollTop(),
+			headerHeight = $header.height(),
+			scrollTimeout = null,
+			ratio = 1,
+			mobileAdjustment = ($('#mainMenuTools:visible').length > 0 ? 1 : 0.666),
+			$mainMenu = $('#mainMenu');
 
-	$mainMenu.on('click', 'li', function ($event) {
-		$event.stopPropagation();
-		if ($(this).parent()[0] == $mainMenu[0] && $(this).children('ul').length) {
-			$event.preventDefault();
-			$('ul',(this).closest('ul#mainMenu')).hide();
-			$(this).children('ul').stop(true, true).show();
-		}
-	});
-	$('html').click(function ($event) {
-		$mainMenu.find('li').children('ul').stop(true, true).hide();
-	});
-	$timeout(function () {
-		$headerEles.height(scrollPos < 50?120 - scrollPos:70);
-		ratio = (scrollPos < 50?scrollPos:50) / 50;
-		$logo.height((100 - 47 * ratio)*mobileAdjustment);
-	});
-	$(window).scroll(function () {
-		scrollPos = $(this).scrollTop();
-		headerHeight = $header.height();
-		// console.log(scrollPos);
-		if (scrollPos >= 0 && scrollPos <= 50) {
-//			scrollTimeout = setTimeout(function () {
-				$headerEles.height(scrollPos < 50?120 - scrollPos:70);
-				ratio = (scrollPos < 50?scrollPos:50) / 50;
-				$logo.height((100 - 47 * ratio)*mobileAdjustment);
-//			}, 100);
-		} else if ($headerEles.height() > 70) {
-			$headerEles.height(70);
-			$logo.height(53*mobileAdjustment);
-		}
-	});
-}]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {
-	$scope.games = [];
-	GamesService.getGames({
-		'limit': 4,
-		'sort': 'created',
-		'sortOrder': -1
-	}).then(function (data) {
-		$scope.games = data;
-	});
-	$scope.systems = [{ 'value': 'all', 'display': 'All' }];
-	SystemsService.get({ 'getAll': true, 'excludeCustom': true }).then(function (data) {
-		for (var key in data.systems) {
-			$scope.systems.push({
-				'value': data.systems[key].shortName,
-				'display': data.systems[key].fullName
-			});
-		}
-	});
-	$scope.setSystem = function (system) {
-		if (system == 'all') {
-			system = null;
-		}
+		$mainMenu.on('click', 'li', function ($event) {
+			$event.stopPropagation();
+			if ($(this).parent()[0] == $mainMenu[0] && $(this).children('ul').length) {
+				$event.preventDefault();
+				$('ul', (this).closest('ul#mainMenu')).hide();
+				$(this).children('ul').stop(true, true).show();
+			}
+		});
+		$('html').click(function ($event) {
+			$mainMenu.find('li').children('ul').stop(true, true).hide();
+		});
+		$timeout(function () {
+			$headerEles.height(scrollPos < 50 ? 120 - scrollPos : 70);
+			ratio = (scrollPos < 50 ? scrollPos : 50) / 50;
+			$logo.height((100 - 47 * ratio) * mobileAdjustment);
+		});
+		$(window).scroll(function () {
+			scrollPos = $(this).scrollTop();
+			headerHeight = $header.height();
+			// console.log(scrollPos);
+			if (scrollPos >= 0 && scrollPos <= 50) {
+				//			scrollTimeout = setTimeout(function () {
+				$headerEles.height(scrollPos < 50 ? 120 - scrollPos : 70);
+				ratio = (scrollPos < 50 ? scrollPos : 50) / 50;
+				$logo.height((100 - 47 * ratio) * mobileAdjustment);
+				//			}, 100);
+			} else if ($headerEles.height() > 70) {
+				$headerEles.height(70);
+				$logo.height(53 * mobileAdjustment);
+			}
+		});
+	}]).controller('landing', ['$scope', '$timeout', 'SystemsService', 'GamesService', function ($scope, $timeout, SystemsService, GamesService) {
+		$scope.games = [];
 		GamesService.getGames({
-			'systems': system,
-			'limit': 3,
-			'sort': 'created',
-			'sortOrder': -1
+			'limit': 4,
 		}).then(function (data) {
 			$scope.games = data;
 		});
-	};
-
-	$scope.signup = {
-		'username': '',
-		'password': ''
-	};
-	$scope.formFocus = '';
-	$scope.setFormFocus = function (input) {
-		if (input == $scope.formFocus) {
-			return;
-		}
-		$scope.formFocus = input;
-		if (input !== '') {
-			$timeout(function () {
-				$('#landing_signup_' + input + ' input').focus();
+		$scope.systems = [{ 'value': 'all', 'display': 'All' }];
+		SystemsService.get({ 'getAll': true, 'excludeCustom': true }).then(function (data) {
+			for (var key in data.systems) {
+				$scope.systems.push({
+					'value': data.systems[key].shortName,
+					'display': data.systems[key].fullName
+				});
+			}
+		});
+		$scope.setSystem = function (system) {
+			if (system == 'all') {
+				system = null;
+			}
+			GamesService.getGames({
+				'systems': system,
+				'limit': 3,
+			}).then(function (data) {
+				$scope.games = data;
 			});
-		}
-	};
+		};
 
-	$scope.whatIsLogos = ['dnd5', 'thestrange', 'pathfinder', 'starwarsffg', '13thage', 'numenera', 'shadowrun5', 'fate', 'savageworlds'];
-}]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
-	$scope.$emit('pageLoading');
-	$scope.catMap = {};
-	$scope.aFAQs = {};
-	for (var key in faqs.categories) {
-		$scope.catMap[key] = faqs.categories[key];
-	}
-	faqs.get().then(function (data) {
-		if (data.faqs) {
-			$scope.$emit('pageLoading');
-			$scope.aFAQs = data.faqs;
-		}
-	});
-}]).controller('about', ['$scope', '$filter', 'Links', function ($scope, $filter, Links) {
-	$scope.$emit('pageLoading');
-	$scope.links = [];
-	Links.get({
-		'level': ['Affiliate', 'Partner'],
-		'networks': 'rpga',
-		'or': true
-	}).then(function (data) {
-		data = data.data;
-		$scope.links.partners = $filter('filter')(data.links, { 'level': 'Partner' });
-		$scope.links.rpgan = $filter('filter')(data.links, { 'networks': 'rpga' });
-		$scope.links.affiliates = $filter('filter')(data.links, { 'level': 'Affiliate' });
+		$scope.signup = {
+			'username': '',
+			'password': ''
+		};
+		$scope.formFocus = '';
+		$scope.setFormFocus = function (input) {
+			if (input == $scope.formFocus) {
+				return;
+			}
+			$scope.formFocus = input;
+			if (input !== '') {
+				$timeout(function () {
+					$('#landing_signup_' + input + ' input').focus();
+				});
+			}
+		};
+
+		$scope.whatIsLogos = ['dnd5', 'thestrange', 'pathfinder', 'starwarsffg', '13thage', 'numenera', 'shadowrun5', 'fate', 'savageworlds'];
+	}]).controller('faqs', ['$scope', 'faqs', function ($scope, faqs) {
 		$scope.$emit('pageLoading');
-	});
-}]);
+		$scope.catMap = {};
+		$scope.aFAQs = {};
+		for (var key in faqs.categories) {
+			$scope.catMap[key] = faqs.categories[key];
+		}
+		faqs.get().then(function (data) {
+			if (data.faqs) {
+				$scope.$emit('pageLoading');
+				$scope.aFAQs = data.faqs;
+			}
+		});
+	}]);
 var controllers = angular.module('controllers', []);
 
-var ImgurHelper=(function(){
-	var uploadFiles=function(file,onUploaded){
+var ImgurHelper = (function () {
+	var uploadFiles = function (file, onUploaded) {
 		var imgurApi = 'https://api.imgur.com/3/image';
 		var apiKey = '7de684608de179a';
 
@@ -1069,24 +1044,24 @@ var ImgurHelper=(function(){
 			$('#messageTextArea').focus();
 			onUploaded(responseObj.data.link);
 		}).fail(function (errorReason) {
-			if(errorReason && errorReason.responseText){
+			if (errorReason && errorReason.responseText) {
 				var responseObj = JSON.parse(errorReason.responseText);
 				alert(responseObj.data.error.message);
 			}
-			else{
+			else {
 				alert('Unable to upload file.');
 			}
 		});
 	};
 
-	var uploadFromClipboard=function(ev, onUploaded){
-		var clipboard=(ev.originalEvent.clipboardData || window.clipboardData);
-		if(clipboard && clipboard.items){
-			for(var i=0;i<clipboard.items.length;i++){
-				var item= clipboard.items[i];
-				if (item.type.indexOf("image") === 0){
+	var uploadFromClipboard = function (ev, onUploaded) {
+		var clipboard = (ev.originalEvent.clipboardData || window.clipboardData);
+		if (clipboard && clipboard.items) {
+			for (var i = 0; i < clipboard.items.length; i++) {
+				var item = clipboard.items[i];
+				if (item.type.indexOf("image") === 0) {
 					var blob = item.getAsFile();
-					ImgurHelper.uploadFiles(blob,onUploaded);
+					ImgurHelper.uploadFiles(blob, onUploaded);
 					ev.preventDefault();
 				}
 			}
@@ -1094,7 +1069,7 @@ var ImgurHelper=(function(){
 	};
 
 	return {
-        uploadFiles: uploadFiles,
-		uploadFromClipboard:uploadFromClipboard
-    };
+		uploadFiles: uploadFiles,
+		uploadFromClipboard: uploadFromClipboard
+	};
 })();

@@ -11,18 +11,10 @@
 			}
 		}
 	}
-	$gmCheck = $mongo->games->findOne(
-		[
-			'gameID' => $gameID,
-			'players' => ['$elemMatch' => [
-				'user.userID' => $currentUser->userID,
-				'isGM' => true
-			]]
-		],
-		['projection' => ['decks' => true]]
-	);
+	$gmCheck = $mysql->query("SELECT games.gameID FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 LIMIT 1");
+
 	$deckLabel = sanitizeString($_POST['deckLabel']);
-	if (isset($_POST['create']) && $gmCheck) {
+	if (isset($_POST['create']) && $gmCheck->rowCount()) {
 		$type = $_POST['deckType'];
 		if (!array_key_exists($type, $deckTypes)) {
 			if (isset($_POST['modal'])) {
@@ -31,73 +23,79 @@
 				header("Location: /games/{$gameID}/decks/?new=1&invalidDeck=1");
 			}
 		} else {
-			$deck = [
-				'deckID' => mongo_getNextSequence('deckID'),
+			$insertDeck = $mysql->prepare("INSERT INTO decks SET gameID = :gameID, label = :label, type = :type, deck = :deck, position = 1, lastShuffle = NOW()");
+			$deck = [];
+			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
+				$deck[] = $count;
+			}
+			shuffle($deck);
+			$insertDeck->execute([
+				'gameID' => $gameID,
 				'label' => $deckLabel,
 				'type' => $type,
-				'deck' => [],
-				'position' => 1,
-				'lastShuffle' => genMongoDate(),
-				'permissions' => sizeof($addUsers) ? $addUsers : []
-			];
-			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
-				$deck['deck'][] = $count;
+				'deck' => json_encode($deck)
+			]);
+			$deckID = $mysql->lastInsertId();
+			$addPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = ?");
+			foreach ($addUsers as $userID) {
+				$addPermissions->execute([$userID]);
 			}
-			shuffle($deck['deck']);
-
-			$mongo->games->updateOne(
-				['gameID' => $gameID],
-				['$push' => ['decks' => $deck]]
-			);
-
-#			$hl_deckCreated = new HistoryLogger('deckCreated');
-#			$hl_deckCreated->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
 
 			if (isset($_POST['modal'])) {
 				displayJSON([
 					'success' => true,
 					'action' => 'createDeck',
 					'deck' => [
-						'deckID' => $deck['deckID'],
-						'label' => $deck['label'],
-						'type' => $deck['type'],
-						'cardsRemaining' => sizeof($deck['deck'])
+						'deckID' => $deckID,
+						'label' => $deckLabel,
+						'type' => $type,
+						'cardsRemaining' => sizeof($deck)
 					]
 				], true);
 			} else {
 				header('Location: /games/' . $gameID . '/?success=createDeck');
 			}
 		}
-	} elseif (isset($_POST['edit']) && $gmCheck) {
+	} elseif (isset($_POST['edit']) && $gmCheck->rowCount()) {
 		$deckID = intval($_POST['deckID']);
 		$deck = [];
-		foreach ($gmCheck['decks'] as $iDeck) {
-			if ($iDeck['deckID'] == $deckID) {
-				$deck = $iDeck;
-				break;
-			}
-		}
-		if (sizeof($deck)) {
-			$deck['label'] = $deckLabel;
-			$type = $_POST['deckType'];
-			if ($deck['type'] != $type && array_key_exists($type, $deckTypes)) {
-				$deck['deck'] = [];
-				for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
-					$deck['deck'][] = $count;
-				}
-				shuffle($deck['deck']);
-				$deck['position'] = 1;
-				$deck['type'] = $type;
-				$deck['lastShuffle'] = genMongoDate();
-			}
-			$deck['permissions'] = sizeof($addUsers) ? $addUsers : [];
-			$mongo->games->updateOne(
-				['gameID' => $gameID, 'decks.deckID' => $deckID],
-				['$set' => ['decks.$' => $deck]]
-			);
+		$getDeck = $mysql->query("SELECT * FROM decks WHERE deckID = {$deckID} LIMIT 1");
+		$deck = $getDeck->fetch();
 
-#			$hl_deckEdited = new HistoryLogger('deckEdited');
-#			$hl_deckEdited->addDeck($deckID)->addUser($currentUser->userID)->addForUsers($addUsers)->save();
+		$updateLastShuffle = false;
+		$newValues = [];
+		if ($deck['label'] != $deckLabel) {
+			$newValues['label'] = $deckLabel;
+		}
+		$type = $_POST['deckType'];
+		if ($deck['type'] != $type && array_key_exists($type, $deckTypes)) {
+			$newValues['type'] = $type;
+			$newDeck = [];
+			for ($count = 1; $count <= $deckTypes[$type]['size']; $count++) {
+				$newDeck[] = $count;
+			}
+			shuffle($newDeck);
+			$newValues['deck'] = json_encode($newDeck);
+			$newValues['position'] = 1;
+			$updateLastShuffle = true;
+		}
+		$updatesPHs = [];
+		foreach ($newValues as $key => $nothing) {
+			$updatesPHs[] = "`{$key}` = :{$key}";
+		}
+		$updateDeck = $mysql->prepare("UPDATE decks SET " . implode(', ', $updatesPHs) . ($updateLastShuffle ? ", lastShuffle = NOW" : '') . " WHERE deckID = {$deckID} LIMIT 1");
+		$updateDeck->execute($newValues);
+
+		$mysql->query("DELETE FROM deckPermissions WHERE deckID = {$deckID}");
+		$addPermissions = $mysql->prepare("INSERT INTO deckPermissions SET deckID = {$deckID}, userID = ?");
+		foreach ($addUsers as $userID) {
+			$addPermissions->execute([$userID]);
+		}
+
+		if ($newValues['deck']) {
+			$cardsRemaining = sizeof($newValues['deck']);
+		} else {
+			sizeof($deck['deck']) - $deck['position'] + 1;
 		}
 		displayJSON([
 			'success' => true,
@@ -105,8 +103,8 @@
 			'deck' => [
 				'deckID' => (int) $deckID,
 				'label' => $deckLabel,
-				'type' => $deck['type'],
-				'cardsRemaining' => sizeof($deck['deck']) - $deck['position'] + 1
+				'type' => $newValues['type'] ?? $deck['type'],
+				'cardsRemaining' => $cardsRemaining
 			]
 		], true);
 	} else {

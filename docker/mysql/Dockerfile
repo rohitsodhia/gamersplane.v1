@@ -1,4 +1,3 @@
-FROM mysql:5.5
+FROM mysql:8.4
 
-COPY gp.cnf /etc/mysql/conf.d/gp.cnf
-RUN chmod 644 /etc/mysql/conf.d/gp.cnf
+COPY --chmod=644 gp.cnf /etc/mysql/conf.d/gp.cnf

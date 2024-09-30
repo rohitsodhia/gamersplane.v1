@@ -10,12 +10,6 @@
 			if ($pathOptions[0] == 'acp') {
 				require(APIROOT.'/forumACP.class.php');
 				$subcontroller = new forumACP();
-			} elseif ($pathOptions[0] == 'save') {
-				$this->saveLink();
-			} elseif ($pathOptions[0] == 'deleteImage') {
-				$this->deleteImage();
-			} elseif ($pathOptions[0] == 'deleteLink') {
-				$this->deleteLink();
 			} elseif ($pathOptions[0] == 'getSubscriptions') {
 				$this->getSubscriptions();
 			} elseif ($pathOptions[0] == 'unsubscribe') {
@@ -37,201 +31,12 @@
 			}
 		}
 
-		public function getLinks() {
-			global $currentUser;
-			$mongo = DB::conn('mongo');
-
-			$search = [];
-			if (isset($_POST['level']) && in_array($_POST['level'], ['Link', 'Affiliate', 'Partner'])) {
-				$search['level'] = $_POST['level'];
-			}
-			if (isset($_POST['networks'])) {
-				$search['networks'] = $_POST['networks'];
-			}
-
-			$page = isset($_POST['page']) && intval($_POST['page']) ? intval($_POST['page']) : 1;
-			$numLinks = $mongo->links->count($search);
-			if (isset($_POST['page'])) {
-				$linksResults = $mongo->links->find(
-					$search,
-					[
-						'sort' => ['title' => 1],
-						'skip' => PAGINATE_PER_PAGE * ($page - 1),
-						'limit' => PAGINATE_PER_PAGE
-					]
-				);
-			} else {
-				$linksResults = $mongo->links->find(
-					$search,
-					['sort' => ['title' => 1]]
-				);
-			}
-			$links = [];
-			foreach ($linksResults as $link) {
-				$link['_id'] = (string) $link['_id'];
-				$links[] = $link;
-			}
-			displayJSON([
-				'type' => $type,
-				'links' => $links,
-				'totalCount' => $numLinks
-			]);
-		}
-
-		private function uploadLogo($_id, $logoFile) {
-			if ($logoFile['error'] == 0 && $logoFile['size'] > 15 && $logoFile['size'] < 2097152) {
-				$logoExt = trim(end(explode('.', strtolower($logoFile['name']))));
-				if ($logoExt == 'jpeg') {
-					$logoExt = 'jpg';
-				}
-				if (in_array($logoExt, ['jpg', 'gif', 'png'])) {
-					$maxWidth = 300;
-					$maxHeight = 300;
-
-					list($imgWidth, $imgHeight, $imgType) = getimagesize($logoFile['tmp_name']);
-					if ($imgWidth >= $maxWidth || $imgHeight >= $maxHeight) {
-						if (image_type_to_mime_type($imgType) == 'image/jpeg' || image_type_to_mime_type($imgType) == 'image/pjpeg') {
-							$tempImg = imagecreatefromjpeg($logoFile['tmp_name']);
-						} elseif (image_type_to_mime_type($imgType) == 'image/gif') {
-							$tempImg = imagecreatefromgif($logoFile['tmp_name']);
-						} elseif (image_type_to_mime_type($imgType) == 'image/png') {
-							$tempImg = imagecreatefrompng($logoFile['tmp_name']);
-						}
-
-						$xRatio = $maxWidth / $imgWidth;
-						$yRatio = $maxHeight / $imgHeight;
-
-						if ($imgWidth <= $maxWidth && $imgHeight <= $maxHeight) {
-							$finalWidth = $imgWidth;
-							$finalHeight = $imgHeight;
-						} elseif (($xRatio * $imgHeight) < $maxHeight) {
-							$finalWidth = $maxWidth;
-							$finalHeight = ceil($xRatio * $imgHeight);
-						} else {
-							$finalWidth = ceil($yRatio * $imgWidth);
-							$finalHeight = $maxHeight;
-						}
-
-						$tempColor = imagecreatetruecolor($finalWidth, $finalHeight);
-						imagealphablending($tempColor, false);
-						imagesavealpha($tempColor,true);
-						imagecopyresampled($tempColor, $tempImg, 0, 0, 0, 0, $finalWidth, $finalHeight, $imgWidth, $imgHeight);
-
-						$destination = FILEROOT."/images/links/{$_id}.{$logoExt}";
-						foreach (glob(FILEROOT."/images/links/{$_id}.*") as $oldFile) {
-							unlink($oldFile);
-						}
-						if ($logoExt == 'jpg') {
-							imagejpeg($tempColor, $destination, 100);
-						} elseif ($logoExt == 'gif') {
-							imagegif($tempColor, $destination);
-						} elseif ($logoExt == 'png') {
-							imagepng($tempColor, $destination, 0);
-						}
-						imagedestroy($tempImg);
-						imagedestroy($tempColor);
-
-						return $logoExt;
-					}
-				} elseif ($logoExt == 'svg') {
-					foreach (glob(FILEROOT."/images/links/{$_id}.*") as $oldFile) {
-						unlink($oldFile);
-					}
-					move_uploaded_file($logoFile['tmp_name'], FILEROOT."/images/links/{$_id}.svg");
-
-					return 'svg';
-				}
-			}
-
-			return null;
-		}
-
-		public function saveLink() {
-			global $loggedIn;
-			$mongo = DB::conn('mongo');
-
-			if (!$loggedIn) {
-				exit;
-			}
-
-			$data = [];
-			$data['_id'] = genMongoId($_POST['_id'] ?? null);
-			$data['title'] = $_POST['title'];
-			$data['sortName'] = strtolower($data['title']);
-			$data['url'] = $_POST['url'];
-			if (!strlen($data['title']) || !strlen($data['url'])) {
-				displayJSON(array('failed' => 'incomplete'));
-			}
-			$data['level'] = $_POST['level'];
-			if (!in_array($data['level'], array_keys($this->levels))) {
-				$data['level'] = 'Link';
-			}
-			if (isset($_FILES['file'])) {
-				$ext = $this->uploadLogo($data['_id'], $_FILES['file']);
-				if ($ext) {
-					$data['image'] = $ext;
-				}
-			}
-			$data['networks'] = [];
-			$_POST['networks'] = json_decode(html_entity_decode($_POST['networks']));
-			foreach ($_POST['networks'] as $key => $value) {
-				if ($value) {
-					$data['networks'][] = $key;
-				}
-			}
-			$data['categories'] = [];
-			$_POST['categories'] = json_decode(html_entity_decode($_POST['categories']));
-			foreach ($_POST['categories'] as $key => $value) {
-				if ($value) {
-					$data['categories'][] = $key;
-				}
-			}
-
-			if (!isset($_POST['_id'])) {
-				$data['random'] = randomFloat();
-
-				$mongo->links->insertOne($data);
-			} else {
-				$mongoID = $data['_id'];
-				unset($data['_id']);
-				$mongo->links->updateOne(['_id' => genMongoId($mongoID)], ['$set' => $data]);
-			}
-
-			displayJSON(['success' => 1, 'image' => $data['image']]);
-		}
-
-		public function deleteImage() {
-			global $currentUser;
-			$mongo = DB::conn('mongo');
-			if (!$loggedIn) {
-				exit;
-			}
-
-			foreach (glob(FILEROOT."/images/links/{$_POST['_id']}.*") as $oldFile) {
-				unlink($oldFile);
-			}
-			$mongo->links->updateOne(['_id' => genMongoId($_POST['_id'])], ['$unset' => ['image' => '']]);
-		}
-
-		public function deleteLink() {
-			global $currentUser;
-			$mongo = DB::conn('mongo');
-			if (!$loggedIn) {
-				exit;
-			}
-
-			foreach (glob(FILEROOT."/images/links/{$_POST['_id']}.*") as $file) {
-				unlink($file);
-			}
-			$mongo->links->deleteOne(['_id' => genMongoId($_POST['_id'])]);
-		}
-
 		public function getSubscriptions() {
 			$mysql = DB::conn('mysql');
 
 			if (isset($_POST['userID'])) {
 				$userID = (int) $_POST['userID'];
-				$rForums = $mysql->query("SELECT p.forumID, p.title, p.heritage, p.parentID, p.order, IF(s.ID = p.forumID, 1, 0) isSubbed FROM forumSubs s INNER JOIN forums f ON s.ID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') WHERE p.forumID != 0 AND s.userID = {$userID} AND s.type = 'f' ORDER BY LENGTH(p.heritage), `order`");
+				$rForums = $mysql->query("SELECT p.forumID, p.title, p.heritage, p.parentID, p.order, IF(s.ID = p.forumID, 1, 0) isSubbed FROM forumSubs s INNER JOIN forums f ON s.ID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') WHERE p.forumID != 0 AND s.userID = {$userID} AND s.`type` = 'f' ORDER BY LENGTH(p.heritage), `order`");
 				$forums = [];
 				foreach ($rForums as $forum) {
 					if (!isset($forums[$forum['forumID']])) {
@@ -249,7 +54,7 @@
 					}
 				}
 
-				$rThreads = $mysql->query("SELECT f.forumID, f.title forumTitle, t.threadID, p.title threadTitle FROM forumSubs s INNER JOIN threads t ON s.ID = t.threadID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts p ON t.firstPostID = p.postID WHERE s.userID = {$userID} AND s.type = 't' ORDER BY LENGTH(f.heritage), `order`");
+				$rThreads = $mysql->query("SELECT f.forumID, f.title forumTitle, t.threadID, p.title threadTitle FROM forumSubs s INNER JOIN threads t ON s.ID = t.threadID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts p ON t.firstPostID = p.postID WHERE s.userID = {$userID} AND s.`type` = 't' ORDER BY LENGTH(f.heritage), `order`");
 				$threads = [];
 				foreach ($rThreads as $thread) {
 					if (!isset($threads[$thread['forumID']])) {
@@ -281,7 +86,7 @@
 			}
 			$typeID = (int) $_POST['id'];
 
-			$mysql->query("DELETE FROM forumSubs WHERE userID = {$userID} AND type = '{$type}' AND ID = {$typeID} LIMIT 1");
+			$mysql->query("DELETE FROM forumSubs WHERE userID = {$userID} AND `type` = '{$type}' AND ID = {$typeID} LIMIT 1");
 
 			displayJSON(['success' => true]);
 		}
@@ -302,8 +107,8 @@
 		}
 
 		public function getPostQuote($postID){
-
-			global $currentUser,$mongo;
+			global $currentUser;
+			$mysql = DB::conn('mysql');
 
 			$ret = '';
 
@@ -313,30 +118,13 @@
 			if (!$threadManager->getThreadProperty('states[locked]')  && $threadManager->getPermissions('write')){
 				$gameID = $threadManager->forumManager->forums[$threadManager->getThreadProperty('forumID')]->gameID;
 				if ($gameID) {
-					$game = $mongo->games->findOne(
-						[
-							'gameID' => (int) $gameID,
-							'players' => ['$elemMatch' => [
-								'user.userID' => $currentUser->userID,
-								'isGM' => true
-							]]
-						],
-						['projection' => ['players.$' => true]]
-					);
-					$isGM = $game['players'][0]['isGM'];
-					if (!$isGM) {
-						$ret = Post::cleanNotes($post->message);
-					}
-					else{
-						$ret = $post->message;
-					}
-				}
-				else{
+					$checkIsGM = $mysql->query("SELECT isGM FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID}")->fetchColumn();
+					$ret = $checkIsGM ? $post->message : Post::cleanNotes($post->message);
+				} else {
 					$ret = Post::cleanNotes($post->message);
 				}
 
-				$ret='[quote="'.$post->getAuthor('username').'"]'.$ret.'[/quote]';
-
+				$ret = '[quote="' . $post->getAuthor('username') . '"]' . $ret . '[/quote]';
 			}
 
 			return $ret;
@@ -368,83 +156,39 @@
 
 		public function pollVote($postID, $vote, $addVote, $isMulti, $isPublic) {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 			$post = new Post($postID);
 			$threadManager = new ThreadManager($post->getThreadID());
 
-			if ($threadManager->getPermissions('write')){
-
-				if($isMulti){
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$pull' => [
-							'votes' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID,
-								'vote' => (int)$vote
-							]
-						]],
-						['upsert' => true]
-					);
+			if ($threadManager->getPermissions('write')) {
+				if ($isMulti) {
+					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {$postID} AND userID = {$currentUser->userID} AND vote = {$vote} LIMIT 1");
+				} else{
+					$mysql->query("DELETE FROM forums_postPollVotes WHERE postID = {$postID} AND userID = {$currentUser->userID}");
 				}
-				else{
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$pull' => [
-							'votes' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID
-							]
-						]],
-						['upsert' => true]
-					);
-				}
-
 
 				if($addVote || !$isMulti){
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$push' => [
-							'votes' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID,
-								'vote' => (int)$vote,
-								'username' => ($isPublic ? $currentUser->username : null)
-							]
-						]],
-						['upsert' => true]
-					);
+					$mysql->query("INSERT INTO forums_postPollVotes SET postID = {$postID}, userID = {$currentUser->userID}, vote = {$vote}");
 				}
 
-				return $post->getPollResults();
+				return $post->getPollResults($isPublic);
 			}
 			else {
 				return null;
 			}
 		}
 
-		public function ffgFlip($postID, $toDark, $totalFlips, $tokens){
+		public function ffgFlip(int $postID, bool $toDark, $totalFlips, $tokens){
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 			$post = new Post($postID);
+			$toDark = $toDark ? 1 : 0;
 			$threadManager = new ThreadManager($post->getThreadID());
 
 			if ($threadManager->getPermissions('write')){
 				$flips=$post->getFfgDestinyResults($tokens);
 				if(count($flips['flips'])==$totalFlips){
-					$mongo->threads->updateOne(
-						['threadID' => ((int)$post->getThreadID())],
-						['$push' => [
-							'ffgTokens' => [
-								'postID' => (int)$postID,
-								'userID' => $currentUser->userID,
-								'username' => $currentUser->username,
-								'toDark' => (int)$toDark,
-								'datetime'=>genMongoDate()
-							]
-						]],
-						['upsert' => true]
-					);
+					$mysql->query("INSERT INTO forums_postFFGFlips SET postID = {$postID}, userID = {$currentUser->userID}, toDark = {$toDark}");
 					$flips=$post->getFfgDestinyResults($tokens);
 					$flips['success']=1;
 				}

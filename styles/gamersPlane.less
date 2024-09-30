@@ -1605,7 +1605,7 @@ br.clearL {
 
 .flexWrapper {
 	display: flex;
-	flex-wrap: wrap;
+	// flex-wrap: wrap;
 }
 
 .fauxColumns {
@@ -2911,6 +2911,10 @@ div.forumIcon {
 /* --------------------------------------------*/
 
 #page_home {
+	.flexWrapper {
+		flex-wrap: wrap;
+	}
+
 	& > .flexWrapper {
 		align-items: flex-start;
 		justify-content: space-between;
@@ -2955,15 +2959,15 @@ div.forumIcon {
 
 .sideWidget {
 	position: relative;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
 	border-radius: 4px;
+	height: fit-content;
+	min-width: 120px;
 	padding: 10px 15px;
 	background: #222;
 	color: #fff;
 
 	&.left {
-		margin-right: 10px;
+		margin-right: 2em;
 		margin-left: 0;
 	}
 

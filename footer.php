@@ -9,7 +9,7 @@
 		<li><a href="/games/">Games</a></li>
 		<li><a href="/forums/">Forums</a></li>
 		<li><a href="/gamersList/">The Gamers</a></li>
-		<li><a href="/links/">Links</a></li>
+		<!-- <li><a href="/links/">Links</a></li> -->
 	</ul>
 	<ul>
 		<li><a href="/faqs/">FAQs</a></li>

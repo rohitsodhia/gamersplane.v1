@@ -22,7 +22,7 @@
 
 	if ($threadManager->isGameForum()) {
 		$gameID = $threadManager->getForumProperty('gameID');
-		$startForum = $mongo->games->findOne(['gameID' => $gameID], ['projection' => ['forumID' => true]])['forumID'];
+		$startForum = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 	} else {
 		$startForum = 0;
 	}

@@ -2,9 +2,9 @@
 	$responsivePage=true;
 	require_once(FILEROOT.'/javascript/markItUp/markitup.bbcode-parser.php');
 	addPackage('forum');
-	if($currentUser->addPostNavigateWarning()){
+	if ($currentUser->addPostNavigateWarning()) {
 		$addJSFiles = Array('forums/unsaved-work.js','forums/postingPage.js','characters/custom/sheet.js','postPolls.js');
-	}else{
+	} else {
 		$addJSFiles = Array('forums/postingPage.js','characters/custom/sheet.js','postPolls.js');
 	}
 
@@ -20,18 +20,14 @@
 	$gms = [];
 	if ($threadManager->isGameForum()) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
-		$game = $mongo->games->findOne(['gameID' => $gameID], ['projection' => ['system' => true, 'players' => true]]);
-		$system = $game['system'];
+		$system = $mysql->query("SELECT `system` FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 		$isGM = false;
-		foreach ($game['players'] as $player) {
-			if ($player['user']['userID'] == $currentUser->userID) {
-				if ($player['isGM']) {
-					$isGM = true;
-				}
-			}
-			if ($player['isGM']) {
-				$gms[] = $player['user']['userID'];
-			}
+		$GMs = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} AND isGM = TRUE")->fetchAll(PDO::FETCH_COLUMN, 0);
+		array_walk($GMs, function (&$val) {
+			$val = (int) $val;
+		});
+		if (in_array($currentUser->userID, $GMs)) {
+			$isGM = true;
 		}
 	} else {
 		$fixedGameMenu = false;
@@ -54,9 +50,9 @@
 				<div class="rightCol alignRight">
 <?php
 	if ($loggedIn) {
-		$forumSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 'f' AND ID = {$threadManager->getThreadProperty('forumID')}");
+		$forumSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND `type` = 'f' AND ID = {$threadManager->getThreadProperty('forumID')}");
 		if (!$forumSubbed->rowCount()) {
-			$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND type = 't' AND ID = {$threadID}");
+			$isSubbed = $mysql->query("SELECT userID FROM forumSubs WHERE userID = {$currentUser->userID} AND `type` = 't' AND ID = {$threadID}");
 ?>
 					<p class="threadSub"><a id="forumSub" href="/forums/process/subscribe/?threadID=<?=$threadID?>"><?=$isSubbed->rowCount() ? 'Unsubscribe from' : 'Subscribe to'?> thread</a></p>
 <?php
@@ -88,6 +84,7 @@
 				<ul>
 <?php
 		foreach ($threadManager->getPollProperty('options') as $pollOptionID => $option) {
+			echo "					<li>\n";
 			if ($allowVote) {
 				if ($threadManager->getPollProperty('optionsPerUser') == 1) {
 					echo "						<div class=\"poll_input\"><input type=\"radio\" name=\"votes\" value=\"{$pollOptionID}\"" . ($option->voted ? ' checked="checked"' : '') . "></div>\n";
@@ -362,38 +359,24 @@
 		</div>
 
 <?php
-	if (($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) || $threadManager->getPermissions('moderate')) {
+	if (
+		($threadManager->getPermissions('write') && $currentUser->userID != 0 && !$threadManager->getThreadProperty('states[locked]')) ||
+		$threadManager->getPermissions('moderate')
+	) {
 		$characters = [];
 		$playerCharacters = [];
 		if ($gameID) {
-			$rCharacters = $mongo->characters->find(
-				[
-					'game.gameID' => $gameID,
-					'game.approved' => true,
-					'user.userID' => $currentUser->userID
-				],
-				['projection' => ['characterID' => true, 'name' => true]]
-			);
+			$getCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 			$characters = [];
-			foreach ($rCharacters as $character) {
-				if (strlen($character['name'])) {
-					$characters[$character['characterID']] = $character['name'];
-				}
+			foreach ($getCharacters->fetchAll() as $character) {
+				$characters[$character['characterID']] = $character['name'];
 			}
-			if($isGM){
-				$rPlayerCharacters = $mongo->characters->find(
-					[
-						'game.gameID' => $gameID,
-						'game.approved' => true,
-						'user.userID' => ['$ne'=>$currentUser->userID]
-					],
-					['projection' => ['characterID' => true, 'name' => true]]
-				);
-				$playerCharacters = [];
-				foreach ($rPlayerCharacters as $rPlayerCharacter) {
-					if (strlen($rPlayerCharacter['name'])) {
-						$playerCharacters[$rPlayerCharacter['characterID']] = $rPlayerCharacter['name'];
-					}
+
+			$pcCharacters = [];
+			if ($isGM) {
+				$getPCCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+				foreach ($getPCCharacters->fetchAll() as $character) {
+					$pcCharacters[$character['characterID']] = $character['name'];
 				}
 			}
 		}

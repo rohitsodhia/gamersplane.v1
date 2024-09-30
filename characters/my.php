@@ -1,5 +1,7 @@
-<?	$responsivePage=true;
-	require_once(FILEROOT.'/header.php'); ?>
+<?
+	$responsivePage=true;
+	require_once(FILEROOT.'/header.php');
+?>
 		<h1 class="headerbar"><i class="ra ra-double-team"></i> My Characters</h1>
 
 <?	if (isset($_GET['invalidType']) || isset($_GET['invalidLabel'])) { ?>

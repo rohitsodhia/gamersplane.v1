@@ -1,41 +1,19 @@
 <?php
 	$gameID = intval($_POST['gameID']);
 	$deckID = intval($_POST['deckID']);
-	$gmCheck = $mongo->games->findOne(
-		[
-			'gameID' => $gameID,
-			'players' => ['$elemMatch' => [
-				'user.userID' => $currentUser->userID,
-				'isGM' => true
-			]]
-		],
-		['projection' => ['decks' => true]]
-	);
-	$deck = [];
-	foreach ($gmCheck['decks'] as $iDeck) {
-		if ($iDeck['deckID'] == $deckID) {
-			$deck = $iDeck;
-			break;
-		}
-	}
-	if (isset($_POST['shuffle']) && $gmCheck && sizeof($deck)) {
+	$getDeck = $mysql->query("SELECT decks.type FROM games INNER JOIN players ON games.gameID = players.gameID INNER JOIN decks ON games.gameID = decks.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 AND decks.deckID = {$deckID} LIMIT 1");
+	if (isset($_POST['shuffle']) && $getDeck->rowCount()) {
+		$deckType = $getDeck->fetchColumn();
 		require_once('includes/DeckTypes.class.php');
 		$deckTypes = DeckTypes::getInstance()->getAll();
-		$deckSize = $deckTypes[$deck['type']]['size'];
-		$deck['deck'] = [];
+		$deckSize = $deckTypes[$deckType]['size'];
+		$deck = [];
 		for ($count = 1; $count <= $deckSize; $count++) {
-			$deck['deck'][] = $count;
+			$deck[] = $count;
 		}
-		shuffle($deck['deck']);
-		$deck['position'] = 1;
-		$deck['lastShuffle'] = genMongoDate();
-		$mongo->games->updateOne(
-			['gameID' => $gameID, 'decks.deckID' => $deckID],
-			['$set' => ['decks.$' => $deck]]
-		);
-
-#		$hl_deckShuffled = new HistoryLogger('deckShuffled');
-#		$hl_deckShuffled->addDeck($deckID)->addUser($currentUser->userID)->save();
+		shuffle($deck);
+		$updateDeck = $mysql->prepare("UPDATE decks SET position = 1, lastShuffle = NOW(), deck = ? WHERE deckID = {$deckID} LIMIT 1");
+		$updateDeck->execute([json_encode($deck)]);
 
 		displayJSON(['success' => true, 'deckID' => (int) $deckID, 'deckSize' => (int) $deckSize]);
 	} else {

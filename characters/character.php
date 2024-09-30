@@ -9,7 +9,9 @@
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
-				$angular = $mongo->systems->findOne(['_id' => SYSTEM], ['angular' => true])['angular'];
+				$getAngular = $mysql->prepare("SELECT angular FROM systems WHERE id = ?");
+				$getAngular->execute([SYSTEM]);
+				$angular = $getAngular->fetchColumn();
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'viewCharacter';
 					$angular = 'viewCharacter_' . SYSTEM;
@@ -21,11 +23,11 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions) {
 					$noChar = false;
-					$gameID=$character->getGameID();
+					$gameID = $character->getGameID();
 					if ($charPermissions == 'library') {
-						$mongo->characters->updateOne(['characterID' => $characterID], ['$inc' => ['library.views' => 1]]);
+						$mysql->query("UPDATE characters SET libraryViews = libraryViews + 1 WHERE characterID = {$characterID} LIMIT 1");
 					}
-					$favorited = $mongo->characterLibraryFavorites->findOne(['userID' => $currentUser->userID, 'characterID' => $characterID]) ? true : false;
+					$favorited = (bool) $mysql->query("SELECT COUNT(*) FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID} LIMIT 1")->fetchColumn();
 					$addJSFiles[] = 'characters/_sheet.js';
 					if (file_exists(FILEROOT . '/javascript/characters/' . SYSTEM . '/sheet.js')) {
 						$addJSFiles[] = 'characters/' . SYSTEM . '/sheet.js';
@@ -36,7 +38,7 @@
 	} else { header('Location: /404/'); exit; }
 ?>
 <?php
-	if(SYSTEM=='custom'){$responsivePage=true;}
+	if (SYSTEM == 'custom') { $responsivePage = true; }
 
 	require_once(FILEROOT.'/header.php'); ?>
 <?php	if (!$noChar) { ?>

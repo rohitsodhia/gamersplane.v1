@@ -2,19 +2,13 @@
 	$gameID = intval($pathOptions[0]);
 	$playerID = intval($pathOptions[2]);
 	$pendingAction = $pathOptions[1] == 'approvePlayer' ? 'approve' : 'reject';
-	$game = $mongo->games->findOne(
-		['gameID' => $gameID, 
-		 'players' => ['$elemMatch' => [
-			'user.userID' => $currentUser->userID,
-			'isGM' => true
-		]]],
-		['projection' => ['title' => true]]
-	);
-	if (!$game) { header('Location: /403'); exit; }
+	$getGame = $mysql->query("SELECT games.title FROM games INNER JOIN players ON games.gameID = players.gameID WHERE games.gameID = {$gameID} AND players.userID = {$currentUser->userID} AND players.isGM = 1 LIMIT 1");
+	if (!$getGame->rowCount()) { header('Location: /403'); exit; }
 
-	$player = $mysql->query('SELECT username FROM users WHERE userID = ' . $playerID);
-	if ($player->rowCount() == 0) { header('Location: /403'); exit; }
-	$playerName = $player->fetchColumn();
+	$game = $getGame->fetch();
+	$getPlayer = $mysql->query("SELECT username FROM users WHERE userID = {$playerID} LIMIT 1");
+	if ($getPlayer->rowCount() == 0) { header('Location: /403'); exit; }
+	$playerName = $getPlayer->fetchColumn();
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar"><?=ucwords($pendingAction)?> Player</h1>

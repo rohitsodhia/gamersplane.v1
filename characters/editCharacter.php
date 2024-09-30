@@ -10,7 +10,9 @@
 		if ($character = new $charClass($characterID)) {
 			$active = $character->load();
 			if ($active) {
-				$angular = DB::conn('mongo')->systems->findOne(['_id' => SYSTEM], ['projection' => ['angular' => true]])['angular'];
+				$getAngular = $mysql->prepare("SELECT angular FROM systems WHERE id = ?");
+				$getAngular->execute([SYSTEM]);
+				$angular = (bool) $getAngular->fetchColumn();
 				if ($angular) {
 					$dispatchInfo['ngController'] = 'editCharacter';
 					$angular = 'editCharacter_' . SYSTEM;

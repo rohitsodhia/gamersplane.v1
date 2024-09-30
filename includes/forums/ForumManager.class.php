@@ -20,7 +20,6 @@ class ForumManager
 	{
 		global $loggedIn, $currentUser;
 		$mysql = DB::conn('mysql');
-		$mongo = DB::conn('mongo');
 
 		if ($loggedIn) {
 			$showPubGames = $currentUser->showPubGames;
@@ -66,44 +65,16 @@ class ForumManager
 			$this->forumsData[$forum['forumID']] = $forum;
 		}
 		if ($loggedIn && in_array($forumID, [0, 2])) {
-			$userGames = $mongo->games->find(
-				[
-					'retired' => null,
-					'players' => ['$elemMatch' => [
-						'user.userID' => $currentUser->userID,
-						'approved' => true
-					]]
-				],
-				['projection' => ['forumID' => true]]
-			);
-			$userGameForumIDs = [];
-			foreach ($userGames as $game) {
-				$userGameForumIDs[] = $game['forumID'];
-				$this->inGameForumIDs[] = $game['forumID'];
+			$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games ON f.gameID = games.gameID INNER JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE games.retired IS NULL ORDER BY LENGTH(f.heritage)");
+			foreach ($userGameForums as $forum) {
+				$this->forumsData[$forum['forumID']] = $forum;
+				$this->inGameForumIDs[] = $forum['forumID'];
 			}
 
-			$favGames=$mongo->gameFavorites->aggregate([	['$lookup'=>	['from' => 'games', 'localField' => 'gameID' ,'foreignField' => 'gameID', 'as' => 'favGames']],
-													['$match' => ['userID' =>  $currentUser->userID]],
-													['$project' => ['forumID' => '$favGames.forumID']]	]);
-			foreach ($favGames as $game) {
-				$userGameForumIDs[] = $game['forumID'][0];
-				$this->favouriteForumIds[] = $game['forumID'][0];
-			}
-
-
-			if (sizeof($this->inGameForumIDs)) {
-				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE p.forumID IN (" . implode(', ', $this->inGameForumIDs) . ") ORDER BY LENGTH(f.heritage)");
-				foreach ($userGameForums as $forum) {
-					$this->forumsData[$forum['forumID']] = $forum;
-					$this->inGameForumIDs[] = $forum['forumID'];
-				}
-			}
-			if (sizeof($this->favouriteForumIds)) {
-				$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID WHERE p.forumID IN (" . implode(', ', $this->favouriteForumIds) . ") ORDER BY LENGTH(f.heritage)");
-				foreach ($userGameForums as $forum) {
-					$this->forumsData[$forum['forumID']] = $forum;
-					$this->favouriteForumIds[]=$forum['forumID'];
-				}
+			$userGameForums = $mysql->query("SELECT f.forumID, f.title, f.description, f.forumType, f.parentID, f.heritage, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted FROM forums f INNER JOIN games ON f.gameID = games.gameID INNER JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID} LEFT JOIN (SELECT parentID forumID, COUNT(forumID) childCount FROM forums GROUP BY (parentID)) cc ON cc.forumID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') LEFT JOIN (SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID FROM threads GROUP BY forumID) t ON f.forumID = t.forumID LEFT JOIN posts lp ON t.lastPostID = lp.postID LEFT JOIN users u ON lp.authorID = u.userID ORDER BY LENGTH(f.heritage)");
+			foreach ($userGameForums as $forum) {
+				$this->forumsData[$forum['forumID']] = $forum;
+				$this->favouriteForumIds[]=$forum['forumID'];
 			}
 		}
 
@@ -480,7 +451,7 @@ public function displayForumRow($forumID)
 
 	public function displayThreads()
 	{
-		$mongo = DB::conn('mongo');
+		$mysql = DB::conn('mysql');
 		$forum = $this->forums[$this->currentForum];
 		if (!$forum->permissions['read']) {
 			return false;
@@ -534,14 +505,15 @@ public function displayForumRow($forumID)
 						}
 					}
 				}
-				$nonMobBadge='';
-				$mobBadge='';
-				if($forum->forumID==10){
-					$gameInfo = $mongo->games->findOne(['recruitmentThreadId' => (int)$thread->threadID]);
-					if($gameInfo){
+				$nonMobBadge = '';
+				$mobBadge = '';
+				if ($forum->forumID == 10) {
+					$getGameInfo = $mysql->query("SELECT status, `system`, customSystem FROM games WHERE recruitmentThreadId = {$thread->threadID} LIMIT 1");
+					if ($getGameInfo->rowCount()) {
+						$gameInfo = $getGameInfo->fetch();
 						$systems = Systems::getInstance();
-						$nonMobBadge="<span class='mob-hide badge badge-game".(($gameInfo['status']=='open')?"Open":"Closed")."'>".($gameInfo["customType"]?$gameInfo["customType"]:$systems->getFullName($gameInfo['system']))."</span>";
-						$mobBadge="<span class='non-mob-hide badge badge-game".(($gameInfo['status']=='open')?"Open":"Closed")."'>".($gameInfo["customType"]?$gameInfo["customType"]:$gameInfo['system'])."</span>";
+						$nonMobBadge = "<span class=\"mob-hide badge badge-game" . ($gameInfo['status'] == 'open' ? "Open" : "Closed") . '">' . ($gameInfo["customType"] ? $gameInfo["customType"] : $systems->getFullName($gameInfo['system'])) . "</span>";
+						$mobBadge = "<span class=\"non-mob-hide badge badge-game" . ($gameInfo['status'] == 'open' ? "Open" : "Closed") . '">' . ($gameInfo["customType"] ? $gameInfo["customType"] : $systems->getFullName($gameInfo['system'])) . "</span>";
 					}
 				}
 			?>

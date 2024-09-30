@@ -15,48 +15,30 @@
 		}
 
 		public function get() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$search = [];
-			$fields = ['name' => true];
+			$validFields = ['shortName', 'name', 'sortName', 'enabled', 'angular', 'genres', 'publisher', 'basics', 'hasCharSheet', 'lfg'];
+			$fields = ['name'];
+			$selectFields = '*';
 			if (!isset($_POST['fields']) || $_POST['fields'] == 'all') {
 				$fields = [];
+				$selectFields = '*';
 			} elseif (isset($_POST['fields']) && is_array($_POST['fields'])) {
-				foreach ($_POST['fields'] as $field) {
-					$fields[$field] = true;
+				$reqFields = $_POST['fields'];
+				if (!array_diff($reqFields, $validFields)) {
+					$fields = $reqFields;
+					$selectFields = substr(str_repeat('?, ', count($fields)), 0, -2);
 				}
 			}
-			if (isset($_POST['excludeCustom']) && $_POST['excludeCustom']) {
-				$search['_id'] = ['$ne' => 'custom'];
-			}
 			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
-				$rSystems = $mongo->systems->findOne(
-					['_id' => $_POST['shortName']],
-					['projection' => $fields]
-				);
-				$rSystems = [$rSystems];
+				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems WHERE id = ?");
+				$getSystems->execute(array_merge($fields, [$_POST['shortName']]));
 				$numSystems = 1;
 			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
-				$numSystems = $mongo->systems->count();
-				$rSystems = $mongo->systems->find(
-					[],
-					[
-						'projection' => $fields,
-						'sort' => ['sortName' => 1]
-					]
-				);
-			} else {
-				$numSystems = $mongo->systems->count($search);
-				$page = isset($_POST['page']) && intval($_POST['page']) ? intval($_POST['page']) : 1;
-				$rSystems = $mongo->systems->find(
-					$search,
-					[
-						'projection' => $fields,
-						'sort' => ['sortName' => 1],
-						'skip' => 10 * ($page - 1),
-						'limit' => 10
-					]
-				);
+				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems ORDER BY sortName");
+				$getSystems->execute($fields);
+				$numSystems = $getSystems->rowCount();
 			}
 			$systems = [];
 			$custom = [];
@@ -65,23 +47,20 @@
 				'publisher' => ['name' => '', 'site' => ''],
 				'basics' => []
 			];
+			$boolFields = ['angular', 'enabled', 'hasCharSheet'];
 			unset($fields['name']);
-			foreach ($rSystems as $rSystem) {
-				$system = [
-					'shortName' => $rSystem['_id'],
+			foreach ($getSystems->fetchAll() as $rSystem) {
+				$system = array_merge($defaults, $rSystem, [
+					'shortName' => $rSystem['id'],
 					'fullName' => $rSystem['name']
-				];
-				if (sizeof($fields) > 0) {
-					foreach ($fields as $field => $nothing) {
-						$system[$field] = isset($rSystem[$field]) ? $rSystem[$field] : (isset($defaults[$field]) ? $defaults[$field] : null);
-					}
-				} else {
-					foreach ($rSystem as $key => $value) {
-						if ($key != '_id' && $key != 'name') {
-							$system[$key] = $value;
-						}
-					}
+				]);
+				foreach (array_keys($defaults) as $jsonKey) {
+					$system[$jsonKey] = $system[$jsonKey];
 				}
+				foreach ($boolFields as $boolKey) {
+					$system[$boolKey] = $system[$boolKey] == "1";
+				}
+				unset($system['id'], $system['name']);
 				if ($system['shortName'] != 'custom') {
 					$systems[] = $system;
 				} else {
@@ -95,17 +74,13 @@
 		}
 
 		public function getGenres() {
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$genres = [];
-			$rSystem = $mongo->systems->find(
-				['genres' => [
-					'$not' => ['$size' => 0]
-				]],
-				['projection' => ['_id' => -1, 'genres' => 1]]
-			);
-			foreach ($rSystem as $system) {
-				foreach ($system['genres'] as $genre) {
+			$getSystem = $mysql->query("SELECT genres FROM systems");
+			foreach ($getSystem->fetchAll() as $system) {
+				$genres = json_decode($system['genres']);
+				foreach ($genres as $genre) {
 					$genres[] = $genre;
 				}
 			}

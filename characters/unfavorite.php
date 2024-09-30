@@ -1,18 +1,10 @@
 <?php
 	$characterID = intval($pathOptions[1]);
-	$favorited = $mongo->characterLibraryFavorites->findOne(
-		[
-			'characterID' => $characterID,
-			'userID' => $currentUser->userID
-		],
-		['projection' => ['_id' => true]]
-	);
-	if (!$favorited) { header('Location: /403'); exit; }
-	$charInfo = $mongo->characters->findOne(
-		['characterID' => $characterID],
-		['projection' => ['system' => true, 'label' => true]]
-	);
-	if (!$charInfo) { header('Location: /403'); exit; }
+	try {
+		$charInfo = $mysql->query("SELECT characters.label, characters.system FROM characters INNER JOIN characterLibrary_favorites favorites ON characters.characterID = favorites.characterID WHERE characters.characterID = {$characterID} AND favorites.userID = {$currentUser->userID} LIMIT 1")->fetch();
+	} catch (Exception $e) {
+		header('Location: /403'); exit;
+	}
 ?>
 <?php	require_once(FILEROOT . '/header.php'); ?>
 		<h1 class="headerbar">Unfavorite Character</h1>

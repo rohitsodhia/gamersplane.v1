@@ -1,7 +1,7 @@
 <? $responsivePage=true;
 require_once(FILEROOT.'/header.php'); ?>
-	<div class="">
-		<div class="">
+	<div>
+		<div>
 			<div class="mainColumn">
 				<h1 class="headerbar"><i class="ra ra-gamers-plane"></i> My Games</h1>
 				<div id="gamesPlaying">
@@ -46,7 +46,7 @@ require_once(FILEROOT.'/header.php'); ?>
 				</div>
 			</div>
 		</div>
-		<div class="">
+		<div>
 			<hr/>
 			<div class="sideWidget ml-1 mob-ml-0">
 				<h2>New Game Notification</h2>

@@ -113,7 +113,8 @@
 			if (sizeof($this->posts))
 				return $this->posts;
 
-			global $loggedIn, $currentUser, $mysql;
+			global $loggedIn, $currentUser;
+			$mysql = DB::conn('mysql');
 
 			if ($page > ceil($this->postCount / $this->pageSize)) $page = ceil($this->postCount / $this->pageSize);
 			$start = ($page - 1) * $this->pageSize;
@@ -125,7 +126,8 @@
 			if (sizeof($this->posts))
 				return $this->posts;
 
-			global $loggedIn, $currentUser, $mysql;
+			global $loggedIn, $currentUser;
+			$mysql = DB::conn('mysql');
 
 			$posts = $mysql->query("SELECT p.postID, p.threadID, p.title, u.userID, u.username, um.metaValue avatarExt, u.lastActivity, p.message, p.postAs, p.datePosted, p.lastEdit, p.timesEdited FROM posts p LEFT JOIN users u ON p.authorID = u.userID LEFT JOIN usermeta um ON u.userID = um.userID AND um.metaKey = 'avatarExt' WHERE p.threadID = {$this->threadID} ORDER BY p.datePosted LIMIT {$start}, ".$this->pageSize);
 			foreach ($posts as $post)
@@ -156,8 +158,8 @@
 			return $this->poll->$key;
 		}
 
-		public function savePoll($theadID = null) {
-			$this->poll->savePoll($theadID);
+		public function savePoll($threadID = null) {
+			$this->poll->savePoll($threadID);
 		}
 
 		public function deletePoll() {

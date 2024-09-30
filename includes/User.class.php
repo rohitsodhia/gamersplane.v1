@@ -16,7 +16,6 @@
 
 		public function __construct($userDetail = null) {
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
 			if ($userDetail == null) {
 				return false;
@@ -34,12 +33,12 @@
 
 				$usermeta = $mysql->query("SELECT metaKey, metaValue FROM usermeta WHERE userID = {$this->userID} AND autoload = 1");
 				foreach ($usermeta as $eMeta) {
-					$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+					if ($eMeta['metaKey'] != 'acpPermissions') {
+						$this->usermeta[$eMeta['metaKey']] = $eMeta['metaValue'];
+					} else {
+						$this->acpPermissions = unserialize($eMeta['metaValue']);
+					}
 				}
-				$this->acpPermissions = (array) $mongo->users->findOne(
-					['userID' => $this->userID],
-					['projection' => ['acpPermissions' => 1]]
-				)['acpPermissions'];
 			} else {
 				return false;
 			}
@@ -111,7 +110,6 @@
 
 		public function newUser($username, $password, $email) {
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
 			$this->salt = randomAlphaNum(20);
 			$addUser = $mysql->prepare('INSERT INTO users SET username = :username, password = :password, salt = :salt, email = :email, joinDate = :joinDate');
@@ -122,8 +120,6 @@
 			$addUser->bindValue(':joinDate', date('Y-m-d H:i:s'));
 			$addUser->execute();
 			$this->userID = $mysql->lastInsertId();
-
-			$mongo->users->insertOne(['userID' => (int) $this->userID, 'lfg' => []]);
 
 			if ($this->userID) {
 				return $this->userID;
@@ -163,8 +159,9 @@
 		}
 
 		public function generateLoginCookie() {
-			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, true, true);
-			setcookie('loginHash', $this->username . '|' . $this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN, true, true);
+			$secure = getenv('ENVIRONMENT') != 'dev';
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, $secure, true);
+			setcookie('loginHash', $this->username . '|' . $this->getLoginHash(), time() + (60 * 60 * 24 * 7), '/', COOKIE_DOMAIN, $secure, true);
 		}
 
 		public function getUsermeta($metaKey) {

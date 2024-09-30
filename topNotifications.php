@@ -1,90 +1,51 @@
 <?php
-	$invitedTo = $mongo->games->find(
-		[
-			'invites' => [
-				'$elemMatch' => [
-					'userID' => $currentUser->userID
-				]
-			],
-			'retired' => null
-		],
-		['projection' => [
-			'gameID' => true,
-			'title' => true,
-			'players' => true
-		]]
-	)->toArray();
-
-	$pending = $mongo->games->find(
-		[
-			'players' => [
-				'$elemMatch' => [
-					'user.userID' => $currentUser->userID,
-					'isGM' => true
-				]
-			],
-			'retired' => null
-
-		],
-		['projection' => [
-			'gameID' => true,
-			'title' => true,
-			'players' => true
-		]]
-	)->toArray();
-	if (count($pending)) {
-		$pendingIDs = [];
-		$pendingPlayers = [];
-		$pendingChars = [];
-		foreach ($pending as $game) {
-			$pendingIDs[] = $game['gameID'];
-			foreach ($game['players'] as $player) {
-				if (!$player['approved']) {
-					if (!isset($pendingPlayers[$game['gameID']])) {
-						$pendingPlayers[$game['gameID']] = 0;
-					}
-					$pendingPlayers[$game['gameID']]++;
-				}
-				if (is_countable($player['characters']) && sizeof($player['characters'])) {
-					foreach ($player['characters'] as $character) {
-						if (!$character['approved']) {
-							if (!isset($pendingChars[$game['gameID']])) {
-								$pendingChars[$game['gameID']] = 0;
-							}
-							$pendingChars[$game['gameID']]++;
-						}
-					}
-				}
-			}
+	$pendingPlayers = $mysql->query("SELECT games.gameID, games.title, COUNT(*) as numberPlayers FROM players pendingPlayers INNER JOIN games ON pendingPlayers.gameID = games.gameID INNER JOIN players gms ON games.gameID = gms.gameID AND gms.isGM = TRUE AND gms.userID = {$currentUser->userID} WHERE pendingPlayers.approved = FALSE GROUP BY games.gameID");
+	$pendingCharacters = $mysql->query("SELECT games.gameID, games.title, COUNT(*) as numberCharacters FROM characters pendingCharacters INNER JOIN games ON pendingCharacters.gameID = games.gameID INNER JOIN players gms ON games.gameID = gms.gameID AND gms.isGM = TRUE AND gms.userID = {$currentUser->userID} WHERE pendingCharacters.approved = FALSE GROUP BY games.gameID");
+	$pending = [];
+	foreach ($pendingPlayers->fetchAll() as $players) {
+		$pending[$players['gameID']] = [
+			'game' => ['gameID' => $players['gameID'], 'title' => $players['title']],
+			'pending' => ['players' => $players['numberPlayers'], 'characters' => 0]
+		];
+	}
+	foreach ($pendingCharacters->fetchAll() as $characters) {
+		if (!in_array($characters['gameID'])) {
+			$pending[$characters['gameID']] = [
+				'game' => ['gameID' => $characters['gameID'], 'title' => $characters['title']],
+				'pending' => ['players' => 0, 'characters' => $characters['numberCharacters']]
+			];
+		} else {
+			$pending[$characters['gameID']]['pending']['characters'] = $characters['numberCharacters'];
 		}
 	}
 
-	if (($pendingPlayers && sizeof($pendingPlayers) > 0) || ($pendingChars && sizeof($pendingChars) > 0) || $pmCount > 0) {
+	if ($pending || $pmCount > 0) {
 ?>
 		<div id="topNotifications" class="alertBox_info"><ul>
 <?php		if ($pmCount) { ?>
 			<li>You have <?=$pmCount?> unread <a href="/pms/">message<?=$pmCount > 1 ? 's' : ''?></a></li>
 <?php
 		}
-		if (sizeof($pendingPlayers) || sizeof($pendingChars)) { foreach ($pending as $game) {
-			$gameID = $game['gameID'];
-			if ($pendingPlayers[$gameID] || $pendingChars[$gameID]) {
+		if ($pending) { foreach ($pending as $game) {
+			$gameID = $game['game']['gameID'];
+			$title = $game['game']['title'];
+			$numPlayers = $game['pending']['players'];
+			$numCharacters = $game['pending']['characters'];
 ?>
-			<li>You have <?php if ($pendingPlayers[$gameID] > 0) { ?><?=$pendingPlayers[$gameID]?> player<?=$pendingPlayers[$gameID] > 1 ? 's' : ''?><?php } if ($pendingPlayers[$gameID] && $pendingChars[$gameID]) echo ' and '; if ($pendingChars[$gameID] > 0) { ?><?=$pendingChars[$gameID]?> character<?=$pendingChars[$gameID] > 1 ? 's' : ''?><?php } ?> pending in <a href="/games/<?=$gameID?>/"><?=$game['title']?></a></li>
+			<li>You have <?php if ($numPlayers > 0) { ?><?=$numPlayers?> player<?=$numPlayers > 1 ? 's' : ''?><?php } if ($numPlayers && $numCharacters) echo ' and '; if ($numCharacters > 0) { ?><?=$numCharacters?> character<?=$characters > 1 ? 's' : ''?><?php } ?> pending in <a href="/games/<?=$gameID?>/"><?=$title?></a></li>
 <?php
-			}
 		} }
+	}
 ?>
-		</div></ul>
-<?php	} 
-		if (sizeof($invitedTo)) { 
-			?><div id="topNotifications" class="alertBox_info"><ul><?
-			
-			foreach ($invitedTo as $game) {
-?>
-				<li>You have been invited to join <a href="/games/<?=$game['gameID']?>/"><?=$game['title']?></a></li>
+		</ul></div>
+		asdgwevaw
 <?php
-		 	}
+	$invitedTo = $mysql->query("SELECT games.gameID, games.title FROM gameInvites INNER JOIN games ON gameInvites.gameID = games.gameID WHERE gameInvites.userID = {$currentUser->userID}");
+	if ($invitedTo->rowCount()) {
 ?>
-		</div></ul>
+		<div id="topNotifications" class="alertBox_info"><ul>
+<?php			foreach ($invitedTo as $game) { ?>
+				<li>You have been invited to join <a href="/games/<?=$game['gameID']?>/"><?=$game['title']?></a></li>
+<?php			} ?>
+		</ul></div>
 <?php	}?>

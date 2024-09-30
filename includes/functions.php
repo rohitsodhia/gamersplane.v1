@@ -251,13 +251,10 @@ function startSession()
 /* Character Functions */
 function getCharacterClass($characterID)
 {
-	$mongo = DB::conn('mongo');
+	$mysql = DB::conn('mysql');
 
 	$characterID = intval($characterID);
-	$system = $mongo->characters->findOne(
-		['characterID' => $characterID],
-		['projection' => ['system' => true]]
-	)['system'];
+	$system = $mysql->query("SELECT `system` FROM characters WHERE characterID = {$characterID} LIMIT 1")->fetchColumn();
 
 	return $system ? $system : null;
 }
@@ -458,34 +455,6 @@ function retrieveHeritage($forumID, $parent = 0)
 function sql_forumIDPad($forumID)
 {
 	return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
-}
-
-function mongo_getNextSequence($key)
-{
-	$mongo = DB::conn('mongo');
-
-	$counter = $mongo->counters->findOneAndUpdate(
-		['_id' => $key],
-		['$inc' => ['seq' => 1]],
-		['returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER]
-	);
-
-	return $counter['seq'];
-}
-
-function genMongoId($id = null)
-{
-	return new MongoDB\BSON\ObjectID($id);
-}
-
-function genMongoDate()
-{
-	return new MongoDB\BSON\UTCDateTime();
-}
-
-function getMongoSeconds($mongoDateTime)
-{
-	return $mongoDateTime->toDateTime()->getTimestamp();
 }
 
 function getUserTheme()

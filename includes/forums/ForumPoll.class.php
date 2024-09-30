@@ -53,7 +53,7 @@
 			$this->options = array();
 			$options = preg_split('/\n/', $value);
 			array_walk($options, function (&$value, $key) { $value = sanitizeString($value); });
-			foreach ($options as $option) 
+			foreach ($options as $option)
 				if (strlen($option)) $this->options[] = $option;
 		}
 
@@ -84,7 +84,7 @@
 
 			if (strlen($this->question) == 0 || sizeof($this->options) == 0) return null;
 
-			if ($threadID != null && is_int($threadID)) {
+			if ($threadID != null) {
 				$this->threadID = intval($threadID);
 				if (strlen($this->question) && sizeof($this->options)) {
 					$addPollOptions = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
@@ -97,7 +97,7 @@
 				$options = preg_split('/\n/', $value);
 				array_walk($options, function (&$value, $key) { $value = sanitizeString($value); });
 				$loadedOptions = array();
-				foreach ($this->oldOptions as $pollOptionID => $option) 
+				foreach ($this->oldOptions as $pollOptionID => $option)
 					$loadedOptions[] = $option;
 				$addPollOption = $mysql->prepare("INSERT INTO forums_pollOptions SET threadID = {$this->threadID}, `option` = :option");
 				foreach ($loadedOptions as $option) {
@@ -129,7 +129,7 @@
 
 		public function getVotesCast() {
 			$cast = array();
-			foreach ($this->options as $option) 
+			foreach ($this->options as $option)
 				if ($option->voted) $cast[] = $option->pollOptionID;
 			return $cast;
 		}
@@ -142,14 +142,14 @@
 
 		public function getVoteTotal() {
 			$total = 0;
-			foreach ($this->options as $option) 
+			foreach ($this->options as $option)
 				$total += $option->votes;
 			return $total;
 		}
 
 		public function getVoteMax() {
 			$max = 0;
-			foreach ($this->options as $option) 
+			foreach ($this->options as $option)
 				if ($option->votes > $max) $max = $option->votes;
 			return $max;
 		}

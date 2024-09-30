@@ -7,7 +7,8 @@
 
 
         public function addAnnouncement($forumId, $iconClass, $announcementClass, $addHeaderFooter,$randomPinned){
-            global $mysql,$post;
+            global $post;
+			$mysql = DB::conn('mysql');
 			$postItem = null;
 
 			if($randomPinned){
@@ -37,8 +38,9 @@
         }
 
 		public function addLookingForAGame($announcementClass){
-            global $mysql,$currentUser;
-			$gamer = $mysql->query("SELECT lfgMeta.metaValue AS lfgStatus, users.userID, users.username, users.joinDate, gamesMeta.metaValue AS games, users.avatarExt, avatarExt.metaValue AS avatarExt FROM usermeta AS lfgMeta INNER JOIN users ON lfgMeta.userID = users.userID INNER JOIN usermeta AS gamesMeta ON users.userID = gamesMeta.userID INNER JOIN usermeta AS avatarExt ON users.userID = avatarExt.userID WHERE (gamesMeta.metaKey = 'games') AND (lfgMeta.metaKey = 'lookingForAGame') AND (avatarExt.metaKey = 'avatarExt') AND (users.lastActivity >= UTC_TIMESTAMP() - INTERVAL 1 WEEK) ORDER BY RAND() LIMIT 1;")->fetch(PDO::FETCH_OBJ);
+            global $currentUser;
+			$mysql = DB::conn('mysql');
+			$gamer = $mysql->query("SELECT lfgMeta.metaValue AS lfgStatus, users.userID, users.username, users.joinDate, gamesMeta.metaValue AS games, avatarExt.metaValue AS avatarExt FROM usermeta AS lfgMeta INNER JOIN users ON lfgMeta.userID = users.userID INNER JOIN usermeta AS gamesMeta ON users.userID = gamesMeta.userID INNER JOIN usermeta AS avatarExt ON users.userID = avatarExt.userID WHERE (gamesMeta.metaKey = 'games') AND (lfgMeta.metaKey = 'lookingForAGame') AND (avatarExt.metaKey = 'avatarExt') AND (users.lastActivity >= UTC_TIMESTAMP() - INTERVAL 1 WEEK) ORDER BY RAND() LIMIT 1;")->fetch(PDO::FETCH_OBJ);
 
 			?>
 			<div class="announcements <?=$announcementClass?>">
@@ -78,43 +80,13 @@
 		}
 
 		public function addLatestGames($showCount){
-			global $mongo,$currentUser,$systems;
+			global $currentUser;
+			$mysql = DB::conn('mysql');
+			$systems = Systems::getInstance();
 
-			$latestGames = $mongo->games->find(
-				[
-					'retired' => null,
-					'status'=>'open',
-					'players' => [
-						'$not' => [
-							'$elemMatch' => [
-								'user.userID' => $currentUser->userID,
-								'approved' => true
-							]
-						]
-					]
-				],
-				[
-					'projection' => [
-						'gameID' => true,
-						'title' => true,
-						'system' => true,
-						'gm' => true,
-						'numPlayers' => true,
-						'players' => true,
-						'customType' => true
-					],
-					'sort' => ['start' => -1],
-					'limit' => $showCount
-				]
-			);
+			$getLatestGames = $mysql->query("SELECT games.gameID, games.title, games.system, games.system, gm.userID, gm.username, games.numPlayers, COUNT(approvedPlayers.gameID) playersInGame FROM games INNER JOIN users gm ON games.gmID = gm.userID INNER JOIN players approvedPlayers ON games.gameID = approvedPlayers.gameID AND approvedPlayers.approved = 1 LEFT JOIN players userGames ON games.gameID = userGames.gameID AND userGames.userID = {$currentUser->userID} WHERE userGames.userID IS NULL GROUP BY games.gameID ORDER BY `start` DESC LIMIT {$showCount}");
 			$first = true;
-			foreach ($latestGames as $gameInfo) {
-				$gameInfo['playersInGame'] = -1;
-				foreach ($gameInfo['players'] as $player) {
-					if ($player['approved']) {
-						$gameInfo['playersInGame']++;
-					}
-				}
+			foreach ($getLatestGames->fetchAll() as $gameInfo) {
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
 				if (!$first) {
 					echo "					<hr>\n";
@@ -124,150 +96,65 @@
 		?>
 							<div class="gameInfo">
 								<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-								<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['gm']['userID']?>/" class="username"><?=$gameInfo['gm']['username']?></a></p>
+								<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['userID']?>/" class="username"><?=$gameInfo['username']?></a></p>
 							</div>
 		<?php	}
 		}
 
 		public function addTopNotifications(){
-			global $mongo,$currentUser;
+			global $currentUser;
+			$mysql = DB::conn('mysql');
 
-			$invitedTo = $mongo->games->find(
-				[
-					'invites' => [
-						'$elemMatch' => [
-							'userID' => $currentUser->userID
-						]
-					],
-					'retired' => null
-				],
-				['projection' => [
-					'gameID' => true,
-					'title' => true,
-					'players' => true
-				]]
-			)->toArray();
+			$getGameInvites = $mysql->query("SELECT games.gameID, games.title FROM games INNER JOIN gameInvites ON games.gameID = gameInvites.gameID WHERE games.retired IS NULL AND gameInvites.userID = {$currentUser->userID} GROUP BY games.gameID");
+			$getPending = $mysql->query("SELECT games.gameID, games.title, games.status, COUNT(players.userID) pendingPlayers, COUNT(characters.userID) pendingCharacters FROM games INNER JOIN players gmCheck ON games.gameID = gmCheck.gameID AND gmCheck.isGM = 1 AND gmCheck.userID = {$currentUser->userID} LEFT JOIN players ON games.gameID = players.gameID AND players.approved = 0 LEFT JOIN characters ON games.gameID = characters.gameID AND characters.approved = 0 WHERE games.retired IS NULL GROUP BY games.gameID HAVING pendingPlayers > 0 OR pendingCharacters > 0 ORDER BY games.start");
+			// $getPendingPlayers = $mysql->query("SELECT games.gameID, games.title, games.status, COUNT(players.userID) pendingPlayers FROM games INNER JOIN players gmCheck ON games.gameID = gmCheck.gameID AND gmCheck.isGM = 1 AND gmCheck.userID = {$currentUser->userID} INNER JOIN players ON games.gameID = players.gameID AND players.approved = 0 WHERE games.retired IS NULL GROUP BY games.gameID ORDER BY games.start");
+			// $getPendingCharacters = $mysql->query("SELECT games.gameID, games.title, games.status, COUNT(characters.userID) pendingCharacters FROM games INNER JOIN players gmCheck ON games.gameID = gmCheck.gameID AND gmCheck.isGM = 1 AND gmCheck.userID = {$currentUser->userID} INNER JOIN characters ON games.gameID = characters.gameID AND characters.approved = 0 WHERE games.retired IS NULL GROUP BY games.gameID ORDER BY games.start");
+			$threadNotifications = $mysql->query("SELECT forumNotifications.notificationType, forumNotifications.postID, forumNotifications.threadID threadID, posts.title threadTitle, forums.title forumTitle FROM forumNotifications INNER JOIN threads ON forumNotifications.threadID = threads.threadID INNER JOIN posts ON threads.firstPostID = posts.postID INNER JOIN forums ON threads.forumID = forums.forumID WHERE forumNotifications.userID = {$currentUser->userID}");
 
-			$pending = $mongo->games->find(
-				[
-					'players' => [
-						'$elemMatch' => [
-							'user.userID' => $currentUser->userID,
-							'isGM' => true
-						]
-					],
-					'retired' => null
-				],
-				['projection' => [
-					'gameID' => true,
-					'title' => true,
-					'players' => true,
-					'status' => true
-				]]
-			)->toArray();
+			$notifications = [];
 
-			$threadNotifications = $mongo->users->findOne(
-				[
-					'userID' => $currentUser->userID
-				],
-				['projection' => [
-					'threadNotifications' => true
-				]]
-			);
-
-			$notifications = Array();
-
-			if (count($pending)) {
-				$pendingIDs = [];
-				$pendingPlayers = [];
-				$pendingChars = [];
-				$openGames = 0;
-				foreach ($pending as $game) {
-
-					if($game['status']=='open'){
-						$openGames++;
+			if ($getPending->rowCount()) {
+				foreach ($getPending->fetchAll() as $game) {
+					$gameID = $game['gameID'];
+					$notification = '<div class="notify notifyWaiting col-1-2 mob-col-1">You have ';
+					if ($game['pendingPlayers']) {
+						$notification .= $game['pendingPlayers'] . ' player' . ($game['pendingPlayers'] > 1 ? 's' : '');
 					}
-
-					$pendingIDs[] = $game['gameID'];
-					foreach ($game['players'] as $player) {
-						if (!$player['approved']) {
-							if (!isset($pendingPlayers[$game['gameID']])) {
-								$pendingPlayers[$game['gameID']] = 0;
-							}
-							$pendingPlayers[$game['gameID']]++;
-						}
-						if (is_countable($player['characters']) && sizeof($player['characters'])) {
-							foreach ($player['characters'] as $character) {
-								if (!$character['approved']) {
-									if (!isset($pendingChars[$game['gameID']])) {
-										$pendingChars[$game['gameID']] = 0;
-									}
-									$pendingChars[$game['gameID']]++;
-								}
-							}
-						}
+					if ($game['pendingPlayers'] && $game['pendingCharacters']){
+						$notification .= ' and ';
 					}
+					if ($game['pendingCharacters']) {
+						$notification .= $game['pendingCharacters'] . ' character' . ($game['pendingCharacters'] > 1 ? 's' : '');
+					}
+					$notification .= ' pending in <a href="/games/'.$gameID.'">'.$game['title'].'</a></div>';
+					$notifications[] = $notification;
 				}
 			}
 
-
-			if (($pendingPlayers && sizeof($pendingPlayers) > 0) || ($pendingChars && sizeof($pendingChars) > 0)) {
-				$notification='';
-				if (sizeof($pendingPlayers) || sizeof($pendingChars)) {
-					foreach ($pending as $game) {
-						$gameID = $game['gameID'];
-						if ($pendingPlayers[$gameID] || $pendingChars[$gameID]) {
-							$notification=$notification.'<div class="notify notifyWaiting col-1-2 mob-col-1">You have ';
-							if ($pendingPlayers[$gameID] > 0) {
-								$notification=$notification.($pendingPlayers[$gameID].' player'.($pendingPlayers[$gameID] > 1 ? 's' : ''));
-							}
-							if ($pendingPlayers[$gameID] && $pendingChars[$gameID]){
-								$notification=$notification.' and ';
-							}
-							if ($pendingChars[$gameID] > 0) {
-								$notification=$notification.($pendingChars[$gameID].' character'.($pendingChars[$gameID] > 1 ? 's' : ''));
-							}
-							$notification=$notification.' pending in <a href="/games/'.$gameID.'">'.$game['title'].'</a></div>';
-
-						}
-					}
+			if ($getGameInvites->rowCount()) {
+				foreach ($getGameInvites->fetchAll() as $game) {
+					$notifications[] = '<div class="notify notifyJoin col-1-2 mob-col-1">You have been invited to join <a href="/games/'.$game['gameID'].'">'.$game['title'].'</a></div>';
 				}
-				$notification=$notification.'';
-				$notifications[]=$notification;
-
-			}
-
-			if (sizeof($invitedTo)) {
-				$notification='';
-
-				foreach ($invitedTo as $game) {
-					$notification=$notification.'<div class="notify notifyJoin col-1-2 mob-col-1">You have been invited to join <a href="/games/'.$game['gameID'].'">'.$game['title'].'</a></div>';
-				}
-				$notification=$notification.'';
-				$notifications[]=$notification;
 			}
 
 			$hasMentions = false;
-			if($threadNotifications && is_countable($threadNotifications["threadNotifications"])){
-				foreach ($threadNotifications["threadNotifications"] as $threadNotification) {
-					$notification='<div class="notify notifyThread notifyThread-'.$threadNotification['notificationType'].' col-1-2 mob-col-1"><a data-postid="'.$threadNotification['postID'].'" href="/forums/thread/'.$threadNotification['threadID'].'/?p='.$threadNotification['postID'].'#p'.$threadNotification['postID'].'">'.$threadNotification['forumTitle'].' &gt; '.$threadNotification['threadTitle'].'</a></div>';
-					$notifications[]=$notification;
-					$hasMentions=true;
+			if($threadNotifications->rowCount()) {
+				foreach ($threadNotifications->fetchAll() as $threadNotification) {
+					$notifications[] = '<div class="notify notifyThread notifyThread-'.$threadNotification['notificationType'].' col-1-2 mob-col-1"><a data-postid="'.$threadNotification['postID'].'" href="/forums/thread/'.$threadNotification['threadID'].'/?p='.$threadNotification['postID'].'#p'.$threadNotification['postID'].'">'.$threadNotification['forumTitle'].' &gt; '.$threadNotification['threadTitle'].'</a></div>';
 				}
+				$hasMentions = true;
 			}
 
 			//new users suggest making an introduction
 			if (strtotime('-14 Days') < strtotime($currentUser->joinDate)){
-				$mysql = DB::conn('mysql');
-				$introPosts=$mysql->query("SELECT count(p.postID) FROM posts p INNER JOIN threads t ON p.threadID = t.threadID WHERE t.forumID=14 AND authorID={$currentUser->userID}")->fetchColumn();
+				$introPosts = $mysql->query("SELECT count(p.postID) FROM posts p INNER JOIN threads t ON p.threadID = t.threadID WHERE t.forumID=14 AND authorID={$currentUser->userID} LIMIT 1")->fetchColumn();
 
-				if($introPosts==0){
-					$notification='<div class="notify notifyIntroduction col-1-2 mob-col-1">Say hello in the <a href="/forums/14">Introductions</a> forum</div>';
-					$notifications[]=$notification;
+				if (!$introPosts) {
+					$notifications[] = '<div class="notify notifyIntroduction col-1-2 mob-col-1">Say hello in the <a href="/forums/14">Introductions</a> forum</div>';
 				}
 			}
 
-			if(!empty($notifications)){
+			if (!empty($notifications)){
 				echo '<div class="flexWrapper"><div id="notifications" class="col-1">';
 				echo '<h2 class="headerbar notificationsheaderbar"><i class="ra ra-ringing-bell"></i> Notifications'.($hasMentions?'<span id="clearMentions">clear @</span>':'').'</h2>';
 
@@ -280,7 +167,9 @@
 		}
 
 		public function addLatestPosts($forumManager,$forumId,$showCount){
-			global $mysql, $currentUser;
+			global $currentUser;
+			$mysql = DB::conn('mysql');
+
 			$results=$mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID={$forumId} ORDER BY lp.datePosted DESC LIMIT {$showCount}")->fetchAll(PDO::FETCH_OBJ);
 
 			$first = true;

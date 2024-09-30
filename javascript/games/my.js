@@ -14,20 +14,22 @@ controllers.controller('myGames', ['$scope', '$filter', 'CurrentUser', 'GamesSer
 			});
 			CurrentUser.getLFG().then(function (data) {
 				$scope.lfg = [];
-				data.forEach(function (val) {
-					$scope.lfg.push($scope.systems[val]);
-				});
+				if (data) {
+					data.forEach(function (val) {
+						$scope.lfg.push($scope.systems[val]);
+					});
+				}
 			});
 
 			GamesService.getGames({ my: true }).then(function (data) {
 				$scope.$emit('pageLoading');
 				$scope.games = data;
 				if ($scope.games.length > 0) {
-					if ($filter('filter')($scope.games, { 'isGM': false,'isRetired':false }).length)
+					if ($filter('filter')($scope.games, { 'isGM': false, 'isRetired': false }).length)
 						$scope.inGames.notGM = true;
-					if ($filter('filter')($scope.games, { 'isGM': true,'isRetired':false }).length)
+					if ($filter('filter')($scope.games, { 'isGM': true, 'isRetired': false }).length)
 						$scope.inGames.gm = true;
-					if ($filter('filter')($scope.games, { 'isRetired':true }).length)
+					if ($filter('filter')($scope.games, { 'isRetired': true }).length)
 						$scope.inGames.retired = true;
 				}
 			});

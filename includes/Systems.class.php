@@ -4,12 +4,11 @@
 		protected $systems = [];
 
 		private function __construct() {
-			$systems = DB::conn('mongo')->systems->find([], [
-				'projection' => ['name' => 1],
-				'sort' => ['sortName' => 1]
-			]);
+			$mysql = DB::conn('mysql');
+
+			$systems = $mysql->query("SELECT id, name FROM systems ORDER BY sortName")->fetchAll();
 			foreach ($systems as $system) {
-				$this->systems[$system['_id']] = $system['name'];
+				$this->systems[$system['id']] = $system['name'];
 			}
 		}
 
@@ -44,7 +43,7 @@
 		}
 
 		public function verifySystem($slug) {
-			return array_key_exists($slug, $this->systems)?true:false;
+			return array_key_exists($slug, $this->systems) ? true : false;
 		}
 
 		public function getFullName($slug) {

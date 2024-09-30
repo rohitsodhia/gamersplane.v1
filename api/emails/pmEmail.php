@@ -17,7 +17,7 @@
 		<tr><td style="height:100px;padding:10px;background-color:#777;border:1px solid #111"><img src="<?=$pathBase?>/images/bodyComponents/logo.png" height="100" alt="Header image"></td></tr>
 		<tr><td style="padding:0 10px;border-color:#111;border-style:solid;border-width:0 1px 0 1px">
 			<h1 style="background-color:#C60;color:#FFF;margin:.3em auto; width: 538px;"><img src="<?=$pathBase?>/images/emails/text/New_PM.jpg" alt="New PM"></h1>
-			<p><a href="<?=$pathBase?>/user/<?=$sender->userID?>/" class="username"><?=$sender->username?></a> has sent you a new PM!</p>
+			<p><a href="<?=$pathBase?>/user/<?=$currentUser->userID?>/" class="username"><?=$currentUser->username?></a> has sent you a new PM!</p>
 			<p style="margin: 15px 20px;"><?=printReady(sanitizeString($_POST['message']))?></p>
 			<p>See and reply to this message in your <a href="<?=$pathBase?>/pms/">PM inbox</a>.</p>
 			<p style="text-align: right;">- The Gamers Plane Team</p>

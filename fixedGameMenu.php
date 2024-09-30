@@ -1,51 +1,48 @@
-
-<?php	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
+<?php
+	if (($gameID || ($pathAction == 'characters' && $pathOptions[0] != 'my')) && !isset($_GET['modal'])) {
+?>
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?php
 		$gameID = (int) $gameID;
-		$isUserGm=false;
+		$isUserGM = false;
 		if ($gameID) {
-			$game = $mongo->games->findOne(
-				[
-					'gameID' => (int) $gameID
-				],
-				[
-					'system' => true,
-					'forumID' => true,
-					'public' => true,
-					'players.$' => true
-				]
-			);
-			$isGM = $game && $game['players'][0]['isGM'] ? true : false;
+			$game = $mysql->query("SELECT games.gmID, systems.name AS `system`, games.forumID, games.public, games.gameOptions FROM games INNER JOIN systems ON games.system = systems.id WHERE games.gameID = {$gameID}")->fetch();
+			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
+			$isGM = $game && $game['gmID'] == $currentUser->userID ? true : false;
 ?>
 <ul style="display:none" id="playerList">
 <?php
-	if ($gameID && is_array($game['players'])) {
-		foreach ($game['players'] as $player) {
-			if ($player['isGM'] && $player['user']['userID'] == $currentUser->userID) {
-				$isUserGm = true;
-			}
-			if ($player['approved']) {
+			$approvedPlayer = false;
+			if ($players->rowCount()) {
+				foreach ($players->fetchAll() as $player) {
+					if ($player['userID'] == $currentUser->userID && $player['approved']) {
+						$approvedPlayer = true;
+					}
+					if ($player['isGM'] && $player['userID'] == $currentUser->userID) {
+						$isUserGM = true;
+					}
+					if ($player['approved']) {
 ?>
-	<li><?= $player['user']['username']?></li>
+	<li><?= $player['username']?></li>
 <?php
+					}
+				}
 			}
-		}
-	}
-	if ($gameID) {
 ?>
 	<script type="application/json" id="gameOptions">
-	<?= $game["gameOptions"] ?>
+<?= $game["gameOptions"] ?>
 	</script>
-
-<?php } ?>
 </ul>
 	<ul class="rightCol">
-		<li><a href="<?='/games/'.$gameID?>" class="menuLink">Game Details</a></li>
+		<li><a href="/games/<?=$gameID?>" class="menuLink">Game Details</a></li>
 	</ul>
-<?php		} ?>
+<?php
+		}
+?>
 	<ul class="leftCol">
-<?php		if ($isGM || $pathAction == 'characters') { ?>
+<?php
+		if ($isGM || $pathAction == 'characters') {
+?>
 		<li id="fm_tools" class="mob-hide">
 			<a href="/tools" class="menuLink">Tools</a>
 			<ul class="submenu" data-menu-group="tools">
@@ -67,6 +64,9 @@
 						<div class="floatRight"></div>
 					</div>
 				</li>
+<?php
+			if ($isGM || $pathAction == 'characters') {
+?>
 				<li id="fm_cards">
 					<a href="/tools/cards" class="menuLink">Cards</a>
 					<div class="subwindow">
@@ -98,45 +98,36 @@
 				</li>
 			</ul>
 		</li>
-<?php		} ?>
+<?php
+			}
+		}
+?>
 <?php
 		if ($gameID) {
-			$charConds = ['game.gameID' => $gameID, 'game.approved' => true];
-			if (!$isGM) {
-				$charConds['user.userID'] = $currentUser->userID;
-			}
-			$characters = $mongo->characters->find(
-				$charConds,
-				[
-					'projection' => [
-						'characterID' => true,
-						'system' => true,
-						'name' => true,
-						'label' => true,
-						'user' => true,
-					],
-					'sort' => ['user.username' => 1, 'name' => 1]
-				]
-			)->toArray();
-			if (count($characters) && $pathAction != 'characters') {
+			$where = "characters.gameID = {$gameID} AND characters.approved = TRUE";
+			// if (!$isGM) {
+			// 	$where .= " AND characters.userID = {$currentUser->userID}";
+			// }
+			$characters = $mysql->query("SELECT characters.characterID, characters.`system`, characters.label, characters.name, users.userID, users.username FROM characters INNER JOIN users ON characters.userID = users.userID WHERE {$where} ORDER BY users.username");
+			if ($characters->rowCount() && $pathAction != 'characters') {
 ?>
 		<li id="fm_characters">
 			<a href="" class="menuLink">Characters</a>
-			<ul class="submenu<?=$isUserGm ? ' isGM' : ''?>" data-menu-group="characters">
+			<ul class="submenu<?=$isUserGM ? ' isGM' : ''?>" data-menu-group="characters">
 <?php
 				$currentUserID = 0;
-				foreach ($characters as $charInfo) {
-					if ($currentUserID != $charInfo['user']['userID']) {
+				foreach ($characters->fetchAll() as $charInfo) {
+					if ($currentUserID != $charInfo['userID']) {
 						if ($currentUserID != 0) {
 							echo "				</li>\n";
 						}
-						$currentUserID = $charInfo['user']['userID'];
-						echo "				<li".($currentUser->userID==$currentUserID?" class='thisUser'":"").">\n";
-						if ($isGM) {
+						$currentUserID = $charInfo['userID'];
+						echo "				<li".($currentUser->userID == $currentUserID?" class='thisUser'":"").">\n";
+						// if ($isGM) {
 ?>
-					<p class="username"><i class="ra ra-quill-ink"></i> <a href="/user/<?=$charInfo['user']['userID']?>" class="username"><?=$charInfo['user']['username']?></a></p>
+					<p class="username"><i class="ra ra-quill-ink"></i> <a href="/user/<?=$charInfo['userID']?>" class="username"><?=$charInfo['username']?></a></p>
 <?php
-						}
+						// }
 					}
 ?>
 					<p class="charName"><i class="ra ra-quill-ink"></i> <a href="/characters/<?=$charInfo['system']?>/<?=$charInfo['characterID']?>/" class="charid-<?=$charInfo['characterID']?>"><?=$charInfo['name']?></a></p>
@@ -146,11 +137,15 @@
 		</li>
 <?php
 			}
-		}
-		if ($gameID && $pathAction != 'forums' && ($game['players'][0]['approved'] || $game['public'])) {
+			if ($pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
 ?>
 			<li><a href="/forums/<?=$game['forumID']?>/" class="menuLink">Forum</a></li>
-<?php	} ?>
+<?php
+			}
+?>
 	</ul>
+<?php
+		}
+	}
+?>
 </div></div>
-<?php } ?>

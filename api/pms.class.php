@@ -23,39 +23,37 @@
 
 		public function get($box) {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$box = strtolower($box);
 			if (!in_array($box, ['inbox', 'outbox'])) {
 				displayJSON(['failed' => true, 'errors' => ['noBox']]);
 			}
 			if ($box == 'inbox') {
-				$search = ['recipients.userID' => $currentUser->userID, 'recipients.deleted' => false];
+				$where = "recipientID = {$currentUser->userID} AND recipientDeleted = 0";
 			} else {
-				$search = ['sender.userID' => $currentUser->userID, 'deleted' => false];
+				$where = "senderID = {$currentUser->userID} AND senderDeleted = 0";
 			}
 			$page = isset($_POST['page']) && intval($_POST['page']) > 0 ? intval($_POST['page']) : 1;
-			$numPMs = $mongo->pms->count($search);
-			$pmsResults = $mongo->pms->find(
-				$search,
-				[
-					'sort' => ['datestamp' => -1],
-					'skip' => PAGINATE_PER_PAGE * ($page - 1),
-					'limit' => PAGINATE_PER_PAGE
-				]
-			);
+			$numPMs = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE {$where}")->fetchColumn();
+			$page = PAGINATE_PER_PAGE * ($page - 1);
+			$paginatePerPage = PAGINATE_PER_PAGE;
+			$pmsResults = $mysql->query("SELECT pmID, senderID, sender.username senderUsername, recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE {$where} ORDER BY datestamp DESC LIMIT {$page}, {$paginatePerPage}");
 			$pms = [];
 			foreach ($pmsResults as $pm) {
 				$pm = printReady($pm);
-				$pm['read'] = false;
-				if ($box == 'inbox') {
-					foreach ($pm['recipients'] as $recipient) {
-						if ($recipient['userID'] == $currentUser->userID) {
-							$pm['read'] = $recipient['read'];
-							break;
-						}
-					}
+				$pm['read'] = (bool) $pm['read'];
+				foreach (['pmID', 'senderID', 'recipientID'] as $intKey) {
+					$pm[$intKey] = (int) $pm[$intKey];
 				}
+				$pm['sender'] = [
+					'userID' => (int) $pm['senderID'],
+					'username' => $pm['senderUsername']
+				];
+				$pm['recipients'] = [[
+					'userID' => (int) $pm['recipientID'],
+					'username' => $pm['recipientUsername']
+				]];
 				$pms[] = $pm;
 			}
 			displayJSON(['success' => true, 'box' => $box, 'pms' => $pms, 'totalCount' => $numPMs]);
@@ -64,65 +62,57 @@
 		public function displayPM($pmID) {
 			require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$pmID = intval($pmID);
 			$includeSelfHistory = isset($_POST['includeSelfHistory']) && $_POST['includeSelfHistory'] ? true : false;
 
-			$pm = $mongo->pms->findOne(
-				[
-					'pmID' => $pmID,
-					'$or' => [
-						['sender.userID' => $currentUser->userID],
-						['recipients.userID' => $currentUser->userID, 'recipients.deleted' => false]
-					]
-				]
-			);
-			if ($pm === null) {
+			$pm = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID = {$pmID} AND (sender.userID = {$currentUser->userID} OR (recipient.userID = {$currentUser->userID} AND recipientDeleted = 0))");
+			if (!$pm->rowCount()) {
 				displayJSON(['noPM' => true]);
 			} else {
-				$pm = printReady($pm);
+				$pm = printReady($pm->fetch());
 				$pm['message'] = BBCode2Html($pm['message']);
-				$history = $pm['history'];
-				if (isset($_POST['markRead']) && $_POST['markRead']) {
-					$mongo->pms->updateOne(
-						[
-							'pmID' => $pmID,
-							'recipients.userID' => $currentUser->userID
-						],
-						['$set' => ['recipients.$.read' => true]]
-					);
+				$pm['read'] = (bool) $pm['read'];
+				$pm['sender'] = [
+					'userID' => (int) $pm['senderID'],
+					'username' => $pm['senderUsername']
+				];
+				$pm['recipients'] = [[
+					'userID' => (int) $pm['recipientID'],
+					'username' => $pm['recipientUsername']
+				]];
+				$history = json_decode($pm['history']);
+				if (isset($_POST['markRead']) && $_POST['markRead'] && !$pm['read']) {
+					$mysql->query("UPDATE pms SET `read` = 1 WHERE pmID = {$pmID}");
 				}
 				if (($history && sizeof($history)) || $includeSelfHistory) {
 					$pm['history'] = [];
 					if ($includeSelfHistory) {
 						$pm['history'][] = [
-							'pmID' => $pm['pmID'],
+							'pmID' => (int) $pm['pmID'],
 							'sender' => $pm['sender'],
 							'recipients' => $pm['recipients'],
 							'title' => $pm['title'],
 							'message' => $pm['message'],
 							'datestamp' => $pm['datestamp'],
-							'replyTo' => $pm['replyTo'],
+							'replyTo' => (int) $pm['replyTo'],
 						];
 					}
 					if ($history && sizeof($history)) {
-						foreach ($history as $pmID) {
-							$hPM = $mongo->pms->findOne(
-								[
-									'pmID' => $pmID,
-									'$or' => [
-										['sender.userID' => $currentUser->userID],
-										['recipients.userID' => $currentUser->userID]
-									]
-								]
-							);
+						$historyPMs = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID IN (" . implode(',', $history) . ") ORDER BY datestamp DESC LIMIT 10");
+						foreach ($historyPMs->fetchAll() as $hPM) {
 							$hPM['title'] = printReady($hPM['title']);
 							$hPM['message'] = BBCode2Html(printReady($hPM['message']));
+							$hPM['sender'] = [
+								'userID' => (int) $hPM['senderID'],
+								'username' => $hPM['senderUsername']
+							];
+							$hPM['recipients'] = [[
+								'userID' => (int) $hPM['recipientID'],
+								'username' => $hPM['recipientUsername']
+							]];
 							$pm['history'][] = $hPM;
-							if (sizeof($pm['history']) == 10) {
-								break;
-							}
 						}
 					}
 				}
@@ -132,59 +122,45 @@
 
 		public function checkAllowed($pmID) {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(
-				[
-					'pmID' => $pmID,
-					'$or' => [
-						['sender.userID' => $currentUser->userID],
-						['recipient.userID' => $currentUser->userID, 'deleted' => false]
-					]
-				]
-			);
-			displayJSON(['allowed' => $pm ? true : false]);
+			$pm = $mysql->query("SELECT pmID FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID = {$pmID} AND (sender.userID = {$currentUser->userID} OR (recipient.userID = {$currentUser->userID} AND recipientDeleted = 0))");
+			displayJSON(['allowed' => $pm->rowCount() ? true : false]);
 		}
 
 		public function sendPM() {
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$mongo = DB::conn('mongo');
 
-			$sender = (object) ['userID' => $currentUser->userID, 'username' => $currentUser->username];
 			$recipient = sanitizeString(preg_replace('/[^\w.]/', '', $_POST['username']));
-			$recipient = $mysql->query("SELECT userID, username, email FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
+			$recipient = $mysql->query("SELECT userID, email FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
 			$recipEmail = $recipient->email;
-			unset($recipient->email);
 			$recipient->userID = (int) $recipient->userID;
-			$recipient->read = false;
-			$recipient->deleted = false;
 			$replyTo = intval($_POST['replyTo']) > 0 ? intval($_POST['replyTo']) : null;
-			if ($sender->userID == $recipient->userID) {
+			if ($currentUser->userID == $recipient->userID) {
 				displayJSON(['mailingSelf' => true]);
 			} else {
 				$history = null;
 				if ($replyTo) {
-					$parent = $mongo->pms->findOne(['pmID' => $replyTo]);
+					$parent = $mysql->query("SELECT history FROM pms WHERE pmID = {$replyTo}")->fetch();
 					$history = [$replyTo];
 					if ($parent['history']) {
-						$history = array_merge($history, $parent['history']);
+						$history = array_merge($history, json_decode($parent['history']));
 					}
 				}
-				$mongo->pms->insertOne([
-					'pmID' => mongo_getNextSequence('pmID'),
-					'sender' => $sender,
-					'deleted' => false,
-					'recipients' => [$recipient],
+				$addPM = $mysql->prepare("INSERT INTO pms SET recipientID = :recipientID, senderID = :senderID, title = :title, message = :message, datestamp = NOW(), replyTo = :replyTo, history = :history");
+				$addPM->execute([
+					'recipientID' => $recipient->userID,
+					'senderID' => $currentUser->userID,
 					'title' => sanitizeString($_POST['title']),
 					'message' => sanitizeString($_POST['message']),
-					'datestamp' => date('Y-m-d H:i:s'),
 					'replyTo' => $replyTo,
-					'history' => $history
+					'history' => json_encode($history)
 				]);
 
-				if ($currentUser->getUsermeta('pmMail')) {
+				$sendMail = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$recipient->userID} AND metaKey = 'pmMail'")->fetchColumn();
+				if ($sendMail) {
 					ob_start();
 					include('emails/pmEmail.php');
 					$email = ob_get_contents();
@@ -203,34 +179,22 @@
 
 		public function deletePM($pmID) {
 			global $currentUser;
-			$mongo = DB::conn('mongo');
+			$mysql = DB::conn('mysql');
 
 			$pmID = intval($pmID);
-			$pm = $mongo->pms->findOne(
-				[
-					'pmID' => $pmID,
-					'$or' => [
-						['sender.userID' => $currentUser->userID], ['recipients.userID' => $currentUser->userID]
-					]
-				]
-			);
-			if ($pm === null) {
+			$getPM = $mysql->query("SELECT senderID FROM pms WHERE pmID = {$pmID} AND (senderID = {$currentUser->userID} OR recipientID = {$currentUser->userID})");
+			if (!$getPM->rowCount()) {
 				displayJSON(['noMatch' => true]);
-			} elseif ($pm['sender']['userID'] == $currentUser->userID) {
-				$mongo->pms->updateOne(
-					['pmID' => $pmID],
-					['$set' => ['deleted' => true]]
-				);
-
-				displayJSON(['deleted' => true]);
-			} else {
-				$mongo->pms->updateOne(
-					['pmID' => $pmID, 'recipients.userID' => $currentUser->userID],
-					['$set' => ['recipients.$.deleted' => true]]
-				);
-
-				displayJSON(['deleted' => true]);
 			}
+			$pm = $getPM->fetch();
+			if ($pm['senderID'] == $currentUser->userID) {
+				$key = 'senderDeleted';
+			} else {
+				$key = 'recipientDeleted';
+			}
+			$mysql->query("UPDATE pms SET {$key} = 1 WHERE pmID = {$pmID}");
+
+			displayJSON(['deleted' => true]);
 		}
 	}
 ?>

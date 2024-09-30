@@ -69,7 +69,7 @@
 						<img src="/images/gm_icon.png" ng-if="activeGame.isGM" class="ag-isGM"/>
 						<a href="/games/{{activeGame.gameID}}" class="ag-title">{{activeGame.title}}</a>
 						<span class="ag-system" ng-bind-html="activeGame.system"></span>
-						<a  class="ag-forum badge badge-gamePublic" href="/forums/{{activeGame.forumID}}" ng-if="activeGame.forumID">Public</a>
+						<a class="ag-forum badge badge-gamePublic" href="/forums/{{activeGame.forumID}}" ng-if="activeGame.forumID">Public</a>
 					</li>
 				</ul>
 			</div>
