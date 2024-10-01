@@ -453,7 +453,7 @@
 			}
 
 			if ($notificationType == ThreadNotificationTypeEnum::NEW_POST || $notificationType == ThreadNotificationTypeEnum::MAJOR_EDIT) {
-				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadID}")->fetchColumn();
+				$discordWebhook = $mysql->query("SELECT discordWebhook FROM threads WHERE threadID = {$threadID} LIMIT 1")->fetchColumn();
 
 				if ($discordWebhook) {
 					$userAvatar = "https://" . getenv('APP_URL') . User::getAvatar($currentUser->userID);
@@ -462,7 +462,7 @@
 					$postAsId = $post->getPostAs();
 
 					if ($postAsId && $postAsId != 'p') {
-						$cpostAsName = $mysql->query("SELECT name FROM characters WHERE characterID = {$postAsId} LIMIT 1")->fetchColumn();
+						$postAsName = $mysql->query("SELECT name FROM characters WHERE characterID = {$postAsId} LIMIT 1")->fetchColumn();
 						if ($postAsName) {
 							if (file_exists(FILEROOT . "/characters/avatars/{$postAsId}.jpg")) {
 								$avatar = "https://" . getenv('APP_URL') . "/characters/avatars/{$postAsId}.jpg";
