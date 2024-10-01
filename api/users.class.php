@@ -182,7 +182,7 @@
 				}
 			}
 
-			$getGames = $mysql->query("SELECT games.gameID, games.title, games.forumID, IF(players.isGM, players.isGM, FALSE) isGM, IF(players.userID, TRUE, FALSE) isPlayer, IF(favorites.userID, 1, 0) isFavorite FROM games LEFT JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID} WHERE (players.userID IS NOT NULL OR favorites.userID IS NOT NULL) ORDER BY isFavorite DESC, isGM DESC, isPlayer DESC, games.title");
+			$getGames = $mysql->query("SELECT games.gameID, games.title, games.forumID, games.retired, IF(players.isGM, players.isGM, FALSE) isGM, IF(players.userID, TRUE, FALSE) isPlayer, IF(favorites.userID, 1, 0) isFavorite FROM games LEFT JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} LEFT JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID} WHERE (players.userID IS NOT NULL OR favorites.userID IS NOT NULL) ORDER BY isFavorite DESC, isGM DESC, isPlayer DESC, games.title");
 			$games = [];
 			$hasFavorites = FALSE;
 			foreach ($getGames->fetchAll() as $game) {
