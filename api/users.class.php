@@ -578,7 +578,7 @@
 				'posts' => ['count' => $postCount, 'communityCount' => $communityPostCount, 'gameCount' => $gamePostCount],
 				'characters' => ['numChars' => $numChars, 'list' => $characters],
 				'games' => ['numGames' => $numGames, 'list' => $games],
-				'activeGames' => $activeGameRet
+				'activeGames' => $activeGames
 			]);
 		}
 
