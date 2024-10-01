@@ -560,7 +560,7 @@
 			}
 			$characters = array_values($characters);
 
-			$getGamesRunning = $mysql->query("SELECT games.`system`, count(*) numGames FROM games INNER JOIN players ON games.gameID = players.gameID WHERE players.userID = {$userID} AND players.isGM = TRUE AND games.retired IS NULL GROUP BY games.system ORDER BY games.system")->fetchALl();
+			$getGamesRunning = $mysql->query("SELECT games.`system`, count(*) numGames FROM games INNER JOIN players ON games.gameID = players.gameID WHERE players.userID = {$userID} AND players.isGM = TRUE GROUP BY games.system ORDER BY games.system")->fetchALl();
 			$games = [];
 			$numGames = 0;
 			foreach ($getGamesRunning as $game) {
