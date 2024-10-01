@@ -789,7 +789,7 @@ class games
 		try {
 			$mysql->query("INSERT INTO games_favorites SET userID = {$currentUser->userID}, gameID = {$gameID}");
 		} catch (Exception $e) {
-			if (str_contains($e->getMessage(), 'Integrity constraint violation: 1062')) {
+			if (strstr($e->getMessage(), 'Integrity constraint violation: 1062')) {
 				$mysql->query("DELETE FROM games_favorites WHERE userID = {$currentUser->userID} AND gameID = {$gameID}");
 			}
 		}
