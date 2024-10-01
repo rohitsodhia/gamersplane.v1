@@ -347,7 +347,7 @@
 					$mysql->query("INSERT INTO characterLibrary_favorites SET userID = {$currentUser->userID}, characterID = {$characterID}");
 					$state = "favorited";
 				} catch (Exception $e) {
-					if (str_contains($e->getMessage(), 'Integrity constraint violation: 1062')) {
+					if (strstr($e->getMessage(), 'Integrity constraint violation: 1062')) {
 						$mysql->query("DELETE FROM characterLibrary_favorites WHERE userID = {$currentUser->userID} AND characterID = {$characterID}");
 						$state = "unfavorited";
 					}
