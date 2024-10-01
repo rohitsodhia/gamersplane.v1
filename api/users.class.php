@@ -529,13 +529,12 @@
 			foreach ($getActiveGames as $activeGame) {
 				$title = printReady($activeGame['title']);
 				$system = $activeGame['customSystem'] ? $activeGame['customSystem'] : $systems->getFullName($activeGame['system']);
-				$forumID = (bool) $activeGame['read'] ? $activeGame['forumID'] : null;
-				$isGM = (bool) $activeGame['isGM'];
+				$forumID = $activeGame['read'] == 1 ? (int) $activeGame['forumID'] : null;
 				$activeGames[] = [
-					'gameID' => $activeGame['gameID'],
+					'gameID' => (int) $activeGame['gameID'],
 					'title' => $title,
 					'system' => $system,
-					'isGM' => $isGM,
+					'isGM' => (bool) $isGM,
 					'forumID' => $forumID
 				];
 			}
