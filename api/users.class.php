@@ -534,7 +534,7 @@
 					'gameID' => (int) $activeGame['gameID'],
 					'title' => $title,
 					'system' => $system,
-					'isGM' => (bool) $isGM,
+					'isGM' => (bool) $activeGame['isGM'],
 					'forumID' => $forumID
 				];
 			}
