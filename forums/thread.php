@@ -374,7 +374,7 @@
 			$playerCharacters = [];
 			if ($isGM) {
 				$getPlayerCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
-				foreach ($getPCCharacters->fetchAll() as $character) {
+				foreach ($getPlayerCharacters->fetchAll() as $character) {
 					$playerCharacters[$character['characterID']] = $character['name'];
 				}
 			}
