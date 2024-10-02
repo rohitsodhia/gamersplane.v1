@@ -21,7 +21,6 @@
 	if ($threadManager->isGameForum()) {
 		$gameID = (int) $threadManager->getForumProperty('gameID');
 		$system = $mysql->query("SELECT `system` FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
-		$isGM = false;
 		$GMs = $mysql->query("SELECT userID FROM players WHERE gameID = {$gameID} AND isGM = TRUE")->fetchAll(PDO::FETCH_COLUMN, 0);
 		array_walk($GMs, function (&$val) {
 			$val = (int) $val;
@@ -248,7 +247,7 @@
 <?php				} ?>
 							</div>
 <?php
-	 		}
+			}
 
 			if (sizeof($post->draws)) {
 				$visText = [1 => '[Hidden Roll/Result]', '[Hidden Dice &amp; Roll]', '[Everything Hidden]', '[Hidden Reason]'];
@@ -372,11 +371,11 @@
 				$characters[$character['characterID']] = $character['name'];
 			}
 
-			$pcCharacters = [];
+			$playerCharacters = [];
 			if ($isGM) {
-				$getPCCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
+				$getPlayerCharacters = $mysql->query("SELECT characterID, name FROM characters WHERE gameID = {$gameID} AND userID != {$currentUser->userID} AND approved = TRUE AND LENGTH(name) > 0");
 				foreach ($getPCCharacters->fetchAll() as $character) {
-					$pcCharacters[$character['characterID']] = $character['name'];
+					$playerCharacters[$character['characterID']] = $character['name'];
 				}
 			}
 		}
