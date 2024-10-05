@@ -590,7 +590,7 @@
 				global $currentUser;
 				$userID = $currentUser->userID;
 			}
-			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'acpPermissions'");
+			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'lfg'");
 			if ($lfg->rowCount()) {
 				$lfg = json_decode($lfg->fetchColumn(), true);
 				displayJSON(['lfg' => $lfg]);
