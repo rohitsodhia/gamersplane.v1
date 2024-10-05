@@ -335,7 +335,7 @@ class games
 
 			$currentUser->updateUsermeta('isGM', true);
 
-			$getLFGUsers = $mysql->query("SELECT users.email FROM lfg INNER JOIN users ON lfg.userID = users.userID WHERE lfg.system = '{$details['system']}'");
+			$getLFGUsers = $mysql->query("SELECT users.email FROM usermeta INNER JOIN users ON usermeta.userID = users.userID WHERE usermeta.metaKey = 'lfg' AND JSON_CONTAINS(usermeta.metaValue, '\"{$details['system']}\"', '$')");
 			if ($getLFGUsers->rowCount()) {
 				$recips = $getLFGUsers->fetchAll(PDO::FETCH_COLUMN, 0);
 				ob_start();

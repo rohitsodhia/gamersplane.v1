@@ -601,41 +601,45 @@
 
 		public function saveLFG() {
 			$mysql = DB::conn('mysql');
-
-			if (isset($_POST['userID']) && intval($_POST['userID']) > 0) {
-				$userID = (int) $_POST['userID'];
-			} else {
-				global $currentUser;
-				$userID = $currentUser->userID;
-			}
-			$lfg = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'acpPermissions'");
-			if ($lfg->rowCount()) {
-				$lfg = json_decode($lfg->fetchColumn(), true);
-			} else {
-				$lfg = [];
-			}
-			$remove = [];
-			$newLFG = [];
 			require_once('../includes/Systems.class.php');
 			$systems = Systems::getInstance();
-			foreach ($_POST['lfg'] as $system) {
-				$newLFG[$systems->getSlug($system)] = 1;
-			}
-			foreach ($lfg as $key => $system) {
-				if (array_key_exists($system, $newLFG)) {
-					unset($newLFG[$system]);
-				} else {
-					unset($lfg[$key]);
-					$remove[$system] = -1;
+
+			global $currentUser;
+			$userID = $currentUser->userID;
+
+			$lfg = [];
+			$savedLFG = [];
+			$metaID = null;
+			$getLFG = $mysql->query("SELECT metaID, metaValue FROM usermeta WHERE userID = {$userID} AND metaKey = 'lfg' LIMIT 1");
+			if ($getLFG->rowCount()) {
+				$metadata = $getLFG->fetch();
+				$metaID = (int) $metadata['metaID'];
+				$savedLFG = $metadata['metaValue'];
+				// $lfg = json_decode($getLFG->fetchColumn(1), true);
+				if (!is_array($savedLFG)) {
+					$savedLFG = [];
 				}
 			}
-			$lfg = array_merge($lfg, array_keys($newLFG));
-			$updateSystemLFGCount = $mysql->prepare("UPDATE systems SET lfg = lfg + :incAmount WHERE id = :system");
-			foreach (array_merge($remove, $newLFG) as $system => $count) {
-				$updateSystemLFGCount->execute(['incAmount' => $count, 'system' => $system]);
+
+			$updateSystemLFGCount = $mysql->prepare("UPDATE systems SET lfg = lfg + :incAmount WHERE id = :system LIMIT 1");
+			foreach ($_POST['lfg'] as $systemName) {
+				$systemSlug = $systems->getSlug($systemName);
+
+				if (!array_key_exists($systemSlug, $savedLFG)) {
+					unset($savedLFG[$systemSlug]);
+				}
+				$lfg[] = $systemSlug;
 			}
-			$updateUserLFG = $mysql->prepare("UPDATE users SET lfg = :lfg WHERE userID = :userID");
-			$updateUserLFG->execute(['lfg' => $lfg, 'userID' => $userID]);
+			foreach ($savedLFG as $system) {
+				$updateSystemLFGCount->execute(['incAmount' => -1, 'system' => $system]);
+			}
+			if ($getLFG->rowCount()) {
+				$updateUserLFG = $mysql->prepare("UPDATE usermeta SET metaValue = :metaValue WHERE metaID = :metaID LIMIT 1");
+				$updateUserLFG->execute(['metaValue' => $lfg ? json_encode($lfg) : '[]', 'metaID' => $metaID]);
+			} else {
+				$insertUserLFG = $mysql->prepare("INSERT INTO usermeta (userID, metaKey, metaValue, autoload) VALUES (:userID, 'lfg', :metaValue, 0)");
+				$insertUserLFG->execute(['userID' => $userID, 'metaValue' => $lfg ? json_encode($lfg) : '[]']);
+			}
 		}
 
 		public function removeThreadNotification($postId){
