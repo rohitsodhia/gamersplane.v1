@@ -2,39 +2,43 @@
 	if (isset($_POST['send'])) {
 		unset($_SESSION['errors']);
 		unset($_SESSION['errorTime']);
-		
+
 		$replyTo = intval($_POST['replyTo']);
 		$username = sanitizeString($_POST['username']);
 		$title = sanitizeString($_POST['title']);
 		$message = sanitizeString($_POST['message']);
-		
+
 		if ($replyTo) {
 			try { $replyManager = new PMManager($pmID); }
 			catch (Exception $e) { header('Location: /pms/'); exit; }
 		}
-		
+
 		$recipientCheck = $mysql->prepare("SELECT userID FROM users WHERE username = :username");
 		$recipientCheck->bindValue(':username', $username);
 		$recipientCheck->execute();
 		$recipientID = $recipientCheck->fetchColumn();
 
 		$formErrors->clearErrors();
-		
+
 		if (!$recipientID) $formErrors->addError('invalidUser');
 		if (!strlen($title)) $formErrors->addError('noTitle');
 		if (!strlen($message)) $formErrors->addError('noMessage');
-		
+
 		if ($formErrors->errorsExist()) {
 			$formErrors->setErrors('pm', $_POST);
 			header('Location: '.$_SESSION['lastURL']);
 		} else {
-			$sendMessage = $mysql->prepare('INSERT INTO pms SET senderID = :senderID, recipientIDs = :recipientID, title = :title, message = :message, datestamp = NOW()'.($replyTo?', replyTo = :replyTo':''));
+			$sendMessage = $mysql->prepare('INSERT INTO pms SET senderID = :senderID, recipientIDs = :recipientID, title = :title, message = :message, datestamp = NOW()'.($replyTo?', replyTo = :replyTo':'').', history = :history');
 			$sendMessage->bindValue(':senderID', $currentUser->userID);
 			$sendMessage->bindValue(':recipientID', $recipientID);
 			$sendMessage->bindValue(':title', $title);
 			$sendMessage->bindValue(':message', $message);
-			if ($replyTo) 
+			$history = '[]';
+			print_r($replyManager->history); exit();
+			if ($replyTo)
 				$sendMessage->bindValue(':replyTo', $replyTo);
+			$sendMessage->bindValue(':history');
+
 			$sendMessage->execute();
 			$pmID = $mysql->lastInsertId();
 
@@ -43,6 +47,6 @@
 
 			header('Location: /pms/?sent=1');
 		}
-	} else 
+	} else
 		header('Location: /pms/');
 ?>

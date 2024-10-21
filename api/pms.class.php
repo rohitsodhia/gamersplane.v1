@@ -115,6 +115,8 @@
 							$pm['history'][] = $hPM;
 						}
 					}
+				} else {
+					$pm['history'] = null;
 				}
 				displayJSON($pm);
 			}
@@ -143,11 +145,13 @@
 			} else {
 				$history = null;
 				if ($replyTo) {
-					$parent = $mysql->query("SELECT history FROM pms WHERE pmID = {$replyTo}")->fetch();
+					$parent = $mysql->query("SELECT history FROM pms WHERE pmID = {$replyTo} LIMIT 1")->fetch();
 					$history = [$replyTo];
 					if ($parent['history']) {
 						$history = array_merge($history, json_decode($parent['history']));
 					}
+				} else {
+					$history = [];
 				}
 				$addPM = $mysql->prepare("INSERT INTO pms SET recipientID = :recipientID, senderID = :senderID, title = :title, message = :message, datestamp = NOW(), replyTo = :replyTo, history = :history");
 				$addPM->execute([
