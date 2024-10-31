@@ -242,6 +242,10 @@
 					}
 				}
 
+				$this->library['inLibrary'] = $character['inLibrary'] == 1 ? true : false;
+				$this->library['views'] = $character['libraryViews'];
+				unset($this->inLibrary, $this->libraryViews);
+
 				return true;
 			} else {
 				return false;
