@@ -323,10 +323,9 @@
 						echo "<span class='badge badge-system badge-system-".$gameInfo['system']."'>".($gameInfo["customSystem"]?$gameInfo["customSystem"]:$systems->getFullName($gameInfo['system']))."</span>";
 
 						if($gameInfo['public']){
-							echo "<span class='badge badge-gamePrivate'>Private</span>";
-						}
-						else{
 							echo "<span class='badge badge-gamePublic'>Public</span>";
+						}else{
+							echo "<span class='badge badge-gamePrivate'>Private</span>";
 						}
 
 						$gameInfo['postFrequency'] = json_decode($gameInfo['postFrequency'], true);
