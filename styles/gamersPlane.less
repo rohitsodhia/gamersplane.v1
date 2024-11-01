@@ -1122,6 +1122,15 @@ div.prettySelect > div {
 			padding: 0;
 			border-top: 1px solid #ddd;
 
+			&:hover {
+				background-color: #ff252c;
+
+				a:hover {
+					color: #fff;
+					text-decoration: none;
+				}
+			}
+
 			a {
 				padding: 3px 0;
 
@@ -1135,12 +1144,6 @@ div.prettySelect > div {
 					height: auto;
 					padding: 7px 13px 7px 8px;
 					line-height: 1em;
-				}
-
-				&:hover {
-					background-color: #ff252c;
-					color: #fff;
-					text-decoration: none;
 				}
 			}
 
@@ -1166,14 +1169,22 @@ div.prettySelect > div {
 
 		li{
 			display: flex;
-			a{
+			align-items: center;
+
+			a {
 				display: inline-block;
-				padding: 7px 8px;
+				padding: 7px 8px 7px 0;
+
+				&:first-of-type {
+					padding-left: 8px;
+				}
 			}
-			a.gameSubmenuItem{
+
+			a.gameSubmenuItem {
 				flex-grow: 0;
 			}
-			a.forumSubmenuItem{
+
+			a.forumSubmenuItem {
 				flex-grow: 1;
 			}
 		}
