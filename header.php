@@ -44,7 +44,10 @@
 				<a ng-href="{{loggedIn?'/games/':'/games/list/'}}"><i class="ra ra-d6 hide mob-show-inline-block"></i><span class="mob-hide">Games</span></a>
 				<ul ng-if="loggedIn && games.length" class="gameSubmenu">
 				<li><a href="/games/my/" class="forumSubmenuItem"><i class="ra ra-gamers-plane"></i> My games</a></li>
-					<li ng-repeat="game in games | limitTo: 10"><a href="/games/{{game.gameID}}/" title="Game" class="gameSubmenuItem"><i class="ra {{game.isPlayer?'ra-d6':'ra-bookmark'}}"></i></a><a href="/forums/{{game.forumID}}/" title="Forum" class="forumSubmenuItem"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a></li>
+					<li ng-repeat="game in games | limitTo: 10">
+						<a href="/games/{{game.gameID}}/" title="Game" class="gameSubmenuItem"><i class="ra {{game.isPlayer?'ra-d6':'ra-bookmark'}}"></i></a>
+						<a href="/forums/{{game.forumID}}/" title="Forum" class="forumSubmenuItem"><span ng-bind-html="game.title | trustHTML"></span> <img ng-if="game.isGM" src="/images/gm_icon.png"></a>
+					</li>
 				</ul>
 			</li>
 			<li><a href="/forums/"><i class="ra ra-speech-bubble hide mob-show-inline-block"></i><span class="mob-hide">Forums</span></a></li>
