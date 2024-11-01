@@ -469,7 +469,7 @@ public function displayForumRow($forumID)
                 <div class="td numPosts"># of Posts</div>
                 <div class="td lastPost">Last Post</div>
             </div>
-            <div class="sudoTable threadList hbdMargined">
+            <div class="sudoTable threadList">
                 <?
 				if (sizeof($forum->threads)) {
 					foreach ($forum->threads as $thread) {
@@ -519,14 +519,15 @@ public function displayForumRow($forumID)
 			?>
                             <a href="/forums/thread/<?= $thread->threadID ?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
                         </div>
-                        <a href="/forums/thread/<?= $thread->threadID ?>/" class="threadTitle"><?= $thread->title ?></a><br>
+                        <a href="/forums/thread/<?= $thread->threadID ?>/" class="threadTitle"><?= $thread->title ?></a>
                         <span class="threadAuthor"><?=$nonMobBadge?>
 							by <a href="/user/<?= $thread->authorID ?>/" class="username"><?= $thread->authorUsername ?></a> on <span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->datePosted)) ?></span>
 						<span>
                     </div>
                     <div class="td numPosts"><?= $thread->postCount ?></div>
                     <div class="td lastPost">
-						<?=$mobBadge?><a href="/user/<?= $thread->lastPost->authorID ?>" class="username"><?= $thread->lastPost->username ?></a><br><span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->lastPost->datePosted)) ?></span>
+						<?=$mobBadge?><a href="/user/<?= $thread->lastPost->authorID ?>" class="username"><?= $thread->lastPost->username ?></a>
+						<span class="convertTZ"><?= date('M j, Y g:i a', strtotime($thread->lastPost->datePosted)) ?></span>
                     </div>
                 </div>
                 <?
