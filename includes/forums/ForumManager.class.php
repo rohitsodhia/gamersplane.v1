@@ -280,7 +280,7 @@ class ForumManager
         <div class="td numPosts"># of Posts</div>
         <div class="td lastPost">Last Post</div>
     </div>
-    <div class="sudoTable forumList hbdMargined">
+    <div class="sudoTable forumList">
         <?
 			$tableOpen = true;
 		}
@@ -319,7 +319,7 @@ public function displayForumRow($forumID)
                 <?
 				$lastPost = $this->getLastPost($forumID);
 				if ($lastPost) {
-					echo "\t\t\t\t\t\t<a href=\"/user/{$lastPost->userID}/\" class=\"username\">{$lastPost->username}</a><br><span class=\"convertTZ\">" . date('M j, Y g:i a', strtotime($lastPost->datePosted)) . "</span>\n";
+					echo "\t\t\t\t\t\t<a href=\"/user/{$lastPost->userID}/\" class=\"username\">{$lastPost->username}</a><span class=\"convertTZ\">" . date('M j, Y g:i a', strtotime($lastPost->datePosted)) . "</span>\n";
 				} else {
 					echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
 				}
