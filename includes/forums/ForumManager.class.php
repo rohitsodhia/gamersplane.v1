@@ -315,13 +315,13 @@ public function displayForumRow($forumID)
             </div>
             <div class="td numThreads"><?= $this->getTotalThreadCount($forumID) ?></div>
             <div class="td numPosts"><?= $this->getTotalPostCount($forumID) ?></div>
-            <div class="td lastPost">
-                <?
+<?
 				$lastPost = $this->getLastPost($forumID);
+				echo "\t\t\t<div class=\"td lastPost" . ($lastPost ? '' : ' noPosts') . "\">\n";
 				if ($lastPost) {
 					echo "\t\t\t\t\t\t<a href=\"/user/{$lastPost->userID}/\" class=\"username\">{$lastPost->username}</a><span class=\"convertTZ\">" . date('M j, Y g:i a', strtotime($lastPost->datePosted)) . "</span>\n";
 				} else {
-					echo "\t\t\t\t\t\t</span>No Posts Yet!</span>\n";
+					echo "\t\t\t\t\t\t<span>No Posts Yet!</span>\n";
 				}
 				?>
             </div>
