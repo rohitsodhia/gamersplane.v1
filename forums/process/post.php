@@ -88,7 +88,7 @@
 
 		if (array_key_exists('decks', $_POST) && sizeof($_POST['decks'])) {
 			$getDecks = $mysql->query("SELECT decks.* FROM decks LEFT JOIN deckPermissions ON decks.deckID = deckPermissions.deckID LEFT JOIN players ON decks.gameID = players.gameID AND players.isGM = TRUE WHERE decks.gameID = {$gameID} AND (deckPermissions.userID = {$currentUser->userID} OR players.userID = {$currentUser->userID})");
-			if ($getDecks->fetch()) {
+			if ($getDecks->rowCount()) {
 				$draws = array_filter($_POST['decks'], function($value) { return intval($value['draw']) > 0 ? true : false; });
 				$decks = [];
 				foreach ($getDecks->fetchAll() as $deck) {
