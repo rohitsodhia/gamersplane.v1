@@ -98,7 +98,7 @@
 				}
 				foreach ($draws as $deckID => $draw) {
 					if ($draw['draw'] > 0) {
-						$deck = $decks[$deckID]['deck'];
+						$deck = json_decode($decks[$deckID]['deck']);
 						if (strlen($draw['reason']) == 0) {
 							$_SESSION['errors']['noDrawReason'] = 1;
 							break;
