@@ -209,6 +209,7 @@
 
 			if (sizeof($this->draws)) {
 				$addDraw = $mysql->prepare("INSERT INTO deckDraws SET postID = {$this->postID}, deckID = :deckID, type = :type, cardsDrawn = :cardsDrawn, reveals = :reveals, reason = :reason");
+				$moveDeckPosition = $mysql->prepare("UPDATE decks SET position = position + :cardsDrawn WHERE deckID = :deckID LIMIT 1");
 				foreach($this->draws as $deckID => $draw) {
 					$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON f.forumID = t.forumID WHERE t.threadID = {$this->threadID} LIMIT 1")->fetchColumn();
 					$addDraw->bindValue('deckID', $deckID);
@@ -217,6 +218,10 @@
 					$addDraw->bindValue('reveals', str_repeat('0', $draw['draw']));
 					$addDraw->bindValue('reason', $draw['reason']);
 					$addDraw->execute();
+
+					$moveDeckPosition->bindValue('deckID', $deckID);
+					$moveDeckPosition->bindValue('cardsDrawn', substr_count($draw['cardsDrawn'], '~') + 1);
+					$moveDeckPosition->execute();
 				}
 			}
 

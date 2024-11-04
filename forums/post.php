@@ -459,6 +459,7 @@
 <?php
 			$firstDeck = true;
 			foreach ($decks as $deck) {
+				$deck['deck'] = json_decode($deck['deck']);
 				if ($draws[$deck['deckID']]) {
 					$draw = $draws[$deck['deckID']];
 ?>
