@@ -8,10 +8,10 @@
 
 		if ($systems->verifySystem($system)) {
 			if ($systemOnly) {
-				$searchSkills = $mysql->query("SELECT charAutocomplete.name, 1 'systemSkill' FROM charAutocomplete INNER JOIN charAutocomplete_systems ON charAutocomplete.itemID = charAutocomplete_systems.itemID WHERE charAutocomplete.searchName LIKE ? AND charAutocomplete_systems = '{$system} ORDER BY name LIMIT 5");
+				$searchSkills = $mysql->query("SELECT charAutocomplete.name, 1 'systemSkill' FROM charAutocomplete INNER JOIN charAutocomplete_systems ON charAutocomplete.itemID = charAutocomplete_systems.itemID WHERE charAutocomplete.searchName LIKE ? AND charAutocomplete_systems = '{$system}' ORDER BY name LIMIT 5");
 				$searchSkills->execute(["%{$searchName}%"]);
 			} else {
-				$searchSkills = $mysql->query("SELECT charAutocomplete.name, IF(charAutocomplete_systems.itemID, 1, 0) systemSkill FROM charAutocomplete LEFT JOIN charAutocomplete_systems ON charAutocomplete.itemID = charAutocomplete_systems.itemID WHERE charAutocomplete.searchName LIKE ? AND charAutocomplete_systems = '{$system} ORDER BY systemSkill DESC, name LIMIT 5");
+				$searchSkills = $mysql->query("SELECT charAutocomplete.name, IF(charAutocomplete_systems.itemID, 1, 0) systemSkill FROM charAutocomplete LEFT JOIN charAutocomplete_systems ON charAutocomplete.itemID = charAutocomplete_systems.itemID WHERE charAutocomplete.searchName LIKE ? AND charAutocomplete_systems = '{$system}' ORDER BY systemSkill DESC, name LIMIT 5");
 				$searchSkills->execute(["%{$searchName}%"]);
 			}
 			$lastType = null;
