@@ -447,8 +447,10 @@ class games
 			}
 			$updateGame = $mysql->prepare("UPDATE games SET " . implode(", ", $setVars) . " WHERE gameID = {$gameID}");
 			$updateGame->execute($details);
-			$updateForumTitle = $mysql->prepare('UPDATE forums SET title = :title WHERE forumID = :forumID');
-			$updateForumTitle->execute(['title' => $details['title'], 'forumID' => $gameInfo['forumID']]);
+
+			$forumID = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
+			$updateForumTitle = $mysql->prepare("UPDATE forums SET title = :title WHERE forumID = {$forumID} LIMIT 1");
+			$updateForumTitle->execute(['title' => $details['title']]);
 			// $hl_gameEdited = new HistoryLogger('gameEdited');
 			// $hl_gameEdited->addGame($gameID)->save();
 
