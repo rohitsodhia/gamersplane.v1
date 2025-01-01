@@ -7,7 +7,7 @@
 			<ul id="gamesList" class="hbAttachedList hbMargined" hb-margined>
 				<li ng-repeat="game in games | filter:{ $ : filter.search }| orderBy: orderBy | paginateItems: 25:(pagination.current - 1) * 25 " class="clearfix">
 					<a href="/games/{{game.gameID}}/" class="gameTitle" ng-bind-html="game.title"></a>
-					<div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
+					<div class="systemType" ng-bind-html="game.customSystem?game.customSystem:game.system"></div>
 					<a href="/user/{{game.gm.userID}}/" class="username" ng-bind-html="game.gm.username"></a><span ng-if="game.lastActivity" ng-bind-html="game.lastActivity"></span>
 					<div class="gameTags">
 						<span class="badge badge-game-{{game.status}}">{{game.status ? 'Open' : 'Closed'}}</span>

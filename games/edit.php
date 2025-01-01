@@ -18,7 +18,7 @@
 				</div>
 				<div class="tr" ng-if="allSystems[game.system]=='Custom'">
 					<label>Custom Type</label>
-					<input id="customType" type="text" ng-model="game.customType">
+					<input id="customSystem" type="text" ng-model="game.customSystem">
 				</div>
 				<div class="tr">
 					<label>Allowed Character Sheets</label>

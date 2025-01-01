@@ -10,7 +10,7 @@ require_once(FILEROOT.'/header.php'); ?>
 					<ul ng-show="inGames.notGM" class="gameList hbAttachedList hbdMargined">
 						<li ng-repeat="game in games | filter: { isGM: false, isRetired:false } | orderBy: ['system', 'title']" class="gamePlaying">
 							<span class="gameTitle"><i class="ra ra-bookmark favoriteGame {{game.isFavorite?'':'off'}}" data-gameid='{{game.gameID}}' title="{{game.isFavorite?'Unfavorite':'Favorite'}}"></i> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span>
-							<div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
+							<div class="systemType" ng-bind-html="game.customSystem?game.customSystem:game.system"></div>
 							<div class="gmInfo"><a href="/user/{{game.gm.userID}}/" class="username">{{game.gm.username}}</a></div>
 							<a class="forumLink" href="/forums/{{game.forumID}}"><i class="ra ra-speech-bubble"></i> Forum</a>
 						</li>
@@ -24,7 +24,7 @@ require_once(FILEROOT.'/header.php'); ?>
 					<ul ng-show="inGames.gm" class="gameList hbAttachedList hbdMargined">
 						<li ng-repeat="game in games | filter: { isGM : true, isRetired:false } | orderBy: ['system', 'title']" class="gameRunning">
 							<span class="gameTitle"><i class="ra ra-bookmark favoriteGame {{game.isFavorite?'':'off'}}" data-gameid='{{game.gameID}}' title="{{game.isFavorite?'Unfavorite':'Favorite'}}"></i> <a href="/games/{{game.gameID}}/">{{game.title}}</a></span>
-							<div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
+							<div class="systemType" ng-bind-html="game.customSystem?game.customSystem:game.system"></div>
 							<div class="gameBadges"><span ng-if="game.status=='open'" class="badge badge-gameOpen">Open</span></div>
 							<a  class="forumLink" href="/forums/{{game.forumID}}"><i class="ra ra-speech-bubble"></i> Forum</a>
 						</li>
@@ -37,7 +37,7 @@ require_once(FILEROOT.'/header.php'); ?>
 						<ul class="gameList prettyList hbdMargined">
 							<li ng-repeat="game in games | filter: { isRetired:true } | orderBy: ['system', 'title']" class="gameRunning">
 							<span  class="gameTitle"><a href="/games/{{game.gameID}}/">{{game.title}}</a></span>
-							<div class="systemType" ng-bind-html="game.customType?game.customType:game.system"></div>
+							<div class="systemType" ng-bind-html="game.customSystem?game.customSystem:game.system"></div>
 							<div class="gameBadges"></div>
 							<a class="forumLink" href="/forums/{{game.forumID}}"><i class="ra ra-speech-bubble"></i> Forum</a>
 							</li>

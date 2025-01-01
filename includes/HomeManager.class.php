@@ -84,7 +84,7 @@
 			$mysql = DB::conn('mysql');
 			$systems = Systems::getInstance();
 
-			$getLatestGames = $mysql->query("SELECT games.gameID, games.title, games.system, games.system, gm.userID, gm.username, games.numPlayers, COUNT(approvedPlayers.gameID) playersInGame FROM games INNER JOIN users gm ON games.gmID = gm.userID INNER JOIN players approvedPlayers ON games.gameID = approvedPlayers.gameID AND approvedPlayers.approved = 1 LEFT JOIN players userGames ON games.gameID = userGames.gameID AND userGames.userID = {$currentUser->userID} WHERE userGames.userID IS NULL GROUP BY games.gameID ORDER BY `start` DESC LIMIT {$showCount}");
+			$getLatestGames = $mysql->query("SELECT games.gameID, games.title, games.system, games.customSystem, gm.userID, gm.username, games.numPlayers, COUNT(approvedPlayers.gameID) playersInGame FROM games INNER JOIN users gm ON games.gmID = gm.userID INNER JOIN players approvedPlayers ON games.gameID = approvedPlayers.gameID AND approvedPlayers.approved = 1 LEFT JOIN players userGames ON games.gameID = userGames.gameID AND userGames.userID = {$currentUser->userID} WHERE userGames.userID IS NULL GROUP BY games.gameID ORDER BY `start` DESC LIMIT {$showCount}");
 			$first = true;
 			foreach ($getLatestGames->fetchAll() as $gameInfo) {
 				$slotsLeft = $gameInfo['numPlayers'] - $gameInfo['playersInGame'];
@@ -96,7 +96,7 @@
 		?>
 							<div class="gameInfo">
 								<p class="title"><a href="/games/<?=$gameInfo['gameID']?>/"><?=$gameInfo['title']?></a> (<?=$slotsLeft == 0 ? 'Full' : "{$gameInfo['playersInGame']}/{$gameInfo['numPlayers']}"?>)</p>
-								<p class="details"><u><?=$gameInfo['customType']?$gameInfo['customType']:$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['userID']?>/" class="username"><?=$gameInfo['username']?></a></p>
+								<p class="details"><u><?=$gameInfo['customSystem']?$gameInfo['customSystem']:$systems->getFullName($gameInfo['system'])?></u> run by <a href="/user/<?=$gameInfo['userID']?>/" class="username"><?=$gameInfo['username']?></a></p>
 							</div>
 		<?php	}
 		}
