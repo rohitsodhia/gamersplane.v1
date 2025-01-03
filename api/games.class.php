@@ -139,7 +139,7 @@ class games
 		if (!$gameID) {
 			displayJSON(['failed' => true]);
 		}
-		$gameInfo = $mysql->query("SELECT games.gameID, games.title, games.customSystem, games.system, gm.userID gmID, gm.username gmUsername, gm.lastActivity, games.created, games.start, games.end, games.postFrequency, games.numPlayers, games.charsPerPlayer, games.description, games.charGenInfo, games.forumID, games.groupID, games.status, games.public, games.retired, games.allowedCharSheets, games.gameOptions, games.recruitmentThreadId FROM games INNER JOIN users gm ON games.gmID = gm.userID WHERE games.gameID = {$gameID} LIMIT 1");
+		$gameInfo = $mysql->query("SELECT games.gameID, games.title, games.system, games.customSystem, gm.userID gmID, gm.username gmUsername, gm.lastActivity, games.created, games.start, games.end, games.postFrequency, games.numPlayers, games.charsPerPlayer, games.description, games.charGenInfo, games.forumID, games.groupID, games.status, games.public, games.retired, games.allowedCharSheets, games.gameOptions, games.recruitmentThreadId FROM games INNER JOIN users gm ON games.gmID = gm.userID WHERE games.gameID = {$gameID} LIMIT 1");
 		if (!$gameInfo->rowCount()) {
 			displayJSON(['failed' => true, 'noGame' => true]);
 		}
@@ -158,7 +158,7 @@ class games
 		$gameInfo['description'] = strlen($gameInfo['description']) ? $gameInfo['description'] : 'None Provided';
 		$gameInfo['charGenInfo'] = strlen($gameInfo['charGenInfo']) ? $gameInfo['charGenInfo'] : 'None Provided';
 		$gameInfo['approvedPlayers'] = 0;
-		if (strlen($gameInfo['customSystem'])) {
+		if (!strlen($gameInfo['customSystem'])) {
 			unset($gameInfo['customSystem']);
 		}
 		foreach (['allowedCharSheets', 'postFrequency'] as $jsonKey) {
@@ -268,7 +268,7 @@ class games
 		$details['description'] = sanitizeString($_POST['description']);
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 		if ($_POST['system'] == "custom") {
-			$details['customSystem'] = sanitizeString($_POST['customType']);
+			$details['customSystem'] = sanitizeString($_POST['customSystem']);
 		}
 
 		$gameOptions = trim($_POST['gameOptions'] ?: "");
@@ -399,7 +399,7 @@ class games
 		$details['charGenInfo'] = sanitizeString($_POST['charGenInfo']);
 
 		if($_POST['system'] == "custom"){
-			$details['customSystem'] = sanitizeString($_POST['customType']);
+			$details['customSystem'] = sanitizeString($_POST['customSystem']);
 		} else {
 			$details['customSystem'] = null;
 		}

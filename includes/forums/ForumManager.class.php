@@ -512,8 +512,8 @@ public function displayForumRow($forumID)
 					if ($getGameInfo->rowCount()) {
 						$gameInfo = $getGameInfo->fetch();
 						$systems = Systems::getInstance();
-						$nonMobBadge = "<span class=\"mob-hide badge badge-game" . ($gameInfo['status'] == 'open' ? "Open" : "Closed") . '">' . ($gameInfo["customType"] ? $gameInfo["customType"] : $systems->getFullName($gameInfo['system'])) . "</span>";
-						$mobBadge = "<span class=\"non-mob-hide badge badge-game" . ($gameInfo['status'] == 'open' ? "Open" : "Closed") . '">' . ($gameInfo["customType"] ? $gameInfo["customType"] : $systems->getFullName($gameInfo['system'])) . "</span>";
+						$nonMobBadge = "<span class=\"mob-hide badge badge-game" . ($gameInfo['status'] == 'open' ? "Open" : "Closed") . '">' . ($gameInfo["customSystem"] ? $gameInfo["customSystem"] : $systems->getFullName($gameInfo['system'])) . "</span>";
+						$mobBadge = "<span class=\"non-mob-hide badge badge-game" . ($gameInfo['status'] == 'open' ? "Open" : "Closed") . '">' . ($gameInfo["customSystem"] ? $gameInfo["customSystem"] : $systems->getFullName($gameInfo['system'])) . "</span>";
 					}
 				}
 			?>
