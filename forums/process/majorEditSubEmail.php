@@ -14,7 +14,7 @@
 		<tr><td style="height:100px;padding:10px;background-color:#777;border:1px solid #111"><img src="<?=$pathBase?>/images/bodyComponents/logo.png" height="100" alt="Header image"></td></tr>
 		<tr><td style="padding:0 10px;border-color:#111;border-style:solid;border-width:0 1px 0 1px">
 			<h1 style="background-color:#C60;color:#FFF;margin:.3em 0;"><img src="<?=$pathBase?>/images/emails/text/Thread_Update.jpg" alt="Thread Update"></h1>
-			<p><a href="/user/<?=$currentUser->userID?>/" class="username"><?=$currentUser->username?></a> made a major edit in the thread "<a href="<?=$pathBase?>/forums/thread/<?=$threadManager->getThreadID()?>/?p=<?=$postID?>#p<?=$postID?>"><?=$threadManager->getThreadProperty('title')?></a>" in the <a href="<?=$pathBase?>/forums/<?=$threadManager->getForumProperty('forumID')?>/"><?=$threadManager->getForumProperty('title')?></a> forum.</p>
+			<p><a href="/user/<?=$currentUser->userID?>/" class="username"><?=$currentUser->username?></a> made a major edit in the thread "<a href="<?=$pathBase?>/forums/thread/<?=$threadManager->getThreadID()?>/?p=<?=$postID?>#p<?=$postID?>"><?=$post->title?></a>" in the <a href="<?=$pathBase?>/forums/<?=$threadManager->getForumProperty('forumID')?>/"><?=$threadManager->getForumProperty('title')?></a> forum.</p>
 			<p style="text-align: right;">- The Gamers Plane Team</p>
 			<p style="font-size: .8em; margin-top: 2em;">If you'd like to stop recieving emails about new posts, please head to the thread or forum in question and unsubscribe via the link to the upper right.</p>
 		</td></tr>
