@@ -206,7 +206,7 @@
 				}
 			}
 
-			$pmCount = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE recipientID = {$currentUser->userID} AND `read` = 0 AND senderDeleted = 0 and recipientDeleted = 0")->fetchColumn();
+			$pmCount = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE recipientID = {$currentUser->userID} AND `recipientRead` = 0 AND senderDeleted = 0 and recipientDeleted = 0")->fetchColumn();
 
 			displayJSON([
 				'success' => true,

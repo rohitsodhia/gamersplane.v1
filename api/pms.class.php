@@ -38,11 +38,12 @@
 			$numPMs = $mysql->query("SELECT COUNT(*) as `count` FROM pms WHERE {$where}")->fetchColumn();
 			$page = PAGINATE_PER_PAGE * ($page - 1);
 			$paginatePerPage = PAGINATE_PER_PAGE;
-			$pmsResults = $mysql->query("SELECT pmID, senderID, sender.username senderUsername, recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE {$where} ORDER BY datestamp DESC LIMIT {$page}, {$paginatePerPage}");
+			$pmsResults = $mysql->query("SELECT pmID, senderID, sender.username senderUsername, recipientID, recipient.username recipientUsername, title, message, datestamp, `senderRead`, `recipientRead`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE {$where} ORDER BY datestamp DESC LIMIT {$page}, {$paginatePerPage}");
 			$pms = [];
 			foreach ($pmsResults as $pm) {
 				$pm = printReady($pm);
-				$pm['read'] = (bool) $pm['read'];
+				$userType = $currentUser->userID == (int) $pm['recipientID'] ? 'recipient' : 'sender';
+				$pm['read'] = (bool) $pm["{$userType}Read"];
 				foreach (['pmID', 'senderID', 'recipientID'] as $intKey) {
 					$pm[$intKey] = (int) $pm[$intKey];
 				}
@@ -67,13 +68,14 @@
 			$pmID = intval($pmID);
 			$includeSelfHistory = isset($_POST['includeSelfHistory']) && $_POST['includeSelfHistory'] ? true : false;
 
-			$pm = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID = {$pmID} AND (sender.userID = {$currentUser->userID} OR (recipient.userID = {$currentUser->userID} AND recipientDeleted = 0))");
+			$pm = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `senderRead`, `recipientRead`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID = {$pmID} AND (sender.userID = {$currentUser->userID} OR (recipient.userID = {$currentUser->userID} AND recipientDeleted = 0))");
 			if (!$pm->rowCount()) {
 				displayJSON(['noPM' => true]);
 			} else {
 				$pm = printReady($pm->fetch());
+				$userType = $currentUser->userID == (int) $pm['recipientID'] ? 'recipient' : 'sender';
 				$pm['message'] = BBCode2Html($pm['message']);
-				$pm['read'] = (bool) $pm['read'];
+				$pm['read'] = (bool) $pm["{$userType}Read"];
 				$pm['sender'] = [
 					'userID' => (int) $pm['senderID'],
 					'username' => $pm['senderUsername']
@@ -84,7 +86,7 @@
 				]];
 				$history = json_decode($pm['history']);
 				if (isset($_POST['markRead']) && $_POST['markRead'] && !$pm['read']) {
-					$mysql->query("UPDATE pms SET `read` = 1 WHERE pmID = {$pmID}");
+					$mysql->query("UPDATE pms SET `{$userType}Read` = 1 WHERE pmID = {$pmID}");
 				}
 				if (($history && sizeof($history)) || $includeSelfHistory) {
 					$pm['history'] = [];
@@ -100,7 +102,7 @@
 						];
 					}
 					if ($history && sizeof($history)) {
-						$historyPMs = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `read`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID IN (" . implode(',', $history) . ") ORDER BY datestamp DESC LIMIT 10");
+						$historyPMs = $mysql->query("SELECT pmID, sender.userID senderID, sender.username senderUsername, recipient.userID recipientID, recipient.username recipientUsername, title, message, datestamp, `senderRead`, `recipientRead`, replyTo, history FROM pms INNER JOIN users sender ON pms.senderID = sender.userID INNER JOIN users recipient ON pms.recipientID = recipient.userID WHERE pmID IN (" . implode(',', $history) . ") ORDER BY datestamp DESC LIMIT 10");
 						foreach ($historyPMs->fetchAll() as $hPM) {
 							$hPM['title'] = printReady($hPM['title']);
 							$hPM['message'] = BBCode2Html(printReady($hPM['message']));
