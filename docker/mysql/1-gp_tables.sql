@@ -47,7 +47,7 @@ CREATE TABLE `charAutocomplete` (
   `approvedOn` datetime DEFAULT NULL,
   PRIMARY KEY (`itemID`),
   UNIQUE KEY `type` (`type`,`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=475 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `characterHistory` (
   `action` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `additionalInfo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=9577 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +121,7 @@ CREATE TABLE `characters` (
   PRIMARY KEY (`characterID`),
   KEY `userID` (`userID`),
   KEY `gameID` (`gameID`)
-) ENGINE=MyISAM AUTO_INCREMENT=30806 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +140,7 @@ CREATE TABLE `contact` (
   `subject` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `comment` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`contactID`)
-) ENGINE=MyISAM AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `deckDraws` (
   PRIMARY KEY (`drawID`),
   KEY `postID` (`postID`),
   KEY `deckID` (`deckID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1378 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +214,7 @@ CREATE TABLE `decks` (
   `lastShuffle` datetime NOT NULL,
   PRIMARY KEY (`deckID`),
   KEY `gameID` (`gameID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,7 +254,7 @@ CREATE TABLE `faqs` (
   `answer` text NOT NULL,
   `order` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,7 +271,7 @@ CREATE TABLE `featsList` (
   `userDefined` int DEFAULT NULL,
   PRIMARY KEY (`featID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=322 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -340,7 +340,7 @@ CREATE TABLE `forums` (
   PRIMARY KEY (`forumID`),
   UNIQUE KEY `heritage` (`heritage`),
   KEY `parentID` (`parentID`)
-) ENGINE=MyISAM AUTO_INCREMENT=11639 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -373,7 +373,7 @@ CREATE TABLE `forums_groups` (
   `gameID` int DEFAULT NULL,
   PRIMARY KEY (`groupID`),
   KEY `ownerID` (`ownerID`)
-) ENGINE=MyISAM AUTO_INCREMENT=5030 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +398,7 @@ DROP TABLE IF EXISTS `forums_permissions`;
 /*!50001 DROP VIEW IF EXISTS `forums_permissions`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `forums_permissions` AS SELECT 
+/*!50001 CREATE VIEW `forums_permissions` AS SELECT
  1 AS `type`,
  1 AS `typeID`,
  1 AS `forumID`,
@@ -470,7 +470,7 @@ DROP TABLE IF EXISTS `forums_permissions_groups_c`;
 /*!50001 DROP VIEW IF EXISTS `forums_permissions_groups_c`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `forums_permissions_groups_c` AS SELECT 
+/*!50001 CREATE VIEW `forums_permissions_groups_c` AS SELECT
  1 AS `userID`,
  1 AS `forumID`,
  1 AS `read`,
@@ -522,7 +522,7 @@ CREATE TABLE `forums_pollOptions` (
   `threadID` int NOT NULL,
   `option` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`pollOptionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=364 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -571,7 +571,7 @@ CREATE TABLE `forums_postFFGFlips` (
   `toDark` int NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`flipID`)
-) ENGINE=MyISAM AUTO_INCREMENT=644 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -650,7 +650,7 @@ CREATE TABLE `gameHistory` (
   `affectedType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `affectedID` int DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2761 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -701,7 +701,7 @@ CREATE TABLE `games` (
   KEY `gmID` (`gmID`),
   KEY `forumID` (`forumID`),
   KEY `groupID` (`groupID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4635 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -782,7 +782,7 @@ CREATE TABLE `maps` (
   `visible` tinyint(1) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`mapID`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -802,7 +802,7 @@ CREATE TABLE `maps_iconHistory` (
   `origin` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `destination` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -822,7 +822,7 @@ CREATE TABLE `maps_icons` (
   `location` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`iconID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -881,7 +881,7 @@ CREATE TABLE `music` (
   `approved` tinyint(1) NOT NULL DEFAULT '0',
   `user` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -931,7 +931,8 @@ CREATE TABLE `pms` (
   `title` varchar(200) NOT NULL,
   `message` mediumtext NOT NULL,
   `datestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `read` tinyint(1) NOT NULL DEFAULT '0',
+  `recipientRead` tinyint(1) NOT NULL DEFAULT '0',
+  `senderRead` tinyint(1) NOT NULL DEFAULT '0',
   `replyTo` int DEFAULT NULL,
   `recipientDeleted` tinyint(1) NOT NULL DEFAULT '0',
   `senderDeleted` tinyint(1) NOT NULL DEFAULT '0',
@@ -939,7 +940,7 @@ CREATE TABLE `pms` (
   PRIMARY KEY (`pmID`),
   KEY `recipientID` (`recipientID`),
   KEY `senderID` (`senderID`)
-) ENGINE=MyISAM AUTO_INCREMENT=80730 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -964,7 +965,7 @@ CREATE TABLE `posts` (
   KEY `threadID` (`threadID`),
   KEY `authorID` (`authorID`),
   FULLTEXT KEY `messageFullText` (`messageFullText`)
-) ENGINE=MyISAM AUTO_INCREMENT=1729526 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1016,7 +1017,7 @@ CREATE TABLE `rolls` (
   `extras` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`rollID`),
   KEY `postID` (`postID`)
-) ENGINE=MyISAM AUTO_INCREMENT=487122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1033,7 +1034,7 @@ CREATE TABLE `skillsList` (
   `userDefined` int DEFAULT NULL,
   PRIMARY KEY (`skillID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=150 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1049,7 +1050,7 @@ CREATE TABLE `spycraft2_focusesList` (
   `searchName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `userDefined` int DEFAULT NULL,
   PRIMARY KEY (`focusID`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1066,7 +1067,7 @@ CREATE TABLE `starwarsffg_talentsList` (
   `userDefined` int DEFAULT NULL,
   PRIMARY KEY (`talentID`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=141 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1127,7 +1128,7 @@ CREATE TABLE `threads` (
   `discordWebhook` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`threadID`),
   KEY `forumID` (`forumID`)
-) ENGINE=MyISAM AUTO_INCREMENT=34789 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1138,7 +1139,7 @@ DROP TABLE IF EXISTS `threads_relPosts`;
 /*!50001 DROP VIEW IF EXISTS `threads_relPosts`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `threads_relPosts` AS SELECT 
+/*!50001 CREATE VIEW `threads_relPosts` AS SELECT
  1 AS `threadID`,
  1 AS `firstPostID`,
  1 AS `lastPostID`*/;
@@ -1168,7 +1169,7 @@ CREATE TABLE `userAddedItems` (
   UNIQUE KEY `itemID` (`itemID`,`systemID`),
   UNIQUE KEY `name_2` (`name`),
   UNIQUE KEY `itemID_2` (`itemID`,`systemID`)
-) ENGINE=MyISAM AUTO_INCREMENT=834 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1186,7 +1187,7 @@ CREATE TABLE `userHistory` (
   `action` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `additionalInfo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`actionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=929 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1197,7 +1198,7 @@ DROP TABLE IF EXISTS `userPosts`;
 /*!50001 DROP VIEW IF EXISTS `userPosts`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `userPosts` AS SELECT 
+/*!50001 CREATE VIEW `userPosts` AS SELECT
  1 AS `userID`,
  1 AS `numPosts`*/;
 SET character_set_client = @saved_cs_client;
@@ -1218,7 +1219,7 @@ CREATE TABLE `usermeta` (
   PRIMARY KEY (`metaID`),
   UNIQUE KEY `userID` (`userID`,`metaKey`),
   KEY `autoload` (`autoload`)
-) ENGINE=MyISAM AUTO_INCREMENT=159290 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1240,10 +1241,10 @@ CREATE TABLE `users` (
   `enableFilter` tinyint(1) NOT NULL DEFAULT '1',
   `timezone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Europe/London',
   `suspendedUntil` datetime DEFAULT NULL,
-  `banned` tinyint(1) NOT NULL,
+  `banned` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=20901 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1258,7 +1259,7 @@ CREATE TABLE `wordFilter` (
   `word` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `spam` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`wordID`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1342,4 +1343,4 @@ CREATE TABLE `wordFilter` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-04 20:20:14
+-- Dump completed on 2025-05-23 23:12:21
