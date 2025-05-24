@@ -211,14 +211,18 @@ function BBCode2Html($text) {
 
 	// Lists
 	$text = preg_replace_callback(
-		'/\[list(?:\=([aAiI]|\d+))?\]\s*(.*?)\[\/list\](?:\\r\\n|\\r|\\n)?/ms',
+		'/\[list(?:\=((?:[aAiI](?:,\s?\d+)?)|\d+))?\]\s*(.*?)\[\/list\](?:\\r\\n|\\r|\\n)?/ms',
 		function ($matches) {
 			if (is_numeric($matches[1])) {
-				return '<ol start="' . $matches[1] . '">' . $matches[2] . '</ol>';
+				return "<ol start=\"{$matches[1]}\">{$matches[2]}</ol>";
 			} elseif ($matches[1]) {
-				return '<ol type="' . $matches[1] . '">' . $matches[2] . '</ol>';
+				if (strpos($matches[1], ',') !== false) {
+					$parts = explode(',', $matches[1]);
+					return "<ol type=\"{$parts[0]}\" start=\"{$parts[1]}\">{$matches[2]}</ol>";
+				}
+				return "<ol type=\"{$matches[1]}\">{$matches[2]}</ol>";
 			} else {
-				return '<ul>' . $matches[2] . '</ul>';
+				return "<ul>{$matches[2]}</ul>";
 			}
 		},
 		$text
