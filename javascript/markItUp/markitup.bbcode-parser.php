@@ -147,6 +147,8 @@ function BBCode2Html($text) {
 	$text = str_replace('“', '"', $text);
 	$text = str_replace('”', '"', $text);
 
+	$newlinePattern = "(?:\r\n|\r|\n)";
+
 	// BBCode [code]
 	if (!function_exists('escape')) {
 		function escape($s) {
@@ -264,21 +266,21 @@ function BBCode2Html($text) {
 		'/\[i\](.*?)\[\/i\]/ms',
 		'/\[u\](.*?)\[\/u\]/ms',
 		'/\[s\](.*?)\[\/s\]/ms',
-		"/[\r\n]*\[linebreak\][\r\n]*/",
+		"/[\r\n]*\[linebreak\]{$newlinePattern}*/",
 		'/\[img\](.*?)\[\/img\]/ms',
 		'/\[email\](.*?)\[\/email\]/ms',
 		'/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
 		'/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
 		'/\[zoommap\="?(.*?)"?\](.*?)\[\/zoommap\]/ms',
-		'/\[\*\]\s?(.*?)\n/ms',
-		"/[\r\n]*\[ooc\](.*?)\[\/ooc\][\r\n]*/ms",
-		"/[\r\n]*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\][\r\n]*/ms",
-		"/[\r\n]*\[spoiler\](.*?)\[\/spoiler\][\r\n]*/ms",
+		"/\[\*\]\s?(.*?){$newlinePattern}/m",
+		"/{$newlinePattern}*\[ooc\](.*?)\[\/ooc\]{$newlinePattern}*/ms",
+		"/{$newlinePattern}*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\]{$newlinePattern}*/ms",
+		"/{$newlinePattern}*\[spoiler\](.*?)\[\/spoiler\]{$newlinePattern}*/ms",
 		"/\[youtube\]https:\/\/youtu.be\/(.*?)\[\/youtube\]/ms",
-		"/[\r\n]*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\][\r\n]*/ms",
-		"/[\r\n]*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\][\r\n]*/ms",
-		"/[\r\n]*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\][\r\n]*/ms",
-		"/[\r\n]*\[style\](.*?)\[\/style\][\r\n]*/ms",
+		"/{$newlinePattern}*\[2column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/2column\]{$newlinePattern}*/ms",
+		"/{$newlinePattern}*\[3column\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/3column\]{$newlinePattern}*/ms",
+		"/{$newlinePattern}*\[col\][ \t\r\n]*(.*?)[ \t\r\n]*\[\/col\]{$newlinePattern}*/ms",
+		"/{$newlinePattern}*\[style\](.*?)\[\/style\]{$newlinePattern}*/ms",
 		"/\[npc=\"?(.*?)\"?\](.*?)\[\/npc\]*/ms",
 	);
 	// And replace them by...
