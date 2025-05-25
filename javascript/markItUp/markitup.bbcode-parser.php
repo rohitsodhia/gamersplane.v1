@@ -223,24 +223,29 @@ function BBCode2Html($text) {
 	$text = preg_replace($scriptingAttackRegex, '', $text);
 
 	// Lists
-	$text = preg_replace_callback(
-		'/\[list(?:\=((?:[aAiI](?:,\s?\d+)?)|\d+))?\]\s*(.*?)\[\/list\](?:\\r\\n|\\r|\\n)?/ms',
-		function ($matches) {
-			if (is_numeric($matches[1])) {
-				return "<ol start=\"{$matches[1]}\">{$matches[2]}</ol>";
-			} elseif ($matches[1]) {
-				if (strpos($matches[1], ',') !== false) {
-					$parts = explode(',', $matches[1]);
-					return "<ol type=\"{$parts[0]}\" start=\"{$parts[1]}\">{$matches[2]}</ol>";
-				}
-				return "<ol type=\"{$matches[1]}\">{$matches[2]}</ol>";
-			} else {
-				return "<ul>{$matches[2]}</ul>";
-			}
-		},
-		$text
-	);
+	// $text = preg_replace_callback(
+	// 	'/\[list(?:\=((?:[aAiI](?:,\s?\d+)?)|\d+))?\]\s*(.*?)\[\/list\](?:\\r\\n|\\r|\\n)?/ms',
+	// 	function ($matches) {
+	// 	},
+	// 	$text
+	// );
 
+	function listTagBuilder($matches, $text, $options) {
+		// error_log(htmlspecialchars($text)); exit();
+		if (sizeof($matches) == 1) {
+			return "<ul>{$text}</ul>";
+		} elseif (is_numeric($matches[1][0])) {
+			return "<ol start=\"{$matches[1][0]}\">{$text}</ol>";
+		} else {
+			if (strpos($matches[1][0], ',') !== false) {
+				$parts = explode(',', $matches[1][0]);
+				return "<ol type=\"{$parts[0]}\" start=\"{$parts[1]}\">{$text}</ol>";
+			}
+			return "<ol type=\"{$matches[1][0]}\">{$text}</ol>";
+		}
+	}
+
+	$text = nestedReplace($text, "/\[list(?:\=((?:[aAiI](?:,\s?\d+)?)|\d+))?\]\s+/", "[/list]", 'listTagBuilder', []);
 
 	// Smileys to find...
 /*	$in = array( 	 ':)',
@@ -260,6 +265,7 @@ function BBCode2Html($text) {
 	);
 	$text = str_replace($in, $out, $text);
 */
+	error_log($text);
 	// BBCode to find...
 	$in = array(
 		'/\[b\](.*?)\[\/b\]/ms',
@@ -272,6 +278,8 @@ function BBCode2Html($text) {
 		'/\[size\="?(.*?)"?\](.*?)\[\/size\]/ms',
 		'/\[color\="?(.*?)"?\](.*?)\[\/color\]/ms',
 		'/\[zoommap\="?(.*?)"?\](.*?)\[\/zoommap\]/ms',
+		"/<\/ol>{$newlinePattern}/ms",
+		"/<\/ul>{$newlinePattern}/ms",
 		"/\[\*\]\s?(.*?){$newlinePattern}/m",
 		"/{$newlinePattern}*\[ooc\](.*?)\[\/ooc\]{$newlinePattern}*/ms",
 		"/{$newlinePattern}*\[spoiler=\"?(.*?)\"?\](.*?)\[\/spoiler\]{$newlinePattern}*/ms",
@@ -295,6 +303,8 @@ function BBCode2Html($text) {
 		'<span class="userSize" style="font-size:\1%">\2</span>',
 		'<span class="userColor" style="color:\1">\2</span>',
 		'<div class="zoommap" data-mapimage="\1" style="display:none">\2</div>',
+		'</ol>',
+		'</ul>',
 		'<li>\1</li>',
 		'<blockquote class="oocText"><div>OOC:</div>\1</blockquote>',
 		'<blockquote class="spoiler closed"><div class="tag">[ <span class="open">+</span><span class="close">-</span> ] \1</div><div class="hidden">\2</div></blockquote>',
