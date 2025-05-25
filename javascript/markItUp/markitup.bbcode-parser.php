@@ -75,38 +75,49 @@ function splitByHeader($title, $text, $cssClass, $collectionData=''){
  * $callback - function to perform the replacement.  This is passed the tag found, the inner text, and the matches
  */
 function nestedReplace($text, $openTagNeedle, $closeTagNeedle, $callback, $options){
-    $replacementMade=true;
-    $searchFromPos=0;
-    $closeTagLen=strlen($closeTagNeedle);
+    $replacementMade = true;
+    $searchFromPos = 0;
+    $closeTagLen = strlen($closeTagNeedle);
 
-    do{
-        $replacementMade=false;
-        if(preg_match($openTagNeedle, $text, $matches, PREG_OFFSET_CAPTURE,$searchFromPos)) {
+    do {
+        $replacementMade = false;
+        if (preg_match($openTagNeedle, $text, $matches, PREG_OFFSET_CAPTURE, $searchFromPos)) {
             $foundTag = $matches[0][0];
             $openTagStart = $matches[0][1];
-			$openTagEnd=$openTagStart+strlen($foundTag);
-            $nextOpenTagPos=-1;
+			$openTagEnd = $openTagStart + strlen($foundTag);
+            $nextOpenTagPos = -1;
 
-            if(preg_match($openTagNeedle, $text, $matchesNext, PREG_OFFSET_CAPTURE,$openTagEnd)){
-                $nextOpenTagPos=$matchesNext[0][1];		//find the next opening tag
+            if (preg_match($openTagNeedle, $text, $matchesNext, PREG_OFFSET_CAPTURE, $openTagEnd)) {
+                $nextOpenTagPos = $matchesNext[0][1];		//find the next opening tag
             }
-            $nextCloseTag=strpos($text,$closeTagNeedle,$openTagEnd);
+			if ($closeTagNeedle[0] == '/') {
+				$nextCloseTag = preg_match($closeTagNeedle, $text, $closeMatches, PREG_OFFSET_CAPTURE, $openTagEnd);
+				error_log($nextCloseTag);
+			} else {
+				$nextCloseTag = strpos($text, $closeTagNeedle, $openTagEnd);
+			}
 
-            if($nextCloseTag!==false){
-                if($nextCloseTag<$nextOpenTagPos || $nextOpenTagPos==-1){
+            if ($nextCloseTag !== false) {
+                if ($nextCloseTag < $nextOpenTagPos || $nextOpenTagPos == -1) {
 					//found a closing tag before the next opening tag
-					$text=substr($text,0,$openTagStart).$callback($matches,substr($text,$openTagEnd,$nextCloseTag-$openTagEnd),$options).substr($text,$nextCloseTag+$closeTagLen);
-                    $replacementMade=true;
-                    $searchFromPos=$openTagEnd;
+					$text = substr($text, 0, $openTagStart).
+						$callback(
+							$matches,
+							substr($text, $openTagEnd, $nextCloseTag - $openTagEnd),
+							$options).
+						substr($text, $nextCloseTag + $closeTagLen);
+                    $replacementMade = true;
+                    $searchFromPos = $openTagEnd;
                 } else {
 					//found an opening tag before the next closing tag - nesting
-					$restOfText=substr($text,$openTagEnd);
-                    $text=substr($text,0,$openTagEnd).nestedReplace($restOfText,$openTagNeedle, $closeTagNeedle, $callback, $options);
-                    $replacementMade=true;
+					$restOfText = substr($text,$openTagEnd);
+                    $text = substr($text, 0, $openTagEnd).
+						nestedReplace($restOfText, $openTagNeedle, $closeTagNeedle, $callback, $options);
+                    $replacementMade = true;
                 }
             }
         }
-    }while($replacementMade);
+    } while ($replacementMade);
 
     return $text;
 }
