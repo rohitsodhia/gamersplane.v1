@@ -140,6 +140,21 @@ function gpClassFormatter($matches,$innerText,$tag){
 	return "<{$tag} class=\"userColor ".implode(' ',$classes)."\">{$innerText}</{$tag}>";
 }
 
+function listTagBuilder($matches, $text, $options) {
+	// error_log(htmlspecialchars($text)); exit();
+	if (sizeof($matches) == 1) {
+		return "<ul>{$text}</ul>";
+	} elseif (is_numeric($matches[1][0])) {
+		return "<ol start=\"{$matches[1][0]}\">{$text}</ol>";
+	} else {
+		if (strpos($matches[1][0], ',') !== false) {
+			$parts = explode(',', $matches[1][0]);
+			return "<ol type=\"{$parts[0]}\" start=\"{$parts[1]}\">{$text}</ol>";
+		}
+		return "<ol type=\"{$matches[1][0]}\">{$text}</ol>";
+	}
+}
+
 function BBCode2Html($text) {
 	$text = trim($text);
 
@@ -229,21 +244,6 @@ function BBCode2Html($text) {
 	// 	},
 	// 	$text
 	// );
-
-	function listTagBuilder($matches, $text, $options) {
-		// error_log(htmlspecialchars($text)); exit();
-		if (sizeof($matches) == 1) {
-			return "<ul>{$text}</ul>";
-		} elseif (is_numeric($matches[1][0])) {
-			return "<ol start=\"{$matches[1][0]}\">{$text}</ol>";
-		} else {
-			if (strpos($matches[1][0], ',') !== false) {
-				$parts = explode(',', $matches[1][0]);
-				return "<ol type=\"{$parts[0]}\" start=\"{$parts[1]}\">{$text}</ol>";
-			}
-			return "<ol type=\"{$matches[1][0]}\">{$text}</ol>";
-		}
-	}
 
 	$text = nestedReplace($text, "/\[list(?:\=((?:[aAiI](?:,\s?\d+)?)|\d+))?\]\s+/", "[/list]", 'listTagBuilder', []);
 
