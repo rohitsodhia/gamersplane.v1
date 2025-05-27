@@ -87,15 +87,9 @@ class forumACP
 		$permissions = ['general' => [], 'group' => [], 'user' => []];
 		if (!$details['isGameForum']) {
 			$permissions['general'] = $this->castPermissions($mysql->query("SELECT 'general' as `type`, `read`, `write`, editPost, deletePost, createThread, deleteThread, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}")->fetch());
+		} else {
+			$permissions['general'] = $this->castPermissions($mysql->query("SELECT 'general' as `type`, `read` FROM forums_permissions_general WHERE forumID = {$forumID}")->fetch());
 		}
-		if (!$details['isGameForum'] && (!$permissions || !$permissions['general'])) {
-			$permissions['general'] = array('type' => 'general');
-			global $permissionTypes;
-			foreach ($permissionTypes as $key => $value) {
-				$permissions['general'][$key] = 0;
-			}
-		}
-		$permissions['general']['ref'] = 'general';
 		$permissions['group'] = $mysql->query("SELECT 'group' as `type`, g.groupID as id, g.name, IF(g.gameID IS NULL, 0, 1) gameGroup, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE p.forumID = {$forumID}")->fetchAll();
 		$pGroups = [];
 		foreach ($permissions['group'] as $key => $permission) {
