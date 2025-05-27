@@ -19,7 +19,7 @@ styles/**/*.css
 ._htaccess
 Thumbs.db
 test*.php
-docker-compose.override.yml
+compose.override.yml
 
 # Folders
 _backup/
