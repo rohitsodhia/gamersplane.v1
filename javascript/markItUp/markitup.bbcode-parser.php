@@ -92,7 +92,6 @@ function nestedReplace($text, $openTagNeedle, $closeTagNeedle, $callback, $optio
             }
 			if ($closeTagNeedle[0] == '/') {
 				$nextCloseTag = preg_match($closeTagNeedle, $text, $closeMatches, PREG_OFFSET_CAPTURE, $openTagEnd);
-				error_log($nextCloseTag);
 			} else {
 				$nextCloseTag = strpos($text, $closeTagNeedle, $openTagEnd);
 			}
@@ -265,7 +264,6 @@ function BBCode2Html($text) {
 	);
 	$text = str_replace($in, $out, $text);
 */
-	error_log($text);
 	// BBCode to find...
 	$in = array(
 		'/\[b\](.*?)\[\/b\]/ms',
