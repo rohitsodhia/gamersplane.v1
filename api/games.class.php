@@ -590,6 +590,7 @@ class games
 			try {
 				$mysql->query("INSERT INTO gameInvites SET gameID = {$gameID}, userID = {$userID}");
 			} catch (Exception $e) {
+				$inviteCheck = $mysql->query("SELECT gameID FROM gameInvites WHERE gameID = {$gameID} AND userID = {$currentUser->userID} LIMIT 1");
 				if ($inviteCheck->rowCount()) {
 					displayJSON([
 						'failed' => true,
@@ -598,7 +599,7 @@ class games
 				}
 			}
 			$systems = Systems::getInstance();
-			$gameInfo = $mysql->query("SELECT system, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch();
+			$gameInfo = $mysql->query("SELECT `system`, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch();
 			ob_start();
 			include('emails/gameInviteEmail.php');
 			$email = ob_get_contents();
