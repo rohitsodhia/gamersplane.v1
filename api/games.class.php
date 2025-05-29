@@ -467,7 +467,8 @@ class games
 		if ($gmCheck->rowCount()) {
 			$forumInfo = $gmCheck->fetch();
 			if ($forumInfo['public'] == 1) {
-				$mysql->query("UPDATE forums_permissions_general fpg INNER JOIN forums f ON fpg.forumID = f.forumID SET fpg.`read` = -1 WHERE f.gameID = {$gameID}");
+				$mysql->query("UPDATE forums_permissions_general fpg INNER JOIN forums f ON fpg.forumID = f.forumID SET fpg.`read` = 0 WHERE f.gameID = {$gameID}");
+				$mysql->query("UPDATE forums_permissions_general SET `read` = -1 WHERE forumID = {$forumInfo['forumID']} LIMIT 1");
 			} else {
 				$mysql->query("UPDATE forums_permissions_general SET `read` = 1 WHERE forumID = {$forumInfo['forumID']} LIMIT 1");
 			}
