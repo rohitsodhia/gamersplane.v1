@@ -113,9 +113,10 @@
 			</div>
 
 			<div ng-if="forumID != 0" id="permissions" ng-class="{ 'currentSection': currentSection == 'permissions', 'hideSection': currentSection != 'permissions' }" class="hbMargined" hb-margined>
-				<div ng-if="!rootGameForum && details.gameDetails.public" id="permissions_general">
+				<div ng-if="!rootGameForum" id="permissions_general">
 					<h3>General</h3>
-					<div ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
+					<div ng-if="details.gameDetails.public" ng-repeat="permission in [permissions.general]" ng-include="'/angular/templates/forums/acp/permissionSet.html'"></div>
+					<div ng-if="!details.gameDetails.public">You cannot edit general permissions while a game is private</div>
 				</div>
 
 				<div id="permissions_groups">
