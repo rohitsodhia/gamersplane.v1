@@ -60,7 +60,7 @@ class forumACP
 		];
 		if ($details['isGameForum']) {
 			$gameForumID = $forum->heritage[2];
-			list($gameID, $groupID) = $mysql->query("SELECT gameID, groupID FROM games WHERE forumID = {$gameForumID} LIMIT 1")->fetch(PDO::FETCH_NUM);
+			list($gameID, $groupID, $public) = $mysql->query("SELECT gameID, groupID, public FROM games WHERE forumID = {$gameForumID} LIMIT 1")->fetch(PDO::FETCH_NUM);
 			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameID}")->fetchAll();
 			foreach ($groups as &$group) {
 				$group['groupID'] = (int) $group['groupID'];
@@ -70,7 +70,8 @@ class forumACP
 				'forumID' => $gameForumID,
 				'groupID' => (int) $groupID,
 				'groups' => $groups,
-				'players' => $players
+				'players' => $players,
+				'public' => (bool) $public
 			];
 		}
 		if (sizeof($forum->getChildren())) {
