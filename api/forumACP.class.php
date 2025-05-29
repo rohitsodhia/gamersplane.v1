@@ -359,9 +359,16 @@ class forumACP
 			$multiplier = 4;
 		}
 
+		if ($forum->isGameForum()) {
+			$gamePrivate = !((bool) $mysql->query("SELECT public FROM games WHERE forumID = {$forumID} LIMIT 1")->fetchColumn());
+			if ($permission->type == 'general' && $gamePrivate) {
+				displayJSON(['failed' => true]);
+			}
+		}
+
 		$pFields = [];
 		foreach ($permissionTypes as $field => $label) {
-			if ($permission->type != 'general' || $field != 'moderate') {
+			if (!($permission->type == 'general' && $field == 'moderate')) {
 				$pFields[] = "`{$field}` = " . (intval($permission->$field) * $multiplier);
 			}
 		}
