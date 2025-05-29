@@ -361,7 +361,7 @@ class forumACP
 		}
 
 		if ($forum->isGameForum()) {
-			$gamePrivate = !((bool) $mysql->query("SELECT public FROM games WHERE forumID = {$forumID} LIMIT 1")->fetchColumn());
+			$gamePrivate = !((bool)$mysql->query("SELECT public FROM games WHERE gameID = {$forum->gameID} LIMIT 1")->fetchColumn());
 			if ($permission->type == 'general' && $gamePrivate) {
 				displayJSON(['failed' => true]);
 			}
