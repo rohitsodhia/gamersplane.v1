@@ -5,7 +5,7 @@ $(function () {
 controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $timeout, CurrentUser) {
 	CurrentUser.load().then(function () {
 		pathElements = getPathElements();
-		$scope.forumID = pathElements[2]?parseInt(pathElements[2]):0;
+		$scope.forumID = pathElements[2] ? parseInt(pathElements[2]) : 0;
 		$scope.currentSection = 'details';
 		$scope.list = {};
 		$scope.details = {};
@@ -49,10 +49,14 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 					if (data.details.parentID == 2 && $scope.currentSection == 'details')
 						$scope.currentSection = 'subforums';
 					$scope.forumID = forumID;
+					$scope.rootGameForum = data.details.parentID == 2;
 					$scope.list = data.list;
 					$scope.details = data.details;
 					$scope.editDetails = { 'title': data.details.title, 'description': data.details.description };
 					$scope.permissions = data.permissions;
+					if ($scope.details.isGameForum) {
+						$scope.permissions.general = { 'type': 'general', 'ref': 'general', 'read': $scope.permissions.general.read };
+					}
 				}
 			});
 		};
@@ -100,7 +104,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			$http.post(API_HOST + '/forums/acp/changeOrder/', { 'forumID': forum.forumID, 'direction': direction }).success(function (data) {
 				if (data.success) {
 					curPos = newPos = forum.order;
-					newPos += direction == 'up'?-1:1;
+					newPos += direction == 'up' ? -1 : 1;
 					switchForum = $filter('filter')($scope.details.children, { 'order': newPos }, true)[0];
 					forum.order = newPos;
 					switchForum.order = curPos;
@@ -108,7 +112,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 			});
 		};
 		$scope.toggleForumDelete = function (forumID) {
-			$scope.showForumDelete = $scope.showForumDelete != forumID?forumID:null;
+			$scope.showForumDelete = $scope.showForumDelete != forumID ? forumID : null;
 		};
 		$scope.cancelForumDelete = function () {
 			$scope.showForumDelete = null;
@@ -142,9 +146,9 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 
 			$http.post(
 				API_HOST + '/forums/acp/createGroup/', {
-					'forumID': $scope.forumID,
-					'name': $scope.newGroup.name
-				}
+				'forumID': $scope.forumID,
+				'name': $scope.newGroup.name
+			}
 			).success(function (data) {
 				if (data.success) {
 					$scope.details.gameDetails.groups.push({ 'groupID': data.groupID, 'name': $scope.newGroup.name, 'permissionSet': false });
@@ -196,7 +200,7 @@ controllers.controller('forums_acp', function ($scope, $http, $sce, $filter, $ti
 				$scope.editingPermission = null;
 		};
 		$scope.changePermission = function (ref, pType, value) {
-			type = ref.indexOf('_') >= 0?ref.split('_')[0]:'general';
+			type = ref.indexOf('_') >= 0 ? ref.split('_')[0] : 'general';
 			if (type == 'general')
 				$scope.permissions.general[pType] = value;
 			for (var key in $scope.permissions[type])

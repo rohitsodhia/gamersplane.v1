@@ -60,7 +60,7 @@ class forumACP
 		];
 		if ($details['isGameForum']) {
 			$gameForumID = $forum->heritage[2];
-			list($gameID, $groupID) = $mysql->query("SELECT gameID, groupID FROM games WHERE forumID = {$gameForumID} LIMIT 1")->fetch(PDO::FETCH_NUM);
+			list($gameID, $groupID, $public) = $mysql->query("SELECT gameID, groupID, public FROM games WHERE forumID = {$gameForumID} LIMIT 1")->fetch(PDO::FETCH_NUM);
 			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameID}")->fetchAll();
 			foreach ($groups as &$group) {
 				$group['groupID'] = (int) $group['groupID'];
@@ -70,7 +70,8 @@ class forumACP
 				'forumID' => $gameForumID,
 				'groupID' => (int) $groupID,
 				'groups' => $groups,
-				'players' => $players
+				'players' => $players,
+				'public' => (bool) $public
 			];
 		}
 		if (sizeof($forum->getChildren())) {
@@ -87,15 +88,9 @@ class forumACP
 		$permissions = ['general' => [], 'group' => [], 'user' => []];
 		if (!$details['isGameForum']) {
 			$permissions['general'] = $this->castPermissions($mysql->query("SELECT 'general' as `type`, `read`, `write`, editPost, deletePost, createThread, deleteThread, addRolls, addDraws, moderate FROM forums_permissions_general WHERE forumID = {$forumID}")->fetch());
+		} else {
+			$permissions['general'] = $this->castPermissions($mysql->query("SELECT 'general' as `type`, `read` FROM forums_permissions_general WHERE forumID = {$forumID}")->fetch());
 		}
-		if (!$details['isGameForum'] && (!$permissions || !$permissions['general'])) {
-			$permissions['general'] = array('type' => 'general');
-			global $permissionTypes;
-			foreach ($permissionTypes as $key => $value) {
-				$permissions['general'][$key] = 0;
-			}
-		}
-		$permissions['general']['ref'] = 'general';
 		$permissions['group'] = $mysql->query("SELECT 'group' as `type`, g.groupID as id, g.name, IF(g.gameID IS NULL, 0, 1) gameGroup, p.`read`, p.`write`, p.editPost, p.deletePost, p.createThread, p.deleteThread, p.addRolls, p.addDraws, p.moderate FROM forums_permissions_groups p INNER JOIN forums_groups g ON p.groupID = g.groupID WHERE p.forumID = {$forumID}")->fetchAll();
 		$pGroups = [];
 		foreach ($permissions['group'] as $key => $permission) {
@@ -365,9 +360,16 @@ class forumACP
 			$multiplier = 4;
 		}
 
+		if ($forum->isGameForum()) {
+			$gamePrivate = !((bool)$mysql->query("SELECT public FROM games WHERE gameID = {$forum->gameID} LIMIT 1")->fetchColumn());
+			if ($permission->type == 'general' && $gamePrivate) {
+				displayJSON(['failed' => true]);
+			}
+		}
+
 		$pFields = [];
 		foreach ($permissionTypes as $field => $label) {
-			if ($permission->type != 'general' || $field != 'moderate') {
+			if (!($permission->type == 'general' && $field == 'moderate')) {
 				$pFields[] = "`{$field}` = " . (intval($permission->$field) * $multiplier);
 			}
 		}

@@ -462,11 +462,16 @@ class games
 		global $currentUser;
 		$mysql = DB::conn('mysql');
 
-		$gameID = (int)$gameID;
-		$gmCheck = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID} AND gmID = {$currentUser->userID} LIMIT 1");
+		$gameID = (int) $gameID;
+		$gmCheck = $mysql->query("SELECT g.forumID, g.public, f.heritage FROM games g INNER JOIN forums f ON g.forumID = f.forumID WHERE g.gameID = {$gameID} AND g.gmID = {$currentUser->userID} LIMIT 1");
 		if ($gmCheck->rowCount()) {
-			$forumID = $gmCheck->fetchColumn();
-			$mysql->query("UPDATE forums_permissions_general SET `read` = IF(`read` = 1, -1, 1) WHERE forumID = {$forumID} LIMIT 1");
+			$forumInfo = $gmCheck->fetch();
+			if ($forumInfo['public'] == 1) {
+				$mysql->query("UPDATE forums_permissions_general fpg INNER JOIN forums f ON fpg.forumID = f.forumID SET fpg.`read` = 0 WHERE f.gameID = {$gameID}");
+				$mysql->query("UPDATE forums_permissions_general SET `read` = -1 WHERE forumID = {$forumInfo['forumID']} LIMIT 1");
+			} else {
+				$mysql->query("UPDATE forums_permissions_general SET `read` = 1 WHERE forumID = {$forumInfo['forumID']} LIMIT 1");
+			}
 			$mysql->query("UPDATE games SET `public` = NOT `public` WHERE gameID = {$gameID} LIMIT 1");
 			displayJSON(['success' => true]);
 		} else {
