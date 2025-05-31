@@ -713,12 +713,13 @@ class games
 				ob_end_clean();
 
 				$mail = getMailObj();
-				foreach ($gmEmails as $email) {
-					$mail->addAddress($email);
-				}
 				$mail->Subject = "Game Activity: {$emailDetails->action}";
 				$mail->msgHTML($email);
-				$mail->send();
+				foreach ($gmEmails as $email) {
+					$mail->clearAddresses();
+					$mail->addAddress($email);
+					$mail->send();
+				}
 			}
 
 			displayJSON(['success' => true, 'character' => $charDetails, 'approved' => $isGM]);
