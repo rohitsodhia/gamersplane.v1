@@ -52,6 +52,6 @@ services:
       - MYSQL_PASSWORD
     volumes:
       - ./docker/mysql:/docker-entrypoint-initdb.d
-      - /logs/mysql:/var/log/mysql/
+      - ./logs/mysql:/var/log/mysql/
       - mysql_db:/var/lib/mysql
 
