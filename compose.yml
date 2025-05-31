@@ -38,10 +38,10 @@ services:
       - mysql
 
   mysql:
-    image: mysql:8.4
     build:
       context: ./docker/mysql
       dockerfile: Dockerfile
+    command: --long_query_time=${MYSQL_LONG_QUERY_TIME}
     container_name: gpv1-mysql
     ports:
       - "127.0.0.1:3306:3306"
@@ -52,5 +52,6 @@ services:
       - MYSQL_PASSWORD
     volumes:
       - ./docker/mysql:/docker-entrypoint-initdb.d
+      - /logs/mysql:/var/log/mysql/
       - mysql_db:/var/lib/mysql
 
