@@ -225,7 +225,7 @@
 				<div class="table">
 					<div>
 						<label for="title">Title:</label>
-						<div><input id="title" type="text" name="title" maxlength="50" tabindex="<?=tabOrder()?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
+						<div><input id="title" type="text" name="title" maxlength="100" tabindex="<?=tabOrder()?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
 					</div>
 <?php
 	if ($gameID && (sizeof($characters) || sizeof($pcCharacters))) {

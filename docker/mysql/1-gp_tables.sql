@@ -953,7 +953,7 @@ DROP TABLE IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `postID` int NOT NULL AUTO_INCREMENT,
   `threadID` int NOT NULL,
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `authorID` int NOT NULL,
   `message` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `datePosted` datetime NOT NULL,
