@@ -333,12 +333,10 @@ CREATE TABLE `forums` (
   `description` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `forumType` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'f',
   `parentID` int DEFAULT NULL,
-  `heritage` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `order` int NOT NULL,
   `gameID` int DEFAULT NULL,
   `threadCount` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`forumID`),
-  UNIQUE KEY `heritage` (`heritage`),
   KEY `parentID` (`parentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -373,20 +371,6 @@ CREATE TABLE `forums_groups` (
   `gameID` int DEFAULT NULL,
   PRIMARY KEY (`groupID`),
   KEY `ownerID` (`ownerID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `forums_heritage`
---
-
-DROP TABLE IF EXISTS `forums_heritage`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `forums_heritage` (
-  `parentID` int NOT NULL,
-  `childID` int NOT NULL,
-  PRIMARY KEY (`parentID`,`childID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
