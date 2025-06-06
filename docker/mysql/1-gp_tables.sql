@@ -333,6 +333,7 @@ CREATE TABLE `forums` (
   `description` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `forumType` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'f',
   `parentID` int DEFAULT NULL,
+  `depth` int DEFAULT NULL,
   `order` int NOT NULL,
   `gameID` int DEFAULT NULL,
   `threadCount` int NOT NULL DEFAULT '0',
