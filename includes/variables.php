@@ -6,7 +6,6 @@
 	define('MODAL', (isset($_GET['modal']) && $_GET['modal'] == 1) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')?TRUE:FALSE);
 	define('CUR_TIMEZONE', '-08:00');
 	define('PAGINATE_PER_PAGE', (int) getenv('PAGINATE_PER_PAGE'));
-	define('HERITAGE_PAD', (int) getenv('HERITAGE_PAD'));
 	define('COOKIE_DOMAIN', '.'.getenv('APP_URL'));
 	$loggedIn = 0;
 	$fixedMenu = FALSE;

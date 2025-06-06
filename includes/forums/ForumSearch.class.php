@@ -59,26 +59,56 @@
 			$start = ($this->page - 1) * PAGINATE_PER_PAGE;
 			if ($this->search == 'latestPosts') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
+				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
 			} elseif ($this->search == 'unreadPosts') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID} LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID} LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0) ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
+				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID} LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0) ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
 			} elseif ($this->search == 'latestGamePosts') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID INNER JOIN forums f ON t.forumID = f.forumID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
+				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
 			} elseif ($this->search == 'latestPublicPosts') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE fpg.read=1 AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
+				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE fpg.read=1 AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
 			} elseif ($this->search == 'homepage') {
 				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK ")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll(PDO::FETCH_OBJ);
+				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
 			} elseif ($this->search == 'text') {
 				$rowCountStmt=$mysql->prepare("SELECT COUNT(*) FROM threads t INNER JOIN posts p ON t.threadID = p.threadID INNER JOIN forums ON t.forumID = forums.forumID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND MATCH (p.messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND forums.gameID={$this->gameID}" : ""));
 				$rowCountStmt->execute([$this->searchText]);
 				$this->resultsCount = $rowCountStmt->fetchColumn();
-				$resultsStmt = $mysql->prepare("SELECT t.threadID, t.forumID, f.title forum, f.heritage, t.locked, t.sticky, t.publicPosting, fp.postID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, fp.postID lastPostID, fp.authorID lp_authorID, fpa.username lp_username, fp.datePosted lp_datePosted,fp.messageFullText FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.threadID = fp.threadID INNER JOIN users fpa ON fp.authorID = fpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND MATCH (messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND f.gameID = {$this->gameID} " : "")." ORDER BY fp.datePosted DESC LIMIT {$start}, {$limit}");
+				$resultsStmt = $mysql->prepare(
+					"SELECT
+						t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, fp.postID lastPostID, fp.authorID lp_authorID, fpa.username lp_username, fp.datePosted lp_datePosted,fp.messageFullText
+					FROM threads t
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts fp ON t.threadID = fp.threadID
+					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
+					WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND MATCH (messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND f.gameID = {$this->gameID} " : "")." ORDER BY fp.datePosted DESC LIMIT {$start}, {$limit}");
 				$resultsStmt->execute([$this->searchText]);
-				$this->results = $resultsStmt->fetchAll(PDO::FETCH_OBJ);
+
+				$forums = $mysql->query(
+					"WITH RECURSIVE forums_with_parents (forumID, parentID, depth) AS (
+						SELECT forumID, parentID, depth FROM forums WHERE forumID IN (".implode(', ', $this->getAccessableForums()).")
+						UNION
+						SELECT f.forumID, f.parentID, f.depth FROM forums f INNER JOIN forums_with_parents p ON f.forumID = p.parentID
+					) SELECT forumID, parentID FROM forums_with_parents ORDER BY depth"
+				);
+				$heritages = [];
+				while (list($forumID, $parentID) = $forums->fetch(PDO::FETCH_NUM)) {
+					$heritages[$forumID] = [];
+					if (array_key_exists($parentID, $heritages)) {
+						$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
+					} else {
+						$heritages[$forumID] = [$parentID];
+					}
+				}
+
+				$this->results = [];
+				foreach ($resultsStmt->fetchAll() as $result) {
+					$result['heritage'] = $heritages[$result["forumID"]];
+					$this->results[] = $result;
+				}
 			}
 		}
 
@@ -110,18 +140,16 @@
 			<ul class="ft_search">
 			<?
 			if (sizeof($this->results)) { foreach ($this->results as $result) {
-				$forumIcon = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?'new':'old';
-				$postTitle=$result->title;
-				if(substr($postTitle,0,4)=='Re: '){
-					$postTitle=substr($postTitle,4);
+				$forumIcon = $result["lastPostID"] > $this->forumManager->getForumProperty($result["forumID"], 'markedRead') && $result["lastPostID"] > $result["lastRead"] ? 'new' : 'old';
+				$postTitle = $result["title"];
+				if (substr($postTitle, 0, 4) == 'Re: ') {
+					$postTitle = substr($postTitle,4);
 				}
-				$heritageArray=explode('-', $result->heritage);
-				$heritageRoot=ltrim($heritageArray[0], '0');
 				?>
 				<li>
-					<h3><a href="/forums/thread/<?=$result->threadID?>/?p=<?=$result->postID?>#p<?=$result->postID?>"><i class="ra forum-icon forum-root-<?=$heritageRoot?> forum-id-<?=$result->forumID?>"></i> <?=$postTitle?></a></h3>
-					<div class="ft_post_info"><a href="/forums/<?=$result->forumID?>/" class="ft_forum"><?=$result->forum?></a> <span class="ft_poster"><a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a> <span class="convertTZdate"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span></span></div>
-					<p class="ft_snippet"><?=ForumSearch::getTextSnippet($result->messageFullText,200)?></p>
+					<h3><a href="/forums/thread/<?=$result["threadID"]?>/?p=<?=$result["postID"]?>#p<?=$result["postID"]?>"><i class="ra forum-icon forum-root-<?=$result["heritage"][0]?> forum-id-<?=$result["forumID"]?>"></i> <?=$postTitle?></a></h3>
+					<div class="ft_post_info"><a href="/forums/<?=$result["forumID"]?>/" class="ft_forum"><?=$result["forum"]?></a> <span class="ft_poster"><a href="/user/<?=$result["lp_authorID"]?>/" class="username"><?=$result["lp_username"]?></a> <span class="convertTZdate"><?=date('M j, Y g:i a', strtotime($result["lp_datePosted"]))?></span></span></div>
+					<p class="ft_snippet"><?=ForumSearch::getTextSnippet($result["messageFullText"],200)?></p>
 				</li>
 				<?
 			}}
@@ -131,7 +159,7 @@
 		}
 
 		public function displayResults() {
-			if($this->search == 'text'){
+			if ($this->search == 'text') {
 				return $this->displayFullTextResults();
 			}
 ?>
@@ -145,19 +173,19 @@
 			<div class="sudoTable forumList">
 <?
 			if (sizeof($this->results)) { foreach ($this->results as $result) {
-				$forumIcon = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?'new':'old';
+				$forumIcon = $result["lastPostID"] > $this->forumManager->getForumProperty($result["forumID"], 'markedRead') && $result["lastPostID"] > $result["lastRead"]?'new':'old';
 ?>
 				<div class="tr">
-					<div class="td icon"><a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><div class="forumIcon<?=$result->publicPosting?" publicPosting":""?><?=$forumIcon == 'new'?' newPosts':''?><?=$this->forumManager->isFavGame($result->forumID)?' favGame':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
+					<div class="td icon"><a href="/forums/thread/<?=$result["threadID"]?>/?view=newPost#newPost"><div class="forumIcon<?=$result["publicPosting"]?" publicPosting":""?><?=$forumIcon == 'new'?' newPosts':''?><?=$this->forumManager->isFavGame($result["forumID"])?' favGame':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
 					<div class="td threadInfo">
 <?				if ($forumIcon == 'new') { ?>
-						<a class="threadInfoNew" href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
+						<a class="threadInfoNew" href="/forums/thread/<?=$result["threadID"]?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
 <?				} else {?><span class="threadInfoNew"></span><?} ?>
 						<div class="paginateDiv">
 <?
-				if ($result->postCount > PAGINATE_PER_PAGE) {
-					$url = "/forums/thread/{$result->threadID}/";
-					$numPages = ceil($result->postCount / PAGINATE_PER_PAGE);
+				if ($result["postCount"] > PAGINATE_PER_PAGE) {
+					$url = "/forums/thread/{$result["threadID"]}/";
+					$numPages = ceil($result["postCount"] / PAGINATE_PER_PAGE);
 					if ($numPages <= 3) { for ($count = 1; $count <= $numPages; $count++) {
 ?>
 							<a href="<?=$url?>?page=<?=$count?>"><?=$count?></a>
@@ -171,15 +199,15 @@
 					}
 				}
 ?>
-							<a href="/forums/thread/<?=$result->threadID?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
+							<a href="/forums/thread/<?=$result["threadID"]?>/?view=lastPost#lastPost"><img src="/images/downArrow.png" title="Last post" alt="Last post"></a>
 						</div>
-						<a class="threadTitle" href="/forums/thread/<?=$result->threadID?>/"><?=$result->title?></a>
-						<span class="threadAuthor">by <a href="/user/<?=$result->authorID?>/" class="username"><?=$result->username?></a> in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a> on <span class="convertTZshort"><?=date('M j, Y g:i a', strtotime($result->datePosted))?></span></span>
+						<a class="threadTitle" href="/forums/thread/<?=$result["threadID"]?>/"><?=$result["title"]?></a>
+						<span class="threadAuthor">by <a href="/user/<?=$result["authorID"]?>/" class="username"><?=$result["username"]?></a> in <a href="/forums/<?=$result["forumID"]?>/"><?=$result["forum"]?></a> on <span class="convertTZshort"><?=date('M j, Y g:i a', strtotime($result["datePosted"]))?></span></span>
 					</div>
-					<div class="td numPosts"><?=$result->postCount?></div>
+					<div class="td numPosts"><?=$result["postCount"]?></div>
 					<div class="td lastPost">
-						<a href="/forums/<?=$result->forumID?>/" class="forumDisplay"><?=$result->forum?></a><a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a>
-						<span class="convertTZshort"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></span>
+						<a href="/forums/<?=$result["forumID"]?>/" class="forumDisplay"><?=$result["forum"]?></a><a href="/user/<?=$result["lp_authorID"]?>/" class="username"><?=$result["lp_username"]?></a>
+						<span class="convertTZshort"><?=date('M j, Y g:i a', strtotime($result["lp_datePosted"]))?></span>
 					</div>
 				</div>
 <?			} } else { ?>
@@ -196,19 +224,19 @@
 				if (!$first) echo "					<hr>\n";
 				else $first = false;
 
-				$newPosts = $result->lastPostID > $this->forumManager->getForumProperty($result->forumID, 'markedRead') && $result->lastPostID > $result->lastRead?true:false;
+				$newPosts = $result["lastPostID"] > $this->forumManager->getForumProperty($result["forumID"], 'markedRead') && $result["lastPostID"] > $result["lastRead"]?true:false;
 
-				ForumSearch::displayLatestPostResultHP($result,$newPosts, $this->forumManager->isFavGame($result->forumID));
+				ForumSearch::displayLatestPostResultHP($result,$newPosts, $this->forumManager->isFavGame($result["forumID"]));
 			}
 		}
 
 		public static function displayLatestPostResultHP($result, $newPosts, $isFavGame) {
 ?>
 					<div class="post">
-						<a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><div class="forumIcon<?=$result->publicPosting?" publicPosting":""?><?=$newPosts?' newPosts':''?><?=$isFavGame?' favGame':''?>"></div></a>
-						<div class="title"><a href="/forums/thread/<?=$result->threadID?>/?view=newPost#newPost"><?=$result->title?></a></div>
-						<div class="byLine">by <a href="/user/<?=$result->lp_authorID?>/" class="username"><?=$result->lp_username?></a>, <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result->lp_datePosted))?></div>
-						<div class="forum">in <a href="/forums/<?=$result->forumID?>/"><?=$result->forum?></a></div>
+						<a href="/forums/thread/<?=$result["threadID"]?>/?view=newPost#newPost"><div class="forumIcon<?=$result["publicPosting"]?" publicPosting":""?><?=$newPosts?' newPosts':''?><?=$isFavGame?' favGame':''?>"></div></a>
+						<div class="title"><a href="/forums/thread/<?=$result["threadID"]?>/?view=newPost#newPost"><?=$result["title"]?></a></div>
+						<div class="byLine">by <a href="/user/<?=$result["lp_authorID"]?>/" class="username"><?=$result["lp_username"]?></a>, <span class="convertTZ"><?=date('M j, Y g:i a', strtotime($result["lp_datePosted"]))?></div>
+						<div class="forum">in <a href="/forums/<?=$result["forumID"]?>/"><?=$result["forum"]?></a></div>
 					</div>
 <?
 		}

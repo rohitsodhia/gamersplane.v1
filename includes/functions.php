@@ -409,54 +409,6 @@ function getCardImg($cardNum, $deckType, $size = '')
 }
 
 /* Forum Functions */
-function buildForumStructure($rawForums)
-{
-	$forums = [['info' => $rawForums[0], 'children' => []]];
-	foreach ($rawForums as $key => $forum) {
-		if ($key != 0) {
-			$heritage = array_map('intval', explode('-', $forum['heritage']));
-			$currentParent = &$forums[0];
-			for ($count = 0; $count + 1 < sizeof($heritage); $count++) {
-				$currentParent = &$currentParent['children'][$heritage[$count]];
-			}
-			$currentParent['children'][$forum['forumID']] = ['info' => $forum, 'children' => []];
-		}
-	}
-
-	return $forums;
-}
-
-function retrieveHeritage($forumID, $parent = 0)
-{
-	global $mysql;
-	$level = 0;
-	$family = [];
-
-	if ($parent == 1) {
-		$children = $mysql->query('SELECT forumID FROM forums WHERE parentID = ' . $forumID);
-		while ($hForumID = $children->fetchColumn()) {
-			$family[$hForumID] = 0;
-		}
-		$level = 1;
-	}
-
-	$heritage = $mysql->query('SELECT heritage FROM forums WHERE forumID = ' . $forumID);
-	$heritage = $heritage->fetchColumn();
-	$heritage = array_reverse(explode('-', $heritage));
-	foreach ($heritage as $hForumID) {
-		$family[$hForumID] = $level;
-		$level++;
-	}
-
-	return $family;
-}
-
-/* DB Functions */
-function sql_forumIDPad($forumID)
-{
-	return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
-}
-
 function getUserTheme()
 {
 	global $currentUser,$loggedIn;

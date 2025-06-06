@@ -314,12 +314,9 @@ class games
 
 			$mysql->query("INSERT INTO players SET userID = {$currentUser->userID}, gameID = {$gameID}, approved = 1, isGM = 1");
 
-			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, 2, " . mt_rand(0, 9999) . ", -1, {$gameID})");
+			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, depth, `order`, gameID) SELECT :title, 2, 2, MAX(`order`) + 1, {$gameID} FROM forums WHERE parentID = 2");
 			$addForum->execute([':title' => $details['title']]);
 			$forumID = $mysql->lastInsertId();
-			$heritage = sql_forumIDPad(2) . '-' . sql_forumIDPad($forumID);
-			$order = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder FROM forums WHERE parentID = 2')->fetchColumn();
-			$mysql->query("UPDATE forums SET heritage = '{$heritage}', `order` = {$order} WHERE forumID = {$forumID}");
 
 			$addForumGroup = $mysql->prepare("INSERT INTO forums_groups (name, ownerID, gameID) VALUES (:title, {$currentUser->userID}, {$gameID})");
 			$addForumGroup->execute(['title' => $details['title']]);
@@ -463,7 +460,7 @@ class games
 		$mysql = DB::conn('mysql');
 
 		$gameID = (int) $gameID;
-		$gmCheck = $mysql->query("SELECT g.forumID, g.public, f.heritage FROM games g INNER JOIN forums f ON g.forumID = f.forumID WHERE g.gameID = {$gameID} AND g.gmID = {$currentUser->userID} LIMIT 1");
+		$gmCheck = $mysql->query("SELECT g.forumID, g.public FROM games g INNER JOIN forums f ON g.forumID = f.forumID WHERE g.gameID = {$gameID} AND g.gmID = {$currentUser->userID} LIMIT 1");
 		if ($gmCheck->rowCount()) {
 			$forumInfo = $gmCheck->fetch();
 			if ($forumInfo['public'] == 1) {

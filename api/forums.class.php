@@ -36,13 +36,53 @@
 
 			if (isset($_POST['userID'])) {
 				$userID = (int) $_POST['userID'];
-				$rForums = $mysql->query("SELECT p.forumID, p.title, p.heritage, p.parentID, p.order, IF(s.ID = p.forumID, 1, 0) isSubbed FROM forumSubs s INNER JOIN forums f ON s.ID = f.forumID INNER JOIN forums p ON f.heritage LIKE CONCAT(p.heritage, '%') WHERE p.forumID != 0 AND s.userID = {$userID} AND s.`type` = 'f' ORDER BY LENGTH(p.heritage), `order`");
+				$rForums = $mysql->query(
+					"WITH RECURSIVE subbed_forums (forumID, isSubbed) AS (
+						SELECT
+							ID,
+							1 as isSubbed
+						FROM
+							forumSubs
+						WHERE
+							userID = {$userID} AND `type` = 'f'
+					),
+					forum_with_parents (forumID, title, parentID, `order`, depth) as (
+						SELECT
+							f.forumID,
+							f.title,
+							f.parentID,
+							f.`order`,
+							f.depth
+						FROM
+							forums f
+						INNER JOIN subbed_forums s ON f.forumID = s.forumID
+						UNION
+						SELECT
+							p.forumID,
+							p.title,
+							p.parentID,
+							p.`order`,
+							p.depth
+						FROM
+							forums p
+						INNER JOIN forum_with_parents ON p.forumID = forum_with_parents.parentID
+					)
+					SELECT
+						f.forumID,
+						f.title,
+						f.parentID,
+						f.`order`,
+						IF(s.forumID = f.forumID, 1, 0) isSubbed
+					FROM
+						forum_with_parents f
+						LEFT JOIN subbed_forums s ON f.forumID = s.forumID
+					ORDER BY depth, `order`;"
+				);
 				$forums = [];
 				foreach ($rForums as $forum) {
 					if (!isset($forums[$forum['forumID']])) {
 						$forum['forumID'] = (int) $forum['forumID'];
 						$forum['title'] = printReady($forum['title']);
-						$forum['heritage'] = array_map('intval', explode('-', $forum['heritage']));
 						$forum['parentID'] = (int) $forum['parentID'];
 						$forum['order'] = (int) $forum['order'];
 						$forum['isSubbed'] = (bool) $forum['isSubbed'];
@@ -54,7 +94,17 @@
 					}
 				}
 
-				$rThreads = $mysql->query("SELECT f.forumID, f.title forumTitle, t.threadID, p.title threadTitle FROM forumSubs s INNER JOIN threads t ON s.ID = t.threadID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts p ON t.firstPostID = p.postID WHERE s.userID = {$userID} AND s.`type` = 't' ORDER BY LENGTH(f.heritage), `order`");
+				$rThreads = $mysql->query(
+					"SELECT
+						f.forumID, f.title forumTitle, t.threadID, p.title threadTitle
+					FROM forumSubs s
+					INNER JOIN threads t ON s.ID = t.threadID
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts p ON t.firstPostID = p.postID
+					WHERE
+						s.userID = {$userID} AND s.`type` = 't'
+					ORDER BY depth, `order`
+				");
 				$threads = [];
 				foreach ($rThreads as $thread) {
 					if (!isset($threads[$thread['forumID']])) {

@@ -59,8 +59,8 @@ class forumACP
 			'children' => []
 		];
 		if ($details['isGameForum']) {
-			$gameForumID = $forum->heritage[2];
-			list($gameID, $groupID, $public) = $mysql->query("SELECT gameID, groupID, public FROM games WHERE forumID = {$gameForumID} LIMIT 1")->fetch(PDO::FETCH_NUM);
+			$gameID = $forum->gameID;
+			list($groupID, $public) = $mysql->query("SELECT groupID, public FROM games WHERE forumID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_NUM);
 			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameID}")->fetchAll();
 			foreach ($groups as &$group) {
 				$group['groupID'] = (int) $group['groupID'];
@@ -228,13 +228,13 @@ class forumACP
 			displayJSON(['failed' => true, 'errors' => ['noPermissions']]);
 		}
 
-		$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, {$parentID}, '" . time() . "', :order, " . ($forum->isGameForum() ? $forum->gameID : 'NULL') . ')');
+		$depth = $forum->depth + 1;
+		$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, depth, `order`, gameID) VALUES (:title, {$parentID}, {$depth}, :order, " . ($forum->isGameForum() ? $forum->gameID : 'NULL') . ')');
 		$addForum->bindValue(':title', sanitizeString($name));
 		$addForum->bindValue(':order', intval($forum->childCount) + 1);
 		$addForum->execute();
 		$forumID = (int) $mysql->lastInsertId();
-		$mysql->query('UPDATE forums SET heritage = "' . $forum->getHeritage(true) . '-' . sql_forumIDPad($forumID) . '" WHERE forumID = ' . $forumID);
-		$mysql->query('INSERT INTO forums_permissions_general (forumID) VALUES (' . $forumID . ')');
+		$mysql->query("INSERT INTO forums_permissions_general (forumID) VALUES ({$forumID})");
 
 		displayJSON([
 			'success' => true,
