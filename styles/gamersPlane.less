@@ -2642,7 +2642,7 @@ textarea {
 			}
 		}
 
-		.parsedRolls i:after{
+		.parsedRolls i::after{
 			color: #fff;
 			background-color: rgba(0,0,0,0);
 		}
@@ -2889,7 +2889,7 @@ div.forumIcon {
 		color: #ccc;
 	}
 
-	&.newPosts:before {
+	&.newPosts::before {
 		color: @gp-red;
 	}
 
@@ -2897,24 +2897,24 @@ div.forumIcon {
 		content: @ra-var-icon-bookmark;
 	}
 
-	&.publicPosting:before {
+	&.publicPosting::before {
 		content: @gp-icon-publicPosting;
 	}
 
-	&.sticky:before {
+	&.sticky::before {
 		content: @gp-icon-sticky;
 	}
 
-	&.locked:before {
+	&.locked::before {
 		content: @gp-icon-locked;
 	}
 }
 
-.favGame div.forumIcon:before{
+.favGame div.forumIcon::before{
 	content: @ra-var-icon-bookmark;
 }
 
-.fid10 div.forumIcon:before{
+.fid10 div.forumIcon::before{
 	content: @ra-var-icon-beer;
 }
 
@@ -3802,7 +3802,7 @@ select.notPretty {
 			font-size: 1rem;
 		}
 
-		&.open:before {
+		&.open::before {
 			content: '\25BC';
 		}
 	}
@@ -3880,35 +3880,35 @@ select.notPretty {
 	}
 }
 
-.ra.forum-root-6:before{ //game discussion
+.ra.forum-root-6::before{ //game discussion
 	content: @ra-var-icon-pawn;
 }
 
-.ra.forum-root-20:before{ //guides
+.ra.forum-root-20::before{ //guides
 	content: @ra-var-icon-wooden-sign;
 }
 
-.ra.forum-root-22:before{ //management
+.ra.forum-root-22::before{ //management
 	content: @ra-var-icon-sheriff;
 }
 
-.ra.forum-root-2:before{ //games
+.ra.forum-root-2::before{ //games
 	content: @ra-var-icon-d6;
 }
 
-.ra.forum-id-3:before{  //announcements
+.ra.forum-id-3::before{  //announcements
 	content: @ra-var-icon-gamers-plane;
 }
 
-.ra.forum-id-10:before{  //tavern
+.ra.forum-id-10::before{  //tavern
 	content: @ra-var-icon-beer;
 }
 
-.ra.forum-id-14:before{  //introductions
+.ra.forum-id-14::before{  //introductions
 	content: @ra-var-icon-hearts;
 }
 
-.ra.forum-id-8672:before{  //questions and help
+.ra.forum-id-8672::before{  //questions and help
 	content: @ra-var-icon-help;
 }
 
@@ -4069,7 +4069,7 @@ select.notPretty {
 					margin-right: 5px;
 				}
 			}
-			.toDark:before{
+			.toDark::before{
 				background-color: #080808;
 			}
 			.convertTZ{
