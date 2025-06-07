@@ -60,7 +60,7 @@ class forumACP
 		];
 		if ($details['isGameForum']) {
 			$gameID = $forum->gameID;
-			list($groupID, $public) = $mysql->query("SELECT groupID, public FROM games WHERE forumID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_NUM);
+			list($groupID, $public) = $mysql->query("SELECT groupID, public FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_NUM);
 			$groups = $mysql->query("SELECT groupID, name FROM forums_groups WHERE gameID = {$gameID}")->fetchAll();
 			foreach ($groups as &$group) {
 				$group['groupID'] = (int) $group['groupID'];
@@ -283,15 +283,15 @@ class forumACP
 		$mysql = DB::conn('mysql');
 
 		$groupID = (int) $groupID;
-		$getForumID = $mysql->query("SELECT forumID FROM games WHERE groupID = {$groupID} LIMIT 1");
-		if ($getForumID->rowCount()) {
+		$getForumID = $mysql->query("SELECT g.forumID, g.groupID FROM games g INNER JOIN forums_groups f ON g.gameID = f.gameID WHERE f.groupID = {$groupID} LIMIT 1");
+		list($forumID, $gameGroupID) = $getForumID->fetch(PDO::FETCH_NUM);
+		if ((int) $gameGroupID == $groupID) {
 			displayJSON(['failed' => true, 'errors' => ['mainGroup']]);
 		}
 		if (strlen($name) < 3) {
 			displayJSON(['failed' => true, 'errors' => ['noName']]);
 		}
 
-		$forumID = $getForumID->fetchColumn();
 		$forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN | ForumManager::NO_NEWPOSTS | ForumManager::ADMIN_FORUMS);
 		$forum = $forumManager->forums[$forumID];
 		if ($forum == null || !$forum->getPermissions('admin')) {
@@ -301,11 +301,11 @@ class forumACP
 		if ($forum->isGameForum()) {
 			$updateName = $mysql->prepare("UPDATE forums_groups SET name = :name WHERE groupID = {$groupID}");
 			$updateName->execute([':name' => $name]);
-			if ($updateName->rowCount()) {
+			// if ($updateName->rowCount()) {
 				displayJSON(['success' => true, 'updated' => true, 'name' => $name]);
-			} else {
-				displayJSON(['failed' => true, 'queryFailed' => true]);
-			}
+			// } else {
+			// 	displayJSON(['failed' => true, 'queryFailed' => true]);
+			// }
 		}
 	}
 
