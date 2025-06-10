@@ -76,6 +76,7 @@
 					FROM
 						forum_with_parents f
 						LEFT JOIN subbed_forums s ON f.forumID = s.forumID
+						WHERE f.forumID != 0
 					ORDER BY depth, `order`;"
 				);
 				$forums = [];
