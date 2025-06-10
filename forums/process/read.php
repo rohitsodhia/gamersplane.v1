@@ -31,7 +31,7 @@
 		if ($forums->rowCount()) {
 			$lpPostID = 0;
 			$forumIDs = [];
-			foreach ($forum in $lpPostID) {
+			while ($forum = $forums->fetch()) {
 				$forumIDs[] = $forum['forumID'];
 				if ($forum['lastPostID'] > $lpPostID) {
 					$lpPostID = $forum['lastPostID'];
