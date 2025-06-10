@@ -37,8 +37,8 @@
 					$lpPostID = $forum['lastPostID'];
 				}
 			}
-			$mysql->query("DELETE FROM forums_readData_forums WHERE userID = {$currentUser->userID} AND forumID NOT IN (" . implode(',', $forumIDs) . ')');
-			$mysql->query("DELETE FROM forums_readData_threads WHERE userID = {$currentUser->userID} AND forumID NOT IN (" . implode(',', $forumIDs) . ')');
+			$mysql->query("DELETE FROM forums_readData_forums WHERE userID = {$currentUser->userID} AND forumID IN (" . implode(',', $forumIDs) . ')');
+			$mysql->query("DELETE rdt FROM forums_readData_threads rdt INNER JOIN threads t ON rdt.threadID = t.threadID WHERE rdt.userID = {$currentUser->userID} AND t.forumID IN (" . implode(',', $forumIDs) . ')');
 		}
 	}
 
