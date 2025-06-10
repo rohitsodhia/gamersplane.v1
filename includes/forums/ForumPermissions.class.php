@@ -57,10 +57,10 @@
 					) SELECT * from forum_with_parents ORDER BY depth"
 				);
 				while (list($forumID, $parentID) = $forumInfos->fetch(PDO::FETCH_NUM)) {
-					$heritages[$forumID] = [];
+					$heritages[$forumID] = [0];
 					if (array_key_exists($parentID, $heritages)) {
 						$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
-					} else {
+					} elseif ($parentID) {
 						$heritages[$forumID] = [$parentID];
 					}
 					$allForumIDs = array_merge($allForumIDs, $heritages[$forumID]);
