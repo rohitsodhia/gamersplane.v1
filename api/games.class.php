@@ -696,7 +696,7 @@ class games
 
 			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID INNER JOIN players ON u.userID = players.userID WHERE players.gameID = {$gameID} AND players.isGM = 1 AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 			if (sizeof($gmEmails)) {
-				$gameInfo = $mysql->query("SELECT gameID, `system`, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+				$gameInfo = $mysql->query("SELECT gameID, `system`, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_CLASS);
 				$emailDetails = new stdClass();
 				$emailDetails->action = 'Character Added';
 				$emailDetails->gameInfo = $gameInfo;
