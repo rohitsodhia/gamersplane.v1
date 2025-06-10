@@ -41,16 +41,16 @@
 			} else {
 				$forumIDsStr = implode(', ', $allForumIDs);
 				$forumInfos = $mysql->query(
-					"WITH RECURSIVE forum_with_parents (forumID, parentID) AS (
+					"WITH RECURSIVE forum_with_parents (forumID, parentID, depth) AS (
 						SELECT
-							forumID, parentID
+							forumID, parentID, depth
 						FROM
 							forums
 						WHERE
 							forumID IN ($forumIDsStr)
 						UNION
 						SELECT
-							f.forumID, f.parentID
+							f.forumID, f.parentID, f.depth
 						FROM
 							forums f
 						INNER JOIN forum_with_parents p ON f.forumID = p.parentID
