@@ -161,9 +161,9 @@ class ForumManager
 					"SELECT
 						f.forumID, f.parentID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(rdf.markedRead, 0)) numUnread, rdf.markedRead
 					FROM forums f
-					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = 1
+					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID}
 					LEFT JOIN threads t ON f.forumID = t.forumID
-					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = 1
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE f.forumID IN ({$forumIDsStr})
 					GROUP BY f.forumID
 					ORDER BY f.depth DESC"
@@ -500,9 +500,6 @@ public function displayForumRow($forumID)
 			}
 		}
 
-		error_log("forumID: $forumID");
-		error_log("new posts: " . $forum->getMarkedRead());
-
 		if ($forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead()) {
 			return true;
 		} else {
@@ -584,8 +581,7 @@ public function displayForumRow($forumID)
                 <?
 				if (sizeof($forum->threads)) {
 					foreach ($forum->threads as $thread) {
-						$maxRead = $this->maxRead($forum->getForumID());
-						$newPosts = $thread->newPosts($maxRead);
+						$newPosts = $thread->newPosts($forum->getMarkedRead());
 						?>
                 <div class="tr">
                     <div class="td icon">
