@@ -63,11 +63,6 @@
 					$currentUser = new User($userID);
 					if ($currentUser->getLoginHash() == $loginHash) {
 						$currentUser->generateLoginCookie();
-
-//						wp_set_current_user($userInfo['userID']);
-//						wp_set_auth_cookie($userInfo['userID']);
-//						do_action('wp_login', $userInfo['userID']);
-
 						$mysql->query('UPDATE users SET lastActivity = NOW() WHERE userID = ' . $currentUser->userID);
 
 						return true;

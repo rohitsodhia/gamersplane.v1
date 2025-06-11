@@ -22,14 +22,26 @@
 			}
 		}
 
-		$forums = $mysql->query('SELECT forumID FROM forums WHERE heritage LIKE "' . sql_forumIDPad(2) . '-' . sql_forumIDPad($forumID) . '%"');
-		$forumIDs = [];
-		foreach ($forums as $info) {
-			$forumIDs[] = $info['forumID'];
-		}
-		$mysql->query("DELETE FROM forumAdmins WHERE userID = {$playerID} AND forumID IN (" . implode(', ', $forumIDs) . ")");
-		$mysql->query("DELETE FROM forums_permissions_users WHERE userID = {$playerID} AND forumID IN (" . implode(', ', $forumIDs) . ")");
-		$mysql->query("DELETE FROM gm USING forums_groupMemberships gm INNER JOIN forums_permissions_groups p WHERE gm.userID = {$playerID} AND gm.groupID = p.groupID AND p.forumID IN (" . implode(', ', $forumIDs) . ")");
+		$forums = $mysql->query(
+			"WITH RECURSIVE forum_with_children (forumID) AS (
+				SELECT
+					forumID
+				FROM
+					forums
+				WHERE
+					forumID = {$forumID}
+				UNION
+				SELECT
+					f.forumID
+				FROM
+					forums f
+				INNER JOIN forum_with_children c ON f.parentID = c.forumID
+			) SELECT forumID FROM forum_with_children"
+		);
+		$forumIDs = implode(', ', array_map('intval', $forums->fetchAll(PDO::FETCH_COLUMN)));
+		$mysql->query("DELETE FROM forumAdmins WHERE userID = {$playerID} AND forumID IN ({$forumIDs})");
+		$mysql->query("DELETE FROM forums_permissions_users WHERE userID = {$playerID} AND forumID IN ({$forumIDs})");
+		$mysql->query("DELETE FROM gm USING forums_groupMemberships gm INNER JOIN forums_permissions_groups p WHERE gm.userID = {$playerID} AND gm.groupID = p.groupID AND p.forumID IN ({$forumIDs})");
 		// $hl_removePlayer = new HistoryLogger(isset($_POST['remove'])?'playerRemove':'playerLeft');
 		// $hl_removePlayer->addUser($playerID)->addGame($gameID)->addUser($currentUser->userID, 'gm')->addForCharacters($chars)->save();
 		$mysql->query("DELETE deckPermissions FROM decks INNER JOIN deckPermissions ON decks.deckID = deckPermissions.deckID WHERE deckPermissions.userID = {$playerID}");

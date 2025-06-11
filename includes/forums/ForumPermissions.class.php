@@ -28,16 +28,41 @@
 			$allForumIDs = $forumIDs;
 			$heritages = array();
 			if (is_array($forumsData) && sizeof($forumsData)) {
+				$count = 0;
 				foreach ($allForumIDs as $forumID) {
-					$heritages[$forumID] = explode('-', $forumsData[$forumID]['heritage']);
-					array_walk($heritages[$forumID], function (&$value, $key) { $value = intval($value); });
+					$heritages[$forumID] = [$forumID];
+					$parentID = $forumsData[$forumID]['parentID'];
+					while ($parentID != NULL) {
+						array_unshift($heritages[$forumID], (int) $parentID);
+						$parentID = $forumsData[$parentID]['parentID'];
+					}
 					$allForumIDs = array_merge($allForumIDs, $heritages[$forumID]);
 				}
 			} else {
-				$forumInfos = $mysql->query('SELECT forumID, heritage FROM forums WHERE forumID IN ('.implode(', ', $allForumIDs).')');
-				while (list($forumID, $heritage) = $forumInfos->fetch(PDO::FETCH_NUM)) {
-					$heritages[$forumID] = explode('-', $heritage);
-					array_walk($heritages[$forumID], function (&$value, $key) { $value = intval($value); });
+				$forumIDsStr = implode(', ', $allForumIDs);
+				$forumInfos = $mysql->query(
+					"WITH RECURSIVE forum_with_parents (forumID, parentID, depth) AS (
+						SELECT
+							forumID, parentID, depth
+						FROM
+							forums
+						WHERE
+							forumID IN ($forumIDsStr)
+						UNION
+						SELECT
+							f.forumID, f.parentID, f.depth
+						FROM
+							forums f
+						INNER JOIN forum_with_parents p ON f.forumID = p.parentID
+					) SELECT * from forum_with_parents ORDER BY depth"
+				);
+				while (list($forumID, $parentID) = $forumInfos->fetch(PDO::FETCH_NUM)) {
+					$heritages[$forumID] = [0];
+					if (array_key_exists($parentID, $heritages)) {
+						$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
+					} elseif ($parentID) {
+						$heritages[$forumID] = [$parentID];
+					}
 					$allForumIDs = array_merge($allForumIDs, $heritages[$forumID]);
 				}
 			}
@@ -46,7 +71,7 @@
 
 			if ($userID) {
 				$adminForums = array();
-				$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = $userID AND forumID IN (0, ".implode(', ', $allForumIDs).')');
+				$adminIn = $mysql->query("SELECT forumID FROM forumAdmins WHERE userID = {$userID} AND forumID IN (".implode(', ', $allForumIDs).')');
 				$adminForums = $adminIn->fetchAll(PDO::FETCH_COLUMN);
 				array_walk($adminForums, function (&$value, $key) { $value = intval($value); });
 				$getPermissionsFor = array();
@@ -69,7 +94,18 @@
 					$forumString = implode(', ', $getPermissionsFor);
 					$forumString = 'IN ('.$forumString.')';
 				}
-				$permissionsInfos = $mysql->query("SELECT forumID, 'general' pType, {$queryColumn['permissions']} FROM forums_permissions_general WHERE forumID {$forumString} UNION SELECT forumID, 'group' pType, {$queryColumn['permissions']} FROM forums_permissions_groups_c WHERE userID = {$userID} AND forumID {$forumString} UNION SELECT forumID, 'user' pType, {$queryColumn['permissions']} FROM forums_permissions_users WHERE userID = {$userID} AND forumID {$forumString}");
+				$permissionsInfos = $mysql->query(
+					"SELECT forumID, 'general' pType, {$queryColumn['permissions']}
+					FROM forums_permissions_general
+					WHERE forumID {$forumString}
+					UNION
+					SELECT forumID, 'group' pType, {$queryColumn['permissions']}
+					FROM forums_permissions_groups_c WHERE userID = {$userID} AND forumID {$forumString}
+					UNION
+					SELECT forumID, 'user' pType, {$queryColumn['permissions']}
+					FROM forums_permissions_users
+					WHERE userID = {$userID} AND forumID {$forumString}
+				");
 				$groupPermissionsDenied = $mysql->query("SELECT forumID FROM forums_permissions_groups WHERE `read`=-2 AND forumID {$forumString}")->fetchAll(PDO::FETCH_COLUMN);
 				$rawPermissions = array();
 				foreach ($permissionsInfos->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC) as $key => $rawPermission) {

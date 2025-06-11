@@ -5,7 +5,7 @@
 		protected $description;
 		protected $forumType;
 		protected $parentID;
-		protected $heritage;
+		protected $depth;
 		protected $childCount;
 		protected $order;
 		protected $gameID = null;
@@ -29,8 +29,6 @@
 				if (is_array($forumData) && !array_key_exists($key, $forumData)) continue;//throw new Exception('Missing data for '.$this->forumID.': '.$key);
 				$this->__set($key, $forumData[$key]);
 			}
-			$this->heritage = array_map('intval', explode('-', $this->heritage));
-			if ($this->forumID != 0) $this->heritage = array_merge([0], $this->heritage);
 			if (isset($forumData['lastPostID'])) {
 				$this->lastPost = new stdClass();
 				$this->lastPost->postID = $forumData['lastPostID'];
@@ -41,17 +39,16 @@
 		}
 
 		public function __set($key, $value) {
-			if ($key == 'forumID' && intval($value))
-				$this->forumID = intval($value);
-			elseif (in_array($key, array('title', 'description', 'heritage', 'permissions')))
+			if (in_array($key, array('forumID', 'parentID', 'depth', 'childCount', 'order', 'threadCount', 'postCount', 'markedRead')))
+				$this->$key = intval($value);
+			elseif (in_array($key, array('title', 'description', 'permissions')))
 				$this->$key = $value;
 			elseif ($key == 'forumType' && in_array(strtolower($value), array('f', 'c')))
 				$this->forumType = strtolower($value);
-			elseif (in_array($key, array('parentID', 'childCount', 'order', 'threadCount', 'postCount', 'markedRead')))
-				$this->$key = intval($value);
 			elseif ($key == 'newPosts')
-				$this->newPosts = $value?true:false;
-			elseif ($key == 'gameID' && (intval($value) || $value == null)) $this->gameID = $value != null?intval($value):null;
+				$this->newPosts = $value ? true : false;
+			elseif ($key == 'gameID' && (intval($value) || $value == null))
+				$this->gameID = $value != null ? intval($value) : null;
 		}
 
 		public function __get($key) {
@@ -83,16 +80,6 @@
 
 		public function getParentID() {
 			return $this->parentID;
-		}
-
-		public function getHeritage($string = false) {
-			if ($string) {
-				$heritage = array();
-				foreach ($this->heritage as $forumID)
-					if ($forumID != 0)
-						$heritage[] = sql_forumIDPad($forumID);
-				return implode('-', $heritage);
-			} else return $this->heritage;
 		}
 
 		public function getPermissions($permission = null) {
@@ -144,12 +131,38 @@
 		public function deleteForum() {
 			global $mysql;
 
-			$mysql->query("DELETE f, c, t, p, po, popt, pv, pge, pgr, pu, rdf, rdt, r, d FROM forums f INNER JOIN forums c ON c.heritage LIKE CONCAT(f.heritage, '%') LEFT JOIN threads t ON c.forumID = t.forumID LEFT JOIN posts p ON t.threadID = p.threadID LEFT JOIN forums_polls po ON t.threadID = po.threadID LEFT JOIN forums_pollOptions popt ON t.threadID = popt.threadID LEFT JOIN forums_pollVotes pv ON popt.pollOptionID = pv.pollOptionID LEFT JOIN forums_permissions_general pge ON c.forumID = pge.forumID LEFT JOIN forums_permissions_groups pgr ON c.forumID = pgr.forumID LEFT JOIN forums_permissions_users pu ON c.forumID = pu.forumID LEFT JOIN forums_readData_forums rdf ON c.forumID = rdf.forumID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID LEFT JOIN rolls r ON p.postID = r.postID LEFT JOIN deckDraws d ON p.postID = d.postID WHERE f.forumID = {$this->forumID}");
-		}
-
-		public function rootHeritage(){
-			$heritageArray=$this->getHeritage();
-			return $heritageArray[1];
+			$mysql->query(
+				"WITH RECURSIVE forum_with_children (forumID) AS (
+					SELECT
+						forumID
+					FROM
+						forums
+					WHERE
+						forumID = 1
+					UNION
+					SELECT
+						f.forumID
+					FROM
+						forums f
+					INNER JOIN forum_with_children c ON f.parentID = c.forumID
+				) DELETE
+					f, c, t, p, po, popt, pv, pge, pgr, pu, rdf, rdt, r, d
+				FROM forums f
+				INNER JOIN forums_with_children c ON f.forumID = c.forumID
+				LEFT JOIN threads t ON c.forumID = t.forumID
+				LEFT JOIN posts p ON t.threadID = p.threadID
+				LEFT JOIN forums_polls po ON t.threadID = po.threadID
+				LEFT JOIN forums_pollOptions popt ON t.threadID = popt.threadID
+				LEFT JOIN forums_pollVotes pv ON popt.pollOptionID = pv.pollOptionID
+				LEFT JOIN forums_permissions_general pge ON c.forumID = pge.forumID
+				LEFT JOIN forums_permissions_groups pgr ON c.forumID = pgr.forumID
+				LEFT JOIN forums_permissions_users pu ON c.forumID = pu.forumID
+				LEFT JOIN forums_readData_forums rdf ON c.forumID = rdf.forumID
+				LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID
+				LEFT JOIN rolls r ON p.postID = r.postID
+				LEFT JOIN deckDraws d ON p.postID = d.postID
+				WHERE f.forumID = {$this->forumID}"
+			);
 		}
 	}
 ?>

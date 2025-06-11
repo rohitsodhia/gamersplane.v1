@@ -166,10 +166,4 @@ function startSession()
 	date_default_timezone_set('GMT');
 }
 
-/* DB Functions */
-function sql_forumIDPad($forumID)
-{
-	return str_pad($forumID, HERITAGE_PAD, 0, STR_PAD_LEFT);
-}
-
 /* Character Functions */

@@ -314,12 +314,9 @@ class games
 
 			$mysql->query("INSERT INTO players SET userID = {$currentUser->userID}, gameID = {$gameID}, approved = 1, isGM = 1");
 
-			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, heritage, `order`, gameID) VALUES (:title, 2, " . mt_rand(0, 9999) . ", -1, {$gameID})");
+			$addForum = $mysql->prepare("INSERT INTO forums (title, parentID, depth, `order`, gameID) SELECT :title, 2, 2, MAX(`order`) + 1, {$gameID} FROM forums WHERE parentID = 2");
 			$addForum->execute([':title' => $details['title']]);
 			$forumID = $mysql->lastInsertId();
-			$heritage = sql_forumIDPad(2) . '-' . sql_forumIDPad($forumID);
-			$order = $mysql->query('SELECT MAX(`order`) + 1 AS newOrder FROM forums WHERE parentID = 2')->fetchColumn();
-			$mysql->query("UPDATE forums SET heritage = '{$heritage}', `order` = {$order} WHERE forumID = {$forumID}");
 
 			$addForumGroup = $mysql->prepare("INSERT INTO forums_groups (name, ownerID, gameID) VALUES (:title, {$currentUser->userID}, {$gameID})");
 			$addForumGroup->execute(['title' => $details['title']]);
@@ -463,7 +460,7 @@ class games
 		$mysql = DB::conn('mysql');
 
 		$gameID = (int) $gameID;
-		$gmCheck = $mysql->query("SELECT g.forumID, g.public, f.heritage FROM games g INNER JOIN forums f ON g.forumID = f.forumID WHERE g.gameID = {$gameID} AND g.gmID = {$currentUser->userID} LIMIT 1");
+		$gmCheck = $mysql->query("SELECT g.forumID, g.public FROM games g INNER JOIN forums f ON g.forumID = f.forumID WHERE g.gameID = {$gameID} AND g.gmID = {$currentUser->userID} LIMIT 1");
 		if ($gmCheck->rowCount()) {
 			$forumInfo = $gmCheck->fetch();
 			if ($forumInfo['public'] == 1) {
@@ -699,14 +696,14 @@ class games
 
 			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID INNER JOIN players ON u.userID = players.userID WHERE players.gameID = {$gameID} AND players.isGM = 1 AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 			if (sizeof($gmEmails)) {
-				$gameInfo = $mysql->query("SELECT gameID, `system`, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+				$gameInfo = $mysql->query("SELECT gameID, `system`, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_CLASS);
 				$emailDetails = new stdClass();
 				$emailDetails->action = 'Character Added';
 				$emailDetails->gameInfo = $gameInfo;
 				$charLabel = strlen($charDetails['name']) ? $charDetails['name'] : $charDetails['label'];
 				$systems = Systems::getInstance();
 				$site_url = getenv('APP_URL');
-				$emailDetails->message = "<a href=\"https://{$site_url}/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"https://{$site_url}/characters/{$characterID}/\">{$charLabel}</a>.";
+				$emailDetails->message = "<a href=\"https://{$site_url}/user/{$currentUser->userID}/\" class=\"username\">{$currentUser->username}</a> applied a new character to your game: <a href=\"https://{$site_url}/characters/{$emailDetails->gameInfo->system}/{$characterID}/\">{$charLabel}</a>.";
 				ob_start();
 				include('emails/gmEmail.php');
 				$email = ob_get_contents();
