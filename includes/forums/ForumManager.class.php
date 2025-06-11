@@ -159,24 +159,31 @@ class ForumManager
 			if (!($options & $this::NO_NEWPOSTS)) {
 				$lastRead = $mysql->query(
 					"SELECT
-						f.forumID, unread.markedRead, unread.numUnread newPosts
+						f.forumID, f.parentID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(rdf.markedRead, 0)) numUnread, rdf.markedRead
 					FROM forums f
-					LEFT JOIN (
-						SELECT
-							t.forumID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(crdf.markedRead, 0)) numUnread, MAX(t.lastPostID) latestPost, crdf.markedRead
-						FROM threads t
-						LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
-						LEFT JOIN (
-							SELECT f.forumID, MAX(rdf.markedRead) markedRead
-							FROM forums f
-							LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID}
-							WHERE f.forumID IN ({$forumIDsStr})
-							GROUP BY f.forumID
-						) crdf ON t.forumID = crdf.forumID
-						GROUP BY t.forumID
-					) unread ON f.forumID = unread.forumID
-					WHERE f.forumID IN ({$forumIDsStr})"
+					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = 1
+					LEFT JOIN threads t ON f.forumID = t.forumID
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = 1
+					WHERE f.forumID IN ({$forumIDsStr})
+					GROUP BY f.forumID
+					ORDER BY f.depth DESC"
 				);
+				$lastRead = $lastRead->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+				foreach ($lastRead as $key => $value) {
+					$markedRead = $value[0]['markedRead'];
+					$parentID = $value[0]['parentID'];
+					while ($parentID) {
+						if ($markedRead < $lastRead[$parentID][0]['markedRead']) {
+							$markedRead = $lastRead[$parentID][0]['markedRead'];
+						}
+						$parentID = $lastRead[$parentID][0]['parentID'];
+					}
+
+					$lastRead[$key] = [
+						'newPosts' => !!$value[0]['numUnread'],
+						'markedRead' => $markedRead
+					];
+				}
 			} else {
 				$lastRead = $mysql->query(
 					"SELECT
@@ -185,11 +192,11 @@ class ForumManager
 					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID}
 					WHERE f.forumID IN ({$forumIDsStr})"
 				);
-			}
-			$lastRead = $lastRead->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
-			array_walk($lastRead, function (&$value, $key) {
-				$value = $value[0];
-			});
+				$lastRead = $lastRead->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+				array_walk($lastRead, function (&$value, $key) {
+					$value = $value[0];
+				});
+				}
 			foreach ($this->forumsData as $forumID => $forumData) {
 				foreach ($lastRead[$forumID] as $key => $value) {
 					$this->forumsData[$forumID][$key] = $value;
@@ -254,18 +261,19 @@ class ForumManager
 		return $forums;
 	}
 
-	public function getAllChildren($forumID = 0, $read = false)
+	public function getAllChildren($forumID = 0, $read = false, $depth = 0)
 	{
-		$forums = [$forumID];
+		$forums = [];
 		if (!isset($this->forums[$forumID])) {
 			return [];
 		}
 		$forum = $this->forums[$forumID];
+
 		foreach ($forum->getChildren() as $childID) {
 			if (!in_array($childID, $forums) && (!$read || ($read && $this->forums[$childID]->getPermissions('read')))) {
 				$forums[] = $childID;
 			}
-			$children = $this->getAllChildren($childID);
+			$children = $this->getAllChildren($childID, $read, $depth + 1);
 			$forums = array_merge($forums, $children);
 		}
 
@@ -402,10 +410,11 @@ class ForumManager
 public function displayForumRow($forumID)
 {
 	$forum = $this->forums[$forumID];
+	$newPosts = $this->newPosts($forumID)
 	?>
-        <div class="tr<?= $this->newPosts($forumID) ? '' : ' noPosts' ?><?= ' fid'.$forumID?><?= ($this->isFavGame($forumID)?' favGame':'')?>">
+        <div class="tr<?= $newPosts ? '' : ' noPosts' ?><?= ' fid'.$forumID?><?= ($this->isFavGame($forumID)?' favGame':'')?>">
             <div class="td icon">
-				<a href="/forums/<?= $forum->forumID ?>/"><div class="forumIcon<?= $this->newPosts($forumID) ? ' newPosts' : '' ?>" title="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum" alt="<?= $this->newPosts($forumID) ? 'New' : 'No new' ?> posts in forum"></div></a>
+				<a href="/forums/<?= $forum->forumID ?>/"><div class="forumIcon<?= $newPosts ? ' newPosts' : '' ?>" title="<?= $newPosts ? 'New' : 'No new' ?> posts in forum" alt="<?= $newPosts ? 'New' : 'No new' ?> posts in forum"></div></a>
             </div>
             <div class="td name">
                 <a href="/forums/<?= $forum->forumID ?>/"><?= printReady($forum->title) ?></a>
@@ -484,14 +493,17 @@ public function displayForumRow($forumID)
 
 		$forum = $this->forums[$forumID];
 
-		if (sizeof($forum->children)) {
-			foreach ($forum->children as $childID) {
-				if ($this->newPosts($childID)) {
-					return true;
-				}
+
+		foreach ($this->getAllChildren($forumID) as $childID) {
+			if ($this->newPosts($childID)) {
+				return true;
 			}
 		}
-		if ($forum->newPosts) {
+
+		error_log("forumID: $forumID");
+		error_log("new posts: " . $forum->getMarkedRead());
+
+		if ($forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead()) {
 			return true;
 		} else {
 			return false;
@@ -573,13 +585,14 @@ public function displayForumRow($forumID)
 				if (sizeof($forum->threads)) {
 					foreach ($forum->threads as $thread) {
 						$maxRead = $this->maxRead($forum->getForumID());
+						$newPosts = $thread->newPosts($maxRead);
 						?>
                 <div class="tr">
                     <div class="td icon">
-						<a href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->getStates('publicPosting') ? ' publicPosting' : '' ?><?= $thread->newPosts($maxRead) ? ' newPosts' : '' ?>" title="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread" alt="<?= $thread->newPosts($maxRead) ? 'New' : 'No new' ?> posts in thread"></div></a>
+						<a href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><div class="forumIcon<?= $thread->getStates('sticky') ? ' sticky' : '' ?><?= $thread->getStates('locked') ? ' locked' : '' ?><?= $thread->getStates('publicPosting') ? ' publicPosting' : '' ?><?= $newPosts ? ' newPosts' : '' ?>" title="<?= $newPosts ? 'New' : 'No new' ?> posts in thread" alt="<?= $newPosts ? 'New' : 'No new' ?> posts in thread"></div></a>
                     </div>
                     <div class="td threadInfo">
-                        <? if ($thread->newPosts($maxRead)) { ?>
+                        <? if ($newPosts) { ?>
                         <a class="threadInfoNew" href="/forums/thread/<?= $thread->threadID ?>/?view=newPost#newPost"><img src="/images/forums/newPost.png" title="View new posts" alt="View new posts"></a>
                         <?
 					} else {?><span class="threadInfoNew"></span><?} ?>
