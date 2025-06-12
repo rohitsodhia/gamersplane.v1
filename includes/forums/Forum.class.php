@@ -39,7 +39,7 @@
 		}
 
 		public function __set($key, $value) {
-			if (in_array($key, array('forumID', 'parentID', 'depth', 'childCount', 'order', 'threadCount', 'postCount', 'markedRead')))
+			if (in_array($key, array('forumID', 'parentID', 'depth', 'childCount', 'order', 'threadCount', 'postCount', 'markedRead')) && $value != null)
 				$this->$key = intval($value);
 			elseif (in_array($key, array('title', 'description', 'permissions')))
 				$this->$key = $value;

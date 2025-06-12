@@ -549,7 +549,7 @@ public function displayForumRow($forumID)
 				$link .="\n";
 				$output = $link . $output;
 				$currentForumID = $this->forums[$currentForumID]->parentID;
-			} while ($currentForumID);
+			} while ($currentForumID !== null);
 			echo $output;
 		}
 	}
