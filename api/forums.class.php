@@ -142,17 +142,19 @@
 			displayJSON(['success' => true]);
 		}
 
-		public function setLastPostUnread($threadID){
+		public function setLastPostUnread($threadID) {
 			global $currentUser;
 			$mysql = DB::conn('mysql');
-			$lastPosts=$mysql->query("SELECT postID FROM posts WHERE threadID = {$threadID} ORDER BY datePosted DESC LIMIT 2");
+			$lastPosts = $mysql->query("SELECT p.postID, t.forumID FROM posts p INNER JOIN threads t ON p.threadID = t.threadID WHERE p.threadID = {$threadID} ORDER BY p.datePosted DESC LIMIT 2");
 
-			if($lastPosts->rowCount()==2){
-				$lastPosts->fetch(PDO::FETCH_OBJ);
-				$lastPostRead=$lastPosts->fetch(PDO::FETCH_OBJ);
-				$mysql->query("UPDATE forums_readData_threads SET lastRead = {$lastPostRead->postID} WHERE threadID = {$threadID} AND userID = {$currentUser->userID}");
-			}
-			else{
+			if ($lastPosts->rowCount() == 2) {
+				list($lastPostID, $forumID) = $lastPosts->fetch(PDO::FETCH_NUM);
+				$newLastPostRead = $lastPosts->fetchColumn();
+				$mysql->query("UPDATE forums_readData_threads SET lastRead = {$newLastPostRead} WHERE threadID = {$threadID} AND userID = {$currentUser->userID} LIMIT 1");
+				$markedRead = $mysql->query("SELECT markedRead FROM forums_readData_forums WHERE userID = {$currentUser->userID} AND forumID = {$forumID} LIMIT 1")->fetchColumn();
+				if ($markedRead > $lastPostID) {
+					$mysql->query("UPDATE forums_readData_forums SET markedRead = {$lastPostID} - 1 WHERE userID = {$currentUser->userID} AND forumID = {$forumID} LIMIT 1");}
+			} else {
 				$mysql->query("DELETE FROM forums_readData_threads WHERE threadID = {$threadID} AND userID = {$currentUser->userID}");
 			}
 		}

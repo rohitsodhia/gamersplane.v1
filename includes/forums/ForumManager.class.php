@@ -159,24 +159,24 @@ class ForumManager
 			if (!($options & $this::NO_NEWPOSTS)) {
 				$lastRead = $mysql->query(
 					"SELECT
-						f.forumID, f.parentID, SUM(t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(rdf.markedRead, 0)) numUnread, rdf.markedRead
+						f.forumID, f.parentID, SUM(rdt.lastRead AND t.lastPostID > IFNULL(rdt.lastRead, 0)) numUnread, rdf.markedRead
 					FROM forums f
 					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID}
 					LEFT JOIN threads t ON f.forumID = t.forumID
 					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE f.forumID IN ({$forumIDsStr})
 					GROUP BY f.forumID
-					ORDER BY f.depth DESC"
+					ORDER BY f.depth"
 				);
 				$lastRead = $lastRead->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 				foreach ($lastRead as $key => $value) {
 					$markedRead = $value[0]['markedRead'];
 					$parentID = $value[0]['parentID'];
-					while ($parentID) {
-						if ($markedRead < $lastRead[$parentID][0]['markedRead']) {
-							$markedRead = $lastRead[$parentID][0]['markedRead'];
+					while ($parentID !== null) {
+						if ($markedRead < $lastRead[$parentID]['markedRead']) {
+							$markedRead = $lastRead[$parentID]['markedRead'];
 						}
-						$parentID = $lastRead[$parentID][0]['parentID'];
+						$parentID = $lastRead[$parentID]['parentID'];
 					}
 
 					$lastRead[$key] = [
@@ -500,7 +500,7 @@ public function displayForumRow($forumID)
 			}
 		}
 
-		if ($forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead()) {
+		if ($forum->newPosts || ($forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
 			return true;
 		} else {
 			return false;

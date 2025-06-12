@@ -103,7 +103,7 @@
 			if (!$loggedIn)
 				return false;
 
-			if ($this->lastPost->postID > $this->lastRead && $this->lastPost->postID > $markedRead)
+			if (($this->lastRead && $this->lastPost->postID > $this->lastRead) || (!$this->lastRead && $this->lastPost->postID > $markedRead))
 				return true;
 			else
 				return false;
