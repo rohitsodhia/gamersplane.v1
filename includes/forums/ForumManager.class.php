@@ -159,7 +159,7 @@ class ForumManager
 			if (!($options & $this::NO_NEWPOSTS)) {
 				$lastRead = $mysql->query(
 					"SELECT
-						f.forumID, f.parentID, SUM(rdt.lastRead AND t.lastPostID > IFNULL(rdt.lastRead, 0)) numUnread, rdf.markedRead
+						f.forumID, f.parentID, IF(SUM(rdt.lastRead) IS NOT NULL, 1, 0) anyRead, SUM(rdt.lastRead AND t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(rdf.markedRead, 0)) numUnread, rdf.markedRead
 					FROM forums f
 					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID}
 					LEFT JOIN threads t ON f.forumID = t.forumID
@@ -180,6 +180,7 @@ class ForumManager
 					}
 
 					$lastRead[$key] = [
+						'anyRead' => !!$value[0]['anyRead'],
 						'newPosts' => !!$value[0]['numUnread'],
 						'markedRead' => $markedRead
 					];
@@ -500,7 +501,11 @@ public function displayForumRow($forumID)
 			}
 		}
 
-		if ($forum->newPosts || ($forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
+		if ($forum->forumID == 9556) {
+			error_log(($forum->lastPost->postID > $forum->getMarkedRead()) ? 'true' : 'false');
+		}
+
+		if ($forum->newPosts || ($forum->anyRead == null && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
 			return true;
 		} else {
 			return false;
