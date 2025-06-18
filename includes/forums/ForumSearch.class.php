@@ -45,8 +45,8 @@
 		}
 
 		public function getAccessableForums(){
-			if($this->accessibleForums===null){
-				$this->accessibleForums= $this->forumManager->getAccessableForums();
+			if ($this->accessibleForums === null) {
+				$this->accessibleForums = $this->forumManager->getAccessableForums();
 			}
 			return $this->accessibleForums;
 		}
@@ -57,39 +57,133 @@
 			if (intval($limit) <= 0) $limit = PAGINATE_PER_PAGE;
 			$this->page = intval($page) > 0?intval($page):1;
 			$start = ($this->page - 1) * PAGINATE_PER_PAGE;
+			$implodedAccessableForums = implode(', ', $this->getAccessableForums());
 			if ($this->search == 'latestPosts') {
-				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
+				$this->resultsCount = $mysql->query(
+					"SELECT t.threadID
+					FROM threads t
+					INNER JOIN posts p ON t.lastPostID = p.postID
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK"
+				)->rowCount();
+				$this->results = $mysql->query(
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					FROM threads t
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts fp ON t.firstPostID = fp.postID
+					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					INNER JOIN posts lp ON t.lastPostID = lp.postID
+					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK
+					ORDER BY lp.datePosted
+					DESC LIMIT {$start}, {$limit}"
+				)->fetchAll();
 			} elseif ($this->search == 'unreadPosts') {
-				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID} LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID} LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0) ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
+				$this->resultsCount = $mysql->query(
+					"SELECT t.threadID
+					FROM threads t
+					INNER JOIN posts p ON t.lastPostID = p.postID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)"
+					)->rowCount();
+				$this->results = $mysql->query(
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					FROM threads t
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts fp ON t.firstPostID = fp.postID
+					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					INNER JOIN posts lp ON t.lastPostID = lp.postID
+					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)
+					ORDER BY lp.datePosted
+					DESC LIMIT {$start}, {$limit}"
+				)->fetchAll();
 			} elseif ($this->search == 'latestGamePosts') {
-				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID INNER JOIN forums f ON t.forumID = f.forumID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
+				$this->resultsCount = $mysql->query(
+					"SELECT t.threadID
+					FROM threads t
+					INNER JOIN posts p ON t.lastPostID = p.postID
+					INNER JOIN forums f ON t.forumID = f.forumID
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
+				)->rowCount();
+				$this->results = $mysql->query(
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					FROM threads t
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts fp ON t.firstPostID = fp.postID
+					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					INNER JOIN posts lp ON t.lastPostID = lp.postID
+					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL
+					ORDER BY lp.datePosted
+					DESC LIMIT {$start}, {$limit}"
+				)->fetchAll();
 			} elseif ($this->search == 'latestPublicPosts') {
-				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE fpg.read=1 AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
+				$this->resultsCount = $mysql->query(
+					"SELECT t.threadID
+					FROM threads t
+					INNER JOIN posts p ON t.lastPostID = p.postID
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID
+					WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
+				)->rowCount();
+				$this->results = $mysql->query(
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					FROM threads t
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts fp ON t.firstPostID = fp.postID
+					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					INNER JOIN posts lp ON t.lastPostID = lp.postID
+					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID
+					WHERE fpg.read=1 AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL
+					ORDER BY lp.datePosted
+					DESC LIMIT {$start}, {$limit}"
+				)->fetchAll();
 			} elseif ($this->search == 'homepage') {
-				$this->resultsCount = $mysql->query("SELECT t.threadID FROM threads t INNER JOIN posts p ON t.lastPostID = p.postID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND p.datePosted > NOW() - INTERVAL 1 WEEK ")->rowCount();
-				$this->results = $mysql->query("SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted FROM threads t INNER JOIN forums f ON t.forumID = f.forumID INNER JOIN posts fp ON t.firstPostID = fp.postID INNER JOIN users fpa ON fp.authorID = fpa.userID INNER JOIN posts lp ON t.lastPostID = lp.postID INNER JOIN users lpa ON lp.authorID = lpa.userID LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID} WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NULL ORDER BY lp.datePosted DESC LIMIT {$start}, {$limit}")->fetchAll();
+				$this->resultsCount = $mysql->query(
+					"SELECT t.threadID
+					FROM threads t
+					INNER JOIN posts p ON t.lastPostID = p.postID
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK "
+				)->rowCount();
+				$this->results = $mysql->query(
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					FROM threads t
+					INNER JOIN forums f ON t.forumID = f.forumID
+					INNER JOIN posts fp ON t.firstPostID = fp.postID
+					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					INNER JOIN posts lp ON t.lastPostID = lp.postID
+					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NULL
+					ORDER BY lp.datePosted
+					DESC LIMIT {$start}, {$limit}"
+				)->fetchAll();
 			} elseif ($this->search == 'text') {
-				$rowCountStmt=$mysql->prepare("SELECT COUNT(*) FROM threads t INNER JOIN posts p ON t.threadID = p.threadID INNER JOIN forums ON t.forumID = forums.forumID WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND MATCH (p.messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND forums.gameID={$this->gameID}" : ""));
+				$rowCountStmt=$mysql->prepare(
+					"SELECT COUNT(*)
+					FROM threads t
+					INNER JOIN posts p ON t.threadID = p.threadID INNER JOIN forums ON t.forumID = forums.forumID WHERE t.forumID IN ({$implodedAccessableForums}) AND MATCH (p.messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND forums.gameID={$this->gameID}" : ""));
 				$rowCountStmt->execute([$this->searchText]);
 				$this->resultsCount = $rowCountStmt->fetchColumn();
 				$resultsStmt = $mysql->prepare(
 					"SELECT
-						t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, fp.postID lastPostID, fp.authorID lp_authorID, fpa.username lp_username, fp.datePosted lp_datePosted,fp.messageFullText
+						t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, fp.postID lastPostID, fp.authorID lp_authorID, fpa.username lp_username, fp.datePosted lp_datePosted,fp.messageFullText
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.threadID = fp.threadID
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
-					WHERE t.forumID IN (".implode(', ', $this->getAccessableForums()).") AND MATCH (messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND f.gameID = {$this->gameID} " : "")." ORDER BY fp.datePosted DESC LIMIT {$start}, {$limit}");
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND MATCH (messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND f.gameID = {$this->gameID} " : "")."
+					ORDER BY fp.datePosted
+					DESC LIMIT {$start}, {$limit}");
 				$resultsStmt->execute([$this->searchText]);
 
 				$forums = $mysql->query(
 					"WITH RECURSIVE forums_with_parents (forumID, parentID, depth) AS (
-						SELECT forumID, parentID, depth FROM forums WHERE forumID IN (".implode(', ', $this->getAccessableForums()).")
+						SELECT forumID, parentID, depth FROM forums WHERE forumID IN ({$implodedAccessableForums})
 						UNION
 						SELECT f.forumID, f.parentID, f.depth FROM forums f INNER JOIN forums_with_parents p ON f.forumID = p.parentID
 					) SELECT forumID, parentID FROM forums_with_parents ORDER BY depth"
