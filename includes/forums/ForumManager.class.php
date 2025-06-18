@@ -344,14 +344,14 @@ class ForumManager
 	{
 		global $loggedIn, $currentUser;
 
-		$childForums=$this->forums[$this->currentForum]->children;
+		$childForums = $this->forums[$this->currentForum]->children;
 
-		if($favFilter==ForumManager::FAVOURITE){
-			$childForums=array_filter($childForums, function($v,$k) {
+		if ($favFilter == ForumManager::FAVOURITE) {
+			$childForums = array_filter($childForums, function($v, $k) {
 				return in_array($v,$this->favouriteForumIds);
 			}, ARRAY_FILTER_USE_BOTH);
-		} else if($favFilter==ForumManager::NON_FAVOURITE){
-			$childForums=array_filter($childForums, function($v,$k) {
+		} elseif ($favFilter==ForumManager::NON_FAVOURITE) {
+			$childForums = array_filter($childForums, function($v,$k) {
 				return !in_array($v,$this->favouriteForumIds);
 			}, ARRAY_FILTER_USE_BOTH);
 		}
@@ -360,10 +360,9 @@ class ForumManager
 			return false;
 		}
 
-		if($favFilter==ForumManager::FAVOURITE || $favFilter==ForumManager::NON_FAVOURITE || $this->currentForum==2){
+		if ($favFilter==ForumManager::FAVOURITE || $favFilter==ForumManager::NON_FAVOURITE || $this->currentForum == 2) {
 			$this->sortGameForums($childForums);
 		}
-
 
 		$tableOpen = false;
 		$lastType = 'f';
@@ -373,13 +372,19 @@ class ForumManager
 				echo "\t\t\t</div>\n\t\t</div>\n";
 			}
 			if (!$tableOpen) {
-				?>
+?>
 <div class="tableDiv">
-	<?if($this->forums[$childID]->forumType == 'c'){?>
+<?php
+				if ($this->forums[$childID]->forumType == 'c') {
+?>
 		<div class="groupTopper groupTopperLeft"><h2 class="trapezoid redTrapezoid"><?$this->addForumIcon($childID)?><?=$this->forums[$childID]->title?></h2></div>
-	<?}else{?>
+<?php
+				} else {
+?>
 		<div class="groupTopper"><h2 class="trapezoid redTrapezoid"> Subforums</h2></div>
-	<?}?>
+<?php
+				}
+?>
     <div class="tr headerTR headerbar hbDark">
         <div class="td icon">&nbsp;</div>
         <div class="td name">Forum</div>
@@ -388,31 +393,30 @@ class ForumManager
         <div class="td lastPost">Last Post</div>
     </div>
     <div class="sudoTable forumList">
-        <?
-			$tableOpen = true;
-		}
-		if ($this->forums[$childID]->forumType == 'f') {
-			$this->displayForumRow($childID);
-		} elseif (is_array($this->forums[$childID]->children)) {
-			$rolledUpChildren=$this->forums[$childID]->children;
-			if($childID==2){ //games forums
-				$this->sortGameForums($rolledUpChildren);
+<?php
+				$tableOpen = true;
 			}
+			if ($this->forums[$childID]->forumType == 'f') {
+				$this->displayForumRow($childID);
+			} elseif (is_array($this->forums[$childID]->children)) {
+				$rolledUpChildren=$this->forums[$childID]->children;
+				if ($childID == 2) { //games forums
+					$this->sortGameForums($rolledUpChildren);
+				}
 
-			foreach ($rolledUpChildren as $cChildID) {
-				$this->displayForumRow($cChildID);
+				foreach ($rolledUpChildren as $cChildID) {
+					$this->displayForumRow($cChildID);
+				}
 			}
+			$lastType = $this->forums[$childID]->forumType;
 		}
-		$lastType = $this->forums[$childID]->forumType;
+		echo "\t\t\t</div>\n\t\t</div>\n";
 	}
-	echo "\t\t\t</div>\n\t\t</div>\n";
-}
 
-public function displayForumRow($forumID)
-{
-	$forum = $this->forums[$forumID];
-	$newPosts = $this->newPosts($forumID)
-	?>
+	public function displayForumRow($forumID) {
+		$forum = $this->forums[$forumID];
+		$newPosts = $this->newPosts($forumID)
+?>
         <div class="tr<?= $newPosts ? '' : ' noPosts' ?><?= ' fid'.$forumID?><?= ($this->isFavGame($forumID)?' favGame':'')?>">
             <div class="td icon">
 				<a href="/forums/<?= $forum->forumID ?>/"><div class="forumIcon<?= $newPosts ? ' newPosts' : '' ?>" title="<?= $newPosts ? 'New' : 'No new' ?> posts in forum" alt="<?= $newPosts ? 'New' : 'No new' ?> posts in forum"></div></a>

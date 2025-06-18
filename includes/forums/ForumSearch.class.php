@@ -224,9 +224,9 @@
 				if (!$first) echo "					<hr>\n";
 				else $first = false;
 
-				$newPosts = $result["lastPostID"] > $this->forumManager->getForumProperty($result["forumID"], 'markedRead') && $result["lastPostID"] > $result["lastRead"]?true:false;
+				$newPosts = $this->forumManager->newPosts($result["forumID"]);
 
-				ForumSearch::displayLatestPostResultHP($result,$newPosts, $this->forumManager->isFavGame($result["forumID"]));
+				ForumSearch::displayLatestPostResultHP($result, $newPosts, $this->forumManager->isFavGame($result["forumID"]));
 			}
 		}
 
@@ -242,8 +242,8 @@
 		}
 
 
-		public function displayLatestHPWidget($header,$footer,$sectionclass,$headerbarclass=''){
-			if($this->getResultsCount()>0){
+		public function displayLatestHPWidget($header, $footer, $sectionclass, $headerbarclass = '') {
+			if ($this->getResultsCount() > 0){
 				echo '<h3 class="headerbar '.$headerbarclass.'">';
 				echo $header;
 				echo '</h3><div class="widgetBody widget-'.$sectionclass.'">';
