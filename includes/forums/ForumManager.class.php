@@ -501,10 +501,6 @@ public function displayForumRow($forumID)
 			}
 		}
 
-		if ($forum->forumID == 9556) {
-			error_log(($forum->lastPost->postID > $forum->getMarkedRead()) ? 'true' : 'false');
-		}
-
 		if ($forum->newPosts || ($forum->anyRead == null && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
 			return true;
 		} else {
