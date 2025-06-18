@@ -99,15 +99,28 @@ class ForumManager
 		}
 		if ($loggedIn && in_array($forumID, [0, 2])) {
 			$userGameForums = $mysql->query(
-				"SELECT
-					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
+				"WITH RECURSIVE forum_with_children (forumID) AS (
+					SELECT
+						forumID
+					FROM
+						forums
+					WHERE
+						forumID = {$this->currentForum}
+					UNION
+					SELECT
+						f.forumID
+					FROM
+						forums f
+					INNER JOIN forum_with_children c ON f.parentID = c.forumID
+				) SELECT
+					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
 				FROM forums f
+				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				INNER JOIN games ON f.gameID = games.gameID
 				INNER JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} AND players.approved = 1
 				LEFT JOIN (
 					SELECT parentID forumID, COUNT(forumID) childCount
-					FROM forums
-					GROUP BY parentID
+					FROM forums GROUP BY (parentID)
 				) cc ON cc.forumID = f.forumID
 				LEFT JOIN (
 					SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
@@ -125,15 +138,28 @@ class ForumManager
 			}
 
 			$favoriteGameForums = $mysql->query(
-				"SELECT
-					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
+				"WITH RECURSIVE forum_with_children (forumID) AS (
+					SELECT
+						forumID
+					FROM
+						forums
+					WHERE
+						forumID = {$this->currentForum}
+					UNION
+					SELECT
+						f.forumID
+					FROM
+						forums f
+					INNER JOIN forum_with_children c ON f.parentID = c.forumID
+				) SELECT
+					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
 				FROM forums f
+				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				INNER JOIN games ON f.gameID = games.gameID
 				INNER JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID}
 				LEFT JOIN (
 					SELECT parentID forumID, COUNT(forumID) childCount
-					FROM forums
-					GROUP BY parentID
+					FROM forums GROUP BY (parentID)
 				) cc ON cc.forumID = f.forumID
 				LEFT JOIN (
 					SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
@@ -142,6 +168,7 @@ class ForumManager
 				) t ON f.forumID = t.forumID
 				LEFT JOIN posts lp ON t.lastPostID = lp.postID
 				LEFT JOIN users u ON lp.authorID = u.userID
+				WHERE games.retired IS NULL
 				ORDER BY depth"
 			);
 			foreach ($favoriteGameForums as $forum) {
