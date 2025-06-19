@@ -237,7 +237,7 @@ class games
 
 		$errors = [];
 		$details['title'] = sanitizeString($_POST['title']);
-		if (strlen($details['title']) == 0) {
+		if (strlen($details['title']) == 0 || strlen($details['title']) > 100) {
 			$errors[] = 'invalidTitle';
 		}
 		$details['system'] = $systems->verifySystem($_POST['system']) ? $_POST['system'] : null;
