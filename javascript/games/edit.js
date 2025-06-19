@@ -105,9 +105,9 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 		};
 
 		$scope.validateTitle = function () {
-			if ($scope.game.title.length > 0 && $scope.errors.indexOf('invalidTitle') >= 0) {
+			if ($scope.game.title.length > 0 && $scope.game.title.length <= 100 && $scope.errors.indexOf('invalidTitle') >= 0) {
 				removeEle($scope.errors, 'invalidTitle');
-			} else if ($scope.game.title.length === 0) {
+			} else if ($scope.game.title.length === 0 || $scope.game.title.length > 100) {
 				$scope.errors.push('invalidTitle');
 			}
 		};
