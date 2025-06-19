@@ -99,15 +99,28 @@ class ForumManager
 		}
 		if ($loggedIn && in_array($forumID, [0, 2])) {
 			$userGameForums = $mysql->query(
-				"SELECT
-					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
+				"WITH RECURSIVE forum_with_children (forumID) AS (
+					SELECT
+						forumID
+					FROM
+						forums
+					WHERE
+						forumID = {$this->currentForum}
+					UNION
+					SELECT
+						f.forumID
+					FROM
+						forums f
+					INNER JOIN forum_with_children c ON f.parentID = c.forumID
+				) SELECT
+					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
 				FROM forums f
+				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				INNER JOIN games ON f.gameID = games.gameID
 				INNER JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} AND players.approved = 1
 				LEFT JOIN (
 					SELECT parentID forumID, COUNT(forumID) childCount
-					FROM forums
-					GROUP BY parentID
+					FROM forums GROUP BY (parentID)
 				) cc ON cc.forumID = f.forumID
 				LEFT JOIN (
 					SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
@@ -125,15 +138,28 @@ class ForumManager
 			}
 
 			$favoriteGameForums = $mysql->query(
-				"SELECT
-					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
+				"WITH RECURSIVE forum_with_children (forumID) AS (
+					SELECT
+						forumID
+					FROM
+						forums
+					WHERE
+						forumID = {$this->currentForum}
+					UNION
+					SELECT
+						f.forumID
+					FROM
+						forums f
+					INNER JOIN forum_with_children c ON f.parentID = c.forumID
+				) SELECT
+					f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
 				FROM forums f
+				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				INNER JOIN games ON f.gameID = games.gameID
 				INNER JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID}
 				LEFT JOIN (
 					SELECT parentID forumID, COUNT(forumID) childCount
-					FROM forums
-					GROUP BY parentID
+					FROM forums GROUP BY (parentID)
 				) cc ON cc.forumID = f.forumID
 				LEFT JOIN (
 					SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
@@ -142,6 +168,7 @@ class ForumManager
 				) t ON f.forumID = t.forumID
 				LEFT JOIN posts lp ON t.lastPostID = lp.postID
 				LEFT JOIN users u ON lp.authorID = u.userID
+				WHERE games.retired IS NULL
 				ORDER BY depth"
 			);
 			foreach ($favoriteGameForums as $forum) {
@@ -159,7 +186,7 @@ class ForumManager
 			if (!($options & $this::NO_NEWPOSTS)) {
 				$lastRead = $mysql->query(
 					"SELECT
-						f.forumID, f.parentID, SUM(rdt.lastRead AND t.lastPostID > IFNULL(rdt.lastRead, 0)) numUnread, rdf.markedRead
+						f.forumID, f.parentID, IF(SUM(rdt.lastRead) IS NOT NULL, 1, 0) anyRead, SUM(rdt.lastRead AND t.lastPostID > IFNULL(rdt.lastRead, 0) AND t.lastPostID > IFNULL(rdf.markedRead, 0)) numUnread, rdf.markedRead
 					FROM forums f
 					LEFT JOIN forums_readData_forums rdf ON f.forumID = rdf.forumID AND rdf.userID = {$currentUser->userID}
 					LEFT JOIN threads t ON f.forumID = t.forumID
@@ -180,6 +207,7 @@ class ForumManager
 					}
 
 					$lastRead[$key] = [
+						'anyRead' => !!$value[0]['anyRead'],
 						'newPosts' => !!$value[0]['numUnread'],
 						'markedRead' => $markedRead
 					];
@@ -343,14 +371,14 @@ class ForumManager
 	{
 		global $loggedIn, $currentUser;
 
-		$childForums=$this->forums[$this->currentForum]->children;
+		$childForums = $this->forums[$this->currentForum]->children;
 
-		if($favFilter==ForumManager::FAVOURITE){
-			$childForums=array_filter($childForums, function($v,$k) {
+		if ($favFilter == ForumManager::FAVOURITE) {
+			$childForums = array_filter($childForums, function($v, $k) {
 				return in_array($v,$this->favouriteForumIds);
 			}, ARRAY_FILTER_USE_BOTH);
-		} else if($favFilter==ForumManager::NON_FAVOURITE){
-			$childForums=array_filter($childForums, function($v,$k) {
+		} elseif ($favFilter==ForumManager::NON_FAVOURITE) {
+			$childForums = array_filter($childForums, function($v,$k) {
 				return !in_array($v,$this->favouriteForumIds);
 			}, ARRAY_FILTER_USE_BOTH);
 		}
@@ -359,10 +387,9 @@ class ForumManager
 			return false;
 		}
 
-		if($favFilter==ForumManager::FAVOURITE || $favFilter==ForumManager::NON_FAVOURITE || $this->currentForum==2){
+		if ($favFilter==ForumManager::FAVOURITE || $favFilter==ForumManager::NON_FAVOURITE || $this->currentForum == 2) {
 			$this->sortGameForums($childForums);
 		}
-
 
 		$tableOpen = false;
 		$lastType = 'f';
@@ -372,13 +399,19 @@ class ForumManager
 				echo "\t\t\t</div>\n\t\t</div>\n";
 			}
 			if (!$tableOpen) {
-				?>
+?>
 <div class="tableDiv">
-	<?if($this->forums[$childID]->forumType == 'c'){?>
+<?php
+				if ($this->forums[$childID]->forumType == 'c') {
+?>
 		<div class="groupTopper groupTopperLeft"><h2 class="trapezoid redTrapezoid"><?$this->addForumIcon($childID)?><?=$this->forums[$childID]->title?></h2></div>
-	<?}else{?>
+<?php
+				} else {
+?>
 		<div class="groupTopper"><h2 class="trapezoid redTrapezoid"> Subforums</h2></div>
-	<?}?>
+<?php
+				}
+?>
     <div class="tr headerTR headerbar hbDark">
         <div class="td icon">&nbsp;</div>
         <div class="td name">Forum</div>
@@ -387,31 +420,30 @@ class ForumManager
         <div class="td lastPost">Last Post</div>
     </div>
     <div class="sudoTable forumList">
-        <?
-			$tableOpen = true;
-		}
-		if ($this->forums[$childID]->forumType == 'f') {
-			$this->displayForumRow($childID);
-		} elseif (is_array($this->forums[$childID]->children)) {
-			$rolledUpChildren=$this->forums[$childID]->children;
-			if($childID==2){ //games forums
-				$this->sortGameForums($rolledUpChildren);
+<?php
+				$tableOpen = true;
 			}
+			if ($this->forums[$childID]->forumType == 'f') {
+				$this->displayForumRow($childID);
+			} elseif (is_array($this->forums[$childID]->children)) {
+				$rolledUpChildren=$this->forums[$childID]->children;
+				if ($childID == 2) { //games forums
+					$this->sortGameForums($rolledUpChildren);
+				}
 
-			foreach ($rolledUpChildren as $cChildID) {
-				$this->displayForumRow($cChildID);
+				foreach ($rolledUpChildren as $cChildID) {
+					$this->displayForumRow($cChildID);
+				}
 			}
+			$lastType = $this->forums[$childID]->forumType;
 		}
-		$lastType = $this->forums[$childID]->forumType;
+		echo "\t\t\t</div>\n\t\t</div>\n";
 	}
-	echo "\t\t\t</div>\n\t\t</div>\n";
-}
 
-public function displayForumRow($forumID)
-{
-	$forum = $this->forums[$forumID];
-	$newPosts = $this->newPosts($forumID)
-	?>
+	public function displayForumRow($forumID) {
+		$forum = $this->forums[$forumID];
+		$newPosts = $this->newPosts($forumID)
+?>
         <div class="tr<?= $newPosts ? '' : ' noPosts' ?><?= ' fid'.$forumID?><?= ($this->isFavGame($forumID)?' favGame':'')?>">
             <div class="td icon">
 				<a href="/forums/<?= $forum->forumID ?>/"><div class="forumIcon<?= $newPosts ? ' newPosts' : '' ?>" title="<?= $newPosts ? 'New' : 'No new' ?> posts in forum" alt="<?= $newPosts ? 'New' : 'No new' ?> posts in forum"></div></a>
@@ -500,7 +532,7 @@ public function displayForumRow($forumID)
 			}
 		}
 
-		if ($forum->newPosts || ($forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
+		if ($forum->newPosts || ($forum->anyRead == null && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
 			return true;
 		} else {
 			return false;

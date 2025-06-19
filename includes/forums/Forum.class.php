@@ -14,6 +14,7 @@
 		protected $postCount;
 		protected $lastPost = null;
 		protected $markedRead = 0;
+		protected $anyRead = false;
 		protected $newPosts = false;
 
 		protected $permissions = array();
@@ -45,8 +46,8 @@
 				$this->$key = $value;
 			elseif ($key == 'forumType' && in_array(strtolower($value), array('f', 'c')))
 				$this->forumType = strtolower($value);
-			elseif ($key == 'newPosts')
-				$this->newPosts = $value ? true : false;
+			elseif (in_array($key, ['newPosts', 'anyRead']))
+				$this->$key = $value ? true : false;
 			elseif ($key == 'gameID' && (intval($value) || $value == null))
 				$this->gameID = $value != null ? intval($value) : null;
 		}
