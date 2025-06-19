@@ -366,7 +366,7 @@ DROP TABLE IF EXISTS `forums_groups`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `forums_groups` (
   `groupID` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `status` tinyint NOT NULL DEFAULT '1',
   `ownerID` int NOT NULL,
   `gameID` int DEFAULT NULL,
