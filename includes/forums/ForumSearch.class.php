@@ -234,7 +234,7 @@
 			<ul class="ft_search">
 			<?
 			if (sizeof($this->results)) { foreach ($this->results as $result) {
-				$forumIcon = $result["lastPostID"] > $this->forumManager->getForumProperty($result["forumID"], 'markedRead') && $result["lastPostID"] > $result["lastRead"] ? 'new' : 'old';
+				$forumIcon = $this->forumManager->newPosts($result["forumID"]) ? 'new' : 'old';
 				$postTitle = $result["title"];
 				if (substr($postTitle, 0, 4) == 'Re: ') {
 					$postTitle = substr($postTitle,4);
@@ -267,7 +267,7 @@
 			<div class="sudoTable forumList">
 <?
 			if (sizeof($this->results)) { foreach ($this->results as $result) {
-				$forumIcon = $result["lastPostID"] > $this->forumManager->getForumProperty($result["forumID"], 'markedRead') && $result["lastPostID"] > $result["lastRead"]?'new':'old';
+				$forumIcon = $this->forumManager->newPosts($result["forumID"]) ? 'new' : 'old';
 ?>
 				<div class="tr">
 					<div class="td icon"><a href="/forums/thread/<?=$result["threadID"]?>/?view=newPost#newPost"><div class="forumIcon<?=$result["publicPosting"]?" publicPosting":""?><?=$forumIcon == 'new'?' newPosts':''?><?=$this->forumManager->isFavGame($result["forumID"])?' favGame':''?>" title="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread" alt="<?=$forumIcon == 'new'?'New':'No new'?> posts in thread"></div></a></div>
