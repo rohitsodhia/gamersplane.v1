@@ -148,7 +148,7 @@
 				) DELETE
 					f, c, t, p, po, popt, pv, pge, pgr, pu, rdf, rdt, r, d
 				FROM forums f
-				INNER JOIN forums_with_children c ON f.forumID = c.forumID
+				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				LEFT JOIN threads t ON c.forumID = t.forumID
 				LEFT JOIN posts p ON t.threadID = p.threadID
 				LEFT JOIN forums_polls po ON t.threadID = po.threadID
