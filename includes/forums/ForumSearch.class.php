@@ -63,6 +63,8 @@
 					"SELECT t.threadID
 					FROM threads t
 					INNER JOIN posts p ON t.lastPostID = p.postID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK"
 				)->rowCount();
 				$this->results = $mysql->query(
@@ -73,6 +75,8 @@
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					INNER JOIN posts lp ON t.lastPostID = lp.postID
 					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK
 					ORDER BY lp.datePosted
 					DESC LIMIT {$start}, {$limit}"
@@ -106,6 +110,8 @@
 					FROM threads t
 					INNER JOIN posts p ON t.lastPostID = p.postID
 					INNER JOIN forums f ON t.forumID = f.forumID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
 				)->rowCount();
 				$this->results = $mysql->query(
@@ -116,6 +122,8 @@
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					INNER JOIN posts lp ON t.lastPostID = lp.postID
 					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL
 					ORDER BY lp.datePosted
 					DESC LIMIT {$start}, {$limit}"
@@ -127,6 +135,8 @@
 					INNER JOIN posts p ON t.lastPostID = p.postID
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
 				)->rowCount();
 				$this->results = $mysql->query(
@@ -138,6 +148,8 @@
 					INNER JOIN posts lp ON t.lastPostID = lp.postID
 					INNER JOIN users lpa ON lp.authorID = lpa.userID
 					INNER JOIN forums_permissions_general as fpg ON f.forumID = fpg.forumID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE fpg.read=1 AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL
 					ORDER BY lp.datePosted
 					DESC LIMIT {$start}, {$limit}"
@@ -147,6 +159,8 @@
 					"SELECT t.threadID
 					FROM threads t
 					INNER JOIN posts p ON t.lastPostID = p.postID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK "
 				)->rowCount();
 				$this->results = $mysql->query(
@@ -157,6 +171,8 @@
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					INNER JOIN posts lp ON t.lastPostID = lp.postID
 					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NULL
 					ORDER BY lp.datePosted
 					DESC LIMIT {$start}, {$limit}"
@@ -165,7 +181,10 @@
 				$rowCountStmt=$mysql->prepare(
 					"SELECT COUNT(*)
 					FROM threads t
-					INNER JOIN posts p ON t.threadID = p.threadID INNER JOIN forums ON t.forumID = forums.forumID WHERE t.forumID IN ({$implodedAccessableForums}) AND MATCH (p.messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND forums.gameID={$this->gameID}" : ""));
+					INNER JOIN posts p ON t.threadID = p.threadID INNER JOIN forums ON t.forumID = forums.forumID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
+					WHERE t.forumID IN ({$implodedAccessableForums}) AND MATCH (p.messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND forums.gameID={$this->gameID}" : ""));
 				$rowCountStmt->execute([$this->searchText]);
 				$this->resultsCount = $rowCountStmt->fetchColumn();
 				$resultsStmt = $mysql->prepare(
@@ -175,6 +194,8 @@
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.threadID = fp.threadID
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
 					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND MATCH (messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND f.gameID = {$this->gameID} " : "")."
 					ORDER BY fp.datePosted
