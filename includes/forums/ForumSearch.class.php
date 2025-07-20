@@ -83,8 +83,10 @@
 					"SELECT t.threadID
 					FROM threads t
 					INNER JOIN posts p ON t.lastPostID = p.postID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)"
-					)->rowCount();
+				)->rowCount();
 				$this->results = $mysql->query(
 					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
 					FROM threads t
@@ -93,6 +95,7 @@
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					INNER JOIN posts lp ON t.lastPostID = lp.postID
 					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
 					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)
 					ORDER BY lp.datePosted
