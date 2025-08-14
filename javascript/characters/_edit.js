@@ -116,7 +116,11 @@ $(function () {
 		e.preventDefault();
 	});
 
-	$('#submitDiv button').click(function (e) {
+	let $submitBtns = $('#submitDiv button')
+	$submitBtns.click(function (e) {
+		let button = e.target;
+		button.innerHTML = 'Saving...';
+
 		$('.placeholder').each(function () {
 			if ($(this).val() == $(this).data('placeholder')) $(this).val('');
 		});
@@ -145,7 +149,10 @@ controllers.controller('editCharacter', ['$scope', 'CharactersService', function
 	$scope.toggleNotes = function ($event) {
 		$($event.target).siblings('textarea').slideToggle();
 	};
+
+	let $submitBtns = $('#submitDiv button')
 	$scope.save = function ($event) {
+		$submitBtns.attr('disabled', 'disabled');
 		CharactersService.save(characterID, $scope.character).then(function (data) {
 			if (data.saved) {
 				if ($($event.originalEvent.submitter).hasClass('dontExit')) {
