@@ -93,10 +93,10 @@
 			if (isset($_POST['search']) && is_array($_POST['search'])) {
 				foreach($_POST['search'] as $searchSystem) {
 					if ($systems->verifySystem($searchSystem)) {
-						$searchSystems[] = $searchSystem;
+						$searchSystems[] = "'{$searchSystem}'";
 					}
 				}
-				$searchSystems = ' AND system IN (' . implode(', ', $searchSystems) . ')';
+				$searchSystems = ' AND `system` IN (' . implode(', ', $searchSystems) . ')';
 			}
 			$getCharacters = $mysql->query("SELECT characters.characterID, characters.label, characters.userID, users.username, characters.system FROM characters INNER JOIN users ON characters.userID = users.userID WHERE inLibrary = TRUE" . ($searchSystems != [] ? $searchSystems : null));
 			$characters = [];
