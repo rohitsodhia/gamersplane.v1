@@ -224,16 +224,19 @@ class ForumManager
 				array_walk($lastRead, function (&$value, $key) {
 					$value = $value[0];
 				});
-				}
+			}
+
 			foreach ($this->forumsData as $forumID => $forumData) {
 				foreach ($lastRead[$forumID] as $key => $value) {
 					$this->forumsData[$forumID][$key] = $value;
 				}
 				$this->spawnForum($forumID);
 			}
+
 			foreach (array_keys($this->forumsData) as $forumID) {
 				$this->forums[$forumID]->sortChildren();
 			}
+
 			if ($options & $this::ADMIN_FORUMS) {
 				$this->pruneByPermissions(0, 'admin');
 			} else {
