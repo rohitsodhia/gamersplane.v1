@@ -186,29 +186,27 @@
 					DESC LIMIT {$start}, {$limit}");
 				$results->execute([$this->searchText]);
 				$this->results = $results->fetchAll();
+			}
 
-				$forums = $mysql->query(
-					"WITH RECURSIVE forums_with_parents (forumID, parentID, depth) AS (
-						SELECT forumID, parentID, depth FROM forums WHERE forumID IN ({$implodedAccessableForums})
-						UNION
-						SELECT f.forumID, f.parentID, f.depth FROM forums f INNER JOIN forums_with_parents p ON f.forumID = p.parentID
-					) SELECT forumID, parentID FROM forums_with_parents ORDER BY depth"
-				);
-				$heritages = [];
-				while (list($forumID, $parentID) = $forums->fetch(PDO::FETCH_NUM)) {
-					$heritages[$forumID] = [];
-					if (array_key_exists($parentID, $heritages)) {
-						$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
-					} else {
-						$heritages[$forumID] = [$parentID];
-					}
+			$forums = $mysql->query(
+				"WITH RECURSIVE forums_with_parents (forumID, parentID, depth) AS (
+					SELECT forumID, parentID, depth FROM forums WHERE forumID IN ({$implodedAccessableForums})
+					UNION
+					SELECT f.forumID, f.parentID, f.depth FROM forums f INNER JOIN forums_with_parents p ON f.forumID = p.parentID
+				) SELECT forumID, parentID FROM forums_with_parents ORDER BY depth"
+			);
+			$heritages = [];
+			while (list($forumID, $parentID) = $forums->fetch(PDO::FETCH_NUM)) {
+				$heritages[$forumID] = [];
+				if (array_key_exists($parentID, $heritages)) {
+					$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
+				} else {
+					$heritages[$forumID] = $forumID > 0 ? [$parentID] : [0];
 				}
+			}
 
-				$this->results = [];
-				foreach ($resultsStmt->fetchAll() as $result) {
-					$result['heritage'] = $heritages[$result["forumID"]];
-					$this->results[] = $result;
-				}
+			foreach ($this->results as $key => $result) {
+				$this->results[$key]["heritage"] = $heritages[$result["forumID"]];
 			}
 		}
 
