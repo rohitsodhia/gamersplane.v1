@@ -66,7 +66,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -88,7 +88,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND t.lastPostID > IFNULL(rdt.lastRead,0) AND t.lastPostID >IFNULL(frf.markedRead,0)"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -110,7 +110,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -132,7 +132,7 @@
 					WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -153,7 +153,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK "
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -175,7 +175,7 @@
 				$this->resultsCount = $resultsCount->fetchColumn();
 				$results = $mysql->prepare(
 					"SELECT
-						t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, fp.postID lastPostID, fp.authorID lp_authorID, fpa.username lp_username, fp.datePosted lp_datePosted,fp.messageFullText
+						t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, fp.postID lastPostID, fp.authorID lp_authorID, fpa.username lp_username, fp.datePosted lp_datePosted,fp.messageFullText, rdt.lastRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.threadID = fp.threadID
