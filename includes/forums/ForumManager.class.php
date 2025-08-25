@@ -528,7 +528,6 @@ class ForumManager
 
 		$forum = $this->forums[$forumID];
 
-
 		foreach ($this->getAllChildren($forumID) as $childID) {
 			if ($this->newPosts($childID)) {
 				return true;

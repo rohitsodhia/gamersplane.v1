@@ -339,7 +339,6 @@
 <?
 		}
 
-
 		public function displayLatestHPWidget($header, $footer, $sectionclass, $headerbarclass = '') {
 			if ($this->getResultsCount() > 0){
 				echo '<h3 class="headerbar '.$headerbarclass.'">';
@@ -355,14 +354,14 @@
 			return false;
 		}
 
-		public function searchTitle(){
+		public function searchTitle() {
 			if ($this->search == 'latestGamePosts') {
 				return 'Latest Game Posts';
 			} elseif ($this->search == 'latestPublicPosts') {
 				return 'Lastest Public Game Posts';
 			} elseif ($this->search == 'text') {
 				return 'Search Results';
-			} else if ($this->search == 'unreadPosts'){
+			} else if ($this->search == 'unreadPosts') {
 				return 'Unread Posts';
 			}
 
@@ -370,28 +369,28 @@
 		}
 
 
-		public function displayHeader(){
+		public function displayHeader() {
 			global $mysql;
 			if ($this->search == 'latestGamePosts') {
 				echo '<h1 class="headerbar"><i class="ra ra-d6"></i> Latest Game Posts</h1>';
 			} elseif ($this->search == 'latestPublicPosts') {
 				echo '<h1 class="headerbar"><i class="ra ra-horn-call"></i> Lastest Public Game Posts</h1>';
 			} elseif ($this->search == 'text') {
-				if($this->gameID){
-					$gameTitle = $mysql->query("SELECT title FROM forums WHERE gameID = {$this->gameID} AND parentID=2")->fetchColumn();
-					echo '<span class="searchTitle"><i class="ra ra-telescope"></i> '.$gameTitle.'</span>';
+				if ($this->gameID) {
+					$gameTitle = $mysql->query("SELECT title FROM forums WHERE gameID = {$this->gameID} AND parentID = 2")->fetchColumn();
+					echo '<span class="searchTitle"><i class="ra ra-telescope"></i> ' . $gameTitle . '</span>';
 				} else {
 					echo '<span class="searchTitle"><i class="ra ra-telescope"></i> Search</span>';
 				}
-			} else if ($this->search == 'unreadPosts'){
+			} else if ($this->search == 'unreadPosts') {
 				echo '<h1 class="headerbar"><i class="ra ra-speech-bubble"></i> Unread Posts</h1>';
 			} else {
 				echo '<h1 class="headerbar"><i class="ra ra-speech-bubble"></i> Latest Posts</h1>';
 			}
 		}
 
-		public function displayPagination(){
-			if($this->search == 'text'){
+		public function displayPagination() {
+			if ($this->search == 'text') {
 				ForumView::displayPagination($this->getResultsCount(), $this->getPage(), array('search' => $this->search, 'q' => $this->searchText, 'gameID' => $this->gameID));
 			} else {
 				ForumView::displayPagination($this->getResultsCount(), $this->getPage(), array('search' => $this->search));
