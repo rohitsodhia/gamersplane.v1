@@ -534,7 +534,7 @@ class ForumManager
 			}
 		}
 
-		if ($forum->newPosts || ($forum->anyRead == null && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
+		if ($forum->newPosts || (!$forum->anyRead && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
 			return true;
 		} else {
 			return false;
