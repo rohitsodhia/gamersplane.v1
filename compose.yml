@@ -1,57 +1,67 @@
 volumes:
-  # logs:
-  #   driver: local
-  mysql_db:
-    driver: local
-    name: gpv1_mysql_db
+    # logs:
+    #   driver: local
+    mysql_db:
+        driver: local
+        name: gpv1_mysql_db
 
 services:
-  # memcached:
-  #   image: memcached:alpine
-  #   container_name: gamersplane-memcached
+    # memcached:
+    #   image: memcached:alpine
+    #   container_name: gamersplane-memcached
 
-  proxy:
-    build:
-      context: ./docker/apache
-      dockerfile: Dockerfile
-    container_name: gpv1-proxy
-    ports:
-      - "127.0.0.1:80:80"
-    volumes:
-      - .:/var/www
-      - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./docker/apache/extra:/usr/local/apache2/conf/extra
-      - ./docker/apache/vhosts/vhosts.${ENVIRONMENT}.conf:/usr/local/apache2/conf/vhosts.conf
-      - ./logs/proxy:/var/log/
-    depends_on:
-      - api
+    proxy:
+        build:
+            context: ./docker/apache
+            dockerfile: Dockerfile
+        container_name: gpv1-proxy
+        ports:
+            - "127.0.0.1:80:80"
+        volumes:
+            - .:/var/www
+            - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+            - ./docker/apache/extra:/usr/local/apache2/conf/extra
+            - ./docker/apache/vhosts/vhosts.${ENVIRONMENT}.conf:/usr/local/apache2/conf/vhosts.conf
+            - ./logs/proxy:/var/log/
+        depends_on:
+            - api
+        networks:
+            - gamersplane_network
 
-  api:
-    build:
-      context: ./
-      dockerfile: docker/Dockerfile-php
-    container_name: gpv1-api
-    volumes:
-      - ./:/var/www
-      - ./logs/api:/dev/log
-    depends_on:
-      - mysql
+    api:
+        build:
+            context: ./
+            dockerfile: docker/Dockerfile-php
+        container_name: gpv1-api
+        volumes:
+            - ./:/var/www
+            - ./logs/api:/dev/log
+        depends_on:
+            - mysql
+        networks:
+            - gamersplane_network
 
-  mysql:
-    build:
-      context: ./docker/mysql
-      dockerfile: Dockerfile
-    command: --long_query_time=${MYSQL_LONG_QUERY_TIME}
-    container_name: gpv1-mysql
-    ports:
-      - "127.0.0.1:3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER=gamersplane
-      - MYSQL_PASSWORD
-    volumes:
-      - ./docker/mysql:/docker-entrypoint-initdb.d
-      - ./logs/mysql:/var/log/mysql/
-      - mysql_db:/var/lib/mysql
+    mysql:
+        build:
+            context: ./docker/mysql
+            dockerfile: Dockerfile
+        command: --long_query_time=${MYSQL_LONG_QUERY_TIME}
+        container_name: gpv1-mysql
+        ports:
+            - "127.0.0.1:3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD
+            - MYSQL_DATABASE
+            - MYSQL_USER=gamersplane
+            - MYSQL_PASSWORD
+        volumes:
+            - ./docker/mysql:/docker-entrypoint-initdb.d
+            - ./logs/mysql:/var/log/mysql/
+            - mysql_db:/var/lib/mysql
+        networks:
+            - gamersplane_network
 
+networks:
+    gamersplane_network:
+        name: gamersplane_network
+        external: true
