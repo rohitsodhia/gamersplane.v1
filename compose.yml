@@ -39,7 +39,9 @@ services:
         depends_on:
             - mysql
         networks:
-            - gamersplane_network
+            gamersplane_network:
+                aliases:
+                    - apiv1
 
     mysql:
         build:
