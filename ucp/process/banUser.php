@@ -1,14 +1,14 @@
 <?php
     global $currentUser;
-    $user = (int) $_GET['userID'];
+    $userID = (int) $_GET['userID'];
     if ($userID == 1) {
         header('Location: /user/1/');
         exit;
     }
 
-    $canBan = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage IN ('banUsers')");
+    $canBan = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage = 'banUsers'");
     if ($canBan->rowCount()) {
-        $mysql->query("UPDATE users SET banned = NOT banned WHERE userID = {$user} LIMIT 1");
+        $mysql->query("UPDATE users SET banned = NOT banned WHERE userID = {$userID} LIMIT 1");
     }
-    header("Location: /user/{$user}/");
+    header("Location: /user/{$userID}/");
 ?>
