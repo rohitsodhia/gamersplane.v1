@@ -1,5 +1,15 @@
-<?	$responsivePage=true;
-	require_once(FILEROOT.'/header.php'); ?>
+<?
+	$responsivePage = true;
+	require_once(FILEROOT.'/header.php');
+
+    global $currentUser;
+	$userID = (int) $pathOptions[0];
+    $canBan = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage = 'banUsers'");
+    if ($canBan->rowCount()) {
+		$allowBan = true;
+		$banState = $mysql->query("SELECT banned FROM users WHERE userID = {$userID} LIMIT 1")->fetchColumn();
+    }
+?>
 	<h1 class="headerbar">{{user.username}}</h1>
 	<div class="flex-row">
 		<div id="leftCol">
@@ -9,6 +19,15 @@
 			</div>
 		</div>
 		<div id="rightCol">
+<?php
+	if ($allowBan) {
+?>
+			<div id="banUser">
+				<a href="/user/process/banUser/?userID={{user.userID}}" class="fancyButton"><?= $banState == 1 ? 'Unban' : 'Ban' ?> User</a>
+			</div>
+<?php
+	}
+?>
 			<div id="userInfo" class="userInfoBox">
 				<h2 class="headerbar hbDark">User Information</h2>
 				<div class="details">
