@@ -4,24 +4,39 @@ $(function () {
 	$('#user').focus();
 
 	if ($('body').hasClass('modal')) {
-		$('#page_login form').append('<input type="hidden" name="modal" value="1">').ajaxForm({
-			beforeSubmit: function () {
-				$('form input[type="text"], form input[type="password"]').each(function () {
-					if ($(this).val().length === 0) {
-						return false;
-					}
-				});
+		$('#page_login form').submit(function (e) {
+			e.preventDefault();
 
-				return true;
-			},
-			success: function (data) {
-				if (data == '1') {
-//					parent.$.colorbox.close();
-					parent.window.location.reload();
-				} else {
-					parent.window.location.href = data;
+			var formDataArray = $(this).serializeArray();
+			var formDataJSON = {};
+			var invalid = false;
+			$(formDataArray).each(function (index, obj) {
+				if (obj.name == 'modal') {
+					return;
 				}
+				if (obj.value == '') {
+					invalid = true;
+				}
+				formDataJSON[obj.name] = obj.value;
+			});
+			if (invalid) {
+				return;
 			}
+			$.ajax({
+				type: 'post',
+				url: $(this).attr('action'),
+				data: JSON.stringify(formDataJSON),
+				contentType: 'application/json',
+				xhrFields: {
+					withCredentials: true
+				},
+				success: function (data) {
+					if (!('success' in data)) {
+						parent.window.location.href = '/login?failed=1';
+					}
+					parent.window.location.reload();
+				}
+			});
 		});
 	}
 });
