@@ -16,7 +16,7 @@ services:
             dockerfile: Dockerfile
         container_name: gpv1-proxy
         ports:
-            - "127.0.0.1:80:80"
+            - 80:80
         volumes:
             - .:/var/www
             - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
@@ -25,8 +25,6 @@ services:
             - ./logs/proxy:/var/log/
         depends_on:
             - api
-        networks:
-            - gamersplane_network
 
     api:
         build:
@@ -38,10 +36,8 @@ services:
             - ./logs/api:/dev/log
         depends_on:
             - mysql
-        networks:
-            gamersplane_network:
-                aliases:
-                    - apiv1
+        extra_hosts:
+            - host.docker.internal:host-gateway
 
     mysql:
         build:
@@ -50,7 +46,7 @@ services:
         command: --long_query_time=${MYSQL_LONG_QUERY_TIME}
         container_name: gpv1-mysql
         ports:
-            - "127.0.0.1:3306:3306"
+            - 3306:3306
         environment:
             - MYSQL_ROOT_PASSWORD
             - MYSQL_DATABASE
@@ -60,10 +56,3 @@ services:
             - ./docker/mysql:/docker-entrypoint-initdb.d
             - ./logs/mysql:/var/log/mysql/
             - mysql_db:/var/lib/mysql
-        networks:
-            - gamersplane_network
-
-networks:
-    gamersplane_network:
-        name: gamersplane_network
-        external: true
