@@ -133,56 +133,6 @@
 			displayJSON(['allowed' => $pm->rowCount() ? true : false]);
 		}
 
-		public function sendPM() {
-			global $currentUser;
-			$mysql = DB::conn('mysql');
-
-			$recipient = sanitizeString(preg_replace('/[^\w.]/', '', $_POST['username']));
-			$recipient = $mysql->query("SELECT userID, email FROM users WHERE username = '{$recipient}'")->fetch(PDO::FETCH_OBJ);
-			$recipEmail = $recipient->email;
-			$recipient->userID = (int) $recipient->userID;
-			$replyTo = intval($_POST['replyTo']) > 0 ? intval($_POST['replyTo']) : null;
-			if ($currentUser->userID == $recipient->userID) {
-				displayJSON(['mailingSelf' => true]);
-			} else {
-				$history = null;
-				if ($replyTo) {
-					$parent = $mysql->query("SELECT history FROM pms WHERE pmID = {$replyTo} LIMIT 1")->fetch();
-					$history = [$replyTo];
-					if ($parent['history']) {
-						$history = array_merge($history, json_decode($parent['history']));
-					}
-				} else {
-					$history = [];
-				}
-				$addPM = $mysql->prepare("INSERT INTO pms SET recipientID = :recipientID, senderID = :senderID, title = :title, message = :message, datestamp = NOW(), replyTo = :replyTo, history = :history");
-				$addPM->execute([
-					'recipientID' => $recipient->userID,
-					'senderID' => $currentUser->userID,
-					'title' => sanitizeString($_POST['title']),
-					'message' => sanitizeString($_POST['message']),
-					'replyTo' => $replyTo,
-					'history' => json_encode($history)
-				]);
-
-				$sendMail = $mysql->query("SELECT metaValue FROM usermeta WHERE userID = {$recipient->userID} AND metaKey = 'pmMail'")->fetchColumn();
-				if ($sendMail) {
-					ob_start();
-					include('emails/pmEmail.php');
-					$email = ob_get_contents();
-					ob_end_clean();
-
-					$mail = getMailObj();
-					$mail->addAddress($recipEmail);
-					$mail->Subject = "New PM";
-					$mail->msgHTML($email);
-					$mail->send();
-				}
-
-				displayJSON(['sent' => true]);
-			}
-		}
-
 		public function deletePM($pmID) {
 			global $currentUser;
 			$mysql = DB::conn('mysql');
