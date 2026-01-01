@@ -31,7 +31,7 @@
 							from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span>
 						</div>
 						<div class="details" ng-show="box == 'Outbox'">
-							to <span ng-repeat="recipient in pm.recipients"><a ng-href="/user/{{recipient.userID}}/" class="username">{{recipient.username}}</a>{{$last?'':', '}}</span> on <span>{{pm.datestamp}}</span>
+							to <a ng-href="/user/{{pm.recipient.userID}}/" class="username">{{pm.recipient.username}}</a> on <span>{{pm.datestamp}}</span>
 						</div>
 					</div>
 				</div>

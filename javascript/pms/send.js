@@ -1,15 +1,15 @@
 controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 	pathElements = getPathElements();
 
-	$scope.headerTitle = pathElements[1] == 'reply'?'Reply':'Send Private Message';
+	$scope.headerTitle = pathElements[1] == 'reply' ? 'Reply' : 'Send Private Message';
 
 	var userID = null;
-	if ($.urlParam('userID')) 
+	if ($.urlParam('userID'))
 		userID = $.urlParam('userID');
 	$scope.username = '';
 	if (userID != null) {
 		$http.get(API_HOST + '/users/search/', { params: { search: userID, searchBy: 'userID', exact: true } }).success(function (data) {
-			if (isNaN(data.noUsers)) 
+			if (isNaN(data.noUsers))
 				$scope.username = data.users[0].username;
 		});
 	}
@@ -19,7 +19,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 		$http.post(API_HOST + '/pms/view/', { pmID: pathElements[2], includeSelfHistory: true }).success(function (data) {
 			$scope.replyTo = data.pmID;
 			$scope.username = data.sender.username;
-			$scope.title = (data.title.substring(0, 3) == 'Re:'?'':'Re: ') + data.title;
+			$scope.title = (data.title.substring(0, 3) == 'Re:' ? '' : 'Re: ') + data.title;
 			$scope.hasHistory = true;
 			$scope.history = data.history;
 		});
@@ -28,20 +28,20 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 	$scope.message = '';
 	$scope.formError = { 'validUser': true, 'validTitle': true, 'validMessage': true };
 	$scope.checkUser = function () {
-		if ($scope.username.length >= 3) 
+		if ($scope.username.length >= 3)
 			$http.get(API_HOST + '/users/search/', { params: { search: $scope.username, exact: true } }).success(function (data) {
-				if (!isNaN(data.noUsers)) 
+				if (!isNaN(data.noUsers))
 					$scope.formError.validUser = false;
-				else 
+				else
 					$scope.formError.validUser = true;
 			});
-		else 
+		else
 			$scope.formError.validUser = false;
 	};
 	$scope.checkTitle = function () {
-		if ($scope.title.length > 0) 
+		if ($scope.title.length > 0)
 			$scope.formError.validTitle = true;
-		else 
+		else
 			$scope.formError.validTitle = false;
 	}
 	var sendingPM = false;
@@ -51,16 +51,19 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 		sendingPM = true;
 		$scope.checkUser();
 		$scope.checkTitle();
-		if ($scope.message.length > 0) 
+		if ($scope.message.length > 0)
 			$scope.formError.validMessage = true;
-		else 
+		else
 			$scope.formError.validMessage = false;
 		if ($scope.formError.validUser && $scope.formError.validTitle && $scope.formError.validMessage) {
-			$http.post(API_HOST + '/pms/send/', { username: $scope.username, title: $scope.title, message: $scope.message, replyTo: $scope.replyTo }).success(function (data) {
-				if (!isNaN(data.mailingSelf)) 
-					$scope.formError.validUser = false;
-				else if (!isNaN(data.sent)) 
+			$http.post(APIV2_HOST + '/legacy/pms', { username: $scope.username, title: $scope.title, message: $scope.message, replyTo: $scope.replyTo }).then(function (response) {
+				if ("sent" in response.data)
 					window.location.href = '/pms/?sent=1';
+				sendingPM = false;
+			}, function (response) {
+				data = response.data;
+				if ("errors" in data && "messagingSelf" in data.errors)
+					$scope.formError.validUser = false;
 				sendingPM = false;
 			});
 		}
