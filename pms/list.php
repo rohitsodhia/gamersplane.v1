@@ -28,7 +28,7 @@
 					<div class="info">
 						<div class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></div>
 						<div class="details" ng-show="box == 'Inbox'">
-							from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span class="convertTZ" data-parse-format="YYYY-MM-DD HH:mm:ss" data-display-format="MMMM D, YYYY h:mm a">{{pm.datestamp}}</span>
+							from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span>
 						</div>
 						<div class="details" ng-show="box == 'Outbox'">
 							to <span ng-repeat="recipient in pm.recipients"><a ng-href="/user/{{recipient.userID}}/" class="username">{{recipient.username}}</a>{{$last?'':', '}}</span> on <span>{{pm.datestamp}}</span>
