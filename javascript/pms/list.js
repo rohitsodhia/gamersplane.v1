@@ -10,16 +10,17 @@ controllers.controller('pmList', ['$scope', '$http', 'CurrentUser', 'DeletePM', 
 			$scope.pagination.current = parseInt($.urlParam('page'));
 		else
 			$scope.pagination.current = 1;
-		$scope.box = pathElements[1] == 'outbox' ? 'outbox' : 'inbox';
+		$scope.box = pathElements[1] == 'Outbox' ? 'Outbox' : 'Inbox';
 
 		$scope.spinnerPause = true;
 		$scope.getPMs = function () {
 			$scope.spinnerPause = false;
 			$scope.$emit('pageLoading');
-			$http.get(APIV2_HOST + '/legacy/pms', { box: $scope.box, page: $scope.pagination.current }).success(function (data) {
+			$http.get(APIV2_HOST + '/legacy/pms', { params: { box: $scope.box.toLowerCase(), page: $scope.pagination.current } }).success(function (data) {
 				data.pms.forEach(function (value, key) {
 					data.pms[key].datestamp = convertTZ(value.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a')
 				});
+				console.log(data.pms);
 				$scope.pms = data.pms;
 				$scope.pagination.numItems = data.totalCount;
 				$scope.$emit('pageLoading');
