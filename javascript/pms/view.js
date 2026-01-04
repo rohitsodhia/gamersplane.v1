@@ -20,8 +20,7 @@ controllers.controller('pmView', function ($scope, $cookies, $http, $sce, Delete
 
 	$scope.delete = function () {
 		DeletePM(pathElements[2]).success(function (data) {
-			if (!isNaN(data.deleted))
-				window.location.href = '/pms/';
+			window.location.href = '/pms/';
 		});
 	}
 });

@@ -40,8 +40,7 @@ controllers.controller('pmList', ['$scope', '$http', 'CurrentUser', 'DeletePM', 
 
 		$scope.delete = function (pmID) {
 			DeletePM(pmID).success(function (data) {
-				if (!isUndefined(data.deleted))
-					$scope.getPMs();
+				$scope.getPMs();
 			});
 		};
 	});
