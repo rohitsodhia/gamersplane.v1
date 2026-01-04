@@ -16,12 +16,12 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 	$scope.replyTo = null;
 	$scope.hasHistory = false;
 	if (pathElements[1] == 'reply') {
-		$http.post(API_HOST + '/pms/view/', { pmID: pathElements[2], includeSelfHistory: true }).success(function (data) {
-			$scope.replyTo = data.pmID;
-			$scope.username = data.sender.username;
-			$scope.title = (data.title.substring(0, 3) == 'Re:' ? '' : 'Re: ') + data.title;
+		$http.get(APIV2_HOST + '/legacy/pms/' + pathElements[2], { includeSelfHistory: true }).success(function (data) {
+			$scope.replyTo = data.pm.id;
+			$scope.username = data.pm.sender.username;
+			$scope.title = (data.pm.title.substring(0, 3) == 'Re:' ? '' : 'Re: ') + data.pm.title;
 			$scope.hasHistory = true;
-			$scope.history = data.history;
+			$scope.history = data.pm.history;
 		});
 	}
 	$scope.title = '';

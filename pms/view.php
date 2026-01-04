@@ -3,7 +3,7 @@
 		<h1 class="headerbar">Private Message</h1>
 
 		<div id="buttonsDiv">
-			<a href="/pms/reply/{{pmID}}/" class="fancyButton">Reply</a>
+			<a href="/pms/reply/{{id}}/" class="fancyButton">Reply</a>
 			<a class="fancyButton deletePM" ng-click="delete()">Delete</a>
 		</div>
 		<div class="tr">
@@ -12,11 +12,11 @@
 		</div>
 		<div class="tr">
 			<div class="leftCol">From</div>
-			<div class="rightCol"><a href="/user/{{sender.userID}}/" class="username">{{sender.username}}</a></div>
+			<div class="rightCol"><a href="/user/{{sender.id}}/" class="username">{{sender.username}}</a></div>
 		</div>
 		<div class="tr">
 			<div class="leftCol">To</div>
-			<div class="rightCol"><div ng-repeat="rec in recipients"><a href="/user/{{rec.userID}}/" class="username">{{rec.username}}</a></div></div>
+			<div class="rightCol"><a href="/user/{{recipient.id}}/" class="username">{{recipient.username}}</a></div>
 		</div>
 		<div class="tr">
 			<div class="leftCol">When</div>
@@ -26,10 +26,10 @@
 
 		<div id="history" ng-if="hasHistory">
 			<div ng-repeat="pm in history" class="historyPM" ng-class="{'first': $first}">
-				<p ng-if="hasAccess" class="title"><a href="/pms/view/{{pm.pmID}}/">{{pm.title}}</a></p>
+				<p ng-if="hasAccess" class="title"><a href="/pms/view/{{pm.id}}/">{{pm.title}}</a></p>
 				<p ng-if="!hasAccess" class="title">{{pm.title}}</p>
-				<p class="user">from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span></p>
-				<p class="user">to <span ng-repeat="recipient in pm.recipients"><a ng-href="/user/{{recipient.userID}}/" class="username">{{recipient.username}}</a>{{$last?'':', '}}</span></p>
+				<p class="user">from <a href="/user/{{pm.sender.id}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span></p>
+				<p class="user">to <a ng-href="/user/{{recipient.id}}/" class="username">{{recipient.username}}</a></p>
 				<div class="message" ng-bind-html="pm.message"></div>
 			</div>
 		</div>
