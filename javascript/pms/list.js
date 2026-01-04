@@ -19,8 +19,8 @@ controllers.controller('pmList', ['$scope', '$http', 'CurrentUser', 'DeletePM', 
 			$http.get(APIV2_HOST + '/legacy/pms', { params: { box: $scope.box.toLowerCase(), page: $scope.pagination.current } }).success(function (data) {
 				data.pms.forEach(function (value, key) {
 					data.pms[key].datestamp = convertTZ(value.datestamp, 'YYYY-MM-DD HH:mm:ss', 'MMMM D, YYYY h:mm a')
+					data.pms[key].read = $scope.box == 'Inbox' ? value.recipient.read : value.sender.read;
 				});
-				console.log(data.pms);
 				$scope.pms = data.pms;
 				$scope.pagination.numItems = data.totalCount;
 				$scope.$emit('pageLoading');
