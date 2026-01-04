@@ -56,7 +56,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 		else
 			$scope.formError.validMessage = false;
 		if ($scope.formError.validUser && $scope.formError.validTitle && $scope.formError.validMessage) {
-			$http.post(APIV2_HOST + '/legacy/pms', { username: $scope.username, title: $scope.title, message: $scope.message, replyTo: $scope.replyTo }).then(function (response) {
+			$http.post(APIV2_HOST + '/legacy/pms', { username: $scope.username, title: $scope.title, message: $scope.message, reply_to_id: $scope.replyTo }).then(function (response) {
 				if ("sent" in response.data)
 					window.location.href = '/pms/?sent=1';
 				sendingPM = false;
