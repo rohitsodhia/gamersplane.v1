@@ -13,6 +13,11 @@
 
 <?=$homeManager->addTopNotifications()?>
 
+	<div class="alertBox_info">
+		<p>The bug involving posts not correctly being marked as read/unread in the forums is actively being worked on.</p>
+		<p>I've been struggling with the logic to get it fixed. If you're a software engineer and willing to pair code with me resolve it, I'd appreciate it. - Keleth</p>
+	</div>
+
 	<div class="flexWrapper mob-order-3">
 <?=$homeManager->addAnnouncement(3,'ra-gamers-plane','col-1-2 mob-col-1',false,true)?>
 <?=$homeManager->addLookingForAGame('col-1-2 mob-col-1')?>
