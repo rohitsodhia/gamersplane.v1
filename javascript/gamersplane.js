@@ -206,7 +206,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	return factory;
 }]).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
 	this.getHeader = function () {
-		return $http.post(API_HOST + '/users/getHeader/').then(function (data) {
+		return $http.get(APIV2_HOST + '/legacy/users/header').then(function (data) {
 			return data.data;
 		});
 	};
@@ -907,7 +907,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 		$scope.avatar = '';
 		$scope.pmCount = 0;
 		UsersService.getHeader().then(function (data) {
-			$scope.loggedIn = data.success ? true : false;
+			$scope.loggedIn = !!data;
 			if ($scope.loggedIn) {
 				$scope.characters = data.characters;
 				$scope.games = data.games;
