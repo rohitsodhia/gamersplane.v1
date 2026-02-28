@@ -22,7 +22,7 @@ controllers.controller('pmList', ['$scope', '$http', 'CurrentUser', 'DeletePM', 
 					data.pms[key].read = $scope.box == 'Inbox' ? value.recipient.read : value.sender.read;
 				});
 				$scope.pms = data.pms;
-				$scope.pagination.numItems = data.totalCount;
+				$scope.pagination.numItems = data.count;
 				$scope.$emit('pageLoading');
 				$scope.spinnerPause = true;
 			});
