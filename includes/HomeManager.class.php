@@ -170,30 +170,14 @@
 			global $currentUser;
 			$mysql = DB::conn('mysql');
 
-			$results = $mysql->query(
-				"SELECT
-					t.threadID, t.forumID, t.locked, t.sticky, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, IFNULL(rdt.lastRead, 0) lastRead, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted
-				FROM threads t
-				INNER JOIN forums f ON t.forumID = f.forumID
-				INNER JOIN posts fp ON t.firstPostID = fp.postID
-				INNER JOIN users fpa ON fp.authorID = fpa.userID
-				INNER JOIN posts lp ON t.lastPostID = lp.postID
-				INNER JOIN users lpa ON lp.authorID = lpa.userID
-				LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
-				WHERE t.forumID={$forumId}
-				ORDER BY lp.datePosted
-				DESC LIMIT {$showCount}"
-			)->fetchAll();
+			$forumSearch = new ForumSearch('latestPosts');
 
-			$first = true;
-			$forumReadId = $forumManager->getForumProperty($forumId, 'markedRead');
-			foreach ($results as $result) {
-				if (!$first) echo "					<hr>\n";
-				else $first = false;
+			$count = 0;
+			foreach ($forumSearch->getResults() as $result) {
+				if ($count == 0) echo "					<hr>\n";
 
-				$newPosts = $forumManager->newPosts($result['forumID']);
-
-				ForumSearch::displayLatestPostResultHP($result, $newPosts, $forumManager->isFavGame($result->forumID));
+				ForumSearch::displayLatestPostResultHP($result, $forumSearch->newPosts($result), $forumManager->isFavGame($result->forumID));
+				if (++$count == 3) break;
 			}
 		}
     }

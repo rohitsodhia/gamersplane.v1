@@ -408,5 +408,9 @@
 			$effectiveMarkedRead = max($forumMarkedRead, $threadLastRead);
 			return $result['lastPostID'] > $effectiveMarkedRead;
 		}
+
+		public function getResults() {
+			return $this->results;
+		}
 	}
 ?>
