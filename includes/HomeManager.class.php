@@ -170,7 +170,8 @@
 			global $currentUser;
 			$mysql = DB::conn('mysql');
 
-			$forumSearch = new ForumSearch('latestPosts');
+			$forumSearch = new ForumSearch('latestPosts', [$forumID], $forumManager);
+			$forumSearch->findThreads(1, $showCount);
 
 			$count = 0;
 			foreach ($forumSearch->getResults() as $result) {
