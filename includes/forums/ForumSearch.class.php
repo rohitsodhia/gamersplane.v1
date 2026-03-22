@@ -118,6 +118,7 @@
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					INNER JOIN posts lp ON t.lastPostID = lp.postID
 					INNER JOIN users lpa ON lp.authorID = lpa.userID
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
 					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND lp.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL
 					ORDER BY lp.datePosted
