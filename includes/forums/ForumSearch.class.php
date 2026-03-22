@@ -66,7 +66,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead, frf.markedRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -110,7 +110,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead, frf.markedRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -132,7 +132,7 @@
 					WHERE fpg.read=1 AND p.datePosted > NOW() - INTERVAL 1 WEEK AND f.gameID IS NOT NULL"
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead, frf.markedRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -153,7 +153,7 @@
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND p.datePosted > NOW() - INTERVAL 1 WEEK "
 				)->fetchColumn();
 				$this->results = $mysql->query(
-					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead
+					"SELECT t.threadID, t.forumID, f.title forum, t.locked, t.sticky, t.publicPosting, fp.postID firstPostID, fp.title, fp.authorID, fpa.username, fp.datePosted, t.postCount, lp.postID lastPostID, lp.authorID lp_authorID, lpa.username lp_username, lp.datePosted lp_datePosted, rdt.lastRead, frf.markedRead
 					FROM threads t
 					INNER JOIN forums f ON t.forumID = f.forumID
 					INNER JOIN posts fp ON t.firstPostID = fp.postID
@@ -181,6 +181,7 @@
 					INNER JOIN posts fp ON t.threadID = fp.threadID
 					INNER JOIN users fpa ON fp.authorID = fpa.userID
 					LEFT JOIN forums_readData_threads rdt ON t.threadID = rdt.threadID AND rdt.userID = {$currentUser->userID}
+					LEFT JOIN forums_readData_forums frf ON t.forumID = frf.forumID AND frf.userID = {$currentUser->userID}
 					WHERE t.forumID IN ({$implodedAccessableForums}) AND MATCH (messageFullText) AGAINST (? IN BOOLEAN MODE)".($this->gameID ? " AND f.gameID = {$this->gameID} " : "")."
 					ORDER BY fp.datePosted
 					DESC LIMIT {$start}, {$limit}");
@@ -398,10 +399,10 @@
 		}
 
 		public function newPosts($result) {
-			$forumID = $result["forumID"];
-			if (($result['lastRead'] && $result['lastPostID'] > $result['lastRead']) || (!$result['lastRead'] && $result['lastPostID'] > $this->forumManager->getForumProperty($forumID, 'markedRead')))
-				return true;
-			return false;
+			$forumMarkedRead = $this->forumManager->maxRead($result['forumID']);
+			$threadLastRead = intval($result['lastRead'] ?? 0);
+			$effectiveMarkedRead = max($forumMarkedRead, $threadLastRead);
+			return $result['lastPostID'] > $effectiveMarkedRead;
 		}
 	}
 ?>
