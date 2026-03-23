@@ -507,9 +507,15 @@ class ForumManager
 
 	public function maxRead($forumID)
 	{
+		if (!isset($this->forums[$forumID])) {
+			return 0;
+		}
 		$maxRead = $this->forums[$forumID]->getMarkedRead();
 		$parentID = $this->forums[$forumID]->parentID;
 		while ($parentID) {
+			if (!isset($this->forums[$parentID])) {
+				break;
+			}
 			if ($this->forums[$parentID]->getMarkedRead() > $maxRead) {
 				$maxRead = $this->forums[$parentID]->getMarkedRead();
 			}
