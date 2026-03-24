@@ -247,7 +247,7 @@
 
 		public function updateLastRead($postID) {
 			global $loggedIn, $mysql, $currentUser;
-			if ($loggedIn && $postID > $this->getThreadProperty('lastRead'))
+			if ($loggedIn && $postID > $this->getThreadLastRead())
 				$mysql->query("INSERT INTO forums_readData_threads SET threadID = {$this->threadID}, userID = {$currentUser->userID}, lastRead = {$postID} ON DUPLICATE KEY UPDATE lastRead = {$postID}");
 		}
 

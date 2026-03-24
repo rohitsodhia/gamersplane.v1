@@ -224,16 +224,19 @@ class ForumManager
 				array_walk($lastRead, function (&$value, $key) {
 					$value = $value[0];
 				});
-				}
+			}
+
 			foreach ($this->forumsData as $forumID => $forumData) {
 				foreach ($lastRead[$forumID] as $key => $value) {
 					$this->forumsData[$forumID][$key] = $value;
 				}
 				$this->spawnForum($forumID);
 			}
+
 			foreach (array_keys($this->forumsData) as $forumID) {
 				$this->forums[$forumID]->sortChildren();
 			}
+
 			if ($options & $this::ADMIN_FORUMS) {
 				$this->pruneByPermissions(0, 'admin');
 			} else {
@@ -504,9 +507,15 @@ class ForumManager
 
 	public function maxRead($forumID)
 	{
+		if (!isset($this->forums[$forumID])) {
+			return 0;
+		}
 		$maxRead = $this->forums[$forumID]->getMarkedRead();
 		$parentID = $this->forums[$forumID]->parentID;
 		while ($parentID) {
+			if (!isset($this->forums[$parentID])) {
+				break;
+			}
 			if ($this->forums[$parentID]->getMarkedRead() > $maxRead) {
 				$maxRead = $this->forums[$parentID]->getMarkedRead();
 			}
@@ -525,14 +534,13 @@ class ForumManager
 
 		$forum = $this->forums[$forumID];
 
-
 		foreach ($this->getAllChildren($forumID) as $childID) {
 			if ($this->newPosts($childID)) {
 				return true;
 			}
 		}
 
-		if ($forum->newPosts || ($forum->anyRead == null && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
+		if ($forum->newPosts || (!$forum->anyRead && !$forum->newPosts && $forum->lastPost && $forum->lastPost->postID > $forum->getMarkedRead())) {
 			return true;
 		} else {
 			return false;
