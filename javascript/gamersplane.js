@@ -176,6 +176,10 @@ $(function () {
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment', 'rsCombobox']);
 app.config(['$httpProvider', function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
+}]).filter('trustHtml', ['$sce', function ($sce) {
+	return function (value) {
+		return $sce.trustAsHtml(value);
+	};
 }]).factory('CurrentUser', ['$http', function ($http) {
 	var factory = {};
 	var userData = null;
