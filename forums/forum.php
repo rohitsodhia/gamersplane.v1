@@ -27,7 +27,7 @@
 <?	$forumManager->displayBreadcrumbs(); ?>
 			<div class="flexWrapper">
 				<div class="alignLeft">
-					<div class="mob-hide">Be sure to read and follow the <a href="/forums/rules">guidelines for our forums</a>.</div>
+					<div class="mob-hide">Be sure to read and follow the <a href="/community_guidelines/">community guidelines</a>.</div>
 				</div>
 				<div class="alignRight">
 <?	if ($forumID == 0) { ?>

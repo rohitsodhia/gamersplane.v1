@@ -44,7 +44,7 @@
 			<div class="threadMenu">
 				<div class="leftCol">
 					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
-					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
+					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/community_guidelines/">community guidelines</a>.</p>
 				</div>
 				<div class="rightCol alignRight">
 <?php
