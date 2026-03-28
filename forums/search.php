@@ -21,7 +21,7 @@
 	}
 ?>
 
-		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
+		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/community_guidelines/">community guidelines</a>.</p>
 
 		<div id="forumLinks">
 			<?php $forumSearch->displayPagination(); ?>
