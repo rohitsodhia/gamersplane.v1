@@ -24,4 +24,19 @@
 		<p>Gamers' Plane reserves the right to moderate content and enforce these rules at its sole discretion. Violations may result in content removal, warnings, temporary suspension, or permanent bans, depending on the nature and severity of the offense.</p>
 		<p>If you have concerns over a moderation decision, you may appeal it to any moderator, keeping the discussion respectful and calm. Any issues with a moderator may be raised to the site owner, Keleth.</p>
 		<p>We appreciate your cooperation in keeping Gamers' Plane a great place to game.</p>
-<? require_once(FILEROOT.'/footer.php'); ?>
+
+<?php
+$mods = $mysql->query('SELECT u.userID, u.username FROM users u INNER JOIN forumAdmins fa ON u.userID = fa.userID AND forumID = 1 WHERE u.userID != 1 ORDER BY username ASC');
+?>
+		<h1 id="mods">Mod Team</h1>
+		<dl class="modTeam">
+			<dt><a href="/user/1">Keleth</a> - Site Owner</dt>
+<?php
+foreach ($mods->fetchAll() as $mod) {
+?>
+			<dt><a href="/user/<?=$mod['userID']?>"><?=$mod['username']?></a></dt>
+<?php
+}
+?>
+		</dl>
+<?php require_once(FILEROOT.'/footer.php'); ?>
