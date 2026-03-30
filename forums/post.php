@@ -158,7 +158,7 @@
 	}
 	$threadManager->displayBreadcrumbs($pathOptions, $post, $quoteID);
 ?>
-		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/forums/rules/">guidelines for our forums</a>.</p>
+		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/community_guidelines/">community guidelines</a>.</p>
 		<h1 class="headerbar"><i class="ra ra-quill-ink"></i> <?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
 
 <?php	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
