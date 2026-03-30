@@ -16,7 +16,7 @@ controllers.controller('pmSend', function ($scope, $cookies, $http, $compile) {
 	$scope.replyTo = null;
 	$scope.hasHistory = false;
 	if (pathElements[1] == 'reply') {
-		$http.get(APIV2_HOST + '/legacy/pms/' + pathElements[2], { includeSelfHistory: true }).success(function (data) {
+		$http.get(APIV2_HOST + '/legacy/pms/' + pathElements[2], { params: { includeSelfHistory: true } }).success(function (data) {
 			$scope.replyTo = data.pm.id;
 			$scope.username = data.pm.sender.username;
 			$scope.title = (data.pm.title.substring(0, 3) == 'Re:' ? '' : 'Re: ') + data.pm.title;
