@@ -28,10 +28,10 @@
 					<div class="info">
 						<div class="title"><a href="/pms/view/{{pm.id}}/">{{pm.title}}</a></div>
 						<div class="details" ng-show="box == 'Inbox'">
-							from <a href="/user/{{pm.sender.userID}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span>
+							from <a href="/user/{{pm.sender.id}}/" class="username">{{pm.sender.username}}</a> on <span>{{pm.datestamp}}</span>
 						</div>
 						<div class="details" ng-show="box == 'Outbox'">
-							to <a ng-href="/user/{{pm.recipient.userID}}/" class="username">{{pm.recipient.username}}</a> on <span>{{pm.datestamp}}</span>
+							to <a ng-href="/user/{{pm.recipient.id}}/" class="username">{{pm.recipient.username}}</a> on <span>{{pm.datestamp}}</span>
 						</div>
 					</div>
 				</div>
