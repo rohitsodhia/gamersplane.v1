@@ -17,7 +17,7 @@ controllers.controller('charLibrary', ['$scope', '$filter', 'CurrentUser', 'Char
 		});
 		SystemsService.get().then(function (data) {
 			for (key in data.systems)
-				$scope.systems.push({ 'slug': data.systems[key].shortName, 'name': data.systems[key].fullName });
+				$scope.systems.push({ 'slug': data.systems[key].id, 'name': data.systems[key].name });
 			loadingFinished++;
 		});
 		CharactersService.getLibrary().then(function (data) {

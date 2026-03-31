@@ -34,7 +34,7 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 			reqLoading = $scope.clearPageLoading(reqLoading);
 			$scope.systems = {};
 			data.systems.forEach(function (val) {
-				$scope.systems[val.shortName] = val.fullName;
+				$scope.systems[val.id] = val.name;
 			});
 
 			GamesService.getGames({ 'systems': null, 'showFullGames': true, 'showInactiveGMs': true }).then(function (data) {

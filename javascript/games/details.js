@@ -33,7 +33,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 			$scope.$emit('pageLoading');
 			SystemsService.get().then(function (data) {
 				data.systems.forEach(function (val) {
-					$scope.systems[val.shortName] = val.fullName;
+					$scope.systems[val.id] = val.name;
 				});
 			});
 			$scope.deckTypes = ToolsService.deckTypes;

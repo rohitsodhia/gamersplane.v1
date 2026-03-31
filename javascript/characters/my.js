@@ -26,8 +26,8 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', '$filter'
 		});
 		SystemsService.get().then(function (data) {
 			for (var key in data.systems)
-				if (data.systems[key].hasCharSheet)
-					$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
+				if (data.systems[key].has_char_sheet)
+					$scope.systems.push({ 'value': data.systems[key].id, 'display': data.systems[key].name });
 		});
 
 		$scope.editBasic = function (character) {

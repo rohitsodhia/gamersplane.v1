@@ -33,9 +33,9 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 			$scope.allSystems = {};
 			$scope.systemsWCharSheets = {};
 			data.systems.forEach(function (val) {
-				$scope.allSystems[val.shortName] = val.fullName;
-				if (val.hasCharSheet) {
-					$scope.systemsWCharSheets[val.shortName] = val.fullName;
+				$scope.allSystems[val.id] = val.name;
+				if (val.has_char_sheet) {
+					$scope.systemsWCharSheets[val.id] = val.name;
 				}
 			});
 			if ($scope.state == 'new') {
@@ -90,11 +90,11 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 				var hold = {},
 					inserted = false,
 					compSystemName = $scope.allSystems[system].toLowerCase();
-				angular.forEach($scope.systemsWCharSheets, function (fullName, shortName) {
-					if (!inserted && fullName.toLowerCase() > compSystemName) {
+				angular.forEach($scope.systemsWCharSheets, function (name, id) {
+					if (!inserted && name.toLowerCase() > compSystemName) {
 						this[system] = $scope.allSystems[system];
 					}
-					this[shortName] = fullName;
+					this[id] = name;
 				}, hold);
 				$scope.systemsWCharSheets = hold;
 			}
