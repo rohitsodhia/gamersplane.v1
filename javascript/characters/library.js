@@ -1,4 +1,4 @@
-controllers.controller('charLibrary', ['$scope','$filter', 'CurrentUser', 'CharactersService', 'SystemsService', function ($scope, $filter, CurrentUser, CharactersService, SystemsService) {
+controllers.controller('charLibrary', ['$scope', '$filter', 'CurrentUser', 'CharactersService', 'SystemsService', function ($scope, $filter, CurrentUser, CharactersService, SystemsService) {
 	$scope.characters = [];
 	$scope.systems = [];
 	$scope.search = { 'systems': [] };
@@ -15,13 +15,13 @@ controllers.controller('charLibrary', ['$scope','$filter', 'CurrentUser', 'Chara
 				waitingLoadingFinish();
 			}
 		});
-		SystemsService.get({ 'getAll': true }).then(function (data) {
+		SystemsService.get().then(function (data) {
 			for (key in data.systems)
 				$scope.systems.push({ 'slug': data.systems[key].shortName, 'name': data.systems[key].fullName });
 			loadingFinished++;
 		});
 		CharactersService.getLibrary().then(function (data) {
-			if (data.success){
+			if (data.success) {
 				$scope.characters = data.characters;
 				$scope.pagination.numItems = $scope.characters.length;
 			}

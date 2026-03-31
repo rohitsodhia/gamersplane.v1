@@ -31,7 +31,7 @@ controllers.controller('games_details', ['$scope', '$http', '$sce', '$filter', '
 
 		setGameData = function () {
 			$scope.$emit('pageLoading');
-			SystemsService.get({ 'getAll': true }).then(function (data) {
+			SystemsService.get().then(function (data) {
 				data.systems.forEach(function (val) {
 					$scope.systems[val.shortName] = val.fullName;
 				});

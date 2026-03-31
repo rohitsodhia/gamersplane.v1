@@ -29,11 +29,7 @@ controllers.controller('games_cu', ['$scope', '$http', '$filter', 'CurrentUser',
 		};
 		$scope.errors = [];
 
-		SystemsService.get(
-			{
-				'getAll': true
-			}
-		).then(function (data) {
+		SystemsService.get().then(function (data) {
 			$scope.allSystems = {};
 			$scope.systemsWCharSheets = {};
 			data.systems.forEach(function (val) {

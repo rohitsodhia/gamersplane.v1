@@ -969,7 +969,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 			$scope.games = data;
 		});
 		$scope.systems = [{ 'value': 'all', 'display': 'All' }];
-		SystemsService.get({ 'getAll': true, 'excludeCustom': true }).then(function (data) {
+		SystemsService.get().then(function (data) {
 			for (var key in data.systems) {
 				$scope.systems.push({
 					'value': data.systems[key].shortName,

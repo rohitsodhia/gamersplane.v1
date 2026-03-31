@@ -30,14 +30,14 @@ controllers.controller('listGames', ['$scope', '$filter', 'CurrentUser', 'UsersS
 	$scope.orderBy = '-start';
 	var reqLoading = 2;
 	CurrentUser.load().then(function () {
-		SystemsService.get({ 'getAll': true }).then(function (data) {
+		SystemsService.get().then(function (data) {
 			reqLoading = $scope.clearPageLoading(reqLoading);
 			$scope.systems = {};
 			data.systems.forEach(function (val) {
 				$scope.systems[val.shortName] = val.fullName;
 			});
 
-			GamesService.getGames({'systems': null,'showFullGames': true,'showInactiveGMs': true}).then(function (data) {
+			GamesService.getGames({ 'systems': null, 'showFullGames': true, 'showInactiveGMs': true }).then(function (data) {
 				reqLoading = $scope.clearPageLoading(reqLoading);
 				$scope.games = data;
 				$scope.games.forEach(function (game) {

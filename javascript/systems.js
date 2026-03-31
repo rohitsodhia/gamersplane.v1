@@ -1,6 +1,6 @@
 controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', 'SystemsService', function ($scope, $http, $sce, $filter, SystemsService) {
 	$scope.$emit('pageLoading');
-	SystemsService.get({ 'getAll': true, 'fields': 'all' }).then(function (data) {
+	SystemsService.get().then(function (data) {
 		$scope.$emit('pageLoading');
 		$scope.systems = data.systems;
 		$scope.numSystems = data.numSystems;

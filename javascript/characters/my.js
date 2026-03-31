@@ -24,7 +24,7 @@ app.controller('myCharacters', ['$scope', '$http', '$sce', '$timeout', '$filter'
 			$scope.library = typeof data.library != 'undefined' ? data.library : null;
 			$scope.pagination.numItems = $scope.characters.length;
 		});
-		SystemsService.get({ 'getAll': true }).then(function (data) {
+		SystemsService.get().then(function (data) {
 			for (var key in data.systems)
 				if (data.systems[key].hasCharSheet)
 					$scope.systems.push({ 'value': data.systems[key].shortName, 'display': data.systems[key].fullName });
