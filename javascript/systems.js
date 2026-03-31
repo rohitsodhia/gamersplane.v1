@@ -3,8 +3,8 @@ controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', 'System
 	SystemsService.get().then(function (data) {
 		$scope.$emit('pageLoading');
 		$scope.systems = data.systems;
-		$scope.numSystems = data.numSystems;
-		$scope.pagination.numItems = data.numSystems;
+		$scope.numSystems = data.num_systems;
+		$scope.pagination.numItems = data.num_systems;
 	});
 	$scope.pagination = { numItems: 0, itemsPerPage: 10 };
 	if ($.urlParam('page'))
@@ -13,14 +13,14 @@ controllers.controller('systems', ['$scope', '$http', '$sce', '$filter', 'System
 		$scope.pagination.current = 1;
 	$scope.systems = [];
 	$scope.filter = { search: '' };
-	$scope.numSystems = 0;
+	$scope.num_systems = 0;
 
 	$scope.wrapPublisher = function (system) {
-		return system.publisher.site?'<a href="' + system.publisher.site + '" target="_blank">' + system.publisher.name + '</a>':system.publisher.name;
+		return system.publisher.site ? '<a href="' + system.publisher.site + '" target="_blank">' + system.publisher.name + '</a>' : system.publisher.name;
 	};
 
 	$scope.$watch(function () { return $scope.filter.search; }, function () {
-		$scope.numSystems = $filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length;
+		$scope.num_systems = $filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length;
 		$scope.pagination.numItems = $filter('filter')($scope.systems, { 'fullName': $scope.filter.search }).length;
 		$scope.pagination.current = 1;
 	});
