@@ -971,6 +971,9 @@ app.config(['$httpProvider', function ($httpProvider) {
 		$scope.systems = [{ 'value': 'all', 'display': 'All' }];
 		SystemsService.get().then(function (data) {
 			for (var key in data.systems) {
+				if (data.systems[key].id == 'custom') {
+					continue;
+				}
 				$scope.systems.push({
 					'value': data.systems[key].shortName,
 					'display': data.systems[key].fullName
