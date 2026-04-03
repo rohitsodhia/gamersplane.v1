@@ -5,29 +5,29 @@ app.controller('gamersList', ['$scope', '$http', '$sce', '$filter', function ($s
 	$scope.filter = { search: '' };
 	$scope.ordering = "0";
 
-	$scope.filterItems = function(user) {
-		return (user.username.toLowerCase().indexOf($scope.filter.search.toLowerCase() )!=-1) && ((!$scope.lookingForAGame) || (user.lfgStatus));
+	$scope.filterItems = function (user) {
+		return (user.username.toLowerCase().indexOf($scope.filter.search.toLowerCase()) != -1) && ((!$scope.lookingForAGame) || (user.lfgStatus));
 	};
 
-	var maxUserIdValue=1000000;
+	var maxUserIdValue = 1000000;
 
-	$scope.sortOrder=function(user){
-		if($scope.ordering==1){
-			return (user.online?'0-':'1-')+('000000000' + user.userID).substr(-6);
+	$scope.sortOrder = function (user) {
+		if ($scope.ordering == 1) {
+			return (user.online ? '0-' : '1-') + ('000000000' + user.userID).substr(-6);
 		}
-		else if($scope.ordering==2){
-			return (user.online?'0-':'1-')+(maxUserIdValue-user.userID);
+		else if ($scope.ordering == 2) {
+			return (user.online ? '0-' : '1-') + (maxUserIdValue - user.userID);
 		}
 
-		return (user.online?'0-':'1-')+user.name;
+		return (user.online ? '0-' : '1-') + user.name;
 	}
 
 
 	$scope.getGamers = function () {
 		$scope.$emit('pageLoading');
-		$http.post(API_HOST + '/users/gamersList/', { 'page': $scope.pagination.current, 'showInactive': $scope.showInactive }).success(function (data) {
-			$scope.users = data.users;
-			$scope.pagination.numItems = data.totalUsers;
+		$http.get(APIV2_HOST + '/legacy/gamers', { params: { 'get_inactive': $scope.showInactive ? true : false } }).success(function (data) {
+			$scope.users = data.gamers;
+			$scope.pagination.numItems = data.gamers.length;
 			$scope.$emit('pageLoading');
 		});
 	}
@@ -51,14 +51,14 @@ app.controller('gamersList', ['$scope', '$http', '$sce', '$filter', function ($s
 		$scope.pagination.current = parseInt($.urlParam('page'));
 	else
 		$scope.pagination.current = 1;
-}]).directive('onErrorSrc', function() {
-    return {
-        link: function(scope, element, attrs) {
-          element.bind('error', function() {
-            if (attrs.src != attrs.onErrorSrc) {
-              attrs.$set('src', attrs.onErrorSrc);
-            }
-          });
-        }
-    }
+}]).directive('onErrorSrc', function () {
+	return {
+		link: function (scope, element, attrs) {
+			element.bind('error', function () {
+				if (attrs.src != attrs.onErrorSrc) {
+					attrs.$set('src', attrs.onErrorSrc);
+				}
+			});
+		}
+	}
 });

@@ -21,7 +21,7 @@
 			<paginate num-items="pagination.numItems" items-per-page="pagination.itemsPerPage" current="pagination.current"></paginate>
 		</p>
 		<ul id="gamersList" hb-margined>
-			<li ng-repeat="user in users| filter:filterItems| orderBy:sortOrder | paginateItems: 25:(pagination.current - 1) * 25" ng-class="{ 'last': $index % 5 == 4 }">
+			<li ng-repeat="user in users| filter:filterItems | orderBy:sortOrder | paginateItems: 25:(pagination.current - 1) * 25" ng-class="{ 'last': $index % 5 == 4 }">
 				<div class="onlineIndicator" ng-class="{ 'online': user.online, 'offline': !user.online }"></div>
 				<div class="lfgIndicator" ng-if="user.lfgStatus"><i class="ra ra-health"></i></div>
 				<a href="/user/{{user.userID}}/" class="avatar">
