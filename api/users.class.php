@@ -5,9 +5,7 @@
 		function __construct() {
 			global $pathOptions;
 
-			if ($pathOptions[0] == 'gamersList') {
-				$this->gamersList();
-			} elseif ($pathOptions[0] == 'search') {
+			if ($pathOptions[0] == 'search') {
 				$this->search();
 			} elseif ($pathOptions[0] == 'getCurrentUser') {
 				$this->getCurrentUser();
@@ -36,28 +34,6 @@
 			} else {
 				displayJSON(['failed' => true]);
 			}
-		}
-
-		public function gamersList() {
-			$mysql = DB::conn('mysql');
-
-			$rUsers = $mysql->query('SELECT users.userID, users.username, users.lastActivity, users.joinDate, IF(lastActivity >= UTC_TIMESTAMP() - INTERVAL 15 MINUTE, 1, 0) online, avatar.avatarExt, lfg.lfgStatus FROM users LEFT OUTER JOIN (SELECT userID, metaValue AS lfgStatus FROM usermeta AS usermeta_lfg WHERE (metaKey = "lookingForAGame")) AS lfg ON users.userID = lfg.userID LEFT OUTER JOIN (SELECT userID, metaValue AS avatarExt FROM usermeta AS usermeta_ava WHERE (metaKey = "avatarExt")) AS avatar ON users.userID = avatar.userID WHERE activatedOn IS NOT NULL' . (!isset($_POST['showInactive']) || !$_POST['showInactive'] ? ' AND lastActivity >= UTC_TIMESTAMP() - INTERVAL 2 WEEK' : '').' ORDER BY online DESC, username')->fetchAll();
-			$users = [];
-			$total=0;
-			if (sizeof($rUsers)) {
-				foreach ($rUsers as $user) {
-					$user['userID'] = (int) $user['userID'];
-					$user['online'] = (bool) $user['online'];
-					$user['avatar'] = $user['avatarExt']? "/ucp/avatars/{$user['userID']}.{$user['avatarExt']}": "/ucp/avatars/avatar.png";
-					$user['inactive'] = User::inactive($user['lastActivity']);
-					unset($user['lastActivity']);
-					unset($user['avatarExt']);
-					$users[] = $user;
-					$total++;
-				}
-				displayJSON(['users' => $users, 'totalUsers' => (int) $total]);
-			} else
-				displayJSON(['noUsers' => true]);
 		}
 
 		public function search() {
