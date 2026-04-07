@@ -6,17 +6,15 @@ app.controller('gamersList', ['$scope', '$http', '$sce', '$filter', function ($s
 	$scope.ordering = "0";
 
 	$scope.filterItems = function (user) {
-		return (user.username.toLowerCase().indexOf($scope.filter.search.toLowerCase()) != -1) && ((!$scope.lookingForAGame) || (user.lfgStatus));
+		return (user.username.toLowerCase().indexOf($scope.filter.search.toLowerCase()) != -1) && ((!$scope.lookingForAGame) || (user.lfg));
 	};
 
 	var maxUserIdValue = 1000000;
-
 	$scope.sortOrder = function (user) {
 		if ($scope.ordering == 1) {
-			return (user.online ? '0-' : '1-') + ('000000000' + user.userID).substr(-6);
-		}
-		else if ($scope.ordering == 2) {
-			return (user.online ? '0-' : '1-') + (maxUserIdValue - user.userID);
+			return (user.online ? '0-' : '1-') + user.id.toString().padStart(8, '0');
+		} else if ($scope.ordering == 2) {
+			return (user.online ? '0-' : '1-') + (maxUserIdValue - user.id);
 		}
 
 		return (user.online ? '0-' : '1-') + user.name;
