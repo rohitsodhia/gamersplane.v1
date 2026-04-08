@@ -210,7 +210,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	return factory;
 }]).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
 	this.getHeader = function () {
-		return $http.get(APIV2_HOST + '/legacy/users/header').then(function (data) {
+		return $http.get(APIV2_HOST + '/legacy/me/header').then(function (data) {
 			return data.data;
 		});
 	};
