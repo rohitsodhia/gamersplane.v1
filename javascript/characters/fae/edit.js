@@ -6,7 +6,6 @@ controllers.controller('editCharacter_fae', ['$scope', '$http', '$sce', '$timeou
 			'stunts': { 'name': '' }
 		};
 		$scope.loadChar().then(function () {
-			console.log($scope.character.aspects);
 			if ($scope.character.aspects.length > 1 || typeof $scope.character.aspects[0] == 'string') {
 				for (key in $scope.character.aspects) {
 					$scope.character.aspects[key] = { 'name': $scope.character.aspects[key] };

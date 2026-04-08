@@ -37,7 +37,7 @@
 				<a href="/characters/my/"><i class="ra ra-double-team hide mob-show-inline-block"></i><span class="mob-hide">Characters</span></a>
 				<ul ng-if="characters.length">
 				<li><a href="/characters/my/"><i class="ra ra-double-team"></i>All characters</a></li>
-					<li ng-repeat="char in characters | limitTo: 10"><a href="/characters/{{char.system}}/{{char.characterID}}/" ng-bind-html="char.label | trustHTML"></a></li>
+					<li ng-repeat="char in characters | limitTo: 10"><a href="/characters/{{char.system}}/{{char.id}}/" ng-bind-html="char.label | trustHTML"></a></li>
 				</ul>
 			</li>
 			<li>

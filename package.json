@@ -1,15 +1,15 @@
 {
-	"name": "Gamers_Plane",
-	"version": "1.0.0",
-	"dependencies": {
-		"grunt": "1.x",
-		"grunt-contrib-clean": "2.x",
-		"grunt-contrib-concat": "2.x",
-		"grunt-contrib-cssmin": "4.x",
-		"grunt-contrib-less": "3.x",
-		"grunt-contrib-uglify": "5.x",
-		"grunt-contrib-watch": "1.x",
-		"grunt-shell": "3.x",
-		"rx-angular": "1.x"
-	}
+    "name": "Gamers_Plane",
+    "version": "1.0.0",
+    "dependencies": {
+        "grunt": "1.x",
+        "grunt-contrib-clean": "2.x",
+        "grunt-contrib-concat": "2.x",
+        "grunt-contrib-cssmin": "4.x",
+        "grunt-contrib-less": "3.x",
+        "grunt-contrib-uglify": "5.x",
+        "grunt-contrib-watch": "1.x",
+        "grunt-shell": "3.x",
+        "rx-angular": "1.x"
+    }
 }

@@ -176,6 +176,10 @@ $(function () {
 var app = angular.module('gamersplane', ['controllers', 'ngCookies', 'ngSanitize', 'ngAnimate', 'ngFileUpload', 'angularMoment', 'rsCombobox']);
 app.config(['$httpProvider', function ($httpProvider) {
 	$httpProvider.defaults.withCredentials = true;
+}]).filter('trustHtml', ['$sce', function ($sce) {
+	return function (value) {
+		return $sce.trustAsHtml(value);
+	};
 }]).factory('CurrentUser', ['$http', function ($http) {
 	var factory = {};
 	var userData = null;
@@ -206,7 +210,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 	return factory;
 }]).service('UsersService', ['$http', 'Upload', function ($http, Upload) {
 	this.getHeader = function () {
-		return $http.post(API_HOST + '/users/getHeader/').then(function (data) {
+		return $http.get(APIV2_HOST + '/legacy/users/header').then(function (data) {
 			return data.data;
 		});
 	};
@@ -278,13 +282,13 @@ app.config(['$httpProvider', function ($httpProvider) {
 	this.get = function (params) {
 		if (typeof params != 'object' || Array.isArray(params))
 			params = {};
-		return $http.post(API_HOST + '/systems/get/', params).then(function (data) { return data.data; });
+		return $http.get(APIV2_HOST + '/legacy/systems', params).then(function (data) { return data.data; });
 	};
 	this.getGenres = function () {
-		return $http.post(API_HOST + '/systems/getGenres/').then(function (data) { return data.data; });
+		return $http.post(APIV2_HOST + '/systems/getGenres/').then(function (data) { return data.data; });
 	};
 	this.save = function (systemData) {
-		return $http.post(API_HOST + '/systems/save/', { data: systemData }).then(function (data) { return data.data; });
+		return $http.post(APIV2_HOST + '/systems/save/', { data: systemData }).then(function (data) { return data.data; });
 	};
 }]).service('ToolsService', ['$http', function ($http) {
 	this.deckTypes = {};
@@ -907,7 +911,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 		$scope.avatar = '';
 		$scope.pmCount = 0;
 		UsersService.getHeader().then(function (data) {
-			$scope.loggedIn = data.success ? true : false;
+			$scope.loggedIn = !!data;
 			if ($scope.loggedIn) {
 				$scope.characters = data.characters;
 				$scope.games = data.games;
@@ -965,11 +969,14 @@ app.config(['$httpProvider', function ($httpProvider) {
 			$scope.games = data;
 		});
 		$scope.systems = [{ 'value': 'all', 'display': 'All' }];
-		SystemsService.get({ 'getAll': true, 'excludeCustom': true }).then(function (data) {
+		SystemsService.get().then(function (data) {
 			for (var key in data.systems) {
+				if (data.systems[key].id == 'custom') {
+					continue;
+				}
 				$scope.systems.push({
-					'value': data.systems[key].shortName,
-					'display': data.systems[key].fullName
+					'value': data.systems[key].id,
+					'display': data.systems[key].name
 				});
 			}
 		});

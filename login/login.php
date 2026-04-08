@@ -1,10 +1,7 @@
-<? $responsivePage=true;
-require_once(FILEROOT.'/header.php');?>
-<?	if ($_GET['passWipe']) { ?>
-		<div class="alertBox_info">
-			To upgrade security, I've had to reset everyone's password. You can check the <a href="/forums/3/">Announcements</a> forum for more details, but to log in again, please click login at the top right, and click <u>Forgot your Password?</u>. Follow the steps and you'll be good to go!
-		</div>
-<?	} ?>
+<?
+	$responsivePage=true;
+	require_once(FILEROOT.'/header.php');
+?>
 		<div class="alertBox_success<?=!isset($_GET['resetSuccess'])?' hideDiv':''?>"><ul>
 			<li>Password changed!</li>
 		</ul></div>
@@ -20,7 +17,7 @@ require_once(FILEROOT.'/header.php');?>
 		<div id="formWrapper">
 			<h1 class="headerbar">Login</h1>
 
-			<form method="post" action="/login/process/login/" class="hbMargined">
+			<form method="post" action="<?=APIV2_HOST?>/legacy/auth/login" class="hbMargined">
 				<div class="tr">
 					<label>Username/Email</label>
 					<input id="user" type="text" name="user" tabindex="3">
@@ -29,6 +26,7 @@ require_once(FILEROOT.'/header.php');?>
 					<label>Password</label>
 					<input id="password" type="password" name="password" maxlength="32" tabindex="4">
 				</div>
+				<input type="hidden" name="modal" value="<?=MODAL ? '1' : '0'?>">
 				<div id="submitDiv" class="alignCenter"><button type="submit" name="login" value="login" tabindex="5">Login</button></div>
 			</form>
 		</div>

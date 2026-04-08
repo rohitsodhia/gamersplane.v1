@@ -5,7 +5,7 @@
     global $currentUser;
 	$userID = (int) $pathOptions[0];
     $canBan = $mysql->query("SELECT userID FROM privilages WHERE userID = {$currentUser->userID} AND privilage = 'banUsers'");
-    if ($canBan->rowCount()) {
+    if ($canBan->rowCount() && $userID != 1) {
 		$allowBan = true;
 		$banState = $mysql->query("SELECT banned FROM users WHERE userID = {$userID} LIMIT 1")->fetchColumn();
     }
