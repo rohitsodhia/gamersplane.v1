@@ -20,6 +20,7 @@
 			<li><strong>Site Security:</strong> You may not take any action intended to harm Gamers' Plane, its servers, or its content, nor may you attempt to circumvent its security measures. Using multiple accounts simultaneously to circumvent bans, or to manipulate or deceive other users is prohibited.</li>
 			<li><strong>Commercial Services/Products:</strong> Promotion of commercial services or products is permitted only in the Advertising forum or the Advertisements discord channel. You must be an existing member of the community in order to make posts advertising any product. All advertising must follow all other rules. Advertisements that follow a known pattern of scammers may be removed.</li>
 			<li><strong>Off-Site Promotion:</strong> You may not use Gamers' Plane to advertise or promote other play-by-post sites, nor may you advertise games that take place elsewhere. You are welcome to use third-party tools to assist with games on Gamers' Plane, but the game itself should take place here.</li>
+			<li><strong>Paid Games:</strong> Games that require any payment to join in are not allowed on Gamers' Plane. This includes payment required upfront or after, monetary or otherwise.</li>
 		</ol>
 
 		<h2>Private Content Standards</h2>
