@@ -949,6 +949,7 @@ CREATE TABLE `posts` (
   PRIMARY KEY (`postID`),
   KEY `threadID` (`threadID`),
   KEY `authorID` (`authorID`),
+  KEY `datePosted` (`datePosted`),
   FULLTEXT KEY `messageFullText` (`messageFullText`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1112,7 +1113,8 @@ CREATE TABLE `threads` (
   `publicPosting` tinyint(1) NOT NULL,
   `discordWebhook` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`threadID`),
-  KEY `forumID` (`forumID`)
+  KEY `forumID` (`forumID`),
+  KEY `lastPostID` (`lastPostID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
