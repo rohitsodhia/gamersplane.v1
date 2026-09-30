@@ -1,6 +1,5 @@
 <?
-	User::logout(true);
-//	wp_logout();
-	
+	User::logout();
+
 	header('Location: /');
 ?>

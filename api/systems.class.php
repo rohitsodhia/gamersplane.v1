@@ -3,9 +3,7 @@
 		function __construct() {
 			global $pathOptions;
 
-			if ($pathOptions[0] == 'get') {
-				$this->get();
-			} elseif ($pathOptions[0] == 'getGenres') {
+			if ($pathOptions[0] == 'getGenres') {
 				$this->getGenres();
 			} elseif ($pathOptions[0] == 'save') {
 				$this->save();
@@ -14,64 +12,6 @@
 			}
 		}
 
-		public function get() {
-			$mysql = DB::conn('mysql');
-
-			$search = [];
-			$validFields = ['shortName', 'name', 'sortName', 'enabled', 'angular', 'genres', 'publisher', 'basics', 'hasCharSheet', 'lfg'];
-			$fields = ['name'];
-			$selectFields = '*';
-			if (!isset($_POST['fields']) || $_POST['fields'] == 'all') {
-				$fields = [];
-				$selectFields = '*';
-			} elseif (isset($_POST['fields']) && is_array($_POST['fields'])) {
-				$reqFields = $_POST['fields'];
-				if (!array_diff($reqFields, $validFields)) {
-					$fields = $reqFields;
-					$selectFields = substr(str_repeat('?, ', count($fields)), 0, -2);
-				}
-			}
-			if (isset($_POST['shortName']) && is_string($_POST['shortName']) && strlen($_POST['shortName'])) {
-				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems WHERE id = ?");
-				$getSystems->execute(array_merge($fields, [$_POST['shortName']]));
-				$numSystems = 1;
-			} elseif (isset($_POST['getAll']) && $_POST['getAll']) {
-				$getSystems = $mysql->prepare("SELECT {$selectFields} FROM systems ORDER BY sortName");
-				$getSystems->execute($fields);
-				$numSystems = $getSystems->rowCount();
-			}
-			$systems = [];
-			$custom = [];
-			$defaults = [
-				'genres' => [],
-				'publisher' => ['name' => '', 'site' => ''],
-				'basics' => []
-			];
-			$boolFields = ['angular', 'enabled', 'hasCharSheet'];
-			unset($fields['name']);
-			foreach ($getSystems->fetchAll() as $rSystem) {
-				$system = array_merge($defaults, $rSystem, [
-					'shortName' => $rSystem['id'],
-					'fullName' => $rSystem['name']
-				]);
-				foreach (array_keys($defaults) as $jsonKey) {
-					$system[$jsonKey] = $system[$jsonKey];
-				}
-				foreach ($boolFields as $boolKey) {
-					$system[$boolKey] = $system[$boolKey] == "1";
-				}
-				unset($system['id'], $system['name']);
-				if ($system['shortName'] != 'custom') {
-					$systems[] = $system;
-				} else {
-					$custom = $system;
-				}
-			}
-			if ((!isset($_POST['excludeCustom']) || !$_POST['excludeCustom']) && sizeof($custom)) {
-				array_splice($systems, 0, 0, array($custom));
-			}
-			displayJSON(array('numSystems' => $numSystems, 'systems' => $systems));
-		}
 
 		public function getGenres() {
 			$mysql = DB::conn('mysql');

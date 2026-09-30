@@ -171,7 +171,6 @@ class games
 		$decks = [];
 		if ($getDecks->rowCount()) {
 			foreach ($getDecks->fetchAll() as $deck) {
-
 				$decks[] = [
 					'deckID' => (int) $deck['deckID'],
 					'type' => $deck['type'],

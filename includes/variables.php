@@ -1,6 +1,7 @@
 <?php
 	define('FILEROOT', getenv('APP_FILEROOT'));
 	define('API_HOST', getenv('APP_API_URL'));
+	define('APIV2_HOST', '//'.getenv('APP_APIV2_URL'));
 
 	define('PVAR', getenv('PVAR'));
 	define('MODAL', (isset($_GET['modal']) && $_GET['modal'] == 1) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')?TRUE:FALSE);
