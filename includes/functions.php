@@ -161,6 +161,9 @@ function filterString($string)
 		$replacements[] = $stars;
 	}
 	//		print_r($filterWords); echo '<br>';
+	if ($string === null) {
+		return $string;
+	}
 	do {
 		$string = preg_replace($filterWords, $replacements, $string);
 	} while ($string != preg_replace($filterWords, $replacements, $string));

@@ -34,7 +34,7 @@
 	require_once('../includes/HistoryLogger.class.php');
 	require_once('../includes/HistoryCache.class.php');
 
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
+	error_reporting(E_ALL & ~E_NOTICE);
 
 	$reqPath = str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 //	echo $reqPath;

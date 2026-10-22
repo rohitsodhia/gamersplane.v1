@@ -201,9 +201,10 @@
 				) SELECT forumID, parentID FROM forums_with_parents ORDER BY depth"
 			);
 			$heritages = [];
-			while (list($forumID, $parentID) = $forums->fetch(PDO::FETCH_NUM)) {
+			while ($forumRow = $forums->fetch(PDO::FETCH_NUM)) {
+				[$forumID, $parentID] = $forumRow;
 				$heritages[$forumID] = [];
-				if (array_key_exists($parentID, $heritages)) {
+				if ($parentID !== null && array_key_exists($parentID, $heritages)) {
 					$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
 				} else {
 					$heritages[$forumID] = $forumID > 0 ? [$parentID] : [0];

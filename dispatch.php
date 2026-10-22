@@ -1,7 +1,7 @@
 <?php
 	require('includes/requires.php');
 
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
+	error_reporting(E_ALL & ~E_NOTICE);
 
 	/*
 	Possible states: standard, maintenance, moving
@@ -21,7 +21,7 @@
 	}
 	$reqPathParts = explode('/', $reqPath);
 	$pathOptions = array_slice(explode('/', $reqPath), 1);
-	$pathAction = $pathOptions[0];
+	$pathAction = $pathOptions[0] ?? '';
 	$reqPath .= '/';
 
 	$pathOptions = array_slice($pathOptions, 1);
@@ -30,15 +30,15 @@
 	if (!in_array('ajax', $reqPathParts)) {
 		if (
 			(
-				$_SESSION['currentURL'] != $reqPath ||
-				$_SESSION['lastURL'] == '' ||
-				$_SESSION['currentURL'] == ''
+				($_SESSION['currentURL'] ?? null) != $reqPath ||
+				($_SESSION['lastURL'] ?? '') == '' ||
+				($_SESSION['currentURL'] ?? '') == ''
 			) &&
 			!in_array($pathAction, ['login'])
 		) {
-			$_SESSION['lastURL'] = $_SESSION['currentURL'];
+			$_SESSION['lastURL'] = $_SESSION['currentURL'] ?? null;
 			$_SESSION['currentURL'] = $reqPath;
-		} elseif ($_SESSION['currentURL'] == $reqPath) {
+		} elseif (($_SESSION['currentURL'] ?? null) == $reqPath) {
 			$sameURL = true;
 		}
 	}
@@ -73,7 +73,7 @@
 		}
 		$dispatchInfo = $mysql->prepare('SELECT url, pageID, ngController, file, title, loginReq, fixedGameMenu, bodyClass, modalWidth FROM dispatch WHERE ? LIKE concat(url, "%") ORDER BY LENGTH(url) DESC LIMIT 1');
 		$dispatchInfo->execute([$moddedPath . '/']);
-		$dispatchInfo = $dispatchInfo->fetch();
+		$dispatchInfo = $dispatchInfo->fetch() ?: ['loginReq' => 0, 'pageID' => null, 'file' => ''];
 		// var_dump($dispatchInfo); exit();
 		global $loggedIn;
 		$loggedIn = User::checkLogin((bool) $dispatchInfo['loginReq']);

@@ -206,7 +206,7 @@ class ForumManager
 						if ($markedRead < $lastRead[$parentID]['markedRead']) {
 							$markedRead = $lastRead[$parentID]['markedRead'];
 						}
-						$parentID = $lastRead[$parentID]['parentID'];
+						$parentID = $lastRead[$parentID]['parentID'] ?? null;
 					}
 
 					$lastRead[$key] = [
@@ -563,7 +563,7 @@ class ForumManager
 				}
 			}
 		}
-		if ($forum->permissions['read'] && $forum->lastPost->postID > $lastPost->postID) {
+		if ($forum->permissions['read'] && $forum->lastPost && $forum->lastPost->postID > $lastPost->postID) {
 			return $forum->lastPost;
 		} elseif ($lastPost->postID != 0) {
 			return $lastPost;

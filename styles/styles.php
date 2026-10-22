@@ -3,7 +3,7 @@
 	<link href="/styles/gamersPlane.css?v=<?=getStyleVersion('/styles/gamersPlane.css')?>" rel="stylesheet">
 	<link href="/styles/markItUp/skins/gp/style.css?v=<?=getStyleVersion('/styles/markItUp/skins/gp/style.css')?>" rel="stylesheet">
 
-<?	if($characterMarkitUp) {?>
+<?	if(!empty($characterMarkitUp)) {?>
 	<link href="/styles/markItUp/sets/bbcode/character-style.css?v=<?=getStyleVersion('/styles/markItUp/sets/bbcode/character-style.css')?>" rel="stylesheet">
 <?	} else {?>
 	<link href="/styles/markItUp/sets/bbcode/style.css?v=<?=getStyleVersion('/styles/markItUp/sets/bbcode/style.css')?>" rel="stylesheet">
@@ -14,7 +14,7 @@
 	<link href="/styles/<?=$pathAction?>.css?v=<?=getStyleVersion('/styles/'.$pathAction.'.css')?>" rel="stylesheet">
 <?
 	}
-	if ($pathOptions[1] == 'maps') {
+	if (($pathOptions[1] ?? null) == 'maps') {
 ?>
 	<link href="/styles/maps.css?v=<?=getStyleVersion('/styles/maps.css')?>" rel="stylesheet">
 <? } ?>
@@ -33,7 +33,7 @@
 	<link href="/styles/nonResponsive.css?v=<?=getStyleVersion('/styles/nonResponsive.css')?>" rel="stylesheet">
 <?}?>
 
-<?	if ($addExternalCSSFiles && !empty($addExternalCSSFiles)) { foreach ($addExternalCSSFiles as $file) { ?>
+<?	if (!empty($addExternalCSSFiles)) { foreach ($addExternalCSSFiles as $file) { ?>
 	<link href="/styles/<?=$file?>.css?v=<?=getStyleVersion('/styles/'.$file.'.css')?>" rel="stylesheet">
 <?	} } ?>
 
