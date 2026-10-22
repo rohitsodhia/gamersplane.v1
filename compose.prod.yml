@@ -3,10 +3,6 @@ services:
         ports:
             - "127.0.0.1:80:80"
 
-    mysql:
-        ports:
-            - "127.0.0.1:3306:3306"
-
     postfix:
         build:
             context: ./docker/postfix
