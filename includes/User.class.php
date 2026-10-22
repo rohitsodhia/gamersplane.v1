@@ -50,7 +50,7 @@
 				$currentUser = new User();
 			}
 
-			$loginHash = $_COOKIE['loginHash'];
+			$loginHash = $_COOKIE['loginHash'] ?? null;
 			if (is_string($loginHash) && strlen($loginHash)) {
 				$mysql = DB::conn('mysql');
 

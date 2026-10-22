@@ -1,10 +1,13 @@
 <?php
-	if (($gameID || ($pathAction == 'characters' && $pathOptions[0] != 'my')) && !isset($_GET['modal'])) {
+	if ((!empty($gameID) || ($pathAction == 'characters' && ($pathOptions[0] ?? null) != 'my')) && !isset($_GET['modal'])) {
 ?>
 <div id="fixedMenu"><div id="fixedMenu_window">
 <?php
-		$gameID = (int) $gameID;
+		$gameID = (int) ($gameID ?? 0);
 		$isUserGM = false;
+		$isGM = false;
+		$approvedPlayer = false;
+		$game = null;
 		if ($gameID) {
 			$game = $mysql->query("SELECT games.gmID, systems.name AS `system`, games.forumID, games.public, games.gameOptions FROM games INNER JOIN systems ON games.system = systems.id WHERE games.gameID = {$gameID}")->fetch();
 			$players = $mysql->query("SELECT users.userID, users.username, players.approved, players.isGM FROM players INNER JOIN users ON players.userID = users.userID WHERE players.gameID = {$gameID}");
@@ -137,9 +140,9 @@
 		</li>
 <?php
 			}
-			if ($pathAction != 'forums' && ($approvedPlayer || $game['public'])) {
+			if ($pathAction != 'forums' && ($approvedPlayer || ($game['public'] ?? false))) {
 ?>
-			<li><a href="/forums/<?=$game['forumID']?>/" class="menuLink">Forum</a></li>
+			<li><a href="/forums/<?=$game['forumID'] ?? ''?>/" class="menuLink">Forum</a></li>
 <?php
 			}
 ?>

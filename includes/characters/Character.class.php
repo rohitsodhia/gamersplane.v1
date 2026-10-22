@@ -1,6 +1,8 @@
 <?php
 	require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
 
+	// Character data is loaded into properties by name (see load()), so dynamic properties are intended
+	#[AllowDynamicProperties]
 	abstract class Character {
 		protected $bodyClasses = [];
 

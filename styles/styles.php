@@ -27,7 +27,7 @@
 <!--	<link href="/styles/mobile.css?v=<?=getStyleVersion('/styles/mobile.css')?>" rel="stylesheet"> -->
 <? // } ?>
 
-<?if($responsivePage){?>
+<?if(!empty($responsivePage)){?>
 	<link href="/styles/responsive.css?v=<?=getStyleVersion('/styles/responsive.css')?>" rel="stylesheet">
 <?}else{?>
 	<link href="/styles/nonResponsive.css?v=<?=getStyleVersion('/styles/nonResponsive.css')?>" rel="stylesheet">

@@ -723,8 +723,8 @@ class ForumManager
 		$forumID = $forumID ? $forumID : $this->currentForum;
 		$rootForum = $forumID;
 		do {
-			$rootForum = $this->forums[$rootForum]->parentID;
-		} while ($this->forums[$rootForum]->parentID);
+			$rootForum = $rootForum !== null && isset($this->forums[$rootForum]) ? $this->forums[$rootForum]->parentID : null;
+		} while ($rootForum !== null && isset($this->forums[$rootForum]) && $this->forums[$rootForum]->parentID);
 		echo "<i class='ra forum-icon forum-root-{$rootForum} forum-id-{$forumID}'></i> ";
 	}
 
