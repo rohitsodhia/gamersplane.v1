@@ -221,7 +221,7 @@
 		}
 
 		public static function getTextSnippet($text, $maxChars) {
-			$words = preg_split('/[\s]+/', $text, null, PREG_SPLIT_DELIM_CAPTURE);
+			$words = preg_split('/[\s]+/', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$wordCount = count($words);
 			$ret = '';
 			$length=0;

@@ -75,8 +75,8 @@
 					<div class="subwindow">
 <?php		$cardCount = isset($_SESSION['deck']) && count($_SESSION['deck']) ? array_count_values($_SESSION['deck']) : [0, 0]; ?>
 						<div class="cardControls">
-							<p class="deckName"><?=$_SESSION['deckName']?></p>
-							<p>Cards Left: <span class="cardsLeft"><?=$cardCount[1]?></span></p>
+							<p class="deckName"><?=$_SESSION['deckName'] ?? ''?></p>
+							<p>Cards Left: <span class="cardsLeft"><?=$cardCount[1] ?? 0?></span></p>
 							<div>Draw <input type="text" name="numCards" maxlength="2" value="<?=!isset($cardsDrawn) ? '' : (sizeof($cardsDrawn) > $cardCount[0] ? $cardCount[0] : sizeof($cardsDrawn))?>" autocomplete="off" class="numCards alignCenter"> Cards</div>
 							<button type="submit" name="drawCards" class="drawCards">Draw Cards</button>
 							<a href="?newDeck=1" class="newDeckLink button">New Deck</a>

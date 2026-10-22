@@ -285,7 +285,7 @@
 
 		public function addPostNavigateWarning()
 		{
-			return ($this->usermeta['warnUnsaved']!='no');
+			return (($this->usermeta['warnUnsaved'] ?? null) != 'no');
 		}
 	}
 ?>

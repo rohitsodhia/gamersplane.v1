@@ -81,7 +81,7 @@
 
 	$fillVars = $formErrors->getErrors('post');
 
-	if ($_GET['preview']) {
+	if (!empty($_GET['preview'])) {
 		$fillVars = $_SESSION['previewVars'];
 	} else {
 		unset($_SESSION['previewVars']);
@@ -125,7 +125,7 @@
 
 	require_once(FILEROOT . '/header.php');
 ?>
-<?php	if ($_GET['errors'] && $formErrors->errorsExist()) { ?>
+<?php	if (!empty($_GET['errors']) && $formErrors->errorsExist()) { ?>
 		<div class="alertBox_error"><ul>
 <?php
 		if ($formErrors->checkError('overdrawn')) {
@@ -156,12 +156,12 @@
 		</ul></div>
 <?php
 	}
-	$threadManager->displayBreadcrumbs($pathOptions, $post, $quoteID);
+	$threadManager->displayBreadcrumbs($pathOptions, $post, $quoteID ?? null);
 ?>
 		<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/community_guidelines/">community guidelines</a>.</p>
 		<h1 class="headerbar"><i class="ra ra-quill-ink"></i> <?=($post->postID || $pathOptions[0] == 'post') ? ($editPost ? 'Edit post' : 'Post a reply') . ' - ' . printReady($threadManager->getThreadProperty('title')) : 'New Thread'?></h1>
 
-<?php	if ($_GET['preview'] && strlen($fillVars['message']) > 0) { ?>
+<?php	if (!empty($_GET['preview']) && strlen($fillVars['message'] ?? '') > 0) { ?>
 		<h2>Preview:</h2>
 		<div id="preview">
 			<?=printReady(BBCode2Html($fillVars['message']))."\n"?>
@@ -215,7 +215,7 @@
 
 	if ($fillVars) {
 		$title = printReady($fillVars['title']);
-	} elseif (!strlen($post->getTitle()) && $threadManager->getThreadID()) {
+	} elseif (!strlen((string) $post->getTitle()) && $threadManager->getThreadID()) {
 		$title = $threadManager->getThreadProperty('title');
 	} else {
 		$title = printReady($post->title, []);
@@ -225,7 +225,7 @@
 				<div class="table">
 					<div>
 						<label for="title">Title:</label>
-						<div><input id="title" type="text" name="title" maxlength="100" tabindex="<?=tabOrder()?>" value="<?=htmlentities($title)?>" class="titleInput"></div>
+						<div><input id="title" type="text" name="title" maxlength="100" tabindex="<?=tabOrder()?>" value="<?=htmlentities($title ?? '')?>" class="titleInput"></div>
 					</div>
 <?php
 	if ($gameID && (sizeof($characters) || sizeof($pcCharacters))) {
@@ -331,7 +331,7 @@
 			}
 ?>
 			<hr/>
-			<p><label for="title">Discord webhook:</label><input type="text" name="discordWebhook" value="<?=htmlentities($discordWebhook)?>" style="width:100%;"></p>
+			<p><label for="title">Discord webhook:</label><input type="text" name="discordWebhook" value="<?=htmlentities($discordWebhook ?? '')?>" style="width:100%;"></p>
 <?php
 		}
 		?>

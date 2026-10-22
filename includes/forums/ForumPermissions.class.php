@@ -56,9 +56,10 @@
 						INNER JOIN forum_with_parents p ON f.forumID = p.parentID
 					) SELECT * from forum_with_parents ORDER BY depth"
 				);
-				while (list($forumID, $parentID) = $forumInfos->fetch(PDO::FETCH_NUM)) {
+				while ($forumInfo = $forumInfos->fetch(PDO::FETCH_NUM)) {
+					[$forumID, $parentID] = $forumInfo;
 					$heritages[$forumID] = [0];
-					if (array_key_exists($parentID, $heritages)) {
+					if ($parentID !== null && array_key_exists($parentID, $heritages)) {
 						$heritages[$forumID] = array_merge($heritages[$parentID], [$forumID]);
 					} elseif ($parentID) {
 						$heritages[$forumID] = [$parentID];
