@@ -76,19 +76,16 @@
 			return false;
 		}
 
-		public static function logout($resetSession = false) {
-			if ($resetSession) {
-				session_unset();
-//				unset($_COOKIE[session_name()]);
+		public static function logout() {
+			session_unset();
+//			unset($_COOKIE[session_name()]);
 
-				session_regenerate_id(TRUE);
-				session_destroy();
-				setcookie(session_name(), '', time() - 30, '/', COOKIE_DOMAIN, true, true);
-				$_SESSION = [];
-			}
+			session_regenerate_id(TRUE);
+			session_destroy();
+			setcookie(session_name(), '', time() - 30, '/', COOKIE_DOMAIN);
+			$_SESSION = [];
 
-			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, true, true);
-//			session_destroy();
+			setcookie('loginHash', '', time() - 30, '/', COOKIE_DOMAIN, getenv('ENVIRONMENT') != 'dev', true);
 		}
 
 		public function __get($var) {

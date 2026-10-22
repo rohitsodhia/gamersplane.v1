@@ -1,28 +1,32 @@
 volumes:
-  mysql_db:
-    driver: local
-    name: gpv1_mysql_db
+    mysql_db:
+        driver: local
+        name: gpv1_mysql_db
 
 services:
-  api:
-    depends_on:
-      - mysql
+    proxy:
+        ports:
+            - 80:80
 
-  mysql:
-    build:
-      context: ./docker/mysql
-      dockerfile: Dockerfile
-    command: --long_query_time=${MYSQL_LONG_QUERY_TIME}
-    container_name: gpv1-mysql
-    ports:
-      - "127.0.0.1:3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER=gamersplane
-      - MYSQL_PASSWORD
-    volumes:
-      - ./docker/mysql:/docker-entrypoint-initdb.d
-      - ./logs/mysql:/var/log/mysql/
-      - mysql_db:/var/lib/mysql
+    api:
+        depends_on:
+            - mysql
+
+    mysql:
+        build:
+            context: ./docker/mysql
+            dockerfile: Dockerfile
+        command: --long_query_time=${MYSQL_LONG_QUERY_TIME}
+        container_name: gpv1-mysql
+        ports:
+            - "127.0.0.1:3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD
+            - MYSQL_DATABASE
+            - MYSQL_USER=gamersplane
+            - MYSQL_PASSWORD
+        volumes:
+            - ./docker/mysql:/docker-entrypoint-initdb.d
+            - ./logs/mysql:/var/log/mysql/
+            - mysql_db:/var/lib/mysql
 
