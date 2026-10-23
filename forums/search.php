@@ -4,10 +4,10 @@
 
 	$search = $_GET['search'];
 	$forumSearch = new ForumSearch($search);
-	$searchText = $_GET['q'];
-	$gameID = $_GET['gameID'];
+	$searchText = $_GET['q'] ?? null;
+	$gameID = $_GET['gameID'] ?? null;
 	$forumSearch->searchText($searchText, $gameID);
-	$forumSearch->findThreads($_GET['page']);
+	$forumSearch->findThreads($_GET['page'] ?? null);
 	$dispatchInfo['title'] = $forumSearch->searchTitle();
 
 	require_once(FILEROOT.'/header.php');

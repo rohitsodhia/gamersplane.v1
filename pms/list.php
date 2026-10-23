@@ -1,10 +1,10 @@
 <?	$responsivePage=true;
 	require_once(FILEROOT.'/header.php'); ?>
-<?	if ($_GET['deleteSuc'] || $_GET['sent']) { ?>
+<?	if (!empty($_GET['deleteSuc']) || !empty($_GET['sent'])) { ?>
 		<div class="alertBox_success">
 <?
-	if ($_GET['deleteSuc']) { echo "\t\t\tPM successfully deleted.\n"; }
-	if ($_GET['sent']) { echo "\t\t\tPM successfully sent.\n"; }
+	if (!empty($_GET['deleteSuc'])) { echo "\t\t\tPM successfully deleted.\n"; }
+	if (!empty($_GET['sent'])) { echo "\t\t\tPM successfully sent.\n"; }
 ?>
 		</div>
 <?	} ?>

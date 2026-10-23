@@ -86,7 +86,7 @@ class games
 			$findParams = [
 				'retired IS NULL'
 			];
-			if ($_GET['systems']) {
+			if (!empty($_GET['systems'])) {
 				$searchSystems = [];
 				foreach($_GET['search'] as $searchSystem) {
 					if ($systems->verifySystem($searchSystem)) {
@@ -107,12 +107,12 @@ class games
 			$game['system'] = $systems->getFullName($game['system']);
 			$game['isRetired'] = $game['retired'] != null;
 			foreach (['gameID', 'forumID', 'numPlayers', 'playerCount'] as $intKey) {
-				$game[$intKey] = (int) $game[$intKey];
+				$game[$intKey] = (int) ($game[$intKey] ?? 0);
 			}
 			foreach (['status', 'public', 'isGM'] as $boolKey) {
-				$game[$boolKey] = (bool) $game[$boolKey];
+				$game[$boolKey] = (bool) ($game[$boolKey] ?? false);
 			}
-			if ($game['start']) {
+			if (!empty($game['start'])) {
 				$game['start'] = strtotime($game['start']);
 			}
 			$game['gm'] = [
@@ -120,7 +120,7 @@ class games
 				'username' => $game['gmUsername'],
 				'lastActivity' => $game['gmLastActivity']
 			];
-			$game['isFavorite'] = (bool) $game['isFavorite'];
+			$game['isFavorite'] = (bool) ($game['isFavorite'] ?? false);
 			unset($game['retired'], $game['gmID'], $game['gmUsername'], $game['gmLastActivity']);
 			$games[] = $game;
 		}
@@ -260,7 +260,7 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
-		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId']);
+		$details['recruitmentThreadId']=intval($_POST['recruitmentThreadId'] ?? 0);
 		if($details['recruitmentThreadId']==0){
 			$details['recruitmentThreadId']=null;
 		}
@@ -270,7 +270,7 @@ class games
 			$details['customSystem'] = sanitizeString($_POST['customSystem']);
 		}
 
-		$gameOptions = trim($_POST['gameOptions'] ?: "");
+		$gameOptions = trim(($_POST['gameOptions'] ?? '') ?: "");
 		$gameOptions = str_replace(array("‘","’","“","”"), array("'", "'", '"', '"'), $gameOptions);
 		json_decode($gameOptions);
 		if ($gameOptions != "" || json_last_error() === 0) {
@@ -387,7 +387,7 @@ class games
 		];
 		$details['numPlayers'] = intval($_POST['numPlayers']);
 		$details['charsPerPlayer'] = intval($_POST['charsPerPlayer']);
-		$details['recruitmentThreadId'] = intval($_POST['recruitmentThreadId']);
+		$details['recruitmentThreadId'] = intval($_POST['recruitmentThreadId'] ?? 0);
 		if ($details['recruitmentThreadId'] == 0){
 			$details['recruitmentThreadId'] = null;
 		}
@@ -400,7 +400,7 @@ class games
 			$details['customSystem'] = null;
 		}
 
-		$gameOptions = trim($_POST['gameOptions'] ?: "");
+		$gameOptions = trim(($_POST['gameOptions'] ?? '') ?: "");
 		$gameOptions = str_replace(["‘", "’", "“", "”"], ["'", "'", '"', '"'], $gameOptions);
 		$jsonTest = json_decode($gameOptions);
 		if ($gameOptions != "" && json_last_error() === 0) {
@@ -447,8 +447,6 @@ class games
 			$forumID = $mysql->query("SELECT forumID FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 			$updateForumTitle = $mysql->prepare("UPDATE forums SET title = :title WHERE forumID = {$forumID} LIMIT 1");
 			$updateForumTitle->execute(['title' => $details['title']]);
-			// $hl_gameEdited = new HistoryLogger('gameEdited');
-			// $hl_gameEdited->addGame($gameID)->save();
 
 			displayJSON(['success' => true, 'gameID' => (int) $gameID]);
 		}
@@ -510,8 +508,6 @@ class games
 			// if ($cForumID != $forumID)
 			// $mysql->query("INSERT INTO forums_permissions_general SET forumID = {$cForumID}");
 			// $mysql->query("UPDATE forums_permissions_general SET `read` = {$public}, `write` = 0, `editPost` = 0, `deletePost` = 0, `createThread` = 0, `deleteThread` = 0, `addPoll` = 0, `addRolls` = -1, `addDraws` = -1, `moderate` = -1 WHERE forumID = {$forumID}");
-			// $hl_retired = new HistoryLogger('retired');
-			// $hl_retired->addGame($gameID)->addForUsers($players)->addForCharacters($chars)->save();
 
 			$gameCount = $mysql->query("SELECT gameID FROM players WHERE players.userID = {$currentUser->userID} AND players.isGM = TRUE");
 			if (!$gameCount->rowCount()) {
@@ -555,8 +551,6 @@ class games
 		$status = $mysql->query("SELECT status FROM games WHERE gameID = {$gameID} LIMIT 1")->fetchColumn();
 		if ($status) {
 			$mysql->query("INSERT INTO players SET gameID = {$gameID}, userID = {$currentUser->userID}");
-			// $hl_playerApplied = new HistoryLogger('playerApplied');
-			// $hl_playerApplied->addUser($currentUser->userID)->addGame($gameID)->save();
 		} else {
 			displayJSON(['failed' => true, 'gameClosed' => true]);
 		}
@@ -615,8 +609,6 @@ class games
 			// }
 			$mail->send();
 
-			// $hl_playerInvited = new HistoryLogger('playerInvited');
-			// $hl_playerInvited->addUser($currentUser->userID, 'gm')->addUser($user['userID'])->addGame($gameID)->save();
 
 			displayJSON([
 				'success' => true,
@@ -640,10 +632,6 @@ class games
 		$gmCheck = $mysql->query("SELECT gameID FROM players WHERE gameID = {$gameID} AND userID = {$currentUser->userID} AND isGM = TRUE LIMIT 1");
 		if ($gmCheck->rowCount() || $currentUser->userID == $userID) {
 			$mysql->query("DELETE FROM gameInvites WHERE gameID = {$gameID} AND userID = {$userID} LIMIT 1");
-			// $hl_inviteRemoved = new HistoryLogger('invite'.ucwords($pathOptions[1]).($pathOptions[1] == 'withdraw'?'n':'d'));
-			// if ($pathOptions[1] == 'withdraw')
-			// 	$hl_inviteRemoved->addUser($currentUser->userID, 'gm');
-			// $hl_inviteRemoved->addUser($userID)->addGame($gameID)->save();
 			displayJSON(['success' => true, 'userID' => (int) $userID]);
 		} else {
 			displayJSON(['failed' => true, 'errors' => 'noPermission']);
@@ -743,11 +731,6 @@ class games
 		} elseif (!$charInfo['approved']) {
 			$pendingAction = 'rejected';
 		}
-		// $hl_charRemoved = new HistoryLogger('character'.ucwords($pendingAction));
-		// $hl_charRemoved->addCharacter($characterID);
-		// if ($pendingAction != 'withdrawn')
-		// 	$hl_charRemoved->addUser($currentUser->userID, 'gm');
-		// $hl_charRemoved->addUser($charInfo['userID'])->addGame($gameID)->save();
 
 		displayJSON(['success' => true, 'action' => $pendingAction, 'characterID' => $characterID]);
 	}
@@ -767,8 +750,6 @@ class games
 		}
 
 		$mysql->query("UPDATE characters SET approved = 1 WHERE characterID = {$characterID} LIMIT 1");
-		// $hl_charApproved = new HistoryLogger('characterApproved');
-		// $hl_charApproved->addCharacter($characterID)->addUser($currentUser->userID, 'gm')->addGame($gameID)->save();
 
 		displayJSON(['success' => true, 'action' => 'characterApproved', 'characterID' => $characterID]);
 	}
@@ -777,7 +758,7 @@ class games
 	{
 		$mysql = DB::conn('mysql');
 
-		$lfgCount = intval($_POST['lfgCount']) > 0 ? intval($_POST['lfgCount']) : 10;
+		$lfgCount = intval($_POST['lfgCount'] ?? 0) > 0 ? intval($_POST['lfgCount']) : 10;
 		$rLFGs = $mysql->query("SELECT name, lfg AS count FROM systems WHERE lfg > 0 ORDER BY lfg DESC, sortName LIMIT {$lfgCount}")->fetchAll();
 		$lfgs = [];
 		foreach ($rLFGs as $rLFG) {

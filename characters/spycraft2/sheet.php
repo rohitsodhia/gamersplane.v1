@@ -156,21 +156,21 @@
 					</div>
 					<div class="tr">
 						<label class="leftLabel shortText">Knowledge</label>
-						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('knowledge') + $this->getLevel() + $this->getStatMod('int', falseh))?></span>
+						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('knowledge') + $this->getLevel() + $this->getStatMod('int', false))?></span>
 						<span class="shortNum lrBuffer"><?=showSign($this->getLevel())?></span>
 						<span class="shortNum lrBuffer"><?=$this->getStatMod('int')?></span>
 						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('knowledge'))?></span>
 					</div>
 					<div class="tr">
 						<label class="leftLabel shortText">Request</label>
-						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('request') + $this->getLevel() + $this->getStatMod('cha', falseh))?></span>
+						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('request') + $this->getLevel() + $this->getStatMod('cha', false))?></span>
 						<span class="shortNum lrBuffer"><?=showSign($this->getLevel())?></span>
 						<span class="shortNum lrBuffer"><?=$this->getStatMod('cha')?></span>
 						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('request'))?></span>
 					</div>
 					<div class="tr">
 						<label class="leftLabel shortText">Gear</label>
-						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('gear') + $this->getLevel() + $this->getStatMod('wis', falseh))?></span>
+						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('gear') + $this->getLevel() + $this->getStatMod('wis', false))?></span>
 						<span class="shortNum lrBuffer"><?=showSign($this->getLevel())?></span>
 						<span class="shortNum lrBuffer"><?=$this->getStatMod('wis')?></span>
 						<span class="shortNum lrBuffer"><?=showSign($this->getExtraStats('gear'))?></span>

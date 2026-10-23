@@ -242,13 +242,13 @@
 					'newGameMail' => $user->newGameMail ? true : false,
 					'gmMail' => $user->gmMail ? true : false,
 					'postSide' => $user->postSide,
-					'pog_participate' => $user->usermeta['pog_participate'] ? true: false,
+					'pog_participate' => !empty($user->usermeta['pog_participate']),
 					'pog_interests' => $user->usermeta['pog_interests'] ?? '',
-					'pog_gift_sent' => $user->usermeta['pog_gift_sent'] ? true: false,
-					'pog_gift_recieved' => $user->usermeta['pog_gift_recieved'] ? true: false,
+					'pog_gift_sent' => !empty($user->usermeta['pog_gift_sent']),
+					'pog_gift_recieved' => !empty($user->usermeta['pog_gift_recieved']),
 				]);
-				if ($user->usermeta['pog_participate']) {
-					$pog23_giftee = new User(intval($user->usermeta['pog23_giftee']));
+				if (!empty($user->usermeta['pog_participate'])) {
+					$pog23_giftee = new User(intval($user->usermeta['pog23_giftee'] ?? 0));
 					$pog23_giftee->getAllUsermeta();
 					$details = array_merge($details, [
 						'pog_assignee' => $pog23_giftee->username,
@@ -290,7 +290,7 @@
 			if (isset($details['avatar']['delete']) && $details['avatar']['delete'] == 'true') {
 				@unlink(FILEROOT . "/ucp/avatars/{$user->userID}.jpg");
 			}
-			if ($_FILES['file']['error'] == 0 && $_FILES['file']['size'] > 15 && $_FILES['file']['size'] < 1048576) {
+			if (isset($_FILES['file']) && $_FILES['file']['error'] == 0 && $_FILES['file']['size'] > 15 && $_FILES['file']['size'] < 1048576) {
 				$avatarExt = trim(end(explode('.', strtolower($_FILES['file']['name']))));
 				if ($avatarExt == 'jpeg') {
 					$avatarExt = 'jpg';
@@ -431,10 +431,10 @@
 			}
 			$user->updateUsermeta('postSide', $postSide);
 
-			$user->updateUsermeta('pog_participate', $plane_of_giving['participate'] ? true : false);
-			$user->updateUsermeta('pog_interests', $plane_of_giving['interests']);
-			$user->updateUsermeta('pog_gift_sent', $plane_of_giving['gift_sent'] ? true : false);
-			$user->updateUsermeta('pog_gift_received', $plane_of_giving['gift_received'] ? true : false);
+			$user->updateUsermeta('pog_participate', !empty($plane_of_giving['participate']));
+			$user->updateUsermeta('pog_interests', $plane_of_giving['interests'] ?? null);
+			$user->updateUsermeta('pog_gift_sent', !empty($plane_of_giving['gift_sent']));
+			$user->updateUsermeta('pog_gift_received', !empty($plane_of_giving['gift_received']));
 
 			$return = [];
 			if (sizeof($errors)) {

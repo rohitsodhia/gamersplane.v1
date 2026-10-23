@@ -19,30 +19,30 @@
 		</div>
 		<h1 class="headerbar"><i class="ra ra-d6"></i> <?=$gameInfo['title'] ?> <a ng-if="isGM" href="/games/{{gameID}}/edit/">[ EDIT ]</a></h1>
 
-<?php	if ($_GET['submitted'] || $_GET['wrongSystem'] || $_GET['approveError']) { ?>
+<?php	if (!empty($_GET['submitted']) || !empty($_GET['wrongSystem']) || !empty($_GET['approveError'])) { ?>
 		<div class="alertBox_error"><ul>
 <?php
-		if ($_GET['submitted']) {
+		if (!empty($_GET['submitted'])) {
 			echo "\t\t\t<li>You already submitted that character to a game.</li>\n";
 		}
-		if ($_GET['wrongSystem']) {
+		if (!empty($_GET['wrongSystem'])) {
 			echo "\t\t\t<li>That character isn't made for this game.</li>\n";
 		}
-		if ($_GET['approveError']) {
+		if (!empty($_GET['approveError'])) {
 			echo "\t\t\t<li>There was an issue approving the character.</li>\n";
 		}
 ?>
 		</ul></div>
-<?php	} if ($_GET['removed'] || $_GET['gmAdded'] || $_GET['gmRemoved']) { ?>
+<?php	} if (!empty($_GET['removed']) || !empty($_GET['gmAdded']) || !empty($_GET['gmRemoved'])) { ?>
 		<div class="alertBox_success"><ul>
 <?php
-		if ($_GET['gmAdded']) {
+		if (!empty($_GET['gmAdded'])) {
 			echo "\t\t\t<li>GM successfully added.</li>\n";
 		}
-		if ($_GET['gmRemoved']) {
+		if (!empty($_GET['gmRemoved'])) {
 			echo "\t\t\t<li>GM successfully removed.</li>\n";
 		}
-		if ($_GET['removed']) {
+		if (!empty($_GET['removed'])) {
 			echo "\t\t\t<li>Character successfully removed from game.</li>\n";
 		}
 ?>

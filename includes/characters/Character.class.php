@@ -1,6 +1,8 @@
 <?php
 	require_once(FILEROOT . '/javascript/markItUp/markitup.bbcode-parser.php');
 
+	// Character data is loaded into properties by name (see load()), so dynamic properties are intended
+	#[AllowDynamicProperties]
 	abstract class Character {
 		protected $bodyClasses = [];
 
@@ -216,7 +218,7 @@
 					$saveCharacter = $mysql->prepare("INSERT INTO characters SET " . implode(', ', $preparedValues));
 				}
 				$saveCharacter->execute($setValues);
-				if (!$this->characterId) {
+				if (!$this->characterID) {
 					$this->characterID = $mysql->lastInsertID();
 				}
 				return true;

@@ -44,7 +44,7 @@
 				$this->$key = intval($value);
 			elseif (in_array($key, array('title', 'description', 'permissions')))
 				$this->$key = $value;
-			elseif ($key == 'forumType' && in_array(strtolower($value), array('f', 'c')))
+			elseif ($key == 'forumType' && in_array(strtolower((string) $value), array('f', 'c')))
 				$this->forumType = strtolower($value);
 			elseif (in_array($key, ['newPosts', 'anyRead']))
 				$this->$key = $value ? true : false;
