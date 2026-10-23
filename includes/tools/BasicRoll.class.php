@@ -31,7 +31,7 @@
 							$diceSize=intval($roll[5]);
 							$diceSides[]=$diceSize;
 							//keep and drop
-							if($roll[7] && intval($roll[8])){
+							if(!empty($roll[7]) && intval($roll[8] ?? 0)){
 								$drop[]= max(0,$dn-intval($roll[8]));  //keep is inverse of drop
 								$dropHigh[] = ( ($roll[7]=="h" || $roll[7]=="H") ? 0:1 );
 							}else{
