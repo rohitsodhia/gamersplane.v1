@@ -21,9 +21,9 @@
 <script type="text/javascript" src="/javascript/combobox.angular.js?v=<?=getJSVersion('/javascript/combobox.angular.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/jquery.markitup.js?v=<?=getJSVersion('/javascript/markItUp/jquery.markitup.js')?>"></script>
 <script type="text/javascript" src="/javascript/markItUp/sets/bbcode/_set-common.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/_set-common.js')?>"></script>
-<?	if ($characterMarkitUp) { ?>
+<?	if (!empty($characterMarkitUp)) { ?>
 	<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/character-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/character-set.js')?>"></script>
-<?	} else if($gameID) {?>
+<?	} else if(!empty($gameID)) {?>
 	<script type="text/javascript" src="/javascript/markItUp/sets/bbcode/game-forum-set.js?v=<?=getJSVersion('/javascript/markItUp/sets/bbcode/game-forum-set.js')?>"></script>
 	<script type="text/javascript" src="/javascript/gameOptions.js?v=<?=getJSVersion('/javascript/gameOptions.js')?>"></script>
 <?	} else if($pathAction == 'forums'){?>
@@ -47,7 +47,7 @@
 <?	if (file_exists(FILEROOT.'/javascript/'.substr($requireLoc, 0, -4).'.js')) { ?>
 <script type="text/javascript" src="/javascript/<?=substr($requireLoc, 0, -4)?>.js?v=<?=getJSVersion('/javascript/'.substr($requireLoc, 0, -4).'.js')?>"></script>
 <?	} ?>
-<?	if (($gameID || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
+<?	if ((!empty($gameID) || $pathAction == 'characters') && !isset($_GET['modal'])) { ?>
 <script type="text/javascript" src="/javascript/tools/cards.js?v=<?=getJSVersion('/javascript/tools/cards.js')?>"></script>
 <?	} ?>
 <?	if ($addJSFiles) { foreach ($addJSFiles as $file) { ?>
@@ -55,6 +55,6 @@
 <?	} } ?>
 <script type="text/javascript" src="/javascript/leaflet/leaflet.js?v=<?=getJSVersion('/javascript/leaflet/leaflet.js')?>"></script>
 <script type="text/javascript" src="/javascript/zoommap.js?v=<?=getJSVersion('/javascript/zoommap.js')?>"></script>
-<?	if ($addExternalJSFiles && !empty($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
+<?	if (!empty($addExternalJSFiles)) { foreach ($addExternalJSFiles as $file) { ?>
 <script src="<?=$file?>"></script>
 <?	} } ?>

@@ -79,15 +79,16 @@ class ForumManager
 				f.forumID, f.title, f.description, f.forumType, f.parentID, f.depth, cc.childCount, f.`order`, f.gameID, f.threadCount, t.numPosts postCount, t.lastPostID, u.userID, u.username, lp.datePosted
 			FROM forums f
 			{$retrieve_forums_join}
-			LEFT JOIN (
-				SELECT parentID forumID, COUNT(forumID) childCount
-				FROM forums GROUP BY (parentID)
-			) cc ON cc.forumID = f.forumID
-			LEFT JOIN (
-				SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
+			LEFT JOIN LATERAL (
+				SELECT NULLIF(COUNT(*), 0) childCount
+				FROM forums children
+				WHERE children.parentID = f.forumID
+			) cc ON TRUE
+			LEFT JOIN LATERAL (
+				SELECT SUM(postCount) numPosts, MAX(lastPostID) lastPostID
 				FROM threads
-				GROUP BY forumID
-			) t ON f.forumID = t.forumID
+				WHERE threads.forumID = f.forumID
+			) t ON TRUE
 			LEFT JOIN posts lp ON t.lastPostID = lp.postID
 			LEFT JOIN users u ON lp.authorID = u.userID
 			{$whereClause}
@@ -118,15 +119,16 @@ class ForumManager
 				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				INNER JOIN games ON f.gameID = games.gameID
 				INNER JOIN players ON games.gameID = players.gameID AND players.userID = {$currentUser->userID} AND players.approved = 1
-				LEFT JOIN (
-					SELECT parentID forumID, COUNT(forumID) childCount
-					FROM forums GROUP BY (parentID)
-				) cc ON cc.forumID = f.forumID
-				LEFT JOIN (
-					SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
+				LEFT JOIN LATERAL (
+					SELECT NULLIF(COUNT(*), 0) childCount
+					FROM forums children
+					WHERE children.parentID = f.forumID
+				) cc ON TRUE
+				LEFT JOIN LATERAL (
+					SELECT SUM(postCount) numPosts, MAX(lastPostID) lastPostID
 					FROM threads
-					GROUP BY forumID
-				) t ON f.forumID = t.forumID
+					WHERE threads.forumID = f.forumID
+				) t ON TRUE
 				LEFT JOIN posts lp ON t.lastPostID = lp.postID
 				LEFT JOIN users u ON lp.authorID = u.userID
 				WHERE games.retired IS NULL
@@ -157,15 +159,16 @@ class ForumManager
 				INNER JOIN forum_with_children c ON f.forumID = c.forumID
 				INNER JOIN games ON f.gameID = games.gameID
 				INNER JOIN games_favorites favorites ON games.gameID = favorites.gameID AND favorites.userID = {$currentUser->userID}
-				LEFT JOIN (
-					SELECT parentID forumID, COUNT(forumID) childCount
-					FROM forums GROUP BY (parentID)
-				) cc ON cc.forumID = f.forumID
-				LEFT JOIN (
-					SELECT forumID, SUM(postCount) numPosts, MAX(lastPostID) lastPostID
+				LEFT JOIN LATERAL (
+					SELECT NULLIF(COUNT(*), 0) childCount
+					FROM forums children
+					WHERE children.parentID = f.forumID
+				) cc ON TRUE
+				LEFT JOIN LATERAL (
+					SELECT SUM(postCount) numPosts, MAX(lastPostID) lastPostID
 					FROM threads
-					GROUP BY forumID
-				) t ON f.forumID = t.forumID
+					WHERE threads.forumID = f.forumID
+				) t ON TRUE
 				LEFT JOIN posts lp ON t.lastPostID = lp.postID
 				LEFT JOIN users u ON lp.authorID = u.userID
 				WHERE games.retired IS NULL
@@ -203,7 +206,7 @@ class ForumManager
 						if ($markedRead < $lastRead[$parentID]['markedRead']) {
 							$markedRead = $lastRead[$parentID]['markedRead'];
 						}
-						$parentID = $lastRead[$parentID]['parentID'];
+						$parentID = $lastRead[$parentID]['parentID'] ?? null;
 					}
 
 					$lastRead[$key] = [
@@ -560,7 +563,7 @@ class ForumManager
 				}
 			}
 		}
-		if ($forum->permissions['read'] && $forum->lastPost->postID > $lastPost->postID) {
+		if ($forum->permissions['read'] && $forum->lastPost && $forum->lastPost->postID > $lastPost->postID) {
 			return $forum->lastPost;
 		} elseif ($lastPost->postID != 0) {
 			return $lastPost;
@@ -720,8 +723,8 @@ class ForumManager
 		$forumID = $forumID ? $forumID : $this->currentForum;
 		$rootForum = $forumID;
 		do {
-			$rootForum = $this->forums[$rootForum]->parentID;
-		} while ($this->forums[$rootForum]->parentID);
+			$rootForum = $rootForum !== null && isset($this->forums[$rootForum]) ? $this->forums[$rootForum]->parentID : null;
+		} while ($rootForum !== null && isset($this->forums[$rootForum]) && $this->forums[$rootForum]->parentID);
 		echo "<i class='ra forum-icon forum-root-{$rootForum} forum-id-{$forumID}'></i> ";
 	}
 

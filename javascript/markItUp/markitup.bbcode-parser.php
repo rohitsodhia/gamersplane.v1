@@ -36,7 +36,7 @@ function splitByHeader($title, $text, $cssClass, $collectionData=''){
 		$ret=$ret.'<h2 class="headerbar hbDark">'.$title.'</h2>';
 	}
 
-	$abilityLines = explode("\n", trim($text));
+	$abilityLines = explode("\n", trim($text ?? ''));
 
 	$abilityOpen=true;
 	$abilityRaw="";
@@ -155,7 +155,7 @@ function listTagBuilder($matches, $text, $options) {
 }
 
 function BBCode2Html($text) {
-	$text = trim($text);
+	$text = trim($text ?? '');
 
 	//iOS uses smart quotes.  Replace those as they might be tag attributes.
 	$text = str_replace('“', '"', $text);

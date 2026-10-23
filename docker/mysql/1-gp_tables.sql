@@ -685,7 +685,8 @@ CREATE TABLE `games` (
   PRIMARY KEY (`gameID`),
   KEY `gmID` (`gmID`),
   KEY `forumID` (`forumID`),
-  KEY `groupID` (`groupID`)
+  KEY `groupID` (`groupID`),
+  KEY `recruitmentThreadId` (`recruitmentThreadId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -948,7 +949,8 @@ CREATE TABLE `posts` (
   `messageFullText` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`postID`),
   KEY `threadID` (`threadID`),
-  KEY `authorID` (`authorID`),
+  KEY `datePosted` (`datePosted`),
+  KEY `authorID_threadID` (`authorID`,`threadID`),
   FULLTEXT KEY `messageFullText` (`messageFullText`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1112,7 +1114,8 @@ CREATE TABLE `threads` (
   `publicPosting` tinyint(1) NOT NULL,
   `discordWebhook` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`threadID`),
-  KEY `forumID` (`forumID`)
+  KEY `lastPostID` (`lastPostID`),
+  KEY `forumID_stats` (`forumID`,`postCount`,`lastPostID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

@@ -204,8 +204,6 @@
 				$newChar->setLabel($label);
 				$newChar->setCharType($charType);
 				$newChar->save();
-#				$hl_charCreated = new HistoryLogger('characterCreated');
-#				$hl_charCreated->addCharacter($characterID, false)->save();
 
 				displayJSON([
 					'success' => true,
@@ -231,8 +229,6 @@
 			if (!$updateCharacter->rowCount()) {
 				displayJSON(['failed' => true, 'errors' => ['noCharacter']]);
 			} else {
-#				$hl_basicEdited = new HistoryLogger('basicEdited');
-#				$hl_basicEdited->addCharacter($characterID, false)->save();
 				displayJSON(['success' => true, 'basicUpdated' => true]);
 			}
 		}
@@ -291,8 +287,6 @@
 				$charPermissions = $character->checkPermissions($currentUser->userID);
 				if ($charPermissions == 'edit') {
 					$character->save();
-#					$hl_charEdited = new HistoryLogger('characterEdited');
-#					$hl_charEdited->addCharacter($characterID)->addUser($currentUser->userID)->save();
 
 					displayJSON(['success' => true, 'saved' => true, 'characterID' => $characterID]);
 				} else {
@@ -329,8 +323,6 @@
 			$charClass = Systems::systemClassName($system).'Character';
 			if ($character = new $charClass($characterID)) {
 				$character->delete();
-#				$hl_charDeleted = new HistoryLogger('characterDeleted');
-#				$hl_charDeleted->addCharacter($characterID, false)->save();
 
 				displayJSON(['success' => true, 'charDeleted' => true]);
 			}
@@ -352,8 +344,6 @@
 						$state = "unfavorited";
 					}
 				}
-#				$hl_charFavorited = new HistoryLogger($state == 'favorited'?'characterFavorited':'characterUnfavorited');
-#				$hl_charFavorited->addCharacter($characterID, false)->addUser($currentUser->userID)->save();
 				displayJSON(['success' => true, 'state' => $state]);
 			} else {
 				displayJSON(['failed' => true, 'errors' => ['noChar']]);
@@ -411,18 +401,6 @@
 				$item['systems'] = explode(';', $item['systems']);
 				$newItems[] = $item;
 			}
-
-			// $rAddToSystem = $mongo->userAddedItems->find(
-			// 	[
-			// 		'itemID' => ['$ne' => null],
-			// 		'action' => null
-			// 	]
-			// );
-			// $addToSystem = [];
-			// foreach ($rAddToSystem as $item) {
-			// 	$item['_id'] = (string) $item['_id'];
-			// 	$addToSystem[] = $item;
-			// }
 
 			displayJSON([
 				'success' => true,

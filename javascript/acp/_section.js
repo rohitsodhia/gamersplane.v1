@@ -37,7 +37,7 @@ controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Rang
 			$user.showForm = null;
 		}
 	};
-	$scope.setDatePart = function(suspendUntil, part, value) {
+	$scope.setDatePart = function (suspendUntil, part, value) {
 		suspendUntil[part] = value;
 	};
 	$scope.confirmSuspend = function (user) {
@@ -64,10 +64,10 @@ controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Rang
 	$timeout(function () {
 		$('#userList').on('click', '.activationLink input', function () {
 			if (document.selection) {
-		        document.selection.empty();
-		    } else if (window.getSelection) {
-		        window.getSelection().removeAllRanges();
-		    }
+				document.selection.empty();
+			} else if (window.getSelection) {
+				window.getSelection().removeAllRanges();
+			}
 			$(this).select();
 		}).on('keydown keypress', '.activationLink input', function ($event) {
 			$event.preventDefault();
@@ -142,26 +142,26 @@ controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Rang
 			}
 		});
 	};
-/*		$('#newItems').on('click', '.actions a', function (e) {
-			e.preventDefault();
-
-			var $itemRow = $(this).closest('.newItem'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
-			if ($(this).hasClass('check')) postData['action'] = 'add';
-			else if ($(this).hasClass('cross')) postData['action'] = 'reject';
-			$.post('/acp/process/newItem/', postData, function (data) {
-				$itemRow.remove();
+	/*		$('#newItems').on('click', '.actions a', function (e) {
+				e.preventDefault();
+	
+				var $itemRow = $(this).closest('.newItem'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
+				if ($(this).hasClass('check')) postData['action'] = 'add';
+				else if ($(this).hasClass('cross')) postData['action'] = 'reject';
+				$.post('/acp/process/newItem/', postData, function (data) {
+					$itemRow.remove();
+				});
 			});
-		});
-		$('#addToSystem').on('click', '.actions a', function (e) {
-			e.preventDefault();
-
-			var $itemRow = $(this).closest('.item'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
-			if ($(this).hasClass('check')) postData['action'] = 'add';
-			else if ($(this).hasClass('cross')) postData['action'] = 'reject';
-			$.post('/acp/process/addToSystem/', postData, function (data) {
-				$itemRow.remove();
-			});
-		});*/
+			$('#addToSystem').on('click', '.actions a', function (e) {
+				e.preventDefault();
+	
+				var $itemRow = $(this).closest('.item'), postData = { uItemID: $itemRow.attr('id').split('_')[1], name: $itemRow.children('input').val() };
+				if ($(this).hasClass('check')) postData['action'] = 'add';
+				else if ($(this).hasClass('cross')) postData['action'] = 'reject';
+				$.post('/acp/process/addToSystem/', postData, function (data) {
+					$itemRow.remove();
+				});
+			});*/
 }]).controller('acp_systems', ['$scope', '$http', '$sce', '$timeout', 'SystemsService', function ($scope, $http, $sce, $timeout, SystemsService) {
 	$scope.selectSystem = {
 		'data': [],
@@ -212,7 +212,7 @@ controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Rang
 		SystemsService.get({ 'shortName': $scope.selectSystem.value }).then(function (data) {
 			$scope.newSystem = false;
 			$scope.edit = data.systems[0];
-//			$scope.selectSystem.search = '';
+			//			$scope.selectSystem.search = '';
 			$scope.newGenre.search = '';
 			updateGenres();
 		});
@@ -393,7 +393,7 @@ controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Rang
 		$scope.$broadcast('resetSongForm', 'new');
 	};
 	$scope.editSong = function (id) {
-		$scope.showEdit = $scope.showEdit != id?id:null;
+		$scope.showEdit = $scope.showEdit != id ? id : null;
 		if ($scope.showEdit !== null)
 			$scope.$broadcast('resetSongForm', id);
 	};
@@ -425,7 +425,7 @@ controllers.controller('acp_users', ['$scope', '$timeout', 'UsersService', 'Rang
 	});
 	$scope.editing = null;
 	$scope.editHold = null;
-	$scope.editFAQ = function(faq) {
+	$scope.editFAQ = function (faq) {
 		$scope.editing = faq._id;
 		$scope.editHold = faq;
 	};

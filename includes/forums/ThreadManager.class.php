@@ -25,7 +25,7 @@
 				$this->forumManager = new ForumManager($forumID, ForumManager::NO_CHILDREN|ForumManager::NO_NEWPOSTS);
 			}
 
-			$pageSize = intval($_GET['pageSize']);
+			$pageSize = intval($_GET['pageSize'] ?? 0);
 			if($pageSize && $pageSize>20){
 				$this->thread->pageSize=$pageSize;
 			}
@@ -123,7 +123,7 @@
 				$this->thread->getPostsFromStart($start);
 				$page = 1;
 			} else{
-				$page = intval($_GET['page']);
+				$page = intval($_GET['page'] ?? 0);
 			}
 			$this->page = intval($page) > 0?intval($page):1;
 		}

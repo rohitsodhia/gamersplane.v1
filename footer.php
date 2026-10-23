@@ -46,7 +46,7 @@
 <?php		} ?>
 	</ul>
 </div></footer>
-<?php		if ($fixedGameMenu) { require(FILEROOT . '/fixedGameMenu.php'); } ?>
+<?php		if (!empty($fixedGameMenu)) { require(FILEROOT . '/fixedGameMenu.php'); } ?>
 <?php	} else { ?>
 </div>
 <?php	} ?>

@@ -11,14 +11,14 @@
 	} elseif (isset($_POST['post'])) {
 		unset ($_SESSION['errors'], $_SESSION['errorVals'], $_SESSION['errorTime']);
 
-		if ($_POST['threadID']) {
+		if (!empty($_POST['threadID'])) {
 			$threadID = intval($_POST['threadID']);
 			$threadManager = new ThreadManager($threadID);
 			if (!$threadManager->getPermissions('write') || ($locked && $threadManager->getPermissions('moderate'))) { header('Location: /forums/'.$forumID.'/'); exit; }
 		}
 
 		$minorChange=false;
-		if ($_POST['edit']) {
+		if (!empty($_POST['edit'])) {
 			$postID = intval($_POST['edit']);
 			$post = new Post($postID);
 			$threadID = intval($post->threadID);
@@ -27,7 +27,7 @@
 			$post = new Post();
 		}
 		$post->setTitle($_POST['title']);
-		$post->setPostAs($_POST['postAs']);
+		$post->setPostAs($_POST['postAs'] ?? null);
 		$message = $_POST['message'];
 		if (isset($threadID)) {
 			$gameID = (int) $mysql->query("SELECT f.gameID FROM threads t INNER JOIN forums f ON t.forumID = f.forumID WHERE t.threadID = {$threadID} LIMIT 1")->fetchColumn();

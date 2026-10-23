@@ -2,7 +2,7 @@
 	$responsivePage=true;
 	addPackage('forum');
 
-	$forumID = intval($pathOptions[0]);
+	$forumID = intval($pathOptions[0] ?? 0);
 	$forumManager = new ForumManager($forumID);
 
 	if (!$forumManager->displayCheck()) { header('Location: /forums'); exit; }
@@ -43,7 +43,7 @@
 	$forumManager->displayForum(ForumManager::FAV_AND_NON_FAV);
 
 	if ($forumID && $forumManager->getForumProperty($forumID, 'forumType') == 'f') {
-		$forumManager->getThreads($_GET['page']);
+		$forumManager->getThreads($_GET['page'] ?? null);
 		$forumManager->displayThreads();
 	}
 ?>
@@ -65,6 +65,6 @@
 				<p><a href="/forums/subscriptions/">Manage Subscriptions</a></p>
 <?	} ?>
 			</div>
-<?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page'], array()); ?>
+<?	ForumView::displayPagination($forumManager->getForumProperty($forumID, 'threadCount'), $_GET['page'] ?? 1, array()); ?>
 		</div>
 <?	require_once(FILEROOT.'/footer.php'); ?>

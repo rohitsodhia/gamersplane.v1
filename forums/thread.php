@@ -43,7 +43,7 @@
 		<div class="hbMargined">
 			<div class="threadMenu">
 				<div class="leftCol">
-					<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
+					<?=$threadManager->displayBreadcrumbs($pathOptions,$post ?? null,$quoteID ?? null);?>
 					<p id="rules" class="mob-hide">Be sure to read and follow the <a href="/community_guidelines/">community guidelines</a>.</p>
 				</div>
 				<div class="rightCol alignRight">
@@ -215,7 +215,7 @@
 					?> <p class="charName"><?=$npc["name"]?></p> <?php
 				}
 ?>
-						<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=is_array($GMs) &&in_array($post->author->userID, $GMs)?' <img src="/images/gm_icon.png">':''?><?=User::inactive($post->author->lastActivity)?></p>
+						<p class="posterName"><a href="/user/<?=$post->author->userID?>/" class="username"><?=$post->author->username?></a><?=is_array($GMs ?? null) &&in_array($post->author->userID, $GMs)?' <img src="/images/gm_icon.png">':''?><?=User::inactive($post->author->lastActivity)?></p>
 <?php			} ?>
 						</div>
 					</div>
@@ -345,7 +345,7 @@
 			</div>
 			<div class="threadMenu">
 			<div class="leftCol">
-				<?=$threadManager->displayBreadcrumbs($pathOptions,$post,$quoteID);?>
+				<?=$threadManager->displayBreadcrumbs($pathOptions,$post ?? null,$quoteID ?? null);?>
 			</div>
 			<div class="rightCol alignRight">
 				<?=$threadManager->addModerationButtons();?>
