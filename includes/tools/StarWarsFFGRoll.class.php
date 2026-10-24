@@ -75,6 +75,7 @@
 				$totalString = '';
 				echo '<p class="rollString">';
 				echo ($showAll && $this->visibility > 0)?'<span class="hidden">'.$this->visText[$this->visibility].'</span> ':'';
+				$hidden = FALSE;
 				if ($this->visibility <= 2) echo $this->reason;
 				elseif ($showAll) { echo '<span class="hidden">'.($this->reason != ''?"{$this->reason}":''); $hidden = TRUE; }
 				else echo 'Secret Roll';

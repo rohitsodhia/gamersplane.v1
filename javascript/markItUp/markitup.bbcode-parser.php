@@ -335,8 +335,8 @@ function BBCode2Html($text) {
 				$isCalc=false;
 			}
 			preg_match('/(\d+)\/(\d+)/',$formVal,$splitVal);
-			$valAsInt=intval($splitVal[1]);
-			$outOf=intval($splitVal[2]);
+			$valAsInt=intval($splitVal[1] ?? 0);
+			$outOf=intval($splitVal[2] ?? 0);
 			$valHtml='';
 			$spanClasses='formVal'.($isCalc?" formCalc":'').($formVarName?" formVar":"");
 			if($outOf<=20 && $outOf>0 && $valAsInt<=$outOf && $valAsInt>=0){
@@ -513,7 +513,7 @@ function BBCode2Html($text) {
 	if (strpos($text, 'aside class="note"') !== false && !$isGM && !$isThreadAdmin && !$postAuthor && preg_match_all('/\<aside class="note"\>\<div\>Note to \<span\>(.*?)\<\/span\>\<\/div\>.*?\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
 			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-			if (!in_array(strtolower($currentUser->username), $noteTo)) {
+			if (!in_array(strtolower($currentUser->username ?? ''), $noteTo)) {
 				$text = str_replace($match[0], '<aside class="note"><div>'.$postAuthorName.' sent a note to <span>'.$match[1].'</span></div></aside>', $text);
 			}
 		}
@@ -527,7 +527,7 @@ function BBCode2Html($text) {
 	if (strpos($text, 'aside class="private"') !== false && !$isGM && !$postAuthor && preg_match_all('/\<aside class="private"\>\<div\>Privately: (.*?)\<\/div\>(.*?)\<\/aside\>/ms', $text, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
 			$noteTo = array_map('strtolower', preg_split('/[^\w\.]+/', $match[1]));
-			if (!in_array(strtolower($currentUser->username), $noteTo)) {
+			if (!in_array(strtolower($currentUser->username ?? ''), $noteTo)) {
 				$text = str_replace($match[0], '', $text);
 			}
 			else{
@@ -561,10 +561,10 @@ function BBCode2Html($text) {
 			foreach ($pollQuestions as $pollQuestion){
 				$pollQuestion=trim($pollQuestion);
 				if(strlen($pollQuestion)>0){
-					$ret .= "<div class='pollQuestion ".($pollResults['votes'][$answerNumber]["me"]?" pollMyVote":"")."' data-q='".$answerNumber."'><div class='pollQuestionLabel'>".$pollQuestion."</div>";
+					$ret .= "<div class='pollQuestion ".(($pollResults['votes'][$answerNumber]["me"] ?? false)?" pollMyVote":"")."' data-q='".$answerNumber."'><div class='pollQuestionLabel'>".$pollQuestion."</div>";
 					$ret .= "<div class='pollQuestionResults'>";
 					if($pollResults['voted'] || $showBeforeVote || $postAuthor || $isGM){
-						$ret .= $pollResults['votes'][$answerNumber]['html'];
+						$ret .= $pollResults['votes'][$answerNumber]['html'] ?? '';
 					}
 					else{
 						$ret .='<div class="voteToView">Vote to view results.</div>';
