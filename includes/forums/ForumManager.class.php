@@ -273,7 +273,7 @@ class ForumManager
 		if (sizeof($this->forums[$forumID]->children) == 0 && $this->forums[$forumID]->permissions[$permission] == false) {
 			$parentID = $this->forums[$forumID]->parentID;
 			unset($this->forums[$forumID]);
-			if (isset($this->forums[$parentID])) {
+			if ($parentID !== null && isset($this->forums[$parentID])) {
 				$this->forums[$parentID]->unsetChild($forumID);
 			}
 		}
@@ -316,6 +316,9 @@ class ForumManager
 
 	public function getForumProperty($forumID, $property)
 	{
+		if (!isset($this->forums[$forumID])) {
+			return null;
+		}
 		if (preg_match('/(\w+)\[(\w+)\]/', $property, $matches)) {
 			return $this->forums[$forumID]->{$matches[1]}[$matches[2]];
 		} elseif (preg_match('/(\w+)->(\w+)/', $property, $matches)) {
