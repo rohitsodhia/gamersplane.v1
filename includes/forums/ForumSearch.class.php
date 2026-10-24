@@ -212,7 +212,7 @@
 			}
 
 			foreach ($this->results as $key => $result) {
-				$this->results[$key]["heritage"] = $heritages[$result["forumID"]];
+				$this->results[$key]["heritage"] = $heritages[$result["forumID"]] ?? [];
 			}
 		}
 

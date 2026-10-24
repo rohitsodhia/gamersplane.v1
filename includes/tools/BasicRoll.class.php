@@ -233,7 +233,7 @@
 						}
 					}else{
 						//old data
-						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.$roll['number'][0].'d'.$roll['sides'][0].'">'.$this->resultsToText($roll['indivRolls'], array()).'</span>)';
+						$results[0] = '(<span class="rollValues parsedRolls" data-rollstring="'.($roll['number'][0] ?? '').'d'.($roll['sides'][0] ?? '').'">'.$this->resultsToText($roll['indivRolls'], array()).'</span>)';
 					}
 
 					$rollValues[$count] .= implode(' ', $results);
