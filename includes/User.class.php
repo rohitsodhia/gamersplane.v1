@@ -54,7 +54,7 @@
 			if (is_string($loginHash) && strlen($loginHash)) {
 				$mysql = DB::conn('mysql');
 
-				list($username, $loginHash) = explode('|', sanitizeString($loginHash));
+				list($username, $loginHash) = array_pad(explode('|', sanitizeString($loginHash)), 2, '');
 				$userCheck = $mysql->prepare('SELECT userID FROM users WHERE username = :username AND suspendedUntil IS NULL AND banned = 0');
 				$userCheck->execute(array(':username' => $username));
 
