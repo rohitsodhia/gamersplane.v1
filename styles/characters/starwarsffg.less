@@ -274,3 +274,44 @@ input.weapon_notes, .weapon_notes {
 	}
 	#weapons .ffgControls { display: flex; justify-content: flex-end; margin: 5px 0 8px; }
 }
+
+// Stack the FFG editor lists and place controls on their own line on small screens.
+@media (max-width: 1000px) {
+	#page_characterSheet_edit {
+		#skills, #talents, #weapons, #items, #motivations, #obligations {
+			float: none;
+			width: 100%;
+			max-width: 100%;
+			box-sizing: border-box;
+		}
+		#skills {
+			.skill, .labelTR { grid-template-columns: minmax(0, 1fr) 90px 40px 40px; }
+			.skill_name, .autocompleteWrapper { width: 100%; min-width: 0; box-sizing: border-box; }
+			.ffgControls { position: static; transform: none; grid-column: ~"1 / -1"; justify-self: end; margin: 5px 0; }
+		}
+		#talents {
+			.talent { padding-right: 0; }
+			.talent_name, .autocompleteWrapper { width: 100%; box-sizing: border-box; }
+			.ffgControls { position: static; display: flex; justify-content: flex-end; margin: 5px 0; }
+			.talent textarea { width: 100%; min-width: 0; }
+		}
+		.ffgControl { width: 32px; height: 32px; }
+		#charDetails > .tr { display: flex; flex-wrap: wrap; gap: 4px; }
+		#charDetails > .tr > * { max-width: 100%; box-sizing: border-box; }
+		#stats, #defense { float: none; margin-left: 0; max-width: 100%; }
+		#defense .col { float: none; display: inline-block; margin-left: 0; }
+		#charAvatar { overflow-wrap: anywhere; }
+		.autocompleteResultsWrapper { max-width: 100%; width: 100% !important; box-sizing: border-box; }
+		#items textarea, #motivations textarea, #obligations textarea, #notes textarea { width: 100%; box-sizing: border-box; }
+		#weapons {
+			.weapon_firstRow, .weapon_secondRow, .weapon > .labelTR:first-child { display: flex; gap: 4px; }
+			.weapon > .labelTR:first-child > label { flex: 1; width: 0; margin: 0; padding-left: 0; }
+			.weapon_firstRow > *, .weapon_secondRow > * { flex: 1; min-width: 0; width: 0; margin: 0; box-sizing: border-box; }
+			.weapon_notes { width: 100%; box-sizing: border-box; margin: 0; }
+		}
+	}
+}
+
+// The responsive stylesheet does not provide the legacy clearfix helper.
+// Contain each FFG section pair so desktop floats cannot escape into later rows.
+#page_characterSheet_edit #charDetails > .clearfix { display: flow-root; }
