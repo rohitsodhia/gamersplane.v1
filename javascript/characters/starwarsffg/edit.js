@@ -1,4 +1,9 @@
 $(function() {
+	$('#skills').on('click', '.skill_remove', function (e) {
+		e.preventDefault();
+		$(this).closest('.skill').remove();
+	});
+
 	if ($('#talents').length) {
 		var nextTalentCount = 1;
 
