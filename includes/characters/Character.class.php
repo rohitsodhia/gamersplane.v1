@@ -143,14 +143,8 @@
 		}
 
 		public function getForumTop($postAuthor, $isGM) {
-			global $currentUser;
-
-			if ($this->checkPermissions($currentUser->userID) == 'edit') {
 ?>
 					<p class="charName"><a href="/characters/<?=$this::SYSTEM?>/<?=$this->characterID?>/"><?=$this->name?></a></p>
-<?			} else { ?>
-					<p class="charName"><?=$this->name?></p>
-<?			} ?>
 			<p class="posterName"><a href="/user/<?=$postAuthor->userID?>/" class="username"><?=$postAuthor->username?></a><?=$isGM?' <img src="/images/gm_icon.png">':''?><?=User::inactive($postAuthor->lastActivity)?></p>
 <?
 		}
