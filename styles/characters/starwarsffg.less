@@ -218,3 +218,59 @@ input.weapon_notes, .weapon_notes {
 		height: 16.2em;
 	}
 }
+// FFG editor list controls. Keep header and row columns in sync.
+#page_characterSheet_edit {
+	#skills {
+		.skill, .labelTR {
+			position: relative;
+			display: grid;
+			grid-template-columns: 230px 90px 40px 40px;
+			column-gap: 4px;
+			align-items: center;
+			&:before, &:after { display: none; }
+		}
+		.skill_name { width: 230px; }
+		.skill > .autocompleteWrapper, .skill > .skill_name { grid-column: 1; }
+		.skill > .skill_stat { grid-column: 2; }
+		.skill > .skill_rank { grid-column: 3; }
+		.skill > .skill_career { grid-column: 4; }
+		.skill > .skill_stat, .skill > .skill_rank, .skill > .skill_career, .labelTR > label {
+			margin-left: 0;
+			margin-right: 0;
+			box-sizing: border-box;
+		}
+		.labelTR > label { width: auto; text-align: center; }
+		.labelTR > label:first-child { text-align: left; }
+		.skill > .skill_rank, .skill > .skill_career { width: 40px; }
+		.ffgControls { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+	}
+	.ffgControls { display: inline-flex; gap: 3px; align-items: center; }
+	.ffgControl {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 26px;
+		height: 26px;
+		padding: 0;
+		margin: 0;
+		border: 1px solid #b5aaa0;
+		border-radius: 4px;
+		background: #fff7ee;
+		color: #a32622;
+		font-size: 18px;
+		box-sizing: border-box;
+		cursor: pointer;
+		&:hover:not(:disabled) { background: #f4dbc4; border-color: #ab3428; }
+		&:focus-visible { outline: 2px solid #ab3428; outline-offset: 2px; }
+		&:disabled { opacity: .25; cursor: default; }
+		.sprite { display: block; margin: 0; pointer-events: none; }
+		.ra { pointer-events: none; }
+	}
+	#talents {
+		.talent { position: relative; padding-right: 120px; min-height: 30px; }
+		.talent_name { width: 260px; box-sizing: border-box; }
+		.ffgControls { position: absolute; right: 0; top: 4px; }
+		.talent textarea { box-sizing: border-box; width: 100%; min-width: 260px; }
+	}
+	#weapons .ffgControls { display: flex; justify-content: flex-end; margin: 5px 0 8px; }
+}
