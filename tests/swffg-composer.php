@@ -11,11 +11,11 @@ if (isset($_GET['roll'])) {
 if (isset($_GET['sheet'])) {
  echo '<div><div id="charDetailsName">Fixture</div><input id="characterID" value="1">';
  if ($_GET['sheet']==='official') {
- echo '<div><div id="stats"><div class="stat_agi">3</div></div><div class="skill"><span class="skill_name">Official</span><span class="skill_stat">agi</span><span class="skill_rank">2</span></div></div>'; exit;
+ echo '<div id="stats"><div class="stat_agi">3</div></div><div class="skill"><span class="skill_name">Official</span><span class="skill_stat">agi</span><span class="skill_rank">2</span></div></div>'; exit;
  }
  $bb="[_agility=3]\n[table=swffg]\nSkill | Characteristic | Rank\nCalculated | [_score$=agility] | [_rank=2]\nReverse | 2 | 3\nEqual | 3 | 3\nUntrained | 3 | 0\nZero | 0 | 0\nMaximum | 10 | 10\nBlank | | 2\nFraction | 2.5 | 2\nNegative | -1 | 2\nToo high | 11 | 2\nError | [_error$=missing] | 2\nCheckbox | [_checks=1/3] | 2\n[/table]\n[table=swffg]\nSkill | Characteristic | Rank\nSecond table | 4 | 1\n[/table]\n[table=rolls]\nAction | Roll\nBasic | 1d8+3\nFate | 4dF+2\n[/table]\n[table=d20 dnd5e]\nSkill | Modifier\nStealth | +3\n[/table]";
  if ($_GET['sheet']==='other') $bb="[table=swffg]\nSkill | Characteristic | Rank\nOther | 1 | 0\n[/table]";
- echo '<div><div id="charDetails"><div class="customChar ignoreSave">'.BBCode2Html($bb).'</div></div></div>';exit;
+ echo '<div id="charDetails"><div class="customChar ignoreSave">'.BBCode2Html($bb).'</div></div></div>';exit;
 }
 ?><!doctype html><html lang="en"><meta charset="utf-8"><title>SWFFG composer integration checks</title>
 <link rel="stylesheet" href="/styles/forums.css"><style>body{font:16px sans-serif;margin:24px}td{padding:6px}#rolls_decks{max-width:900px}.rollForChar{cursor:pointer;margin:12px;display:inline-block}#results{white-space:pre-wrap;background:#eef3ef;padding:12px}.customChar{border:1px solid #ccc;padding:10px}.formText{cursor:pointer}.rollWrapper{border:1px solid #ccc;margin:8px;padding:8px}</style>
