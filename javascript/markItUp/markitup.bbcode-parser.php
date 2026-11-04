@@ -425,6 +425,10 @@ function BBCode2Html($text) {
 				$tableClass .= " bbTableRolls";
 			}
 
+			if(in_array("swffg", explode(" ", $tableType))){
+				$tableClass .= " bbTableSwffg";
+			}
+
 			if(strpos($tableType,"d20")!==false){
 				$tableClass.=" bbTableD20";
 			}
