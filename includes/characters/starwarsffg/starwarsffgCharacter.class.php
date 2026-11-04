@@ -374,7 +374,7 @@
 				}
 
 				$this->clearVar('skills');
-				if ($data['skills'] && sizeof($data['skills'])) {
+				if (!empty($data['skills'])) {
 					foreach ($data['skills'] as $skillInfo) {
 						$this->addSkill($skillInfo);
 					}
