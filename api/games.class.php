@@ -331,7 +331,7 @@ class games
 
 			$currentUser->updateUsermeta('isGM', true);
 
-			$getLFGUsers = $mysql->query("SELECT users.email FROM usermeta lfg INNER JOIN users ON lfg.userID = users.userID INNER JOIN usermeta gameEmails ON gameEmails.userID = users.userID WHERE lfg.metaKey = 'lfg' AND JSON_CONTAINS(lfg.metaValue, '\"{$details['system']}\"', '$') AND gameEmails.metaKey = 'newGameMail' AND gameEmails.metaValue = 1");
+			$getLFGUsers = $mysql->query("SELECT users.email FROM usermeta lfg INNER JOIN users ON lfg.userID = users.userID INNER JOIN usermeta gameEmails ON gameEmails.userID = users.userID WHERE users.activatedOn IS NOT NULL AND users.banned = 0 AND (users.suspendedUntil IS NULL OR users.suspendedUntil < NOW()) AND users.lastActivity >= NOW() - INTERVAL 6 MONTH AND lfg.metaKey = 'lfg' AND JSON_CONTAINS(lfg.metaValue, '\"{$details['system']}\"', '$') AND gameEmails.metaKey = 'newGameMail' AND gameEmails.metaValue = 1");
 			if ($getLFGUsers->rowCount()) {
 				$recips = $getLFGUsers->fetchAll(PDO::FETCH_COLUMN, 0);
 				ob_start();
@@ -681,7 +681,7 @@ class games
 			$approved = $isGM ? 1 : 0;
 			$mysql->query("UPDATE characters SET gameID = {$gameID}, approved = {$approved} WHERE characterID = {$characterID} LIMIT 1");
 
-			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID INNER JOIN players ON u.userID = players.userID WHERE players.gameID = {$gameID} AND players.isGM = 1 AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
+			$gmEmails = $mysql->query("SELECT u.email FROM users u INNER JOIN usermeta m ON u.userID = m.userID INNER JOIN players ON u.userID = players.userID WHERE u.activatedOn IS NOT NULL AND u.banned = 0 AND (u.suspendedUntil IS NULL OR u.suspendedUntil < NOW()) AND u.lastActivity >= NOW() - INTERVAL 6 MONTH AND players.gameID = {$gameID} AND players.isGM = 1 AND m.metaKey = 'gmMail' AND m.metaValue = 1")->fetchAll(PDO::FETCH_COLUMN);
 			if (sizeof($gmEmails)) {
 				$gameInfo = $mysql->query("SELECT gameID, `system`, title FROM games WHERE gameID = {$gameID} LIMIT 1")->fetch(PDO::FETCH_CLASS);
 				$emailDetails = new stdClass();

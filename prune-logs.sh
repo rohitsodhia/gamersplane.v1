@@ -17,7 +17,8 @@ remove() {
 
 for day in "$LOG_ROOT"/*/*/*/; do
   [ -d "$day" ] || continue
-  d=${day#"$LOG_ROOT"/}; d=${d%/}   # YYYY/MM/DD
+  day=${day%/}
+  d=${day#"$LOG_ROOT"/}   # YYYY/MM/DD
   stamp=${d//\//}
   [[ "$stamp" =~ ^[0-9]{8}$ ]] || continue
 

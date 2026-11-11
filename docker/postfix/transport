@@ -1,0 +1,4 @@
+# Non-delivery notices for our own mail are addressed to the envelope sender (noone@gamersplane.com).
+# Nobody reads them (the bounces are already in the postfix log), and they were ~2.8% of all sent mail,
+# so discard them here instead of delivering them to a mailbox.
+noone@gamersplane.com	discard:noone-bounces

@@ -7,4 +7,5 @@ sed -i -r -e "s/^(myhostname =) gamersplane.com$/\1 $POSTFIX_MYHOSTNAME/" $CONF_
 chmod 600 $CONF_FILE
 
 postalias /etc/postfix/aliases
+postmap lmdb:/etc/postfix/transport
 postfix start-fg

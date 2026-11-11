@@ -157,6 +157,32 @@ function getMailObj() {
 	return $mail;
 }
 
+/*	Verifies a reCAPTCHA response token with Google. Skipped when ENVIRONMENT=dev. Fails closed: a missing
+	secret, missing token, or an unreachable Google all count as a failed check. */
+function verifyRecaptcha($token)
+{
+	if (getenv('ENVIRONMENT') === 'dev') {
+		return true;
+	}
+
+	$secret = getenv('RECAPTCHA_SECRET');
+	if (!$secret || !is_string($token) || !strlen($token)) {
+		return false;
+	}
+
+	$context = stream_context_create([
+		'http' => [
+			'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+			'method' => 'POST',
+			'content' => http_build_query(['secret' => $secret, 'response' => $token, 'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '']),
+			'timeout' => 5
+		]
+	]);
+	$result = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+
+	return $result !== false && !empty(json_decode($result)->success);
+}
+
 /* Session Functions */
 function startSession()
 {

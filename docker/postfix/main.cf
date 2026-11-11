@@ -11,6 +11,7 @@ alias_database = lmdb:/etc/postfix/aliases
 mydestination = localhost.localdomain, localhost
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 gpv1-api.gamersplanev1_default
 relayhost =
+transport_maps = lmdb:/etc/postfix/transport
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 
 inet_interfaces = all
@@ -22,5 +23,14 @@ tls_ssl_options = NO_COMPRESSION, NO_RENEGOTIATION
 milter_default_action = accept
 smtpd_milters = inet:gpv1-opendkim:8891
 non_smtpd_milters = $smtpd_milters
+
+# Give up on undeliverable mail after a day (default is 5) and back off between retries, so a host that
+# refuses us isn't hit every few minutes. Fewer retries also means fewer deferred lines in the logs.
+maximal_queue_lifetime = 1d
+bounce_queue_lifetime = 1d
+minimal_backoff_time = 900s
+maximal_backoff_time = 4h
+smtp_destination_concurrency_limit = 2
+smtp_destination_rate_delay = 1s
 
 maillog_file=/var/log/postfix.log

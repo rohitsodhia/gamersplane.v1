@@ -1,4 +1,8 @@
-<?	require_once(FILEROOT.'/header.php'); ?>
+<?
+	$captchaEnabled = getenv('ENVIRONMENT') !== 'dev';
+	if ($captchaEnabled) { $addExternalJSFiles[] = 'https://www.google.com/recaptcha/api.js?render=explicit'; }
+	require_once(FILEROOT.'/header.php');
+?>
 		<h1 class="headerbar">Contact Us</h1>
 		<div class="animationFrame">
 			<form ng-show="dispForm" ng-submit="send()" class="slideDown">
@@ -19,6 +23,12 @@
 				<div class="tr">
 					<textarea ng-model="form.comment" placeholder="Comments" ng-class="{ 'error': errors.empty.indexOf('comment') > -1 }"></textarea>
 				</div>
+	<?	if ($captchaEnabled) { ?>
+				<div class="tr" ng-show="loggedIn === false">
+					<div id="contactCaptcha" data-sitekey="<?=htmlspecialchars((string) getenv('RECAPTCHA_SITE_KEY'))?>"></div>
+					<p ng-show="errors.captcha" style="color: #c00;">Please confirm you're not a robot, then submit again.</p>
+				</div>
+	<?	} ?>
 				<div class="alignCenter"><button type="submit" class="fancyButton">Submit</button></div>
 			</form>
 			<div ng-hide="dispForm" class="slideUp">
