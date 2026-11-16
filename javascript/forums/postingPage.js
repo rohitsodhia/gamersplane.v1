@@ -474,7 +474,7 @@ $(function() {
 							rollsTable.appendTo(charSheet);
 						}
 
-						$('table.bbTableRolls td',charSheet).each(function(){
+						$('table.bbTableRolls:not(.bbTableSwffg) td',charSheet).each(function(){
 							var td=$(this);
 							var tdText=$.trim(td.text());
 							if(/(\d*)[dD](\d+)([+-]\d+)?/g.test(tdText)) {
@@ -502,7 +502,7 @@ $(function() {
 							}
 						});*/
 
-						$('table.bbTableD20:not(.bbTableDnd5e) td',charSheet).each(function(){
+						$('table.bbTableD20:not(.bbTableDnd5e):not(.bbTableSwffg) td',charSheet).each(function(){
 							var td=$(this);
 							var tdText=$.trim(td.text());
 							if(/^[\+\-](\d)+$/.test(tdText)) {
@@ -512,7 +512,7 @@ $(function() {
 							}
 						});
 
-						$('table.bbTableD20.bbTableDnd5e td',charSheet).each(function(){
+						$('table.bbTableD20.bbTableDnd5e:not(.bbTableSwffg) td',charSheet).each(function(){
 							var td=$(this);
 							var tdText=$.trim(td.text());
 							if(/^[\+\-](\d)+$/.test(tdText)) {
@@ -569,6 +569,7 @@ $(function() {
 				var customSheet=$('<div class="customSheet customChar"></div>').appendTo(charSheet);
 				customSheet.html($('#charDetails div.customChar',charSheetContent).html()).zoommap().darkModeColorize();
 				$('<input id="characterID" type="hidden" value=""></input>').val($('#characterID',charSheetContent).val()).appendTo(customSheet);
+				customSheet.on('gp.calculationsUpdated', function(){addCustomStarwarsFFGRolls(customSheet);});
 				customSheet.updateCalculations();
 				customSheet.on('gp.sheetUpdated',function(){$('#rolls_decks .rollForChar.sel').removeClass('sel').click();});
 			};
@@ -640,16 +641,40 @@ $(function() {
 					var yellow=Math.min(rank,abilityScore);
 					var green=Math.max(rank,abilityScore)-yellow;
 
-					{
-						var roller = $('<tr class="ffgSkill"><td><span class="name"></span></td><td class="swffgRoller"><span class="ability"></span></td><td><i class="p">1</i><i class="p">2</i><i class="p">3</i><i class="p">4</i><i class="p">5</i></td></tr>').appendTo(skills);
-						$('span.name', roller).text(label);
-						$('.swffgRoller,i.p',roller).data('y',yellow);
-						$('.swffgRoller,i.p',roller).data('g',green);
-						$('.swffgRoller',roller).data('p',0);
-						$('i.p',roller).each(function(){$(this).addClass('swffgRoller').data('p',$(this).text());});
-						$('span.ability', roller).html('<i class="y">y</i>'.repeat(yellow)+'<i class="g">g</i>'.repeat(green));
-					}
+					addStarwarsFFGSkillRow(skills, label, yellow, green);
 				});
+			};
+
+			//Use the same skill controls for official and custom character sheets.
+			var addStarwarsFFGSkillRow=function(skills, label, yellow, green){
+				var roller = $('<tr class="ffgSkill"><td><span class="name"></span></td><td class="swffgRoller"><span class="ability"></span></td><td><i class="p">1</i><i class="p">2</i><i class="p">3</i><i class="p">4</i><i class="p">5</i></td></tr>').appendTo(skills);
+				$('span.name', roller).text(label);
+				$('.swffgRoller,i.p',roller).data('y',yellow).data('g',green);
+				$('.swffgRoller',roller).data('p',0);
+				$('i.p',roller).each(function(){$(this).addClass('swffgRoller').data('p',Number($(this).text()));});
+				$('span.ability',roller).html('<i class="y">y</i>'.repeat(yellow)+'<i class="g">g</i>'.repeat(green));
+				if(yellow+green===0){$('td.swffgRoller',roller).removeClass('swffgRoller');}
+			};
+
+			var addCustomStarwarsFFGRolls=function(customSheet){
+				charSheet.children('.customFfgSkills').remove();
+				var section=$('<div class="customFfgSkills"><h3>Skills</h3><table class="ffgSkills"></table></div>');
+				var skills=$('table',section);
+				$('table.bbTableSwffg',customSheet).each(function(){
+					$(this).children('tbody').children('tr').add($(this).children('tr')).slice(1).each(function(){
+						var cells=$(this).children('td');
+						if(cells.length!==3 || cells.find('.formCalcError,.formCheck,input,textarea,select').length){return;}
+						var label=$.trim(cells.eq(0).text());
+						var characteristic=$.trim(cells.eq(1).text());
+						var rank=$.trim(cells.eq(2).text());
+						if(!label || !/^\+?\d+$/.test(characteristic) || !/^\+?\d+$/.test(rank)){return;}
+						characteristic=Number(characteristic);
+						rank=Number(rank);
+						if(characteristic>10 || rank>10){return;}
+						addStarwarsFFGSkillRow(skills,label,Math.min(characteristic,rank),Math.abs(characteristic-rank));
+					});
+				});
+				if(skills.children().length){section.insertAfter(customSheet);}
 			};
 
 			//special code for dnd 5e
