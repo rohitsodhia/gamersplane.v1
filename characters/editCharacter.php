@@ -37,7 +37,7 @@
 		}
 	} else { header('Location: /404/'); exit; }
 ?>
-<?php	if(SYSTEM=='custom'){$responsivePage=true;}
+<?php	if (in_array(SYSTEM, ['custom', 'starwarsffg'])) { $responsivePage = true; }
 		require_once(FILEROOT . '/header.php'); ?>
 
 <?php	if (file_exists(FILEROOT . '/images/logos/' . SYSTEM . '.png')) { ?>

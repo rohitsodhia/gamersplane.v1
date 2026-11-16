@@ -381,14 +381,14 @@
 				}
 
 				$this->clearVar('talents');
-				if ($data['talents'] && sizeof($data['talents'])) {
+				if (!empty($data['talents'])) {
 					foreach ($data['talents'] as $talentInfo) {
 						$this->addTalent($talentInfo);
 					}
 				}
 
 				$this->clearVar('weapons');
-				foreach ($data['weapons'] as $weapon) {
+				foreach (($data['weapons'] ?? []) as $weapon) {
 					$this->addWeapon($weapon);
 				}
 
