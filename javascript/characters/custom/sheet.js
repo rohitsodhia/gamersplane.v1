@@ -199,6 +199,9 @@ $(function () {
             }
         });
 
+        //Composer shortcuts read current values after all calculations finish.
+        $(this).trigger('gp.calculationsUpdated');
+
         //refresh required once the save queue is processed
         if(requiresRefresh){
             OnQueueEmpty(function(){$('div.customChar').trigger('gp.sheetUpdated');});
