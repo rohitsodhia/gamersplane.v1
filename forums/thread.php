@@ -174,13 +174,9 @@
 			$postedCharAvatar = false;
 			if ($postAsChar && $character->getAvatar()) {
 				$postedCharAvatar = true;
-				if ($character->checkPermissions()) {
 ?>
 							<a href="/characters/<?=$character::SYSTEM?>/<?=$character->getID()?>/"><img src="<?=$character->getAvatar()?>"></a>
-<?php				} else { ?>
-							<img src="<?=$character->getAvatar()?>">
 <?php
-				}
 				$userAvatarSize = getimagesize(FILEROOT.User::getAvatar($post->author->userID, $post->author->avatarExt));
 				$xRatio = 40 / $userAvatarSize[0];
 				$yRatio = 40 / $userAvatarSize[1];
