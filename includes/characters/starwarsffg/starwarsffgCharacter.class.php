@@ -10,6 +10,8 @@
 		protected $defenses = ['melee' => 0, 'ranged' => 0, 'soak' => 0];
 		protected $hp = ['maxStrain' => 0, 'currentStrain' => 0, 'maxWounds' => 0, 'currentWounds' => 0];
 		protected $weapons = [];
+		protected $skills = [];
+		protected $talents = [];
 		protected $motivations = '';
 		protected $obligations = '';
 
@@ -122,6 +124,9 @@
 		}
 
 		static public function skillEditFormat($key = 1, $skillInfo = null) {
+			if ($skillInfo == null) {
+				$skillInfo = ['name' => '', 'stat' => 'bra', 'rank' => '', 'career' => false];
+			}
 ?>
 							<div id="skill_<?=$key?>" class="skill tr clearfix">
 								<input type="text" name="skills[<?=$key?>][name]" value="<?=$skillInfo['name']?>" class="skill_name medText">
@@ -138,7 +143,7 @@
 		}
 
 		public function showSkillsEdit() {
-			if (sizeof($this->skills)) {
+			if (!empty($this->skills)) {
 				foreach ($this->skills as $key => $skill) {
 					$this->skillEditFormat($key + 1, $skill);
 				}
@@ -190,7 +195,7 @@
 		}
 
 		public function showTalentsEdit() {
-			if (sizeof($this->talents)) {
+			if (!empty($this->talents)) {
 				foreach ($this->talents as $key => $talent) {
 					$this->talentEditFormat($key + 1, $talent);
 				}
