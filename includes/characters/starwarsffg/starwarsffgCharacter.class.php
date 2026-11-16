@@ -152,7 +152,7 @@
 				foreach ($this->skills as $skill) {
 ?>
 						<div id="skill_<?=$skill['skillID']?>" class="skill tr clearfix">
-							<span class="skill_name medText"><?=mb_convert_case($skill['name'], MB_CASE_TITLE)?></span>
+							<span class="skill_name medText"><?=$skill['name']?></span>
 							<span class="skill_stat alignCenter shortNum lrBuffer"><?=ucwords($skill['stat'])?></span>
 							<span class="skill_rank alignCenter shortNum lrBuffer"><?=$skill['rank']?></span>
 							<span class="skill_career alignCenter shortNum lrBuffer"><?=$skill['career']?'<div class="sprite check"></div>':''?></span>
