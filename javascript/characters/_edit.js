@@ -111,9 +111,10 @@ $(function () {
 	}
 
 	$('#weapons, #armor').on('click', '.remove', function (e) {
-		$(this).parent().parent().remove();
-
 		e.preventDefault();
+		if (system === 'starwarsffg' && $(this).closest('#weapons').length) return;
+
+		$(this).parent().parent().remove();
 	});
 
 	$('#submitDiv button').click(function (e) {
